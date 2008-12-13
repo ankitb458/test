@@ -4,7 +4,7 @@ Plugin Name: External Links
 Plugin URI: http://www.semiologic.com/software/publishing/external-links/
 Description: Adds a class=&quot;external&quot; to all outbound links, with various effects that are configurable under Options / External Links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the icon on individual links.
 Author: Denis de Bernardy
-Version: 3.0.2
+Version: 3.0.3 alpha
 Author URI: http://www.semiologic.com
 */
 
@@ -239,7 +239,7 @@ class external_links
 					{
 						$anchor = str_replace(
 							$match[0],
-							'class="' . $match[1] . ' external"',
+							' class="' . $match[1] . ' external"',
 							$anchor
 							);
 					}
@@ -258,7 +258,7 @@ class external_links
 			{
 				if ( !preg_match(
 					"/
-						\b
+						\s
 						target\s*=
 					/iUx",
 					$anchor
@@ -276,7 +276,7 @@ class external_links
 			{
 				if ( preg_match(
 					"/
-						\b
+						\s
 						rel\s*=\s*
 						(?:
 							\"([^\"]*)\"
@@ -309,7 +309,7 @@ class external_links
 					{
 						$anchor = str_replace(
 							$match[0],
-							'rel="' . $match[1] . ' nofollow"',
+							' rel="' . $match[1] . ' nofollow"',
 							$anchor
 							);
 					}
