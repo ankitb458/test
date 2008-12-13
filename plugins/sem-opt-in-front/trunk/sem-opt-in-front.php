@@ -5,7 +5,7 @@ Plugin URI: http://www.semiologic.com/software/publishing/opt-in-front/
 Description: Restricts the access to your front page on an opt-in basis: Only posts within the category with a slug of 'blog' will be displayed on your front page.
 Author: Denis de Bernardy
 Version: 3.1
-Author URI: http://www.semiologic.com
+Author URI: http://www.getsemiologic.com
 */
 
 /*

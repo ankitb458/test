@@ -3,9 +3,9 @@
 Plugin Name: Page Tags
 Plugin URI: http://www.semiologic.com/software/publishing/page-tags/
 Description: Use tags on static pages.
-Author: Denis de Bernardy and Mike Koepke
+Author: Denis de Bernardy
 Version: 1.0.1 alpha
-Author URI: http://www.semiologic.com
+Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: page_tags
 Update Package: http://www.semiologic.com/media/software/widgets/publishing/page-tags/page-tags.zip

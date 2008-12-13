@@ -5,7 +5,7 @@ Plugin URI: http://www.semiologic.com/software/publishing/external-links/
 Description: Adds a class=&quot;external&quot; to all outbound links, with various effects that are configurable under Options / External Links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the icon on individual links.
 Author: Denis de Bernardy
 Version: 3.0.3 alpha
-Author URI: http://www.semiologic.com
+Author URI: http://www.getsemiologic.com
 */
 
 /*

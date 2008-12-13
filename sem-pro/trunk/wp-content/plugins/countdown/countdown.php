@@ -5,7 +5,7 @@ Plugin URI: http://redalt.com/wiki/Countdown
 Description: Adds template tags to count down to a specified date. Browse Manage / Events to configure your events.
 Version: 2.3 fork
 Author: Owen Winkler &amp; Denis de Bernardy
-Author URI: http://www.semiologic.com
+Author URI: http://www.getsemiologic.com
 License: MIT License - http://www.opensource.org/licenses/mit-license.php
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: countdown

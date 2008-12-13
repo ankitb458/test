@@ -5,7 +5,7 @@ Plugin URI: http://www.semiologic.com/software/widgets/link-widgets/
 Description: Replaces WordPress' default archive widgets with advanced archive widgets
 Author: Denis de Bernardy
 Version: 1.0.1
-Author URI: http://www.semiologic.com
+Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: archive_widgets
 Update Package: http://www.semiologic.com/media/software/widgets/archive-widgets/archive-widgets.zip
