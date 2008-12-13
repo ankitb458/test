@@ -29,14 +29,16 @@ class page_tags
 	function init()
 	{
 		# page tags
-		add_filter('posts_where', array('page_tags', 'add_page_tags_to_where' ));
+		add_filter('posts_where', array('page_tags', 'posts_where'));
 		
 	} # init()
-
+	
+	
 	#
-	# add_page_tags_to_where)
+	# posts_where()
 	#	
-	function add_page_tags_to_where( $where ) 
+	
+	function posts_where( $where ) 
 	{
 		if ( is_tag() ) 
 		{
@@ -48,9 +50,9 @@ class page_tags
 		}
 
 		return $where;
-	} # add_page_tags_to_where
+	} # posts_where()
 	
-} # page-tags
+} # page_tags
 
 page_tags::init();
 
