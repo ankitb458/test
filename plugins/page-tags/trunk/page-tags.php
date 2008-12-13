@@ -38,11 +38,13 @@ class page_tags
 	#	
 	function add_page_tags_to_where( $where ) 
 	{
-		if( is_tag() ) 
+		if ( is_tag() ) 
 		{
-			$where = preg_replace(
-				"/ ([0-9a-zA-Z_]*\.?)post_type = 'post'/",
-				"(${1}post_type = 'post' OR ${1}post_type = 'page')", $where );
+			$where = str_replace(
+				"post_type = 'post'",
+				"post_type IN ('post', 'page')",
+				$where
+				);
 		}
 
 		return $where;
