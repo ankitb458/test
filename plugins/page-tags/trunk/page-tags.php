@@ -4,7 +4,7 @@ Plugin Name: Page Tags
 Plugin URI: http://www.semiologic.com/software/publishing/page-tags/
 Description: Use tags on static pages.
 Author: Denis de Bernardy
-Version: 1.0.1 alpha
+Version: 1.1 alpha
 Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: page_tags
@@ -20,41 +20,6 @@ This software is copyright Mesoconcepts Ltd, and is distributed under the terms 
 http://www.mesoconcepts.com/license/
 **/
 
-
-class page_tags
-{
-	#
-	# init()
-	#
-	function init()
-	{
-		# page tags
-		add_filter('posts_where', array('page_tags', 'posts_where'));
-		
-	} # init()
-	
-	
-	#
-	# posts_where()
-	#	
-	
-	function posts_where( $where ) 
-	{
-		if ( is_tag() ) 
-		{
-			$where = str_replace(
-				"post_type = 'post'",
-				"post_type IN ('post', 'page')",
-				$where
-				);
-		}
-
-		return $where;
-	} # posts_where()
-	
-} # page_tags
-
-page_tags::init();
 
 if ( is_admin() )
 {
