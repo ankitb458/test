@@ -846,7 +846,7 @@ div.media
 }
 
 /* Image Aligns */
-/*
+
 .skin .aligncenter
 {
 	display: block;
@@ -865,4 +865,17 @@ div.media
 	float: right;
 	margin-left: .5em;
 }
-*/
+
+/* captions */
+
+.wp-caption {
+    -moz-border-radius-bottomleft:3px;
+    -moz-border-radius-bottomright:3px;
+    -moz-border-radius-topleft:3px;
+    -moz-border-radius-topright:3px;
+    background-color:#F3F3F3;
+    border:1px solid #DDDDDD;
+    margin:10px;
+    padding-top:4px;
+    text-align:center;
+}
