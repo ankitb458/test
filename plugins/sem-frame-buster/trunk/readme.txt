@@ -27,9 +27,9 @@ If you've ever seen your site trapped within a frame surrounded by ads, you cert
 
 = It Does Not Work At All =
 
-Make sure your theme has the following in between its `<head>` and `</head>` tags:
+Make sure your theme has the following in between its `<body>` and `</body>` tags:
 
-    <?php wp_head(); ?>
+    <?php wp_footer(); ?>
 
 
 = Help Me! =
