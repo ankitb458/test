@@ -382,16 +382,6 @@ class sem_entry
 		}
 
 		
-		if ( $author = sem_entry::get('author') )
-		{
-			$author_name = $sem_captions['entry_author'];
-			$author_name = str_replace('%author%', $author, $author_name);
-
-			$o .= '<div class="entry_author">'
-				. $author_name
-				. '</div>' . "\n";
-		}
-		
 		if ( $o )
 		{
 			$o = '<div class="spacer"></div>' . "\n" . $o;

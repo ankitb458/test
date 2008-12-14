@@ -29,8 +29,6 @@ class sem_entry_admin
 			$new_captions = $sem_captions;
 
 			$new_options['show_post_date'] = isset($_POST['sem_entry']['show_post_date']);
-			$new_captions['entry_author'] = strip_tags(stripslashes($_POST['sem_entry']['entry_author']));			
-			
 
 			if ( $new_options != $sem_options )
 			{
@@ -65,22 +63,7 @@ class sem_entry_admin
 			. ' '
 			. __('Show Post Date')
 			. '</label>'
-			. '</div>';
-			
-		echo '<h3>'
-			. __('Captions')
-			. '</h3>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Author(s), e.g. by %author%')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[entry_author]"'
-				. ' value="' . attribute_escape($sem_captions['entry_author']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';			
+			. '</div>';		
 	} # header()
 
 
