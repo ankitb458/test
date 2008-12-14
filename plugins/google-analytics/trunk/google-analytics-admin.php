@@ -217,7 +217,9 @@ EOF;
 		$str = <<<EOF
 <p><a href="http://www.getsemiologic.com">Semiologic Pro</a> lets you easily insert scripts on your site.</p>
 
-<p>To insert extra site-wide tracking code, browse Design / Footer, and add the relevant lines. Examples:</p>
+<p>To insert extra site-wide tracking code, activate the script manager and, under Settings / Scripts, add the relevant lines that follow in the footer. Alternatively, edit a specific post or page and insert the lines in its footer scripts if this needs to be entry-specific.<p>
+
+<p>Sample Extras:</p>
 <ul>
 	<li><a href="http://code.google.com/apis/analytics/docs/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSampleRate">Set the sampling rate</a> at 50% on a high traffic site (this speeds up GA reports quite a bit):<br />
 	<textarea cols="58" rows="5" style="width: 95%;" class="code" onfocus="var this_val=eval(this); this_val.select();">
