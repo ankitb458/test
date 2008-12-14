@@ -236,7 +236,7 @@ class sem_admin_menu
 									)
 								. '"'
 							. '>'
-							. __('Design', 'sem-admin-menu')
+							. __('Widgets', 'sem-admin-menu')
 							. '</a>'
 							. '</span>'
 							. ' ';
