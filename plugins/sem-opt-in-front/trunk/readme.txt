@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
 Tags: asides, opt-in-front-page, opt-in front page, opt-in
 Requires at least: 2.3
-Tested up to: 2.6.5
+Tested up to: 2.7
 Stable tag: trunk
 
 The Opt-In Front Page plugin lets you add posts to your front page on an opt-in basis, rather than remove posts on an opt-out basis. This allows you to manage any number of asides categories.
@@ -15,7 +15,7 @@ The Opt-In Front Page plugin lets you add posts to your front page on an opt-in 
 
 In short, only posts in your "Blog" category will appear on your front page and its RSS feed when you use this plugin.
 
-It changes your main category's url as relevant, and it fallbacks to normal blog mode when no 'blog' category exists or when said category is empty.
+It changes your main category's url as relevant, and it fallbacks to normal blog mode when no 'blog' category exists or when the latter is empty.
 
 You can safely change your 'Blog' category's name after it is created: The opt-in front page plugin looks for the category with a slug of 'blog'.
 
