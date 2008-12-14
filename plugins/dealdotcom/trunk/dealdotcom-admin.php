@@ -72,8 +72,9 @@ class dealdotcom_admin
 				. __('Affiliate ID', 'dealdotcom')
 				. '</a>'
 				. ':'
-			. ' '
-			. '<input style="width: 140px;"'
+				. '<br />'
+			. 'http://www.dealdotcom.com/invite/'
+			. '<input style="width: 50px;"'
 			. ' name="widget-dealdotcom[' . $number. '][aff_id]"'
 			. ' type="text" value="' . $aff_id . '"'
 			. ' />'
