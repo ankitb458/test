@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Simple Trackback Validation (fork)
+Plugin Name: Simple Trackback Validation
 Plugin URI: http://sw-guide.de/wordpress/plugins/simple-trackback-validation/
 Description: Eliminates spam trackbacks by (1) checking if the IP address of the trackback sender is equal to the IP address of the webserver the trackback URL is referring to and (2) by retrieving the web page located at the URL used in the trackback and checking if the page contains a link to your blog.
 Version: 2.5 fork
