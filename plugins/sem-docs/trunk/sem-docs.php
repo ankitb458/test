@@ -6,7 +6,7 @@ Description: Semiologic Pro Documentation, Tips, and Features Screen
 Author: Denis de Bernardy
 Version: 1.14
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: sem_docs
 */
 

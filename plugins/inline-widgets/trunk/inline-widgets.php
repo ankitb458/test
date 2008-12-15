@@ -6,7 +6,7 @@ Description: Creates a special sidebar that lets you insert widget in posts and 
 Author: Denis de Bernardy
 Version: 1.0
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: inline_widgets
 Update Package: http://www.semiologic.com/media/software/widgets/inline-widgets/inline-widgets.zip
 */

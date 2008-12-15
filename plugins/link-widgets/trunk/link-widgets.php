@@ -6,7 +6,7 @@ Description: Replaces WordPress' default link widgets with advanced link widgets
 Author: Denis de Bernardy
 Version: 1.1
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: link_widgets
 Update Package: http://www.semiologic.com/media/software/widgets/link-widgets/link-widgets.zip
 */

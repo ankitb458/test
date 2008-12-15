@@ -6,7 +6,7 @@ Description: Replaces WordPress' default archive widgets with advanced archive w
 Author: Denis de Bernardy
 Version: 1.0.1
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: archive_widgets
 Update Package: http://www.semiologic.com/media/software/widgets/archive-widgets/archive-widgets.zip
 */

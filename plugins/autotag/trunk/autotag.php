@@ -6,7 +6,7 @@ Description: Leverages Yahoo!'s term extraction web service to automatically tag
 Version: 2.1
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: autotag
 Update Package: http://www.semiologic.com/media/software/publishing/autotag/autotag.zip
 */

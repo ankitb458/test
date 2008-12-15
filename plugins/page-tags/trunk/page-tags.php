@@ -6,7 +6,7 @@ Description: Use tags on static pages.
 Author: Denis de Bernardy
 Version: 1.1 alpha
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: page_tags
 Update Package: http://www.semiologic.com/media/software/widgets/publishing/page-tags/page-tags.zip
 */

@@ -6,7 +6,7 @@ Description: Semiologic Pro Wizards
 Author: Denis de Bernardy
 Version: 1.4
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: sem_wizards
 */
 

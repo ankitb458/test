@@ -6,7 +6,7 @@ Description: Creates a special sidebar that lets you insert widgets at the end o
 Author: Denis de Bernardy
 Version: 1.0
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/wordpress
+Update Service: http://version.semiologic.com/plugins
 Update Tag: feed_widgets
 Update Package: http://www.semiologic.com/media/software/widgets/feed-widgets/feed-widgets.zip
 */
