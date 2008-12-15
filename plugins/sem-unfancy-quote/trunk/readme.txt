@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
 Tags: code, quote, fancy-quote, fancy quote, unfancy-quote, unfancy quote
 Requires at least: 2.0
-Tested up to: 2.6.5
+Tested up to: 2.7
 Stable tag: trunk
 
 The unfancy quote plugin for WordPress lets you override WordPress' quote fancification. Curly quotes in the wrong direction and broken code because of curly quotes will be a thing of the past.
