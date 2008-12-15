@@ -3,7 +3,7 @@
 Plugin Name: Tag Cloud Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/tag-cloud/
 Description: Replaces WordPress' default tag widgets with advanced configurable tag widgets
-Author: Denis de Bernardy
+Author: Mike Koepke
 Version: 1.0.2
 Author URI: http://www.getsemiologic.com
 */
@@ -118,8 +118,8 @@ class tag_cloud_widgets
 			if ( !is_numeric($o) ) continue;
 			$id = "tag_cloud_widget-$o";
 
-			wp_register_sidebar_widget($id, __('Tag Cloud Widget'), array('tag_cloud_widgets', 'display_widget'), $widget_options, array( 'number' => $o ));
-			wp_register_widget_control($id, __('Tag Cloud Widget'), array('tag_cloud_widgets_admin', 'widget_control'), $control_options, array( 'number' => $o ) );
+			wp_register_sidebar_widget($id, __('Tag Cloud'), array('tag_cloud_widgets', 'display_widget'), $widget_options, array( 'number' => $o ));
+			wp_register_widget_control($id, __('Tag Cloud'), array('tag_cloud_widgets_admin', 'widget_control'), $control_options, array( 'number' => $o ) );
 		}
 		
 		# default widget if none were registered
