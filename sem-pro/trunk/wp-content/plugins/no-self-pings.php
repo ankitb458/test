@@ -1,21 +1,28 @@
 <?php
-/*
-Plugin Name: No Self Pings
-Plugin URI: http://blogwaffe.com/2006/10/04/421/
-Description: Keeps WordPress from sending pings to your own site.
-Version: 0.2
-Author: Michael D. Adams
-Author URI: http://blogwaffe.com/
+# obsolete plugin
 
-License: GPL2 - http://www.gnu.org/licenses/gpl.txt
-*/
+$active_plugins = get_option('active_plugins');
 
-function no_self_ping( &$links ) {
-	$home = get_option( 'home' );
-	foreach ( $links as $l => $link )
-		if ( 0 === strpos( $link, $home ) )
-			unset($links[$l]);
+if ( !is_array($active_plugins) )
+{
+	$active_plugins = array();
 }
 
-add_action( 'pre_ping', 'no_self_ping' );
+foreach ( (array) $active_plugins as $key => $plugin )
+{
+	if ( $plugin == 'no-self-pings.php' )
+	{
+		unset($active_plugins[$key]);
+		break;
+	}
+}
+
+if ( !in_array('no-self-pings/no-self-pings.php', $active_plugins) )
+{
+	$active_plugins[] = 'no-self-pings/no-self-pings.php';
+}
+
+sort($active_plugins);
+
+update_option('active_plugins', $active_plugins);
 ?>
