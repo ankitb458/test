@@ -47,7 +47,7 @@ class sem_docs
 			global $sem_plugin_docs;
 			
 			$_sem_plugin_docs = $wpdb->get_results("
-				SELECT	doc_key as key,
+				SELECT	doc_key as name,
 						doc_content as content
 				FROM	$wpdb->sem_docs
 				WHERE	doc_cat = 'features'
@@ -55,9 +55,9 @@ class sem_docs
 				AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
 				");
 			
-			foreach ( $_sem_plugin_docs as $doc )
+			foreach ( (array) $_sem_plugin_docs as $doc )
 			{
-				$sem_plugin_docs[$doc->key] = $doc->content;
+				$sem_plugin_docs[$doc->name] = $doc->content;
 			}
 		}
 		
@@ -207,7 +207,8 @@ class sem_docs
 		global $sem_plugin_docs;
 		
 		echo '<tr class="' . $context . ' plugin_doc hidden" id="' . $key . '-help-wrap">'
-			. '<td colspan="5">'
+			. '<td>&nbsp;</td>'
+			. '<td colspan="4">'
 			. $sem_plugin_docs[$key]
 			. '</td>'
 			. '</tr>';
