@@ -35,8 +35,11 @@ class sem_docs
 		}
 		
 		# Admin docs
-		add_filter('contextual_help_list', array('sem_docs', 'display_admin_doc'), 10, 2);
+		add_filter('contextual_help_list', array('sem_docs', 'display_admin_doc'), 100, 2);
 		add_filter('contextual_help', array('sem_docs', 'strip_wp_links'));
+		
+		# Plugin docs
+		add_action('after_plugin_row', array('sem_docs', 'display_plugin_doc'), 0, 2);
 		
 		# Docs links
 		remove_action('admin_footer', 'hello_dolly');
@@ -81,6 +84,10 @@ class sem_docs
 				UNIQUE ( doc_cat, doc_key, doc_version )
 				);
 			");
+		
+		$wpdb->query("
+			DELETE FROM $wpdb->sem_docs
+			");
 	} # init_db()
 	
 	
@@ -92,7 +99,7 @@ class sem_docs
 	{
 		$key = str_replace('-', '_', $screen);
 		
-		$doc = sem_docs::get_doc($key);
+		$doc = sem_docs::get_doc('admin', $key);
 		
 		if ( $doc && $doc->content )
 		{
@@ -122,10 +129,37 @@ class sem_docs
 	
 	
 	#
+	# display_plugin_doc()
+	#
+	
+	function display_plugin_doc($file, $plugin_data = null)
+	{
+		$key = $file;
+		$key = basename($file, '.php');
+		$key = str_replace('-', '_', $key);
+		
+		$doc = sem_docs::get_doc('features', $key);
+		
+		if ( $doc && $doc->content )
+		{
+			echo '<tr><td colspan="5" class="plugin-update">';
+			echo $doc->content;
+			echo '</tr></td>';
+		}
+		elseif ( $_SERVER['HTTP_HOST'] == 'localhost' )
+		{
+			echo '<tr><td colspan="5" align="right">';
+			echo "<b>&rarr; $key</b>";
+			echo '</tr></td>';
+		}
+	} # display_plugin_doc()
+	
+	
+	#
 	# get_doc()
 	#
 	
-	function get_doc($key)
+	function get_doc($cat, $key)
 	{
 		global $wpdb;
 		
@@ -134,36 +168,11 @@ class sem_docs
 					doc_excerpt as excerpt,
 					doc_content as content
 			FROM	$wpdb->sem_docs
-			WHERE	doc_cat = 'admin'
+			WHERE	doc_cat = '" . $wpdb->escape($cat) . "'
 			AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
 			AND		doc_key = '" . $wpdb->escape($key) . "'
 			");
 	} # get_doc()
-	
-	
-	#
-	# get_features()
-	#
-	
-	function get_features()
-	{
-		global $wpdb;
-		
-		foreach ( array('feature_sets', 'features') as $cat )
-		{
-			$$cat = $wpdb->get_results("
-				SELECT	doc_key as \"key\",
-						doc_name as name,
-						doc_excerpt as excerpt,
-						doc_content as content
-				FROM	$wpdb->sem_docs
-				WHERE	doc_cat = '" . $wpdb->escape($cat) . "'
-				AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
-				");
-		}
-		
-		return array($feature_sets, $features);
-	} # get_features()
 	
 	
 	#

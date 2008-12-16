@@ -26,5 +26,5 @@ global $sem_docs_files;
 global $sem_docs_admin_files;
 
 $sem_docs_files = array();
-$sem_docs_admin_files = array('docs.php', 'features.php');
+$sem_docs_admin_files = array('docs.php');
 ?>

@@ -12,26 +12,3 @@
 {
 	font-weight: bold;
 }
-
-#sem_features img
-{
-	border: dotted 1px Lavender;
-	padding: 20px;
-}
-
-.sem_features__active
-{
-	text-decoration: underline;
-}
-
-.sem_features__locked
-{
-	color: DimGray;
-}
-
-.sem_features__toggle
-{
-	float: right;
-	margin-left: 10px;
-	margin-bottom: 2px;
-}
