@@ -4,7 +4,7 @@ Plugin Name: Semiologic Documentation
 Plugin URI: http://www.getsemiologic.com
 Description: Semiologic Pro Documentation, Tips, and Features Screen
 Author: Denis de Bernardy
-Version: 1.14
+Version: 2.0 alpha
 Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/plugins
 Update Tag: sem_docs

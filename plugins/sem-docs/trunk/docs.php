@@ -44,6 +44,8 @@ class sem_docs
 		{
 			sem_docs::update(true);
 		}
+		
+		add_filter('contextual_help', array('sem_docs', 'strip_wp_links'));
 	} # init()
 	
 	
@@ -449,6 +451,24 @@ class sem_docs
 		
 		echo '</div>';
 	} # display_links()
+	
+	
+	#
+	# strip_wp_links()
+	#
+	
+	function strip_wp_links($o)
+	{
+		$strip = '<div class="metabox-prefs">'
+			. __('<a href="http://codex.wordpress.org/" target="_blank">Documentation</a>')
+			. '<br />'
+			. __('<a href="http://wordpress.org/support/" target="_blank">Support Forums</a>')
+			. "</div>\n";
+		
+		$o = str_replace($strip, '', $o);
+		
+		return $o;
+	} # strip_wp_links()
 	
 	
 	#
