@@ -26,7 +26,7 @@ class sem_docs
 		# and we can append to the docs using this one:
 		#
 		# add_filter('contextual_help_list', array('sem_docs', 'test'));
-		
+		#
 		
 		add_action('admin_footer', array('sem_docs', 'update'));
 		
@@ -38,9 +38,6 @@ class sem_docs
 		
 		wp_enqueue_script( 'sem_docs', $plugin_path . 'admin.js', array('sack'),  '20080414' );
 
-		add_action('show_user_profile', array('sem_docs', 'user_prefs'));
-		add_action('personal_options_update', array('sem_docs', 'save_user_prefs'));
-		
 		add_action('init', array('sem_docs', 'init_docs'));
 		
 		if ( isset($_GET['update_docs']) && current_user_can('administrator') )
@@ -64,21 +61,8 @@ class sem_docs
 //		if (empty($results))
 			sem_docs::update(false);
 			
-		$user_prefs = sem_docs::get_user_prefs();
-		
-		if ( $user_prefs['show_docs'] )
-		{
-			add_action('admin_footer', array('sem_docs', 'display_doc'));
-		}
-			
-		if ( $user_prefs['show_tips'] )
-		{
-			sem_docs::ajax_tip();
-			add_action('admin_footer', array('sem_docs', 'display_tip'));
-		}
-		
 		remove_action('admin_footer', 'hello_dolly');
-		add_action('admin_footer', array('sem_docs', 'display_links'));
+		# add_action('admin_footer', array('sem_docs', 'display_links'));
 	} # init_docs()
 	
 	
@@ -99,7 +83,7 @@ class sem_docs
 	
 	
 	#
-	# init_db)
+	# init_db()
 	#
 	
 	function init_db()
@@ -119,7 +103,7 @@ class sem_docs
 				);
 			");
 			
-	} # init_db)
+	} # init_db()
 	
 	
 	#
@@ -222,205 +206,6 @@ class sem_docs
 	
 	
 	#
-	# display_tip()
-	#
-	
-	function display_tip()
-	{
-		@session_start();
-		
-		if ( $_SESSION['sem_tip_showed'] ) return;
-		
-		if ( $tip = sem_docs::next_tip() )
-		{
-			echo '<div id="sem_tips__wrapper">';
-
-			echo '<div style="float: right;">'
-				. '<a href="javascript:;" onclick="sem_tips.close();">'
-					. __('Close')
-					. '</a>'
-				. '</div>';
-
-			echo '<div>'
-				. '<h3>' . __('Did you know?') . '</h3>'
-				. '<div id="sem_tips__content">'
-				. $tip->content
-				. '</div>'
-				. '</div>';
-
-			echo '<div style="clear: both;"></div>';
-
-			echo '<div style="float: right">'
-				. '<a href="javascript:;" onclick="sem_tips.prev();">'
-					. __('Previous')
-					. '</a>'
-				. ' / '
-				. '<a href="javascript:;" onclick="sem_tips.next();">'
-					. __('Next')
-					. '</a>'
-				. '</div>';
-
-			echo '<div>'
-				. '<label>'
-				. '<input type="checkbox"'
-					. ' id="sem_tips__show"'
-					. ' checked="checked"'
-					. ' />'
-					. '&nbsp;'
-					. __('Show guru tips at startup')
-					. '</label>'
-				. '</div>';
-
-			echo '<div style="clear: both;"></div>';
-
-			echo '</div>';
-		}
-
-		$_SESSION['sem_tip_showed'] = true;
-	} # display_tip()
-	
-	
-	#
-	# next_tip()
-	#
-	
-	function next_tip()
-	{
-		global $wpdb;
-		global $user_ID;
-		
-		$user_prefs = sem_docs::get_user_prefs();
-		$key = (string) $user_prefs['tip_id'][sem_docs_version];
-		
-		$tip = $wpdb->get_row("
-				SELECT	doc_key as \"key\",
-					doc_name as name,
-					doc_excerpt as excerpt,
-					doc_content as content
-			FROM	$wpdb->sem_docs
-			WHERE	doc_cat = 'tips'
-			AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
-			AND		doc_key > '" . $wpdb->escape($key) . "'
-			ORDER BY doc_key
-			LIMIT 1
-			");
-
-		if ( !$tip )
-		{
-			$tip = $wpdb->get_row("
-				SELECT	doc_key as \"key\",
-						doc_name as name,
-						doc_excerpt as excerpt,
-						doc_content as content
-				FROM	$wpdb->sem_docs
-				WHERE	doc_cat = 'tips'
-				AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
-				ORDER BY doc_key
-				LIMIT 1
-				");
-		}
-		
-		if ( $tip )
-		{
-			$user_prefs['tip_id'][sem_docs_version] = $tip->key;
-			update_usermeta($user_ID, 'sem_docs', $user_prefs);
-		}
-		
-		return $tip;
-	} # next_tip()
-	
-	
-	#
-	# prev_tip()
-	#
-	
-	function prev_tip()
-	{
-		global $wpdb;
-		global $user_ID;
-
-		$user_prefs = sem_docs::get_user_prefs();
-		$key = (string) $user_prefs['tip_id'][sem_docs_version];
-
-		$tip = $wpdb->get_row("
-			SELECT	doc_key as \"key\",
-					doc_name as name,
-					doc_excerpt as excerpt,
-					doc_content as content
-			FROM	$wpdb->sem_docs
-			WHERE	doc_cat = 'tips'
-			AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
-			AND		doc_key < '" . $wpdb->escape($key) . "'
-			ORDER BY doc_key DESC
-			LIMIT 1
-			");
-
-		if ( !$tip )
-		{
-			$tip = $wpdb->get_row("
-				SELECT	doc_key as \"key\",
-						doc_name as name,
-						doc_excerpt as excerpt,
-						doc_content as content
-				FROM	$wpdb->sem_docs
-				WHERE	doc_cat = 'tips'
-				AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
-				ORDER BY doc_key DESC
-				LIMIT 1
-				");
-		}
-		
-		if ( $tip )
-		{
-			$user_prefs['tip_id'][sem_docs_version] = $tip->key;
-			update_usermeta($user_ID, 'sem_docs', $user_prefs);
-		}
-		
-		return $tip;
-	} # prev_tip()
-	
-	
-	#
-	# ajax_tip()
-	#
-	
-	function ajax_tip()
-	{
-		if ( !$_REQUEST['sem_tips'] ) return;
-		
-		switch ( $_REQUEST['sem_tips'] )
-		{
-		case 'next':
-		case 'prev':
-			if ( $_REQUEST['sem_tips'] == 'next' && ( $tip = sem_docs::next_tip() )
-				|| $_REQUEST['sem_tips'] == 'prev' && ( $tip = sem_docs::prev_tip() )
-				)
-			{
-				$tip = $tip->content;
-			}
-			else
-			{
-				$tip = '<p>No tip found</p>';
-			}
-
-			$tip = addslashes($tip);
-			$tip = str_replace('</', '<\/', $tip);
-			$tip = str_replace("\n", "\\\n", $tip);
-			echo "sem_tips.load('" . $tip . "');";
-			die;
-
-		case 'stop':
-			global $user_ID;
-
-			$user_prefs = get_usermeta($user_ID, 'sem_docs');
-			$user_prefs['show_tips'] = false;
-			update_usermeta($user_ID, 'sem_docs', $user_prefs);
-			die;
-		}
-	} # ajax_tip()
-	
-	
-	#
 	# get_features()
 	#
 	
@@ -455,7 +240,7 @@ class sem_docs
 		global $allowedposttags;
 		global $wpdb;
 		
-		foreach ( array('admin', 'tips', 'feature_sets', 'features') as $cat )
+		foreach ( array('admin', 'feature_sets', 'features') as $cat )
 		{
 			$url = 'http://rest.semiologic.com/1.0/docs/?cat=sem_' . $cat . '&version=' . sem_docs_version;
 		
@@ -625,111 +410,6 @@ class sem_docs
 	
 	
 	#
-	# user_prefs()
-	#
-	
-	function user_prefs()
-	{
-		global $user_ID;
-		
-		$prefs = array(
-			'show_docs' => array(
-				'label' => 'Admin Docs',
-				'desc' => 'Show admin area docs'
-				),
-			'show_tips' => array(
-				'label' => 'Guru Tips',
-				'desc' => 'Show guru tips at start-up'
-				)
-			);
-		
-		$user_prefs = get_usermeta($user_ID, 'sem_docs');
-		
-		echo '<h3>'
-			. 'Semiologic Theme Docs'
-			. '</h3>';
-		
-		echo '<table class="form-table">';
-		
-		foreach ( $prefs as $key => $details )
-		{
-			echo '<tr valign="top">'
-				. '<th scope="row">'
-				. $details['label']
-				. '</th>'
-				. '<td>'
-				. '<label>'
-				. '<input type="checkbox" name="sem_docs[' . $key . ']"'
-					. ( $user_prefs[$key]
-						? ' checked="checked"'
-						: ''
-						)
-					. ' />'
-				. '&nbsp;'
-				. $details['desc']
-				. '</td>'
-				. '</tr>' . "\n";
-		}
-		
-		echo '</table>';
-	} # user_prefs()
-	
-	
-	#
-	# save_user_prefs()
-	#
-	
-	function save_user_prefs()
-	{
-		global $user_ID;
-		
-		if ( $_POST['user_id'] == $user_ID )
-		{
-			$user_prefs = get_usermeta($user_ID, 'sem_docs');
-			
-			foreach ( array('show_docs', 'show_tips') as $key )
-			{
-				$user_prefs[$key] = isset($_POST['sem_docs'][$key]);
-			}
-			
-			update_usermeta($user_ID, 'sem_docs', $user_prefs);
-		}
-	} # save_user_prefs()
-	
-	
-	#
-	# get_user_prefs()
-	#
-	
-	function get_user_prefs()
-	{
-		global $user_ID;
-		
-		if ( !( $user_prefs = get_usermeta($user_ID, 'sem_docs') ) )
-		{
-			if ( $old_prefs = get_usermeta($user_ID, 'sem_tips') )
-			{
-				$show_tips = $old_prefs['show_tips'];
-			}
-			else
-			{
-				$show_tips = true;
-			}
-			
-			$user_prefs = array(
-				'show_docs' => true,
-				'show_tips' => $show_tips,
-				'tip_id' => array( sem_docs_version => false )
-				);
-			
-			update_usermeta($user_ID, 'sem_docs', $user_prefs);
-		}
-		
-		return $user_prefs;
-	} # get_user_prefs()
-	
-	
-	#
 	# display_links()
 	#
 	
@@ -775,9 +455,9 @@ class sem_docs
 	# test()
 	#
 	
-	function test($foo)
+	function test($foo, $bar = null)
 	{
-		dump($foo);
+		dump($foo, $bar);
 		return $foo;
 	} # test()
 } # sem_docs
