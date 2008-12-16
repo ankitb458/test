@@ -91,9 +91,8 @@ EOF;
 		echo '<p>'
 			. '<input type="file" name="upload_article" tabindex="5" />'
 			. ' '
-			. '<input type="button" class="button" tabindex="5"'
-			. ' value="' . __('Upload') . '"'
-			. ' onclick="return form.save.click();"'
+			. . '<input type="submit" name="save" class="button" tabindex="5"'
+			. ' value="' . __('Save') . '"'
 			. ' />'
 			. '</p>';
 		

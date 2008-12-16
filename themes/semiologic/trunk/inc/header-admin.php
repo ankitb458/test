@@ -565,9 +565,8 @@ class sem_header_admin
 					. ' id="header_file" name="header_file"'
 					. ' />'
 					. ' '
-					. '<input type="button" class="button" tabindex="5"'
-					. ' value="' . __('Upload') . '"'
-					. ' onclick="return form.save.click();"'
+					. '<input type="submit" name="save" class="button" tabindex="5"'
+					. ' value="' . __('Save') . '"'
 					. ' />';
 			}
 			elseif ( !is_writable(ABSPATH . 'wp-content') )
