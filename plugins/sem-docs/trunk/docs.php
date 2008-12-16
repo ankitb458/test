@@ -136,6 +136,7 @@ class sem_docs
 	{
 		$key = $file;
 		$key = basename($file, '.php');
+		$key = str_replace(array('sem-', 'wp-'), '', $key);
 		$key = str_replace('-', '_', $key);
 		
 		$doc = sem_docs::get_doc('features', $key);
