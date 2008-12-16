@@ -9,7 +9,7 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
-add_filter('pre_blog_public', create_function('$in', 'return "0";'));
+add_filter('option_blog_public', create_function('$in', 'return "0";'));
 add_filter('active_layout', 'force_m');
 add_filter('active_width', 'force_narrow');
 
@@ -26,7 +26,6 @@ else
 }
 ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset'); ?>" />
-<meta name="robots" content="noindex, nofollow" />
 <link rel="alternate" type="application/rss+xml" title="<?php _e('RSS feed'); ?>" href="<?php bloginfo('rss2_url'); ?>" />
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 <?php do_action('wp_head'); ?>
