@@ -12,3 +12,8 @@
 {
 	font-weight: bold;
 }
+
+.plugin_doc li {
+	margin-left: 1.5em;
+	list style: square;
+}

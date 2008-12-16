@@ -39,7 +39,27 @@ class sem_docs
 		add_filter('contextual_help', array('sem_docs', 'strip_wp_links'));
 		
 		# Plugin docs
-		add_action('after_plugin_row', array('sem_docs', 'display_plugin_doc'), 0, 2);
+		if ( strpos($_SERVER['REQUEST_URI'], '/wp-admin/plugins.php') !== false )
+		{
+			add_filter('plugin_action_links', array('sem_docs', 'display_plugin_doc_link'), 0, 4);
+			add_action('admin_print_scripts', array('sem_docs', 'register_scripts'));
+			
+			global $sem_plugin_docs;
+			
+			$_sem_plugin_docs = $wpdb->get_results("
+				SELECT	doc_key as key,
+						doc_content as content
+				FROM	$wpdb->sem_docs
+				WHERE	doc_cat = 'features'
+				AND		doc_content <> ''
+				AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
+				");
+			
+			foreach ( $_sem_plugin_docs as $doc )
+			{
+				$sem_plugin_docs[$doc->key] = $doc->content;
+			}
+		}
 		
 		# Docs links
 		remove_action('admin_footer', 'hello_dolly');
@@ -62,6 +82,20 @@ class sem_docs
 		. ' />' . "\n";
 
 	} # css()
+	
+	
+	#
+	# register_scripts()
+	#
+	
+	function register_scripts()
+	{
+		$plugin_path = plugin_basename(__FILE__);
+		$plugin_path = preg_replace("/[^\/]+$/", '', $plugin_path);
+		$plugin_path = '/wp-content/plugins/' . $plugin_path;
+		
+		wp_enqueue_script( 'sem_docs', $plugin_path . 'admin.js', array('jquery'),  '200801215' );
+	} # register_scripts()
 	
 	
 	#
@@ -99,7 +133,7 @@ class sem_docs
 	{
 		$key = str_replace('-', '_', $screen);
 		
-		$doc = sem_docs::get_doc('admin', $key);
+		$doc = sem_docs::get_doc($key);
 		
 		if ( $doc && $doc->content )
 		{
@@ -129,30 +163,54 @@ class sem_docs
 	
 	
 	#
-	# display_plugin_doc()
+	# display_plugin_doc_link()
 	#
 	
-	function display_plugin_doc($file, $plugin_data = null)
+	function display_plugin_doc_link($action_links, $file = null, $plugin_data = null, $context = null)
 	{
 		$key = $file;
 		$key = basename($file, '.php');
 		$key = str_replace(array('sem-', 'wp-'), '', $key);
 		$key = str_replace('-', '_', $key);
 		
-		$doc = sem_docs::get_doc('features', $key);
+		global $sem_plugin_docs;
 		
-		if ( $doc && $doc->content )
+		if ( isset($sem_plugin_docs[$key]) )
 		{
-			echo '<tr><td colspan="5" class="plugin-update">';
-			echo $doc->content;
-			echo '</tr></td>';
+			add_action('after_plugin_row_' . $file,
+				create_function('$in', "sem_docs::display_plugin_doc('$key', '$context');")
+				);
+			
+			$extra = '<a href="#' . $key .'-help" class="hide-if-no-js plugin_doc_link">'
+				. 'Help'
+				. '</a>';
+			
+			array_unshift($action_links, $extra);
 		}
 		elseif ( $_SERVER['HTTP_HOST'] == 'localhost' )
 		{
-			echo '<tr><td colspan="5" align="right">';
-			echo "<b>&rarr; $key</b>";
-			echo '</tr></td>';
+			$extra = $key;
+			
+			array_unshift($action_links, $extra);
 		}
+		
+		return $action_links;
+	} # display_plugin_doc_link()
+	
+	
+	#
+	# display_plugin_doc()
+	#
+	
+	function display_plugin_doc($key, $context)
+	{
+		global $sem_plugin_docs;
+		
+		echo '<tr class="' . $context . ' plugin_doc hidden" id="' . $key . '-help-wrap">'
+			. '<td colspan="5">'
+			. $sem_plugin_docs[$key]
+			. '</td>'
+			. '</tr>';
 	} # display_plugin_doc()
 	
 	
@@ -160,7 +218,7 @@ class sem_docs
 	# get_doc()
 	#
 	
-	function get_doc($cat, $key)
+	function get_doc($key)
 	{
 		global $wpdb;
 		
@@ -169,7 +227,7 @@ class sem_docs
 					doc_excerpt as excerpt,
 					doc_content as content
 			FROM	$wpdb->sem_docs
-			WHERE	doc_cat = '" . $wpdb->escape($cat) . "'
+			WHERE	doc_cat = 'admin'
 			AND		doc_version = '" . $wpdb->escape(sem_docs_version) . "'
 			AND		doc_key = '" . $wpdb->escape($key) . "'
 			");
