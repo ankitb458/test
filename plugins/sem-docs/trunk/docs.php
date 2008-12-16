@@ -143,6 +143,8 @@ class sem_docs
 				$help[$screen] = "<h5><b>&rarr; $key</b></h5>";
 			}
 		}
+		
+		return $help;
 	} # display_doc()
 	
 	
