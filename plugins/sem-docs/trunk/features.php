@@ -9,6 +9,7 @@ class sem_features
 	function init()
 	{
 		if ( !defined('sem_docs_version')
+			|| version_compare(sem_docs_version, '5.6', '>')
 			|| !file_exists(sem_docs_path . '/features/' . sem_docs_version . '.php')
 			) return;
 		
