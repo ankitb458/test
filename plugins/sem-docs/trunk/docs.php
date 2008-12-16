@@ -15,8 +15,20 @@ class sem_docs
 		global $wpdb;
 		$wpdb->sem_docs = $wpdb->prefix . 'sem_docs';
 		
-//		add_action('shutdown', array('sem_docs', 'update'));
-		add_action('admin_head', array('sem_docs', 'update'));
+		#
+		# Notice
+		# ------
+		#
+		# we can catch the screen ID using this hook:
+		#
+		# add_filter('screen_meta_screen', array('sem_docs', 'test'));
+		#
+		# and we can append to the docs using this one:
+		#
+		# add_filter('contextual_help_list', array('sem_docs', 'test'));
+		
+		
+		add_action('admin_footer', array('sem_docs', 'update'));
 		
 		add_action('admin_head', array('sem_docs', 'css'));
 
@@ -757,6 +769,17 @@ class sem_docs
 		
 		echo '</div>';
 	} # display_links()
+	
+	
+	#
+	# test()
+	#
+	
+	function test($foo)
+	{
+		dump($foo);
+		return $foo;
+	} # test()
 } # sem_docs
 
 sem_docs::init();
