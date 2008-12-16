@@ -37,63 +37,9 @@ class sem_admin_menu
 		add_action('wp_head', array('sem_admin_menu', 'display_css'));
 		#add_action('wp_head', array('sem_admin_menu', 'ob_add_menu'), 1000);
 		add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
-		
-		add_action('edit_page_form', array('sem_admin_menu', 'set_parent_id'), 0);
+		# edit_page_form
+		add_action('submitpage_box', array('sem_admin_menu', 'set_parent_id'), 0);
 	} # init()
-
-
-	#
-	# ob_add_menu()
-	#
-
-	function ob_add_menu()
-	{
-		if ( ( strpos($_SERVER['REQUEST_URI'], 'wp-login') === false )
-			&& ( strpos($_SERVER['REQUEST_URI'], 'wp-register') === false )
-			&& !( isset($_GET['action']) && $_GET['action'] == 'print' )
-			)
-		{
-			$GLOBALS['did_admin_menu'] = false;
-			ob_start(array('sem_admin_menu', 'ob_add_menu_callback'));
-			add_action('wp_footer', array('sem_admin_menu', 'ob_flush'), 1000000000);
-		}
-	} # ob_add_menu()
-	
-	
-	#
-	# ob_add_menu_callback()
-	#
-
-	function ob_add_menu_callback($input)
-	{
-		$input = preg_replace("/
-			<\s*\/\s*head\s*>
-			\s*
-			<\s*body(?:\s.*?)?\s*>
-			/isx",
-			"$0\n" . sem_admin_menu::display_menu(),
-			$input
-			);
-		
-		$GLOBALS['did_admin_menu'] = true;
-
-		return $input;
-	} # ob_add_menu_callback()
-	
-	
-	#
-	# ob_flush()
-	#
-	
-	function ob_flush()
-	{
-		$i = 0;
-		
-		while ( !$GLOBALS['did_admin_menu'] && $i++ < 100 )
-		{
-			@ob_end_flush();
-		}
-	} # ob_flush()
 
 
 	#

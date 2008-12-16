@@ -38,6 +38,7 @@ class sem_admin_menu_admin
 	function update_options()
 	{
 		check_admin_referer('admin_menu');
+		
 		#echo '<pre>';
 		#var_dump($_POST);
 		#echo '</pre>';
