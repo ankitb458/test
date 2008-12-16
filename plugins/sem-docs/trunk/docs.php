@@ -45,6 +45,9 @@ class sem_docs
 			sem_docs::update(true);
 		}
 		
+		
+		add_filter('contextual_help_list', array('sem_docs', 'display_doc'), 10, 2);
+
 		add_filter('contextual_help', array('sem_docs', 'strip_wp_links'));
 	} # init()
 	
@@ -112,77 +115,33 @@ class sem_docs
 	# display_doc()
 	#
 	
-	function display_doc()
+	function display_doc($help, $screen = null)
 	{
-		# default key
-		$menu = $_SERVER['PHP_SELF'];
-		$menu = preg_replace("/^.*\/wp-admin\/|\.php$/i", '', $menu);
-		$page = $_GET['page'];
-		$page = preg_replace("/\.php$/i", '', $page);
-		$key = $menu . ( $page ? ( '_' . $page ) : '' );
-		$key = str_replace(array('-', '/'), '_', $key);
-		$key = str_replace('options_general_', 'options_', $key);
-		$key = preg_replace("/^admin_|_admin$|sem_/", '', $key);
-		$key = preg_replace("/(.{2,})_\\1/", "$1", $key);
-
-		switch ( $key )
-		{
-		case 'post':
-			$key = 'post_new';
-			break;
-		case 'page':
-			$key = 'page_new';
-			break;
-		}
+		$key = str_replace('-', '_', $screen);
 		
-		if ( ( $doc = sem_docs::get_doc($key) )
-			&& $doc->content
-			)
+		$doc = sem_docs::get_doc($key);
+		
+		if ( $doc && $doc->content )
 		{
-			echo '<div id="sem_docs__more" class="button-secondary">'
-				. '<b>'
-				. '<a href="javascript:;" class="button-secondary"'
-				. ' onclick="sem_docs.show();"'
-				. '>' . ( ( $key != 'index' )
-						? ( 'Show Documentation' )
-						: ( 'Get Started With Semiologic Pro' )
-						) . '</a>'
-				. '</b>'
-				. '</div>';
-
-			echo '<div id="sem_docs__less" class="button-secondary" style="display: none;">'
-				. '<b>'
-				. '<a href="javascript:;" class="button-secondary"'
-				. ' onclick="sem_docs.hide(); "'
-				. '>' . 'Hide Documentation' . '</a>'
-				. '</b>'
-				. '</div>';
-
-			echo '<div id="sem_docs__wrapper">'
-				. '<div class="wrap">'
-				. '<div id="sem_docs__content">'
-				. '<h2>' . $doc->name . '</h2>'
-				. $doc->content
-				. '<div style="clear:both;"></div>'
-				. '<div style="float: right;">'
-					. '<b>'
-					. '<a href="javascript:;"'
-					. ' onclick="sem_docs.hide(); "'
-					. '>' . 'Hide Documentation on ' . $doc->name . '</a>'
-					. '</b>'
-					. '</div>'
-				. '<div style="clear:both;"></div>'
-				. '</div>'
-				. '</div>'
-				. '</div>';
+			if ( isset($help[$sceen]) && trim($help[$sceen]) !== '' )
+			{
+				$help[$screen] = $doc->content . '<hr />' . $help[$screen];
+			}
+			else
+			{
+				$help[$screen] = $doc->content;
+			}
 		}
 		elseif ( $_SERVER['HTTP_HOST'] == 'localhost' )
 		{
-			echo '<div id="sem_docs__error" class="button-secondary">'
-				. '<b>'
-				. 'No Documentation on ' . $key
-				. '</b>'
-				. '</div>';
+			if ( isset($help[$screen]) )
+			{
+				$help[$screen] = "<h5><b>&rarr; $key</b></h5>" . $help[$screen];
+			}
+			else
+			{
+				$help[$screen] = "<h5><b>&rarr; $key</b></h5>";
+			}
 		}
 	} # display_doc()
 	
@@ -242,10 +201,13 @@ class sem_docs
 		global $allowedposttags;
 		global $wpdb;
 		
+		#$force = true;
+		#dump(sem_docs_version);
+		
 		foreach ( array('admin', 'feature_sets', 'features') as $cat )
 		{
 			$url = 'http://rest.semiologic.com/1.0/docs/?cat=sem_' . $cat . '&version=' . sem_docs_version;
-		
+			
 			if ( !$force )
 			{
 				if ( intval($options[$cat][sem_docs_version]) + 3600 * 24 * 14 >= time() )
@@ -258,7 +220,9 @@ class sem_docs
 					$url .= '&last_modified=' . date('Y-m-d', $last_updated);
 				}
 			}
-		
+			
+			#dump($url);
+			
 			if ( !class_exists('sem_http') )
 			{
 				include dirname(__FILE__) . '/http.php';
@@ -404,7 +368,7 @@ class sem_docs
 			$o = array();
 			update_option('sem_docs', $o);
 			
-			add_action('admin_footer', array('sem_docs', 'update'), 0);
+			add_action('admin_footer', array('sem_docs', 'update'));
 		}
 		
 		return $o;
@@ -459,7 +423,9 @@ class sem_docs
 	
 	function strip_wp_links($o)
 	{
-		$strip = '<div class="metabox-prefs">'
+		$strip[] = '<h5>' . __('Other Help') . '</h5>';
+		$strip[] = '<h5>' . __('Help') . '</h5>';
+		$strip[] = '<div class="metabox-prefs">'
 			. __('<a href="http://codex.wordpress.org/" target="_blank">Documentation</a>')
 			. '<br />'
 			. __('<a href="http://wordpress.org/support/" target="_blank">Support Forums</a>')
