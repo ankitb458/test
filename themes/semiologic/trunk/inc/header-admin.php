@@ -662,4 +662,50 @@ class sem_header_admin
 } # sem_header_admin
 
 sem_header_admin::init();
+
+
+if ( !function_exists('ob_multipart_entry_form') ) :
+#
+# ob_multipart_entry_form_callback()
+#
+
+function ob_multipart_entry_form_callback($buffer)
+{
+	$buffer = str_replace(
+		'<form name="post"',
+		'<form enctype="multipart/form-data" name="post"',
+		$buffer
+		);
+
+	return $buffer;
+} # ob_multipart_entry_form_callback()
+
+
+#
+# ob_multipart_entry_form()
+#
+
+function ob_multipart_entry_form()
+{
+	if ( current_user_can('upload_files') && $GLOBALS['editing'] )
+	{
+		ob_start('ob_multipart_entry_form_callback');
+	}
+} # ob_multipart_entry_form()
+
+add_action('admin_head', 'ob_multipart_entry_form');
+
+
+#
+# add_file_max_size()
+#
+
+function add_file_max_size()
+{
+	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="32000000" />' . "\n";
+}
+
+add_action('edit_form_advanced', 'add_file_max_size');
+add_action('edit_page_form', 'add_file_max_size');
+endif;
 ?>
