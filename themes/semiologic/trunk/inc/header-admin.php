@@ -687,7 +687,7 @@ function ob_multipart_entry_form_callback($buffer)
 
 function ob_multipart_entry_form()
 {
-	if ( current_user_can('upload_files') && $GLOBALS['editing'] )
+	if ( $GLOBALS['editing'] )
 	{
 		ob_start('ob_multipart_entry_form_callback');
 	}

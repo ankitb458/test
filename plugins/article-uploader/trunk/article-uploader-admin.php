@@ -206,6 +206,9 @@ EOF;
 article_uploader_admin::init();
 
 
+
+
+
 if ( !function_exists('ob_multipart_entry_form') ) :
 #
 # ob_multipart_entry_form_callback()
@@ -229,7 +232,7 @@ function ob_multipart_entry_form_callback($buffer)
 
 function ob_multipart_entry_form()
 {
-	if ( current_user_can('upload_files') && $GLOBALS['editing'] )
+	if ( $GLOBALS['editing'] )
 	{
 		ob_start('ob_multipart_entry_form_callback');
 	}
