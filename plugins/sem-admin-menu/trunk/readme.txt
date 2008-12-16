@@ -2,7 +2,7 @@
 Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
 Tags: admin-menu, admin, cms
-Requires at least: 2.0
+Requires at least: 2.7
 Tested up to: 2.6.5
 Stable tag: trunk
 
