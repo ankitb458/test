@@ -57,12 +57,12 @@ class sem_docs
 		
 		sem_docs::init_db();
 		
-//		$results = $wpdb->query("SELECT * FROM $wpdb->sem_docs");
-//		if (empty($results))
-			sem_docs::update(false);
-			
+		#$results = $wpdb->query("SELECT * FROM $wpdb->sem_docs");
+		#if (empty($results))
+		#	sem_docs::update(false);
+		
 		remove_action('admin_footer', 'hello_dolly');
-		# add_action('admin_footer', array('sem_docs', 'display_links'));
+		add_action('admin_footer', array('sem_docs', 'display_links'));
 	} # init_docs()
 	
 	
