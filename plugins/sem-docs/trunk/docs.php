@@ -15,60 +15,34 @@ class sem_docs
 		global $wpdb;
 		$wpdb->sem_docs = $wpdb->prefix . 'sem_docs';
 		
-		#
-		# Notice
-		# ------
-		#
-		# we can catch the screen ID using this hook:
-		#
-		# add_filter('screen_meta_screen', array('sem_docs', 'test'));
-		#
-		# and we can append to the docs using this one:
-		#
-		# add_filter('contextual_help_list', array('sem_docs', 'test'));
-		#
-		
-		add_action('admin_footer', array('sem_docs', 'update'));
-		
-		add_action('admin_head', array('sem_docs', 'css'));
-
-		$plugin_path = plugin_basename(__FILE__);
-		$plugin_path = preg_replace("/[^\/]+$/", '', $plugin_path);
-		$plugin_path = '/wp-content/plugins/' . $plugin_path;
-		
-		wp_enqueue_script( 'sem_docs', $plugin_path . 'admin.js', array('sack'),  '20080414' );
-
-		add_action('init', array('sem_docs', 'init_docs'));
-		
-		if ( isset($_GET['update_docs']) && current_user_can('administrator') )
+		# install docs
+		if ( !get_option('sem_docs_version') )
+		{
+			sem_docs::init_db();
+			sem_docs::update(true);
+			
+			update_option('sem_docs_version', 2);
+		}
+		# force update on domain.com/wp-admin/?update_docs
+		elseif ( isset($_GET['update_docs']) && current_user_can('administrator') )
 		{
 			sem_docs::update(true);
 		}
+		# check for new docs in footer
+		else
+		{
+			add_action('admin_footer', array('sem_docs', 'update'), 1000);
+		}
 		
-		
-		add_filter('contextual_help_list', array('sem_docs', 'display_doc'), 10, 2);
-
+		# Admin docs
+		add_filter('contextual_help_list', array('sem_docs', 'display_admin_doc'), 10, 2);
 		add_filter('contextual_help', array('sem_docs', 'strip_wp_links'));
-	} # init()
-	
-	
-	#
-	# init_docs()
-	#
-	
-	function init_docs()
-	{
-		global $wpdb;
 		
-		sem_docs::init_db();
-		
-		#$results = $wpdb->query("SELECT * FROM $wpdb->sem_docs");
-		#if (empty($results))
-		#	sem_docs::update(false);
-		
+		# Docs links
 		remove_action('admin_footer', 'hello_dolly');
 		add_action('admin_footer', array('sem_docs', 'display_links'));
-	} # init_docs()
+		add_action('admin_head', array('sem_docs', 'css'));
+	} # init()
 	
 	
 	#
@@ -107,15 +81,14 @@ class sem_docs
 				UNIQUE ( doc_cat, doc_key, doc_version )
 				);
 			");
-			
 	} # init_db()
 	
 	
 	#
-	# display_doc()
+	# display_admin_doc()
 	#
 	
-	function display_doc($help, $screen = null)
+	function display_admin_doc($help, $screen = null)
 	{
 		$key = str_replace('-', '_', $screen);
 		
@@ -145,7 +118,7 @@ class sem_docs
 		}
 		
 		return $help;
-	} # display_doc()
+	} # display_admin_doc()
 	
 	
 	#
@@ -206,7 +179,7 @@ class sem_docs
 		#$force = true;
 		#dump(sem_docs_version);
 		
-		foreach ( array('admin', 'feature_sets', 'features') as $cat )
+		foreach ( array('admin', 'features') as $cat )
 		{
 			$url = 'http://rest.semiologic.com/1.0/docs/?cat=sem_' . $cat . '&version=' . sem_docs_version;
 			
@@ -370,7 +343,7 @@ class sem_docs
 			$o = array();
 			update_option('sem_docs', $o);
 			
-			add_action('admin_footer', array('sem_docs', 'update'));
+			add_action('admin_footer', array('sem_docs', 'update'), 1000);
 		}
 		
 		return $o;
