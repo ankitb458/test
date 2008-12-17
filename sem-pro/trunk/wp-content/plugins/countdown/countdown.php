@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Event Countdown
+Plugin Name: Events Widget
 Plugin URI: http://redalt.com/wiki/Countdown
 Description: Adds template tags to count down to a specified date. Browse Manage / Events to configure your events.
 Version: 2.3 fork
@@ -427,8 +427,8 @@ function countdown_widget_init()
 	$widget_options = array('classname' => 'countdown', 'description' => __( "Displays upcoming events") );
 	$control_options = array('width' => 460);
 	
-	wp_register_sidebar_widget('countdown', 'Event Countdown', 'countdown_widget', $widget_options );
-	wp_register_widget_control('countdown', 'Event Countdown', 'countdown_widget_control', $control_options );
+	wp_register_sidebar_widget('countdown', 'Events Widget', 'countdown_widget', $widget_options );
+	wp_register_widget_control('countdown', 'Events Widget', 'countdown_widget_control', $control_options );
 }
 
 add_action('widgets_init', 'countdown_widget_init');

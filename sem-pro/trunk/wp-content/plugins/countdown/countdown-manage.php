@@ -4,7 +4,7 @@
 
 function dtr_admin_menu2()
 {
-	add_management_page('Events', 'Events', 'edit_pages', __FILE__, 'dtr_management_page');
+	add_options_page('Events', 'Events', 'edit_pages', __FILE__, 'dtr_management_page');
 }
 
 
