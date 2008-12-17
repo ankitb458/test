@@ -4,7 +4,7 @@
 
 function dtr_admin_menu()
 {
-	add_options_page('Countdown', 'Countdown', 'manage_options', __FILE__, 'dtr_options_page');
+	add_options_page('Event Countdown', 'Event Countdown', 'manage_options', __FILE__, 'dtr_options_page');
 }
 
 
