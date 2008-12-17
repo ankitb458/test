@@ -120,6 +120,11 @@ EOF;
 
 	function save_entry($post_ID)
 	{
+		$post = get_post($post_ID);
+		
+		if ( $post->post_type == 'revision' ) return;
+		
+		
 		global $wpdb;
 		
 		if ( current_user_can('unfiltered_html') )
