@@ -7,7 +7,7 @@ by froman118 <froman118@gmail.com>
 
 function mypageorder_menu()
 {
-	add_submenu_page("edit.php", 'Page Order', 'Page Order', 'edit_pages',"mypageorder",'mypageorder');
+	add_pages_page('Page Order', 'Page Order', 'edit_pages',"mypageorder",'mypageorder');
 }
 function mypageorder_js_libs() {
     if ( $_GET['page'] == "mypageorder" ) {
