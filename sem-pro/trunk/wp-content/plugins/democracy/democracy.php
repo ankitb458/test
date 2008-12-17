@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Democracy
+Plugin Name: Poll Widget / Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
 Version: 1.14 fork
@@ -841,8 +841,8 @@ function widget_democracy_init()
 	if (!function_exists('register_sidebar_widget')) return;
 	if (!function_exists('jal_democracy')) return;
 
-	wp_register_sidebar_widget( 'democracy', 'Democracy', 'widget_democracy', array('description' => 'The poll you\'ve configured under Manage / Polls') );
-	wp_register_widget_control( 'democracy', 'Democracy', 'widget_democracy_control', array('width' => 300 ) );
+	wp_register_sidebar_widget( 'democracy', 'Poll Widget', 'widget_democracy', array('description' => 'The poll you\'ve configured under Manage / Polls') );
+	wp_register_widget_control( 'democracy', 'Poll Widget', 'widget_democracy_control', array('width' => 300 ) );
 }
 
 ?>
