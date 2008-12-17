@@ -4,7 +4,7 @@ Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/publishing/admin-menu/
 Description: Adds a convenient admin menu to your blog.
 Author: Denis de Bernardy
-Version: 5.1.1
+Version: 5.1.2
 Author URI: http://www.getsemiologic.com
 */
 
@@ -227,7 +227,7 @@ class sem_admin_menu
 				$o .= '<span class="am_user">'
 						. apply_filters('loginout',
 							'<a href="'
-									. $site_url . 'wp-login.php?action=logout'
+									. wp_logout_url()
 									. '"'
 								. '>'
 								. __('Logout', 'sem-admin-menu')
