@@ -140,6 +140,13 @@ class autotag
 
 	function save_entry($post_ID)
 	{
+		$post = get_post($post_ID);
+		
+		if ( $post->post_type == 'revision' ) return;
+		
+		#dump($post_ID);
+		#return;
+		
 		if ( isset($_POST['sem_autotag']) )
 		{
 			global $user_ID;
