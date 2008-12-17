@@ -197,7 +197,6 @@ $sem_seo = array(
 	'category_excerpts' => false,
 	'tag_dates' => true,
 	'tag_excerpts' => false,
-	'enforce_www_preference' => false,
 	'keywords' => (string) $sem_options['seo']['keywords'],
 	'description' => (string) $sem_options['seo']['description']
 	);
