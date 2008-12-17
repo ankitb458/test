@@ -11,7 +11,7 @@ class inline_widgets_admin
 		add_action('admin_head', array('inline_widgets_admin', 'display_js_list'), 0);
 		add_filter('admin_footer', array('inline_widgets_admin', 'quicktag'), 0);
 		add_filter('mce_external_plugins', array('inline_widgets_admin', 'editor_plugin'));
-		add_filter('mce_buttons_2', array('inline_widgets_admin', 'editor_button'), 0);
+		add_filter('mce_buttons_3', array('inline_widgets_admin', 'editor_button'), 0);
 
 		add_filter('sem_api_key_protected', array('inline_widgets_admin', 'sem_api_key_protected'));
 	} # init()
