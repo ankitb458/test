@@ -475,10 +475,6 @@ class sem_header_admin
 	{
 		$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
 
-		#echo '<pre>';
-		#var_dump($post_ID);
-		#echo '</pre>';
-
 		if ( defined('GLOB_BRACE') )
 		{
 			if ( $post_ID > 0
@@ -589,6 +585,10 @@ class sem_header_admin
 
 	function save_entry_header($post_ID)
 	{
+		$post = get_post($post_ID);
+		
+		if ( $post->post_type == 'revision' ) return;
+		
 		if ( @ $_FILES['header_file']['name'] )
 		{
 			if ( defined('GLOB_BRACE') )
