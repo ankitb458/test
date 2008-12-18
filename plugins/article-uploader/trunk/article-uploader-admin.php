@@ -251,7 +251,9 @@ add_action('admin_head', 'ob_multipart_entry_form');
 
 function add_file_max_size()
 {
-	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="32000000" />' . "\n";
+	$bytes = apply_filters( 'import_upload_size_limit', wp_max_upload_size() );
+	
+	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="' . $bytes .'" />' . "\n";
 }
 
 add_action('edit_form_advanced', 'add_file_max_size');
