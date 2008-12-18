@@ -30,7 +30,7 @@
  Basic Idea 			Michael Nguyen		http://www.socialpatterns.com/
  SQL Improvements		Rodney Shupe		http://www.shupe.ca/
  Japanse Lang. File		Hirosama			http://hiromasa.zone.ne.jp/
- Spanish lang. File		César Gómez Martín	http://www.cesargomez.org/
+ Spanish lang. File		CÃ©sar GÃ³mez MartÃ­n	http://www.cesargomez.org/
  Italian lang. File		Stefano Aglietti	http://wordpress-it.it/
  Trad.Chinese  File		Kirin Lin			http://kirin-lin.idv.tw/
  Simpl.Chinese File		june6				http://www.june6.cn/
@@ -67,7 +67,7 @@
  2005-06-14		2.5		Added support for external pages
 						Added support for Google Ping
 						Added the minimum Post Priority option
-						Added Spanish Language File by César Gómez Martín (http://www.cesargomez.org/)
+						Added Spanish Language File by CÃ©sar GÃ³mez MartÃ­n (http://www.cesargomez.org/)
 						Added Italian Language File by Stefano Aglietti (http://wordpress-it.it/)
 						Added Traditional Chine Language File by Kirin Lin (http://kirin-lin.idv.tw/)
  2005-07-03		2.6		Added support to store the files at a custom location
@@ -1144,10 +1144,15 @@ if(!function_exists("sm_buildSitemap")) {
 
 function sm_update_sitemap($post_ID)
 {
+	$post = get_post($post_ID);
+	
+	if ( $post->post_type == 'revision' ) return $post_ID;
+	
 	if (wp_verify_nonce($_REQUEST['sitemap'], 'sitemap'))
 	{
 		sm_buildSitemap();
 	}
+	
 	return ($post_ID);
 }
 
