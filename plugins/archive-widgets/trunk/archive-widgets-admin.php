@@ -60,10 +60,10 @@ class archive_widgets_admin
 			}
 
 			foreach ( (array) $_POST['archive-widgets'] as $widget_number => $ops ) {
-				$title = strip_tags(stripslashes($widget_text['title']));
+				$title = strip_tags(stripslashes($ops['title']));
 				$dropdown = isset($ops['dropdown']);
 				$count = isset($ops['count']);				
-				$options[$widget_number] = compact('filter', 'dropdown', 'count');
+				$options[$widget_number] = compact('title', 'dropdown', 'count');
 			}
 			
 			update_option('archive_widgets', $options);
