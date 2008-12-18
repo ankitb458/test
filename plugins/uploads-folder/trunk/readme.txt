@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
 Tags: uploads, uploads-folder, uploads folder, cms
 Requires at least: 2.5
-Tested up to: 2.6.5
+Tested up to: 2.7
 Stable tag: trunk
 
 The Uploads Folder plugin for WordPress changes your uploads folders to a more natural uploads/yyyy/mm for posts (based on the post's date rather than the current date), and uploads/page/sub-page for static pages (based on the page's position in the hierarchy).

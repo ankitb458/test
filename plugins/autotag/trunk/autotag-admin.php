@@ -61,7 +61,7 @@ class autotag
 			&& !( $post_ID > 0 && get_post_meta($post_ID, '_did_autotag', true) ) )
 		{
 			if ( $post_ID > 0 && get_post_meta($post_ID, '_autotag', true)
-				|| $post_ID < 0 && get_usermeta($user_ID, 'autotag')
+				|| $post_ID <= 0 && get_usermeta($user_ID, 'autotag')
 				)
 			{
 				$default = 'publish';
@@ -70,7 +70,7 @@ class autotag
 			{
 				$default = '';
 			}
-
+			
 			echo '<p>'
 				. '<label>'
 				. '<input type="radio" name="sem_autotag" value=""'

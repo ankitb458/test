@@ -36,7 +36,7 @@ class article_uploader_admin
 	{
 		global $post_ID;
 		
-		if ( !$GLOBALS['editing'] || $post_ID < 0 ) return $in;
+		if ( !$GLOBALS['editing'] || $post_ID <= 0 ) return $in;
 		#var_dump($post_ID);
 		if ( get_post_meta($post_ID, '_kill_formatting', true) )
 		{
