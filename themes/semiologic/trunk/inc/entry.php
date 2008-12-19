@@ -236,15 +236,13 @@ class sem_entry
 				{
 					foreach ( $terms as $term ) {
 						if ( $term->count == 0 ) continue;
-						$link = get_term_link( $term, $taxonomy );
+						$link = get_term_link( $term, 'post_tag' );
 						if ( is_wp_error( $link ) )
 							return $link;
 						$term_links[] = '<a href="' . $link . '" rel="tag">' . $term->name . '</a>';
 					}
 
-					$term_links = apply_filters( "term_links-$taxonomy", $term_links );
-
-					return $before . join( $sep, $term_links ) . $after;
+					$term_links = apply_filters( "term_links-post_tag", $term_links );
 				}
 				
 				$sem_entry['tags'] = apply_filters('the_tags', join(', ', $term_links));
