@@ -105,7 +105,7 @@ function wpguy_category_order_options(){
 	if(isset($_GET['submit'])){
 		$order = $_GET['category_order'];
 		$order = explode(',', $order);
-		$order = array_filter($order, 'intval');
+		$order = array_map('intval', $order);
 		$order = array_diff($order, array(0));
 		$order = implode(',', $order);
 		$options[$childrenOf] = $order;
