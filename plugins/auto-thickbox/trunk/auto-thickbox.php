@@ -28,7 +28,7 @@ class auto_thickbox
 	
 	function init()
 	{
-		if ( !is_admin() )
+		if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === false )
 		{
 			add_action('wp_print_scripts', array('auto_thickbox', 'add_scripts'));
 			add_action('wp_print_styles', array('auto_thickbox', 'add_css'));
