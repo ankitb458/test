@@ -3,7 +3,7 @@
 Plugin Name: Singular
 Plugin URI: http://www.jamietalbot.com/wp-hacks/
 Description: Removes the unique suffix from similarly named post slugs.<br/>Licensed under the <a href="http://www.opensource.org/licenses/mit-license.php">MIT License</a>, Copyright &copy; 2005 Jamie Talbot.
-Version: 0.7.1 alpha fork
+Version: 0.7.1 beta fork
 Author: Jamie Talbot
 Author URI: http://jamietalbot.com/
 */
