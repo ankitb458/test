@@ -1,17 +1,4 @@
-#sem_docs__links
-{
-	position: absolute;
-	top: 4.5em;
-	margin: 0;
-	padding: 0;
-	right: 225px;
-	font-size: 11px;
-}
 
-#sem_docs__links a
-{
-	font-weight: bold;
-}
 
 .plugin_doc li {
 	margin-left: 1.5em;
