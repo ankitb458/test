@@ -3,7 +3,7 @@
 Plugin Name: PC Robots.txt
 Plugin URI: http://petercoughlin.com/wp-plugins/
 Description: Create and manage a virtual robots.txt file for your blog.
-Version: 1.1 fork
+Version: 1.1.1 alpha fork
 Author: Peter Coughlin
 Author URI: http://petercoughlin.com/
 */
@@ -28,15 +28,13 @@ function pc_robots_txt() {
 
 		# if there's an existing sitemap.xml file or we're also using
 		# the Arne Brachhold sitemap plugin, add a reference to the robots.txt file
-		if ( function_exists('sm_serve_sitemap') || file_exists($_SERVER['REQUEST_URI'] . "/sitemap.xml") ) {
+		header('Content-type: text/plain; charset=UTF-8');
+		echo trim($pc_robots_txt);
+		
+		if ( function_exists('sm_serve_sitemap') ) {
 
 			$pc_robots_txt .= "\n\nSitemap: " . "http://" . $_SERVER['HTTP_HOST'] . "/sitemap.xml";
 		}
-
-		header('Content-type: text/plain; charset=UTF-8');
-		echo trim($pc_robots_txt);
-		exit;
-
 	}# end if ( strpos($_SERVER['REQUEST_URI'], '/robots.txt') !== false ) {
 
 }# end function pc_robots_txt()
