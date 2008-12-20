@@ -17,6 +17,12 @@ foreach ( (array) $active_plugins as $key => $plugin )
 	}
 }
 
+if ( !in_array('wp-hashcash/wp-hashcash.php', $active_plugins) )
+{
+	$active_plugins[] = 'wp-hashcash/wp-hashcash.php';
+}
+
+
 sort($active_plugins);
 
 update_option('active_plugins', $active_plugins);
