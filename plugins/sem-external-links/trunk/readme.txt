@@ -1,21 +1,24 @@
 === External Links ===
 Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
-Tags: admin-menu, admin, cms
+Tags: external-links, nofollow, link-target, link-icon
 Requires at least: 2.0
-Tested up to: 2.6.5
+Tested up to: 2.7
 Stable tag: trunk
 
-The admin menu plugin for WordPress sticks key admin menu links to the top of your blog's screen.
+The external links plugin for WordPress lets you process outgoing links differently from internal links.
 
 
 == Description ==
 
-The admin menu plugin for WordPress sticks key admin menu links to the top of your blog's screen.
+The external links plugin for WordPress lets you process outgoing links differently from internal links.
 
-The menu will automatically appear to the top of your blog. Menu items will only be visible when relevant.
+You can configure the plugin to:
 
-It's quite useful for those who run their WP install as a CMS. When you create a static page using its New Page link, it will also set the new page's parent automatically, to the ongoing page.
+- Process all outgoing links, rather than only those within your entries' content.
+- Add an external link icon to outgoing links. You can use a class="noicon" attribute on links to override this.
+- Open outgoing links in new windows. Note that this can damage your visitor's trust towards your site in that they can think your site used a pop-under.
+- Add rel=nofollow to the links. This is not very nice for those you're linking to, but useful to avoid PR leak.
 
 
 == Installation ==
@@ -24,28 +27,7 @@ It's quite useful for those who run their WP install as a CMS. When you create a
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 
-== Screenshots ==
-
-1. Admin Menu in action
-
-
 == Frequently Asked Questions ==
-
-= It Doesn't Work =
-
-Make sure your theme has the following in between its `<body>` and `</body>` tags:
-
-    <?php wp_footer(); ?>
-
-
-= Hiding the Admin Menu to Visitors =
-
-If you disable user registrations on your site, the admin menu will not display to visitors unless you specifically want this to occur.
-
-To disable user registrations, uncheck "Anyone can register" under Settings / General.
-
-To configure the behavior, browse Settings / Admin Menu.
-
 
 = Help Me! =
 
