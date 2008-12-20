@@ -217,7 +217,9 @@ if ( ( $active_plugins = get_option('active_plugins') ) === false )
 
 $extra_plugins = array(
 	'ad-manager/ad-manager.php',
+	'archive-widgets/archive-widgets.php'	
 	'autotag/autotag.php',
+	'auto-thickbox/auto-thickbox.php',
 	'contact-form/contact-form.php',
 	'feed-widgets/feed-widgets.php',
  	'feedburner/feedburner.php',
@@ -228,8 +230,10 @@ $extra_plugins = array(
 	'mediacaster/mediacaster.php',
 	'newsletter-manager/newsletter-manager.php',
 	'nav-menus/nav-menus.php',
+	'redirect-manager/redirect-manager.php',
 	'related-widgets/related-widgets.php',
 	'script-manager/script-manager.php',
+	'search-reloaded/search-reloaded.php',	
 	'sem-admin-menu/sem-admin-menu.php',
 	'sem-author-image/sem-author-image.php',
 	'sem-bookmark-me/sem-bookmark-me.php',
@@ -237,7 +241,6 @@ $extra_plugins = array(
 	'sem-fancy-excerpt/sem-fancy-excerpt.php',
 	'sem-fixes/sem-fixes.php',
 	'sem-frame-buster/sem-frame-buster.php',
-	'sem-search-reloaded/sem-search-reloaded.php',
 	'sem-semiologic-affiliate/sem-semiologic-affiliate.php',
 	'sem-seo/sem-seo.php',
 	'sem-subscribe-me/sem-subscribe-me.php',
@@ -245,10 +248,15 @@ $extra_plugins = array(
 	'sem-wizards/sem-wizards.php',
 	'silo/silo.php',
 	'singular.php',
-	'sitemap.php',
+	'tag-cloud-widgets/tag-cloud.php',
 	'text-widgets/text-widgets.php',
+	'tinymce-advanced/tinymce-advanced.php',
+	'uploads-folder/uploads-folder.php',
 	'version-checker/version-checker.php',
 	'widget-contexts/widget-contexts.php',
+	'wp-db-backup/wp-db-backup.php',
+	'wp-hashcash/wp-hashcash.php',
+	'xml-sitemaps/xml-sitemaps.php'
 	);
 
 foreach ( $extra_plugins as $plugin )

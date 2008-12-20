@@ -12,12 +12,8 @@ if ( ( $active_plugins = get_option('active_plugins') ) === false )
 }
 
 $extra_plugins = array(
-	'page-tags/page-tags.php',
-	'smart-update-pinger.php',
 	'tinymce-advanced/tinymce-advanced.php',
-	'order-categories/category-order.php',
-	'pc-robots-txt/pc-robots-txt.php',
-	'archive-widgets/archive-widgets.php'
+	'archive-widgets/archive-widgets.php',
 	);
 
 foreach ( $extra_plugins as $plugin )
@@ -48,42 +44,8 @@ foreach ( $extra_plugins as $plugin )
 
 $GLOBALS['plugin_page'] = $plugin_page_backup;
 
-
 #
 # Step 3
-# ------
-# Update Ping list
-#
-
-$ping_sites = "
-http://blogsearch.google.com/ping/RPC2
-http://www.blogshares.com/rpc.php
-http://www.blogstreet.com/xrbin/xmlrpc.cgi
-http://api.moreover.com/RPC2
-http://api.my.yahoo.com/RPC2
-http://rpc.technorati.com/rpc/ping
-http://rpc.twingly.com/
-http://rpc.weblogs.com/RPC2
-http://www.blogdigger.com/RPC2
-http://pinger.blogflux.com/rpc
-http://www.bloglines.com/ping
-http://rpc.blogrolling.com/pinger/
-http://www.blogsnow.com/ping
-http://www.feed24.com/?c=add
-http://www.feedblitz.com/f/f.fbz?XmlPing 
-http://ping.feedburner.com/
-http://rpc.icerocket.com:10080/
-http://rpc.newsgator.com/
-http://www.octora.com/add_rss.php
-http://ping.syndic8.com/xmlrpc.php
-http://www.wasalive.com/ping/
-http://ping.weblogalot.com/rpc.php
-";
-
-update_option("ping_sites", $ping_sites);
-
-#
-# Step 4
 # ------
 # Widget Contexts
 #
