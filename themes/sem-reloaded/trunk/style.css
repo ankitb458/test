@@ -405,6 +405,18 @@ h2 a {
 
 
 
+
+/* External links: only add an icon in the main area */
+
+.header .external,
+.sidebar .external,
+.footer .external
+{
+	background-image: none;
+	padding-right: 0px;
+}
+
+
 /* WP Image Aligns */
 
 .skin .aligncenter
