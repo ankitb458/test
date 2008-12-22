@@ -197,33 +197,6 @@ $GLOBALS['wp_rewrite']->flush_rules();
 update_option('default_comment_status', 'closed');
 update_option('default_ping_status', 'closed');
 
-$ping_sites = "
-http://blogsearch.google.com/ping/RPC2
-http://www.blogshares.com/rpc.php
-http://www.blogstreet.com/xrbin/xmlrpc.cgi
-http://api.moreover.com/RPC2
-http://api.my.yahoo.com/RPC2
-http://rpc.technorati.com/rpc/ping
-http://rpc.twingly.com/
-http://rpc.weblogs.com/RPC2
-http://www.blogdigger.com/RPC2
-http://pinger.blogflux.com/rpc
-http://www.bloglines.com/ping
-http://rpc.blogrolling.com/pinger/
-http://www.blogsnow.com/ping
-http://www.feed24.com/?c=add
-http://www.feedblitz.com/f/f.fbz?XmlPing 
-http://ping.feedburner.com/
-http://rpc.icerocket.com:10080/
-http://rpc.newsgator.com/
-http://www.octora.com/add_rss.php
-http://ping.syndic8.com/xmlrpc.php
-http://www.wasalive.com/ping/
-http://ping.weblogalot.com/rpc.php
-";
-
-update_option("ping_sites", $ping_sites);
-
 
 #
 # last step applies to all sites
