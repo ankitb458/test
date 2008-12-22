@@ -28,7 +28,6 @@ endif;
 
 #
 # true(), false() and reset_plugin_hook()
-# these are useful to override theme defaults in the custom.php file
 #
 
 if ( !function_exists('true') ) :
