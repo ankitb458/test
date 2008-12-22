@@ -31,7 +31,7 @@ class sem_footer_admin
 			{
 				$sem_captions = $new_captions;
 
-				update_option('sem5_captions', $sem_captions);
+				update_option('sem6_captions', $sem_captions);
 			}
 		}
 

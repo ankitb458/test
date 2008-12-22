@@ -87,7 +87,7 @@ class sem_entry_admin
 			{
 				$sem_captions = $new_captions;
 
-				update_option('sem5_captions', $sem_captions);
+				update_option('sem6_captions', $sem_captions);
 			}
 		}
 
@@ -158,7 +158,7 @@ class sem_entry_admin
 			{
 				$sem_captions = $new_captions;
 
-				update_option('sem5_captions', $sem_captions);
+				update_option('sem6_captions', $sem_captions);
 			}
 		}
 
@@ -215,7 +215,7 @@ class sem_entry_admin
 			{
 				$sem_captions = $new_captions;
 
-				update_option('sem5_captions', $sem_captions);
+				update_option('sem6_captions', $sem_captions);
 			}
 		}
 
@@ -295,7 +295,7 @@ class sem_entry_admin
 			{
 				$sem_captions = $new_captions;
 
-				update_option('sem5_captions', $sem_captions);
+				update_option('sem6_captions', $sem_captions);
 			}
 		}
 
@@ -475,7 +475,7 @@ class sem_entry_admin
 			{
 				$sem_captions = $new_captions;
 
-				update_option('sem5_captions', $sem_captions);
+				update_option('sem6_captions', $sem_captions);
 			}
 		}
 
@@ -672,7 +672,7 @@ function sem_postnav_widget_control()
 		{
 			$sem_captions = $new_captions;
 
-			update_option('sem5_captions', $sem_captions);
+			update_option('sem6_captions', $sem_captions);
 		}
 	}
 
