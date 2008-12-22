@@ -401,3 +401,42 @@ h2 a {
 .sidebar h2 a {
 	color: inherit;
 }
+
+
+
+
+/* WP Image Aligns */
+
+.skin .aligncenter
+{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.skin .alignleft
+{
+	float: left;
+	margin-right: .5em;
+}
+
+.skin .alignright
+{
+	float: right;
+	margin-left: .5em;
+}
+
+
+/* WP Image Captions */
+
+.wp-caption {
+    -moz-border-radius-bottomleft:3px;
+    -moz-border-radius-bottomright:3px;
+    -moz-border-radius-topleft:3px;
+    -moz-border-radius-topright:3px;
+    background-color:#F3F3F3;
+    border:1px solid #DDDDDD;
+    margin:10px;
+    padding-top:4px;
+    text-align:center;
+}
