@@ -24,8 +24,10 @@ include sem_path . '/header.php';
 				while ( have_posts() ) :
 
 					the_post();
-
-					echo '<div class="entry">' . "\n"
+					
+					$class = join(' ', get_post_class());
+					
+					echo '<div class="entry' . ( $class ? ( ' ' . $class ) : '' ) . '">' . "\n"
 						. '<div class="entry_top"></div>' . "\n";
 					
 					do_action('the_entry');
