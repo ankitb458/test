@@ -5,7 +5,7 @@
 # You would lose your changes when you upgrade your site.
 #
 
-add_filter('pre_blog_public', create_function('$in', 'return "0";'));
+add_filter('option_blog_public', create_function('$in', 'return "0";'));
 remove_action('wp_footer', array('sem_footer', 'display_credits'));
 
 # show header
