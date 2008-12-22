@@ -101,6 +101,8 @@ class sem_skin
 			$template = get_post_meta(intval($GLOBALS['wp_query']->get_queried_object_id()), '_wp_page_template', true);
 
 			$template = preg_replace("/\.[^\.]+$/", "", $template);
+			
+			$classes[] = $template;
 		}
 		
 		return $classes;
