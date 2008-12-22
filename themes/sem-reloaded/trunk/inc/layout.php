@@ -55,14 +55,6 @@ class sem_layout
 				$classes[] = str_replace(array('s', 't'), '', $active_layout)
 					. ( substr_count(str_replace('t', 's', $active_layout), 's')) . 's';
 			}
-			
-			#$extra_layout2 = str_replace(array('e'), array(''), $extra_layout);
-			#
-			#if ( $extra_layout2 != $extra_layout)
-			#{
-			#	$classes[] = $extra_layout2;
-			#	$classes[] = 'me';
-			#}
 		}
 		
 		return $classes;
