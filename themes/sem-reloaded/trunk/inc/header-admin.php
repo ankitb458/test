@@ -107,7 +107,7 @@ class sem_header_admin
 			{
 				$sem_captions = $new_captions;
 
-				update_option('sem5_captions', $sem_captions);
+				update_option('sem6_captions', $sem_captions);
 			}
 		}
 
@@ -159,18 +159,6 @@ class sem_header_admin
 
 		sem_nav_menus_admin::widget_control('header');
 	} # navbar_widget_control()
-	
-	
-	#
-	# header_boxes_widget_control()
-	#
-	
-	function header_boxes_widget_control()
-	{
-		echo '<p>'
-			. 'Use this widget to place the header boxes panel where you want it.'
-			. '</p>';
-	} # header_boxes_widget_control()
 
 
 	#
@@ -246,7 +234,9 @@ class sem_header_admin
 		echo '<div class="wrap">';
 		echo '<h2>' . __('Header Settings') . '</h2>';
 
-		echo '<p>' . __('You\'ll find a few <a href="http://www.semiologic.com/software/wp-themes/sem-headers/">generic headers</a> on semiologic.com. You can also have a <a href="http://www.semiologic.com/members/sem-pro/services/">graphic designer</a> create one for you.') . '</p>' . "\n";
+		echo '<p>' . __('You\'ll find a few <a href="http://www.semiologic.com/software/wp-themes/sem-headers/">generic headers</a> on semiologic.com.') . '</p>' . "\n";
+
+		echo '<p>' . __('You can also have a <a href="http://www.semiologic.com/members/sem-pro/services/">graphic designer</a> create one for you.') . '</p>' . "\n";
 		
 		echo '<p>'
 			. 'The header\'s height will automatically adjust to fit your image or flash file. The available width is 950px, 750px or 620px, depending on your layout. (Strip 20px to these values for the Kubrick skin.)'
@@ -489,10 +479,6 @@ class sem_header_admin
 	{
 		$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
 
-		#echo '<pre>';
-		#var_dump($post_ID);
-		#echo '</pre>';
-
 		if ( defined('GLOB_BRACE') )
 		{
 			if ( $post_ID > 0
@@ -579,9 +565,8 @@ class sem_header_admin
 					. ' id="header_file" name="header_file"'
 					. ' />'
 					. ' '
-					. '<input type="button" class="button" tabindex="5"'
-					. ' value="' . __('Upload') . '"'
-					. ' onclick="return form.save.click();"'
+					. '<input type="submit" name="save" class="button" tabindex="5"'
+					. ' value="' . __('Save') . '"'
 					. ' />';
 			}
 			elseif ( !is_writable(ABSPATH . 'wp-content') )
@@ -604,6 +589,10 @@ class sem_header_admin
 
 	function save_entry_header($post_ID)
 	{
+		$post = get_post($post_ID);
+		
+		if ( $post->post_type == 'revision' ) return;
+		
 		if ( @ $_FILES['header_file']['name'] )
 		{
 			if ( defined('GLOB_BRACE') )
@@ -676,4 +665,52 @@ class sem_header_admin
 } # sem_header_admin
 
 sem_header_admin::init();
+
+
+if ( !function_exists('ob_multipart_entry_form') ) :
+#
+# ob_multipart_entry_form_callback()
+#
+
+function ob_multipart_entry_form_callback($buffer)
+{
+	$buffer = str_replace(
+		'<form name="post"',
+		'<form enctype="multipart/form-data" name="post"',
+		$buffer
+		);
+
+	return $buffer;
+} # ob_multipart_entry_form_callback()
+
+
+#
+# ob_multipart_entry_form()
+#
+
+function ob_multipart_entry_form()
+{
+	if ( $GLOBALS['editing'] )
+	{
+		ob_start('ob_multipart_entry_form_callback');
+	}
+} # ob_multipart_entry_form()
+
+add_action('admin_head', 'ob_multipart_entry_form');
+
+
+#
+# add_file_max_size()
+#
+
+function add_file_max_size()
+{
+	$bytes = apply_filters( 'import_upload_size_limit', wp_max_upload_size() );
+	
+	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="' . $bytes .'" />' . "\n";
+}
+
+add_action('edit_form_advanced', 'add_file_max_size');
+add_action('edit_page_form', 'add_file_max_size');
+endif;
 ?>
