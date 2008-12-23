@@ -109,7 +109,6 @@ function core_upgrade_preamble() {
 		echo '</h3>';
 	}
 
-	dump($updates);
 	echo '<ul class="core-updates">';
 	$alternate = true;
 	foreach( (array) $updates as $update ) {
