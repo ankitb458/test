@@ -10,29 +10,31 @@ function sem_clean_up_options()
 
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'bas%';");					# bad ass stats
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'botd%';");					# blog of the day
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'gravatars_%';");			# gravatars
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'hashcash_%';");			# hashcash
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'gravatars\_%';");			# gravatars
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'hashcash\_%';");			# hashcash
 	if ( get_option('fuzzy_widgets') )
-		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'kjgrc_%';");			# recent comments
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_clean_%';");			# legacy caching
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'kjgrc\_%';");			# recent comments
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_clean\_%';");			# legacy caching
 	if ( !in_array('sem-ad-space/sem-ad-space.php', $active_plugins) )
-		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_ad_space_%';");
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_ad\_space\_%';");
 	if ( get_option('newsletter_manager_widgets') )
-		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_newsletter_%';");
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_opt_in_%';");
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_newsletter\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_opt\_in_%';");
 	if ( get_option('fuzzy_widgets') )
-		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_recent_%';");
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_search_%';");
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_sidebar_tile_%';");
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_tile_%';");
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_static_front_%';");
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_theme_%';");				# Semiologic v.2!
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp_cron_%';");
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_recent\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_search\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_sidebar\_tile\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_tile\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_static\_front\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem\_theme\_%';");				# Semiologic v.2!
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp\_cron\_%';");
 	if ( !in_array('wpLicense/wpLicense.php', $active_plugins) )
-		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp_cc_%';");
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp_hashcash_%';");
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp\_cc\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp\_hashcash\_%';");
 	if ( !in_array('ylsy_permalink_redirect.php', $active_plugins) )
-		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'permalink_redirect_%';");
+		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'permalink\_redirect\_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'eco\_%';");      #extended comment status 
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'SUP\_%';");      #smart update pinger
 	
 	delete_option('analytics_uastring');				# legacy analytics plugin
 	delete_option('caplist');							# role manager
@@ -52,6 +54,10 @@ function sem_clean_up_options()
 	delete_option('speller_options');
 	delete_option('xdash_settings');
 	delete_option('yt_cache');
+	delete_option('ozh_absolutecomments'); 
+	delete_option('plugin_simple_tb_validation2'); 
+	delete_option('plugin_simple_tb_validation2_log'); 
+	delete_option('sm_cpages');
 	
 	delete_option('sem_widget_contexts');
 	delete_option('sem5_nav');
@@ -73,12 +79,15 @@ function sem_clean_up_options()
 		update_option('links_recently_updated_append', '</em>');
 	}
 
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name = 'core_update';");				# Duplicate
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss_[0-9a-f]{32}';");	# clean up magpie
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name = 'core\_update';");				# Duplicate
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss\_[0-9a-f]{32}';");	# clean up magpie
 	
 	# drop obsolete tables
 	$wpdb->query("DROP IF EXISTS TABLE {$wpdb->prefix}WP_HASHCASH;");
-	$wpdb->query("DROP IF EXISTS TABLE {$wpdb->prefix}sem_ad_spaces;");
+	if ( class_exists('ad_manager') )
+	{
+		$wpdb->query("DROP IF EXISTS TABLE {$wpdb->prefix}sem_ad_spaces;");
+	}
 } # clean_up_options()
 
 add_action('shutdown', 'sem_clean_up_options');

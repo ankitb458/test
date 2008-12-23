@@ -18,6 +18,13 @@ include sem_path . '/inc/upgrade/5.5.php';
 
 endif;
 
+if ( version_compare($sem_options['version'], '5.7', '<') ) :
+
+include sem_path . '/inc/upgrade/5.7.php';
+
+endif;
+
+
 #
 # Update Version
 #
