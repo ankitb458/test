@@ -24,12 +24,6 @@ include sem_path . '/inc/upgrade/5.7.php';
 
 endif;
 
-#
-# Clean up Database over time too
-#
-
-include_once sem_path . '/inc/upgrade/options.php';
-
 
 #
 # Update Version
