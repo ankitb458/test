@@ -3,11 +3,6 @@
 # Wizard Name: Clone
 #
 
-if ( !class_exists('sem_http') )
-{
-	include sem_wizards_path . '/http.php';
-}
-
 class wiz_clone
 {
 	#
@@ -193,7 +188,7 @@ class wiz_clone
 			. '&user=' . urlencode($site_user)
 			. '&pass=' . urlencode($site_pass);
 
-		$data = sem_http::get($url);
+		$data = wp_remote_get($url);
 
 		#dump($url, $data);
 		

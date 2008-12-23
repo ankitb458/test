@@ -3,11 +3,6 @@
 # Wizard Name: Upgrade
 #
 
-if ( !class_exists('sem_http') )
-{
-	include sem_wizards_path . '/http.php';
-}
-
 if ( !class_exists('ftp') )
 {
 	include sem_wizards_path . '/ftp.php';
@@ -709,7 +704,7 @@ class wiz_upgrade
 		
 		$url = 'http://version.semiologic.com/sem_pro/';
 
-		$lines = sem_http::get($url);
+		$lines = wp_remote_get($url);
 		
 		if ( $lines === false )
 		{
@@ -882,7 +877,7 @@ class wiz_upgrade
 		{
 			return false;
 		}
-		elseif ( !( $res = sem_http::get($url) ) )
+		elseif ( !( $res = wp_remote_get($url) ) )
 		{
 			return false;
 		}
@@ -1299,7 +1294,7 @@ class wiz_upgrade
 
 		$url = trailingslashit(get_option('siteurl')) . 'wp-admin/upgrade.php?step=1';
 
-		sem_http::get($url);
+		wp_remote_get($url);
 
 		return true;
 	} # upgrade_db()

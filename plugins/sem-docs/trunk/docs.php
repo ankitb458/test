@@ -348,12 +348,7 @@ class sem_docs
 			
 			#dump($url);
 			
-			if ( !class_exists('sem_http') )
-			{
-				include dirname(__FILE__) . '/http.php';
-			}
-
-			$xml = sem_http::get($url);
+			$xml = wp_remote_get($url);
 		
 			if ( $xml === false )
 			{
