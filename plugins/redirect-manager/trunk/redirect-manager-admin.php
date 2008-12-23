@@ -88,7 +88,7 @@ class redirect_manager_admin
 			
 			if ( $value )
 			{
-				add_post_meta($post_ID, '_redirect_url' . $field, $value, true);
+				add_post_meta($post_ID, '_redirect_url', $value, true);
 			}
 		}
 	} # save_entry()
