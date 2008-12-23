@@ -865,7 +865,7 @@ class wiz_upgrade
 
 		$url =
 			( $_POST['sem_pro_version'] == 'bleeding'
-				? 'http://www.semiologic.com/media/members/sem-pro/bleeding/sem-pro-bleeding.zip'
+				? 'http://www.semiologic.com/media/members/sem-pro/bleeding/sem-pro.zip'
 				: 'http://www.semiologic.com/media/members/sem-pro/download/sem-pro.zip'
 				);
 
