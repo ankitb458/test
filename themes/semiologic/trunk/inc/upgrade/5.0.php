@@ -482,9 +482,6 @@ unset($sem_options['theme_credits']);
 unset($sem_options['seo']);
 unset($sem_options['scripts']);
 
-include_once sem_path . '/inc/upgrade/options.php';
-
-
 #
 # Debug
 #

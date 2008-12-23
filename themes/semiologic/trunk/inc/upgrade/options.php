@@ -27,12 +27,14 @@ function sem_clean_up_options()
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_tile_%';");
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_static_front_%';");
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'sem_theme_%';");				# Semiologic v.2!
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp_cron_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp\_cron\_%';");
 	if ( !in_array('wpLicense/wpLicense.php', $active_plugins) )
 		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp_cc_%';");
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'wp_hashcash_%';");
 	if ( !in_array('ylsy_permalink_redirect.php', $active_plugins) )
 		$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'permalink_redirect_%';");
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'eco_%';");	 #extended comment status
+	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name LIKE 'SUP_%';");	 #smart update pinger	
 	
 	delete_option('analytics_uastring');				# legacy analytics plugin
 	delete_option('caplist');							# role manager
@@ -52,6 +54,10 @@ function sem_clean_up_options()
 	delete_option('speller_options');
 	delete_option('xdash_settings');
 	delete_option('yt_cache');
+	delete_option('ozh_absolutecomments');
+	delete_option('plugin_simple_tb_validation2');
+	delete_option('plugin_simple_tb_validation2_log');
+	delete_option('sm_cpages');							#arne sitemap
 	
 	delete_option('sem_widget_contexts');
 	delete_option('sem5_nav');
