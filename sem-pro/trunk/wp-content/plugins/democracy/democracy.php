@@ -352,7 +352,7 @@ function jal_dem_admin_page() {
 
 // Adds the Democracy Poll Plugin tab to the admin navigation
 function jal_add_page() {
-    add_management_page('Polls', 'Polls', 'switch_themes', 'democracy', 'jal_dem_admin_page');
+    add_options_page('Polls', 'Polls', 'switch_themes', 'democracy', 'jal_dem_admin_page');
 }
 
 
