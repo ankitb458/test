@@ -881,6 +881,10 @@ class wiz_upgrade
 		{
 			return false;
 		}
+		elseif ( is_wp_error($res) )
+		{
+			return false;
+		}
 
 		fwrite($fp, $res);
 		fclose($fp);
