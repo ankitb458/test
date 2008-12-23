@@ -25,6 +25,14 @@ $active_plugins = array_diff($active_plugins, $extra_plugins);
 
 update_option('active_plugins', $active_plugins);
 
+
+#
+# Clean up options
+#
+
+include_once sem_path . '/inc/upgrade/options.php';
+
+
 #
 # Debug
 #
