@@ -72,7 +72,7 @@ class archive_widgets_admin
 		}
 
 		if ( -1 == $number ) {
-			$title = '';
+			$title = __('Archives');
 			$dropdown = false;
 			$count = false;
 			$number = '%i%';
