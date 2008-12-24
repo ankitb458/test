@@ -161,7 +161,7 @@ class dealdotcom
 	function update()
 	{
 		$url = 'http://www.dealdotcom.com/wp';
-
+		
 		if ( function_exists('curl_init') )
 		{
 			$ch = curl_init();

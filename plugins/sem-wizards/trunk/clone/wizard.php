@@ -188,7 +188,7 @@ class wiz_clone
 			. '&user=' . urlencode($site_user)
 			. '&pass=' . urlencode($site_pass);
 
-		$data = wp_remote_get($url);
+		$data = wp_remote_fopen($url);
 
 		#dump($url, $data);
 		

@@ -704,7 +704,7 @@ class wiz_upgrade
 		
 		$url = 'http://version.semiologic.com/sem_pro/';
 
-		$lines = wp_remote_get($url);
+		$lines = wp_remote_fopen($url);
 		
 		if ( $lines === false )
 		{
@@ -877,7 +877,7 @@ class wiz_upgrade
 		{
 			return false;
 		}
-		elseif ( !( $res = wp_remote_get($url) ) )
+		elseif ( !( $res = wp_remote_fopen($url) ) )
 		{
 			return false;
 		}
@@ -1298,7 +1298,7 @@ class wiz_upgrade
 
 		$url = trailingslashit(get_option('siteurl')) . 'wp-admin/upgrade.php?step=1';
 
-		wp_remote_get($url);
+		wp_remote_fopen($url);
 
 		return true;
 	} # upgrade_db()

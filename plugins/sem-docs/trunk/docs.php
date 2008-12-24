@@ -347,7 +347,7 @@ class sem_docs
 			
 			#dump($url);
 			
-			$xml = wp_remote_get($url);
+			$xml = wp_remote_fopen($url);
 		
 			if ( $xml === false )
 			{
