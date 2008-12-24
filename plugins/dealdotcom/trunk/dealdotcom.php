@@ -4,7 +4,7 @@ Plugin Name: Dealdotcom
 Plugin URI: http://www.semiologic.com/software/marketing/dealdotcom/
 Description: A widget to display <a href="http://go.semiologic.com/dealdotcom">dealdotcom</a>'s deal of the day.
 Author: Denis de Bernardy
-Version: 1.1.1
+Version: 1.1.2 alpha
 Author URI: http://www.getsemiologic.com
 */
 
@@ -162,30 +162,7 @@ class dealdotcom
 	{
 		$url = 'http://www.dealdotcom.com/wp';
 		
-		if ( function_exists('curl_init') )
-		{
-			$ch = curl_init();
-
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_USERAGENT, 'WordPress');
-			curl_setopt($ch, CURLOPT_HEADER, 0);
-
-			$deal = @ curl_exec($ch);
-
-			curl_close($ch);
-		}
-		else
-		{
-			require_once ABSPATH . WPINC . '/class-snoopy.php';
-
-			$snoopy = new snoopy;
-			$snoopy->agent = 'WordPress';
-
-			@ $snoopy->fetch($url);
-
-			$deal = $snoopy->results;
-		}
+		$deal = wp_remote_fopen($url);
 
 		if ( $deal )
 		{
