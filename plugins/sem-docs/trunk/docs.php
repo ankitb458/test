@@ -73,7 +73,6 @@ class sem_docs
 	{
 		# Docs links
 		remove_filter( 'update_footer', 'core_update_footer' );
-		remove_action( 'admin_notices', 'update_nag', 3 );
 		remove_action('admin_footer', 'hello_dolly');
 		
 		add_action('admin_head', array('sem_docs', 'css'));
