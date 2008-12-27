@@ -4,7 +4,7 @@ Plugin Name: Dealdotcom
 Plugin URI: http://www.semiologic.com/software/marketing/dealdotcom/
 Description: A widget to display <a href="http://go.semiologic.com/dealdotcom">dealdotcom</a>'s deal of the day.
 Author: Denis de Bernardy
-Version: 1.1.2 alpha
+Version: 1.1.2 RC
 Author URI: http://www.getsemiologic.com
 */
 
