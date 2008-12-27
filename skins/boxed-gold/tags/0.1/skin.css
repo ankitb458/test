@@ -1,0 +1,518 @@
+/*
+Skin name: Boxed (Gold)
+Version: 0.1
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+html {
+	background: #ddd;
+}
+
+
+/*
+ * Header
+ */
+
+#sitename {
+	color: #c22;
+}
+
+
+/*
+ * Navbar
+ */
+
+#navbar {
+	line-height: 40px;
+}
+
+#navbar a {
+	color: #000;
+}
+
+#navbar a:hover {
+	color: #c22;
+}
+
+.mmm #navbar {
+	background: url(images/mmm-navbar.jpg) center repeat-y #ffc102;
+}
+
+.mm #navbar {
+	background: url(images/mm-navbar.jpg) center repeat-y #ffc102;
+}
+
+.m #navbar {
+	background: url(images/m-navbar.jpg) center repeat-y #ffc102;
+}
+
+
+/*
+ * Footer
+ */
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #c22;
+}
+
+#footer_top,
+#footer_bottom {
+	height: 10px;
+}
+
+.mmm #footer {
+	background: url(images/mmm-footer.jpg) center repeat-y #fffdcf;
+}
+
+.mmm #footer_top {
+	background: url(images/mmm-footer_top.jpg) bottom center no-repeat;
+}
+
+.mmm #footer_bottom {
+	background: url(images/mmm-footer_bottom.jpg) top center no-repeat;
+}
+
+.mm #footer {
+	background: url(images/mm-footer.jpg) center repeat-y #fffdcf;
+}
+
+.mm #footer_top {
+	background: url(images/mm-footer_top.jpg) bottom center no-repeat;
+}
+
+.mm #footer_bottom {
+	background: url(images/mm-footer_bottom.jpg) top center no-repeat;
+}
+
+.m #footer {
+	background: url(images/m-footer.jpg) center repeat-y #fffdcf;
+}
+
+.m #footer_top {
+	background: url(images/m-footer_top.jpg) bottom center no-repeat;
+}
+
+.m #footer_bottom {
+	background: url(images/m-footer_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header & Footer Boxes
+ */
+
+#header_boxes_top,
+#header_boxes_bottom,
+#footer_boxes_top,
+#footer_boxes_bottom {
+	height: 10px;
+}
+
+.mmm #header_boxes,
+.mmm #footer_boxes {
+	background: url(images/mmm-inline_boxes.jpg) center repeat-y;
+}
+
+.mmm #header_boxes_top,
+.mmm #footer_boxes_top {
+	background: url(images/mmm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom,
+.mmm #footer_boxes_bottom {
+	background: url(images/mmm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #header_boxes,
+.mm #footer_boxes {
+	background: url(images/mm-inline_boxes.jpg) center repeat-y;
+}
+
+.mm #header_boxes_top,
+.mm #footer_boxes_top {
+	background: url(images/mm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom,
+.mm #footer_boxes_bottom {
+	background: url(images/mm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #header_boxes,
+.m #footer_boxes {
+	background: url(images/m-inline_boxes.jpg) center repeat-y;
+}
+
+.m #header_boxes_top,
+.m #footer_boxes_top {
+	background: url(images/m-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom,
+.m #footer_boxes_bottom {
+	background: url(images/m-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header & Footer Widgets
+ */
+
+.header_widget_top,
+.header_widget_bottom,
+.footer_widget_top,
+.footer_widget_bottom {
+	height: 10px;
+}
+
+.mmm .header_widget,
+.mmm .footer_widget {
+	background: url(images/mmm-wrapper_widget.jpg) center repeat-y;
+}
+
+.mmm .header_widget_top,
+.mmm .footer_widget_top {
+	background: url(images/mmm-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.mmm .header_widget_bottom,
+.mmm .footer_widget_bottom {
+	background: url(images/mmm-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+.mm .header_widget,
+.mm .footer_widget {
+	background: url(images/mm-wrapper_widget.jpg) center repeat-y;
+}
+
+.mm .header_widget_top,
+.mm .footer_widget_top {
+	background: url(images/mm-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.mm .header_widget_bottom,
+.mm .footer_widget_bottom {
+	background: url(images/mm-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+.m .header_widget,
+.m .footer_widget {
+	background: url(images/m-wrapper_widget.jpg) center repeat-y;
+}
+
+.m .header_widget_top,
+.m .footer_widget_top {
+	background: url(images/m-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.m .header_widget_bottom,
+.m .footer_widget_bottom {
+	background: url(images/m-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Body
+ */
+
+#main_top,
+#main_bottom {
+	height: 10px;
+}
+
+.mmm #main {
+	background: url(images/mmm-main.jpg) center repeat-y;
+}
+
+.mmm #main_top {
+	background: url(images/mmm-main_top.jpg) bottom center no-repeat;
+}
+
+.mmm #main_bottom {
+	background: url(images/mmm-main_bottom.jpg) top center no-repeat;
+}
+
+.mm #main,
+.mm1s #main {
+	background: url(images/mm-main.jpg) center repeat-y;
+}
+
+.mm #main_top,
+.mm1s #main_top {
+	background: url(images/mm-main_top.jpg) bottom center no-repeat;
+}
+
+.mm #main_bottom,
+.mm1s #main_bottom {
+	background: url(images/mm-main_bottom.jpg) top center no-repeat;
+}
+
+.m2s #main,
+.m1s #main {
+	background: url(images/main.jpg) center repeat-y;
+}
+
+.m2s #main_top,
+.m1s #main_top {
+	background: url(images/main_top.jpg) bottom center no-repeat;
+}
+
+.m2s #main_bottom,
+.m1s #main_bottom {
+	background: url(images/main_bottom.jpg) top center no-repeat;
+}
+
+.m #main {
+	background: url(images/m-main.jpg) center repeat-y;
+}
+
+.m #main_top {
+	background: url(images/m-main_top.jpg) bottom center no-repeat;
+}
+
+.m #main_bottom {
+	background: url(images/m-main_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Credits
+ */
+
+#credits {
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+/*
+ * Content
+ */
+
+.entry_header {
+	color: #c22;
+}
+
+.entry_date,
+.comment_date {
+}
+
+.entry_actions p,
+.comment_actions p {
+	padding-top: 1px;
+	border-top: solid 1px #999;
+}
+
+blockquote {
+	background: url(icons/blockquote.gif) top left no-repeat;
+	padding: 10px 10px 10px 50px;
+	margin-left: 0px;
+}
+
+.comment_header {
+	width: 160px;
+	float: left;
+}
+
+.comment {
+	margin-left: 170px;
+}
+
+
+/*
+ * Sidebars
+ */
+
+.widget_title h2 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.widget {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.widget_top,
+.widget_bottom {
+	height: 10px;
+}
+
+.widget_title_top {
+	margin-top: -10px;
+	height: 10px;
+}
+
+.widget_title_bottom {
+	height: 5px;
+}
+
+.widget {
+	background: url(images/widget.jpg) center repeat-y;
+}
+
+.widget_top {
+	background: url(images/widget_top.jpg) bottom center no-repeat;
+}
+
+.widget_bottom {
+	background: url(images/widget_bottom.jpg) top center no-repeat;
+}
+
+.widget_title {
+	background: url(images/widget_title.jpg) center repeat-y;
+}
+
+.widget_title_top {
+	background: url(images/widget_title_top.jpg) bottom center no-repeat;
+}
+
+.widget_title_bottom {
+	background: url(images/widget_title_bottom.jpg) top center no-repeat;
+}
+
+#top_sidebar .widget {
+	background: url(images/top_widget.jpg) center repeat-y;
+}
+
+#top_sidebar .widget_top {
+	background: url(images/top_widget_top.jpg) bottom center no-repeat;
+}
+
+#top_sidebar .widget_bottom {
+	background: url(images/top_widget_bottom.jpg) top center no-repeat;
+}
+
+#top_sidebar .widget_title {
+	background: url(images/top_widget_title.jpg) center repeat-y;
+}
+
+#top_sidebar .widget_title_top {
+	background: url(images/top_widget_title_top.jpg) bottom center no-repeat;
+}
+
+#top_sidebar .widget_title_bottom {
+	background: url(images/top_widget_title_bottom.jpg) top center no-repeat;
+}
+
+
+
+/*
+ * Calendar
+ */
+
+#wp-calendar {
+	border: solid 1px #666;
+}
+
+#wp-calendar thead {
+	border-bottom: solid 1px #666;
+	background: #ffc102;
+}
+
+#wp-calendar tfoot {
+	border-top: solid 1px #666;
+	background: #fffdcf;
+}
+
+#wp-calendar tfoot a {
+	color: #000;
+}
+
+#wp-calendar tfoot a:hover {
+	color: #c22;
+}
+
+
+/*
+ * Icons
+ */
+
+.header_widget ul,
+.footer_widget ul,
+.inline_box ul,
+.main_widget ul,
+.inline_widget ul,
+.post_list ul,
+.widget ul {
+	list-style-image: url(icons/file.gif);
+}
+
+.widget_categories ul,
+.widget_archive ul {
+	list-style-image: url(icons/folder.gif);
+}
+
+li.nav_home,
+li.nav_blog,
+li.nav_branch {
+	list-style-image: url(icons/folder.gif);
+}
+
+li.nav_leaf {
+	list-style-image: url(icons/file.gif);
+}
+
+.link_entry a,
+.link_comment a {
+	background: url(icons/file.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.admin_link a,
+.edit_entry a,
+.edit_comment a {
+	background: url(icons/edit.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_comment a {
+	background: url(icons/comment.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.comment_entry a,
+.reply_comment a {
+	background: url(icons/add_comment.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.email_entry a {
+	background: url(icons/email.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.print_entry a {
+	background: url(icons/print.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_tags a,
+.entry_categories a {
+	background: url(icons/folder.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_author a,
+.signed_in_author a,
+.loginout a {
+	background: url(icons/user.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
