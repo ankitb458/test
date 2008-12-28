@@ -115,10 +115,12 @@ class sem_skin
 
 	function get_skin_data($skin_id)
 	{
-		if ( !( $skin_data = file_get_contents(sem_path . '/skins/' . $skin_id . '/skin.css') ) )
+		if ( !( $skin_data = @file_get_contents(sem_path . '/skins/' . $skin_id . '/skin.css') ) )
 		{
 			$skin_id = 'copywriter-gold';
-			$skin_data = file_get_contents(sem_path . '/skins/copywriter-gold/skin.css');
+			$skin_data = @file_get_contents(sem_path . '/skins/copywriter-gold/skin.css');
+			
+			if ( !$skin_data ) return array();
 		}
 
 		$skin_data = str_replace("\r", "\n", $skin_data);

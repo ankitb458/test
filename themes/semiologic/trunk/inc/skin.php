@@ -6,8 +6,10 @@
 
 function get_skin_data($skin_id)
 {
-	$skin_data = file_get_contents(dirname(dirname(__FILE__)) . '/skins/' . $skin_id . '/skin.css');
+	$skin_data = @file_get_contents(dirname(dirname(__FILE__)) . '/skins/' . $skin_id . '/skin.css');
 
+	if ( !$skin_data ) return array();
+	
 	$skin_data = str_replace("\r", "\n", $skin_data);
 
 	preg_match('/Skin(?:\s+name)?\s*:(.*)/i', $skin_data, $name);
