@@ -116,6 +116,13 @@ class sem_admin_menu_admin
 				. ' />'
 			. '</p>' . "\n";
 		
+		if ( get_option('users_can_register') )
+		{
+			echo '<p>'
+				. '<strong>Notice</strong>: anyone can currently register on your site. The above option will be ignored as a result. To turn registrations off, browse Settings / General.'
+				. '</p>' . "\n";
+		}
+		
 		echo '</form>' . "\n"
 			. '</div>' . "\n";
 	} # end display_admin_page()
