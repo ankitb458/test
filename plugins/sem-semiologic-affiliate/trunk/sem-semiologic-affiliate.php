@@ -4,7 +4,7 @@ Plugin Name: Semiologic Affiliate
 Plugin URI: http://www.semiologic.com/software/marketing/sem-affiliate/
 Description: Automatically adds your affiliate ID to all links to Semiologic.
 Author: Denis de Bernardy
-Version: 1.7
+Version: 1.8 RC
 Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/plugins
 Update Tag: semiologic_affiliate
@@ -38,6 +38,16 @@ function sem_semiologic_affiliate_process_links($buffer = '')
 		&& !is_admin()
 		)
 	{
+		global $sem_semiologic_affiliate_escape;
+		
+		$sem_semiologic_affiliate_escape = array();
+		
+		$buffer = preg_replace_callback("/
+			<\s*(object|script).*>
+			.+
+			<\s*\/\\1\s*>
+			/isUx", 'sem_semiologic_affiliate_escape', $buffer);
+		
 		$buffer = preg_replace_callback(
 			"/
 				<
@@ -80,14 +90,46 @@ function sem_semiologic_affiliate_process_links($buffer = '')
 			'sem_semiologic_affiliate_add_id',
 			$buffer
 			);
+		
+		$find = array_keys($sem_semiologic_affiliate_escape);
+		$repl = array_values($sem_semiologic_affiliate_escape);
+		
+		$buffer = str_replace($find, $repl, $buffer);
 	}
-
+	
 	return $buffer;
 } # end sem_semiologic_affiliate_process_links()
 
-add_action('the_excerpt', 'sem_semiologic_affiliate_process_links', 2000);
-add_action('the_content', 'sem_semiologic_affiliate_process_links', 2000);
-add_action('comment_text', 'sem_semiologic_affiliate_process_links', 2000);
+add_filter('the_content', 'sem_semiologic_affiliate_process_links');
+
+
+#
+# sem_semiologic_affiliate_ob()
+#
+
+function sem_semiologic_affiliate_ob()
+{
+	ob_start('sem_semiologic_affiliate_process_links');
+} # sem_semiologic_affiliate_ob()
+
+#add_action('wp_head', 'sem_semiologic_affiliate_ob', -10000);
+
+
+#
+# sem_semiologic_affiliate_unescape()
+#
+
+function sem_semiologic_affiliate_escape($match)
+{
+	global $sem_semiologic_affiliate_escape;
+	
+	$id = uniqid();
+	$id = "---sem_semiologic_affiliate_escape---$id---";
+	
+	$sem_semiologic_affiliate_escape[$id] = $match[0];
+
+	return $id;
+} # sem_semiologic_affiliate_unescape()
 
 
 #
