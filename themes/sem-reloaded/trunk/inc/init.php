@@ -3,7 +3,7 @@
 # sem_version
 #
 
-define('sem_version', '5.7-RC'); # todo: change to 6.0 when docs are ready
+define('sem_version', '5.7-RC2');
 
 define('sem_path', dirname(dirname(__FILE__)));
 define('sem_url', get_stylesheet_directory_uri());
