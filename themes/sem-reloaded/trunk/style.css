@@ -200,27 +200,6 @@ th,
 
 
 /*
- * Button
- */
-
-.button {
-	background-color: #c0c0c0;
-	color: #000000;
-	
-	padding: 3px 10px;
-
-	border: solid 1px #696969;
-
-	-moz-border-radius: 4px;
-	-khtml-border-radius: 4px;
-	-webkit-border-radius: 4px;
-	border-radius: 4px;
-	
-	cursor: pointer;
-}
-
-
-/*
  * calendar
  */
 
