@@ -48,7 +48,7 @@ if ( is_admin() )
 
 add_option('sem_api_key', '');
 
-foreach ( array('sem_docs', 'sem_wizards', 'sem_fixes') as $sem_plugins ) :
+foreach ( array('sem_docs', 'sem_fixes') as $sem_plugins ) :
 
 $sem_plugin_path = $sem_plugins . '_path';
 

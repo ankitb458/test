@@ -37,7 +37,6 @@ $extra_plugins = array(
 	'sem-docs/sem-docs.php',
 	'sem-fixes/sem-fixes.php',
 	'sem-seo/sem-seo.php',
-	'sem-wizards/sem-wizards.php',
 	'text-widgets/text-widgets.php',
 	'version-checker/version-checker.php',
 	'widget-contexts/widget-contexts.php',
@@ -313,7 +312,7 @@ foreach ( array(
 # Disable a couple of plugins that are now built-in
 #
 
-foreach ( array('sem_docs', 'sem_wizards', 'sem_fixes') as $sem_plugins ) :
+foreach ( array('sem_docs', 'sem_fixes') as $sem_plugins ) :
 
 $sem_plugin_path = $sem_plugins . '_path';
 

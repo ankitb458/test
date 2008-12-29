@@ -37,7 +37,6 @@ $extra_plugins = array(
 	'sem-docs/sem-docs.php',
 	'sem-fixes/sem-fixes.php',
 	'sem-seo/sem-seo.php',
-	'sem-wizards/sem-wizards.php',
 	'text-widgets/text-widgets.php',
 	'version-checker/version-checker.php',
 	'widget-contexts/widget-contexts.php',
