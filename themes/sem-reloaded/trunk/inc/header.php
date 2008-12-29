@@ -292,9 +292,9 @@ class sem_header
 			}
 			
 			$go = $sem_captions['search_button'];
-
+			
 			echo '<form method="get" action="' . get_option('home') . '" id="searchform" name="searchform">'
-				. '&nbsp;' # force line-height
+				. '&nbsp;'				# force line-height
 				. '<input type="text" id="s" class="s" name="s"'
 					. ' value="' . htmlspecialchars($search) . '"'
 					. ( !is_search()
@@ -308,7 +308,7 @@ class sem_header
 					. '/>'
 					. '<input type="submit" id="go" class="go button" value="' . htmlspecialchars($go) . '" />'
 					. '</form>';
-
+			
 			echo '</div><!-- search_form -->';
 		}
 

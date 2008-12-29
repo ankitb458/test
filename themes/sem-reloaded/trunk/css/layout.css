@@ -172,6 +172,16 @@ To customize this file, create a custom.css file in the theme's folder, and past
 	line-height: 30px;
 }
 
+* html #s {
+	margin: 3px 0px;
+	vertical-align: center;
+}
+
+* html #go {
+	margin: 3px 0px 1px;
+	vertical-align: center;
+}
+
 
 /*
  * non-floating nav

@@ -1,6 +1,6 @@
 /*
 Skin name: Classy (Purple)
-Version: 0.1
+Version: 0.2 beta
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -67,6 +67,16 @@ html {
 #navbar {
 	line-height: 40px;
 	color: #fff;
+}
+
+* html #s {
+	margin: 6px 0px;
+	vertical-align: center;
+}
+
+* html #go {
+	margin: 6px 0px 4px;
+	vertical-align: center;
 }
 
 #navbar a {
