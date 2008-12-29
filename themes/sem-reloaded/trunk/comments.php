@@ -57,10 +57,10 @@ if ( $comments )
 	}
 
 	echo '<div class="comments_header">' . "\n"
-		. '<div class="comments_header_top"></div>' . "\n"
+		. '<div class="comments_header_top"><div class="hidden"></div></div>' . "\n"
 		. '<div class="pad">' . "\n"
 		. '<h2>' . $caption . $comment_form_link . '</h2>' . "\n"
-		. '<div class="comments_header_bottom"></div>' . "\n"
+		. '<div class="comments_header_bottom"><div class="hidden"></div></div>' . "\n"
 		. '</div>' . "\n"
 		. '</div>' . "\n";
 
@@ -82,7 +82,7 @@ if ( $comments )
 		}
 		
 		echo '<div class="comment_header">' . "\n"
-			. '<div class="comment_header_top"></div>' . "\n"
+			. '<div class="comment_header_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="pad">' . "\n";
 		
 		echo '<h3>'
@@ -101,20 +101,20 @@ if ( $comments )
 			. '</h3>' . "\n";
 
 		echo '</div>' . "\n"
-			. '<div class="comment_header_bottom"></div>' . "\n"
+			. '<div class="comment_header_bottom"><div class="hidden"></div></div>' . "\n"
 			. '</div>' . "\n";
 
 
 		echo '<div id="comment-' . get_comment_ID() . '" class="comment">' . "\n"
-			. '<div class="comment_top"></div>' . "\n"
+			. '<div class="comment_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="comment_pad">' . "\n";
 
 		echo '<div class="comment_body">' . "\n"
-			. '<div class="comment_body_top"></div>' . "\n"
+			. '<div class="comment_body_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="pad">' . "\n"
 			. apply_filters('comment_text', get_comment_text())
 			. '</div>' . "\n"
-			. '<div class="comment_body_bottom"></div>' . "\n"
+			. '<div class="comment_body_bottom"><div class="hidden"></div></div>' . "\n"
 			. '</div>' . "\n";
 
 
@@ -124,7 +124,7 @@ if ( $comments )
 		if ( !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
 		{
 			echo '<div class="comment_actions">' . "\n"
-				. '<div class="comment_actions_top"></div>' . "\n"
+				. '<div class="comment_actions_top"><div class="hidden"></div></div>' . "\n"
 				. '<div class="pad">' . "\n"
 				. '<p>' . "\n";
 
@@ -150,12 +150,12 @@ if ( $comments )
 
 			echo '</p>' . "\n"
 				. '</div>' . "\n"
-				. '<div class="comment_actions_bottom"></div>' . "\n"
+				. '<div class="comment_actions_bottom"><div class="hidden"></div></div>' . "\n"
 				. '</div>' . "\n";
 		}
 		
 		echo '</div>' . "\n"
-			. '<div class="comment_bottom"></div>' . "\n"
+			. '<div class="comment_bottom"><div class="hidden"></div></div>' . "\n"
 			. '</div> <!-- comment -->' . "\n";
 		
 		echo '<div class="spacer"></div>';
@@ -174,11 +174,11 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 	echo '<div id="comment_form">' . "\n";
 	
 	echo '<div class="comments_header" id="postcomment">' . "\n"
-		. '<div class="comments_header_top"></div>' . "\n"
+		. '<div class="comments_header_top"><div class="hidden"></div></div>' . "\n"
 		. '<div class="pad">' . "\n"
 		. '<h2>' . $sem_captions['leave_comment'] . '</h2>' . "\n"
 		. '</div>' . "\n"
-		. '<div class="comments_header_bottom"></div>' . "\n"
+		. '<div class="comments_header_bottom"><div class="hidden"></div></div>' . "\n"
 		. '</div>' . "\n";
 
 	if ( get_option('comment_registration') && !$user_ID )

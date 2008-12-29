@@ -36,7 +36,7 @@ else
 </head>
 <body class="<?php do_action('display_page_class'); ?>">
 <div id="ext_wrapper">
-<div id="shadow_top"></div>
+<div id="shadow_top"><div class="hidden"></div></div>
 <div id="shadow">
 <div id="wrapper">
 <div id="body" class="body">
@@ -62,7 +62,7 @@ the_post();
 </div><!-- #body -->
 </div><!-- #wrapper -->
 </div><!-- #shadow -->
-<div id="shadow_bottom"></div>
+<div id="shadow_bottom"><div class="hidden"></div></div>
 </div><!-- #ext_wrapper -->
 <?php
 do_action('display_canvas_spacer');

@@ -10,15 +10,15 @@ html {
 }
 
 #wrapper {
-	background: url(images/letter.jpg) center repeat-y #ffffff;
-	color: #000000;
+	background: url(images/letter.jpg) center repeat-y #fff;
+	color: #000;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	width: 750px;
 }
 
 #wrapper_top {
-	background: url(images/letter_top.jpg) bottom center no-repeat;
+	background: url(images/letter_top.jpg) top center no-repeat;
 	height: 15px;
 }
 

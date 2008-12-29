@@ -115,7 +115,7 @@ class sem_header
 
 		echo '>' . "\n";
 		
-		echo '<div id="header_top"></div>' . "\n";
+		echo '<div id="header_top"><div class="hidden"></div></div>' . "\n";
 		
 		echo '<div id="header_bg">' . "\n";
 		
@@ -194,7 +194,7 @@ class sem_header
 		
 		echo '</div>' . "\n";
 		
-		echo '<div id="header_bottom"></div>' . "\n";
+		echo '<div id="header_bottom"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div><!-- header -->' . "\n";
 	} # header_widget()
@@ -262,7 +262,7 @@ class sem_header
 				. '"'
 			. '>' . "\n";
 		
-		echo '<div id="navbar_top"></div>' . "\n";
+		echo '<div id="navbar_top"><div class="hidden"></div></div>' . "\n";
 		
 		echo '<div id="navbar_bg">' . "\n";
 		
@@ -317,7 +317,7 @@ class sem_header
 			. '</div>' . "\n"
 			. '</div>' . "\n";
 		
-		echo '<div id="navbar_bottom"></div>' . "\n";
+		echo '<div id="navbar_bottom"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div><!-- navbar -->' . "\n";
 	} # navbar_widget()

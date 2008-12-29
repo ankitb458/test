@@ -44,7 +44,7 @@ do_action('before_the_canvas');
 
 echo '<div id="wrapper">' . "\n";
 
-echo '<div id="wrapper_top"></div>' . "\n";
+echo '<div id="wrapper_top"><div class="hidden"></div></div>' . "\n";
 
 echo '<div id="wrapper_bg">' . "\n";
 
@@ -66,7 +66,7 @@ echo '<div id="wrapper_bg">' . "\n";
 	
 	echo '<div id="body" class="wrapper">' . "\n";
 
-	echo '<div id="body_top"></div>' . "\n";
+	echo '<div id="body_top"><div class="hidden"></div></div>' . "\n";
 	
 	echo '<div id="body_bg">' . "\n";
 	
@@ -90,7 +90,7 @@ echo '<div id="wrapper_bg">' . "\n";
 		
 		echo '<div id="main" class="main">' . "\n";
 
-		echo '<div id="main_top"></div>' . "\n";
+		echo '<div id="main_top"><div class="hidden"></div></div>' . "\n";
 		
 		echo '<div class="pad">' . "\n";
 ?>

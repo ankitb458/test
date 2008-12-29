@@ -63,7 +63,7 @@ class sem_footer
 				. '"'
 			. '>' . "\n";
 		
-		echo '<div id="footer_top"></div>' . "\n";
+		echo '<div id="footer_top"><div class="hidden"></div></div>' . "\n";
 		
 		echo '<div id="footer_bg">' . "\n"
 			. '<div class="wrapper_item">' . "\n"
@@ -123,7 +123,7 @@ class sem_footer
 			. '</div>' . "\n"
 			. '</div>' . "\n";
 		
-		echo '<div id="footer_bottom"></div>' . "\n";
+		echo '<div id="footer_bottom"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div><!-- footer -->' . "\n";
 	} # footer_widget()
@@ -151,7 +151,7 @@ class sem_footer
 		global $sem_options;
 		
 		echo '<div id="credits">' . "\n"
-			. '<div id="credits_top"></div>' . "\n"
+			. '<div id="credits_top"><div class="hidden"></div></div>' . "\n"
 			. '<div id="credits_bg">' . "\n"
 			. ( $sem_options['show_credits']
 				? ( '<div>' . "\n"
@@ -168,7 +168,7 @@ class sem_footer
 				: ''
 				)
 			. '</div>' . "\n"
-			. '<div id="credits_bottom"></div>' . "\n"
+			. '<div id="credits_bottom"><div class="hidden"></div></div>' . "\n"
 			. '</div><!-- credits -->' . "\n";
 	} # display_credits()
 	

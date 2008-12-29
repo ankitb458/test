@@ -10,7 +10,7 @@
 		
 		echo '</div>' . "\n";
 		
-		echo '<div id="main_bottom"></div>' . "\n";
+		echo '<div id="main_bottom"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div><!-- main -->' . "\n";
 		
@@ -27,18 +27,18 @@
 		
 			echo '<div id="sidebars">' . "\n";
 
-			echo '<div id="sidebars_top"></div>' . "\n";
+			echo '<div id="sidebars_top"><div class="hidden"></div></div>' . "\n";
 
 		
 			# top sidebar
 			
 			echo '<div id="top_sidebar" class="sidebar">' . "\n";
 
-			echo '<div id="top_sidebar_top"></div>' . "\n";
+			echo '<div id="top_sidebar_top"><div class="hidden"></div></div>' . "\n";
 
 			do_action('the_top_sidebar');
 
-			echo '<div id="top_sidebar_bottom"></div>' . "\n";
+			echo '<div id="top_sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
 			echo '</div><!-- top sidebar -->' . "\n";
 
@@ -57,11 +57,11 @@
 			
 			echo '<div id="sidebar" class="sidebar">' . "\n";
 			
-			echo '<div id="sidebar_top"></div>' . "\n";
+			echo '<div id="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
 			do_action('the_left_sidebar');
 
-			echo '<div id="sidebar_bottom"></div>' . "\n";
+			echo '<div id="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
 			echo '</div><!-- left sidebar -->' . "\n";
 
@@ -70,11 +70,11 @@
 			
 			echo '<div id="sidebar2" class="sidebar">' . "\n";
 			
-			echo '<div id="sidebar2_top"></div>' . "\n";
+			echo '<div id="sidebar2_top"><div class="hidden"></div></div>' . "\n";
 
 			do_action('the_right_sidebar');
 
-			echo '<div id="sidebar2_bottom"></div>' . "\n";
+			echo '<div id="sidebar2_bottom"><div class="hidden"></div></div>' . "\n";
 
 			echo '</div><!-- right sidebar -->' . "\n";
 			
@@ -86,7 +86,7 @@
 			
 			# end sidebars wrapper
 
-			echo '<div id="sidebars_bottom"></div>' . "\n";
+			echo '<div id="sidebars_bottom"><div class="hidden"></div></div>' . "\n";
 
 			echo '</div><!-- sidebars -->' . "\n";
 
@@ -105,11 +105,11 @@
 			
 			echo '<div id="sidebar" class="sidebar">' . "\n";
 
-			echo '<div id="sidebar_top" class="sidebar_top"></div>' . "\n";
+			echo '<div id="sidebar_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
 			do_action('the_left_sidebar');
 
-			echo '<div id="sidebar_bottom" class="sidebar_bottom"></div>' . "\n";
+			echo '<div id="sidebar_bottom" class="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
 			echo '</div><!-- left sidebar -->' . "\n";
 
@@ -128,11 +128,11 @@
 			
 			echo '<div id="sidebar2" class="sidebar">' . "\n";
 
-			echo '<div id="sidebar2_top" class="sidebar_top"></div>' . "\n";
+			echo '<div id="sidebar2_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
 			do_action('the_right_sidebar');
 
-			echo '<div id="sidebar2_bottom" class="sidebar_bottom"></div>' . "\n";
+			echo '<div id="sidebar2_bottom" class="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
 			echo '</div><!-- right sidebar -->' . "\n";
 
@@ -154,11 +154,11 @@
 			
 			echo '<div id="sidebar" class="sidebar">' . "\n";
 
-			echo '<div id="sidebar_top" class="sidebar_top"></div>' . "\n";
+			echo '<div id="sidebar_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
 			do_action('the_left_sidebar');
 
-			echo '<div id="sidebar_bottom" class="sidebar_bottom"></div>' . "\n";
+			echo '<div id="sidebar_bottom" class="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
 			echo '</div><!-- left sidebar -->' . "\n";
 			
@@ -178,7 +178,7 @@
 	
 	echo '</div>' . "\n";
 	
-	echo '<div id="body_bottom"></div>' . "\n";
+	echo '<div id="body_bottom"><div class="hidden"></div></div>' . "\n";
 
 	echo '</div><!-- body -->' . "\n";
 	
@@ -198,7 +198,7 @@
 
 echo '</div>' . "\n";
 
-echo '<div id="wrapper_bottom"></div>' . "\n";
+echo '<div id="wrapper_bottom"><div class="hidden"></div></div>' . "\n";
 
 echo '</div><!-- wrapper -->' . "\n";
 

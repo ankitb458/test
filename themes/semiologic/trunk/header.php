@@ -30,7 +30,7 @@ else
 do_action('before_the_wrapper');
 ?>
 <div id="ext_wrapper">
-<div id="shadow_top"></div>
+<div id="shadow_top"><div class="hidden"></div></div>
 <div id="shadow">
 <div id="wrapper">
 

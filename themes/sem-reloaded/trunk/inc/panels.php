@@ -10,19 +10,19 @@ class sem_panels
 		global $sem_options;
 		
 		$before_widget = '<div class="widget %2$s">' . "\n"
-						. '<div class="widget_top"></div>' . "\n"
+						. '<div class="widget_top"><div class="hidden"></div></div>' . "\n"
 						. '<div class="pad">';
 		$after_widget = '</div>' . "\n"
-						. '<div class="widget_bottom"></div>' . "\n"
+						. '<div class="widget_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . "\n";
 		
 		$before_title = '</div>' . "\n"			# close <div class="pad">, due to the funky WP API
-						. '<div class="widget_title_top"></div>' . "\n"
+						. '<div class="widget_title_top"><div class="hidden"></div></div>' . "\n"
 						. '<div class="widget_title pad">' . "\n"
 						. '<h2>';
 		$after_title = '</h2>' . "\n"
 						. '</div>' . "\n"
-						. '<div class="widget_title_bottom"></div>' . "\n"
+						. '<div class="widget_title_bottom"><div class="hidden"></div></div>' . "\n"
 						. '<div class="pad">';
 		
 		if ( strpos($sem_options['active_layout'], 't') !== false )
@@ -130,7 +130,7 @@ class sem_panels
 			case 'the_header':
 				$before_widget = "\n\t"
 					. '<div class="%2$s header_widget wrapper">' . "\n\t"
-					. '<div class="header_widget_top"></div>' . "\n\t"
+					. '<div class="header_widget_top"><div class="hidden"></div></div>' . "\n\t"
 					. '<div class="header_widget_bg">' . "\n\t"
 					. '<div class="wrapper_item">' . "\n\t"
 					. '<div class="pad">' . "\n";
@@ -138,14 +138,14 @@ class sem_panels
 					. '</div>' . "\n\t"
 					. '</div>' . "\n\t"
 					. '</div>' . "\n\t"
-					. '<div class="header_widget_bottom"></div>' . "\n\t"
+					. '<div class="header_widget_bottom"><div class="hidden"></div></div>' . "\n\t"
 					. '</div><!-- header_widget -->' . "\n\n";
 				break;
 			
 			case 'the_footer':
 				$before_widget = "\n\t"
 					. '<div class="%2$s footer_widget wrapper">' . "\n\t"
-					. '<div class="footer_widget_top"></div>' . "\n\t"
+					. '<div class="footer_widget_top"><div class="hidden"></div></div>' . "\n\t"
 					. '<div class="footer_widget_bg">' . "\n\t"
 					. '<div class="wrapper_item">' . "\n\t"
 					. '<div class="pad">' . "\n";
@@ -153,27 +153,27 @@ class sem_panels
 					. '</div>' . "\n\t"
 					. '</div>' . "\n\t"
 					. '</div>' . "\n\t"
-					. '<div class="footer_widget_bottom"></div>' . "\n\t"
+					. '<div class="footer_widget_bottom"><div class="hidden"></div></div>' . "\n\t"
 					. '</div><!-- footer_widget -->' . "\n\n";
 				break;
 			
 			case 'the_header_boxes':
 			case 'the_footer_boxes':
 				$before_widget = '<div class="inline_box %2$s">' . "\n"
-					. '<div class="inline_box_top"></div>' . "\n"
+					. '<div class="inline_box_top"><div class="hidden"></div></div>' . "\n"
 					. '<div class="pad">' . "\n";
 				$after_widget = '</div>' . "\n"
-					. '<div class="inline_box_bottom"></div>' . "\n"
+					. '<div class="inline_box_bottom"><div class="hidden"></div></div>' . "\n"
 					. '</div><!-- inline_box -->' . "\n";
 				break;
 			
 			case 'before_the_entries':
 			case 'after_the_entries':
 				$before_widget = '<div class="%2$s main_widget">' . "\n"
-					. '<div class="main_widget_top"></div>' . "\n"
+					. '<div class="main_widget_top"><div class="hidden"></div></div>' . "\n"
 					. '<div class="pad">' . "\n";
 				$after_widget = '</div>' . "\n"
-					. '<div class="main_widget_bottom"></div>' . "\n"
+					. '<div class="main_widget_bottom"><div class="hidden"></div></div>' . "\n"
 					. '</div><!-- main_widget -->' . "\n";
 				break;
 			
@@ -335,14 +335,14 @@ class sem_panels
 			$GLOBALS['the_header_boxes'] = true;
 			echo '<div class="spacer"></div>' . "\n"
 				. '<div id="header_boxes" class="wrapper">' . "\n"
-				. '<div id="header_boxes_top"></div>' . "\n"
+				. '<div id="header_boxes_top"><div class="hidden"></div></div>' . "\n"
 				. '<div id="header_boxes_bg">' . "\n"
 				. '<div class="wrapper_item">' . "\n";
 			dynamic_sidebar('the_header_boxes');
 			echo '<div class="spacer"></div>' . "\n"
 				. '</div>' . "\n"
 				. '</div>' . "\n"
-				. '<div id="header_boxes_bottom"></div>' . "\n"
+				. '<div id="header_boxes_bottom"><div class="hidden"></div></div>' . "\n"
 				. '</div><!-- header_boxes -->' . "\n";
 			$GLOBALS['the_header_boxes'] = false;
 		}
@@ -399,14 +399,14 @@ class sem_panels
 			$GLOBALS['the_footer_boxes'] = true;
 			echo '<div class="spacer"></div>' . "\n"
 				. '<div id="footer_boxes" class="wrapper">' . "\n"
-				. '<div id="footer_boxes_top"></div>' . "\n"
+				. '<div id="footer_boxes_top"><div class="hidden"></div></div>' . "\n"
 				. '<div id="footer_boxes_bg">' . "\n"
 				. '<div class="wrapper_item">' . "\n";
 			dynamic_sidebar('the_footer_boxes');
 			echo '<div class="spacer"></div>' . "\n"
 				. '</div>' . "\n"
 				. '</div>' . "\n"
-				. '<div id="footer_boxes_bottom"></div>' . "\n"
+				. '<div id="footer_boxes_bottom"><div class="hidden"></div></div>' . "\n"
 				. '</div><!-- footer_boxes -->' . "\n";
 			$GLOBALS['the_footer_boxes'] = false;
 		}

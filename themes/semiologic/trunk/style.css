@@ -879,3 +879,10 @@ div.media
     padding-top:4px;
     text-align:center;
 }
+
+
+/* hidden: used to fix IE6 bugs */
+
+.hidden {
+	display: none;
+}

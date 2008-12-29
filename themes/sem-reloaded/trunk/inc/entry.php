@@ -385,14 +385,14 @@ class sem_entry
 			}
 
 			$o .= '<div class="entry_header">' . "\n"
-				. '<div class="entry_header_top"></div>' . "\n"
+				. '<div class="entry_header_top"><div class="hidden"></div></div>' . "\n"
 				. '<div class="pad">' . "\n"
 				. '<h1>'
 				. $title
 				. $edit_link
 				. '</h1>' . "\n"
 				. '</div>' . "\n"
-				. '<div class="entry_header_bottom"></div>' . "\n"
+				. '<div class="entry_header_bottom"><div class="hidden"></div></div>' . "\n"
 				. '</div>' . "\n";
 		}
 		
@@ -618,11 +618,11 @@ class sem_entry
 		{
 			echo '<div class="spacer"></div>' . "\n"
 				. '<div class="entry_actions">' . "\n"
-				. '<div class="entry_actions_top"></div>' . "\n"
+				. '<div class="entry_actions_top"><div class="hidden"></div></div>' . "\n"
 				. '<div class="pad">' . "\n"
 				. '<p>' . $o . '</p>' . "\n"
 				. '</div>' . "\n"
-				. '<div class="entry_actions_bottom"></div>' . "\n"
+				. '<div class="entry_actions_bottom"><div class="hidden"></div></div>' . "\n"
 				. '</div>' . "\n";
 		}
 	} # actions()

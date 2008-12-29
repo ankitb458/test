@@ -30,11 +30,11 @@ include sem_path . '/header.php';
 						: '';
 					
 					echo '<div class="entry' . ( $class ? ( ' ' . $class ) : '' ) . '">' . "\n"
-						. '<div class="entry_top"></div>' . "\n";
+						. '<div class="entry_top"><div class="hidden"></div></div>' . "\n";
 					
 					do_action('the_entry');
 					
-					echo '<div class="entry_bottom"></div>' . "\n"
+					echo '<div class="entry_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . '<!-- entry -->' . "\n";
 
 				endwhile; # have_posts()

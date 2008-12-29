@@ -33,7 +33,7 @@ else
 <body class="<?php echo implode(' ', apply_filters('page_class', array('skin', 'custom'))) ?>">
 
 <div id="wrapper">
-<div id="wrapper_top"></div>
+<div id="wrapper_top"><div class="hidden"></div></div>
 <div id="wrapper_bg">
 <?php
 # show header
@@ -67,7 +67,7 @@ if ( class_exists('widget_contexts') )
 ?>
 </div>
 </div>
-<div id="wrapper_bottom"></div>
+<div id="wrapper_bottom"><div class="hidden"></div></div>
 </div><!-- wrapper -->
 <?php
 

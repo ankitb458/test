@@ -25,12 +25,6 @@ Based on YUI Reset and YUI Font
 Copyright (c) 2008, Yahoo! Inc. All rights reserved. BSD Licensed.
 */
 
-/*
-div {
-	position: relative;
-}
-*/
-
 html {
 	color:#000;
 	background:#FFF;
@@ -451,4 +445,10 @@ h2 a {
     margin:10px;
     padding-top:4px;
     text-align:center;
+}
+
+/* hidden class, used to fix IE6 problems */
+
+.hidden {
+	display: none;
 }

@@ -38,7 +38,7 @@ do_action('display_canvas_spacer');
 ?>
 
 </div><!-- #shadow -->
-<div id="shadow_bottom"></div>
+<div id="shadow_bottom"><div class="hidden"></div></div>
 </div><!-- #ext_wrapper -->
 <?php
 do_action('display_canvas_spacer');
