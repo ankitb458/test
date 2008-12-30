@@ -21,6 +21,9 @@ http://www.mesoconcepts.com/license/
 **/
 
 
+if ( @ini_get('pcre.backtrack_limit') < 250000 )
+	@ini_set('pcre.backtrack_limit', 250000);
+
 #
 # sem_semiologic_affiliate_process_links()
 #
