@@ -78,21 +78,6 @@ html {
  * Header & Footer Boxes
  */
 
-.mmm #header_boxes .wrapper_item,
-.mmm #footer_boxes .wrapper_item {
-	width: 949px;
-}
-
-.mm #header_boxes .wrapper_item,
-.mm #footer_boxes .wrapper_item {
-	width: 749px;
-}
-
-.m #header_boxes .wrapper_item,
-.m #footer_boxes .wrapper_item {
-	width: 619px;
-}
-
 #header_boxes_top,
 #header_boxes_bottom,
 #footer_boxes_top,
