@@ -1,7 +1,7 @@
-=== DealDotCom ===
+=== Auto Thickbox ===
 Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
-Tags: dealdotcom, marketing, internet-marketing, monetize, money, adsense
+Tags: lightbox, thickbox, shadowbox
 Requires at least: 2.0
 Tested up to: 2.7
 Stable tag: trunk
