@@ -35,9 +35,12 @@ class auto_thickbox
 			
 			add_action('wp_head', array('auto_thickbox', 'add_thickbox_images'), 20);
 			
-			add_filter('the_content', array('auto_thickbox', 'add_thickbox'), 20);
-			add_filter('the_excerpt', array('auto_thickbox', 'add_thickbox'), 20);
+			add_filter('the_content', array('auto_thickbox', 'add_thickbox'), 100);
+			add_filter('the_excerpt', array('auto_thickbox', 'add_thickbox'), 100);
 		}
+		
+		if ( @ini_get('pcre.backtrack_limit') < 250000 )
+			@ini_set('pcre.backtrack_limit', 250000);
 	} # init()
 	
 	
@@ -47,13 +50,17 @@ class auto_thickbox
 	
 	function add_thickbox($content)
 	{
+		#return $content;
+		
 		$content = preg_replace_callback("/
 			<\s*a\s					# an achnor...
 				(.*\s)?
-				href\s*?=\s*?(.+)	# (catch href)
+				href\s*=\s*?(.+)	# (catch href)
 				(\s.*)?
-				>\s*
-			(<\s*img\s.+>)\s*		# ... on an image
+				>
+			\s*
+			(.*)
+			\s*
 			<\s*\/\s*a\s*>
 			/isUx", array('auto_thickbox', 'add_thickbox_callback'), $content);
 		
@@ -67,16 +74,19 @@ class auto_thickbox
 	
 	function add_thickbox_callback($match)
 	{
-		#dump($match);
-		
 		# trim surrounding quotes
 		$href = trim(trim($match[2]), '\'"');
 		
-		# return if not an image
+		# return if link isn't pointing to an image
 		if ( !preg_match("/\.(jpe?g|gif|png)$/i", $href) ) return $match[0];
 		
-		$attr = ' ' . $match[1] . $match[3] . ' ';
 		$img = $match[4];
+		
+		# return if link isn't wrapping an image (lets us work around backtrack limit)
+		if ( !preg_match("|^<\s*img\s[^>]+>$|i", $img) ) return $match[0];
+		
+		# link attribute
+		$attr = ' ' . $match[1] . $match[3] . ' ';
 		
 		# add thickbox class
 		if ( !preg_match("/
