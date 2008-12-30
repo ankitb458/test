@@ -6,9 +6,6 @@ Description: Automatically enables thickbox on thumbnail images (i.e. opens them
 Author: Denis de Bernardy
 Version: 1.0 RC
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/plugins
-Update Tag: auto_thickbox
-Update Package: http://www.semiologic.com/media/software/publishing/auto-thickbox/auto-thickbox.zip
 */
 
 /*
