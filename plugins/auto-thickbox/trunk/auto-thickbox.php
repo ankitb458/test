@@ -88,7 +88,7 @@ class auto_thickbox
 			/ix", $attr, $class)
 			)
 		{
-			$attr .= ' class="thickbox"';
+			$attr .= ' class="thickbox noicon"';
 		}
 		else
 		{
@@ -97,7 +97,7 @@ class auto_thickbox
 			
 			if ( strpos($old_class, 'thickbox') !== false )
 			{
-				$new_class = $old_class . ' thickbox';
+				$new_class = $old_class . ' thickbox noicon';
 
 				# replace class
 				$attr = str_replace($class[0], 'class="' . $new_class . '"', $attr);
