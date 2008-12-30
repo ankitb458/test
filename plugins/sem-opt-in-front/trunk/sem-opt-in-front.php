@@ -124,7 +124,7 @@ class sem_opt_in_front
 				}
 				else
 				{
-					$new_link = uesr_trailingslashit(get_option('home'));
+					$new_link = user_trailingslashit(get_option('home'));
 				}
 			}
 			
