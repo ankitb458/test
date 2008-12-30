@@ -30,9 +30,6 @@ class external_links
 		
 		add_action('the_content', array('external_links', 'filter'), 40);
 		add_action('the_excerpt', array('external_links', 'filter'), 40);
-		
-		if ( @ini_get('pcre.backtrack_limit') < 250000 )
-			@ini_set('pcre.backtrack_limit', 250000);
 	} # init()
 	
 	

@@ -38,9 +38,6 @@ class auto_thickbox
 			add_filter('the_content', array('auto_thickbox', 'add_thickbox'), 100);
 			add_filter('the_excerpt', array('auto_thickbox', 'add_thickbox'), 100);
 		}
-		
-		if ( @ini_get('pcre.backtrack_limit') < 250000 )
-			@ini_set('pcre.backtrack_limit', 250000);
 	} # init()
 	
 	
