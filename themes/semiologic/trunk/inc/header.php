@@ -102,7 +102,7 @@ class sem_header
 		if ( !$flash && !is_front_page() )
 		{
 			echo ' style="cursor: pointer;"'
-				. ' onclick="top.location.href = \'' . get_option('home') . '\'"';
+				. ' onclick="top.location.href = \'' . user_trailingslashit(get_option('home')) . '\'"';
 		}
 
 		echo '>' . "\n";
@@ -140,7 +140,7 @@ class sem_header
 					$site_name = '<div id="sitename" class="sitename">'
 						. '<h1>'
 						. ( !is_front_page()
-							? ( '<a href="' . get_option('home') . '">' . sem_header::display_logo($header) . '</a>' )
+							? ( '<a href="' . user_trailingslashit(get_option('home')) . '">' . sem_header::display_logo($header) . '</a>' )
 							: sem_header::display_logo($header)
 							)
 						. '</h1>'
@@ -152,7 +152,7 @@ class sem_header
 				$site_name = '<div id="sitename" class="sitename">'
 					. '<h1>'
 					. ( !$flash && !is_front_page()
-						? ( '<a href="' . get_option('home') . '">' . get_option('blogname') . '</a>' )
+						? ( '<a href="' . user_trailingslashit(get_option('home')) . '">' . get_option('blogname') . '</a>' )
 						: get_option('blogname')
 						)
 					. '</h1>'
@@ -245,7 +245,7 @@ class sem_header
 			
 			$go = $sem_captions['search_button'];
 
-			echo '<form method="get" action="' . get_option('home') . '" id="searchform" name="searchform">'
+			echo '<form method="get" action="' . user_trailingslashit(get_option('home')) . '" id="searchform" name="searchform">'
 				. '<input type="text" id="s" class="s" name="s"'
 					. ' value="' . htmlspecialchars($search) . '"'
 					. ( !is_search()

@@ -147,7 +147,7 @@ foreach ( $sem_nav as $nav_menu => $nav_items )
 	
 	foreach ( $nav_items as $label => $ref )
 	{
-		if ( $ref == get_option('home') )
+		if ( untrailingslashit($ref) == untrailingslashit(get_option('home')) )
 		{
 			$items[] = array(
 				'type' => 'home',

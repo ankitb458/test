@@ -4,7 +4,7 @@ Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/widgets/bookmark-me/
 Description: Adds widgets that lets visitors subscribe your webpages to social bookmarking sites such as del.icio.us and Digg.
 Author: Denis de Bernardy
-Version: 4.5
+Version: 4.5.1 RC
 Author URI: http://www.getsemiologic.com
 */
 
@@ -318,7 +318,7 @@ class bookmark_me
 
 		$as_dropdown = intval($args['dropdown']);
 		$show_names = intval($args['show_names']);
-		$home_url = get_option('home');
+		$home_url = user_trailingslashit(get_option('home'));
 		$o = '';
 
 		$o .= $args['before_widget'] . "\n"
