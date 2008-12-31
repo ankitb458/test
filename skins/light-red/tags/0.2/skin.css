@@ -1,0 +1,499 @@
+/*
+Skin name: Light (Red)
+Version: 0.2
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+html {
+	background: #eee;
+}
+
+
+/*
+ * Header
+ */
+
+#sitename {
+	color: #c22;
+}
+
+
+/*
+ * Navbar
+ */
+
+#navbar {
+	line-height: 40px;
+	color: #eee;
+}
+
+* html #s {
+	margin: 8px 0px 6px;
+	vertical-align: center;
+}
+
+* html #go {
+	margin: 8px 0px 4px;
+	vertical-align: center;
+}
+
+#navbar a {
+	color: #eee;
+}
+
+#navbar a:hover {
+	color: #ffe;
+}
+
+.mmm #navbar {
+	background: url(images/mmm-navbar.jpg) center repeat-y #7a1618;
+}
+
+.mm #navbar {
+	background: url(images/mm-navbar.jpg) center repeat-y #7a1618;
+}
+
+.m #navbar {
+	background: url(images/m-navbar.jpg) center repeat-y #7a1618;
+}
+
+
+/*
+ * Footer
+ */
+
+#footer {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+
+/*
+ * Header & Footer Boxes
+ */
+
+#header_boxes_top,
+#header_boxes_bottom,
+#footer_boxes_top,
+#footer_boxes_bottom {
+	height: 10px;
+}
+
+.mmm #header_boxes,
+.mmm #footer_boxes {
+	background: url(images/mmm-inline_boxes.jpg) center repeat-y;
+}
+
+.mmm #header_boxes_top,
+.mmm #footer_boxes_top {
+	background: url(images/mmm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom,
+.mmm #footer_boxes_bottom {
+	background: url(images/mmm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mmm #header_boxes_bg,
+.mmm #footer_boxes_bg {
+	background: url(images/mmm-inline_boxes_bg.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes,
+.mm #footer_boxes {
+	background: url(images/mm-inline_boxes.jpg) center repeat-y;
+}
+
+.mm #header_boxes_top,
+.mm #footer_boxes_top {
+	background: url(images/mm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom,
+.mm #footer_boxes_bottom {
+	background: url(images/mm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #header_boxes_bg,
+.mm #footer_boxes_bg {
+	background: url(images/mm-inline_boxes_bg.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes,
+.m #footer_boxes {
+	background: url(images/m-inline_boxes.jpg) center repeat-y;
+}
+
+.m #header_boxes_top,
+.m #footer_boxes_top {
+	background: url(images/m-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom,
+.m #footer_boxes_bottom {
+	background: url(images/m-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #header_boxes_bg,
+.m #footer_boxes_bg {
+	background: url(images/m-inline_boxes_bg.jpg) bottom center no-repeat;
+}
+
+
+/*
+ * Header & Footer Widgets
+ */
+
+.header_widget_top,
+.header_widget_bottom,
+.footer_widget_top,
+.footer_widget_bottom {
+	height: 10px;
+}
+
+.mmm .header_widget,
+.mmm .footer_widget {
+	background: url(images/mmm-body.jpg) center repeat-y;
+}
+
+.mmm .header_widget_top,
+.mmm .footer_widget_top {
+	background: url(images/mmm-body_top.jpg) bottom center no-repeat;
+}
+
+.mmm .header_widget_bottom,
+.mmm .footer_widget_bottom {
+	background: url(images/mmm-body_bottom.jpg) top center no-repeat;
+}
+
+.mm .header_widget,
+.mm .footer_widget {
+	background: url(images/mm-body.jpg) center repeat-y;
+}
+
+.mm .header_widget_top,
+.mm .footer_widget_top {
+	background: url(images/mm-body_top.jpg) bottom center no-repeat;
+}
+
+.mm .header_widget_bottom,
+.mm .footer_widget_bottom {
+	background: url(images/mm-body_bottom.jpg) top center no-repeat;
+}
+
+.m .header_widget,
+.m .footer_widget {
+	background: url(images/m-body.jpg) center repeat-y;
+}
+
+.m .header_widget_top,
+.m .footer_widget_top {
+	background: url(images/m-body_top.jpg) bottom center no-repeat;
+}
+
+.m .header_widget_bottom,
+.m .footer_widget_bottom {
+	background: url(images/m-body_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Body
+ */
+
+#body_top,
+#body_bottom {
+	height: 10px;
+}
+
+.mmm #body {
+	background: url(images/mmm-body.jpg) center repeat-y;
+}
+
+.mmm #body_top {
+	background: url(images/mmm-body_top.jpg) bottom center no-repeat;
+}
+
+.mmm #body_bottom {
+	background: url(images/mmm-body_bottom.jpg) top center no-repeat;
+}
+
+.mts #body {
+	background: url(images/mts-body.jpg) center repeat-y;
+}
+
+.mts #body_top {
+	background: url(images/mts-body_top.jpg) bottom center no-repeat;
+}
+
+.mts #body_bottom {
+	background: url(images/mts-body_bottom.jpg) top center no-repeat;
+}
+
+.sms #body {
+	background: url(images/sms-body.jpg) center repeat-y;
+}
+
+.sms #body_top {
+	background: url(images/sms-body_top.jpg) bottom center no-repeat;
+}
+
+.sms #body_bottom {
+	background: url(images/sms-body_bottom.jpg) top center no-repeat;
+}
+
+.tsm #body {
+	background: url(images/tsm-body.jpg) center repeat-y;
+}
+
+.tsm #body_top {
+	background: url(images/tsm-body_top.jpg) bottom center no-repeat;
+}
+
+.tsm #body_bottom {
+	background: url(images/tsm-body_bottom.jpg) top center no-repeat;
+}
+
+.mms #body {
+	background: url(images/mms-body.jpg) center repeat-y;
+}
+
+.mms #body_top {
+	background: url(images/mms-body_top.jpg) bottom center no-repeat;
+}
+
+.mms #body_bottom {
+	background: url(images/mms-body_bottom.jpg) top center no-repeat;
+}
+
+.smm #body {
+	background: url(images/smm-body.jpg) center repeat-y;
+}
+
+.smm #body_top {
+	background: url(images/smm-body_top.jpg) bottom center no-repeat;
+}
+
+.smm #body_bottom {
+	background: url(images/smm-body_bottom.jpg) top center no-repeat;
+}
+
+.mm #body {
+	background: url(images/mm-body.jpg) center repeat-y;
+}
+
+.mm #body_top {
+	background: url(images/mm-body_top.jpg) bottom center no-repeat;
+}
+
+.mm #body_bottom {
+	background: url(images/mm-body_bottom.jpg) top center no-repeat;
+}
+
+.ms #body {
+	background: url(images/ms-body.jpg) center repeat-y;
+}
+
+.ms #body_top {
+	background: url(images/ms-body_top.jpg) bottom center no-repeat;
+}
+
+.ms #body_bottom {
+	background: url(images/ms-body_bottom.jpg) top center no-repeat;
+}
+
+.sm #body {
+	background: url(images/sm-body.jpg) center repeat-y;
+}
+
+.sm #body_top {
+	background: url(images/sm-body_top.jpg) bottom center no-repeat;
+}
+
+.sm #body_bottom {
+	background: url(images/sm-body_bottom.jpg) top center no-repeat;
+}
+
+.m #body {
+	background: url(images/m-body.jpg) center repeat-y;
+}
+
+.m #body_top {
+	background: url(images/m-body_top.jpg) bottom center no-repeat;
+}
+
+.m #body_bottom {
+	background: url(images/m-body_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Credits
+ */
+
+#credits {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-top: solid 1px #b4b4b4;
+}
+
+
+/*
+ * Content
+ */
+
+.entry_header {
+	color: #c22;
+}
+
+.entry_date,
+.comment_date {
+}
+
+.entry_actions p,
+.comment_actions p {
+	padding-top: 1px;
+	border-top: solid 1px #b4b4b4;
+}
+
+blockquote {
+	background: url(icons/blockquote.gif) top left no-repeat;
+	padding: 10px 10px 10px 50px;
+	margin-left: 0px;
+}
+
+.comment_header {
+	width: 160px;
+	float: left;
+}
+
+.comment {
+	margin-left: 170px;
+}
+
+
+/*
+ * Sidebars
+ */
+
+.widget_title h2 {
+	padding-bottom: 1px;
+	border-bottom: solid 1px #b4b4b4;
+}
+
+
+/*
+ * Calendar
+ */
+
+#wp-calendar {
+	border: solid 1px #b4b4b4;
+}
+
+#wp-calendar thead {
+	border-bottom: solid 1px #b4b4b4;
+	background: #7a1618;
+	color: #eee;
+}
+
+#wp-calendar tfoot {
+	border-top: solid 1px #b4b4b4;
+	background: #eee;
+}
+
+#wp-calendar tfoot a {
+}
+
+#wp-calendar tfoot a:hover {
+}
+
+
+/*
+ * Icons
+ */
+
+.header_widget ul,
+.footer_widget ul,
+.inline_box ul,
+.main_widget ul,
+.inline_widget ul,
+.post_list ul,
+.widget ul {
+	list-style-image: url(icons/file.gif);
+}
+
+.widget_categories ul,
+.widget_archive ul {
+	list-style-image: url(icons/folder.gif);
+}
+
+li.nav_home,
+li.nav_blog,
+li.nav_branch {
+	list-style-image: url(icons/folder.gif);
+}
+
+li.nav_leaf {
+	list-style-image: url(icons/file.gif);
+}
+
+.link_entry a,
+.link_comment a {
+	background: url(icons/file.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.admin_link a,
+.edit_entry a,
+.edit_comment a {
+	background: url(icons/edit.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_comment a {
+	background: url(icons/comment.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.comment_entry a,
+.reply_comment a {
+	background: url(icons/add_comment.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.email_entry a {
+	background: url(icons/email.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.print_entry a {
+	background: url(icons/print.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_tags a,
+.entry_categories a {
+	background: url(icons/folder.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_author a,
+.signed_in_author a,
+.loginout a {
+	background: url(icons/user.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
