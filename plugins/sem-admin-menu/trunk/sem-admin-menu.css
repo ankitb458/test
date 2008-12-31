@@ -6,7 +6,9 @@ body {
 {
 	position: absolute;
 	top: 0px;
-	right: 0px;
+	left: 0px;
+	width: 100%;
+	text-align: right;
 	z-index: 9999;
 }
 
