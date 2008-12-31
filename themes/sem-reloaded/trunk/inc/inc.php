@@ -75,7 +75,10 @@ foreach ( $$sem_plugin_admin_files as $sem_file )
 
 $sem_file = ABSPATH . PLUGINDIR . '/version-checker/sem-api-key.php';
 
-if ( !class_exists('sem_api_key') && !get_option('sem_api_key') && file_exists($sem_file) )
+if ( !get_option('sem_api_key')
+	&& !class_exists('sem_api_key') && file_exists($sem_file)
+	&& version_compare($GLOBALS['wp_version'], '2.7', '>=')
+	)
 {
 	include $sem_file;
 }
