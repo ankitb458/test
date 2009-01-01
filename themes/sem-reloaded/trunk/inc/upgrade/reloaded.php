@@ -17,11 +17,14 @@ $sidebars_widgets = get_option('sidebars_widgets');
 
 if ( ( $sidebars_widgets = get_option('sidebars_widgets') ) !== false ) :
 
+$sidebars_widgets['the_header'] = (array) $sidebars_widgets['the_header'];
+$sidebars_widgets['the_footer'] = (array) $sidebars_widgets['the_footer'];
+
 if ( !in_array('header_boxes', $sidebars_widgets['the_header']))
-	$sidebars_widgets['the_header'][] = 'header_boxes';
+	array_push($sidebars_widgets['the_header'], 'header_boxes');
 
 if ( !in_array('footer_boxes', $sidebars_widgets['the_footer']))
-	$sidebars_widgets['the_footer'][] = 'footer_boxes';
+	array_unshift($sidebars_widgets['the_footer'], 'footer_boxes');
 
 endif;
 

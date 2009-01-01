@@ -208,13 +208,18 @@ if ( !$GLOBALS['sem_options'] )
 	
 	$GLOBALS['sem_options'] = get_option('sem5_options');
 	$GLOBALS['sem_captions'] = get_option('sem5_captions');
+	
+	if ( $GLOBALS['sem_options'] )
+	{
+		$force_update = true;
+	}
 }
 
 if ( !$GLOBALS['sem_options'] )
 {
 	include sem_path . '/inc/install.php';
 }
-elseif ( version_compare($GLOBALS['sem_options']['version'], sem_version, '<') )
+elseif ( version_compare($GLOBALS['sem_options']['version'], sem_version, '<') || $force_update )
 {
 	include sem_path . '/inc/upgrade.php';
 }
