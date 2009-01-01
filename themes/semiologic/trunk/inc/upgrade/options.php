@@ -83,8 +83,8 @@ function sem_clean_up_options()
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss_[0-9a-f]{32}';");	# clean up magpie
 	
 	# drop obsolete tables
-	$wpdb->query("DROP IF EXISTS TABLE {$wpdb->prefix}WP_HASHCASH;");
-	$wpdb->query("DROP IF EXISTS TABLE {$wpdb->prefix}sem_ad_spaces;");
+	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}WP_HASHCASH;");
+	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}sem_ad_spaces;");
 } # clean_up_options()
 
 add_action('shutdown', 'sem_clean_up_options');
