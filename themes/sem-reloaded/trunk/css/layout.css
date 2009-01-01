@@ -211,7 +211,7 @@ To customize this file, create a custom.css file in the theme's folder, and past
 }
 
 .m .inline_box {
-	width: 49.99%;
+	width: 50%;
 }
 
 .mm .inline_box {
@@ -219,7 +219,23 @@ To customize this file, create a custom.css file in the theme's folder, and past
 }
 
 .mmm .inline_box {
-	width: 24.99%;
+	width: 25%;
+}
+
+.mmm #header_boxes .wrapper_item,
+.mmm #footer_boxes .wrapper_item
+{
+	width: 949px;
+}
+
+.mm #header_boxes .wrapper_item,
+.mm #footer_boxes .wrapper_item {
+	width: 749px;
+}
+
+.m #header_boxes .wrapper_item,
+.m #footer_boxes .wrapper_item {
+	width: 619px;
 }
 
 
