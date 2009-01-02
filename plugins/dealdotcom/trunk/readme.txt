@@ -1,16 +1,21 @@
 === DealDotCom ===
 Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
-Tags: dealdotcom, marketing, internet-marketing, monetize, money, adsense
-Requires at least: 2.0
+Tags: dealdotcom, marketing, internet-marketing, monetize, money, adsense, widget
+Requires at least: 2.7
 Tested up to: 2.7
 Stable tag: trunk
 
-Short Intro
+[Dealdotcom](http://go.semiologic.com/dealdotcom) is a great place to look for deals on internet marketing related materials.
 
 
 == Description ==
 
+The Dealdotcom plugin for WordPress introduces a widget that lets you insert [dealdotcom](http://go.semiologic.com/dealdotcom)'s deal of the day on your site.
+
+In the event you're unfamiliar with it, Dealdotcom is a great place to look for deals on internet marketing related materials, and this widget is a great way to collect commissions if you run a site related to the topic.
+
+After activating the plugin, browse Appearance / Widgets. Insert the Dealdotcom widget, configure your affiliate ID, and you're done.
 
 
 == Installation ==
