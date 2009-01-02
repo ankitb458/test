@@ -58,7 +58,7 @@ else
 	if($parentID != 0)
 	{
 		$parentsParent = $wpdb->get_row("SELECT post_parent FROM $wpdb->posts WHERE ID = $parentID ", ARRAY_N);
-		echo "<a href='edit.php?page=mypageorder&parentID=$parentsParent[0]'>Return to parent page</a>";
+		echo "<a href='edit-pages.php?page=mypageorder&parentID=$parentsParent[0]'>Return to parent page</a>";
 	}
  if($subPageStr != "") { ?>
 	<h3>Order Subpages</h3>
@@ -105,7 +105,7 @@ else
 		var order = Sortable.serialize('order');
 		alerttext = Sortable.sequence('order');
 
-		new Ajax.Request('edit.php?page=mypageorder&mode=act_OrderPages&idString='+alerttext, {
+		new Ajax.Request('edit-pages.php?page=mypageorder&mode=act_OrderPages&idString='+alerttext, {
 		 onSuccess: function(){
       			new Effect.Highlight('order', {startcolor:'#F9FC4A', endcolor:'#CFEBF7',restorecolor:'#CFEBF7', duration: 1.5, queue: 'front'})
 				new Effect.Highlight('order', {startcolor:'#CFEBF7', endcolor:'#ffffff',restorecolor:'#ffffff', duration: 1.5, queue: 'end'})
@@ -118,7 +118,7 @@ else
 	function goEdit ()
     {
 		if($("pages").value != "")
-			location.href="edit.php?page=mypageorder&mode=dsp_OrderPages&parentID="+$("pages").value;
+			location.href="edit-pages.php?page=mypageorder&mode=dsp_OrderPages&parentID="+$("pages").value;
 	}
 
 </script>
