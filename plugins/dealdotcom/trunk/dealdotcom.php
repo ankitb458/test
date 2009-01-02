@@ -6,6 +6,9 @@ Description: A widget to display <a href="http://go.semiologic.com/dealdotcom">d
 Author: Denis de Bernardy
 Version: 1.1.2
 Author URI: http://www.getsemiologic.com
+Update Service: http://version.semiologic.com/plugins
+Update Tag: dealdotcom
+Update Package: http://www.semiologic.com/media/software/marketing/dealdotcom/dealdotcom.zip
 */
 
 /*
