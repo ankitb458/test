@@ -2,7 +2,7 @@
 /*
 Plugin Name: Auto Thickbox
 Plugin URI: http://www.semiologic.com/software/publishing/auto-thickbox/
-Description: Automatically enables thickbox on thumbnail images (i.e. opens them in a fancy pop-up). You can disable the latter feature for individual images by adding the 'nothickbox' class to its anchor tag. To bind images together in a gallery, add an identical rel attribute. The latter is done automatically in each post, on images anchors that have no rel attribute already. Lastly, it lets you open any link in a thickbox by adding the thickbox class to its anchor tag.
+Description: Automatically enables thickbox on thumbnail images (i.e. opens the images in a fancy pop-up).
 Author: Denis de Bernardy
 Version: 1.0 RC
 Author URI: http://www.getsemiologic.com
