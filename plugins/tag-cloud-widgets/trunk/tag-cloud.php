@@ -4,7 +4,7 @@ Plugin Name: Tag Cloud Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/tag-cloud/
 Description: Replaces WordPress' default tag widgets with advanced configurable tag widgets
 Author: Mike Koepke
-Version: 1.0.2
+Version: 1.0.3 RC
 Author URI: http://www.getsemiologic.com
 */
 
@@ -221,6 +221,7 @@ class tag_cloud_widgets
 		INNER JOIN $wpdb->terms ON $wpdb->term_taxonomy.term_id = $wpdb->terms.term_id 
 		WHERE ((($wpdb->term_taxonomy.taxonomy)='post_tag') 
 		AND (($wpdb->posts.post_status)='publish')) 
+		AND $wpdb->posts.post_type = 'post'
 		GROUP BY $wpdb->terms.name ORDER BY count DESC, $wpdb->terms.name ";
 		$query .= ($number) ? "LIMIT 0, $number" : "";
 		$tags = $wpdb->get_results($query);
