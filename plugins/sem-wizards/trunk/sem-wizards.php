@@ -1,4 +1,7 @@
 <?php
+/*
+Version: 1.0.1
+*/
 // obsolete file
 
 $active_plugins = get_option('active_plugins');
