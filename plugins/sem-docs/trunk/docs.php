@@ -139,8 +139,9 @@ class sem_docs
 	
 	function display_admin_doc($help, $screen = null)
 	{
-		$key = str_replace('-', '_', $screen);
-		
+		#dump($screen);
+		$key = preg_replace("/[^a-z0-9]+/i", '_', $screen);
+		#dump($key);
 		$doc = sem_docs::get_doc($key);
 		
 		if ( $doc && $doc->content )
