@@ -140,7 +140,7 @@ class sem_docs
 	function display_admin_doc($help, $screen = null)
 	{
 		#dump($screen);
-		$key = preg_replace("/[^a-z0-9]+/i", '_', $screen);
+		$key = preg_replace("/[^a-z]+/i", '_', $screen);
 		#dump($key);
 		$doc = sem_docs::get_doc($key);
 		
