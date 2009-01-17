@@ -83,10 +83,17 @@
 						onselect : function(v) {
 							if ( v )
 							{
-								v = '[widget:' + v + ']';
-						
-								window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, v);
-								window.tinyMCE.execCommand("mceCleanup");
+								if ( v != 'inline_widget_help' )
+								{
+									v = '[widget:' + v + ']';
+
+									window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, v);
+									window.tinyMCE.execCommand("mceCleanup");
+								}
+								else
+								{
+									alert('This drop down lets you insert any widget you\'ve configured in your Inline Widgets "sidebar", under Appearance / Widgets. For instance, you could use this to configure and then insert an inline ad unit, a newsletter subscription form, and so on.');
+								}
 							}
 						
 							tinyMCE.activeEditor.controlManager.get('InlineWidgetsDropdown').reset();
@@ -94,9 +101,16 @@
 					});
 				
 					var i;
-					for ( i = 0; i < document.inlineWidgetItems.length; i++ )
+					if ( document.inlineWidgetItems.length )
 					{
-						myInlineWidgetsDropdown.add(document.inlineWidgetItems[i].label, document.inlineWidgetItems[i].value);
+						for ( i = 0; i < document.inlineWidgetItems.length; i++ )
+						{
+							myInlineWidgetsDropdown.add(document.inlineWidgetItems[i].label, document.inlineWidgetItems[i].value);
+						}
+					}
+					else
+					{
+						myInlineWidgetsDropdown.add('What\'s this?', 'inline_widget_help');
 					}
 
 					// Return the new listbox instance
