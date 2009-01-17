@@ -431,3 +431,9 @@ h2 a {
 .hidden {
 	display: none;
 }
+
+/* WP Search Widget */
+
+.widget_search {
+	text-align: center;
+}
