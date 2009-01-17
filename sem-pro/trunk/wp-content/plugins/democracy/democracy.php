@@ -3,7 +3,7 @@
 Plugin Name: Poll Widget / Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.14 fork
+Version: 1.15 fork
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
@@ -210,7 +210,7 @@ function jal_dem_admin_page() {
 
     ?>    <p>To delete an answer, leave the input box blank. Moving an answer from one box to another will erase its votes.<br />
     </p>
-        <form action="edit.php?page=democracy" method="post" onsubmit="return jal_validate();">
+        <form action="options-general.php?page=democracy" method="post" onsubmit="return jal_validate();">
 		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
     <strong>Question: <input id="question" type="text" name="question" value="<?php echo $question['question']; ?>" /></strong>
 
@@ -323,7 +323,7 @@ function jal_dem_admin_page() {
     </table>
     <h2>Add a New Poll</h2>
     <p>Some HTML is allowed in polls, and no character entities will be converted, so if you want to use &amp;, write <code>&amp;amp;</code>, etc.. If you have no idea know what the last two sentences meant, don't worry about 'em. Blank fields will be skipped.</p>
-    <form action="edit.php?page=democracy" method="post" onsubmit="return jal_validate();">
+    <form action="options-general.php?page=democracy" method="post" onsubmit="return jal_validate();">
 		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
     <div id="form_questions">
 
