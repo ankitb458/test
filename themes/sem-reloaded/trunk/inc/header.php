@@ -367,8 +367,7 @@ class sem_header
 					$css = <<<EOF
 
 <style type="text/css">
-.skin #header_img
-{
+.skin #header_img {
 	background: url({header_url}) no-repeat top left;
 	height: {header_height}px;
 	border: 0px;
@@ -384,9 +383,8 @@ EOF;
 					$css = <<<EOF
 
 <style type="text/css">
-.skin #header_img
-{
-	background-image: url({header_url}) repeat-x top left;
+.skin #header_img {
+	background: url({header_url}) repeat-x top left;
 	height: {header_height}px;
 	border: 0px;
 	overflow: hidden;
