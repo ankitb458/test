@@ -1,6 +1,6 @@
 /*
 Skin name: Classy (Beige)
-Version: 0.2
+Version: 0.3-alpha
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -338,7 +338,7 @@ html {
  * Content
  */
 
-.entry_header {
+h1 {
 	color: #4d2d00;
 }
 
