@@ -437,3 +437,17 @@ h2 a {
 .widget_search {
 	text-align: center;
 }
+
+/* mediacaster */
+
+div.media,
+div.enclosures
+{
+	margin: .5em 0px;
+}
+
+div.media
+{
+	text-align: center;
+}
+
