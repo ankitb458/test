@@ -5,6 +5,10 @@
 # Set default captions
 #
 
+$site_url = get_option('home');
+$site_url = preg_replace("|^.+://|", '', $site_url);
+$site_url = preg_replace("|/.*$|", '', $site_url);
+
 $sem_captions = array(
 	"1_comment_link" => "1 Comment",
 	"cats_title" => "Categories",
@@ -12,7 +16,7 @@ $sem_captions = array(
 	"comments_on" => "Comments on %title%",
 	"comment_permalink" => "Permalink",
 	"comment_trackback" => "Trackback URI",	
-	"copyright" => "Copyright %year%",
+	"copyright" => "Copyright %year%, $site_url",
 	"email_field" => "Email",
 	"email_link" => "Email",
 	"required_field" => "(Required Field)",
