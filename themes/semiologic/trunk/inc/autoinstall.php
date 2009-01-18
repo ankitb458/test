@@ -256,8 +256,12 @@ $extra_plugins = array(
 	'widget-contexts/widget-contexts.php',
 	'wp-db-backup/wp-db-backup.php',
 	'wp-hashcash/wp-hashcash.php',
-	'xml-sitemaps/xml-sitemaps.php'
 	);
+
+if ( get_option('blog_public') )
+{
+	$extra_plugins[] = 'xml-sitemaps/xml-sitemaps.php';
+}
 
 foreach ( $extra_plugins as $plugin )
 {
