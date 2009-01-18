@@ -251,7 +251,6 @@ $extra_plugins = array(
 	'singular.php',
 	'tag-cloud-widgets/tag-cloud.php',
 	'text-widgets/text-widgets.php',
-	'tinymce-advanced/tinymce-advanced.php',
 	'uploads-folder/uploads-folder.php',
 	'version-checker/version-checker.php',
 	'widget-contexts/widget-contexts.php',
