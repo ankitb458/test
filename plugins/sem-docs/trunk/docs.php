@@ -114,6 +114,15 @@ class sem_docs
 	{
 		global $wpdb;
 		
+		$charset_collate = '';
+
+		if ( $wpdb->has_cap( 'collation' ) ) {
+			if ( ! empty($wpdb->charset) )
+				$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+			if ( ! empty($wpdb->collate) )
+				$charset_collate .= " COLLATE $wpdb->collate";
+		}
+		
 		$wpdb->query("
 			CREATE TABLE IF NOT EXISTS $wpdb->sem_docs (
 				doc_id			int PRIMARY KEY AUTO_INCREMENT,
@@ -124,7 +133,7 @@ class sem_docs
 				doc_excerpt		text NOT NULL DEFAULT '',
 				doc_content		text NOT NULL DEFAULT '',
 				UNIQUE ( doc_cat, doc_key, doc_version )
-				);
+				) $charset_collate;
 			");
 		
 		$wpdb->query("

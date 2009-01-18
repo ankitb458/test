@@ -474,14 +474,23 @@ function jal_dem_install () {
 
    // PRIMARY KEY has 2 spaces on purpose ... some weird dbDelta thing...
 
-   $qry = "CREATE TABLE {$table_prefix}democracyA (
+   $charset_collate = '';
+
+	if ( $wpdb->has_cap( 'collation' ) ) {
+		if ( ! empty($wpdb->charset) )
+			$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
+		if ( ! empty($wpdb->collate) )
+			$charset_collate .= " COLLATE $wpdb->collate";
+	}
+		
+	$qry = "CREATE TABLE {$table_prefix}democracyA (
             aid int(10) unsigned NOT NULL auto_increment,
             qid int(10) NOT NULL default '0',
             answers varchar(200) NOT NULL default '',
             votes int(10) NOT NULL default '0',
             added_by enum('1','0') NOT NULL default '0',
             PRIMARY KEY  (aid)
-           );
+           ) $charset_collate;
 
            CREATE TABLE {$table_prefix}democracyQ (
             id int(10) unsigned NOT NULL auto_increment,
@@ -491,7 +500,7 @@ function jal_dem_install () {
             allowusers enum('0','1') NOT NULL default '0',
             active enum('0','1') NOT NULL default '0',
             PRIMARY KEY  (id)
-           ); ";
+           ) $charset_collate; ";
 
     require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
     dbDelta($qry);
