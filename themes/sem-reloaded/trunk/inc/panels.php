@@ -30,7 +30,7 @@ class sem_panels
 			register_sidebar(
 				array(
 					'id' => 'top_sidebar',
-					'name' => 'Top Sidebar',
+					'name' => 'Top Wide Sidebar',
 					'before_widget' => $before_widget,
 					'after_widget' => $after_widget,
 					'before_title' => $before_title,
@@ -110,13 +110,13 @@ class sem_panels
 		}
 		
 		foreach ( array(
-			'the_header' => 'Header',
-			'the_header_boxes' => 'Header Boxes',
+			'the_header' => 'Header Area',
+			'the_header_boxes' => 'Header Boxes Bar',
 			'before_the_entries' => 'Before the Entries',
 			'the_entry' => 'Each Entry',
 			'after_the_entries' => 'After the Entries',
-			'the_footer_boxes' => 'Footer Boxes',
-			'the_footer' => 'Footer',
+			'the_footer_boxes' => 'Footer Boxes Bar',
+			'the_footer' => 'Footer Area',
 			'the_404' => 'Not Found Error (404)',
 			) as $panel_id => $panel_label )
 		{
@@ -263,7 +263,7 @@ class sem_panels
 
 			if ( !$sidebars_widgets['the_footer'] )
 			{
-				$sidebars_widgets['the_header'][] = 'footer_boxes';
+				$sidebars_widgets['the_footer'][] = 'footer_boxes';
 				$sidebars_widgets['the_footer'][] = 'footer';
 			}
 

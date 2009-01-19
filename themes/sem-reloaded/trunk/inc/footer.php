@@ -24,15 +24,9 @@ class sem_footer
 				'label' => 'Footer: Nav Menu',
 				'desc' => 'Footer: Navigation Menu. Only works in the footer.',
 				),
-			/*
-			'credits' => array(
-				'label' => 'Footer: Credits',
-				'desc' => 'Footer: Credits. Only works in the footer.',
-				),
-			*/
 			'footer_boxes' => array(
 				'label' => 'Footer: Inline Boxes',
-				'desc' => 'Footer: Inline Boxes. Lets you decide where the Footer Boxes panel goes. Only works in the footer.',
+				'desc' => 'Footer: Inline Boxes. Lets you decide where the Footer Boxes Bar panel goes. Only works in the footer.',
 				),
 			) as $widget_id => $widget_details )
 		{

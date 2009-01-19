@@ -46,7 +46,7 @@ class sem_header
 				),
 			'header_boxes' => array(
 				'label' => 'Header: Inline Boxes',
-				'desc' => 'Header: Inline Boxes. Lets you decide where the Header Boxes panel goes. Only works in the header.',
+				'desc' => 'Header: Inline Boxes. Lets you decide where the Header Boxes Bar panel goes. Only works in the header.',
 				),
 			) as $widget_id => $widget_details )
 		{

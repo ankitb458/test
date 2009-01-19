@@ -662,6 +662,18 @@ class sem_header_admin
 			}
 		}
 	} # save_entry_header()
+	
+	
+	#
+	# header_boxes_widget_control()
+	#
+	
+	function header_boxes_widget_control()
+	{
+		echo '<p>'
+			. 'Use this widget to place the header boxes bar panel where you want it.'
+			. '</p>';
+	} # header_boxes_widget_control()
 } # sem_header_admin
 
 sem_header_admin::init();

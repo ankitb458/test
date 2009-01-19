@@ -100,15 +100,6 @@ class sem_footer_admin
 
 		sem_nav_menus_admin::widget_control('footer');
 	} # footer_widget_control()
-
-	#
-	# credits_widget_control()
-	#
-
-	function credits_widget_control()
-	{
-		echo '<p>There are no options for this widget.</p>';
-	} # credits_widget_control()
 	
 	
 	#
@@ -118,7 +109,7 @@ class sem_footer_admin
 	function footer_boxes_widget_control()
 	{
 		echo '<p>'
-			. 'Use this widget to place the footer boxes panel where you want it.'
+			. 'Use this widget to place the footer boxes bar panel where you want it.'
 			. '</p>';
 	} # footer_boxes_widget_control()
 } # sem_footer_admin
