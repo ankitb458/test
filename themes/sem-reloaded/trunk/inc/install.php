@@ -262,7 +262,7 @@ $extra_plugins = array(
 	'wp-hashcash/wp-hashcash.php',
 	);
 
-if ( get_option('blog_public') )
+if ( get_option('blog_public') && get_option('permalink_structure') )
 {
 	$extra_plugins[] = 'xml-sitemaps/xml-sitemaps.php';
 }
