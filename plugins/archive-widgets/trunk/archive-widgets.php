@@ -2,9 +2,9 @@
 /*
 Plugin Name: Archive Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/archive-widgets/
-Description: Replaces WordPress' default archive widgets with advanced archive widgets
+Description: Replaces WordPress' the default, single archive widget with multiple archive widgets.
 Author: Denis de Bernardy
-Version: 1.0.3 alpha
+Version: 1.0.3
 Author URI: http://www.getsemiologic.com
 */
 
