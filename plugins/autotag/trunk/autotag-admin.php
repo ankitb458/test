@@ -9,21 +9,7 @@ class autotag
 	{
 		add_action('admin_menu', array('autotag', 'add_meta_boxes'));
 		add_action('save_post', array('autotag', 'save_entry'));
-
-		add_filter('sem_api_key_protected', array('autotag', 'sem_api_key_protected'));
 	} # init()
-	
-		
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/publishing/autotag/autotag.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
 	
 	
 	#

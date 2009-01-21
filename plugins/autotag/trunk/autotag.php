@@ -8,7 +8,7 @@ Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/plugins
 Update Tag: autotag
-Update Package: http://www.semiologic.com/media/software/publishing/autotag/autotag.zip
+Update Package: http://members.semiologic.com/media/wp-plugins/autotag.zip
 */
 
 /*
