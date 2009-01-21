@@ -8,24 +8,10 @@ class article_uploader_admin
 	
 	function init()
 	{
-		add_filter('sem_api_key_protected', array('article_uploader_admin', 'sem_api_key_protected'));
-		
 		add_filter('get_user_option_rich_editing', array('article_uploader_admin', 'disable_tinymce'));
 
 		add_action('admin_menu', array('article_uploader_admin', 'meta_boxes'), 30);
 	} # init()
-	
-	
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/publishing/article-uploader/article-uploader.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
 	
 	
 	#
