@@ -8,7 +8,7 @@ Version: 1.2.2 alpha
 Author URI: http://www.getsemiologic.com
 Update Service: http://version.semiologic.com/plugins
 Update Tag: article_uploader
-Update Package: http://members.semiologic.com/media/wp-plugins/article-uploader.zip
+Update Package: https://members.semiologic.com/media/wp-plugins/article-uploader.zip
 */
 
 /*
