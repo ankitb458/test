@@ -4,20 +4,17 @@ Plugin Name: Archive Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/archive-widgets/
 Description: Replaces WordPress' default archive widgets with advanced archive widgets
 Author: Denis de Bernardy
-Version: 1.0.2
+Version: 1.0.3 alpha
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/plugins
-Update Tag: archive_widgets
-Update Package: http://www.semiologic.com/media/software/widgets/archive-widgets/archive-widgets.zip
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.mesoconcepts.com/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
@@ -51,7 +48,7 @@ class archive_widgets
 		
 		#dump(wp_get_sidebars_widgets());
 		#delete_option('archive_widgets');
-		if ( !( $options = get_option('archive_widgets') ) )
+		if ( ( $options = get_option('archive_widgets') ) === false )
 		{
 			$options = array();
 			
@@ -64,14 +61,14 @@ class archive_widgets
 
 				if ( ( $key = array_search('archives', $sidebars[$k]) ) !== false )
 				{
-					$options = array( 1 => array() );
+					$options = array( 1 => get_option('widget_archives') );
 					$sidebars[$k][$key] = 'archive_widget-1';
 					update_option('sidebars_widgets', $sidebars);
 					break;
 				}
 				elseif ( ( $key = array_search('Archives', $sidebars[$k]) ) !== false )
 				{
-					$options = array( 1 => array() );
+					$options = array( 1 => get_option('widget_archives') );
 					$sidebars[$k][$key] = 'archive_widget-1';
 					update_option('sidebars_widgets', $sidebars);
 					break;

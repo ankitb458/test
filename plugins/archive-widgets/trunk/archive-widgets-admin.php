@@ -3,28 +3,6 @@
 class archive_widgets_admin
 {
 	#
-	# init()
-	#
-	
-	function init()
-	{
-//		add_filter('sem_api_key_protected', array('archive_widgets_admin', 'sem_api_key_protected'));
-	} # init()
-	
-		
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/widgets/archive-widgets/archive-widgets.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
-	
-	
-	#
 	# widget_archives_control()
 	#
 	
@@ -117,7 +95,5 @@ class archive_widgets_admin
 			. '</p>';
 	} # widget_archives_control()
 } # archive_widgets_admin
-
-archive_widgets_admin::init();
 
 ?>
