@@ -1,7 +1,7 @@
 === Archive Widgets ===
 Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
-Tags: archives, widget, widgets
+Tags: archives, widget, widgets, semiologic
 Requires at least: 2.5
 Tested up to: 2.7
 Stable tag: trunk
@@ -13,7 +13,7 @@ Replaces WordPress' the default, single archive widget with multiple archive wid
 
 The archives widgets plugin for WordPress replaces its default, single archive widget with multiple archive widgets.
 
-This lets you add the widgets in several different locations when using the [Semiologic theme](http://www.semiologic.com/software/wp-themes/) and/or [Widget Contexts](http://www.semiologic.com/software/widgets/).
+This lets you insert multiple instances of archive widget when using the [Semiologic theme](http://www.semiologic.com/software/wp-themes/) or [Widget Contexts](http://www.semiologic.com/software/widgets/).
 
 
 == Installation ==
