@@ -29,8 +29,6 @@ class feed_widgets
 	{
 		add_action('init', array('feed_widgets', 'panels'), 0);
 		add_filter('the_content', array('feed_widgets', 'display'), 100);
-		
-		add_filter('sem_api_key_protected', array('feed_widgets', 'sem_api_key_protected'));
 	} # init()
 	
 	
@@ -52,18 +50,6 @@ class feed_widgets
 			update_option('sidebars_widgets', $sidebars_widgets);
 		}
 	} # autofill()
-	
-	
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/widgets/feed-widgets/feed-widgets.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
 	
 	
 	#
