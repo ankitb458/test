@@ -3,28 +3,6 @@
 class link_widgets_admin
 {
 	#
-	# init()
-	#
-	
-	function init()
-	{
-		add_filter('sem_api_key_protected', array('link_widgets_admin', 'sem_api_key_protected'));
-	} # init()
-	
-		
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/widgets/link-widgets/link-widgets.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
-	
-	
-	#
 	# widget_links_control()
 	#
 	
@@ -117,7 +95,5 @@ class link_widgets_admin
 			. '</p>';
 	} # widget_links_control()
 } # link_widgets_admin
-
-link_widgets_admin::init();
 
 ?>

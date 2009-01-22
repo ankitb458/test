@@ -2,22 +2,19 @@
 /*
 Plugin Name: Link Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/link-widgets/
-Description: Replaces WordPress' default link widgets with advanced link widgets
+Description: Replaces WordPress' default link widget with advanced link widgets
+Version: 1.1.1 alpha
 Author: Denis de Bernardy
-Version: 1.1
 Author URI: http://www.getsemiologic.com
-Update Service: http://version.semiologic.com/plugins
-Update Tag: link_widgets
-Update Package: http://www.semiologic.com/media/software/widgets/link-widgets/link-widgets.zip
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.mesoconcepts.com/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
