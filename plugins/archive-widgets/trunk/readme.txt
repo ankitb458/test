@@ -6,7 +6,7 @@ Requires at least: 2.5
 Tested up to: 2.7
 Stable tag: trunk
 
-Replaces WordPress' the default, single archive widget with multiple archive widgets.
+Replaces WordPress' default, single archive widget with multiple archive widgets.
 
 
 == Description ==
