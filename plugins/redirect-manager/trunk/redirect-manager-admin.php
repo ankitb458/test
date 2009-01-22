@@ -8,22 +8,8 @@ class redirect_manager_admin
 	
 	function init()
 	{
-		add_filter('sem_api_key_protected', array('redirect_manager_admin', 'sem_api_key_protected'));
-
 		add_action('admin_menu', array('redirect_manager_admin', 'meta_boxes'));
 	} # init()
-
-
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/marketing/redirect-manager/redirect-manager.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
 	
 	
 	#
