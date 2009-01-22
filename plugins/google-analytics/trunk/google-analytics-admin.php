@@ -8,21 +8,7 @@ class google_analytics_admin
 	function init()
 	{
 		add_action('admin_menu', array('google_analytics_admin', 'add_option_page'));
-
-		add_filter('sem_api_key_protected', array('google_analytics_admin', 'sem_api_key_protected'));
 	} # init()
-	
-		
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/marketing/google-analytics/google-analytics.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
 
 
 	#
