@@ -6,7 +6,7 @@ Description: Leverages Yahoo!'s term extraction web service to automatically tag
 Version: 2.1.2 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Update Package: https://members.semiologic.com/media/plugins/autotag.zip
+Update Package: https://members.semiologic.com/media/plugins/autotag/autotag.zip
 */
 
 /*

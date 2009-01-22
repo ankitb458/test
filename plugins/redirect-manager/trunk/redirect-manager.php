@@ -6,7 +6,7 @@ Description: Lets you manage redirects on your site without messing around with 
 Version: 1.0.1 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Update Package: https://members.semiologic.com/media/plugins/redirect-manager.zip
+Update Package: https://members.semiologic.com/media/plugins/redirect-manager/redirect-manager.zip
 */
 
 /*

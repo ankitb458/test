@@ -6,7 +6,7 @@ Description: Replaces WordPress' default tag widgets with advanced configurable 
 Version: 1.0.4 alpha
 Author: Mike Koepke
 Author URI: http://www.getsemiologic.com
-Update Package: https://members.semiologic.com/media/plugins/tag-cloud-widgets.zip
+Update Package: https://members.semiologic.com/media/plugins/tag-cloud-widgets/tag-cloud-widgets.zip
 */
 
 /*

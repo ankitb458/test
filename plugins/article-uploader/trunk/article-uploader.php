@@ -6,7 +6,7 @@ Description: Lets you upload files in place of using the WP editor when writing 
 Version: 1.2.2 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Update Package: https://members.semiologic.com/media/plugins/article-uploader.zip
+Update Package: https://members.semiologic.com/media/plugins/article-uploader/article-uploader.zip
 */
 
 /*

@@ -6,7 +6,7 @@ Description: Adds <a href="http://analytics.google.com">Google analytics</a> to 
 Version: 3.1.3 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Update Package: https://members.semiologic.com/media/plugins/google-analytics.zip
+Update Package: https://members.semiologic.com/media/plugins/google-analytics/google-analytics.zip
 */
 
 /*
