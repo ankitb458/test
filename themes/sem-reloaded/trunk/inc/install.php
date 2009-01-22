@@ -253,7 +253,7 @@ $extra_plugins = array(
 	'sem-unfancy-quote/sem-unfancy-quote.php',
 	'silo/silo.php',
 	'singular.php',
-	'tag-cloud-widgets/tag-cloud.php',
+	'tag-cloud-widgets/tag-cloud-widgets.php',
 	'text-widgets/text-widgets.php',
 	'uploads-folder/uploads-folder.php',
 	'version-checker/version-checker.php',
