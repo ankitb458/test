@@ -12,21 +12,7 @@ class inline_widgets_admin
 		add_filter('admin_footer', array('inline_widgets_admin', 'quicktag'), 0);
 		add_filter('mce_external_plugins', array('inline_widgets_admin', 'editor_plugin'));
 		add_filter('mce_buttons_4', array('inline_widgets_admin', 'editor_button'), 0);
-
-		add_filter('sem_api_key_protected', array('inline_widgets_admin', 'sem_api_key_protected'));
 	} # init()
-	
-		
-	#
-	# sem_api_key_protected()
-	#
-	
-	function sem_api_key_protected($array)
-	{
-		$array[] = 'http://www.semiologic.com/media/software/widgets/inline-widgets/inline-widgets.zip';
-		
-		return $array;
-	} # sem_api_key_protected()
 	
 	
 	#
