@@ -1,7 +1,7 @@
 === Autolink URI ===
 Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
-Tags: autolink, link, auto-link
+Tags: autolink, link, auto-link, semiologic
 Requires at least: 2.0
 Tested up to: 2.7
 Stable tag: trunk

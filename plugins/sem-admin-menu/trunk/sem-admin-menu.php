@@ -3,8 +3,8 @@
 Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/publishing/admin-menu/
 Description: Adds a convenient admin menu to your blog.
-Author: Denis de Bernardy
 Version: 5.1.3
+Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */
 
@@ -15,12 +15,6 @@ Terms of use
 This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
 http://www.opensource.org/licenses/gpl-2.0.php
-
-
-Hat Tips
---------
-
-	* Mike Koepke <http://www.mikekoepke.com>
 **/
 
 load_plugin_textdomain('sem-admin-menu','wp-content/plugins/sem-admin-menu');

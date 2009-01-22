@@ -1,7 +1,7 @@
 === Unfancy Quote ===
 Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
-Tags: code, quote, fancy-quote, fancy quote, unfancy-quote, unfancy quote
+Tags: code, quote, fancy-quote, fancy quote, unfancy-quote, unfancy quote, semiologic
 Requires at least: 2.0
 Tested up to: 2.7
 Stable tag: trunk
