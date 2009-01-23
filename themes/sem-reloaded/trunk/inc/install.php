@@ -86,6 +86,7 @@ $sem_options['header']['mode'] = 'header';
 $sem_options['show_post_date'] = true;
 $sem_options['show_permalink'] = true;
 $sem_options['show_print_link'] = true;
+$sem_options['show_email_link'] = true;
 $sem_options['show_comment_link'] = true;
 $sem_options['show_search_form'] = true;
 $sem_options['show_copyright'] = true;
