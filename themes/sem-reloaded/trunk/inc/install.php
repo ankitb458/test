@@ -75,9 +75,6 @@ update_option('sem_nav_menus', $sem_nav_menus);
 # Skin, layout, font, width
 $sem_options['active_skin'] = 'copywriter-gold';
 $sem_options['active_layout'] = 'mts';
-#$sem_options['active_width'] = 'wide';
-#$sem_options['active_font'] = 'trebuchet';
-#$sem_options['active_font_size'] = 'small';
 
 # Header
 $sem_options['header']['mode'] = 'header';
