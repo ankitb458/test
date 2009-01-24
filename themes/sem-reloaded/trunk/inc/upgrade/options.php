@@ -79,7 +79,6 @@ function sem_clean_up_options()
 		update_option('links_recently_updated_append', '</em>');
 	}
 
-	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name = 'core\_update';");				# Duplicate
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss\_[0-9a-f]{32}';");	# clean up magpie
 	
 	# drop obsolete tables
