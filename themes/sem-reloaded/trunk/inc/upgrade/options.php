@@ -87,6 +87,20 @@ function sem_clean_up_options()
 	
 	if ( !in_array('sem-ad-space/sem-ad-space.php', $active_plugins) )
 		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}sem_ad_spaces;");
+	
+	# kill duplicate options
+	if ( version_compare(mysql_get_server_info(), '4.1', '>=') )
+	{
+		$wpdb->query("
+			DELETE FROM $wpdb->options
+			WHERE option_id IN (
+				SELECT	o2.option_id
+				FROM	wp_options as o1
+				JOIN	wp_options as o2
+				ON		o1.option_name = o2.option_name
+				AND		o2.option_id > o1.option_id
+				)");
+	}
 } # clean_up_options()
 
 add_action('shutdown', 'sem_clean_up_options');
