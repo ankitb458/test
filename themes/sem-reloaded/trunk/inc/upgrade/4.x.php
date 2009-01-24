@@ -446,6 +446,8 @@ add_action('init', array('sem_panels', 'autofill'));
 
 foreach ( $sidebars_widgets as $sidebar => $widgets )
 {
+	if ( !is_array($widgets) ) continue;
+	
 	foreach ( $widgets as $key => $widget )
 	{
 		if ( strpos($widget, 'Text ') === 0
