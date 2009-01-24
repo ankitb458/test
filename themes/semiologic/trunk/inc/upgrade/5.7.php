@@ -18,7 +18,10 @@ $extra_plugins = array(
 	'page-tags/page-tags.php',	
 	'smart-update-pinger.php',
 	'simple-trackback-validation.php',
-	'favicon-head.php'
+	'favicon-head.php',
+	'mycategoryorder/mycategoryorder.php',
+	'mylinkorder/mylinkorder.php',
+	'mypageorder/mypageorder.php',
 	);
 
 $active_plugins = array_diff($active_plugins, $extra_plugins);
