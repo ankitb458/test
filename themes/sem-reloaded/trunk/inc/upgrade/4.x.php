@@ -167,6 +167,17 @@ foreach ( $sem_nav as $nav_menu => $nav_items )
 			
 			continue;
 		}
+		
+		if ( strpos($ref, '@') !== false )
+		{
+			$items[] = array(
+				'type' => 'url',
+				'label' => $label,
+				'ref' => 'mailto:' . $ref,
+				);
+			
+			continue;
+		}
 
 		if ( !$ref )
 		{
