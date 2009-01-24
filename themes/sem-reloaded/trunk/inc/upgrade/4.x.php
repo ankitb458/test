@@ -225,6 +225,36 @@ foreach ( $sem_nav as $nav_menu => $nav_items )
 			
 			continue;
 		}
+		
+		# try pre-WP 2.3 cat syntax if failed
+		$cat_id = $wpdb->get_var("
+			SELECT	cat_ID
+			FROM	{$wpdb->prefix}categories
+			WHERE	cat_name = '" . $wpdb->escape($ref) . "'
+			AND		category_parent = 0
+			");
+		
+		if ( $cat_id )
+		{
+			if ( $ref == 'blog' )
+			{
+				$items[] = array(
+					'type' => 'home',
+					'label' => $label,
+					);
+			}
+			else
+			{
+				$items[] = array(
+					'type' => 'url',
+					'label' => $label,
+					'ref' => user_trailingslashit(trailingslashit(get_category_link($cat_id)) . $ref),
+					);
+			}
+			
+			
+			continue;
+		}
 	}
 	
 	$sem_nav_menus[$nav_menu]['items'] = $items;
