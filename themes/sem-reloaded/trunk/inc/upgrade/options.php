@@ -84,10 +84,9 @@ function sem_clean_up_options()
 	
 	# drop obsolete tables
 	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}WP_HASHCASH;");
-	if ( class_exists('ad_manager') )
-	{
+	
+	if ( !in_array('sem-ad-space/sem-ad-space.php', $active_plugins) )
 		$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}sem_ad_spaces;");
-	}
 } # clean_up_options()
 
 add_action('shutdown', 'sem_clean_up_options');

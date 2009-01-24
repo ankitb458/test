@@ -4,16 +4,16 @@ if ( get_option('sem_ad_space_params') ) :
 
 $active_plugins = get_option('active_plugins');
 
-if ( !class_exists('ad_manager') )
+if ( !in_array('ad-manager/ad-manager.php', $active_plugins) )
 {
-	include_once ABSPATH . PLUGINDIR . '/ad-manager/ad-manager.php';
 	$active_plugins[] = 'ad-manager/ad-manager.php';
+	include_once WP_PLUGIN_DIR . '/ad-manager/ad-manager.php';
 }
 
-if ( !class_exists('inline_widgets') )
+if ( !in_array('inline-widgets/inline-widgets.php', $active_plugins) )
 {
-	include_once ABSPATH . PLUGINDIR . '/inline-widgets/inline-widgets.php';
 	$active_plugins[] = 'inline-widgets/inline-widgets.php';
+	include_once WP_PLUGIN_DIR . '/inline-widgets/inline-widgets.php';
 }
 
 sort($active_plugins);
@@ -58,6 +58,11 @@ function export_ad_spaces()
 		}
 		else
 		{
+			if ( strpos($ad_block->ad_block_code, 'src=\\"') !== false )
+			{
+				$ad_block->ad_block_code = stripslashes($ad_block->ad_block_code);
+			}
+			
 			$widget_id = ad_manager::new_widget(array(
 				'title' => trim($ad_block->ad_block_name),
 				'code' => $ad_block->ad_block_code,
@@ -144,7 +149,6 @@ function export_ad_spaces()
 	
 	
 	# migrate location-specific ads
-	
 	foreach ( $options['default_ad_block'] as $area => $ad_block_id )
 	{
 		if ( $area == 'top' ) continue;
@@ -158,6 +162,11 @@ function export_ad_spaces()
 
 		if ( !$ad_block ) return '';
 
+		if ( strpos($ad_block->ad_block_code, 'src=\\"') !== false )
+		{
+			$ad_block->ad_block_code = stripslashes($ad_block->ad_block_code);
+		}
+		
 		$widget_id = ad_manager::new_widget(array(
 			'title' => trim($ad_block->ad_block_name),
 			'code' => $ad_block->ad_block_code,
@@ -181,7 +190,7 @@ function export_ad_spaces()
 			$sidebars_widgets['the_entry'][] = $widget_id;
 			break;
 		case 'footer':
-			$sidebars_widgets['the_footer'][] = $widget_id;
+			array_unshift($sidebars_widgets['the_footer'], $widget_id);
 			break;
 		case 'sidebar':
 			if ( isset($sidebars_widgets['sidebar-1']) )
@@ -224,8 +233,6 @@ function export_ad_spaces()
 	sort($active_plugins);
 	update_option('active_plugins', $active_plugins);
 } # export_ad_spaces()
-
-add_action('init', 'export_ad_spaces', 20);
 
 else :
 

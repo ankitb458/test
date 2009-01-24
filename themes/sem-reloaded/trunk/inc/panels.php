@@ -299,6 +299,14 @@ class sem_panels
 				feed_widgets::autofill();
 			}
 			
+			if ( function_exists('export_ad_spaces')
+				&& class_exists('ad_manager')
+				&& class_exists('inline_widgets')
+				)
+			{
+				export_ad_spaces();
+			}
+			
 			#dump( get_option('sidebars_widgets') );
 			wp_redirect($_SERVER['REQUEST_URI']);
 			die;
