@@ -439,6 +439,30 @@ add_action('init', array('sem_panels', 'autofill'));
 
 
 #
+# Step 11
+# -------
+# Fix important WP widgets
+#
+
+foreach ( $sidebars_widgets as $sidebar => $widgets )
+{
+	foreach ( $widgets as $key => $widget )
+	{
+		if ( strpos($widget, 'Text ') === 0
+			|| strpos($widget, 'RSS ') === 0
+			|| strpos($widget, 'Pages') === 0
+			|| strpos($widget, 'Recent Posts') === 0
+			)
+		{
+			$sidebars_widgets[$sidebar][$key] = sanitize_title($widget);
+		}
+	}
+}
+
+update_option('sidebars_widgets', $sidebars_widgets);
+
+
+#
 # Final Step
 # ----------
 # Clean Up
