@@ -626,36 +626,18 @@ class bookmark_me
 				unset($o['before_title']);
 				unset($o['after_title']);
 				
-				$o['services'] = get_option('sem_bookmark_me_services');
-				
-				if ( !$o['services'] )
+				if ( !is_array($o['services']) )
 				{
-					$defaults = bookmark_me::default_options();
-					$o['services'] = $defaults['services'];
+					$o['services'] = get_option('sem_bookmark_me_services');
+					
+					if ( !$o['services'] )
+					{
+						$defaults = bookmark_me::default_options();
+						$o['services'] = $defaults['services'];
+					}
 				}
 				
 				$o = array( 1 => $o );
-				
-				foreach ( array_keys( $sidebars = get_option('sidebars_widgets') ) as $k )
-				{
-					if ( !is_array($sidebars[$k]) )
-					{
-						continue;
-					}
-					
-					if ( ( $key = array_search('bookmark-me', $sidebars[$k]) ) !== false )
-					{
-						$sidebars[$k][$key] = 'bookmark_me-1';
-						update_option('sidebars_widgets', $sidebars);
-						break;
-					}
-					elseif ( ( $key = array_search('Bookmark Me', $sidebars[$k]) ) !== false )
-					{
-						$sidebars[$k][$key] = 'bookmark_me-1';
-						update_option('sidebars_widgets', $sidebars);
-						break;
-					}
-				}
 			}
 			else
 			{
@@ -673,14 +655,18 @@ class bookmark_me
 	# new_widget()
 	#
 	
-	function new_widget()
+	function new_widget($k = null)
 	{
 		$o = bookmark_me::get_options();
-		$k = time();
-		do $k++; while ( isset($o[$k]) );
-		$o[$k] = bookmark_me::default_options();
 		
-		update_option('bookmark_me_widgets', $o);
+		if ( !( isset($k) && isset($o[$k]) ) )
+		{
+			$k = time();
+			do $k++; while ( isset($o[$k]) );
+			$o[$k] = bookmark_me::default_options();
+			
+			update_option('bookmark_me_widgets', $o);
+		}
 		
 		return 'bookmark_me-' . $k;
 	} # new_widget()
