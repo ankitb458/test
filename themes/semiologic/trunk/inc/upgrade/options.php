@@ -60,8 +60,11 @@ function sem_clean_up_options()
 	delete_option('sm_cpages');							#arne sitemap
 	
 	delete_option('sem_widget_contexts');
-	delete_option('sem5_nav');
-	delete_option('semiologic');
+	if ( !defined('sem_install_test') )
+	{
+		delete_option('sem5_nav');
+		delete_option('semiologic');
+	}
 	
 	# clean up cache
 	foreach ( glob(ABSPATH . "wp-content/cache/yt-*") as $cache_file )

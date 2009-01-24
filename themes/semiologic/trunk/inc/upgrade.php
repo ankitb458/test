@@ -31,9 +31,12 @@ endif;
 
 $sem_options['version'] = sem_version;
 
-update_option('sem5_options', $sem_options);
-update_option('sem5_captions', $sem_captions);
-update_option('sem_nav_menus', $sem_nav_menus);
+if ( !defined('sem_install_test') )
+{
+	update_option('sem5_options', $sem_options);
+	update_option('sem5_captions', $sem_captions);
+	update_option('sem_nav_menus', $sem_nav_menus);
+}
 
 
 #
