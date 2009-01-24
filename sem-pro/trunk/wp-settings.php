@@ -201,10 +201,11 @@ timer_start();
 if (defined('WP_DEBUG') and WP_DEBUG == true) {
 	error_reporting(E_ALL);
 } else {
-	if ( defined( 'E_DEPRECATED' ) )
-		error_reporting(E_ALL ^ E_STRICT ^ E_DEPRECATED ^ E_NOTICE ^ E_USER_NOTICE);
-	else if ( defined( 'E_STRICT' ) )
-		error_reporting( ( E_ALL ^ E_NOTICE ^ E_USER_NOTICE ) & E_STRICT);
+	// Unicode Extension is in PHP 6.0 only or do version check when this changes.
+	if ( function_exists('unicode_decode') ) 
+		error_reporting( E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_USER_NOTICE ^ E_STRICT );
+	else if ( defined( 'E_DEPRECATED' ) ) // Introduced in PHP 5.3
+		error_reporting( E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_USER_NOTICE );
 	else
 		error_reporting(E_ALL ^ E_NOTICE ^ E_USER_NOTICE);
 }
