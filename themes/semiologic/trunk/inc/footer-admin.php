@@ -17,8 +17,15 @@ class sem_footer_admin
 
 			$new_options['show_copyright'] = isset($_POST['sem_footer']['show_copyright']);
 			$new_options['float_footer'] = isset($_POST['sem_footer']['float_footer']);
-
-			$new_captions['copyright'] = strip_tags(stripslashes($_POST['sem_footer']['label_copyright']));
+			
+			if ( current_user_can('unfiltered_html') )
+			{
+				$new_captions['copyright'] = stripslashes($_POST['sem_footer']['label_copyright']);
+			}
+			else
+			{
+				$new_captions['copyright'] = strip_tags(stripslashes($_POST['sem_footer']['label_copyright']));
+			}
 
 			if ( $new_options != $sem_options )
 			{
