@@ -93,7 +93,10 @@ $sem_options['show_credits'] = true;
 $sem_options['version'] = sem_version;
 
 # Update
-update_option('sem6_options', $sem_options);
+if ( !defined('sem_install_test') )
+{
+	update_option('sem6_options', $sem_options);
+}
 
 
 #

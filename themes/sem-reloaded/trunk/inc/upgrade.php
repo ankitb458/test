@@ -33,9 +33,12 @@ include sem_path . '/inc/upgrade/reloaded.php';
 
 $sem_options['version'] = sem_version;
 
-update_option('sem6_options', $sem_options);
-update_option('sem6_captions', $sem_captions);
-update_option('sem_nav_menus', $sem_nav_menus);
+if ( !defined('sem_install_test') )
+{
+	update_option('sem6_options', $sem_options);
+	update_option('sem6_captions', $sem_captions);
+	update_option('sem_nav_menus', $sem_nav_menus);
+}
 
 
 #

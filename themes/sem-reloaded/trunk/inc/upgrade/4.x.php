@@ -117,7 +117,10 @@ foreach ( array_keys($old_options) as $key )
 	}
 }
 
-update_option('sem6_options', $sem_options);
+if ( !defined('sem_install_test') )
+{
+	update_option('sem6_options', $sem_options);
+}
 
 
 #
