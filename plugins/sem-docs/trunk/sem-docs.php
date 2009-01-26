@@ -3,7 +3,7 @@
 Plugin Name: Semiologic Documentation
 Plugin URI: http://www.semiologic.com/software/wp-tweaks/sem-docs/
 Description: Semiologic Pro Documentation
-Version: 2.0.1 RC
+Version: 2.0.1
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Update Package: https://members.semiologic.com/media/plugins/sem-docs/sem-docs.zip
