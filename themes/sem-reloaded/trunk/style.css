@@ -2,7 +2,7 @@
 Theme Name: Semiologic, Reloaded
 Theme URI: http://www.semiologic.com/software/wp-themes/sem-reloaded/
 Description: The Semiologic theme, reloaded
-Version: 0.5
+Version: 0.6 alpha
 Author: Denis de Bernardy
 Author URI: http://www.mesoconcepts.com
 */
@@ -394,9 +394,12 @@ h2 a {
 
 .skin .aligncenter
 {
-	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.skin img.aligncenter {
+	display: block;
 }
 
 .skin .alignleft
