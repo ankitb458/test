@@ -849,9 +849,12 @@ div.media
 
 .skin .aligncenter
 {
-	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.skin img.aligncenter {
+	display: block;
 }
 
 .skin .alignleft
