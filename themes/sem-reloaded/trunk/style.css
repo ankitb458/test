@@ -45,8 +45,8 @@ fieldset, img {
 }
 
 address, caption, cite, code, dfn, em, strong, th, var {
-	font-style:normal;
-	font-weight:normal;
+	font-style: inherit;
+	font-weight: inherit;
 }
 
 caption, th {
@@ -55,7 +55,7 @@ caption, th {
 
 h1, h2, h3, h4, h5, h6 {
 	font-size:100%;
-	font-weight:normal;
+	font-weight: inherit;
 }
 
 q:before,
