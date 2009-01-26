@@ -1,6 +1,6 @@
 /*
 Skin name: Boxed (Gold)
-Version: 0.2
+Version: 0.3
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -308,7 +308,7 @@ html {
  * Content
  */
 
-.entry_header {
+h1 {
 	color: #c22;
 }
 
