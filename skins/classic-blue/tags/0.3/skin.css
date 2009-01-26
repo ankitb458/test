@@ -1,0 +1,433 @@
+/*
+Skin name: Semiologic Classic (Blue)
+Version: 0.3
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+html {
+	background: #ccc;
+	color: #000;
+}
+
+#wrapper {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#wrapper_top,
+#wrapper_bottom {
+	height: 5px;
+}
+
+.mmm #wrapper {
+	background: url(images/mmm-wrapper.jpg) center repeat-y;
+}
+
+.mmm #wrapper_top {
+	background: url(images/mmm-wrapper_top.jpg) bottom center no-repeat;
+}
+
+.mmm #wrapper_bottom {
+	background: url(images/mmm-wrapper_bottom.jpg) top center no-repeat;
+}
+
+.mm #wrapper {
+	background: url(images/mm-wrapper.jpg) center repeat-y;
+}
+
+.mm #wrapper_top {
+	background: url(images/mm-wrapper_top.jpg) bottom center no-repeat;
+}
+
+.mm #wrapper_bottom {
+	background: url(images/mm-wrapper_bottom.jpg) top center no-repeat;
+}
+
+.m #wrapper {
+	background: url(images/m-wrapper.jpg) center repeat-y;
+}
+
+.m #wrapper_top {
+	background: url(images/m-wrapper_top.jpg) bottom center no-repeat;
+}
+
+.m #wrapper_bottom {
+	background: url(images/m-wrapper_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header
+ */
+
+#header {
+	background: #fff;
+	border-bottom: solid 1px #666;
+}
+
+#sitename {
+	color: #15689a;
+}
+
+
+/*
+ * Navbar
+ */
+
+#navbar {
+	background: url(images/navbar.jpg) center repeat #15689a;
+	color: #ffe;
+	border-bottom: solid 1px #666;
+}
+
+#navbar a {
+	color: #ffe;
+}
+
+#navbar a:hover {
+	color: #fdb;
+}
+
+
+/*
+ * Footer
+ */
+
+#footer {
+	background: #cadbf5;
+	color: #000;
+	border-top: solid 1px #666;
+}
+
+#footer_top,
+#footer_bottom {
+	height: 5px;
+}
+
+#footer_top {
+	background: url(images/footer_top.jpg) bottom center repeat-x;
+}
+
+#footer_bottom {
+	background: url(images/footer_bottom.jpg) top center repeat-x;
+}
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #c22;
+}
+
+
+/*
+ * Header & Footer Boxes
+ */
+
+#header_boxes {
+	border-bottom: solid 1px #666;
+}
+
+#footer_boxes {
+	border-top: solid 1px #666;
+}
+
+#header_boxes_top,
+#header_boxes_bottom,
+#footer_boxes_top,
+#footer_boxes_bottom {
+	height: 5px;
+}
+
+.mmm #header_boxes,
+.mmm #footer_boxes {
+	background: url(images/mmm-inline_boxes.jpg) center repeat-y #fcd7bd;
+}
+
+.mmm #header_boxes_top,
+.mmm #footer_boxes_top {
+	background: url(images/mmm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom,
+.mmm #footer_boxes_bottom {
+	background: url(images/mmm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #header_boxes,
+.mm #footer_boxes {
+	background: url(images/mm-inline_boxes.jpg) center repeat-y #fcd7bd;
+}
+
+.mm #header_boxes_top,
+.mm #footer_boxes_top {
+	background: url(images/mm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom,
+.mm #footer_boxes_bottom {
+	background: url(images/mm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #header_boxes,
+.m #footer_boxes {
+	background: url(images/m-inline_boxes.jpg) center repeat-y #fcd7bd;
+}
+
+.m #header_boxes_top,
+.m #footer_boxes_top {
+	background: url(images/m-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom,
+.m #footer_boxes_bottom {
+	background: url(images/m-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header and Footer Widgets
+ */
+
+.header_widget,
+.footer_widget {
+	background: #fcd7bd;
+}
+
+.header_widget {
+	border-bottom: solid 1px #666;
+}
+
+.footer_widget {
+	border-top: solid 1px #666;
+}
+
+.header_widget_top,
+.header_widget_bottom,
+.footer_widget_top,
+.footer_widget_bottom {
+	height: 5px;
+}
+
+.header_widget_top,
+.footer_widget_top {
+	background: url(images/wrapper_widget_top.jpg) bottom center repeat-x;
+}
+
+.header_widget_bottom,
+.footer_widget_bottom {
+	background: url(images/wrapper_widget_bottom.jpg) top center repeat-x;
+}
+
+
+/*
+ * Body
+ */
+
+#body {
+	background: #fff;
+}
+
+.mts #body {
+	background: url(images/mts-body.jpg) center repeat-y #fff;
+}
+
+.sms #body {
+	background: url(images/sms-body.jpg) center repeat-y #fff;
+}
+
+.tsm #body {
+	background: url(images/tsm-body.jpg) center repeat-y #fff;
+}
+
+.mms #body {
+	background: url(images/mms-body.jpg) center repeat-y #fff;
+}
+
+.smm #body {
+	background: url(images/smm-body.jpg) center repeat-y #fff;
+}
+
+.ms #body {
+	background: url(images/ms-body.jpg) center repeat-y #fff;
+}
+
+.sm #body {
+	background: url(images/sm-body.jpg) center repeat-y #fff;
+}
+
+
+/*
+ * Credits
+ */
+
+#credits {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
+/*
+ * Content
+ */
+
+h1 {
+	color: #15689a;
+}
+
+.entry_date,
+.comment_date {
+	color: #444;
+}
+
+.entry_actions p,
+.comment_actions p {
+	padding-top: 1px;
+	border-top: solid 1px #15689a;
+}
+
+blockquote {
+	background: url(icons/blockquote.gif) top left no-repeat;
+	padding: 10px 10px 10px 50px;
+	margin-left: 0px;
+}
+
+.comment_header {
+	width: 160px;
+	float: left;
+}
+
+.comment {
+	margin-left: 170px;
+}
+
+
+/*
+ * Sidebars
+ */
+
+.widget_title h2 {
+	padding-bottom: 1px;
+	border-bottom: solid 1px #15689a;
+}
+
+
+/*
+ * Calendar
+ */
+
+#wp-calendar {
+	border: solid 1px #666;
+	background: #fff;
+}
+
+#wp-calendar thead {
+	border-bottom: solid 1px #666;
+	background: #15689a;
+	color: #ffe;
+}
+
+#wp-calendar tfoot {
+	border-top: solid 1px #666;
+	background: #cadbf5;
+}
+
+#wp-calendar tfoot a {
+	color: #000;
+}
+
+#wp-calendar tfoot a:hover {
+	color: #c22;
+}
+
+
+/*
+ * Icons
+ */
+
+.header_widget ul,
+.footer_widget ul,
+.inline_box ul,
+.main_widget ul,
+.inline_widget ul,
+.post_list ul,
+.widget ul {
+	list-style-image: url(icons/file.gif);
+}
+
+.widget_categories ul,
+.widget_archive ul {
+	list-style-image: url(icons/folder.gif);
+}
+
+li.nav_home,
+li.nav_blog,
+li.nav_branch {
+	list-style-image: url(icons/folder.gif);
+}
+
+li.nav_leaf {
+	list-style-image: url(icons/file.gif);
+}
+
+.link_entry a,
+.link_comment a {
+	background: url(icons/file.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.admin_link a,
+.edit_entry a,
+.edit_comment a {
+	background: url(icons/edit.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_comment a {
+	background: url(icons/comment.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.comment_entry a,
+.reply_comment a {
+	background: url(icons/add_comment.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.email_entry a {
+	background: url(icons/email.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.print_entry a {
+	background: url(icons/print.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_tags a,
+.entry_categories a {
+	background: url(icons/folder.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
+
+.entry_author a,
+.signed_in_author a,
+.loginout a {
+	background: url(icons/user.gif) center left no-repeat;
+	padding-left: 14px;
+	padding-right: 0px;
+}
