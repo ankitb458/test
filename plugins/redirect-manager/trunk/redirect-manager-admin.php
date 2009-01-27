@@ -1,4 +1,10 @@
 <?php
+/**
+ * redirect_manager_admin class
+ *
+ * @package Redirect Manager
+ * @author Denis
+ **/
 
 class redirect_manager_admin {
 	/**
