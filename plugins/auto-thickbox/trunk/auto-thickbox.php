@@ -84,7 +84,7 @@ class auto_thickbox
 		
 		# add thickbox class
 		if ( !preg_match("/
-				(\sclass\s*=\s*(.+?))(?:$|\s[a-z]+=)
+				(\sclass\s*=\s*(.+?))(?:$|\s[a-z_]+\s*=)
 			/ix", $attr, $class)
 			)
 		{
