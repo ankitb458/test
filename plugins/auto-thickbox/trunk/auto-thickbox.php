@@ -83,9 +83,7 @@ class auto_thickbox
 		$attr = ' ' . $match[1] . $match[3] . ' ';
 		
 		# add thickbox class
-		if ( !preg_match("/
-				(\sclass\s*=\s*(.+?))(?:$|\s[a-z_]+\s*=)
-			/ix", $attr, $class)
+		if ( !preg_match("/(\sclass\s*=\s*(.+?))(?:$|\s[a-z_]+\s*=)/i", $attr, $class)
 			)
 		{
 			$attr .= ' class="thickbox noicon"';
