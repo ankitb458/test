@@ -76,7 +76,7 @@ class redirect_manager {
 		
 		if ( $location ) {
 			$caption = __('Redirects to <a href="%1$s">%2$s</a>', 'redirect-manager');
-			$content = wpautop(sprintf($caption, attribute_escape($location), $location));
+			$content = '<p>' . sprintf($caption, attribute_escape($location), $location) . '</p>';
 		}
 		
 		return $content;
