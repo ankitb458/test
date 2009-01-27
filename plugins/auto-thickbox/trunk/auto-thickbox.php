@@ -4,7 +4,7 @@ Plugin Name: Auto Thickbox
 Plugin URI: http://www.semiologic.com/software/publishing/auto-thickbox/
 Description: Automatically enables thickbox on thumbnail images (i.e. opens the images in a fancy pop-up).
 Author: Denis de Bernardy
-Version: 1.1.1 alpha
+Version: 1.1.1 beta
 Author URI: http://www.getsemiologic.com
 */
 
@@ -83,8 +83,7 @@ class auto_thickbox
 		$attr = ' ' . $match[1] . $match[3] . ' ';
 		
 		# add thickbox class
-		if ( !preg_match("/(\sclass\s*=\s*(.+?))(?:$|\s[a-z_]+\s*=)/i", $attr, $class)
-			)
+		if ( !preg_match("/(\sclass\s*=\s*(.+?))(?:$|\s[a-z_]+\s*=)/i", $attr, $class) )
 		{
 			$attr .= ' class="thickbox noicon"';
 		}
@@ -104,7 +103,7 @@ class auto_thickbox
 		
 		# add gallery rel if no rel is present
 		if ( in_the_loop()
-			&& !preg_match("/\srel\s*=\s*.+?(?:$|\s[a-z]+=)/ix", $attr, $rel)
+			&& !preg_match("/\srel\s*=\s*.+?(?:$|\s[a-z_]+\s*=)/i", $attr, $rel)
 			)
 		{
 			$attr .= ' rel="gallery-' . get_the_ID() . '"';
