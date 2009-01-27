@@ -152,7 +152,7 @@ class auto_thickbox
 	
 	function add_thickbox_images()
 	{
-		$site_url = rtrim(site_url(), '/');
+		$site_url = site_url();
 		
 		$js = <<<EOF
 
