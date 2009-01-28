@@ -17,21 +17,21 @@ class redirect_manager_admin {
 	
 	function meta_boxes() {
 		if ( current_user_can('edit_posts') )
-			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'entry_editor'), 'post');
+			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'edit_entry'), 'post');
 		
 		if ( current_user_can('edit_pages') )
-			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'entry_editor'), 'page');
+			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'edit_entry'), 'page');
 	} # meta_boxes()
 	
 	
 	/**
-	 * entry_editor($post)
+	 * edit_entry()
 	 *
-	 * @param object $post the edited post
+	 * @param object $post
 	 * @return void
 	 **/
 	
-	function entry_editor($post) {
+	function edit_entry($post) {
 		if ( $post->ID > 0 ) {
 			$value = get_post_meta($post->ID, '_redirect_url', true);
 		}
@@ -45,13 +45,13 @@ class redirect_manager_admin {
 		echo '<p>'
 			. __('Enter the url to which visitors of this entry should automatically be redirected.', 'redirect-manager')
 			. '</p>';
-	} # entry_editor()
+	} # edit_entry()
 	
 	
 	/**
-	 * save_entry($post_id)
+	 * save_entry()
 	 *
-	 * @param int $post_id the entry's ID (zero for a draft)
+	 * @param int $post_id
 	 * @return void
 	 **/
 	

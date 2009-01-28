@@ -57,7 +57,7 @@ class redirect_manager {
 	
 	
 	/**
-	 * display($content)
+	 * display()
 	 *
 	 * @param string $content the entry's content
 	 * @return string $content
