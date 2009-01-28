@@ -1,10 +1,14 @@
 <?php
+
 /**
  * redirect_manager_admin class
  *
  * @package Redirect Manager
  * @author Denis
  **/
+
+add_action('admin_menu', array('redirect_manager_admin', 'meta_boxes'));
+add_action('save_post', array('redirect_manager_admin', 'save_entry'));
 
 class redirect_manager_admin {
 	/**
@@ -74,8 +78,4 @@ class redirect_manager_admin {
 		}
 	} # save_entry()
 } # redirect_manager_admin
-
-# init
-add_action('admin_menu', array('redirect_manager_admin', 'meta_boxes'));
-add_action('save_post', array('redirect_manager_admin', 'save_entry'));
 ?>

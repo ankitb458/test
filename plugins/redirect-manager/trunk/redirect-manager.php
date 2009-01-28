@@ -20,12 +20,17 @@ http://www.mesoconcepts.com/license/
 **/
 
 
+load_plugin_textdomain('redirect-manager', null, basename(dirname(__FILE__)) . '/lang');
+
+
 /**
  * redirect_manager
  *
  * @package Redirect Manager
  * @author Denis
  **/
+
+add_action('template_redirect', array('redirect_manager', 'redirect'), -1000000);
 
 class redirect_manager {
 	/**
@@ -82,10 +87,6 @@ class redirect_manager {
 		return $content;
 	} # display()
 } # redirect_manager
-
-# init
-load_plugin_textdomain('redirect-manager', null, basename(dirname(__FILE__)) . '/lang');
-add_action('template_redirect', array('redirect_manager', 'redirect'), -1000000);
 
 if ( is_admin() )
 	include dirname(__FILE__) . '/redirect-manager-admin.php';
