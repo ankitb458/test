@@ -1,10 +1,8 @@
 <?php
-
 /**
  * redirect_manager_admin class
  *
  * @package Redirect Manager
- * @author Denis
  **/
 
 add_action('admin_menu', array('redirect_manager_admin', 'meta_boxes'));
@@ -15,7 +13,6 @@ class redirect_manager_admin {
 	 * meta_boxes()
 	 *
 	 * @return void
-	 * @author Denis
 	 **/
 	
 	function meta_boxes() {
@@ -32,7 +29,6 @@ class redirect_manager_admin {
 	 *
 	 * @param object $post the edited post
 	 * @return void
-	 * @author Denis
 	 **/
 	
 	function entry_editor($post) {
@@ -57,7 +53,6 @@ class redirect_manager_admin {
 	 *
 	 * @param int $post_id the entry's ID (zero for a draft)
 	 * @return void
-	 * @author Denis
 	 **/
 	
 	function save_entry($post_id) {

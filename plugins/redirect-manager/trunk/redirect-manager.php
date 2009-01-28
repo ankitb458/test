@@ -27,7 +27,6 @@ load_plugin_textdomain('redirect-manager', null, basename(dirname(__FILE__)) . '
  * redirect_manager
  *
  * @package Redirect Manager
- * @author Denis
  **/
 
 add_action('template_redirect', array('redirect_manager', 'redirect'), -1000000);
@@ -37,7 +36,6 @@ class redirect_manager {
 	 * redirect()
 	 *
 	 * @return void
-	 * @author Denis
 	 **/
 	
 	function redirect() {
@@ -63,7 +61,6 @@ class redirect_manager {
 	 *
 	 * @param string $content the entry's content
 	 * @return string $content
-	 * @author Denis
 	 **/
 	
 	function display($content) {
