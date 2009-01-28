@@ -36,8 +36,6 @@ class redirect_manager {
 	/**
 	 * redirect()
 	 *
-	 * Perform a redirect
-	 *
 	 * @return void
 	 * @author Denis
 	 **/
@@ -63,8 +61,6 @@ class redirect_manager {
 	/**
 	 * display($content)
 	 *
-	 * Replace the content with a link to where the entry will perform a redirect
-	 *
 	 * @param string $content the entry's content
 	 * @return string $content
 	 * @author Denis
@@ -77,7 +73,6 @@ class redirect_manager {
 		global $wp_query;
 		$post_id = $wp_query->get_queried_object_id();
 		$location = get_post_meta($post_id, '_redirect_url', true);
-		$location = clean_url($location);
 		
 		if ( $location ) {
 			$caption = __('Redirects to <a href="%1$s">%2$s</a>', 'redirect-manager');

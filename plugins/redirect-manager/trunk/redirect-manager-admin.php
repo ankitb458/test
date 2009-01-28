@@ -14,9 +14,8 @@ class redirect_manager_admin {
 	/**
 	 * meta_boxes()
 	 *
-	 * adds meta boxes to post and page editors
-	 *
 	 * @return void
+	 * @author Denis
 	 **/
 	
 	function meta_boxes() {
