@@ -444,13 +444,19 @@ h2 a {
 /* mediacaster */
 
 div.media,
-div.enclosures
-{
+div.enclosures {
 	margin: .5em 0px;
 }
 
-div.media
-{
+div.media {
 	text-align: center;
 }
 
+
+/* entry_author_image */
+
+.entry .entry_author_image {
+	float: left;
+	border: outset 1px;
+	margin: 1.2em 1.2em 0px .1em;
+}
