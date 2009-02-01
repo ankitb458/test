@@ -2,7 +2,7 @@
 #
 # hub.org WP/Sem Pro utils
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.5 alpha
+# Version: 0.5
 # http://www.mesoconcepts.com/license/
 #
 
@@ -343,7 +343,6 @@ then
 		dbn=${dbn/\/public_html/}
 		dbn=${dbn/\/htdocs/}
 		dbn=${dbn//[![a-zA-Z]/_}
-		echo $dbn
 	fi
 	
 	if [ "$dbu" = '' ];
