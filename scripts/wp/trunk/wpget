@@ -1,0 +1,199 @@
+#!/bin/sh
+#
+# WP/Sem Pro package regenerator
+# Author: Denis de Bernardy <http://www.mesoconcepts.com>
+# Version: 0.1
+# http://www.mesoconcepts.com/license/
+#
+
+# fetch path
+if [ $USER = 'root' ];
+then
+	path=/usr/local
+else
+	path=$HOME
+fi
+
+path=`cd $path && pwd`
+path=${path%/}
+
+
+# validate path
+if [ ! -w $path ];
+then
+	echo "Err: $path is not writable"
+	exit 1
+fi
+
+
+# fetch unzip method
+if [ -x /usr/bin/unzip -o -x /usr/local/bin/unzip ];
+then
+	cmd=unzip
+else
+	cmd='tar -xf'
+fi
+
+
+# inititialize
+wp_core="wordpress"
+wp_themes=
+wp_plugins="auto-thickbox archive-widgets sem-external-links sem-admin-menu sem-author-image sem-autolink-uri sem-dofollow sem-fancy-excerpt sem-frame-buster sem-opt-in-front link-widgets uploads-folder text-widgets xml-sitemaps"
+sem_themes="sem-reloaded"
+sem_plugins=
+
+# debug
+wp_core=
+wp_plugins=
+
+
+cwd=$PWD
+
+dir=`uuidgen`
+
+touch ~/.wpget
+touch ~/.wpget.$dir
+
+trap "cd $cwd; rm -Rf /tmp/$dir 2> /dev/null; rm -f ~/.wpget.$dir 2> /dev/null" EXIT
+
+
+# wp_core
+for package in $wp_core;
+do
+	# debug
+	case $package
+	in
+		wordpress )
+			service=http://api.wordpress.org/core/version-check/1.3/
+			response=`curl -s --connect-timeout 3 -f $service`
+			sleep .2
+			
+			if [ "$response" = '' ];
+			then
+				echo "Err: $service returned an invalid response."
+				exit 1
+			fi
+	
+			echo "wordpress,`echo $response | cut -d ' ' -f 4`,`echo $response | cut -d ' ' -f 3`" >> ~/.wpget.$dir
+			;;
+		* )
+			continue
+			;;
+	esac
+done
+
+
+# wp_themes
+args=
+service=http://api.wordpress.org/themes/update-check/1.0/
+
+for package in $wp_themes;
+do
+	args=`echo $args "'$package' => array('Name' => '$package', 'Title' => '$package', 'Template' => '$package', 'Stylesheet' => '$package'), "`
+done
+
+if [ "$args" != '' ];
+then
+	args=`echo '$send =' "array($args);" '$send['current_theme'] = (object) null; echo "themes=" . urlencode(serialize($send));'`
+	args=`php -r "$args"`
+	
+	response=`curl -s --connect-timeout 3 -f $service -d "$args"`
+	sleep .2
+	
+	response=`echo '$themes =' "unserialize('$response');" 'foreach ( $themes as $theme_slug => $theme ) { echo preg_replace("|[^a-z0-9_-]|", "", $theme_slug) . "," . preg_replace("|[^0-9\.]|", "", $theme["new_version"]) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $theme["package"]) . " "; }'`
+	response=`php -r "$response"`
+	
+	for details in $response;
+	do
+		echo $details >> ~/.wpget.$dir
+	done
+fi
+
+
+# wp_plugins
+args=
+service=http://api.wordpress.org/plugins/update-check/1.0/
+
+for package in $wp_plugins;
+do
+	args=`echo $args "'$package/$package.php' => array('Name' => '$package'), "`
+done
+
+if [ "$args" != '' ];
+then
+	args=`echo '$plugins =' "array($args);" '$send = (object) null; $send->plugins=$plugins; $send->active=array(); echo "plugins=" . urlencode(serialize($send));'`
+	args=`php -r "$args"`
+	
+	response=`curl -s --connect-timeout 3 -f $service -d "$args"`
+	sleep .2
+			
+	if [ "$response" = '' ];
+	then
+		echo "Err: $service returned an invalid response."
+		exit 1
+	fi
+	
+	response=`echo '$plugins =' "unserialize('$response');" 'foreach ( $plugins as $plugin ) { echo preg_replace("|[^a-z0-9_-]|", "", $plugin->slug) . "," . preg_replace("|[^0-9\.]|", "", $plugin->new_version) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $plugin->package) . " "; }'`
+	response=`php -r "$response"`
+	
+	for details in $response;
+	do
+		echo $details >> ~/.wpget.$dir
+	done
+fi
+
+
+# Repackage if necessary
+cmp ~/.wpget ~/.wpget.$dir 2> /dev/null
+
+if [ $? -eq 0 ];
+then
+	# no diff
+	exit 0
+fi
+
+
+echo "Repackaging $path/wordpress ..."
+
+mkdir -p /tmp/$dir
+cd /tmp/$dir
+
+
+# wp_core
+for package in $wp_core;
+do
+	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+	curl -s --connect-timeout 3 -f $url -o /tmp/$dir/wordpress.zip		|| exit 1
+	$cmd /tmp/$dir/wordpress.zip 1> /dev/null							|| exit 1
+	rm -f /tmp/$dir/wordpress.zip 2> /dev/null
+done
+
+
+# wp_themes
+for package in $wp_themes;
+do
+	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+	curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
+	$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
+	rm -f /tmp/$dir/$package.zip 2> /dev/null
+done
+
+
+# wp_plugins
+for package in $wp_plugins;
+do
+	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+	curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
+	$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/plugins/$package 2> /dev/null
+	rm -f /tmp/$dir/$package.zip 2> /dev/null
+done
+
+
+# overwrite existing package
+rm -Rf $path/wordpress 2> /dev/null
+mv /tmp/$dir/wordpress $path/wordpress 2> /dev/null
+mv ~/.wpget.$dir ~/.wpget
+
+exit 0

@@ -1,0 +1,417 @@
+#!/bin/sh
+#
+# hub.org WP/Sem Pro utils
+# Author: Denis de Bernardy <http://www.mesoconcepts.com>
+# Version: 0.5 alpha
+# http://www.mesoconcepts.com/license/
+#
+
+
+# init
+force=0
+all=0
+
+# extract command
+if [ $# -lt 1 ];
+then
+	cmd=help
+else
+	cmd=$1
+	shift
+fi
+
+
+# extract args
+while [ $# -gt 0 ];
+do
+	if [ $1 != ${1#-} ];
+	then
+		case $1
+		in
+			'-a' )
+				shift
+				all=1
+				;;
+			'-s' )
+				shift
+				src=$1
+				;;
+			'-n' )
+				shift
+				dbn=$1
+				;;
+			'-h' )
+				shift
+				dbh=$1
+				;;
+			'-u' )
+				shift
+				dbu=$1
+				;;
+			'-p' )
+				shift
+				dbp=$1
+				;;
+			'--force' )
+				force=1
+				;;
+			* )
+				echo "Invalid option ($1). Type: wp help $cmd"
+				exit
+				;;
+		esac
+	else
+		case $cmd
+		in
+			'help' )
+				help=$1
+				;;
+			
+			* )
+				path=$1
+				;;
+		esac
+	fi
+	
+	shift
+done
+
+
+# validate command
+case $cmd
+in
+	'in' | 'install' )
+		cmd=install
+		;;
+	'up' | 'upgrade' )
+		cmd=upgrade
+		;;
+	'permissions' | 'perms' )
+		cmd=perms
+		;;
+	'help' )
+		case $help
+		in
+			'in' | 'install' )
+			echo 'Creates a new WP/Sem Pro installation'
+			echo
+			echo 'Usage: wp install [options] [path]'
+			echo
+			echo 'Path defaults to the current path'
+			echo
+			echo 'Options include:'
+			echo
+			echo '--force	Force installation'
+			echo
+			echo '-s	Path to a valid source'
+			echo   '	Default: ~owner/wordpress, fallbacks to /usr/local/wordpress'
+			echo
+			echo '-n	Database name'
+			echo   '	Default: subdomain_domain_com for subdomain.domain.com'
+			echo
+			echo '-h	Database host'
+			echo   '	127.0.0.1'
+			echo
+			echo '-u	Database user'
+			echo   '	Default: root'
+			echo
+			echo '-p	Database pass'
+			echo   '	Default: empty string'
+			;;
+			
+			'up' | 'upgrade' )
+			echo 'Upgrades an existing WP/Sem Pro installation'
+			echo
+			echo 'Usage: wp upgrade [options] [path]'
+			echo
+			echo 'Path defaults to the current path'
+			echo
+			echo 'Options include:'
+			echo
+			echo '-s	Path to a valid source'
+			echo   '	Default: ~owner/wordpress, fallbacks to /usr/local/wordpress'
+			echo
+			echo '-a	Process all known installations (overrides the path and all options)'
+			;;
+			
+			'perms' | 'permissions' )
+			echo 'Checks and sets WP/Sem Pro file and folder permissions (e.g. for a moved site)'
+			echo
+			echo 'Usage: wp perms [options] [path]'
+			echo
+			echo 'Path defaults to the current path'
+			echo
+			echo 'Options include:'
+			echo
+			echo '-a	Process all known installations (overrides the path and all options)'
+			;;
+			
+			* )
+			echo 'Usage: wp command args'
+			echo
+			echo 'Where command can be:'
+			echo
+			echo '- install (in)'
+			echo '- upgrade (up)'
+			echo '- permissions (perms)'
+			echo
+			echo 'For help on an individual command, type: wp help command'
+			;;
+		esac
+		
+		echo
+		exit 0
+		;;
+	
+	* )
+		echo 'Invalid command. Type: wp help'
+		exit 1
+		;;
+esac
+
+
+# default path
+if [ "$path" = '' ];
+then
+	path=$PWD
+fi
+
+
+# check path
+if [ ! -d $path ];
+then
+	echo "Err: $path folder does not exist"
+	exit 1
+elif [ ! -w $path ];
+then
+	echo "Err: $path is not writable"
+	exit 1
+fi
+
+
+# process all
+if [ "$cmd" != 'install' -a $all -eq 1 ];
+then
+	touch cat ~/.wp
+	
+	# dump non-valid installs
+	tmp=`uuidgen`
+	cp /dev/null ~/.wp.$tmp
+	
+	for path in `cat ~/.wp`
+	do
+		if [ "$path" != '' -a -f $path/wp-config.php ];
+		then
+			echo $path >> ~/.wp.$tmp
+		fi
+	done
+	
+	cp ~/.wp.$tmp ~/.wp
+	rm ~/.wp.$tmp
+	
+	for path in `cat ~/.wp 2> /dev/null`
+	do
+		wp $cmd $path -s $src || exit 1
+	done
+	
+	exit 0
+fi
+
+
+# sanitize path
+path=`cd $path && pwd`
+
+# owner and owner_home
+owner=`stat --format '%U' $path 2> /dev/null || stat -f '%Su' $path 2> /dev/null`
+owner_home=`eval "cd ~$owner && pwd"`
+
+path=${path%/}
+owner_home=${owner_home%/}
+
+
+# default source
+if [ "$src" = '' ];
+then
+	if [ -d $owner_home/wordpress ];
+	then
+		src=$owner_home/wordpress
+	elif [ -d /usr/local/wordpress ];
+	then
+		src=/usr/local/wordpress
+	else
+		zip_found=0
+		for package in $owner_home/wordpress.zip $owner_home/sem-pro.zip $owner_home/sem-pro-bleeding.zip  $owner_home/sem-pro-reloaded.zip;
+		do
+			if [ -f $package ];
+			then
+				zip_found=1
+				break
+			fi
+		done
+		
+		if [ $zip_found -eq 1 ];
+		then
+			# fetch unzip method
+			if [ -x /usr/bin/unzip -o -x /usr/local/bin/unzip ];
+			then
+				cmd=unzip
+			else
+				cmd='tar -xf'
+			fi
+			
+			$cmd $package 1> /dev/null							|| exit 1
+		fi
+		
+		if [ -d $owner_home/wordpress ];
+		then
+			src=$owner_home/wordpress
+		else
+			echo "Err: Neither $owner_home/wordpress nor /usr/local/wordpress are a valid source"
+			exit 1
+		fi
+	fi
+fi
+
+
+# sanitize src
+src=`cd $src && pwd`
+src=${src%/}
+
+# validate source
+if [ "$cmd" != 'perms' ];
+then
+	if [ ! -d $src -o ! -f $src/wp-config-sample.php -o -e $src/wp-config.php ];
+	then
+		echo "Err: $src is not a valid WP/Sem Pro source"
+		exit 1
+	fi
+fi
+
+
+# validate folder
+if [ "$cmd" != 'install' ];
+then
+	if [ ! -f $path/wp-config.php ];
+	then
+		echo "Err: $path is not a valid WP/Sem Pro installation"
+		exit 1
+	fi
+fi
+
+
+# check for existing files
+if [ "$cmd" = 'install' -a $force -ne 1 -a "`ls -A $path`" != '' ];
+then
+	echo "$path is not empty. Use --force to force the installation."
+	exit 1
+fi
+
+
+# copy files
+if [ "$cmd" != 'perms' ];
+then
+	echo "Copying $src to $path"
+	cp -R $src/* $path/.
+fi
+
+
+# create .htaccess file
+if [ ! -e $path/.htaccess ];
+then
+	echo "Creating $path/.htaccess"
+	touch $path/.htaccess
+fi
+
+
+# create config file
+if [ "$cmd" = 'install' -a ! -e $path/wp-config.php ];
+then
+	echo "Creating $path/wp-config.php"
+	
+	if [ "$dbh" = '' ];
+	then
+		dbh=127.0.0.1
+	fi
+	
+	if [ "$dbn" = '' ];
+	then
+		dbn=$path
+		dbn=${dbn#/usr/local/www/}
+		dbn=${dbn#/home/}
+		dbn=${dbn##/}
+		dbn=${dbn/\/www/}
+		dbn=${dbn/\/public_html/}
+		dbn=${dbn/\/htdocs/}
+		dbn=${dbn//[![a-zA-Z]/_}
+		echo $dbn
+	fi
+	
+	if [ "$dbu" = '' ];
+	then
+		dbu=root
+	fi
+	
+	if [ "$dbp" = '' ];
+	then
+		dbp=''
+	fi
+	
+	secret1=`uuidgen`
+	secret2=`uuidgen`
+	secret3=`uuidgen`
+	secret4=`uuidgen`
+	
+	cat $path/wp-config-sample.php \
+		| sed "s/define('DB_NAME', 'putyourdbnamehere');/define('DB_NAME', '$dbn');/" \
+		| sed "s/define('DB_USER', 'usernamehere');/define('DB_USER', '$dbu');/" \
+		| sed "s/define('DB_PASSWORD', 'yourpasswordhere');/define('DB_PASSWORD', '$dbp');/" \
+		| sed "s/define('DB_HOST', 'localhost');/define('DB_HOST', '$dbh');/" \
+		| sed "s/define('AUTH_KEY', 'put your unique phrase here');/define('AUTH_KEY', '$secret1');/" \
+		| sed "s/define('SECURE_AUTH_KEY', 'put your unique phrase here');/define('SECURE_AUTH_KEY', '$secret2');/" \
+		| sed "s/define('LOGGED_IN_KEY', 'put your unique phrase here');/define('LOGGED_IN_KEY', '$secret3');/" \
+		| sed "s/define('NONCE_KEY', 'put your unique phrase here');/define('NONCE_KEY', '$secret4');/" \
+		> $path/wp-config.php
+fi
+
+
+# change perms
+echo "Setting $path permissions"
+
+chown -R $owner $path
+
+chmod ugo+w $path/.htaccess
+chmod ugo+w $path/wp-config.php
+chmod ugo+w $path/wp-content
+
+for dir in	media \
+			wp-content/authors \
+			wp-content/backup-* \
+			wp-content/cache \
+			wp-content/header \
+			wp-content/sitemaps \
+			wp-content/uploads
+do
+	chmod -R ugo+w $path/$dir 2> /dev/null
+done
+
+
+# register folder
+touch ~/.wp
+touch $owner_home/.wp
+chown $owner $owner_home/.wp
+
+grep "$path" ~/.wp 1> /dev/null
+
+if [ $? -ne 0 ];
+then
+	echo "$path" >> ~/.wp
+fi
+
+grep "$path" $owner_home/.wp 1> /dev/null
+
+if [ $? -ne 0 ];
+then
+	echo "$path" >> $owner_home/.wp
+fi
+
+exit 0
