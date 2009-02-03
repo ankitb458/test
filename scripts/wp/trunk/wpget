@@ -42,10 +42,6 @@ wp_plugins="auto-thickbox archive-widgets sem-external-links sem-admin-menu sem-
 sem_themes="sem-reloaded"
 sem_plugins=
 
-# debug
-wp_core=
-wp_plugins=
-
 
 cwd=$PWD
 
