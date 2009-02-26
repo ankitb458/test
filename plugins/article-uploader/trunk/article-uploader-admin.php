@@ -119,7 +119,8 @@ EOF;
 			
 			if ( $file_name = $_FILES['upload_article']['name'] )
 			{
-				$ext = pathinfo($file_name, PATHINFO_EXTENSION);
+				preg_match("/\.(.+?)$/i", $file_name, $ext);
+				$ext = end($ext);
 				
 				switch ( strtolower($ext) )
 				{
