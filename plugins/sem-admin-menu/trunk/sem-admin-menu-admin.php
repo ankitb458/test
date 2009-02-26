@@ -1,104 +1,102 @@
 <?php
+/**
+ * sem_amdin_menu_admin
+ *
+ * @package Admin Menu
+ **/
 
-class sem_admin_menu_admin
-{
-	#
-	# init()
-	#
+add_action('submitpage_box', array('sem_admin_menu_admin', 'set_parent_id'), 0);
 
-	function init()
-	{
-		add_action('admin_menu', array('sem_admin_menu_admin', 'add_admin_page'));
-	} # init()
+add_action('admin_menu', array('sem_admin_menu_admin', 'admin_menu'));
+add_action('settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'));
 
-
-	#
-	# add_admin_page()
-	#
-
-	function add_admin_page()
-	{
-		if ( !function_exists('get_site_option') )
-		{
-			add_options_page(
-				__('Admin&nbsp;Menu', 'sem-admin-menu'),
-				__('Admin&nbsp;Menu', 'sem-admin-menu'),
-				'manage_options',
-				__FILE__,
-				array('sem_admin_menu_admin', 'display_admin_page')
-				);
+class sem_admin_menu_admin {
+	/**
+	 * set_parent_id()
+	 *
+	 * @return void
+	 **/
+	
+	function set_parent_id() {
+		if ( isset($_GET['parent_id'])
+			&& strpos($_SERVER['REQUEST_URI'], 'wp-admin/page-new.php') !== false
+			) {
+			global $post;
+			
+			$post->post_parent = intval($_GET['parent_id']);
 		}
-	} # end add_admin_page()
+	} # set_parent_id()
+	
+	
+	/**
+	 * admin_menu()
+	 *
+	 * @return void
+	 **/
+	
+	function admin_menu() {
+		add_options_page(
+			__('Admin&nbsp;Menu', 'sem-admin-menu'),
+			__('Admin&nbsp;Menu', 'sem-admin-menu'),
+			'manage_options',
+			'admin-menu',
+			array('sem_admin_menu_admin', 'edit_options')
+			);
+	} # admin_menu()
+	
+	
+	/**
+	 * save_options()
+	 *
+	 * @return void
+	 **/
 
-
-	#
-	# update_options()
-	#
-
-	function update_options()
-	{
+	function save_options() {
+		if ( !$_POST ) return;
+		
 		check_admin_referer('admin_menu');
 		
-		#echo '<pre>';
-		#var_dump($_POST);
-		#echo '</pre>';
-
 		$options = array(
 			'always_on' => isset($_POST['always_on'])
 			);
-
-		update_option('sem_admin_menu_params', $options);
-	} # end update_options()
-
-
-	#
-	# display_admin_page()
-	#
-
-	function display_admin_page()
-	{
-		echo '<form method="post" action="">';
-
-		if ( function_exists('wp_nonce_field') ) wp_nonce_field('admin_menu');
-
-		if ( $_POST['update_admin_menu_options'] )
-		{
-			echo "<div class=\"updated\">\n"
-				. "<p>"
-					. "<strong>"
-					. __('Settings saved.', 'sem-admin-menu')
-					. "</strong>"
-				. "</p>\n"
-				. "</div>\n";
-		}
-	?><div class="wrap">
-		<h2><?php echo __('Admin Menu Settings', 'sem-admin-menu'); ?></h2>
-	<?php
-		if ( $_POST['update_admin_menu_options'] )
-		{
-			sem_admin_menu_admin::update_options();
-		}
-
-	?><input type="hidden" name="update_admin_menu_options" value="1" />
-	<?php
-		$options = get_option('sem_admin_menu_params');
-
-		if ( !$options )
-		{
-			$options = array(
-				'always_on' => true
-				);
-
-			update_option('sem_admin_menu_params', $options);
-		}
-
-		echo '<table class="form-table">';
 		
-		echo '<tr><td>'
+		update_option('sem_admin_menu', $options);
+		
+		echo '<div class="updated fade">' . "\n"
+			. '<p>'
+				. '<strong>'
+				. __('Settings saved.', 'sem-admin-menu')
+				. '</strong>'
+			. '</p>' . "\n"
+			. '</div>' . "\n";
+	} # save_options()
+	
+	
+	/**
+	 * edit_options()
+	 *
+	 * @return void
+	 **/
+
+	function edit_options()
+	{
+		echo '<div class="wrap">' . "\n"
+			. '<form method="post" action="">';
+
+		wp_nonce_field('admin_menu');
+
+		echo '<h2>' . __('Admin Menu Settings', 'sem-admin-menu') . '</h2>' . "\n";
+		
+		$options = sem_admin_menu::get_options();
+		
+		echo '<table class="form-table">' . "\n";
+		
+		echo '<tr>' . "\n"
+			. '<td>'
 			. '<label for="always_on">'
 			. '<input type="checkbox"'
 				. ' id="always_on" name="always_on"'
-				. ( ( !isset($options['always_on']) || $options['always_on'] )
+				. ( $options['always_on']
 				? ' checked="checked"'
 				: ''
 				)
@@ -106,27 +104,19 @@ class sem_admin_menu_admin
 			. '&nbsp;'
 			. __('Display a menu bar with a login link when I am logged out.', 'sem-admin-menu')
 			. '</label>'
-			. '</td></tr>';
+			. '</td>' . "\n"
+			. '</tr>' . "\n";
 		
-		echo '</table>';
+		echo '</table>' . "\n";
 
 		echo '<p class="submit">'
 			. '<input type="submit"'
-				. ' value="' . attribute_escape(__('Save Changes')) . '"'
+				. ' value="' . attribute_escape(__('Save Changes', 'sem-admin-menu')) . '"'
 				. ' />'
 			. '</p>' . "\n";
 		
-		if ( get_option('users_can_register') )
-		{
-			echo '<p>'
-				. '<strong>Notice</strong>: anyone can currently register on your site. The above option will be ignored as a result. To turn registrations off, browse Settings / General.'
-				. '</p>' . "\n";
-		}
-		
 		echo '</form>' . "\n"
 			. '</div>' . "\n";
-	} # end display_admin_page()
+	} # edit_options()
 } # sem_admin_menu_admin
-
-sem_admin_menu_admin::init();
 ?>

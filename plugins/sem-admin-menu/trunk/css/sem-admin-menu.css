@@ -34,37 +34,37 @@ body {
 
 #am .am_new
 {
-	background: url(new_file.gif) center left no-repeat;
+	background: url(../icons/new_file.gif) center left no-repeat;
 	padding-left: 14px;
 }
 
 #am .am_manage
 {
-	background: url(edit.gif) center left no-repeat;
+	background: url(../icons/edit.gif) center left no-repeat;
 	padding-left: 14px;
 }
 
 #am .am_comments
 {
-	background: url(comment.gif) center left no-repeat;
+	background: url(../icons/comment.gif) center left no-repeat;
 	padding-left: 14px;
 }
 
 #am .am_options
 {
-	background: url(options.gif) center left no-repeat;
+	background: url(../icons/options.gif) center left no-repeat;
 	padding-left: 14px;
 }
 
 #am .am_dashboard
 {
-	background: url(activity.gif) center left no-repeat;
+	background: url(../icons/activity.gif) center left no-repeat;
 	padding-left: 14px;
 }
 
 #am .am_user
 {
-	background: url(user.gif) center left no-repeat;
+	background: url(../icons/user.gif) center left no-repeat;
 	padding-left: 14px;
 }
 
