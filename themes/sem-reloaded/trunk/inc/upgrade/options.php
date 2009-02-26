@@ -5,6 +5,12 @@
 
 function sem_clean_up_options()
 {
+	$role = get_role('administrator');
+
+	$role->add_cap('edit_files', true);
+	$role->add_cap('edit_themes', true);
+	$role->add_cap('edit_plugins', true);
+	
 	global $wpdb;
 	$active_plugins = get_option('active_plugins');
 
