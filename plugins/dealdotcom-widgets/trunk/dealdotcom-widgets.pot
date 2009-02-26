@@ -1,0 +1,39 @@
+#  Dealdotcom Widgets pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the  Dealdotcom Widgets package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version:  1.2 alpha\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-02-26 12:51+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: dealdotcom-widgets-admin.php:73
+msgid "Affiliate ID"
+msgstr ""
+
+#: dealdotcom-widgets-admin.php:97
+msgid "Add nofollow"
+msgstr ""
+
+#: dealdotcom-widgets.php:46
+msgid "Dealdotcom's deal of the day"
+msgstr ""
+
+#: dealdotcom-widgets.php:55 dealdotcom-widgets.php:56
+#: dealdotcom-widgets.php:62 dealdotcom-widgets.php:63
+msgid "Dealdotcom"
+msgstr ""
+
+#: dealdotcom-widgets.php:91
+#, php-format
+msgid "Your <a href=\"%s\">dealdotcom</a> affiliate ID is not configured."
+msgstr ""

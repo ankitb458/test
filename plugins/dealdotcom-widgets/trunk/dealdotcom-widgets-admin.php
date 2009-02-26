@@ -1,12 +1,19 @@
 <?php
-class dealdotcom_admin
-{
-	#
-	# widget_control()
-	#
+/**
+ * dealdotcom_admin
+ *
+ * @package DealDotCom Widgets
+ **/
 
-	function widget_control($widget_args)
-	{
+class dealdotcom_admin {
+	/**
+	 * widget_control()
+	 *
+	 * @param array $widget_args Widget arguments
+	 * @return void
+	 **/
+
+	function widget_control($widget_args) {
 		global $wp_registered_widgets;
 		static $updated = false;
 
@@ -14,11 +21,10 @@ class dealdotcom_admin
 			$widget_args = array( 'number' => $widget_args );
 		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
 		extract( $widget_args, EXTR_SKIP ); // extract number
-
+		
 		$options = dealdotcom::get_options();
-
-		if ( !$updated && !empty($_POST['sidebar']) )
-		{
+		
+		if ( !$updated && !empty($_POST['sidebar']) ) {
 			$sidebar = (string) $_POST['sidebar'];
 
 			$sidebars_widgets = wp_get_sidebars_widgets();
@@ -28,12 +34,10 @@ class dealdotcom_admin
 			else
 				$this_sidebar = array();
 
-			foreach ( $this_sidebar as $_widget_id )
-			{
+			foreach ( $this_sidebar as $_widget_id ) {
 				if ( array('dealdotcom', 'display_widget') == $wp_registered_widgets[$_widget_id]['callback']
 					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
-					)
-				{
+				) {
 					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
 					if ( !in_array( "dealdotcom-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
 						unset($options[$widget_number]);
@@ -51,13 +55,10 @@ class dealdotcom_admin
 			$updated = true;
 		}
 
-		if ( -1 == $number )
-		{
+		if ( -1 == $number ) {
 			$ops = dealdotcom::default_options();
 			$number = '%i%';
-		}
-		else
-		{
+		} else {
 			$ops = $options[$number];
 		}
 		
@@ -69,7 +70,7 @@ class dealdotcom_admin
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<label>'
 			. '<a href="http://go.semiologic.com/dealdotcom" target="_blank">'
-				. __('Affiliate ID', 'dealdotcom')
+				. __('Your DealDotCom Affiliate ID', 'dealdotcom')
 				. '</a>'
 				. ':'
 				. '<br />'
