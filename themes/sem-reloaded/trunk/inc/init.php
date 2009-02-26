@@ -223,4 +223,12 @@ elseif ( version_compare($GLOBALS['sem_options']['version'], sem_version, '<') |
 {
 	include sem_path . '/inc/upgrade.php';
 }
+
+
+#
+# override WP 2.7 comment options
+#
+
+add_filter('option_page_comments', 'false');
+add_filter('option_thread_comments', 'false');
 ?>
