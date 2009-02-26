@@ -36,8 +36,8 @@ class sem_admin_menu_admin {
 	
 	function admin_menu() {
 		add_options_page(
-			__('Admin&nbsp;Menu', 'sem-admin-menu'),
-			__('Admin&nbsp;Menu', 'sem-admin-menu'),
+			__('Admin Menu', 'sem-admin-menu'),
+			__('Admin Menu', 'sem-admin-menu'),
 			'manage_options',
 			'admin-menu',
 			array('sem_admin_menu_admin', 'edit_options')

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  5.2 alpha\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-02-26 13:29+0100\n"
+"POT-Creation-Date: 2009-02-26 13:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: sem-admin-menu-admin.php:39 sem-admin-menu-admin.php:40
-msgid "Admin&nbsp;Menu"
+msgid "Admin Menu"
 msgstr ""
 
 #: sem-admin-menu-admin.php:68
