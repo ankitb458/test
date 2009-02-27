@@ -119,7 +119,7 @@ EOF;
 			
 			if ( $file_name = $_FILES['upload_article']['name'] )
 			{
-				preg_match("/\.(.+?)$/i", $file_name, $ext);
+				preg_match("/\.([^.]+)$/", $file_name, $ext);
 				$ext = end($ext);
 				
 				switch ( strtolower($ext) )

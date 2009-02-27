@@ -75,7 +75,7 @@ class sem_header
 
 		if ( $header = sem_header::get_header() )
 		{
-			preg_match("/\.(.+?)$/i", $header, $ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = end($ext);
 			
 			$flash = ( $ext == 'swf' );
@@ -222,7 +222,7 @@ class sem_header
 			$background = false;
 			$flash = false;
 			
-			preg_match("/\.(.+?)$/i", $header, $ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = end($ext);
 			
 			$flash = ( $ext == 'swf' );
@@ -348,7 +348,7 @@ class sem_header
 		
 		if ( $header = sem_header::get_header() )
 		{
-			preg_match("/\.(.+?)$/i", $header, $ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = end($ext);
 			
 			if ( $flash = ( $ext == 'swf' ) )
@@ -634,7 +634,7 @@ EOF;
 		{
 			$name = basename($header);
 			
-			preg_match("/\.(.+?)$/i", $name, $ext);
+			preg_match("/\.([^.]+)$/", $name, $ext);
 			$ext = end($ext);
 
 			$name = str_replace('.' . $ext, '', $name);

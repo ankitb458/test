@@ -57,7 +57,7 @@ class sem_admin_menu {
 		
 		$user = wp_get_current_user();
 
-		$site_url = trailingslashit(site_url(null, 'admin'));
+		$site_url = trailingslashit(admin_url());
 
 		$options = sem_admin_menu::get_options();
 

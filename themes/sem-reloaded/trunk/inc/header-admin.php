@@ -251,7 +251,7 @@ class sem_header_admin
 
 		if ( $header )
 		{
-			preg_match("/\.(.+?)$/i", $header, $ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = end($ext);
 
 			if ( $ext != 'swf' )
@@ -412,7 +412,7 @@ class sem_header_admin
 
 			$tmp_name =& $_FILES['header_file']['tmp_name'];
 			
-			preg_match("/\.(.+?)$/i", $_FILES['header_file']['name'], $ext);
+			preg_match("/\.([^.]+)$/", $_FILES['header_file']['name'], $ext);
 			$ext = end($ext);
 			$ext = strtolower($ext);
 
@@ -450,7 +450,7 @@ class sem_header_admin
 
 		if ( $header = sem_header::get_header() )
 		{
-			preg_match("/\.(.+?)$/i", $header, $ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = end($ext);
 
 			if ( $ext == 'swf' && $_POST['header']['mode'] == 'background' )
@@ -503,7 +503,7 @@ class sem_header_admin
 
 		if ( $header )
 		{
-			preg_match("/\.(.+?)$/i", $header, $ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = end($ext);
 			
 			echo '<div style="overflow: hidden;">';
@@ -618,7 +618,7 @@ class sem_header_admin
 
 			$tmp_name =& $_FILES['header_file']['tmp_name'];
 			
-			preg_match("/\.(.+?)$/i", $_FILES['header_file']['name'], $ext);
+			preg_match("/\.([^.]+)$/", $_FILES['header_file']['name'], $ext);
 			$ext = end($ext);
 
 			if ( !in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'swf')) )
