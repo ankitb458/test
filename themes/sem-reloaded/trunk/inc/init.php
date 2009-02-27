@@ -167,7 +167,7 @@ if ( isset($_GET['send_diagnosis']) )
 
 if ( is_admin() && $_GET['page'] == 'wizards/upgrade.php' )
 {
-	wp_redirect(trailingslashit(get_option('siteurl')) . 'wp-admin/');
+	wp_redirect(trailingslashit(site_url()) . 'wp-admin/');
 	die;
 }
 

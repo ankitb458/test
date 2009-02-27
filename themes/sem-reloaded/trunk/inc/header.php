@@ -399,7 +399,7 @@ EOF;
 					break;
 				}
 
-				$site_url = trailingslashit(get_option('siteurl'));
+				$site_url = trailingslashit(site_url());
 				$header_url = str_replace(ABSPATH, $site_url, $header);
 
 				list($header_width, $header_height) = getimagesize($header);
@@ -427,7 +427,7 @@ EOF;
 
 		if ( !$header ) return '';
 		
-		$site_url = trailingslashit(get_option('siteurl'));
+		$site_url = trailingslashit(site_url());
 
 		list($width, $height) = getimagesize($header);
 
@@ -454,7 +454,7 @@ EOF;
 		if ( !$header ) return '';
 		
 		$id = 'h' . md5($header);
-		$site_url = trailingslashit(get_option('siteurl'));
+		$site_url = trailingslashit(site_url());
 
 		list($width, $height) = getimagesize($header);
 

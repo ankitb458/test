@@ -183,7 +183,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 	if ( get_option('comment_registration') && !$user_ID )
 	{
-		$login_url = trailingslashit(get_option('siteurl'))
+		$login_url = trailingslashit(site_url())
 			. 'wp-login.php?redirect_to='
 			. urlencode(get_permalink());
 
@@ -198,14 +198,14 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 	else
 	{
 		echo '<form method="post" id="commentform"'
-			. ' action="' . trailingslashit(get_option('siteurl')) . 'wp-comments-post.php"'
+			. ' action="' . trailingslashit(site_url()) . 'wp-comments-post.php"'
 			. '>' . "\n"
 			. '<div class="pad">' . "\n";
 
 		if ( $user_ID )
 		{
 			$identity = '<span class="signed_in_author">'
-				. '<a href="' . trailingslashit(get_option('siteurl')) . 'wp-admin/profile.php">'
+				. '<a href="' . trailingslashit(site_url()) . 'wp-admin/profile.php">'
 				. $user_identity
 				. '</a>'
 				. '</span>';
