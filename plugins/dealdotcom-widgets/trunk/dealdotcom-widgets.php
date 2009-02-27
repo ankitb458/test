@@ -94,7 +94,11 @@ class dealdotcom {
 			if ( !$deal ) {
 				$deal = dealdotcom::update();
 			}
-
+			
+			if ( is_ssl() ) {
+				$deal['image'] = str_replace('http://', 'https://', $deal['image']);
+			}
+			
 			$plugin_path = plugins_url() . '/' . basename(dirname(__FILE__));
 
 			echo '<div style="'
