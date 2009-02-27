@@ -533,7 +533,7 @@ class bookmark_me
 		$folder = plugins_url() . '/' . basename(dirname(__FILE__));
 		$css = $folder . '/sem-bookmark-me.css';
 		
-		wp_enqueue_style('sem_admin_menu', $css, null, '4.5.3');
+		wp_enqueue_style('bookmark_me', $css, null, '4.5.3');
 	} # css()
 
 
