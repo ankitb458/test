@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
 Tags: archives, widget, widgets, semiologic
 Requires at least: 2.5
-Tested up to: 2.7
+Tested up to: 2.7.2
 Stable tag: trunk
 
 Replaces WordPress' default, single archive widget with multiple archive widgets.

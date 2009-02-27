@@ -39,7 +39,7 @@ class auto_thickbox {
 	 * add_thickbox()
 	 *
 	 * @param string $content
-	 * @return void
+	 * @return string $content
 	 **/
 
 	function add_thickbox($content) {
@@ -63,7 +63,7 @@ class auto_thickbox {
 	 * add_thickbox_callback()
 	 *
 	 * @param array $match Regexp match
-	 * @return void
+	 * @return string $link
 	 **/
 	
 	function add_thickbox_callback($match) {

@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy, Semiologic
 Donate link: http://buy.semiologic.com/drink
 Tags: admin-menu, admin, cms, semiologic
 Requires at least: 2.7
-Tested up to: 2.7
+Tested up to: 2.7.2
 Stable tag: trunk
 
 The admin menu plugin for WordPress sticks key admin menu links to the top of your blog's screen.
