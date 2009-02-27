@@ -3,7 +3,7 @@
 Plugin Name: External Links
 Plugin URI: http://www.semiologic.com/software/publishing/external-links/
 Description: Adds a class=&quot;external&quot; to all outbound links, with various effects that are configurable under Options / External Links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the icon on individual links.
-Version: 3.0.4
+Version: 3.0.5 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */
@@ -26,6 +26,7 @@ class external_links
 	
 	function init()
 	{
+		add_action('wp_print_styles', array('external_links', 'add_css'));
 		add_action('wp_head', array('external_links', 'wp_head'));
 		
 		add_action('the_content', array('external_links', 'filter'), 40);
@@ -56,6 +57,24 @@ class external_links
 	
 	
 	#
+	# add_css()
+	#
+	
+	function add_css()
+	{
+		$options = external_links::get_options();
+
+		if ( $options['add_css'] )
+		{
+			$folder = plugins_url() . '/' . basename(dirname(__FILE__));
+			$css = $folder . '/sem-external-links.css';
+
+			wp_enqueue_style('external_links', $css, null, '3.0.5');
+		}
+	} # add_css()
+	
+	
+	#
 	# wp_head()
 	#
 	
@@ -63,16 +82,6 @@ class external_links
 	{
 		$options = external_links::get_options();
 
-		if ( $options['add_css'] )
-		{
-			echo '<link rel="stylesheet" type="text/css"'
-				. ' href="'
-					. trailingslashit(get_option('siteurl'))
-					. 'wp-content/plugins/sem-external-links/sem-external-links.css?ver=3.0'
-					. '"'
-				. ' />' . "\n";
-		}
-		
 		if ( $options['global'] )
 		{
 			remove_action('the_content', array('external_links', 'filter'), 40);
