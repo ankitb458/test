@@ -36,7 +36,7 @@ class bookmark_me
 	
 	function init()
 	{
-		add_action('wp_head', array('bookmark_me', 'css'));
+		add_action('wp_print_styles', array('bookmark_me', 'css'));
 		
 		if ( !is_admin() )
 		{
@@ -530,12 +530,10 @@ class bookmark_me
 
 	function css()
 	{
-		echo '<link rel="stylesheet" type="text/css"'
-			. ' href="'
-				. trailingslashit(get_option('siteurl'))
-				. 'wp-content/plugins/sem-bookmark-me/sem-bookmark-me.css?ver=4.0'
-				. '"'
-			. ' />' . "\n";
+		$folder = plugins_url() . '/' . basename(dirname(__FILE__));
+		$css = $folder . '/sem-bookmark-me.css';
+		
+		wp_enqueue_style('sem_admin_menu', $css, null, '4.5.3');
 	} # css()
 
 
@@ -545,11 +543,10 @@ class bookmark_me
 
 	function js()
 	{
-		$plugin_path = plugin_basename(__FILE__);
-		$plugin_path = preg_replace("/[^\/]+$/", '', $plugin_path);
-		$plugin_path = '/wp-content/plugins/' . $plugin_path;
+		$folder = plugins_url() . '/' . basename(dirname(__FILE__));
+		$js = $folder . '/sem-bookmark-me.js';
 		
-		wp_enqueue_script( 'bookmark_me', $plugin_path . 'sem-bookmark-me.js', false, '20080416' );
+		wp_enqueue_script( 'bookmark_me', $js, false, '20080416' );
 	} # js()
 
 
