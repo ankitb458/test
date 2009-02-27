@@ -3,7 +3,7 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/marketing/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 3.1.4 alpha
+Version: 3.1.4 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */
