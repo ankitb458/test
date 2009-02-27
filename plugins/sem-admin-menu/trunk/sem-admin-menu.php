@@ -57,7 +57,7 @@ class sem_admin_menu {
 		
 		$user = wp_get_current_user();
 
-		$site_url = trailingslashit(admin_url());
+		$admin_url = trailingslashit(admin_url());
 
 		$options = sem_admin_menu::get_options();
 
@@ -94,8 +94,8 @@ class sem_admin_menu {
 			if ( current_user_can('edit_posts') ) {
 				echo '<span class="am_new">'
 					. '<a href="'
-						. $site_url
-						. 'wp-admin/post-new.php'
+						. $admin_url
+						. 'post-new.php'
 						. '"'
 					. '>'
 					. __('New Post', 'sem-admin-menu')
@@ -107,8 +107,8 @@ class sem_admin_menu {
 			if ( current_user_can('edit_pages') ) {
 				echo '<span class="am_new">'
 					. '<a href="'
-						. $site_url
-						. 'wp-admin/page-new.php'
+						. $admin_url
+						. 'page-new.php'
 						. ( is_page() && !is_front_page()
 							? ( '?parent_id=' . $GLOBALS['wp_query']->get_queried_object_id() )
 							: ''
@@ -124,8 +124,8 @@ class sem_admin_menu {
 			if ( is_page() && current_user_can('edit_pages') ) {
 				echo '<span class="am_manage">'
 					. '<a href="'
-							. $site_url
-							. 'wp-admin/edit-pages.php'
+							. $admin_url
+							. 'edit-pages.php'
 							. '"'
 						. '>'
 						. __('Manage', 'sem-admin-menu')
@@ -135,8 +135,8 @@ class sem_admin_menu {
 			} elseif ( current_user_can('edit_posts') ) {
 				echo '<span class="am_manage">'
 					. '<a href="'
-							. $site_url
-							. 'wp-admin/edit.php'
+							. $admin_url
+							. 'edit.php'
 							. '"'
 						. '>'
 						. __('Manage', 'sem-admin-menu')
@@ -148,7 +148,7 @@ class sem_admin_menu {
 			if ( current_user_can('edit_posts') || current_user_can('edit_pages') ) {
 				echo '<span class="am_comments">'
 					. '<a href="'
-							. $site_url . 'wp-admin/edit-comments.php'
+							. $admin_url . 'edit-comments.php'
 							. '"'
 						. '>'
 						. __('Comments', 'sem-admin-menu')
@@ -160,7 +160,7 @@ class sem_admin_menu {
 			if ( current_user_can('activate_plugins') ) {
 				echo '<span class="am_options">'
 					. '<a href="'
-							. $site_url . 'wp-admin/plugins.php'
+							. $admin_url . 'plugins.php'
 							. '"'
 						. '>'
 						. __('Plugins', 'sem-admin-menu')
@@ -172,10 +172,10 @@ class sem_admin_menu {
 			if ( current_user_can('switch_themes') ) {
 				echo '<span class="am_options">'
 					. '<a href="'
-							. $site_url
+							. $admin_url
 							. ( $GLOBALS['wp_registered_sidebars']
-								? 'wp-admin/widgets.php'
-								: 'wp-admin/themes.php'
+								? 'widgets.php'
+								: 'themes.php'
 								)
 							. '"'
 						. '>'
@@ -191,7 +191,7 @@ class sem_admin_menu {
 			if ( current_user_can('manage_options') ) {
 				echo '<span class="am_options">'
 					. '<a href="'
-							. $site_url . 'wp-admin/options-general.php'
+							. $admin_url . 'options-general.php'
 							. '"'
 						. '>'
 						. __('Settings', 'sem-admin-menu')
@@ -202,7 +202,7 @@ class sem_admin_menu {
 			
 			echo '<span class="am_dashboard">'
 				. '<a href="'
-						. $site_url . 'wp-admin/'
+						. $admin_url
 						. '"'
 					. '>'
 					. __('Dashboard', 'sem-admin-menu')
