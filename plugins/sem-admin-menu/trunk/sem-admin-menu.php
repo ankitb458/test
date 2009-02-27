@@ -27,8 +27,10 @@ load_plugin_textdomain('sem-admin-menu', null, basename(dirname(__FILE__)) . '/l
  * @package Admin Menu
  **/
 
-add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
-add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
+if ( !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
+	add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
+	add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
+}
 
 class sem_admin_menu
 {
