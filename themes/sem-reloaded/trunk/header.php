@@ -10,11 +10,6 @@ if ( is_singular() )
 {
 	$GLOBALS['post'] = $GLOBALS['posts'][0];
 	setup_postdata($GLOBALS['post']);
-	
-	if ( pings_open() )
-	{
-		add_action('wp_head', 'trackback_rdf');
-	}
 }
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -21,7 +21,7 @@ if ( $post->post_password !== ''
 }
 
 #
-# Displaytrackback uri
+# Display trackback uri
 #
 
 if ( $sem_options['show_trackback_uri'] )
@@ -285,17 +285,21 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 function display_trackback_uri()
 {
 	global $sem_captions;
-
-	if ( pings_open() && is_singular() )
+	
+	if ( is_singular() && pings_open() )
 	{
-?><div class="comment_entry">
-<!--
-<?php trackback_rdf(); ?>
--->
-<h2><?php echo $sem_captions['comment_trackback']; ?></h2>
-<p><a href="<?php trackback_url(); ?>" rel="trackback nofollow"><?php trackback_url(); ?></a></p>
-</div>
-<?php
+		echo '<div class="entry_trackback">' . "\n"
+			. '<div class="entry_trackback_top"><div class="hidden"></div></div>' . "\n"
+			. '<div class="pad">' . "\n"
+			. '<h2>' . $sem_captions['comment_trackback'] . '</h2>' . "\n"
+			. '<p>'
+				. '<a href="' . get_trackback_url() . '" rel="trackback nofollow">'
+					. get_trackback_url()
+					. '</a>'
+				. '</p>' . "\n"
+			. '<div class="entry_trackback_bottom"><div class="hidden"></div></div>' . "\n"
+			. '</div>' . "\n"
+			. '</div>' . "\n";
 	}
 } # display_trackback_uri()
 ?>

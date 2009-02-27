@@ -9,6 +9,7 @@ class sem_header
 	{
 		add_action('widgets_init', array('sem_header', 'widgetize'));
 		add_action('wp_head', array('sem_header', 'wire_header'), 30);
+		add_action('wp_head', array('sem_header', 'trackback_rdf'), 1000);
 		add_action('wp_print_scripts', array('sem_header', 'scripts'));
 	} # init()
 	
@@ -680,6 +681,21 @@ EOF;
 
 		update_option('sem6_options', $sem_options);
 	} # upgrade()
+	
+	
+	#
+	# trackback_rdf()
+	#
+	
+	function trackback_rdf()
+	{
+		if ( is_singular() && pings_open() )
+		{
+			echo '<!--' . "\n";
+			trackback_rdf();
+			echo "\n" . '-->' . "\n";
+		}
+	} # trackback_rdf()
 } # sem_header
 
 sem_header::init();
