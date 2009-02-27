@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe To Comments
-Version: 2.5 fork
+Version: 2.5.1 alpha fork
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to receive notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
@@ -459,7 +459,7 @@ class sg_subscribe {
 			add_post_meta($postid, '_sg_subscribe-to-comments', stripslashes($email));
 			setcookie('comment_author_email_' . COOKIEHASH, stripslashes($email), time() + 30000000, COOKIEPATH);
 			$location = $this->manage_link(stripslashes($email), false, false) . '&subscribeid=' . $postid;
-			header("Location: $location");
+			wp_redirect($location);
 			exit();
 		}
 	}

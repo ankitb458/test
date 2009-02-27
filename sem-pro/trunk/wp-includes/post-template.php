@@ -607,7 +607,7 @@ function wp_list_pages($args = '') {
 	$current_page = 0;
 
 	// sanitize, mostly to keep spaces out
-	$r['exclude'] = preg_replace('[^0-9,]', '', $r['exclude']);
+	$r['exclude'] = preg_replace('/[^0-9,]/', '', $r['exclude']);
 
 	// Allow plugins to filter an array of excluded pages
 	$r['exclude'] = implode(',', apply_filters('wp_list_pages_excludes', explode(',', $r['exclude'])));
@@ -1048,7 +1048,7 @@ function wp_post_revision_title( $revision, $link = true ) {
 	$autosavef = __( '%s [Autosave]' );
 	$currentf  = __( '%s [Current Revision]' );
 
-	$date = date_i18n( $datef, strtotime( $revision->post_modified_gmt . ' +0000' ) );
+	$date = date_i18n( $datef, strtotime( $revision->post_modified ) );
 	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) )
 		$date = "<a href='$link'>$date</a>";
 

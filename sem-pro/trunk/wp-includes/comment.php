@@ -45,7 +45,7 @@ function check_comment($author, $email, $url, $comment, $user_ip, $user_agent, $
 	if ( 1 == get_option('comment_moderation') )
 		return false; // If moderation is set to manual
 
-	if ( get_option('comment_max_links') && preg_match_all("|(href\t*?=\t*?['\"]?)?(https?:)?//|i", apply_filters('comment_text', $comment), $out) >= get_option('comment_max_links') )
+	if ( get_option('comment_max_links') && preg_match_all("/<[Aa][^>]*[Hh][Rr][Ee][Ff]=['\"]([^\"'>]+)[^>]*>/", apply_filters('comment_text',$comment), $out) >= get_option('comment_max_links') )
 		return false; // Check # of external links
 
 	$mod_keys = trim(get_option('moderation_keys'));
@@ -592,7 +592,7 @@ function get_page_of_comment( $comment_ID, $args = array() ) {
 	$comtypewhere = ( 'all' != $args['type'] && isset($allowedtypes[$args['type']]) ) ? " AND comment_type = '" . $allowedtypes[$args['type']] . "'" : '';
 
 	// Count comments older than this one
-	$oldercoms = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(comment_ID) FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_parent = 0 AND comment_date_gmt < '%s'" . $comtypewhere, $comment->comment_post_ID, $comment->comment_date_gmt ) );
+	$oldercoms = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(comment_ID) FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_parent = 0 AND comment_approved = '1' AND comment_date_gmt < '%s'" . $comtypewhere, $comment->comment_post_ID, $comment->comment_date_gmt ) );
 
 	// No older comments? Then it's page #1.
 	if ( 0 == $oldercoms )
