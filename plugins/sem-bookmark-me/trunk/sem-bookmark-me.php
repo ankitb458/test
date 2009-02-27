@@ -275,7 +275,7 @@ class bookmark_me
 				. $_SERVER['REQUEST_URI'];
 		}
 
-		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-bookmark-me/img/';
+		$args['img_path'] = trailingslashit(site_url()) . 'wp-content/plugins/sem-bookmark-me/img/';
 			
 		$hash = md5(uniqid(rand()));
 		
@@ -419,7 +419,7 @@ class bookmark_me
 					. ' style="'
 						. 'padding: 2px 2px 2px 22px;'
 						. ' background: url('
-							. trailingslashit(get_option('siteurl'))
+							. trailingslashit(site_url())
 							. 'wp-content/plugins/sem-bookmark-me/img/'
 							. $service . '.gif'
 							. ') center left no-repeat;'
@@ -454,7 +454,7 @@ class bookmark_me
 					. ' title="' . __($details['name']) . '"'
 					. '>'
 					. '<img src="'
-							. trailingslashit(get_option('siteurl'))
+							. trailingslashit(site_url())
 							. 'wp-content/plugins/sem-bookmark-me/img/'
 							. $service . '.gif'
 							. '"'

@@ -131,8 +131,8 @@ class bookmark_me_admin
 			;
 
 
-		$args['site_path'] = trailingslashit(get_option('siteurl'));
-		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-bookmark-me/img/';
+		$args['site_path'] = trailingslashit(site_url());
+		$args['img_path'] = trailingslashit(site_url()) . 'wp-content/plugins/sem-bookmark-me/img/';
 
 		echo '<table border="0" cellpadding="1" cellspacing="0" style="width: 440px;">';
 		$i = 0;
@@ -168,7 +168,7 @@ class bookmark_me_admin
 						. '<span style="'
 						. 'padding-left: 22px;'
 						. ' background: url('
-							. trailingslashit(get_option('siteurl'))
+							. trailingslashit(site_url())
 							. 'wp-content/plugins/sem-bookmark-me/img/'
 							. $service . '.gif'
 							. ') center left no-repeat;'

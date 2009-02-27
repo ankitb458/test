@@ -84,7 +84,7 @@ class sem_docs
 	{
 		echo '<link rel="stylesheet" type="text/css"'
 		. ' href="'
-			. trailingslashit(get_option('siteurl'))
+			. trailingslashit(site_url())
 			. 'wp-content/plugins/sem-docs/admin.css'
 			. '"'
 		. ' />' . "\n";

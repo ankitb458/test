@@ -188,7 +188,7 @@ if ( document.getElementById('quicktags') )
 		{
 			$path = plugin_basename(__FILE__);
 
-			$plugin = trailingslashit(get_option('siteurl'))
+			$plugin = trailingslashit(site_url())
 				. 'wp-content/plugins/'
 				. ( strpos($path, '/') !== false
 					? ( dirname($path) . '/' )

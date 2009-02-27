@@ -50,7 +50,7 @@ function VSI_function_options() {
 		update_post_cache($subscribed);
 
 		echo '<p>'
-			. '<a href="' . trailingslashit(get_option('siteurl')) . 'wp-admin/edit.php?page=wp-subscribed.php">'
+			. '<a href="' . trailingslashit(site_url()) . 'wp-admin/edit.php?page=wp-subscribed.php">'
 			. __('All Posts')
 			. '</a>'
 			. '</p>';
@@ -181,7 +181,7 @@ function VSI_dash_report() {
   		WHERE	comment_subscribe = 'Y'
   		");
     if ($VSI_sub_auth_counter != '') {
-        echo "<h3>Subscriber Stats <a href=\"" . trailingslashit(get_option('siteurl')) . "wp-admin/edit.php?page=wp-subscribed.php\" title=\"More...\" /> &raquo;</a></h3>";
+        echo "<h3>Subscriber Stats <a href=\"" . trailingslashit(site_url()) . "wp-admin/edit.php?page=wp-subscribed.php\" title=\"More...\" /> &raquo;</a></h3>";
         echo "<p>There are <strong>" . $VSI_sub_auth_counter . "</strong> people subscribed to <strong>" . $VSI_sub_counter ."</strong> different posts.</p>";
     }
 }

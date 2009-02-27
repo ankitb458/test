@@ -104,7 +104,7 @@ function dtr_options_page()
 		
 		<tr valign="top">
 		<td>
-		Based on your <a href="<?php echo trailingslashit(get_option('siteurl')); ?>wp-admin/options-general.php">your timezone settings</a> in WordPress, it is <?php echo date('Y-m-d h:i a', time() + ($options['timeoffset'] * 3600)); ?>.
+		Based on your <a href="<?php echo trailingslashit(site_url()); ?>wp-admin/options-general.php">your timezone settings</a> in WordPress, it is <?php echo date('Y-m-d h:i a', time() + ($options['timeoffset'] * 3600)); ?>.
 		</td>
 		</tr>
 		</table>
