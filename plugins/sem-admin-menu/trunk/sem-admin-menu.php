@@ -27,10 +27,8 @@ load_plugin_textdomain('sem-admin-menu', null, basename(dirname(__FILE__)) . '/l
  * @package Admin Menu
  **/
 
-if ( !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
-	add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
-	add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
-}
+add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
+add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
 
 class sem_admin_menu
 {
@@ -55,6 +53,9 @@ class sem_admin_menu
 	 **/
 
 	function display_menu() {
+		if ( isset($_GET['action']) && $_GET['action'] == 'print' )
+			return;
+		
 		$user = wp_get_current_user();
 
 		$site_url = trailingslashit(site_url(null, 'admin'));
