@@ -3,7 +3,7 @@
 Plugin Name: Poll Widget / Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.15 fork
+Version: 1.15.1 alpha fork
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
@@ -361,7 +361,7 @@ function jal_add_js () {
     global $jal_dem_version;
 
     //$jal_wp_url = (dirname($_SERVER['PHP_SELF']) == "/") ? "/" : dirname($_SERVER['PHP_SELF']) . "/";
-    $jal_wp_url = get_bloginfo('wpurl') . "/";
+    $jal_wp_url = trailingslashit(site_url());
 
     echo '<script type="text/javascript" src="'.$jal_wp_url.'wp-content/plugins/democracy/js.php"></script>
 <link rel="stylesheet" href="'.$jal_wp_url.'wp-content/plugins/democracy/democracy.css?ver=1.14" type="text/css" />
