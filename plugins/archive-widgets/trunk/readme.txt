@@ -1,5 +1,5 @@
 === Archive Widgets ===
-Contributors: Denis-de-Bernardy, Semiologic
+Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: archives, widget, widgets, semiologic
 Requires at least: 2.5

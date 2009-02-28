@@ -1,5 +1,5 @@
 === Dofollow ===
-Contributors: Denis-de-Bernardy, Semiologic
+Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: dofollow, nofollow, semiologic
 Requires at least: 2.0

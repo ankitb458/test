@@ -1,5 +1,5 @@
 === Admin Menu ===
-Contributors: Denis-de-Bernardy, Semiologic
+Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: admin-menu, admin, cms, semiologic
 Requires at least: 2.7

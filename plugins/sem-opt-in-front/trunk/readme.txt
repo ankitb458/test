@@ -1,5 +1,5 @@
 === Opt-In Front Page ===
-Contributors: Denis-de-Bernardy, Semiologic
+Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: asides, opt-in-front-page, opt-in front page, opt-in, semiologic
 Requires at least: 2.3

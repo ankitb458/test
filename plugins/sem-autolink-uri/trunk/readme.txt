@@ -1,5 +1,5 @@
 === Autolink URI ===
-Contributors: Denis-de-Bernardy, Semiologic
+Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: autolink, link, auto-link, semiologic
 Requires at least: 2.0

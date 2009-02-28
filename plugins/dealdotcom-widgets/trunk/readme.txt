@@ -1,5 +1,5 @@
 === DealDotCom Widgets ===
-Contributors: Denis-de-Bernardy, Semiologic
+Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: dealdotcom, marketing, internet-marketing, monetize, money, adsense, widget, semiologic
 Requires at least: 2.7

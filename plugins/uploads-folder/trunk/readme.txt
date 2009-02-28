@@ -1,5 +1,5 @@
 === Uploads Folder ===
-Contributors: Denis-de-Bernardy, Semiologic
+Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: uploads, uploads-folder, uploads folder, cms, semiologic
 Requires at least: 2.5
