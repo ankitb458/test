@@ -74,7 +74,7 @@ endif;
 # stops
 #
 
-if ( isset($_GET['add_stops']) )
+if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['drop_stops']) )
 {
 	if ( current_user_can('administrator') )
 	{
@@ -107,7 +107,7 @@ if ( isset($_GET['add_stops']) )
 			}
 			echo '</pre>';
 			
-			if ( SAVEQUERIES )
+			if ( defined('SAVEQUERIES') )
 			{
 				global $wpdb;
 				dump($wpdb->queries);
@@ -115,29 +115,34 @@ if ( isset($_GET['add_stops']) )
 
 			return $in;
 		} # dump_stops()
-
-		add_action('init', create_function('$in', '
-			return add_stop($in, "Load");
-			'), 10000000);
-
-		add_action('template_redirect', create_function('$in', '
-			return add_stop($in, "Query");
-			'), -10000000);
-
-		add_action('wp_footer', create_function('$in', '
-			return add_stop($in, "Display");
-			'), 10000000);
-
-		add_action('admin_footer', create_function('$in', '
-			return add_stop($in, "Admin Display");
-			'), 10000000);
-
-		add_action('wp_footer', 'dump_stops', 10000000);
-		add_action('admin_footer', 'dump_stops', 10000000);
+		
+		if ( !isset($_GET['drop_stops']) ) {
+			setcookie('add_stops', 1);
+			
+			add_action('init', create_function('$in', '
+				return add_stop($in, "Load");
+				'), 10000000);
+			
+			add_action('template_redirect', create_function('$in', '
+				return add_stop($in, "Query");
+				'), -10000000);
+			
+			add_action('wp_footer', create_function('$in', '
+				return add_stop($in, "Display");
+				'), 10000000);
+			
+			add_action('admin_footer', create_function('$in', '
+				return add_stop($in, "Display");
+				'), 10000000);
+			
+			add_action('wp_footer', 'dump_stops', 10000000);
+			add_action('admin_footer', 'dump_stops', 10000000);
+		} else {
+			setcookie('add_stops', null, time() - 3600);
+		}
 	}
 	else
 	{
-
 		add_action('init', create_function('', '
 			header("HTTP/1.1 301 Moved Permanently");
 	        header("Status: 301 Moved Permanently");
@@ -165,7 +170,7 @@ if ( isset($_GET['send_diagnosis']) )
 # catch old wizard upgrader
 #
 
-if ( is_admin() && $_GET['page'] == 'wizards/upgrade.php' )
+if ( is_admin() && isset($_GET['page']) && $_GET['page'] == 'wizards/upgrade.php' )
 {
 	wp_redirect(trailingslashit(site_url()) . 'wp-admin/');
 	die;
@@ -201,6 +206,8 @@ $GLOBALS['sem_nav_menus'] = get_option('sem_nav_menus');
 #
 # install / upgrade
 #
+
+$force_update = false;
 
 if ( !$GLOBALS['sem_options'] )
 {
