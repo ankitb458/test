@@ -3,7 +3,7 @@
 Favicon Head
 http://timjoh.com/wordpress-plugin-favicon-head/
 Tim A. Johansson
-1.3 fork
+1.4 fork
 
 Copyright 2006  Tim A. Johansson
 
@@ -37,8 +37,8 @@ Changelog:
 
 */
 
-define('taj_fh_location_default', '/favicon.ico', TRUE);
-define('taj_fha_location_default', '', TRUE);
+define('taj_fh_location_default', '/favicon.ico');
+define('taj_fha_location_default', '');
 
 add_action('admin_menu', 'taj_fh_add_options_pages');
 
