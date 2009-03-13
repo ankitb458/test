@@ -95,7 +95,7 @@ endforeach; # Semiologic Pro files
 # print template
 #
 
-if ( $_GET['action'] == 'print' ) :
+if ( isset($_GET['action']) && $_GET['action'] == 'print' ) :
 
 function print_template()
 {
