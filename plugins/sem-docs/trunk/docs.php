@@ -289,14 +289,6 @@ class sem_docs
 		
 			if ( $xml === false )
 			{
-				$errors = (array) $_SESSION['sem_err'];
-				$err = array_pop($errors);
-			
-				$id = md5( uniqid( microtime() ) );
-			
-				echo '<div id="' . $id .'">' . $err . '</div>'
-					. '<script type="text/javascript">sem_docs.prepend(\'' . $id .'\', \'wpbody\');</script>';
-			
 				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 13; # try in 1 days
 				update_option('sem_docs', $options);
 			
