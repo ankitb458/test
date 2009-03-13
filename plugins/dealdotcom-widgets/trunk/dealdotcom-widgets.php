@@ -247,6 +247,16 @@ class dealdotcom {
 	} # init_options()
 } # dealdotcom
 
-if ( is_admin() )
+
+/**
+ * dealdotcom_admin()
+ *
+ * @return void
+ **/
+
+function dealdotcom_admin() {
 	include dirname(__FILE__) . '/dealdotcom-widgets-admin.php';
+} # dealdotcom_admin()
+
+add_action('load-widgets.php', 'dealdotcom_admin');
 ?>
