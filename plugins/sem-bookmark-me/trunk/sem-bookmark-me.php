@@ -663,7 +663,7 @@ class bookmark_me
 		if ( !( isset($k) && isset($o[$k]) ) )
 		{
 			$k = time();
-			do $k++; while ( isset($o[$k]) );
+			while ( isset($o[$k]) ) $k++;
 			$o[$k] = bookmark_me::default_options();
 			
 			update_option('bookmark_me_widgets', $o);
