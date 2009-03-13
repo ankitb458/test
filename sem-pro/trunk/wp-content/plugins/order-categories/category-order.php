@@ -3,7 +3,7 @@
 Category Order
 http://wpguy.com/plugins/category-order
 Wessley Roche
-1.0.3 fork
+1.0.4 alpha fork
 */
 
 function wpguy_category_order_menu(){
@@ -11,7 +11,7 @@ function wpguy_category_order_menu(){
 }
 
 function wpguy_category_order_scriptaculous() {
-	if($_GET['page'] == "wpguy_category_order_options"){
+	if(isset($_GET['page']) && $_GET['page'] == "wpguy_category_order_options"){
 		wp_enqueue_script('scriptaculous');
 	} 
 }

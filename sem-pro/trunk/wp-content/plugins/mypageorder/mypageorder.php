@@ -10,7 +10,7 @@ function mypageorder_menu()
 	add_pages_page('Page Order', 'Page Order', 'edit_pages',"mypageorder",'mypageorder');
 }
 function mypageorder_js_libs() {
-    if ( $_GET['page'] == "mypageorder" ) {
+    if ( isset($_GET['page']) && $_GET['page'] == "mypageorder" ) {
 		wp_enqueue_script('scriptaculous');
 	}
 }
