@@ -30,6 +30,8 @@ load_plugin_textdomain('sem-admin-menu', null, basename(dirname(__FILE__)) . '/l
 add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
 add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
 
+add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
+
 class sem_admin_menu {
 	/**
 	 * add_css
@@ -268,9 +270,38 @@ class sem_admin_menu {
 		
 		return $o;
 	} # init_options()
+	
+	
+	/**
+	 * admin_menu()
+	 *
+	 * @return void
+	 **/
+	
+	function admin_menu() {
+		add_options_page(
+			__('Admin Menu', 'sem-admin-menu'),
+			__('Admin Menu', 'sem-admin-menu'),
+			'manage_options',
+			'admin-menu',
+			array('sem_admin_menu_admin', 'edit_options')
+			);
+	} # admin_menu()
 } # sem_admin_menu
 
 
-if ( is_admin() )
-	include dirname(__FILE__) . '/sem-admin-menu-admin.php';
+/**
+ * sem_admin_menu_admin()
+ *
+ * @return void
+ **/
+
+function sem_admin_menu_admin() {
+ 	include dirname(__FILE__) . '/sem-admin-menu-admin.php';
+} # sem_admin_menu_admin()
+
+foreach ( array('load-page-new.php', 'settings_page_admin-menu') as $admin_page )
+	add_action($admin_page, 'sem_admin_menu_admin');
+
+add_action('settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'));
 ?>

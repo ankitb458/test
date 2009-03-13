@@ -7,9 +7,6 @@
 
 add_action('submitpage_box', array('sem_admin_menu_admin', 'set_parent_id'), 0);
 
-add_action('admin_menu', array('sem_admin_menu_admin', 'admin_menu'));
-add_action('settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'));
-
 class sem_admin_menu_admin {
 	/**
 	 * set_parent_id()
@@ -18,31 +15,11 @@ class sem_admin_menu_admin {
 	 **/
 	
 	function set_parent_id() {
-		if ( isset($_GET['parent_id'])
-			&& strpos($_SERVER['REQUEST_URI'], 'wp-admin/page-new.php') !== false
-			) {
+		if ( isset($_GET['parent_id']) && $GLOBALS['editing'] ) {
 			global $post;
-			
 			$post->post_parent = intval($_GET['parent_id']);
 		}
 	} # set_parent_id()
-	
-	
-	/**
-	 * admin_menu()
-	 *
-	 * @return void
-	 **/
-	
-	function admin_menu() {
-		add_options_page(
-			__('Admin Menu', 'sem-admin-menu'),
-			__('Admin Menu', 'sem-admin-menu'),
-			'manage_options',
-			'admin-menu',
-			array('sem_admin_menu_admin', 'edit_options')
-			);
-	} # admin_menu()
 	
 	
 	/**
@@ -78,8 +55,7 @@ class sem_admin_menu_admin {
 	 * @return void
 	 **/
 
-	function edit_options()
-	{
+	function edit_options() {
 		echo '<div class="wrap">' . "\n"
 			. '<form method="post" action="">';
 
