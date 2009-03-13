@@ -109,12 +109,12 @@ if ( $comments )
 			. '<div class="comment_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="comment_pad">' . "\n";
 
-		echo '<div class="comment_body">' . "\n"
-			. '<div class="comment_body_top"><div class="hidden"></div></div>' . "\n"
+		echo '<div class="comment_content">' . "\n"
+			. '<div class="comment_content_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="pad">' . "\n"
 			. apply_filters('comment_text', get_comment_text())
 			. '</div>' . "\n"
-			. '<div class="comment_body_bottom"><div class="hidden"></div></div>' . "\n"
+			. '<div class="comment_content_bottom"><div class="hidden"></div></div>' . "\n"
 			. '</div>' . "\n";
 
 

@@ -1,6 +1,6 @@
 /*
 Skin name: Kubrick (Red)
-Version: 0.3
+Version: 0.4 alpha
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -87,8 +87,8 @@ html {
 }
 
 #sitename {
-	padding-top: 39px;
-	padding-bottom: 40px;
+	padding-top: 38px;
+	padding-bottom: 37px;
 }
 
 #tagline {
@@ -97,13 +97,13 @@ html {
 }
 
 .invert_header #sitename {
-	padding-top: 60px;
-	padding-bottom: 2px;
+	padding-top: 59px;
+	padding-bottom: 1px;
 }
 
 .invert_header #tagline {
-	padding-top: 2px;
-	padding-bottom: 40px;
+	padding-top: 1px;
+	padding-bottom: 39px;
 }
 
 

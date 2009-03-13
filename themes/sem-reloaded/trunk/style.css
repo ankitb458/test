@@ -323,35 +323,36 @@ span.avatar {
 #sitename {
 	margin: 0px;
 	font-weight: bold;
-	padding-top: 22px;
-	padding-bottom: 27px;
 	text-align: center;
-	font-size: 24px;
-	line-height: 29px;
+	padding-top: 22px;
+	padding-bottom: 23px;
+	font-size: 28px;
+	line-height: 33px;
 }
 
 #tagline {
 	margin: 0px;
 	font-weight: bold;
-	padding-top: 15px;
-	padding-bottom: 10px;
+	padding-top: 20px;
+	padding-bottom: 5px;
 	text-align: right;
 	font-size: 14px;
 	line-height: 17px;
 }
 
 .invert_header #sitename {
-	padding-top: 43px;
-	padding-bottom: 2px;
+	padding-top: 44px;
+	padding-bottom: 1px;
 	text-align: center;
 }
 
 .invert_header #tagline {
-	padding-top: 2px;
-	padding-bottom: 27px;
+	padding-top: 1px;
+	padding-bottom: 24px;
 	text-align: center;
 }
 
+div.next_prev_posts,
 p.submit,
 p.subscribe-to-comments,
 p.solo-subscribe-to-comments {
@@ -376,6 +377,70 @@ h2 a {
 }
 
 
+/* Margins and Padding */
+
+
+
+.main_widget,
+.entry,
+.comment,
+.widget {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#top_sidebar .widget {
+	margin-bottom: 0px;
+}
+
+.pad,
+.post_list {
+	padding: 0px 15px;
+	margin: 0px auto;
+}
+
+.entry,
+.widget {
+	margin-bottom: 25px;
+}
+
+.entry_header h1 {
+	margin: 0px;
+	padding: 0px;
+}
+
+.entry_date,
+.comment_date {
+	margin-bottom: 2px;
+}
+
+.entry_header,
+.comments_header,
+.comment_header {
+	margin-bottom: 15px;
+}
+
+.entry_content,
+.comment_content {
+	margin-bottom: 15px;
+}
+
+.entry h2 {
+	margin-top: 15px;
+}
+
+h3 {
+	margin-top: 15px;
+}
+
+.entry_actions,
+.comment_actions {
+	margin-bottom: 15px;
+}
+
+.comment_field {
+	width: 99%;
+}
 
 
 
