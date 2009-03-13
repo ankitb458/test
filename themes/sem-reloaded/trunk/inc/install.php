@@ -78,6 +78,7 @@ $sem_options['active_layout'] = 'mts';
 
 # Header
 $sem_options['header']['mode'] = 'header';
+$sem_options['invert_header'] = false;
 
 # Template
 $sem_options['show_post_date'] = true;
