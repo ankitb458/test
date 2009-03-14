@@ -87,26 +87,13 @@ class sem_layout_admin
 		$active_layout = $sem_options['active_layout'];
 		
 		$i = 0;
+		$last_id = key(array_reverse($layouts));
+		
 		echo '<table>' . "\n";
 		
 		foreach ( $layouts as $layout_id => $layout_data )
 		{
-			#if ( $layout_id == 'split' )
-			#{
-			#	echo '<div style="clear:both"></div>'
-			#		. '<hr />' . "\n";
-			#	
-			#	continue;
-			#}
-			
 			$i++;
-			
-			#echo '<div style="text-align: center; width: 360px; height: 320px; float: left; margin-bottom: 12px;'
-			#	. ( ( $layout_id == $active_layout )
-			#		? ' background-color: #eeeeee;'
-			#		: ''
-			#		)
-			#	. '">';
 			
 			if ( $i % 2 )
 				echo '<tr align="center">' . "\n";
@@ -139,20 +126,26 @@ class sem_layout_admin
 				. '</label>'
 				. '</p>' . "\n";
 
-			#echo '</div>';
 			echo '</td>' . "\n";
 			
-			if ( !( $i % 2 ) )
-				echo '</tr>' . "\n";
+			if ( $i % 2 && $skin_id == $last_id ) {
+				echo '<td>&nbsp;</td>' . "\n";
+				$i++;
+			}
+			
+			if ( !( $i % 2 ) ) {
+				echo '</tr>' . "\n"
+					. '<tr>' . "\n"
+					. '<td colspan="2">'
+					. '<div class="submit">'
+					. '<input type="submit" value="' . attribute_escape(__('Save Changes')) . '" />'
+					. '</div>' . "\n"
+					. '</td>'
+					. '</tr>' . "\n";
+			}
 		}
 
 		echo '</table>' . "\n";
-		#echo '<div style="clear: both;"></div>';
-		
-		echo '<p class="submit">';
-		echo '<input type="submit" value="' . attribute_escape(__('Save Changes')) . '" />';
-		echo '</p>' . "\n";
-		
 		
 		echo '</form>' . "\n";
 		echo '</div>' . "\n";
@@ -172,12 +165,6 @@ class sem_layout_admin
 			'sms' => array(
 				'name' => __('Sidebar, Content, Sidebar')
 				),
-			#'mse' => array(
-			#	'name' => __('Content, Sidebar, Ext Sidebar')
-			#	),
-			#'sme' => array(
-			#	'name' => __('Sidebar, Content, Ext Sidebar')
-			#	),
 			'mms' => array(
 				'name' => __('Wide Content, Sidebar')
 				),
@@ -196,27 +183,12 @@ class sem_layout_admin
 			'm' => array(
 				'name' => __('Narrow Content')
 				),
-			
-			#'split' => array(),
-			
 			'mmm' => array(
 				'name' => __('Extra Wide Content')
 				),
 			'tsm' => array(
 				'name' => __('Top Sidebar + 2 Sidebars, Content')
 				),
-			#'ems' => array(
-			#	'name' => __('Ext Sidebar, Content, Sidebar')
-			#	),
-			#'esm' => array(
-			#	'name' => __('Ext Sidebar, Sidebar, Content')
-			#	),
-			#'mme' => array(
-			#	'name' => __('Content, Ext Sidebar')
-			#	),
-			#'emm' => array(
-			#	'name' => __('Ext Sidebar, Content')
-			#	),
 			);
 	} # get_layouts()
 } # sem_layout_admin

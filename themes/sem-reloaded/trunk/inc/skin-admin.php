@@ -103,18 +103,14 @@ class sem_skin_admin
 		echo '<p>' . __('Note that you can create your own skins. Skins are automatically detected, so copying one of the existing ones (wp-content/themes/semiologic/skins/ folder) is the simplest way to start. Don\'t miss the <a href="' . sem_url . '/skins/custom/skin-sample.css">near-exhaustive list of CSS pointers</a> that are available in the sample custom skin.') . '</p>' . "\n";
 
 		$i = 0;
+		$last_id = key(array_reverse($skins));
+		
 		echo '<table>' . "\n";
+		
 		
 		foreach ( $skins as $skin_id => $skin_data )
 		{
 			$i++;
-			
-			#echo '<div style="text-align: center; width: 360px; height: 360px; float: left; margin-bottom: 12px;'
-			#	. ( ( $skin_id == $active_skin )
-			#		? ' background-color: #eeeeee;'
-			#		: ''
-			#		)
-			#	. '">';
 
 			if ( $i % 2 )
 				echo '<tr align="center">' . "\n";
@@ -155,7 +151,6 @@ class sem_skin_admin
 					. '<img src="'
 						. get_template_directory_uri()
 						. '/skins/' . $skin_id . '/screenshot.png"'
-						. ' style="padding: 10px;"'
 						. ' />'
 					. '</label>'
 					. '</p>' . "\n";
@@ -167,20 +162,26 @@ class sem_skin_admin
 				. '</label>'
 				. '</p>' . "\n";
 
-			#echo '</div>';
 			echo '</td>' . "\n";
 			
-			if ( !( $i % 2 ) )
-				echo '</tr>' . "\n";
+			if ( $i % 2 && $skin_id == $last_id ) {
+				echo '<td>&nbsp;</td>' . "\n";
+				$i++;
+			}
+			
+			if ( !( $i % 2 ) ) {
+				echo '</tr>' . "\n"
+					. '<tr>' . "\n"
+					. '<td colspan="2">'
+					. '<div class="submit">'
+					. '<input type="submit" value="' . attribute_escape(__('Save Changes')) . '" />'
+					. '</div>' . "\n"
+					. '</td>'
+					. '</tr>' . "\n";
+			}
 		}
 
 		echo '</table>' . "\n";
-		#echo '<div style="clear: both;"></div>';
-
-		echo '<div class="submit">';
-		echo '<input type="submit" value="' . attribute_escape(__('Save Changes')) . '" />';
-		echo '</div>' . "\n";
-		
 		
 		echo '</form>' . "\n";
 		echo '</div>' . "\n";
