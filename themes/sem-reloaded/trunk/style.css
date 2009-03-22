@@ -378,8 +378,8 @@ h2 a {
 .entry,
 .comment,
 .widget {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 #top_sidebar .widget {
@@ -394,7 +394,23 @@ h2 a {
 
 .entry,
 .widget {
-	margin-bottom: 25px;
+	margin-bottom: 1.2em;
+}
+
+.entry_content h1, .entry_content h2, .entry_content h3,
+.entry_content h4, .entry_content h5, .entry_content h6,
+.entry_content p, .entry_content ul, .entry_content ol, .entry_content dl {
+	margin-top: .8em;
+	margin-bottom: .8em;
+}
+
+.entry h2 {
+	margin-top: 1.2em;
+}
+
+.entry h3,
+.widget h3 {
+	margin-top: 1em;
 }
 
 .entry_header h1 {
@@ -410,29 +426,17 @@ h2 a {
 .entry_header,
 .comments_header,
 .comment_header {
-	margin-bottom: 15px;
+	margin-bottom: 1em;
 }
 
 .entry_content,
 .comment_content {
-	margin-bottom: 15px;
-}
-
-.entry h2 {
-	margin-top: 15px;
-}
-
-.entry_content h2 {
-	margin-top: 25px;
-}
-
-h3 {
-	margin-top: 15px;
+	margin-bottom: 1em;
 }
 
 .entry_actions,
 .comment_actions {
-	margin-bottom: 15px;
+	margin-bottom: 1em;
 }
 
 .comment_field {
