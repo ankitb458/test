@@ -221,10 +221,6 @@ class sem_panels
 		{
 			$update = true;
 			$sidebars_widgets['the_entry'][] = 'entry_header';
-			if ( method_exists('author_image', 'new_widget') )
-			{
-				$sidebars_widgets['the_entry'][] = author_image::new_widget();
-			}
 			$sidebars_widgets['the_entry'][] = 'entry_content';
 			$sidebars_widgets['the_entry'][] = 'entry_tags';
 			$sidebars_widgets['the_entry'][] = 'entry_categories';
