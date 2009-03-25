@@ -2,12 +2,13 @@
 #
 # hub.org WP/Sem Pro utils
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.5
+# Version: 0.6
 # http://www.mesoconcepts.com/license/
 #
 
 
 # init
+quiet=0
 force=0
 all=0
 
@@ -54,6 +55,9 @@ do
 				;;
 			'--force' )
 				force=1
+				;;
+			'--quiet' )
+				quiet=1
 				;;
 			* )
 				echo "Invalid option ($1). Type: wp help $cmd"
@@ -103,6 +107,8 @@ in
 			echo
 			echo '--force	Force installation'
 			echo
+			echo '--quiet	Non-verbose Mode'
+			echo
 			echo '-s	Path to a valid source'
 			echo   '	Default: ~owner/wordpress, fallbacks to /usr/local/wordpress'
 			echo
@@ -128,6 +134,8 @@ in
 			echo
 			echo 'Options include:'
 			echo
+			echo '--quiet	Non-verbose Mode'
+			echo
 			echo '-s	Path to a valid source'
 			echo   '	Default: ~owner/wordpress, fallbacks to /usr/local/wordpress'
 			echo
@@ -142,6 +150,8 @@ in
 			echo 'Path defaults to the current path'
 			echo
 			echo 'Options include:'
+			echo
+			echo '--quiet	Non-verbose Mode'
 			echo
 			echo '-a	Process all known installations (overrides the path and all options)'
 			;;
@@ -310,7 +320,11 @@ fi
 # copy files
 if [ "$cmd" != 'perms' ];
 then
-	echo "Copying $src to $path"
+	if [ $quiet -eq 0 ];
+	then
+		echo "Copying $src to $path"
+	fi
+	
 	cp -R $src/* $path/.
 fi
 
@@ -318,7 +332,11 @@ fi
 # create .htaccess file
 if [ ! -e $path/.htaccess ];
 then
-	echo "Creating $path/.htaccess"
+	if [ $quiet -eq 0 ];
+	then
+		echo "Creating $path/.htaccess"
+	fi
+	
 	touch $path/.htaccess
 fi
 
@@ -326,7 +344,10 @@ fi
 # create config file
 if [ "$cmd" = 'install' -a ! -e $path/wp-config.php ];
 then
-	echo "Creating $path/wp-config.php"
+	if [ $quiet -eq 0 ];
+	then
+		echo "Creating $path/wp-config.php"
+	fi
 	
 	if [ "$dbh" = '' ];
 	then
@@ -374,7 +395,10 @@ fi
 
 
 # change perms
-echo "Setting $path permissions"
+if [ $quiet -eq 0 ];
+then
+	echo "Setting $path permissions"
+fi
 
 chown -R $owner $path
 
