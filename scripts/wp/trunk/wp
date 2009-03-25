@@ -342,7 +342,7 @@ then
 		dbn=${dbn/\/www/}
 		dbn=${dbn/\/public_html/}
 		dbn=${dbn/\/htdocs/}
-		dbn=${dbn//[![a-zA-Z]/_}
+		dbn=${dbn//[!a-zA-Z]/_}
 	fi
 	
 	if [ "$dbu" = '' ];
