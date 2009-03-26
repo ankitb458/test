@@ -176,10 +176,10 @@ class sem_footer
 		$theme_descriptions = array(
 			'<a href="http://www.semiologic.com">Semiologic</a>',
 			'a healthy dose of <a href="http://www.semiologic.com">Semiologic</a>',
-			'the <a href="http://www.semiologic.com/software/wp-themes/sem-reloaded/">Semiologic theme and CMS</a>',
-			'an <a href="http://www.semiologic.com/software/wp-themes/sem-reloaded/">easy to use WordPress theme</a>',
-			'an <a href="http://www.semiologic.com/software/wp-themes/sem-reloaded/">easy to customize WordPress theme</a>',
-			'a <a href="http://www.semiologic.com/software/wp-themes/sem-reloaded/">search engine optimized WordPress theme</a>'
+			'the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic theme and CMS</a>',
+			'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to use WordPress theme</a>',
+			'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to customize WordPress theme</a>',
+			'a <a href="http://www.semiologic.com/software/sem-reloaded/">search engine optimized WordPress theme</a>'
 			);
 
 		$theme_descriptions = apply_filters('theme_descriptions', $theme_descriptions);

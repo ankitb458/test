@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Link Widgets
-Plugin URI: http://www.semiologic.com/software/widgets/link-widgets/
+Plugin URI: http://www.semiologic.com/software/link-widgets/
 Description: Replaces WordPress' default link widget with advanced link widgets
-Version: 1.1.1
+Version: 1.1.2 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */

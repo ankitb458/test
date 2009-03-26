@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: External Links
-Plugin URI: http://www.semiologic.com/software/publishing/external-links/
+Plugin URI: http://www.semiologic.com/software/external-links/
 Description: Adds a class=&quot;external&quot; to all outbound links, with various effects that are configurable under Options / External Links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the icon on individual links.
 Version: 3.0.5 alpha
 Author: Denis de Bernardy

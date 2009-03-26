@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Admin Menu
-Plugin URI: http://www.semiologic.com/software/publishing/admin-menu/
+Plugin URI: http://www.semiologic.com/software/admin-menu/
 Description: Adds a convenient admin menu to your blog.
 Version: 5.2 RC
 Author: Denis de Bernardy
@@ -213,6 +213,15 @@ class sem_admin_menu {
 					. ' ';
 
 			echo '<span class="am_user">'
+					. '<a href="'
+							. $admin_url . 'profile.php'
+							. '"'
+						. '>'
+						. __('Profile', 'sem-admin-menu')
+						. '</a>'
+					. '</span>';
+
+			echo '<span class="am_user">'
 					. apply_filters('loginout',
 						'<a href="'
 								. wp_logout_url()
@@ -300,8 +309,8 @@ function sem_admin_menu_admin() {
  	include dirname(__FILE__) . '/sem-admin-menu-admin.php';
 } # sem_admin_menu_admin()
 
-foreach ( array('load-page-new.php', 'settings_page_admin-menu') as $admin_page )
+foreach ( array('load-page-new.php', 'load-settings_page_admin-menu') as $admin_page )
 	add_action($admin_page, 'sem_admin_menu_admin');
 
-add_action('settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'));
+add_action('load-settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'));
 ?>

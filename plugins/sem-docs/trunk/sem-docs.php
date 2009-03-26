@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Semiologic Documentation
-Plugin URI: http://www.semiologic.com/software/wp-tweaks/sem-docs/
+Plugin URI: http://www.semiologic.com/software/sem-docs/
 Description: Semiologic Pro Documentation
 Version: 2.0.2 alpha
 Author: Denis de Bernardy

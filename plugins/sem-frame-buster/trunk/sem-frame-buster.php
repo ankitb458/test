@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Frame Buster
-Plugin URI: http://www.semiologic.com/software/wp-tweaks/frame-buster/
+Plugin URI: http://www.semiologic.com/software/frame-buster/
 Description: Prevents your blog from being loaded into a frame.
-Version: 4.0
+Version: 4.0.1 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */

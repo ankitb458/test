@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Fancy Excerpt
-Plugin URI: http://www.semiologic.com/software/wp-tweaks/fancy-excerpt/
+Plugin URI: http://www.semiologic.com/software/fancy-excerpt/
 Description: Enhances WordPress' default excerpt generator by generating sentence aware excerpts.
-Version: 2.9
+Version: 2.9.1 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */

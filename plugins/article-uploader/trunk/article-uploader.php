@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Article Uploader
-Plugin URI: http://www.semiologic.com/software/publishing/article-uploader/
+Plugin URI: http://www.semiologic.com/software/article-uploader/
 Description: Lets you upload files in place of using the WP editor when writing your entries.
 Version: 1.2.3 RC
 Author: Denis de Bernardy

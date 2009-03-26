@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Uploads Folder
-Plugin URI: http://www.semiologic.com/software/wp-tweaks/uploads-folder/
+Plugin URI: http://www.semiologic.com/software/uploads-folder/
 Description: Changes your uploads folders to a more natural uploads/yyyy/mm for posts (based on the post's date rather than the current date), and uploads/page/sub-page for static pages (based on the page's position in the hierarchy).
-Version: 1.0.1
+Version: 1.0.2 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */

@@ -133,7 +133,7 @@
 				longname : "Inline Widgets",
 				author : 'Denis de Bernardy',
 				authorurl : 'http://www.semiologic.com/',
-				infourl : 'http://www.semiologic.com/software/widgets/inline-widgets/',
+				infourl : 'http://www.semiologic.com/software/inline-widgets/',
 				version : "1.5"
 			};
 		}

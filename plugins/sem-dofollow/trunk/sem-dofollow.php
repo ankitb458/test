@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Do Follow
-Plugin URI: http://www.semiologic.com/software/wp-tweaks/dofollow/
+Plugin URI: http://www.semiologic.com/software/dofollow/
 Description: The Do Follow plugin removes the nofollow attribute that WordPress adds in comments.
-Version: 3.1
+Version: 3.1.1 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */

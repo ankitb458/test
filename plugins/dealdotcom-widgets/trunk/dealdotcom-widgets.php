@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Dealdotcom Widgets
-Plugin URI: http://www.semiologic.com/software/marketing/dealdotcom/
+Plugin URI: http://www.semiologic.com/software/dealdotcom/
 Description: Widgets to display <a href="http://go.semiologic.com/dealdotcom">dealdotcom</a>'s deal of the day.
 Version: 1.2 RC
 Author: Denis de Bernardy
