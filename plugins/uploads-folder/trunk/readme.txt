@@ -6,12 +6,12 @@ Requires at least: 2.5
 Tested up to: 2.7.2
 Stable tag: trunk
 
-The Uploads Folder plugin for WordPress changes your uploads folders to a more natural paths that are unique to the post or page.
+The Uploads Folder plugin for WordPress changes your uploads subfolders to more natural paths that are unique to the post or page.
 
 
 == Description ==
 
-The Uploads Folder plugin for WordPress changes your uploads folders to a more natural uploads/yyyy/mm/post-slug for posts (based on the post's date rather than the current date), and uploads/page-slug/subpage-slug for static pages (based on the page's position in the hierarchy).
+The Uploads Folder plugin for WordPress changes your uploads subfolders to a more natural yyyy/mm/post-slug for posts (based on the post's date rather than the current date), and page-slug/subpage-slug for static pages (based on the page's position in the hierarchy).
 
 
 == Installation ==
