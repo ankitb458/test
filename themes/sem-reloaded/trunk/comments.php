@@ -276,30 +276,4 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 	
 	echo '</div><!-- #commentform -->' . "\n";
 } # comments_open()
-
-
-#
-# display_entry_trackback_uri()
-#
-
-function display_trackback_uri()
-{
-	global $sem_captions;
-	
-	if ( is_singular() && pings_open() )
-	{
-		echo '<div class="entry_trackback">' . "\n"
-			. '<div class="entry_trackback_top"><div class="hidden"></div></div>' . "\n"
-			. '<div class="pad">' . "\n"
-			. '<h2>' . $sem_captions['comment_trackback'] . '</h2>' . "\n"
-			. '<p>'
-				. '<a href="' . get_trackback_url() . '" rel="trackback nofollow">'
-					. get_trackback_url()
-					. '</a>'
-				. '</p>' . "\n"
-			. '<div class="entry_trackback_bottom"><div class="hidden"></div></div>' . "\n"
-			. '</div>' . "\n"
-			. '</div>' . "\n";
-	}
-} # display_trackback_uri()
 ?>

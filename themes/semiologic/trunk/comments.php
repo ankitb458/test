@@ -239,26 +239,4 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 	echo '</div><!-- #commentform -->' . "\n";
 } # comments_open()
-
-
-#
-# display_entry_trackback_uri()
-#
-
-function display_trackback_uri()
-{
-	global $sem_captions;
-
-	if ( pings_open() && is_singular() )
-	{
-?><div class="comment_entry">
-<!--
-<?php trackback_rdf(); ?>
--->
-<h2><?php echo $sem_captions['comment_trackback']; ?></h2>
-<p><a href="<?php trackback_url(); ?>" rel="trackback nofollow"><?php trackback_url(); ?></a></p>
-</div>
-<?php
-	}
-} # display_trackback_uri()
 ?>

@@ -801,4 +801,26 @@ function archive_header_widgetize()
 } # archive_header_widgetize()
 
 add_action('widgets_init', 'archive_header_widgetize');
+
+
+#
+# display_entry_trackback_uri()
+#
+
+function display_trackback_uri()
+{
+	global $sem_captions;
+
+	if ( pings_open() && is_singular() )
+	{
+?><div class="comment_entry">
+<!--
+<?php trackback_rdf(); ?>
+-->
+<h2><?php echo $sem_captions['comment_trackback']; ?></h2>
+<p><a href="<?php trackback_url(); ?>" rel="trackback nofollow"><?php trackback_url(); ?></a></p>
+</div>
+<?php
+	}
+} # display_trackback_uri()
 ?>
