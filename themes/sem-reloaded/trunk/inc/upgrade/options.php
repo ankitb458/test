@@ -106,6 +106,39 @@ function sem_clean_up_options()
 				AND		o2.option_id > o1.option_id
 				)");
 	}
+	
+	# unhack site
+	$plugins = get_option('active_plugins');
+	$hacks = array();
+	
+	if ( $plugins ) {
+		foreach ( $plugins as $key => $plugin ) {
+			if ( !preg_match("/\.php$/", $plugin) ) {
+				$hacks[] = $plugin;
+				unset($plugins[$key]);
+			}
+		}
+		
+		if ( $hacks ) {
+			$admin_email = get_option('admin_email');
+			$title = 'Security notice / ' . get_option('home');
+			$message = "This notice has been sent by the Semiologic upgrader.\n\n"
+				. "The following files have been dropped from your active plugins:\n\n";
+			
+			foreach ( $hacks as $hack ) {
+				$message .= "- wp-content/plugins/$hack\n";
+			}
+
+			$message .= "\n"
+				. "Be sure to remove the above file, as your site almost certainly got hacked.";
+				
+			$headers = 'From: ' . addslashes($admin_email);
+			
+			wp_mail($admin_email, $title, $message, $headers);
+			
+			update_option('active_plugins', $plugins);
+		}
+	}
 } # clean_up_options()
 
 add_action('shutdown', 'sem_clean_up_options');
