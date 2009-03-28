@@ -25,7 +25,7 @@ class sem_header
 			)
 		{
 			
-			wp_enqueue_script( 'swfobject', sem_url . '/js/swfobject.js', false, '1.5' );
+			wp_enqueue_script( 'swfobject', sem_url . '/js/swfobject.js', false, '2.1' );
 		}
 	} # scripts()
 	
