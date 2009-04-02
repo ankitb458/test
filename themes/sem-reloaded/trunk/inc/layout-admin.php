@@ -18,8 +18,8 @@ class sem_layout_admin
 	function admin_menu()
 	{
 		add_theme_page(
-			__('Layout'),
-			__('Layout'),
+			__('Width &amp; Layout'),
+			__('Width &amp; Layout'),
 			'switch_themes',
 			basename(__FILE__),
 			array('sem_layout_admin', 'admin_page')

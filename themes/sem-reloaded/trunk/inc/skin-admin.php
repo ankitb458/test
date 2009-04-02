@@ -19,8 +19,8 @@ class sem_skin_admin
 	function admin_menu()
 	{
 		add_theme_page(
-			__('Skin'),
-			__('Skin'),
+			__('Skin &amp; Font'),
+			__('Skin &amp; Font'),
 			'switch_themes',
 			basename(__FILE__),
 			array('sem_skin_admin', 'admin_page')
@@ -39,6 +39,7 @@ class sem_skin_admin
 		global $sem_options;
 
 		$sem_options['active_skin'] = preg_replace("/\//", '', $_POST['active_skin']);
+		$sem_options['active_font'] = preg_replace("/[^a-z]/", '', $_POST['active_font']);
 
 		update_option('sem6_options', $sem_options);
 	} # update_options()
@@ -73,7 +74,9 @@ class sem_skin_admin
 			. ' value="1"'
 			. ' />' . "\n";
 
-		echo '<h2>' . __('Skin Settings') . '</h2>' . "\n";
+		echo '<h2>' . __('Skin &amp; Font Settings') . '</h2>' . "\n";
+		
+		echo '<h3>' . __('Skin Settings') . '</h3>' . "\n";
 		
 		global $sem_options;
 		
@@ -182,6 +185,52 @@ class sem_skin_admin
 		}
 
 		echo '</table>' . "\n";
+		
+		echo '<h3>' . __('Font Settings') . '</h3>' . "\n";
+		
+		echo '<p>' . __('This will let you set the default font on your site.') . '</p>' . "\n";
+		
+		echo '<ul>' . "\n";
+		
+		foreach ( array(
+			'' =>  __('Use the skin\'s default'),
+			'antica' => __('Book Antica, Times, Serif'),
+			'arial' => __('Arial, Helvetica, Sans-Serif'),
+			'bookman' => __('Bookman Old Style, Times, Serif'),
+			'comic' => __('Comic Sans MS, Helvetica, Sans-Serif'),
+			'corsiva' => __('Monotype Corsiva, Courier, Monospace'),
+			'courier' => __('Courier New, Courier, Monospace'),
+			'garamond' => __('Garamond, Times, Serif'),
+			'georgia' => __('Georgia, Times, Serif'),
+			'tahoma' => __('Tahoma, Helvetica, Sans-Serif'),
+			'times' => __('Times New Roman, Times, Serif'),
+			'trebuchet' => __('Trebuchet MS, Tahoma, Helvetica, Sans-Serif'),
+			'verdana' => __('Verdana, Helvetica, Sans-Serif'),
+			) as $k => $v ) {
+			echo '<li>'
+				. '<label'
+					. ( $k
+						? ( ' style="font-family:' . htmlspecialchars($v) . ';"' )
+						: ''
+						)
+					. '>'
+				. '<input type="radio" name="active_font" value="' . $k . '"'
+					. ( $k == $sem_options['active_font']
+						? ' checked="checked"'
+						: ''
+						)
+					. '/>'
+				. '&nbsp;'
+				. $v
+				. '</label>'
+				. '</li>' . "\n";
+		}
+		
+		echo '</ul>' . "\n";
+		
+		echo '<div class="submit">'
+			. '<input type="submit" value="' . attribute_escape(__('Save Changes')) . '" />'
+			. '</div>' . "\n";
 		
 		echo '</form>' . "\n";
 		echo '</div>' . "\n";

@@ -59,9 +59,7 @@ echo '<div id="wrapper_bg">' . "\n";
 	
 	# body
 	
-	$active_font = preg_replace("/[^a-z]+/", '_', $GLOBALS['sem_options']['active_font']);
-	
-	echo '<div id="body" class="wrapper' . ( $active_font ? " $active_font" : '' ) . '">' . "\n";
+	echo '<div id="body" class="wrapper">' . "\n";
 	
 	echo '<div id="body_top"><div class="hidden"></div></div>' . "\n";
 	

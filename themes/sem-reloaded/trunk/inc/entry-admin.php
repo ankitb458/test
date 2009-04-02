@@ -72,8 +72,6 @@ class sem_entry_admin
 			$new_captions = $sem_captions;
 
 			$new_options['show_excerpts'] = isset($_POST['sem_entry']['show_excerpts']);
-			$new_options['active_font'] = strip_tags(stripslashes($_POST['sem_entry']['active_font']));
-
 
 			$new_captions['more_link'] = strip_tags(stripslashes($_POST['sem_entry']['more_link']));
 			$new_captions['paginate'] = strip_tags(stripslashes($_POST['sem_entry']['paginate']));
@@ -112,48 +110,6 @@ class sem_entry_admin
 			. __('Show excerpts on front page')
 			. '</label>'
 			. '</div>';
-		
-		echo '<p>'
-			. __('Default Content Font:')
-			. '</p>' . "\n"
-			. '<ul>' . "\n";
-		
-		foreach ( array(
-			'' =>  __('Use the skin\'s default'),
-			'antica' => __('Book Antica, Times, Serif'),
-			'arial' => __('Arial, Helvetica, Sans-Serif'),
-			'bookman' => __('Bookman Old Style, Times, Serif'),
-			'comic' => __('Comic Sans MS, Helvetica, Sans-Serif'),
-			'corsiva' => __('Monotype Corsiva, Courier, Monospace'),
-			'courier' => __('Courier New, Courier, Monospace'),
-			'garamond' => __('Garamond, Times, Serif'),
-			'georgia' => __('Georgia, Times, Serif'),
-			'tahoma' => __('Tahoma, Helvetica, Sans-Serif'),
-			'times' => __('Times New Roman, Times, Serif'),
-			'trebuchet' => __('Trebuchet MS, Tahoma, Helvetica, Sans-Serif'),
-			'verdana' => __('Verdana, Helvetica, Sans-Serif'),
-			) as $k => $v ) {
-			echo '<li>'
-				. '<label'
-					. ( $k
-						? ( ' style="font-family:' . htmlspecialchars($v) . ';"' )
-						: ''
-						)
-					. '>'
-				. '<input type="radio" name="sem_entry[active_font]" value="' . $k . '"'
-					. ( $k == $sem_options['active_font']
-						? ' checked="checked"'
-						: ''
-						)
-					. '/>'
-				. '&nbsp;'
-				. $v
-				. '</label>'
-				. '</li>' . "\n";
-		}
-		
-		echo '</ul>' . "\n"
-			. '</p>' . "\n";
 		
 		echo '<h3>'
 			. __('Captions')

@@ -115,6 +115,7 @@ Theme Fonts
 
 .arial {
 	font-family: Arial, Helvetica, Sans-Serif;
+	font-size: 1em;
 }
 
 .bookman {
@@ -129,7 +130,7 @@ Theme Fonts
 
 .corsiva {
 	font-family: "Monotype Corsiva", Courier, Monospace;
-	font-size: 1.35em;
+	font-size: 1.2em;
 }
 
 .courier {

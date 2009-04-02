@@ -107,6 +107,8 @@ class sem_skin
 			}
 		}
 		
+		$classes[] = preg_replace("/[^a-z]+/", '_', $sem_options['active_font']);
+		
 		return $classes;
 	} # page_class()
 	
