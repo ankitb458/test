@@ -186,6 +186,18 @@ h2 {
 	font-weight: bold;
 }
 
+h1 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+h2 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 18px;
+}
+
 h3,
 th,
 .entry_date,
@@ -315,14 +327,16 @@ span.avatar {
 	font-size: .8em;
 }
 
+
 #sitename {
 	margin: 0px;
-	font-weight: bold;
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
 	text-align: center;
-	padding-top: 22px;
-	padding-bottom: 23px;
-	font-size: 28px;
-	line-height: 33px;
+	padding-top: 12px;
+	padding-bottom: 16px;
+	font-size: 42px;
+	line-height: 50px;
 }
 
 #tagline {
@@ -336,14 +350,14 @@ span.avatar {
 }
 
 .invert_header #sitename {
-	padding-top: 44px;
+	padding-top: 34px;
 	padding-bottom: 1px;
 	text-align: center;
 }
 
 .invert_header #tagline {
 	padding-top: 1px;
-	padding-bottom: 24px;
+	padding-bottom: 17px;
 	text-align: center;
 }
 

@@ -87,8 +87,8 @@ html {
 }
 
 #sitename {
-	padding-top: 38px;
-	padding-bottom: 37px;
+	padding-top: 28px;
+	padding-bottom: 30px;
 }
 
 #tagline {
@@ -97,13 +97,13 @@ html {
 }
 
 .invert_header #sitename {
-	padding-top: 59px;
+	padding-top: 49px;
 	padding-bottom: 1px;
 }
 
 .invert_header #tagline {
 	padding-top: 1px;
-	padding-bottom: 39px;
+	padding-bottom: 32px;
 }
 
 
