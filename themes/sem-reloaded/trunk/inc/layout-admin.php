@@ -74,7 +74,7 @@ class sem_layout_admin
 				. "</div>" . "\n";
 		}
 		
-		echo '<h2>' . __('Layout Settings') . '</h2>' . "\n";
+		echo '<h2>' . __('Width &amp; Layout Settings') . '</h2>' . "\n";
 		
 		$layouts = sem_layout_admin::get_layouts();
 

@@ -103,7 +103,7 @@ class sem_skin_admin
 		
 		$active_skin = $sem_options['active_skin'];
 		
-		echo '<p>' . __('Note that you can create your own skins. Skins are automatically detected, so copying one of the existing ones (wp-content/themes/semiologic/skins/ folder) is the simplest way to start. Don\'t miss the <a href="' . sem_url . '/skins/custom/skin-sample.css">near-exhaustive list of CSS pointers</a> that are available in the sample custom skin.') . '</p>' . "\n";
+		echo '<p>' . __('Note that you can create your own skins. Skins are automatically detected, so copying one of the existing ones (in the theme\'s skins folder) is the simplest way to start. Scanning through the various default ones will reveal much about every CSS pointer there is to know.') . '</p>' . "\n";
 
 		$i = 0;
 		$last_id = key(array_reverse($skins));
