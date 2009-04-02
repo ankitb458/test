@@ -28,6 +28,7 @@ class feed_widgets
 	{
 		add_action('init', array('feed_widgets', 'panels'), 0);
 		add_filter('the_content', array('feed_widgets', 'display'), 100);
+		add_filter('the_content_rss', array('feed_widgets', 'display'), 100);
 	} # init()
 	
 	
