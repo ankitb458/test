@@ -238,4 +238,12 @@ elseif ( version_compare($GLOBALS['sem_options']['version'], sem_version, '<') |
 
 add_filter('option_page_comments', 'false');
 add_filter('option_thread_comments', 'false');
+
+
+#
+# set content width
+#
+
+global $content_width;
+$content_width = 480;
 ?>
