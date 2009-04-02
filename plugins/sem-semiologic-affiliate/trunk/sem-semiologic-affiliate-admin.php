@@ -5,7 +5,7 @@
 
 function add_semiologic_affiliate_admin()
 {
-	if ( !function_exists('get_site_option') || is_site_admin() )
+	if ( !function_exists('is_site_admin') || is_site_admin() )
 	{
 		add_options_page(
 				__('Semiologic&nbsp;Affiliate'),
