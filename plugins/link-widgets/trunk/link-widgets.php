@@ -33,6 +33,9 @@ class link_widgets
 			'edit_link',
 			'delete_link',
 			'switch_theme',
+			'update_option_sidebars_widgets',
+			'update_option_sem5_options',
+			'update_option_sem6_options',
 			) as $hook )
 		{
 			add_action($hook, array('link_widgets', 'clear_cache'));

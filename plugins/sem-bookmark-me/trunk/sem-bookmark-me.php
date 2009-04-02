@@ -52,6 +52,9 @@ class bookmark_me
 				'update_option_show_on_front',
 				'update_option_page_on_front',
 				'update_option_page_for_posts',
+				'update_option_sidebars_widgets',
+				'update_option_sem5_options',
+				'update_option_sem6_options',
 				'save_post',
 				) as $hook)
 		{
