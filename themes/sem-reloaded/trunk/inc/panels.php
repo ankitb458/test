@@ -57,6 +57,16 @@ class sem_panels
 					'after_title' => $after_title,
 					)
 				);
+			register_sidebar(
+				array(
+					'id' => 'bottom_sidebar',
+					'name' => 'Bottom Wide Sidebar',
+					'before_widget' => $before_widget,
+					'after_widget' => $after_widget,
+					'before_title' => $before_title,
+					'after_title' => $after_title,
+					)
+				);
 		}
 		else
 		{
@@ -102,6 +112,7 @@ class sem_panels
 
 		foreach ( array(
 			'the_top_sidebar',
+			'the_bottom_sidebar',
 			'the_left_sidebar',
 			'the_right_sidebar',
 			) as $panel_id )
@@ -451,6 +462,16 @@ class sem_panels
 	{
 		dynamic_sidebar('top_sidebar');
 	} # the_top_sidebar()
+	
+	
+	#
+	# the_bottom_sidebar()
+	#
+	
+	function the_bottom_sidebar()
+	{
+		dynamic_sidebar('bottom_sidebar');
+	} # the_bottom_sidebar()
 	
 	
 	#

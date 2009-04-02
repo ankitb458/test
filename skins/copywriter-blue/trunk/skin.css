@@ -235,6 +235,18 @@ html {
  */
 
 h1 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+h2 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 18px;
+}
+
+h1 {
 	color: #005bad;
 }
 

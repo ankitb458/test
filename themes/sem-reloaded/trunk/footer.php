@@ -32,7 +32,7 @@
 		
 			# top sidebar
 			
-			echo '<div id="top_sidebar" class="sidebar">' . "\n";
+			echo '<div id="top_sidebar" class="sidebar wide_sidebar">' . "\n";
 
 			echo '<div id="top_sidebar_top"><div class="hidden"></div></div>' . "\n";
 
@@ -50,7 +50,7 @@
 			
 			# split
 			
-			echo '<div id="sidebars_split"></div>' . "\n";
+			echo '<div id="sidebars_split"><div class="hidden"></div></div>' . "\n";
 			
 			
 			# left sidebar
@@ -78,6 +78,29 @@
 
 			echo '</div><!-- right sidebar -->' . "\n";
 			
+			
+			# split
+			
+			echo '<div id="sidebars_split"><div class="hidden"></div></div>' . "\n";
+			
+			
+			# spacer
+
+			echo '<div class="spacer"></div>' . "\n";
+			
+			
+			# bottom sidebar
+			
+			echo '<div id="bottom_sidebar" class="sidebar wide_sidebar">' . "\n";
+
+			echo '<div id="bottom_sidebar_top"><div class="hidden"></div></div>' . "\n";
+
+			do_action('the_bottom_sidebar');
+
+			echo '<div id="bottom_sidebar_bottom"><div class="hidden"></div></div>' . "\n";
+
+			echo '</div><!-- bottom sidebar -->' . "\n";
+
 			
 			# spacer
 

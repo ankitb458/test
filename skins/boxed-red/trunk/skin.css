@@ -310,6 +310,18 @@ html {
  */
 
 h1 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+h2 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 18px;
+}
+
+h1 {
 	color: #991c1f;
 }
 
@@ -392,28 +404,28 @@ blockquote {
 	background: url(images/widget_title_bottom.jpg) top center no-repeat;
 }
 
-#top_sidebar .widget {
-	background: url(images/top_widget.jpg) center repeat-y;
+.wide_sidebar .widget {
+	background: url(images/wide_widget.jpg) center repeat-y;
 }
 
-#top_sidebar .widget_top {
-	background: url(images/top_widget_top.jpg) bottom center no-repeat;
+.wide_sidebar .widget_top {
+	background: url(images/wide_widget_top.jpg) bottom center no-repeat;
 }
 
-#top_sidebar .widget_bottom {
-	background: url(images/top_widget_bottom.jpg) top center no-repeat;
+.wide_sidebar .widget_bottom {
+	background: url(images/wide_widget_bottom.jpg) top center no-repeat;
 }
 
-#top_sidebar .widget_title {
-	background: url(images/top_widget_title.jpg) center repeat-y;
+.wide_sidebar .widget_title {
+	background: url(images/wide_widget_title.jpg) center repeat-y;
 }
 
-#top_sidebar .widget_title_top {
-	background: url(images/top_widget_title_top.jpg) bottom center no-repeat;
+.wide_sidebar .widget_title_top {
+	background: url(images/wide_widget_title_top.jpg) bottom center no-repeat;
 }
 
-#top_sidebar .widget_title_bottom {
-	background: url(images/top_widget_title_bottom.jpg) top center no-repeat;
+.wide_sidebar .widget_title_bottom {
+	background: url(images/wide_widget_title_bottom.jpg) top center no-repeat;
 }
 
 
