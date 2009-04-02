@@ -136,8 +136,25 @@ class external_links
 			$buffer
 			);
 
+		# escape image links
+		
+		$buffer = preg_replace_callback(
+			"/
+			<\s*a					# anchor tag
+				(?:\s[^>]*)			# optional attributes
+				>
+			\s*
+			<\s*img					# img tag
+				(?:\s[^>]*)			# attributes
+				>
+			<\s*\/\s*a\s*>			# end of anchor tag
+			/isUx",
+			array('external_links', 'escape'),
+			$buffer
+			);
+		
 		global $site_host;
-
+		
 		$site_host = trailingslashit(get_option('home'));
 		$site_host = preg_replace("~^https?://~i", "", $site_host);
 		$site_host = preg_replace("~^www\.~i", "", $site_host);
