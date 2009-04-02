@@ -102,6 +102,10 @@ class bookmark_me
 				'name' => 'BUMPzee',
 				'url' => 'http://www.bumpzee.com/bump.php?u=%url%'
 				),
+			// 'buzzup' => array(
+			// 	'name' => 'Buzz Up!',
+			// 	'url' => 'http://buzz.yahoo.com/submit/?submitHeadline=%title%&submitUrl=%url%'
+			// 	),
 			'dzone' => array(
 				'name' => 'DZone',
 				'url' => 'http://www.dzone.com/links/add.html?title=%title%&amp;url=%url%',
