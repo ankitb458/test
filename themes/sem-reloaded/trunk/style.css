@@ -110,7 +110,7 @@ Theme Fonts
 
 .antica {
 	font-family: "Book Antica", Times, Serif;
-	font-size: 1.15em;
+	font-size: 1.1em;
 }
 
 .arial {
@@ -120,12 +120,12 @@ Theme Fonts
 
 .bookman {
 	font-family: "Bookman Old Style", Times, Serif;
-	font-size: 1.1em;
+	font-size: 1em;
 }
 
 .comic {
 	font-family: "Comic Sans MS", Helvetica, Sans-Serif;
-	font-size: 1.1em;
+	font-size: 1em;
 }
 
 .corsiva {
@@ -135,12 +135,12 @@ Theme Fonts
 
 .courier {
 	font-family: "Courier New", Courier, Monospace;
-	font-size: 1.05em;
+	font-size: 1em;
 }
 
 .garamond {
 	font-family: Garamond, Times, Serif;
-	font-size: 1.2em;
+	font-size: 1.1em;
 }
 
 .georgia {
@@ -155,7 +155,7 @@ Theme Fonts
 
 .times {
 	font-family: "Times New Roman", Times, Serif;
-	font-size: 1.15em;
+	font-size: 1.1em;
 }
 
 .trebuchet {
@@ -586,11 +586,16 @@ div.media {
 	text-align: center;
 }
 
-
 /* entry_author_image */
 
 .entry .entry_author_image {
 	float: left;
 	border: outset 1px;
 	margin: 1.2em 1.2em 0px .1em;
+}
+
+/* wp gallery */
+
+.gallery {
+	clear: both;
 }
