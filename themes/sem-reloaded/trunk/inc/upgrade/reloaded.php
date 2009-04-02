@@ -141,10 +141,8 @@ unset($sem_options['theme_meta']);
 unset($sem_options['seo']);
 unset($sem_options['scripts']);
 unset($sem_options['active_header']);
-unset($sem_options['active_font']);
 unset($sem_options['active_font_size']);
 unset($sem_options['active_width']);
-
 unset($sem_captions['entry_author']);
 
 #dump($sem_options, $sem_captions);

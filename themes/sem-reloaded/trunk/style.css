@@ -86,7 +86,7 @@ legend {
 }
 
 body {
-	font:13px/1.231 Trebuchet MS, Tahoma, Arial, Helvetica, Clean, Sans-Serif;
+	font:13px/1.231 "Trebuchet MS", Tahoma, Arial, Helvetica, Clean, Sans-Serif;
 	*font-size:small;
 	*font:x-small;
 }
@@ -100,6 +100,71 @@ pre, code, kbd, samp, tt {
 	font-family:monospace;
 	*font-size:108%;
 	line-height:100%;
+}
+
+
+/*
+Theme Fonts
+-----------
+ */
+
+.antica {
+	font-family: "Book Antica", Times, Serif;
+	font-size: 1.15em;
+}
+
+.arial {
+	font-family: Arial, Helvetica, Sans-Serif;
+}
+
+.bookman {
+	font-family: "Bookman Old Style", Times, Serif;
+	font-size: 1.1em;
+}
+
+.comic {
+	font-family: "Comic Sans MS", Helvetica, Sans-Serif;
+	font-size: 1.1em;
+}
+
+.corsiva {
+	font-family: "Monotype Corsiva", Courier, Monospace;
+	font-size: 1.35em;
+}
+
+.courier {
+	font-family: "Courier New", Courier, Monospace;
+	font-size: 1.05em;
+}
+
+.garamond {
+	font-family: Garamond, Times, Serif;
+	font-size: 1.2em;
+}
+
+.georgia {
+	font-family: Georgia, Times, Serif;
+	font-size: 1.1em;
+}
+
+.tahoma {
+	font-family: Tahoma, Helvetica, Sans-Serif;
+	font-size: 1em;
+}
+
+.times {
+	font-family: "Times New Roman", Times, Serif;
+	font-size: 1.15em;
+}
+
+.trebuchet {
+	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
+	font-size: 1em;
+}
+
+.verdana {
+	font-family: Verdana, Helvetica, Sans-Serif;
+	font-size: 1em;
 }
 
 

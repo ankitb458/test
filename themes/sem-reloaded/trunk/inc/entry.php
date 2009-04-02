@@ -460,7 +460,7 @@ class sem_entry
 			$o .= sem_entry::get('content')
 				. sem_entry::get('paginate');
 		}
-
+		
 		if ( $o )
 		{
 			echo $args['before_widget'] . "\n" . $o . $args['after_widget'] . "\n";

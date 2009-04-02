@@ -99,10 +99,12 @@ class sem_skin
 		if ( is_page() )
 		{
 			$template = get_post_meta(intval($GLOBALS['wp_query']->get_queried_object_id()), '_wp_page_template', true);
-
-			$template = preg_replace("/\.[^\.]+$/", "", $template);
 			
-			$classes[] = $template;
+			if ( $template != 'default' ) {
+				$template = preg_replace("/\.[^\.]+$/", "", $template);
+
+				$classes[] = $template;
+			}
 		}
 		
 		return $classes;
