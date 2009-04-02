@@ -312,7 +312,8 @@ h1 {
 	font-size: 22px;
 }
 
-h2 {
+h2,
+#wp-calendar caption {
 	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
 	font-weight: normal;
 	font-size: 18px;
