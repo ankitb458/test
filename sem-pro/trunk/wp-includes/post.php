@@ -424,7 +424,7 @@ function set_post_type( $post_id = 0, $post_type = 'post' ) {
 	global $wpdb;
 
 	$post_type = sanitize_post_field('post_type', $post_type, $post_id, 'db');
-	$return = $wpdb->query( $wpdb->prepare("UPDATE $wpdb->posts SET post_type = %s WHERE ID = %d", $post_type, $post_id) );
+	$return = $wpdb->update($wpdb->posts, array('post_type' => $post_type), array('ID' => $post_id) );
 
 	if ( 'page' == $post_type )
 		clean_page_cache($post_id);
@@ -510,6 +510,9 @@ function get_posts($args = null) {
  * @return bool False for failure. True for success.
  */
 function add_post_meta($post_id, $meta_key, $meta_value, $unique = false) {
+	if ( !$meta_key )
+		return false;
+
 	global $wpdb;
 
 	// make sure meta is added to the post, not a revision
@@ -558,6 +561,9 @@ function delete_post_meta($post_id, $meta_key, $meta_value = '') {
 	$meta_key = stripslashes( $meta_key );
 	$meta_value = maybe_serialize( stripslashes_deep($meta_value) );
 
+	if ( !$meta_key )
+		return false;
+
 	if ( empty( $meta_value ) )
 		$meta_id = $wpdb->get_var( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = %s", $post_id, $meta_key ) );
 	else
@@ -589,6 +595,9 @@ function delete_post_meta($post_id, $meta_key, $meta_value = '') {
  * @return mixed Will be an array if $single is false. Will be value of meta data field if $single is true.
  */
 function get_post_meta($post_id, $key, $single = false) {
+	if ( !$key )
+		return '';
+
 	$post_id = (int) $post_id;
 
 	$meta_cache = wp_cache_get($post_id, 'post_meta');
@@ -637,6 +646,9 @@ function update_post_meta($post_id, $meta_key, $meta_value, $prev_value = '') {
 	// expected_slashed ($meta_key)
 	$meta_key = stripslashes($meta_key);
 
+	if ( !$meta_key )
+		return false;
+
 	if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT meta_key FROM $wpdb->postmeta WHERE meta_key = %s AND post_id = %d", $meta_key, $post_id ) ) ) {
 		return add_post_meta($post_id, $meta_key, $meta_value);
 	}
@@ -666,6 +678,9 @@ function update_post_meta($post_id, $meta_key, $meta_value, $prev_value = '') {
  * @return bool Whether the post meta key was deleted from the database
  */
 function delete_post_meta_by_key($post_meta_key) {
+	if ( !$post_meta_key )
+		return false;
+
 	global $wpdb;
 	if ( $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->postmeta WHERE meta_key = %s", $post_meta_key)) ) {
 		/** @todo Get post_ids and delete cache */
@@ -739,6 +754,9 @@ function get_post_custom_keys( $post_id = 0 ) {
  * @return array Meta field values.
  */
 function get_post_custom_values( $key = '', $post_id = 0 ) {
+	if ( !$key )
+		return null;
+
 	$custom = get_post_custom($post_id);
 
 	return isset($custom[$key]) ? $custom[$key] : null;
@@ -1059,7 +1077,7 @@ function wp_post_mime_type_where($post_mime_types) {
 		$slashpos = strpos($mime_type, '/');
 		if ( false !== $slashpos ) {
 			$mime_group = preg_replace('/[^-*.a-zA-Z0-9]/', '', substr($mime_type, 0, $slashpos));
-			$mime_subgroup = preg_replace('/[^-*.a-zA-Z0-9]/', '', substr($mime_type, $slashpos + 1));
+			$mime_subgroup = preg_replace('/[^-*.+a-zA-Z0-9]/', '', substr($mime_type, $slashpos + 1));
 			if ( empty($mime_subgroup) )
 				$mime_subgroup = '*';
 			else
@@ -1131,6 +1149,8 @@ function wp_delete_post($postid = 0) {
 		$children = $wpdb->get_results($children_query);
 
 		$wpdb->update( $wpdb->posts, $parent_data, $parent_where + array( 'post_type' => 'page' ) );
+	} else {
+		unstick_post($postid);
 	}
 
 	// Do raw query.  wp_get_post_revisions() is filtered
@@ -1142,11 +1162,11 @@ function wp_delete_post($postid = 0) {
 	// Point all attachments to this post up one level
 	$wpdb->update( $wpdb->posts, $parent_data, $parent_where + array( 'post_type' => 'attachment' ) );
 
-	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE ID = %d", $postid ));
-
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->comments WHERE comment_post_ID = %d", $postid ));
 
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE post_id = %d", $postid ));
+
+	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE ID = %d", $postid ));
 
 	if ( 'page' == $post->post_type ) {
 		clean_page_cache($postid);
@@ -1206,12 +1226,34 @@ function wp_get_post_categories( $post_id = 0, $args = array() ) {
  * @return array List of post tags.
  */
 function wp_get_post_tags( $post_id = 0, $args = array() ) {
+	return wp_get_post_terms( $post_id, 'post_tag', $args);
+}
+
+/**
+ * Retrieve the terms for a post.
+ *
+ * There is only one default for this function, called 'fields' and by default
+ * is set to 'all'. There are other defaults that can be override in
+ * {@link wp_get_object_terms()}.
+ *
+ * @package WordPress
+ * @subpackage Post
+ * @since 2.8.0
+ *
+ * @uses wp_get_object_terms() Gets the tags for returning. Args can be found here
+ *
+ * @param int $post_id Optional. The Post ID
+ * @param string $taxonomy The taxonomy for which to retrieve terms. Defaults to post_tag.
+ * @param array $args Optional. Overwrite the defaults
+ * @return array List of post tags.
+ */
+function wp_get_post_terms( $post_id = 0, $taxonomy = 'post_tag', $args = array() ) {
 	$post_id = (int) $post_id;
 
 	$defaults = array('fields' => 'all');
 	$args = wp_parse_args( $args, $defaults );
 
-	$tags = wp_get_object_terms($post_id, 'post_tag', $args);
+	$tags = wp_get_object_terms($post_id, $taxonomy, $args);
 
 	return $tags;
 }
@@ -1498,7 +1540,15 @@ function wp_insert_post($postarr = array(), $wp_error = false) {
 	}
 
 	wp_set_post_categories( $post_ID, $post_category );
-	wp_set_post_tags( $post_ID, $tags_input );
+	// old-style tags_input
+	if ( !empty($tags_input) )
+		wp_set_post_tags( $post_ID, $tags_input );
+	// new-style support for all tag-like taxonomies
+	if ( !empty($tax_input) ) {
+		foreach ( $tax_input as $taxonomy => $tags ) {
+			wp_set_post_terms( $post_ID, $tags, $taxonomy );
+		}
+	}
 
 	$current_guid = get_post_field( 'guid', $post_ID );
 
@@ -1685,7 +1735,21 @@ function wp_add_post_tags($post_id = 0, $tags = '') {
  * @return bool|null Will return false if $post_id is not an integer or is 0. Will return null otherwise
  */
 function wp_set_post_tags( $post_id = 0, $tags = '', $append = false ) {
+	return wp_set_post_terms( $post_id, $tags, 'post_tag', $append);
+}
 
+/**
+ * Set the terms for a post.
+ *
+ * @since 2.8.0
+ * @uses wp_set_object_terms() Sets the tags for the post.
+ *
+ * @param int $post_id Post ID.
+ * @param string $tags The tags to set for the post, separated by commas.
+ * @param bool $append If true, don't delete existing tags, just add on. If false, replace the tags with the new tags.
+ * @return bool|null Will return false if $post_id is not an integer or is 0. Will return null otherwise
+ */
+function wp_set_post_terms( $post_id = 0, $tags = '', $taxonomy = 'post_tag', $append = false ) {
 	$post_id = (int) $post_id;
 
 	if ( !$post_id )
@@ -1693,8 +1757,9 @@ function wp_set_post_tags( $post_id = 0, $tags = '', $append = false ) {
 
 	if ( empty($tags) )
 		$tags = array();
-	$tags = (is_array($tags)) ? $tags : explode( ',', trim($tags, " \n\t\r\0\x0B,") );
-	wp_set_object_terms($post_id, $tags, 'post_tag', $append);
+
+	$tags = is_array($tags) ? $tags : explode( ',', trim($tags, " \n\t\r\0\x0B,") );
+	wp_set_object_terms($post_id, $tags, $taxonomy, $append);
 }
 
 /**
@@ -2082,13 +2147,17 @@ function &get_pages($args = '') {
 	$r = wp_parse_args( $args, $defaults );
 	extract( $r, EXTR_SKIP );
 
+	$cache = array();
 	$key = md5( serialize( compact(array_keys($defaults)) ) );
 	if ( $cache = wp_cache_get( 'get_pages', 'posts' ) ) {
-		if ( isset( $cache[ $key ] ) ) {
+		if ( is_array($cache) && isset( $cache[ $key ] ) ) {
 			$pages = apply_filters('get_pages', $cache[ $key ], $r );
 			return $pages;
 		}
 	}
+
+	if ( !is_array($cache) )
+		$cache = array();
 
 	$inclusions = '';
 	if ( !empty($include) ) {
@@ -2330,7 +2399,7 @@ function wp_insert_attachment($object, $file = false, $parent = 0) {
 		while ($post_name_check) {
 			$alt_post_name = $post_name . "-$suffix";
 			// expected_slashed ($alt_post_name, $post_name)
-			$post_name_check = $wpdb->get_var( $wpdb->prepare( "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_status = 'inherit' AND ID != %d AND post_parent = %d LIMIT 1", $alt_post_name, $post_ID, $post_parent));
+			$post_name_check = $wpdb->get_var( $wpdb->prepare( "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_status = 'inherit' AND ID != %d LIMIT 1", $alt_post_name, $post_ID, $post_parent));
 			$suffix++;
 		}
 		$post_name = $alt_post_name;
@@ -2442,14 +2511,16 @@ function wp_delete_attachment($postid) {
 	$meta = wp_get_attachment_metadata( $postid );
 	$file = get_attached_file( $postid );
 
+	do_action('delete_attachment', $postid);
+
 	/** @todo Delete for pluggable post taxonomies too */
 	wp_delete_object_term_relationships($postid, array('category', 'post_tag'));
-
-	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE ID = %d", $postid ));
 
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->comments WHERE comment_post_ID = %d", $postid ));
 
 	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->postmeta WHERE post_id = %d ", $postid ));
+
+	$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->posts WHERE ID = %d", $postid ));
 
 	$uploadPath = wp_upload_dir();
 
@@ -2477,8 +2548,6 @@ function wp_delete_attachment($postid) {
 		@ unlink($file);
 
 	clean_post_cache($postid);
-
-	do_action('delete_attachment', $postid);
 
 	return $post;
 }
@@ -3456,6 +3525,7 @@ function _wp_put_post_revision( $post = null, $autosave = false ) {
 		return new WP_Error( 'post_type', __( 'Cannot create a revision of a revision' ) );
 
 	$post = _wp_post_revision_fields( $post, $autosave );
+	$post = add_magic_quotes($post); //since data is from db
 
 	$revision_id = wp_insert_post( $post );
 	if ( is_wp_error($revision_id) )
@@ -3532,6 +3602,8 @@ function wp_restore_post_revision( $revision_id, $fields = null ) {
 		return false;
 
 	$update['ID'] = $revision['post_parent'];
+
+	$update = add_magic_quotes( $update ); //since data is from db
 
 	$post_id = wp_update_post( $update );
 	if ( is_wp_error( $post_id ) )

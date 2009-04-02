@@ -11,10 +11,7 @@
  * @name $post_ID
  * @var int
  */
-if ( ! isset( $post_ID ) )
-	$post_ID = 0;
-else
-	$post_ID = (int) $post_ID;
+$post_ID = isset($post_ID) ? (int) $post_ID : 0;
 
 $action = isset($action) ? $action : '';
 if ( isset($_GET['message']) )
@@ -88,9 +85,16 @@ function post_submit_meta_box($post) {
 </div>
 
 <div id="preview-action">
-<?php $preview_link = 'publish' == $post->post_status ? clean_url(get_permalink($post->ID)) : clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>
-
-<a class="preview button" href="<?php echo $preview_link; ?>" target="wp-preview" id="post-preview" tabindex="4"><?php _e('Preview'); ?></a>
+<?php
+if ( 'publish' == $post->post_status ) {
+	$preview_link = clean_url(get_permalink($post->ID));
+	$preview_button = __('Preview Changes');
+} else {
+	$preview_link = clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID))));
+	$preview_button = __('Preview');
+}
+?>
+<a class="preview button" href="<?php echo $preview_link; ?>" target="wp-preview" id="post-preview" tabindex="4"><?php echo $preview_button; ?></a>
 <input type="hidden" name="wp-preview" id="wp-preview" value="" />
 </div>
 
@@ -166,12 +170,12 @@ if ( 'private' == $post->post_status ) {
 
 <div id="post-visibility-select" class="hide-if-js">
 <input type="hidden" name="hidden_post_password" id="hidden-post-password" value="<?php echo attribute_escape($post->post_password); ?>" />
-<input type="checkbox" style="display:none" name="hidden_post_sticky" id="hidden-post-sticky" value="sticky" <?php checked(is_sticky($post->ID), true); ?> />
+<input type="checkbox" style="display:none" name="hidden_post_sticky" id="hidden-post-sticky" value="sticky" <?php checked(is_sticky($post->ID)); ?> />
 <input type="hidden" name="hidden_post_visibility" id="hidden-post-visibility" value="<?php echo attribute_escape( $visibility ); ?>" />
 
 
 <input type="radio" name="visibility" id="visibility-radio-public" value="public" <?php checked( $visibility, 'public' ); ?> /> <label for="visibility-radio-public" class="selectit"><?php _e('Public'); ?></label><br />
-<span id="sticky-span"><input id="sticky" name="sticky" type="checkbox" value="sticky" <?php checked(is_sticky($post->ID), true); ?> tabindex="4" /> <label for="sticky" class="selectit"><?php _e('Stick this post to the front page') ?></label><br /></span>
+<span id="sticky-span"><input id="sticky" name="sticky" type="checkbox" value="sticky" <?php checked(is_sticky($post->ID)); ?> tabindex="4" /> <label for="sticky" class="selectit"><?php _e('Stick this post to the front page') ?></label><br /></span>
 <input type="radio" name="visibility" id="visibility-radio-password" value="password" <?php checked( $visibility, 'password' ); ?> /> <label for="visibility-radio-password" class="selectit"><?php _e('Password protected'); ?></label><br />
 <span id="password-span"><label for="post_password"><?php _e('Password:'); ?></label> <input type="text" name="post_password" id="post_password" value="<?php echo attribute_escape($post->post_password); ?>" /><br /></span>
 <input type="radio" name="visibility" id="visibility-radio-private" value="private" <?php checked( $visibility, 'private' ); ?> /> <label for="visibility-radio-private" class="selectit"><?php _e('Private'); ?></label><br />
@@ -187,7 +191,8 @@ if ( 'private' == $post->post_status ) {
 
 
 <?php
-$datef = _c( 'M j, Y @ G:i|Publish box date format');
+// translators: Publish box date formt, see http://php.net/date
+$datef = __( 'M j, Y @ G:i' );
 if ( 0 != $post->ID ) {
 	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
 		$stamp = __('Scheduled for: <b>%1$s</b>');
@@ -263,14 +268,36 @@ add_meta_box('submitdiv', __('Publish'), 'post_submit_meta_box', 'post', 'side',
  *
  * @param object $post
  */
-function post_tags_meta_box($post) {
+function post_tags_meta_box($post, $box) {
+	$tax_name = substr($box['id'], 8);
+	$taxonomy = get_taxonomy($tax_name);
+	$helps = isset($taxonomy->helps) ? attribute_escape($taxonomy->helps) : __('Separate tags with commas.');
 ?>
-<p id="jaxtag"><label class="hidden" for="newtag"><?php _e('Tags'); ?></label><input type="text" name="tags_input" class="tags-input" id="tags-input" size="40" tabindex="3" value="<?php echo get_tags_to_edit( $post->ID ); ?>" /></p>
-<div id="tagchecklist"></div>
-<p id="tagcloud-link" class="hide-if-no-js"><a href='#'><?php _e( 'Choose from the most popular tags' ); ?></a></p>
+<div class="tagsdiv" id="<?php echo $tax_name; ?>">
+	<p class="jaxtag">
+		<label class="hidden" for="newtag"><?php _e( $box['title'] ); ?></label>
+		<input type="hidden" name="<?php echo "tax_input[$tax_name]"; ?>" class="the-tags" id="tax-input[<?php echo $tax_name; ?>]" value="<?php echo get_terms_to_edit( $post->ID, $tax_name ); ?>" />
+
+	<span class="ajaxtag">
+		<input type="text" name="newtag[<?php echo $tax_name; ?>]" class="newtag form-input-tip" size="16" autocomplete="off" value="<?php _e('Add new tag'); ?>" />
+		<input type="button" class="button tagadd" value="<?php _e('Add'); ?>" tabindex="3" />
+	</span></p>
+	<p class="howto"><?php echo $helps; ?></p>
+	<div class="tagchecklist"></div>
+</div>
+<p class="tagcloud-link hide-if-no-js"><a href="#titlediv" class="tagcloud-link" id="link-<?php echo $tax_name; ?>"><?php printf( __('Choose from the most used tags in %s'), $box['title'] ); ?></a></p>
 <?php
 }
-add_meta_box('tagsdiv', __('Tags'), 'post_tags_meta_box', 'post', 'side', 'core');
+
+// all tag-style post taxonomies
+foreach ( get_object_taxonomies('post') as $tax_name ) {
+	if ( !is_taxonomy_hierarchical($tax_name) ) {
+		$taxonomy = get_taxonomy($tax_name);
+		$label = isset($taxonomy->label) ? attribute_escape($taxonomy->label) : $tax_name;
+
+		add_meta_box('tagsdiv-' . $tax_name, $label, 'post_tags_meta_box', 'post', 'side', 'core');
+	}
+}
 
 /**
  * Display post categories form fields.
@@ -408,7 +435,6 @@ do_action('dbx_post_advanced');
  * @param object $post
  */
 function post_comment_status_meta_box($post) {
-	global $wpdb, $post_ID;
 ?>
 <input name="advanced_view" type="hidden" value="1" />
 <p class="meta-options">
@@ -416,19 +442,36 @@ function post_comment_status_meta_box($post) {
 	<label for="ping_status" class="selectit"><input name="ping_status" type="checkbox" id="ping_status" value="open" <?php checked($post->ping_status, 'open'); ?> /> <?php _e('Allow <a href="http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments" target="_blank">trackbacks and pingbacks</a> on this post') ?></label>
 </p>
 <?php
+}
+add_meta_box('commentstatusdiv', __('Discussion'), 'post_comment_status_meta_box', 'post', 'normal', 'core');
+
+/**
+ * Display comments for post.
+ *
+ * @since 2.8.0
+ *
+ * @param object $post
+ */
+function post_comment_meta_box($post) {
+	global $wpdb, $post_ID;
+
 	$total = $wpdb->get_var($wpdb->prepare("SELECT count(1) FROM $wpdb->comments WHERE comment_post_ID = '%d' AND ( comment_approved = '0' OR comment_approved = '1')", $post_ID));
 
-	if ( !$post_ID || $post_ID < 0 || 1 > $total )
+	if ( 1 > $total ) {
+		echo '<p>' . __('No comments yet.') . '</p>';
 		return;
+	}
 
-wp_nonce_field( 'get-comments', 'add_comment_nonce', false );
+	wp_nonce_field( 'get-comments', 'add_comment_nonce', false );
 ?>
 
 <table class="widefat comments-box fixed" cellspacing="0" style="display:none;">
 <thead>
 	<tr>
     <th scope="col" class="column-author"><?php _e('Author') ?></th>
-    <th scope="col" class="column-comment"><?php echo _c('Comment|noun') ?></th>
+    <th scope="col" class="column-comment">
+		<?php /* translators: field name in comment form */ echo _x('Comment', 'noun'); ?>
+	</th>
   </tr>
 </thead>
 <tbody id="the-comment-list" class="list:comment">
@@ -437,12 +480,13 @@ wp_nonce_field( 'get-comments', 'add_comment_nonce', false );
 <p class="hide-if-no-js"><a href="#commentstatusdiv" id="show-comments" onclick="commentsBox.get(<?php echo $total; ?>);return false;"><?php _e('Show comments'); ?></a> <img class="waiting" style="display:none;" src="images/loading.gif" alt="" /></p>
 <?php
 	$hidden = get_hidden_meta_boxes('post');
-	if ( ! in_array('commentstatusdiv', $hidden) ) { ?>
-		<script type="text/javascript">commentsBox.get(<?php echo $total; ?>, 10);</script>
+	if ( ! in_array('commentsdiv', $hidden) ) { ?>
+		<script type="text/javascript">jQuery(document).ready(function(){commentsBox.get(<?php echo $total; ?>, 10);});</script>
 <?php
 	}
 }
-add_meta_box('commentstatusdiv', __('Discussion'), 'post_comment_status_meta_box', 'post', 'normal', 'core');
+if ( 'publish' == $post->post_status || 'private' == $post->post_status )
+	add_meta_box('commentsdiv', __('Comments'), 'post_comment_meta_box', 'post', 'normal', 'core');
 
 /**
  * Display post slug form fields.
@@ -538,7 +582,7 @@ else
 
 <?php echo $form_extra ?>
 
-<div id="poststuff" class="metabox-holder">
+<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
 
 <div id="side-info-column" class="inner-sidebar">
 
@@ -547,11 +591,10 @@ else
 <?php $side_meta_boxes = do_meta_boxes('post', 'side', $post); ?>
 </div>
 
-<div id="post-body" class="<?php echo $side_meta_boxes ? 'has-sidebar' : ''; ?>">
-<div id="post-body-content" class="has-sidebar-content">
+<div id="post-body">
 <div id="titlediv">
 <div id="titlewrap">
-	<input type="text" name="post_title" size="30" tabindex="1" value="<?php echo attribute_escape($post->post_title); ?>" id="title" autocomplete="off" />
+	<input type="text" name="post_title" size="30" tabindex="1" value="<?php echo attribute_escape( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" />
 </div>
 <div class="inside">
 <?php $sample_permalink_html = get_sample_permalink_html($post->ID); ?>
@@ -569,9 +612,9 @@ endif; ?>
 
 <?php the_editor($post->post_content); ?>
 
-<div id="post-status-info">
-	<span id="wp-word-count" class="alignleft"></span>
-	<span class="alignright">
+<table id="post-status-info"><tbody><tr>
+	<td id="wp-word-count"></td>
+	<td class="autosave-info">
 	<span id="autosave">&nbsp;</span>
 <?php
 	if ( $post_ID ) {
@@ -585,9 +628,8 @@ endif; ?>
 		echo '</span>';
 	}
 ?>
-	</span>
-	<br class="clear" />
-</div>
+	</td>
+</tr></tbody></table>
 
 
 <?php wp_nonce_field( 'autosave', 'autosavenonce', false ); ?>
@@ -609,7 +651,6 @@ do_action('dbx_post_sidebar');
 
 ?>
 
-</div>
 </div>
 <br class="clear" />
 </div><!-- /poststuff -->

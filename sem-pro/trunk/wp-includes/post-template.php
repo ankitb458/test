@@ -339,6 +339,141 @@ function get_post_class( $class = '', $post_id = null ) {
 }
 
 /**
+ * Display the classes for the body element.
+ *
+ * @since 2.8.0
+ *
+ * @param string|array $class One or more classes to add to the class list.
+ */
+function body_class( $class = '' ) {
+	// Separates classes with a single space, collates classes for body element
+	echo 'class="' . join( ' ', get_body_class( $class ) ) . '"';
+}
+
+/**
+ * Retrieve the classes for the body element as an array.
+ *
+ * @since 2.8.0
+ *
+ * @param string|array $class One or more classes to add to the class list.
+ * @return array Array of classes.
+ */
+function get_body_class( $class = '' ) {
+	global $wp_query, $current_user;
+
+	$classes = array();
+
+	if ( 'rtl' == get_bloginfo('text_direction') )
+		$classes[] = 'rtl';
+
+	if ( is_front_page() )
+		$classes[] = 'home';
+	if ( is_home() )
+		$classes[] = 'blog';
+	if ( is_archive() )
+		$classes[] = 'archive';
+	if ( is_date() )
+		$classes[] = 'date';
+	if ( is_search() )
+		$classes[] = 'search';
+	if ( is_paged() )
+		$classes[] = 'paged';
+	if ( is_attachment() )
+		$classes[] = 'attachment';
+	if ( is_404() )
+		$classes[] = 'error404';
+
+	if ( is_single() ) {
+		the_post();
+
+		$postID = $wp_query->post->ID;
+		$classes[] = 'single postid-' . $postID;
+
+		if ( is_attachment() ) {
+			$mime_type = get_post_mime_type();
+			$mime_prefix = array( 'application/', 'image/', 'text/', 'audio/', 'video/', 'music/' );
+			$classes[] = 'attachmentid-' . $postID . ' attachment-' . str_replace( $mime_prefix, "", "$mime_type" );
+		}
+
+		rewind_posts();
+	} elseif ( is_archive() ) {
+		if ( is_author() ) {
+			$author = $wp_query->get_queried_object();
+			$classes[] = 'author';
+			$classes[] = 'author-' . $author->user_nicename;
+		} elseif ( is_category() ) {
+			$cat = $wp_query->get_queried_object();
+			$classes[] = 'category';
+			$classes[] = 'category-' . $cat->slug;
+		} elseif ( is_tag() ) {
+			$tags = $wp_query->get_queried_object();
+			$classes[] = 'tag';
+			$classes[] = 'tag-' . $tags->slug;
+		}
+	} elseif ( is_page() ) {
+		the_post();
+
+		$pageID = $wp_query->post->ID;
+		$page_children = wp_list_pages("child_of=$pageID&echo=0");
+
+		if ( $page_children )
+			$classes[] = 'page-parent';
+
+		if ( $wp_query->post->post_parent )
+			$classes[] = 'page-child parent-pageid-' . $wp_query->post->post_parent;
+
+		if ( is_page_template() )
+			$classes[] = 'page-template page-template-' . str_replace( '.php', '-php', get_post_meta( $pageID, '_wp_page_template', true ) );
+
+		rewind_posts();
+	} elseif ( is_search() ) {
+		the_post();
+
+		if ( have_posts() )
+			$classes[] = 'search-results';
+		else
+			$classes[] = 'search-no-results';
+
+		rewind_posts();
+	}
+
+	if ( is_user_logged_in() )
+		$classes[] = 'logged-in';
+
+	$page = $wp_query->get('page');
+
+	if ( !$page || $page < 2)
+		$page = $wp_query->get('paged');
+
+	if ( $page && $page > 1 ) {
+		$classes[] = 'paged-' . $page;
+
+		if ( is_single() )
+			$classes[] = 'single-paged-' . $page;
+		elseif ( is_page() )
+			$classes[] = 'page-paged-' . $page;
+		elseif ( is_category() )
+			$classes[] = 'category-paged-' . $page;
+		elseif ( is_tag() )
+			$classes[] = 'tag-paged-' . $page;
+		elseif ( is_date() )
+			$classes[] = 'date-paged-' . $page;
+		elseif ( is_author() )
+			$classes[] = 'author-paged-' . $page;
+		elseif ( is_search() )
+			$classes[] = 'search-paged-' . $page;
+	}
+
+	if ( !empty($class) ) {
+		if ( !is_array( $class ) )
+			$class = preg_split('#\s+#', $class);
+		$classes = array_merge($classes, $class);
+	}
+
+	return apply_filters('body_class', $classes, $class);
+}
+
+/**
  * Whether post requires password and correct password has been provided.
  *
  * @since 2.7.0
@@ -719,7 +854,11 @@ function wp_page_menu( $args = array() ) {
  * @see Walker_Page::walk() for parameters and return description.
  */
 function walk_page_tree($pages, $depth, $current_page, $r) {
-	$walker = new Walker_Page;
+	if ( empty($r['walker']) )
+		$walker = new Walker_Page;
+	else
+		$walker = $r['walker'];
+
 	$args = array($pages, $depth, $r, $current_page);
 	return call_user_func_array(array(&$walker, 'walk'), $args);
 }
@@ -732,8 +871,12 @@ function walk_page_tree($pages, $depth, $current_page, $r) {
  * @see Walker_PageDropdown::walk() for parameters and return description.
  */
 function walk_page_dropdown_tree() {
-	$walker = new Walker_PageDropdown;
 	$args = func_get_args();
+	if ( empty($args[2]['walker']) ) // the user's options are the third parameter
+		$walker = new Walker_PageDropdown;
+	else
+		$walker = $args[2]['walker'];
+
 	return call_user_func_array(array(&$walker, 'walk'), $args);
 }
 
@@ -765,12 +908,13 @@ function the_attachment_link($id = 0, $fullsize = false, $deprecated = false, $p
  * @uses apply_filters() Calls 'wp_get_attachment_link' filter on HTML content with same parameters as function.
  *
  * @param int $id Optional. Post ID.
- * @param string $size Optional. Image size.
+ * @param string $size Optional, default is 'thumbnail'. Size of image, either array or string.
  * @param bool $permalink Optional, default is false. Whether to add permalink to image.
  * @param bool $icon Optional, default is false. Whether to include icon.
+ * @param string $text Optional, default is false. If string, then will be link text.
  * @return string HTML content.
  */
-function wp_get_attachment_link($id = 0, $size = 'thumbnail', $permalink = false, $icon = false) {
+function wp_get_attachment_link($id = 0, $size = 'thumbnail', $permalink = false, $icon = false, $text = false) {
 	$id = intval($id);
 	$_post = & get_post( $id );
 
@@ -782,11 +926,16 @@ function wp_get_attachment_link($id = 0, $size = 'thumbnail', $permalink = false
 
 	$post_title = attribute_escape($_post->post_title);
 
-	$link_text = wp_get_attachment_image($id, $size, $icon);
-	if ( !$link_text )
+	if ( $text ) {
+		$link_text = attribute_escape($text);
+	} elseif ( ( is_int($size) && $size != 0 ) or ( is_string($size) && $size != 'none' ) or $size != false ) {
+		$link_text = wp_get_attachment_image($id, $size, $icon);
+	}
+
+	if( trim($link_text) == '' )
 		$link_text = $_post->post_title;
 
-	return apply_filters( 'wp_get_attachment_link', "<a href='$url' title='$post_title'>$link_text</a>", $id, $size, $permalink, $icon );
+	return apply_filters( 'wp_get_attachment_link', "<a href='$url' title='$post_title'>$link_text</a>", $id, $size, $permalink, $icon, $text );
 }
 
 /**
@@ -1044,11 +1193,14 @@ function wp_post_revision_title( $revision, $link = true ) {
 	if ( !in_array( $revision->post_type, array( 'post', 'page', 'revision' ) ) )
 		return false;
 
-	$datef = _c( 'j F, Y @ G:i|revision date format');
-	$autosavef = __( '%s [Autosave]' );
-	$currentf  = __( '%s [Current Revision]' );
+	/* translators: revision date format, see http://php.net/date */
+	$datef = _x( 'j F, Y @ G:i', 'revision date format');
+	/* translators: 1: date */
+	$autosavef = __( '%1$s [Autosave]' );
+	/* translators: 1: date */
+	$currentf  = __( '%1$s [Current Revision]' );
 
-	$date = date_i18n( $datef, strtotime( $revision->post_modified ) );
+	$date = date_i18n( $datef, strtotime( $revision->post_modified_gmt . ' +0000' ) );
 	if ( $link && current_user_can( 'edit_post', $revision->ID ) && $link = get_edit_post_link( $revision->ID ) )
 		$date = "<a href='$link'>$date</a>";
 
@@ -1111,7 +1263,8 @@ function wp_list_post_revisions( $post_id = 0, $args = null ) {
 		break;
 	}
 
-	$titlef = _c( '%1$s by %2$s|post revision 1:datetime, 2:name' );
+	/* translators: post revision: 1: when, 2: author name */
+	$titlef = _x( '%1$s by %2$s', 'post revision' );
 
 	if ( $parent )
 		array_unshift( $revisions, $post );

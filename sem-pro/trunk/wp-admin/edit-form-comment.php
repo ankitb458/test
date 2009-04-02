@@ -21,7 +21,7 @@ $form_extra = "' />\n<input type='hidden' name='comment_ID' value='" . $comment-
 <?php screen_icon(); ?>
 <h2><?php _e('Edit Comment'); ?></h2>
 
-<div id="poststuff" class="metabox-holder">
+<div id="poststuff" class="metabox-holder has-right-sidebar">
 <input type="hidden" name="user_ID" value="<?php echo (int) $user_ID ?>" />
 <input type="hidden" name="action" value='<?php echo $form_action . $form_extra ?>' />
 <?php
@@ -48,14 +48,15 @@ $url = attribute_escape( $comment->comment_author_url );
 <div id="misc-publishing-actions">
 
 <div class="misc-pub-section" id="comment-status-radio">
-<label class="approved"><input type="radio"<?php checked( $comment->comment_approved, '1' ); ?> name="comment_status" value="1" /><?php echo _c('Approved|adjective') ?></label><br />
-<label class="waiting"><input type="radio"<?php checked( $comment->comment_approved, '0' ); ?> name="comment_status" value="0" /><?php echo _c('Pending|adjective') ?></label><br />
-<label class="spam"><input type="radio"<?php checked( $comment->comment_approved, 'spam' ); ?> name="comment_status" value="spam" /><?php echo _c('Spam|adjective'); ?></label>
+<label class="approved"><input type="radio"<?php checked( $comment->comment_approved, '1' ); ?> name="comment_status" value="1" /><?php /* translators: comment type radio button */ echo _x('Approved', 'adjective') ?></label><br />
+<label class="waiting"><input type="radio"<?php checked( $comment->comment_approved, '0' ); ?> name="comment_status" value="0" /><?php /* translators: comment type radio button */ echo _x('Pending', 'adjective') ?></label><br />
+<label class="spam"><input type="radio"<?php checked( $comment->comment_approved, 'spam' ); ?> name="comment_status" value="spam" /><?php /* translators: comment type radio button */ echo _x('Spam', 'adjective'); ?></label>
 </div>
 
 <div class="misc-pub-section curtime misc-pub-section-last">
 <?php
-$datef = _c( 'M j, Y @ G:i|Publish box date format');
+// translators: Publish box date formt, see http://php.net/date
+$datef = __( 'M j, Y @ G:i' );
 $stamp = __('Submitted on: <b>%1$s</b>');
 $date = date_i18n( $datef, strtotime( $comment->comment_date ) );
 ?>
@@ -68,7 +69,7 @@ $date = date_i18n( $datef, strtotime( $comment->comment_date ) );
 
 <div id="major-publishing-actions">
 <div id="delete-action">
-<a class='submitdelete deletion' href='<?php echo wp_nonce_url("comment.php?action=deletecomment&amp;c=$comment->comment_ID&amp;_wp_original_http_referer=" . wp_get_referer(), 'delete-comment_' . $comment->comment_ID) . "' onclick=\"if ( confirm('" . js_escape(__("You are about to delete this comment. \n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Delete'); ?></a>
+<?php echo "<a class='submitdelete deletion' href='" . wp_nonce_url("comment.php?action=deletecomment&amp;c=$comment->comment_ID&amp;_wp_original_http_referer=" . wp_get_referer(), 'delete-comment_' . $comment->comment_ID) . "' onclick=\"if ( confirm('" . js_escape(__("You are about to delete this comment. \n  'Cancel' to stop, 'OK' to delete.")) . "') ){return true;}return false;\">" . __('Delete') . "</a>\n"; ?>
 </div>
 <div id="publishing-action">
 <input type="submit" name="save" value="<?php _e('Update Comment'); ?>" tabindex="4" class="button-primary" />
@@ -80,13 +81,11 @@ $date = date_i18n( $datef, strtotime( $comment->comment_date ) );
 </div>
 </div>
 
-<div id="post-body" class="has-sidebar">
-<div id="post-body-content" class="has-sidebar-content">
-
+<div id="post-body">
 <div id="namediv" class="stuffbox">
 <h3><label for="name"><?php _e( 'Author' ) ?></label></h3>
 <div class="inside">
-<table class="form-table">
+<table class="form-table editcomment">
 <tbody>
 <tr valign="top">
 	<td class="first"><?php _e( 'Name:' ); ?></td>
@@ -134,7 +133,6 @@ $date = date_i18n( $datef, strtotime( $comment->comment_date ) );
 <?php wp_original_referer_field(true, 'previous'); ?>
 <input type="hidden" name="noredir" value="1" />
 
-</div>
 </div>
 </div>
 </div>

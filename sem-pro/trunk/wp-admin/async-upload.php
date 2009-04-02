@@ -5,6 +5,8 @@
  * @package WordPress
  * @subpackage Administration
  */
+ 
+define('WP_ADMIN', true); 
 
 if ( defined('ABSPATH') )
 	require_once(ABSPATH . 'wp-load.php');
@@ -30,6 +32,7 @@ if ( isset($_REQUEST['attachment_id']) && ($id = intval($_REQUEST['attachment_id
 		add_filter('attachment_fields_to_edit', 'media_single_attachment_fields_to_edit', 10, 2);
 		echo get_media_item($id, array( 'send' => false, 'delete' => false ));
 	} else {
+		add_filter('attachment_fields_to_edit', 'media_post_single_attachment_fields_to_edit', 10, 2);
 		echo get_media_item($id);
 	}
 	exit;

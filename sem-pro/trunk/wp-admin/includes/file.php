@@ -713,11 +713,13 @@ jQuery(function($){
 	jQuery("#ftp, #ftps").click(function () {
 		jQuery("#ssh_keys").hide();
 	});
+	jQuery('form input[value=""]:first').focus();
 });
 -->
 </script>
 <form action="<?php echo $form_post ?>" method="post">
 <div class="wrap">
+<?php screen_icon(); ?>
 <h2><?php _e('Connection Information') ?></h2>
 <p><?php _e('To perform the requested action, connection information is required.') ?></p>
 

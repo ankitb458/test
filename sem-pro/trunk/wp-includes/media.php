@@ -231,10 +231,10 @@ function wp_constrain_dimensions( $current_width, $current_height, $max_width=0,
 
 	$width_ratio = $height_ratio = 1.0;
 
-	if ( $max_width > 0 && $current_width > $max_width )
+	if ( $max_width > 0 && $current_width > 0 && $current_width > $max_width )
 		$width_ratio = $max_width / $current_width;
 
-	if ( $max_height > 0 && $current_height > $max_height )
+	if ( $max_height > 0 && $current_height > 0 && $current_height > $max_height )
 		$height_ratio = $max_height / $current_height;
 
 	// the smaller ratio is the one we need to fit it to the constraining box
@@ -378,7 +378,7 @@ function image_resize( $file, $max_w, $max_h, $crop=false, $suffix=null, $dest_p
 	else {
 		// all other formats are converted to jpg
 		$destfilename = "{$dir}/{$name}-{$suffix}.jpg";
-		if (!imagejpeg( $newimage, $destfilename, apply_filters( 'jpeg_quality', $jpeg_quality ) ) )
+		if (!imagejpeg( $newimage, $destfilename, apply_filters( 'jpeg_quality', $jpeg_quality, 'image_resize' ) ) )
 			return new WP_Error('resize_path_invalid', __( 'Resize path invalid' ));
 	}
 
@@ -514,9 +514,10 @@ function wp_get_attachment_image_src($attachment_id, $size='thumbnail', $icon = 
 }
 
 /**
- * Retrieve img HTML content for an image to represent an attachment.
+ * Get an HTML img element representing an image attachment
  *
- * @see wp_get_attachment_image_src() Returns img HTML element based on array.
+ * @uses apply_filters() Calls 'wp_get_attachment_image_attributes' hook on attributes array
+ * @uses wp_get_attachment_image_src() Gets attachment file URL and dimensions
  * @since 2.5.0
  *
  * @param int $attachment_id Image attachment ID.
@@ -533,7 +534,20 @@ function wp_get_attachment_image($attachment_id, $size = 'thumbnail', $icon = fa
 		$hwstring = image_hwstring($width, $height);
 		if ( is_array($size) )
 			$size = join('x', $size);
-		$html = '<img src="'.attribute_escape($src).'" '.$hwstring.'class="attachment-'.attribute_escape($size).'" alt="" />';
+		$attachment =& get_post($attachment_id);
+		$attr = array(
+			'src'	=> $src,
+			'class'	=> "attachment-$size",
+			'alt'	=> trim(strip_tags( $attachment->post_excerpt )),
+			'title'	=> trim(strip_tags( $attachment->post_title )),
+			);
+		$attr = apply_filters( 'wp_get_attachment_image_attributes', $attr, $attachment );
+		$attr = array_map( 'attribute_escape', $attr );
+		$html = rtrim("<img $hwstring");
+		foreach ( $attr as $name => $value ) {
+			$html .= " $name=" . '"' . $value . '"';
+		}
+		$html .= ' />';
 	}
 
 	return $html;
@@ -578,7 +592,7 @@ function img_caption_shortcode($attr, $content = null) {
 	if ( $id ) $id = 'id="' . $id . '" ';
 
 	return '<div ' . $id . 'class="wp-caption ' . $align . '" style="width: ' . (10 + (int) $width) . 'px">'
-	. $content . '<p class="wp-caption-text">' . $caption . '</p></div>';
+	. do_shortcode( $content ) . '<p class="wp-caption-text">' . $caption . '</p></div>';
 }
 
 add_shortcode('gallery', 'gallery_shortcode');
@@ -689,18 +703,24 @@ function gallery_shortcode($attr) {
  * Display previous image link that has the same post parent.
  *
  * @since 2.5.0
+ * @param string $size Optional, default is 'thumbnail'. Size of image, either array or string. 0 or 'none' will default to post_title or $text;
+ * @param string $text Optional, default is false. If included, link will reflect $text variable.
+ * @return string HTML content.
  */
-function previous_image_link() {
-	adjacent_image_link(true);
+function previous_image_link($size = 'thumbnail', $text = false) {
+	adjacent_image_link(true, $size, $text);
 }
 
 /**
  * Display next image link that has the same post parent.
  *
  * @since 2.5.0
+ * @param string $size Optional, default is 'thumbnail'. Size of image, either array or string. 0 or 'none' will default to post_title or $text;
+ * @param string $text Optional, default is false. If included, link will reflect $text variable.
+ * @return string HTML content.
  */
-function next_image_link() {
-	adjacent_image_link(false);
+function next_image_link($size = 'thumbnail', $text = false) {
+	adjacent_image_link(false, $size, $text);
 }
 
 /**
@@ -712,7 +732,7 @@ function next_image_link() {
  *
  * @param bool $prev Optional. Default is true to display previous link, true for next.
  */
-function adjacent_image_link($prev = true) {
+function adjacent_image_link($prev = true, $size = 'thumbnail', $text = false) {
 	global $post;
 	$post = get_post($post);
 	$attachments = array_values(get_children( array('post_parent' => $post->post_parent, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC', 'orderby' => 'menu_order ID') ));
@@ -724,7 +744,7 @@ function adjacent_image_link($prev = true) {
 	$k = $prev ? $k - 1 : $k + 1;
 
 	if ( isset($attachments[$k]) )
-		echo wp_get_attachment_link($attachments[$k]->ID, 'thumbnail', true);
+		echo wp_get_attachment_link($attachments[$k]->ID, $size, true, false, $text);
 }
 
 /**

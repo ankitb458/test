@@ -23,6 +23,12 @@ function _c() {}
 /**
  * @ignore
  */
+function _x() {}
+
+
+/**
+ * @ignore
+ */
 function add_filter() {}
 
 /**
@@ -190,10 +196,9 @@ header( 'Content-Type: application/x-javascript; charset=UTF-8' );
 { "url" : "images/xit.gif" },
 { "url" : "images/yes.png" },
 
-<?php if ( is_file('../wp-includes/js/tinymce/tiny_mce.js') ) { ?>
+<?php if ( @is_file('../wp-includes/js/tinymce/tiny_mce.js') ) { ?>
 { "url" : "../wp-includes/js/tinymce/tiny_mce.js", "src" : "../wp-includes/js/tinymce/tiny_mce.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
 { "url" : "../wp-includes/js/tinymce/langs/wp-langs-en.js", "src" : "../wp-includes/js/tinymce/langs/wp-langs-en.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
-{ "url" : "../wp-includes/js/tinymce/wordpress.css", "src" : "../wp-includes/js/tinymce/wordpress.css?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
 { "url" : "../wp-includes/js/tinymce/utils/mctabs.js", "src" : "../wp-includes/js/tinymce/utils/mctabs.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
 { "url" : "../wp-includes/js/tinymce/utils/validate.js", "src" : "../wp-includes/js/tinymce/utils/validate.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
 { "url" : "../wp-includes/js/tinymce/utils/form_utils.js", "src" : "../wp-includes/js/tinymce/utils/form_utils.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
@@ -245,6 +250,8 @@ header( 'Content-Type: application/x-javascript; charset=UTF-8' );
 
 { "url" : "../wp-includes/js/tinymce/plugins/spellchecker/editor_plugin.js", "src" : "../wp-includes/js/tinymce/plugins/spellchecker/editor_plugin.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
 { "url" : "../wp-includes/js/tinymce/plugins/spellchecker/css/content.css", "src" : "../wp-includes/js/tinymce/plugins/spellchecker/css/content.css?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
+
+{ "url" : "../wp-includes/js/tinymce/plugins/tabfocus/editor_plugin.js", "src" : "../wp-includes/js/tinymce/plugins/tabfocus/editor_plugin.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
 
 { "url" : "../wp-includes/js/tinymce/plugins/wordpress/editor_plugin.js", "src" : "../wp-includes/js/tinymce/plugins/wordpress/editor_plugin.js?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },
 { "url" : "../wp-includes/js/tinymce/plugins/wordpress/css/content.css", "src" : "../wp-includes/js/tinymce/plugins/wordpress/css/content.css?ver=<?php echo $mce_ver; ?>", "ignoreQuery" : true },

@@ -156,6 +156,10 @@ for ( $i = 1; $i <= $count; $i++ ) {
 	}
 	$content = trim($content);
 
+	//Give Post-By-Email extending plugins full access to the content
+	//Either the raw content or the content of the last quoted-printable section
+	$content = apply_filters('wp_mail_original_content', $content);
+
 	if ( false !== stripos($content_transfer_encoding, "quoted-printable") ) {
 		$content = quoted_printable_decode($content);
 	}

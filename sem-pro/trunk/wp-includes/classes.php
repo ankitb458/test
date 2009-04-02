@@ -207,8 +207,8 @@ class WP {
 					$request_match = $req_uri . '/' . $request;
 				}
 
-				if (preg_match("!^$match!", $request_match, $matches) ||
-					preg_match("!^$match!", urldecode($request_match), $matches)) {
+				if (preg_match("#^$match#", $request_match, $matches) ||
+					preg_match("#^$match#", urldecode($request_match), $matches)) {
 					// Got a match.
 					$this->matched_rule = $match;
 
@@ -302,16 +302,19 @@ class WP {
 	 * @since 2.0.0
 	 */
 	function send_headers() {
-		@header('X-Pingback: '. get_bloginfo('pingback_url'));
+		$headers = array('X-Pingback' => get_bloginfo('pingback_url'));
+		$status = null;
+		$exit_required = false;
+
 		if ( is_user_logged_in() )
-			nocache_headers();
+			$headers = array_merge($headers, wp_get_nocache_headers());
 		if ( !empty($this->query_vars['error']) && '404' == $this->query_vars['error'] ) {
-			status_header( 404 );
+			$status = 404;
 			if ( !is_user_logged_in() )
-				nocache_headers();
-			@header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
+				$headers = array_merge($headers, wp_get_nocache_headers());
+			$headers['Content-Type'] = get_option('html_type') . '; charset=' . get_option('blog_charset');
 		} else if ( empty($this->query_vars['feed']) ) {
-			@header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
+			$headers['Content-Type'] = get_option('html_type') . '; charset=' . get_option('blog_charset');
 		} else {
 			// We're showing a feed, so WP is indeed the only thing that last changed
 			if ( !empty($this->query_vars['withcomments'])
@@ -329,8 +332,8 @@ class WP {
 			else
 				$wp_last_modified = mysql2date('D, d M Y H:i:s', get_lastpostmodified('GMT'), 0).' GMT';
 			$wp_etag = '"' . md5($wp_last_modified) . '"';
-			@header("Last-Modified: $wp_last_modified");
-			@header("ETag: $wp_etag");
+			$headers['Last-Modified'] = $wp_last_modified;
+			$headers['ETag'] = $wp_etag;
 
 			// Support for Conditional GET
 			if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
@@ -347,10 +350,20 @@ class WP {
 			if ( ($client_last_modified && $client_etag) ?
 					 (($client_modified_timestamp >= $wp_modified_timestamp) && ($client_etag == $wp_etag)) :
 					 (($client_modified_timestamp >= $wp_modified_timestamp) || ($client_etag == $wp_etag)) ) {
-				status_header( 304 );
-				exit;
+				$status = 304;
+				$exit_required = true;
 			}
 		}
+
+		$headers = apply_filters('wp_headers', $headers, $this);
+
+		if ( ! empty( $status ) )
+			status_header( $status );
+		foreach( (array) $headers as $name => $field_value )
+			@header("{$name}: {$field_value}");
+
+		if ($exit_required)
+			exit();
 
 		do_action_ref_array('send_headers', array(&$this));
 	}
@@ -1159,18 +1172,20 @@ class Walker_Page extends Walker {
 			$indent = '';
 
 		extract($args, EXTR_SKIP);
-		$css_class = 'page_item page-item-'.$page->ID;
+		$css_class = array('page_item', 'page-item-'.$page->ID);
 		if ( !empty($current_page) ) {
 			$_current_page = get_page( $current_page );
 			if ( isset($_current_page->ancestors) && in_array($page->ID, (array) $_current_page->ancestors) )
-				$css_class .= ' current_page_ancestor';
+				$css_class[] = 'current_page_ancestor';
 			if ( $page->ID == $current_page )
-				$css_class .= ' current_page_item';
+				$css_class[] = 'current_page_item';
 			elseif ( $_current_page && $page->ID == $_current_page->post_parent )
-				$css_class .= ' current_page_parent';
+				$css_class[] = 'current_page_parent';
 		} elseif ( $page->ID == get_option('page_for_posts') ) {
-			$css_class .= ' current_page_parent';
+			$css_class[] = 'current_page_parent';
 		}
+		
+		$css_class = implode(' ', apply_filters('page_css_class', $css_class, $page)); 
 
 		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page->ID) . '" title="' . attribute_escape(apply_filters('the_title', $page->post_title)) . '">' . $link_before . apply_filters('the_title', $page->post_title) . $link_after . '</a>';
 

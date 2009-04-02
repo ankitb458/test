@@ -202,7 +202,7 @@ if (defined('WP_DEBUG') and WP_DEBUG == true) {
 	error_reporting(E_ALL);
 } else {
 	// Unicode Extension is in PHP 6.0 only or do version check when this changes.
-	if ( function_exists('unicode_decode') ) 
+	if ( function_exists('unicode_decode') )
 		error_reporting( E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_USER_NOTICE ^ E_STRICT );
 	else if ( defined( 'E_DEPRECATED' ) ) // Introduced in PHP 5.3
 		error_reporting( E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_USER_NOTICE );
@@ -247,6 +247,15 @@ require (ABSPATH . WPINC . '/compat.php');
 require (ABSPATH . WPINC . '/functions.php');
 require (ABSPATH . WPINC . '/classes.php');
 
+/**
+ * Format specifiers for DB columns. Columns not listed here default to %s.
+ * @since 2.8.0
+ */
+$db_field_types = array( 'post_author' => '%d', 'post_parent' => '%d', 'menu_order' => '%d', 'term_id' => '%d', 'term_group' => '%d', 'term_taxonomy_id' => '%d',
+	'parent' => '%d', 'count' => '%d','object_id' => '%d', 'term_order' => '%d', 'ID' => '%d', 'commment_ID' => '%d', 'comment_post_ID' => '%d', 'comment_parent' => '%d',
+	'user_id' => '%d', 'link_id' => '%d', 'link_owner' => '%d', 'link_rating' => '%d', 'option_id' => '%d', 'blog_id' => '%d', 'meta_id' => '%d', 'post_id' => '%d',
+	'user_status' => '%d', 'umeta_id' => '%d', 'comment_karma' => '%d', 'comment_count' => '%d');
+
 require_wp_db();
 
 if ( !empty($wpdb->error) )
@@ -257,10 +266,13 @@ $prefix = $wpdb->set_prefix($table_prefix);
 if ( is_wp_error($prefix) )
 	wp_die(/*WP_I18N_BAD_PREFIX*/'<strong>ERROR</strong>: <code>$table_prefix</code> in <code>wp-config.php</code> can only contain numbers, letters, and underscores.'/*/WP_I18N_BAD_PREFIX*/);
 
-if ( file_exists(WP_CONTENT_DIR . '/object-cache.php') )
+if ( file_exists(WP_CONTENT_DIR . '/object-cache.php') ) {
 	require_once (WP_CONTENT_DIR . '/object-cache.php');
-else
+	$_wp_using_ext_object_cache = true;
+} else {
 	require_once (ABSPATH . WPINC . '/cache.php');
+	$_wp_using_ext_object_cache = false;
+}
 
 wp_cache_init();
 if ( function_exists('wp_cache_add_global_groups') ) {
@@ -270,8 +282,7 @@ if ( function_exists('wp_cache_add_global_groups') ) {
 
 require (ABSPATH . WPINC . '/plugin.php');
 require (ABSPATH . WPINC . '/default-filters.php');
-include_once(ABSPATH . WPINC . '/streams.php');
-include_once(ABSPATH . WPINC . '/gettext.php');
+include_once(ABSPATH . WPINC . '/pomo/mo.php');
 require_once (ABSPATH . WPINC . '/l10n.php');
 
 if ( !is_blog_installed() && (strpos($_SERVER['PHP_SELF'], 'install.php') === false && !defined('WP_INSTALLING')) ) {
@@ -316,6 +327,7 @@ require (ABSPATH . WPINC . '/canonical.php');
 require (ABSPATH . WPINC . '/shortcodes.php');
 require (ABSPATH . WPINC . '/media.php');
 require (ABSPATH . WPINC . '/http.php');
+require (ABSPATH . WPINC . '/widgets.php');
 
 if ( !defined('WP_CONTENT_URL') )
 	define( 'WP_CONTENT_URL', get_option('siteurl') . '/wp-content'); // full url - WP_CONTENT_DIR is defined further up
@@ -343,6 +355,41 @@ if ( !defined('WP_PLUGIN_URL') )
  */
 if ( !defined('PLUGINDIR') )
 	define( 'PLUGINDIR', 'wp-content/plugins' ); // Relative to ABSPATH.  For back compat.
+
+/**
+ * Allows for the mu-plugins directory to be moved from the default location.
+ *
+ * @since 2.8.0
+ */
+if ( !defined('WPMU_PLUGIN_DIR') )
+	define( 'WPMU_PLUGIN_DIR', WP_CONTENT_DIR . '/mu-plugins' ); // full path, no trailing slash
+
+/**
+ * Allows for the mu-plugins directory to be moved from the default location.
+ *
+ * @since 2.8.0
+ */
+if ( !defined('WPMU_PLUGIN_URL') )
+	define( 'WPMU_PLUGIN_URL', WP_CONTENT_URL . '/mu-plugins' ); // full url, no trailing slash
+
+/**
+ * Allows for the mu-plugins directory to be moved from the default location.
+ *
+ * @since 2.8.0
+ */
+if ( !defined( 'MUPLUGINDIR' ) )
+	define( 'MUPLUGINDIR', 'wp-content/mu-plugins' ); // Relative to ABSPATH.  For back compat.
+
+if ( is_dir( WPMU_PLUGIN_DIR ) ) {
+	if ( $dh = opendir( WPMU_PLUGIN_DIR ) ) {
+		while ( ( $plugin = readdir( $dh ) ) !== false ) {
+			if ( substr( $plugin, -4 ) == '.php' ) {
+				include_once( WPMU_PLUGIN_DIR . '/' . $plugin );
+			}
+		}
+	}
+}
+do_action('muplugins_loaded');
 
 /**
  * Used to guarantee unique hash cookies
@@ -460,18 +507,19 @@ if ( !defined( 'AUTOSAVE_INTERVAL' ) )
 require (ABSPATH . WPINC . '/vars.php');
 
 // Check for hacks file if the option is enabled
-if (get_option('hack_file')) {
-	if (file_exists(ABSPATH . 'my-hacks.php'))
+if ( get_option('hack_file') ) {
+	if ( file_exists(ABSPATH . 'my-hacks.php') )
 		require(ABSPATH . 'my-hacks.php');
 }
 
 if ( get_option('active_plugins') && !defined('WP_INSTALLING') ) {
 	$current_plugins = get_option('active_plugins');
 	if ( is_array($current_plugins) ) {
-		foreach ($current_plugins as $plugin) {
+		foreach ( $current_plugins as $plugin ) {
 			if ( '' != $plugin && 0 == validate_file($plugin) && file_exists(WP_PLUGIN_DIR . '/' . $plugin) )
 				include_once(WP_PLUGIN_DIR . '/' . $plugin);
 		}
+		unset($plugin);
 	}
 }
 
@@ -540,6 +588,13 @@ $wp_rewrite   =& new WP_Rewrite();
  * @since 2.0.0
  */
 $wp           =& new WP();
+
+/**
+ * WordPress Widget Factory Object
+ * @global object $wp_widget_factory
+ * @since 2.8.0
+ */
+$wp_widget_factory =& new WP_Widget_Factory();
 
 do_action('setup_theme');
 

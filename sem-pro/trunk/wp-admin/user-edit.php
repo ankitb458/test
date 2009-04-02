@@ -245,28 +245,24 @@ do_action('personal_options', $profileuser);
 
 <?php if ( !$is_profile_page ): ?>
 <tr><th><label for="role"><?php _e('Role:') ?></label></th>
+<td><select name="role" id="role">
 <?php
-// print_r($profileuser);
-echo '<td><select name="role" id="role">';
-$role_list = '';
-$user_has_role = false;
-foreach($wp_roles->role_names as $role => $name) {
-	$name = translate_with_context($name);
-	if ( $profileuser->has_cap($role) ) {
-		$selected = ' selected="selected"';
-		$user_has_role = true;
-	} else {
-		$selected = '';
-	}
-	$role_list .= "<option value=\"{$role}\"{$selected}>{$name}</option>";
-}
-if ( $user_has_role )
-	$role_list .= '<option value="">' . __('&mdash; No role for this blog &mdash;') . '</option>';
+// Get the highest/primary role for this user
+// TODO: create a function that does this: wp_get_user_role()
+$user_roles = $profileuser->roles;
+$user_role = array_shift($user_roles);
+
+// print the full list of roles with the primary one selected.
+wp_dropdown_roles($user_role);
+
+// print the 'no role' option. Make it selected if the user has no role yet.
+if ( $user_role )
+	echo '<option value="">' . __('&mdash; No role for this blog &mdash;') . '</option>';
 else
-	$role_list .= '<option value="" selected="selected">' . __('&mdash; No role for this blog &mdash;') . '</option>';
-echo $role_list . '</select></td></tr>';
+	echo '<option value="" selected="selected">' . __('&mdash; No role for this blog &mdash;') . '</option>';
 ?>
-<?php endif; ?>
+</select></td></tr>
+<?php endif; //!$is_profile_page ?>
 
 <tr>
 	<th><label for="first_name"><?php _e('First name') ?></label></th>
@@ -321,17 +317,17 @@ echo $role_list . '</select></td></tr>';
 </tr>
 
 <tr>
-	<th><label for="aim"><?php _e('AIM') ?></label></th>
+	<th><label for="aim"><?php echo apply_filters('user_aim_label', __('AIM')); ?></label></th>
 	<td><input type="text" name="aim" id="aim" value="<?php echo $profileuser->aim ?>" class="regular-text" /></td>
 </tr>
 
 <tr>
-	<th><label for="yim"><?php _e('Yahoo IM') ?></label></th>
+	<th><label for="yim"><?php echo apply_filters('user_yim_label', __('Yahoo IM')); ?></label></th>
 	<td><input type="text" name="yim" id="yim" value="<?php echo $profileuser->yim ?>" class="regular-text" /></td>
 </tr>
 
 <tr>
-	<th><label for="jabber"><?php _e('Jabber / Google Talk') ?></label></th>
+	<th><label for="jabber"><?php echo apply_filters('user_jabber_label', __('Jabber / Google Talk')); ?></label></th>
 	<td><input type="text" name="jabber" id="jabber" value="<?php echo $profileuser->jabber ?>" class="regular-text" /></td>
 </tr>
 </table>
@@ -369,7 +365,7 @@ if ( $show_password_fields ) :
 	}
 ?>
 
-<?php if (count($profileuser->caps) > count($profileuser->roles)): ?>
+<?php if (count($profileuser->caps) > count($profileuser->roles) && apply_filters('additional_capabilities_display', true)): ?>
 <br class="clear" />
 	<table width="99%" style="border: none;" cellspacing="2" cellpadding="3" class="editform">
 		<tr>

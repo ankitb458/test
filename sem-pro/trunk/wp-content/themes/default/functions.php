@@ -1,18 +1,19 @@
 <?php
-include dirname(__FILE__) . '/semiologic.php';
-
 /**
  * @package WordPress
  * @subpackage Default_Theme
  */
 
-if ( function_exists('register_sidebar') )
-    register_sidebar(array(
-        'before_widget' => '<li id="%1$s" class="widget %2$s">',
-        'after_widget' => '</li>',
-        'before_title' => '<h2 class="widgettitle">',
-        'after_title' => '</h2>',
-    ));
+automatic_feed_links();
+
+if ( function_exists('register_sidebar') ) {
+	register_sidebar(array(
+		'before_widget' => '<li id="%1$s" class="widget %2$s">',
+		'after_widget' => '</li>',
+		'before_title' => '<h2 class="widgettitle">',
+		'after_title' => '</h2>',
+	));
+}
 
 /** @ignore */
 function kubrick_head() {
@@ -152,7 +153,7 @@ function kubrick_add_theme_page() {
 		}
 		add_action('admin_head', 'kubrick_theme_page_head');
 	}
-	add_theme_page(__('Customize Header'), __('Header Image and Color'), 'edit_themes', basename(__FILE__), 'kubrick_theme_page');
+	add_theme_page(__('Custom Header'), __('Custom Header'), 'edit_themes', basename(__FILE__), 'kubrick_theme_page');
 }
 
 function kubrick_theme_page_head() {

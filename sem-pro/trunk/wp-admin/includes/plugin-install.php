@@ -40,11 +40,11 @@ function plugins_api($action, $args = null) {
 	if ( ! $res ) {
 		$request = wp_remote_post('http://api.wordpress.org/plugins/info/1.0/', array( 'body' => array('action' => $action, 'request' => serialize($args))) );
 		if ( is_wp_error($request) ) {
-			$res = new WP_Error('plugins_api_failed', __('An Unexpected HTTP Error occured during the API request.</p> <p><a href="?" onclick="document.location.reload(); return false;">Try again</a>'), $request->get_error_message() );
+			$res = new WP_Error('plugins_api_failed', __('An Unexpected HTTP Error occurred during the API request.</p> <p><a href="?" onclick="document.location.reload(); return false;">Try again</a>'), $request->get_error_message() );
 		} else {
 			$res = unserialize($request['body']);
 			if ( ! $res )
-				$res = new WP_Error('plugins_api_failed', __('An unknown error occured'), $request['body']);
+				$res = new WP_Error('plugins_api_failed', __('An unknown error occurred'), $request['body']);
 		}
 	}
 
@@ -125,24 +125,11 @@ function install_dashboard() {
 	<p><?php _e('Plugins extend and expand the functionality of WordPress. You may automatically install plugins from the <a href="http://wordpress.org/extend/plugins/">WordPress Plugin Directory</a> or upload a plugin in .zip format via this page.') ?></p>
 
 	<h4><?php _e('Search') ?></h4>
-	<?php install_search_form('<a href="' . add_query_arg('show-help', !isset($_REQUEST['show-help'])) .'" onclick="jQuery(\'#search-help\').toggle(); return false;">' . __('[need help?]') . '</a>') ?>
-	<div id="search-help" style="display: <?php echo isset($_REQUEST['show-help']) ? 'block' : 'none'; ?>;">
-	<p>	<?php _e('You may search based on 3 criteria:') ?><br />
-		<?php _e('<strong>Term:</strong> Searches plugins names and descriptions for the specified term') ?><br />
-		<?php _e('<strong>Tag:</strong> Searches for plugins tagged as such') ?><br />
-		<?php _e('<strong>Author:</strong> Searches for plugins created by the Author, or which the Author contributed to.') ?></p>
-	</div>
-
-	<h4><?php _e('Install a plugin in .zip format') ?></h4>
-	<p><?php _e('If you have a plugin in a .zip format, You may install it by uploading it here.') ?></p>
-	<form method="post" enctype="multipart/form-data" action="<?php echo admin_url('plugin-install.php?tab=upload') ?>">
-		<?php wp_nonce_field( 'plugin-upload') ?>
-		<input type="file" name="pluginzip" />
-		<input type="submit" class="button" value="<?php _e('Install Now') ?>" />
-	</form>
+	<p class="install-help"><?php _e('Search for plugins by keyword, author, or tag.') ?></p>
+	<?php install_search_form(); ?>
 
 	<h4><?php _e('Popular tags') ?></h4>
-	<p><?php _e('You may also browse based on the most popular tags in the Plugin Directory:') ?></p>
+	<p class="install-help"><?php _e('You may also browse based on the most popular tags in the Plugin Directory:') ?></p>
 	<?php
 
 	$api_tags = install_popular_tags();
@@ -155,7 +142,9 @@ function install_dashboard() {
 								'name' => $tag['name'],
 								'id' => sanitize_title_with_dashes($tag['name']),
 								'count' => $tag['count'] );
+	echo '<p class="popular-tags">';
 	echo wp_generate_tag_cloud($tags, array( 'single_text' => __('%d plugin'), 'multiple_text' => __('%d plugins') ) );
+	echo '</p><br class="clear" />';
 }
 
 /**
@@ -173,7 +162,7 @@ function install_search_form(){
 			<option value="author"<?php selected('author', $type) ?>><?php _e('Author') ?></option>
 			<option value="tag"<?php selected('tag', $type) ?>><?php _e('Tag') ?></option>
 		</select>
-		<input type="text" name="s" id="search-field" value="<?php echo attribute_escape($term) ?>" />
+		<input type="text" name="s" class="search-input" value="<?php echo attribute_escape($term) ?>" />
 		<input type="submit" name="search" value="<?php echo attribute_escape(__('Search')) ?>" class="button" />
 	</form><?php
 }
@@ -206,6 +195,25 @@ function install_popular($page = 1) {
 	$args = array('browse' => 'popular', 'page' => $page);
 	$api = plugins_api('query_plugins', $args);
 	display_plugins_table($api->plugins, $api->info['page'], $api->info['pages']);
+}
+
+add_action('install_plugins_upload', 'install_plugins_upload', 10, 1);
+/**
+ * Upload from zip
+ * @since 2.8.0
+ * 
+ * @param string $page
+ */
+function install_plugins_upload( $page = 1 ) {
+?>
+	<h4><?php _e('Install a plugin in .zip format') ?></h4>
+	<p class="install-help"><?php _e('If you have a plugin in a .zip format, You may install it by uploading it here.') ?></p>
+	<form method="post" enctype="multipart/form-data" action="<?php echo admin_url('plugin-install.php?tab=do_upload') ?>">
+		<?php wp_nonce_field( 'plugin-upload') ?>
+		<input type="file" name="pluginzip" />
+		<input type="submit" class="button" value="<?php _e('Install Now') ?>" />
+	</form>
+<?php
 }
 
 add_action('install_plugins_new', 'install_new', 10, 1);
@@ -254,7 +262,8 @@ function display_plugins_table($plugins, $page = 1, $totalpages = 1){
 
 	$plugins_allowedtags = array('a' => array('href' => array(),'title' => array(), 'target' => array()),
 								'abbr' => array('title' => array()),'acronym' => array('title' => array()),
-								'code' => array(), 'pre' => array(), 'em' => array(),'strong' => array());
+								'code' => array(), 'pre' => array(), 'em' => array(),'strong' => array(),
+								'ul' => array(), 'ol' => array(), 'li' => array(), 'p' => array(), 'br' => array());
 
 ?>
 	<div class="tablenav">
@@ -338,7 +347,7 @@ function display_plugins_table($plugins, $page = 1, $totalpages = 1){
 				<td class="name"><?php echo $title; ?></td>
 				<td class="vers"><?php echo $version; ?></td>
 				<td class="vers">
-					<div class="star-holder" title="<?php printf(__ngettext('(based on %s rating)', '(based on %s ratings)', $plugin['num_ratings']), number_format_i18n($plugin['num_ratings'])) ?>">
+					<div class="star-holder" title="<?php printf(_n('(based on %s rating)', '(based on %s ratings)', $plugin['num_ratings']), number_format_i18n($plugin['num_ratings'])) ?>">
 						<div class="star star-rating" style="width: <?php echo attribute_escape($plugin['rating']) ?>px"></div>
 						<div class="star star5"><img src="<?php echo admin_url('images/star.gif'); ?>" alt="<?php _e('5 stars') ?>" /></div>
 						<div class="star star4"><img src="<?php echo admin_url('images/star.gif'); ?>" alt="<?php _e('4 stars') ?>" /></div>
@@ -347,7 +356,7 @@ function display_plugins_table($plugins, $page = 1, $totalpages = 1){
 						<div class="star star1"><img src="<?php echo admin_url('images/star.gif'); ?>" alt="<?php _e('1 star') ?>" /></div>
 					</div>
 				</td>
-				<td class="desc"><p><?php echo $description, $author; ?></p></td>
+				<td class="desc"><?php echo $description, $author; ?></td>
 				<td class="action-links"><?php if ( !empty($action_links) )	echo implode(' | ', $action_links); ?></td>
 			</tr>
 			<?php
@@ -421,11 +430,13 @@ function install_plugin_information() {
 			$type = 'install';
 			//Check to see if this plugin is known to be installed, and has an update awaiting it.
 			$update_plugins = get_option('update_plugins');
-			foreach ( (array)$update_plugins->response as $file => $plugin ) {
-				if ( $plugin->slug === $api->slug ) {
-					$type = 'update_available';
-					$update_file = $file;
-					break;
+			if ( is_object( $update_plugins ) ) {
+				foreach ( (array)$update_plugins->response as $file => $plugin ) {
+					if ( $plugin->slug === $api->slug ) {
+						$type = 'update_available';
+						$update_file = $file;
+						break;
+					}
 				}
 			}
 			if ( 'install' == $type && is_dir( WP_PLUGIN_DIR  . '/' . $api->slug ) ) {
@@ -485,7 +496,7 @@ function install_plugin_information() {
 <?php endif; if ( ! empty($api->tested) ) : ?>
 			<li><strong><?php _e('Compatible up to:') ?></strong> <?php echo $api->tested ?></li>
 <?php endif; if ( ! empty($api->downloaded) ) : ?>
-			<li><strong><?php _e('Downloaded:') ?></strong> <?php printf(__ngettext('%s time', '%s times', $api->downloaded), number_format_i18n($api->downloaded)) ?></li>
+			<li><strong><?php _e('Downloaded:') ?></strong> <?php printf(_n('%s time', '%s times', $api->downloaded), number_format_i18n($api->downloaded)) ?></li>
 <?php endif; if ( ! empty($api->slug) ) : ?>
 			<li><a target="_blank" href="http://wordpress.org/extend/plugins/<?php echo $api->slug ?>/"><?php _e('WordPress.org Plugin Page &#187;') ?></a></li>
 <?php endif; if ( ! empty($api->homepage) ) : ?>
@@ -493,7 +504,7 @@ function install_plugin_information() {
 <?php endif; ?>
 		</ul>
 		<h2><?php _e('Average Rating') ?></h2>
-		<div class="star-holder" title="<?php printf(__ngettext('(based on %s rating)', '(based on %s ratings)', $api->num_ratings), number_format_i18n($api->num_ratings)); ?>">
+		<div class="star-holder" title="<?php printf(_n('(based on %s rating)', '(based on %s ratings)', $api->num_ratings), number_format_i18n($api->num_ratings)); ?>">
 			<div class="star star-rating" style="width: <?php echo attribute_escape($api->rating) ?>px"></div>
 			<div class="star star5"><img src="<?php echo admin_url('images/star.gif'); ?>" alt="<?php _e('5 stars') ?>" /></div>
 			<div class="star star4"><img src="<?php echo admin_url('images/star.gif'); ?>" alt="<?php _e('4 stars') ?>" /></div>
@@ -501,14 +512,16 @@ function install_plugin_information() {
 			<div class="star star2"><img src="<?php echo admin_url('images/star.gif'); ?>" alt="<?php _e('2 stars') ?>" /></div>
 			<div class="star star1"><img src="<?php echo admin_url('images/star.gif'); ?>" alt="<?php _e('1 star') ?>" /></div>
 		</div>
-		<small><?php printf(__ngettext('(based on %s rating)', '(based on %s ratings)', $api->num_ratings), number_format_i18n($api->num_ratings)); ?></small>
+		<small><?php printf(_n('(based on %s rating)', '(based on %s ratings)', $api->num_ratings), number_format_i18n($api->num_ratings)); ?></small>
 	</div>
 	<div id="section-holder" class="wrap">
 	<?php
-		if ( version_compare($GLOBALS['wp_version'], $api->tested, '>') )
+		if ( !empty($api->tested) && version_compare( substr($GLOBALS['wp_version'], 0, strlen($api->tested)), $api->tested, '>') )
 			echo '<div class="updated"><p>' . __('<strong>Warning:</strong> This plugin has <strong>not been tested</strong> with your current version of WordPress.') . '</p></div>';
-		else if ( version_compare($GLOBALS['wp_version'], $api->requires, '<') )
-			echo '<div class="updated"><p>' . __('<strong>Warning:</strong> This plugin has not been marked as <strong>compatible</strong> with your version of WordPress.') . '</p></div>';
+
+		else if ( !empty($api->requires) && version_compare( substr($GLOBALS['wp_version'], 0, strlen($api->requires)), $api->requires, '<') )
+			echo '<div class="updated"><p>' . __('<strong>Warning:</strong> This plugin has <strong>not been marked as compatible</strong> with your version of WordPress.') . '</p></div>';
+
 		foreach ( (array)$api->sections as $section_name => $content ) {
 			$title = $section_name;
 			$title[0] = strtoupper($title[0]);
@@ -533,7 +546,7 @@ function install_plugin_information() {
 }
 
 
-add_action('install_plugins_upload', 'upload_plugin');
+add_action('install_plugins_do_upload', 'upload_plugin');
 function upload_plugin() {
 
 	if ( ! ( ( $uploads = wp_upload_dir() ) && false === $uploads['error'] ) )

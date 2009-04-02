@@ -11,7 +11,16 @@ require_once('admin.php');
 
 $title = __('Tags');
 
-wp_reset_vars( array('action', 'tag') );
+wp_reset_vars( array('action', 'tag', 'taxonomy') );
+
+if ( empty($taxonomy) )
+	$taxonomy = 'post_tag';
+
+if ( !is_taxonomy($taxonomy) )
+	wp_die(__('Invalid taxonomy'));
+
+$parent_file = 'edit.php';
+$submenu_file = "edit-tags.php?taxonomy=$taxonomy";
 
 if ( isset( $_GET['action'] ) && isset($_GET['delete_tags']) && ( 'delete' == $_GET['action'] || 'delete' == $_GET['action2'] ) )
 	$action = 'bulk-delete';
@@ -25,7 +34,7 @@ case 'addtag':
 	if ( !current_user_can('manage_categories') )
 		wp_die(__('Cheatin&#8217; uh?'));
 
-	$ret = wp_insert_term($_POST['name'], 'post_tag', $_POST);
+	$ret = wp_insert_term($_POST['name'], $taxonomy, $_POST);
 	if ( $ret && !is_wp_error( $ret ) ) {
 		wp_redirect('edit-tags.php?message=1#addtag');
 	} else {
@@ -41,9 +50,16 @@ case 'delete':
 	if ( !current_user_can('manage_categories') )
 		wp_die(__('Cheatin&#8217; uh?'));
 
-	wp_delete_term( $tag_ID, 'post_tag');
+	wp_delete_term( $tag_ID, $taxonomy);
 
-	wp_redirect('edit-tags.php?message=2');
+	$location = 'edit-tags.php';
+	if ( $referer = wp_get_referer() ) {
+		if ( false !== strpos($referer, 'edit-tags.php') )
+			$location = $referer;
+	}
+
+	$location = add_query_arg('message', 2, $location);
+	wp_redirect($location);
 	exit;
 
 break;
@@ -56,7 +72,7 @@ case 'bulk-delete':
 
 	$tags = $_GET['delete_tags'];
 	foreach( (array) $tags as $tag_ID ) {
-		wp_delete_term( $tag_ID, 'post_tag');
+		wp_delete_term( $tag_ID, $taxonomy);
 	}
 
 	$location = 'edit-tags.php';
@@ -77,7 +93,7 @@ case 'edit':
 	require_once ('admin-header.php');
 	$tag_ID = (int) $_GET['tag_ID'];
 
-	$tag = get_term($tag_ID, 'post_tag', OBJECT, 'edit');
+	$tag = get_term($tag_ID, $taxonomy, OBJECT, 'edit');
 	include('edit-tag-form.php');
 
 break;
@@ -89,7 +105,7 @@ case 'editedtag':
 	if ( !current_user_can('manage_categories') )
 		wp_die(__('Cheatin&#8217; uh?'));
 
-	$ret = wp_update_term($tag_ID, 'post_tag', $_POST);
+	$ret = wp_update_term($tag_ID, $taxonomy, $_POST);
 
 	$location = 'edit-tags.php';
 	if ( $referer = wp_get_original_referer() ) {
@@ -154,6 +170,7 @@ endif; ?>
 <div id="col-right">
 <div class="col-wrap">
 <form id="posts-filter" action="" method="get">
+<input type="hidden" name="taxonomy" value="<?php echo attribute_escape($taxonomy); ?>" />
 <div class="tablenav">
 <?php
 $pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 0;
@@ -167,7 +184,7 @@ $page_links = paginate_links( array(
 	'format' => '',
 	'prev_text' => __('&laquo;'),
 	'next_text' => __('&raquo;'),
-	'total' => ceil(wp_count_terms('post_tag') / $tagsperpage),
+	'total' => ceil(wp_count_terms($taxonomy) / $tagsperpage),
 	'current' => $pagenum
 ));
 
@@ -207,7 +224,7 @@ if ( $page_links )
 
 $searchterms = isset( $_GET['s'] ) ? trim( $_GET['s'] ) : '';
 
-$count = tag_rows( $pagenum, $tagsperpage, $searchterms );
+$count = tag_rows( $pagenum, $tagsperpage, $searchterms, $taxonomy );
 ?>
 	</tbody>
 </table>
@@ -241,9 +258,9 @@ if ( $page_links )
 <h3><?php _e('Popular Tags'); ?></h3>
 <?php
 if ( $can_manage )
-	wp_tag_cloud(array('link' => 'edit'));
+	wp_tag_cloud(array('taxonomy' => $taxonomy, 'link' => 'edit'));
 else
-	wp_tag_cloud();
+	wp_tag_cloud(array('taxonomy' => $taxonomy));
 ?>
 </div>
 
@@ -255,18 +272,19 @@ else
 <div id="ajax-response"></div>
 <form name="addtag" id="addtag" method="post" action="edit-tags.php" class="add:the-list: validate">
 <input type="hidden" name="action" value="addtag" />
+<input type="hidden" name="taxonomy" value="<?php echo attribute_escape($taxonomy); ?>" />
 <?php wp_original_referer_field(true, 'previous'); wp_nonce_field('add-tag'); ?>
 
 <div class="form-field form-required">
 	<label for="name"><?php _e('Tag name') ?></label>
 	<input name="name" id="name" type="text" value="" size="40" aria-required="true" />
-    <p><?php _e('The name is how the tag appears on your site.'); ?></p>
+	<p><?php _e('The name is how the tag appears on your site.'); ?></p>
 </div>
 
 <div class="form-field">
 	<label for="slug"><?php _e('Tag slug') ?></label>
 	<input name="slug" id="slug" type="text" value="" size="40" />
-    <p><?php _e('The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.'); ?></p>
+	<p><?php _e('The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.'); ?></p>
 </div>
 
 <p class="submit"><input type="submit" class="button" name="submit" value="<?php _e('Add Tag'); ?>" /></p>
@@ -279,21 +297,6 @@ else
 
 </div><!-- /col-container -->
 </div><!-- /wrap -->
-
-<script type="text/javascript">
-/* <![CDATA[ */
-(function($){
-	$(document).ready(function(){
-		$('#doaction, #doaction2').click(function(){
-			if ( $('select[name^="action"]').val() == 'delete' ) {
-				var m = '<?php echo js_escape(__("You are about to delete the selected tags.\n  'Cancel' to stop, 'OK' to delete.")); ?>';
-				return showNotice.warn(m);
-			}
-		});
-	});
-})(jQuery);
-/* ]]> */
-</script>
 
 <?php inline_edit_term_row('edit-tags'); ?>
 

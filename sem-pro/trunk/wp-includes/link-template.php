@@ -92,15 +92,18 @@ function get_permalink($id = 0, $leavename = false) {
 		$leavename? '' : '%pagename%',
 	);
 
-	if ( is_object($id) && isset($id->filter) && 'sample' == $id->filter )
+	if ( is_object($id) && isset($id->filter) && 'sample' == $id->filter ) {
 		$post = $id;
-	else
+		$sample = true;
+	} else {
 		$post = &get_post($id);
+		$sample = false;
+	}
 
 	if ( empty($post->ID) ) return false;
 
 	if ( $post->post_type == 'page' )
-		return get_page_link($post->ID, $leavename);
+		return get_page_link($post->ID, $leavename, $sample);
 	elseif ($post->post_type == 'attachment')
 		return get_attachment_link($post->ID);
 
@@ -177,10 +180,11 @@ function post_permalink($post_id = 0, $deprecated = '') {
  * @since 1.5.0
  *
  * @param int $id Optional. Post ID.
- * @param bool $leavename Optional, defaults to false. Whether to keep post name or page name.
+ * @param bool $leavename Optional, defaults to false. Whether to keep page name.
+ * @param bool $sample Optional, defaults to false. Is it a sample permalink.
  * @return string
  */
-function get_page_link($id = false, $leavename = false) {
+function get_page_link( $id = false, $leavename = false, $sample = false ) {
 	global $post;
 
 	$id = (int) $id;
@@ -190,7 +194,7 @@ function get_page_link($id = false, $leavename = false) {
 	if ( 'page' == get_option('show_on_front') && $id == get_option('page_on_front') )
 		$link = get_option('home');
 	else
-		$link = _get_page_link( $id , $leavename );
+		$link = _get_page_link( $id , $leavename, $sample );
 
 	return apply_filters('page_link', $link, $id);
 }
@@ -205,9 +209,10 @@ function get_page_link($id = false, $leavename = false) {
  *
  * @param int $id Optional. Post ID.
  * @param bool $leavename Optional. Leave name.
+ * @param bool $sample Optional. Sample permalink.
  * @return string
  */
-function _get_page_link( $id = false, $leavename = false ) {
+function _get_page_link( $id = false, $leavename = false, $sample = false ) {
 	global $post, $wp_rewrite;
 
 	if ( !$id )
@@ -217,7 +222,7 @@ function _get_page_link( $id = false, $leavename = false ) {
 
 	$pagestruct = $wp_rewrite->get_page_permastruct();
 
-	if ( '' != $pagestruct && isset($post->post_status) && 'draft' != $post->post_status ) {
+	if ( '' != $pagestruct && ( ( isset($post->post_status) && 'draft' != $post->post_status ) || $sample ) ) {
 		$link = get_page_uri($id);
 		$link = ( $leavename ) ? $pagestruct : str_replace('%pagename%', $link, $pagestruct);
 		$link = get_option('home') . "/$link";
@@ -507,7 +512,7 @@ function get_category_feed_link($cat_id, $feed = '') {
 	$permalink_structure = get_option('permalink_structure');
 
 	if ( '' == $permalink_structure ) {
-		$link = get_option('home') . "?feed=$feed&amp;cat=" . $cat_id;
+		$link = trailingslashit( get_option('home') ) . "?feed=$feed&amp;cat=" . $cat_id;
 	} else {
 		$link = get_category_link($cat_id);
 		if( $feed == get_default_feed() )
@@ -569,13 +574,13 @@ function get_tag_feed_link($tag_id, $feed = '') {
  * @param int $tag_id Tag ID
  * @return string
  */
-function get_edit_tag_link( $tag_id = 0 ) {
-	$tag = get_term($tag_id, 'post_tag');
+function get_edit_tag_link( $tag_id = 0, $taxonomy = 'post_tag' ) {
+	$tag = get_term($tag_id, $taxonomy);
 
 	if ( !current_user_can('manage_categories') )
 		return;
 
-	$location = admin_url('edit-tags.php?action=edit&amp;tag_ID=') . $tag->term_id;
+	$location = admin_url('edit-tags.php?action=edit&amp;taxonomy=' . $taxonomy . '&amp;tag_ID=' . $tag->term_id);
 	return apply_filters( 'get_edit_tag_link', $location );
 }
 
@@ -901,6 +906,242 @@ function get_adjacent_post($in_same_cat = false, $excluded_categories = '', $pre
 	$sort  = apply_filters( "get_{$adjacent}_post_sort", "ORDER BY p.post_date $order LIMIT 1" );
 
 	return $wpdb->get_row("SELECT p.* FROM $wpdb->posts AS p $join $where $sort");
+}
+
+/**
+ * Get adjacent post relational link.
+ *
+ * Can either be next or previous post relational link.
+ *
+ * @since 2.8.0
+ *
+ * @param string $title Optional. Link title format.
+ * @param bool $in_same_cat Optional. Whether link should be in same category.
+ * @param string $excluded_categories Optional. Excluded categories IDs.
+ * @param bool $previous Optional, default is true. Whether display link to previous post.
+ * @return string
+ */
+function get_adjacent_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '', $previous = true) {
+	if ( $previous && is_attachment() )
+		$post = & get_post($GLOBALS['post']->post_parent);
+	else
+		$post = get_adjacent_post($in_same_cat,$excluded_categories,$previous);
+
+	if ( empty($post) )
+		return;
+
+	if ( empty($post->post_title) )
+		$post->post_title = $previous ? __('Previous Post') : __('Next Post');
+
+	$date = mysql2date(get_option('date_format'), $post->post_date);
+	
+	$title = str_replace('%title', $post->post_title, $title);
+	$title = str_replace('%date', $date, $title);
+	$title = apply_filters('the_title', $title, $post);
+
+	$link = $previous ? "<link rel='prev' title='" : "<link rel='next' title='";
+	$link .= $title;
+	$link .= "' href='" . get_permalink($post) . "' />\n";
+
+        $adjacent = $previous ? 'previous' : 'next';
+        return apply_filters( "{$adjacent}_post_rel_link", $link );
+}
+
+/**
+ * Display relational links for the posts adjacent to the current post.
+ *
+ * @since 2.8.0
+ *
+ * @param string $title Optional. Link title format.
+ * @param bool $in_same_cat Optional. Whether link should be in same category.
+ * @param string $excluded_categories Optional. Excluded categories IDs.
+ */
+function adjacent_posts_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '') {
+	echo get_adjacent_post_rel_link($title, $in_same_cat, $excluded_categories = '', true);
+	echo get_adjacent_post_rel_link($title, $in_same_cat, $excluded_categories = '', false);
+}
+
+/**
+ * Display relational link for the next post adjacent to the current post.
+ *
+ * @since 2.8.0
+ *
+ * @param string $title Optional. Link title format.
+ * @param bool $in_same_cat Optional. Whether link should be in same category.
+ * @param string $excluded_categories Optional. Excluded categories IDs.
+ */
+function next_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '') {
+	echo get_adjacent_post_rel_link($title, $in_same_cat, $excluded_categories = '', false);
+}
+
+/**
+ * Display relational link for the previous post adjacent to the current post.
+ *
+ * @since 2.8.0
+ *
+ * @param string $title Optional. Link title format.
+ * @param bool $in_same_cat Optional. Whether link should be in same category.
+ * @param string $excluded_categories Optional. Excluded categories IDs.
+ */
+function prev_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '') {
+	echo get_adjacent_post_rel_link($title, $in_same_cat, $excluded_categories = '', true);
+}
+
+/**
+ * Retrieve boundary post.
+ *
+ * Boundary being either the first or last post by publish date within the contraitns specified
+ * by in same category or excluded categories.
+ *
+ * @since 2.8.0
+ *
+ * @param bool $in_same_cat Optional. Whether returned post should be in same category.
+ * @param string $excluded_categories Optional. Excluded categories IDs.
+ * @param bool $previous Optional. Whether to retrieve first post.
+ * @return object
+ */
+function get_boundary_post($in_same_cat = false, $excluded_categories = '', $start = true) {
+        global $post, $wpdb;
+
+        if( empty($post) || !is_single() || is_attachment() )
+                return null;
+
+	$cat_array = array();
+	$excluded_categories = array();
+        if ( !empty($in_same_cat) || !empty($excluded_categories) ) {
+                if ( !empty($in_same_cat) ) {
+                        $cat_array = wp_get_object_terms($post->ID, 'category', 'fields=ids');
+                }
+
+                if ( !empty($excluded_categories) ) {
+                        $excluded_categories = array_map('intval', explode(',', $excluded_categories));
+
+                        if ( !empty($cat_array) ) {
+                                $excluded_categories = array_diff($excluded_categories, $cat_array);
+                        }
+
+                        $inverse_cats = array();
+                        foreach ( $excluded_categories as $excluded_category) {
+                                $inverse_cats[] = $excluded_category * -1;
+                        }
+                        $excluded_categories = $inverse_cats;
+                }
+        }
+
+	$categories = array_merge($cat_array, $excluded_categories);
+
+        $order = $start ? 'ASC' : 'DESC';
+
+	return get_posts("numberposts=1&order=$order&orderby=ID&category=$categories");
+}
+
+/**
+ * Get boundary post relational link.
+ *
+ * Can either be start or end post relational link.
+ *
+ * @since 2.8.0
+ *
+ * @param string $title Optional. Link title format.
+ * @param bool $in_same_cat Optional. Whether link should be in same category.
+ * @param string $excluded_categories Optional. Excluded categories IDs.
+ * @param bool $start Optional, default is true. Whether display link to first post.
+ * @return string
+ */
+function get_boundary_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '', $start = true) {
+        $posts = get_boundary_post($in_same_cat,$excluded_categories,$start);
+	// Even though we limited get_posts to return only 1 item it still returns an array of objects.  
+	$post = $posts[0];	
+
+        if ( empty($post) )
+                return;
+
+        if ( empty($post->post_title) )
+                $post->post_title = $start ? __('First Post') : __('Last Post');
+
+        $date = mysql2date(get_option('date_format'), $post->post_date);
+
+        $title = str_replace('%title', $post->post_title, $title);
+        $title = str_replace('%date', $date, $title);
+        $title = apply_filters('the_title', $title, $post);
+
+        $link = $start ? "<link rel='start' title='" : "<link rel='end' title='";
+        $link .= $title;
+        $link .= "' href='" . get_permalink($post) . "' />\n";
+
+        $boundary = $start ? 'start' : 'end';
+        return apply_filters( "{$boundary}_post_rel_link", $link );
+}
+
+/**
+ * Display relational link for the first post.
+ *
+ * @since 2.8.0
+ *
+ * @param string $title Optional. Link title format.
+ * @param bool $in_same_cat Optional. Whether link should be in same category.
+ * @param string $excluded_categories Optional. Excluded categories IDs.
+ */
+function start_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '') {
+	echo get_boundary_post_rel_link($title, $in_same_cat, $excluded_categories, true);
+}
+
+/**
+ * Get site index relational link.
+ *
+ * @since 2.8.0
+ *
+ * @return string
+ */
+function get_index_rel_link() {
+	$link = "<link rel='index' title='" . get_bloginfo('name') . "' href='" . get_bloginfo('siteurl') . "' />\n";
+	return apply_filters( "index_rel_link", $link );
+}
+
+/**
+ * Display relational link for the site index.
+ *
+ * @since 2.8.0
+ */
+function index_rel_link() {
+	echo get_index_rel_link(); 
+}
+
+/**
+ * Get parent post relational link.
+ *
+ * @since 2.8.0
+ *
+ * @param string $title Optional. Link title format.
+ * @return string
+ */
+function get_parent_post_rel_link($title = '%title') {
+	if ( ! empty( $GLOBALS['post'] ) && ! empty( $GLOBALS['post']->post_parent ) )
+		$post = & get_post($GLOBALS['post']->post_parent);
+
+	if ( empty($post) )
+		return;
+
+        $date = mysql2date(get_option('date_format'), $post->post_date);
+
+        $title = str_replace('%title', $post->post_title, $title);
+        $title = str_replace('%date', $date, $title);
+        $title = apply_filters('the_title', $title, $post);
+
+        $link = "<link rel='up' title='";
+        $link .= $title;
+        $link .= "' href='" . get_permalink($post) . "' />\n";
+
+        return apply_filters( "parent_post_rel_link", $link );
+}
+
+/**
+ * Display relational link for parent item
+ *
+ * @since 2.8.0
+ */
+function parent_post_rel_link($title = '%title') {
+	echo get_parent_post_rel_link($title);
 }
 
 /**
@@ -1256,7 +1497,7 @@ function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
 function get_next_comments_link( $label = '', $max_page = 0 ) {
 	global $wp_query;
 
-	if ( !is_singular() )
+	if ( !is_singular() || !get_option('page_comments') )
 		return;
 
 	$page = get_query_var('cpage');
@@ -1299,7 +1540,7 @@ function next_comments_link( $label = '', $max_page = 0 ) {
  * @return string|null
  */
 function get_previous_comments_link( $label = '' ) {
-	if ( !is_singular() )
+	if ( !is_singular() || !get_option('page_comments') )
 		return;
 
 	$page = get_query_var('cpage');
@@ -1338,7 +1579,7 @@ function previous_comments_link( $label = '' ) {
 function paginate_comments_links($args = array()) {
 	global $wp_query, $wp_rewrite;
 
-	if ( !is_singular() )
+	if ( !is_singular() || !get_option('page_comments') )
 		return;
 
 	$page = get_query_var('cpage');
@@ -1499,20 +1740,29 @@ function content_url($path = '') {
 }
 
 /**
- * Retrieve the url to the plugins directory.
+ * Retrieve the url to the plugins directory or to a specific file within that directory.
+ * You can hardcode the plugin slug in $path or pass __FILE__ as a second argument to get the correct folder name.
  *
  * @package WordPress
  * @since 2.6.0
  *
  * @param string $path Optional. Path relative to the plugins url.
+ * @param string $plugin Optional. The plugin file that you want to be relative to - i.e. pass in __FILE__
  * @return string Plugins url link with optional path appended.
 */
-function plugins_url($path = '') {
+function plugins_url($path = '', $plugin = '') {
 	$scheme = ( is_ssl() ? 'https' : 'http' );
 	$url = WP_PLUGIN_URL;
 	if ( 0 === strpos($url, 'http') ) {
 		if ( is_ssl() )
 			$url = str_replace( 'http://', "{$scheme}://", $url );
+	}
+
+	if ( !empty($plugin) && is_string($plugin) )
+	{
+		$folder = dirname(plugin_basename($plugin));
+		if ('.' != $folder)
+			$url .= '/' . ltrim($folder, '/');
 	}
 
 	if ( !empty($path) && is_string($path) && strpos($path, '..') === false )

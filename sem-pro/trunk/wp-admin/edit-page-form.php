@@ -80,9 +80,16 @@ function page_submit_meta_box($post) {
 </div>
 
 <div id="preview-action">
-<?php $preview_link = 'publish' == $post->post_status ? clean_url(get_permalink($post->ID)) : clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>
-
-<a class="preview button" href="<?php echo $preview_link; ?>" target="wp-preview" id="post-preview" tabindex="4"><?php _e('Preview'); ?></a>
+<?php
+if ( 'publish' == $post->post_status ) {
+	$preview_link = clean_url(get_permalink($post->ID));
+	$preview_button = __('Preview Changes');
+} else {
+	$preview_link = clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID))));
+	$preview_button = __('Preview');
+}
+?>
+<a class="preview button" href="<?php echo $preview_link; ?>" target="wp-preview" id="post-preview" tabindex="4"><?php echo $preview_button; ?></a>
 <input type="hidden" name="wp-preview" id="wp-preview" value="" />
 </div>
 
@@ -174,7 +181,8 @@ if ( 'private' == $post->post_status ) {
 </div><?php // /misc-pub-section ?>
 
 <?php
-$datef = _c( 'M j, Y @ G:i|Publish box date format');
+// translators: Publish box date formt, see http://php.net/date
+$datef = __( 'M j, Y @ G:i' );
 if ( 0 != $post->ID ) {
 	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
 		$stamp = __('Scheduled for: <b>%1$s</b>');
@@ -418,7 +426,7 @@ if (isset($mode) && 'bookmarklet' == $mode)
 <input name="referredby" type="hidden" id="referredby" value="<?php echo clean_url(stripslashes(wp_get_referer())); ?>" />
 <?php if ( 'draft' != $post->post_status ) wp_original_referer_field(true, 'previous'); ?>
 
-<div id="poststuff" class="metabox-holder">
+<div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
 
 <div id="side-info-column" class="inner-sidebar">
 
@@ -430,12 +438,10 @@ $side_meta_boxes = do_meta_boxes('page', 'side', $post);
 ?>
 </div>
 
-<div id="post-body" class="<?php echo $side_meta_boxes ? 'has-sidebar' : ''; ?>">
-<div id="post-body-content" class="has-sidebar-content">
-
+<div id="post-body">
 <div id="titlediv">
 <div id="titlewrap">
-  <input type="text" name="post_title" size="30" tabindex="1" value="<?php echo attribute_escape( $post->post_title ); ?>" id="title" autocomplete="off" />
+  <input type="text" name="post_title" size="30" tabindex="1" value="<?php echo attribute_escape( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" />
 </div>
 <div class="inside">
 <?php $sample_permalink_html = get_sample_permalink_html($post->ID); ?>
@@ -450,9 +456,9 @@ endif; ?>
 <div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
 
 <?php the_editor($post->post_content); ?>
-<div id="post-status-info">
-	<span id="wp-word-count" class="alignleft"></span>
-	<span class="alignright">
+<table id="post-status-info"><tbody><tr>
+	<td id="wp-word-count"></td>
+	<td class="autosave-info">
 	<span id="autosave">&nbsp;</span>
 
 <?php
@@ -465,9 +471,8 @@ endif; ?>
 		}
 	}
 ?>
-	</span>
-	<br class="clear" />
-</div>
+	</td>
+</tr></tbody></table>
 
 <?php wp_nonce_field( 'autosave', 'autosavenonce', false ); ?>
 <?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
@@ -484,7 +489,6 @@ do_meta_boxes('page', 'advanced', $post);
 
 ?>
 
-</div>
 </div>
 </div>
 

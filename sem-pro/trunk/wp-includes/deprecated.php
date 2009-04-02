@@ -748,14 +748,13 @@ function dropdown_cats($optionall = 1, $all = 'All', $orderby = 'ID', $order = '
 
 /**
  * @since 2.1
- * @deprecated Use wp_print_scripts() or WP_Scripts.
- * @see wp_print_scripts()
- * @see WP_Scripts
+ * @deprecated Use wp_tiny_mce().
+ * @see wp_tiny_mce()
  */
 function tinymce_include() {
-	_deprecated_function(__FUNCTION__, '0.0', 'wp_print_scripts()/WP_Scripts');
+	_deprecated_function(__FUNCTION__, '0.0', 'wp_tiny_mce()');
 
-	wp_print_script('wp_tiny_mce');
+	wp_tiny_mce();
 }
 
 /**
@@ -1302,6 +1301,41 @@ function gzip_compression() {
 function get_commentdata( $comment_ID, $no_cache = 0, $include_unapproved = false ) {
 	_deprecated_function( __FUNCTION__, '2.7', 'get_comment()' );
 	return get_comment($comment_ID, ARRAY_A);
+}
+
+/**
+ * Retrieve category children list separated before and after the term IDs.
+ *
+ * @since 1.2.0
+ *
+ * @param int $id Category ID to retrieve children.
+ * @param string $before Optional. Prepend before category term ID.
+ * @param string $after Optional, default is empty string. Append after category term ID.
+ * @param array $visited Optional. Category Term IDs that have already been added.
+ * @return string
+ */
+function get_category_children( $id, $before = '/', $after = '', $visited = array() ) {
+	_deprecated_function(__FUNCTION__, '2.8', 'get_term_children()');
+	if ( 0 == $id )
+		return '';
+
+	$chain = '';
+	/** TODO: consult hierarchy */
+	$cat_ids = get_all_category_ids();
+	foreach ( (array) $cat_ids as $cat_id ) {
+		if ( $cat_id == $id )
+			continue;
+
+		$category = get_category( $cat_id );
+		if ( is_wp_error( $category ) )
+			return $category;
+		if ( $category->parent == $id && !in_array( $category->term_id, $visited ) ) {
+			$visited[] = $category->term_id;
+			$chain .= $before.$category->term_id.$after;
+			$chain .= get_category_children( $category->term_id, $before, $after );
+		}
+	}
+	return $chain;
 }
 
 ?>

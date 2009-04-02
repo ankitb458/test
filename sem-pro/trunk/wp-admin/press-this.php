@@ -8,22 +8,9 @@
 
 /** WordPress Administration Bootstrap */
 require_once('admin.php');
+header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
 
-if ( ! current_user_can('publish_posts') ) wp_die( __( 'Cheatin&#8217; uh?' ) );
-
-/**
- * Replace forward slash with backslash and slash.
- *
- * @package WordPress
- * @subpackage Press_This
- * @since 2.6.0
- *
- * @param string $string
- * @return string
- */
-function preg_quote2($string) {
-	return str_replace('/', '\/', preg_quote($string));
-}
+if ( ! current_user_can('edit_posts') ) wp_die( __( 'Cheatin&#8217; uh?' ) );
 
 /**
  * Convert characters.
@@ -55,7 +42,7 @@ function press_it() {
 	// define some basic variables
 	$quick['post_status'] = 'draft'; // set as draft first
 	$quick['post_category'] = $_REQUEST['post_category'];
-	$quick['tags_input'] = $_REQUEST['tags_input'];
+	$quick['tax_input'] = $_REQUEST['tax_input'];
 	$quick['post_title'] = $_REQUEST['title'];
 	$quick['post_content'] = '';
 
@@ -63,16 +50,14 @@ function press_it() {
 	$post_ID = wp_insert_post($quick, true);
 	$content = $_REQUEST['content'];
 
-	if($_REQUEST['photo_src'])
+	if( $_REQUEST['photo_src'] && current_user_can('upload_files') )
 		foreach( (array) $_REQUEST['photo_src'] as $key => $image)
 			// see if files exist in content - we don't want to upload non-used selected files.
 			if( strpos($_REQUEST['content'], $image) !== false ) {
 				$upload = media_sideload_image($image, $post_ID, $_REQUEST['photo_description'][$key]);
-
-				// Replace the POSTED content <img> with correct uploaded ones.
-				// escape quote for matching
-				$quoted = preg_quote2($image);
-				if( !is_wp_error($upload) ) $content = preg_replace('/<img ([^>]*)src=(\"|\')'.$quoted.'(\2)([^>\/]*)\/*>/is', $upload, $content);
+				
+				// Replace the POSTED content <img> with correct uploaded ones. Regex contains fix for Magic Quotes
+				if( !is_wp_error($upload) ) $content = preg_replace('/<img ([^>]*)src=\\\?(\"|\')'.preg_quote($image, '/').'\\\?(\2)([^>\/]*)\/*>/is', $upload, $content);
 			}
 
 	// set the post_content and status
@@ -338,7 +323,16 @@ die;
 	wp_enqueue_style( 'colors' );
 	wp_enqueue_script( 'post' );
 	wp_enqueue_script('editor');
+?>
+<script type="text/javascript">
+//<![CDATA[
+addLoadEvent = function(func){if(typeof jQuery!="undefined")jQuery(document).ready(func);else if(typeof wpOnload!='function'){wpOnload=func;}else{var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}};
+var userSettings = {'url':'<?php echo SITECOOKIEPATH; ?>','uid':'<?php if ( ! isset($current_user) ) $current_user = wp_get_current_user(); echo $current_user->ID; ?>','time':'<?php echo time() ?>'};
+var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+//]]>
+</script>
 
+<?php
 	do_action('admin_print_styles');
 	do_action('admin_print_scripts');
 	do_action('admin_head');
@@ -349,23 +343,6 @@ die;
 	}
 ?>
 	<script type="text/javascript">
-    jQuery('#tags-input').hide();
-	tag_update_quickclicks();
-	// add the quickadd form
-	jQuery('#jaxtag').prepend('<span id="ajaxtag"><input type="text" name="newtag" id="newtag" class="form-input-tip" size="16" autocomplete="off" value="'+postL10n.addTag+'" /><input type="submit" class="button" id="tagadd" value="' + postL10n.add + '" tabindex="3" onclick="return false;" /><input type="hidden"/><input type="hidden"/><span class="howto">'+postL10n.separate+'</span></span>');
-
-	jQuery('#tagadd').click( tag_flush_to_text );
-	jQuery('#newtag').focus(function() {
-		if ( this.value == postL10n.addTag )
-			jQuery(this).val( '' ).removeClass( 'form-input-tip' );
-	});
-	jQuery('#newtag').blur(function() {
-		if ( this.value == '' )
-			jQuery(this).val( postL10n.addTag ).addClass( 'form-input-tip' );
-	});
-	// auto-save tags on post save/publish
-	jQuery('#publish').click( tag_save_on_publish );
-	jQuery('#save').click( tag_save_on_publish );
 	function insert_plain_editor(text) {
 		edCanvas = document.getElementById('content');
 		edInsertContent(edCanvas, text);
@@ -468,9 +445,24 @@ die;
 
 			<!-- This div holds the photo metadata -->
 			<div class="photolist"></div>
-
+			
+			<div id="submitdiv" class="stuffbox">
+				<h3><?php _e('Publish') ?></h3>
+				<div class="inside">
+					<p>
+						<input class="button" type="submit" name="draft" value="<?php _e('Save Draft') ?>" id="save" />
+						<?php if ( current_user_can('publish_posts') ) { ?>
+							<input class="button-primary" type="submit" name="publish" value="<?php _e('Publish') ?>" id="publish" />
+						<?php } else { ?>
+							<br /><br /><input class="button-primary" type="submit" name="review" value="<?php _e('Submit for Review') ?>" id="review" />
+						<?php } ?>
+						<img src="images/loading-publish.gif" alt="" id="saving" style="display:none;" />
+					</p>
+				</div>
+			</div>
+			
 			<div id="categorydiv" class="stuffbox">
-				<h2><?php _e('Categories') ?></h2>
+				<h3><?php _e('Categories') ?></h3>
 				<div class="inside">
 
 					<div id="categories-all" class="ui-tabs-panel">
@@ -492,25 +484,21 @@ die;
 				</div>
 			</div>
 
-			<div class="stuffbox">
-				<h2><?php _e('Tags') ?></h2>
+			<div id="tagsdiv-post_tag" class="stuffbox" >
+				<h3><span><?php _e('Post Tags'); ?></span></h3>
 				<div class="inside">
-
-					<div id="jaxtag">
-						<label class="hidden" for="newtag"><?php _e('Tags'); ?></label>
-						<input type="text" name="tags_input" class="tags-input" id="tags-input" size="40" tabindex="3" value="<?php echo get_tags_to_edit( $post->ID ); ?>" />
+					<div class="tagsdiv" id="post_tag">
+						<p class="jaxtag">
+							<label class="hidden" for="newtag"><?php _e('Post Tags'); ?></label>
+							<input type="hidden" name="tax_input[post_tag]" class="the-tags" id="tax-input[post_tag]" value="" />
+							<span class="ajaxtag" style="display:none;">
+								<input type="text" name="newtag[post_tag]" class="newtag form-input-tip" size="16" autocomplete="off" value="<?php _e('Add new tag'); ?>" />
+								<input type="button" class="button tagadd" value="Add" tabindex="3" />
+							</span>
+						</p>
+						<div class="tagchecklist"></div>
 					</div>
-					<div id="tagchecklist"></div>
-				</div>
-			</div>
-			<div id="submitdiv" class="postbox">
-				<h2><?php _e('Publish') ?></h2>
-				<div class="inside">
-					<p>
-						<input class="button" type="submit" name="draft" value="<?php _e('Save Draft') ?>" id="save" />
-						<input class="button-primary" type="submit" name="publish" value="<?php _e('Publish') ?>" id="publish" />
-						<img src="images/loading-publish.gif" alt="" id="saving" style="display:none;"/>
-					</p>
+					<p class="tagcloud-link"><a href="#titlediv" class="tagcloud-link" id="link-post_tag"><?php _e('Choose from the most used tags in Post Tags'); ?></a></p>
 				</div>
 			</div>
 		</div>
@@ -531,9 +519,11 @@ die;
 
 		<div class="postdivrich">
 			<ul id="actions">
+				
 				<li id="photo_button">
-					Add: <a title="<?php _e('Insert an Image'); ?>" href="#">
+					Add: <?php if ( current_user_can('upload_files') ) { ?><a title="<?php _e('Insert an Image'); ?>" href="#">
 <img alt="<?php _e('Insert an Image'); ?>" src="images/media-button-image.gif"/></a>
+					<?php } ?>
 				</li>
 				<li id="video_button">
 					<a title="<?php _e('Embed a Video'); ?>" href="#"><img alt="<?php _e('Embed a Video'); ?>" src="images/media-button-video.gif"/></a>
@@ -542,9 +532,9 @@ die;
 				<li id="switcher">
 					<?php wp_print_scripts( 'quicktags' ); ?>
 					<?php add_filter('the_editor_content', 'wp_richedit_pre'); ?>
-					<a id="edButtonHTML" onclick="switchEditors.go('<?php echo $id; ?>', 'html');"><?php _e('HTML'); ?></a>
-					<a id="edButtonPreview" class="active" onclick="switchEditors.go('<?php echo $id; ?>', 'tinymce');"><?php _e('Visual'); ?></a>
-					<div class="zerosize"><input accesskey="e" type="button" onclick="switchEditors.go('<?php echo $id; ?>')" /></div>
+					<a id="edButtonHTML" onclick="switchEditors.go('content', 'html');"><?php _e('HTML'); ?></a>
+					<a id="edButtonPreview" class="active" onclick="switchEditors.go('content', 'tinymce');"><?php _e('Visual'); ?></a>
+					<div class="zerosize"><input accesskey="e" type="button" onclick="switchEditors.go('content')" /></div>
 				</li>
 				<?php } ?>
 			</ul>
@@ -559,5 +549,7 @@ die;
 	</div>
 </div>
 </form>
+<?php do_action('admin_print_footer_scripts'); ?>
+<script type="text/javascript">if(typeof wpOnload=='function')wpOnload();</script>
 </body>
 </html>

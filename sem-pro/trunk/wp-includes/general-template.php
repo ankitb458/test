@@ -98,7 +98,17 @@ function get_sidebar( $name = null ) {
  *
  * Will first attempt to locate the searchform.php file in either the child or
  * the parent, then load it. If it doesn't exist, then the default search form
- * will be displayed.
+ * will be displayed. The default search form is HTML, which will be displayed.
+ * There is a filter applied to the search form HTML in order to edit or replace
+ * it. The filter is 'get_search_form'.
+ *
+ * This function is primarily used by themes which want to hardcode the search
+ * form into the sidebar and also by the search widget in WordPress.
+ *
+ * There is also an action that is called whenever the function is run called,
+ * 'get_search_form'. This can be useful for outputting JavaScript that the
+ * search relies on or various formatting that applies to the beginning of the
+ * search. To give a few examples of what it can be used for.
  *
  * @since 2.7.0
  */
@@ -109,8 +119,8 @@ function get_search_form() {
 		return;
 
 	$form = '<form method="get" id="searchform" action="' . get_option('home') . '/" >
-	<label class="hidden" for="s">' . __('Search for:') . '</label>
-	<div><input type="text" value="' . attribute_escape(apply_filters('the_search_query', get_search_query())) . '" name="s" id="s" />
+	<div><label class="hidden" for="s">' . __('Search for:') . '</label>
+	<input type="text" value="' . attribute_escape(apply_filters('the_search_query', get_search_query())) . '" name="s" id="s" />
 	<input type="submit" id="searchsubmit" value="'.attribute_escape(__('Search')).'" />
 	</div>
 	</form>';
@@ -375,6 +385,7 @@ function wp_title($sep = '&raquo;', $display = true, $seplocation = '') {
 	$year = get_query_var('year');
 	$monthnum = get_query_var('monthnum');
 	$day = get_query_var('day');
+	$search = get_query_var('s');
 	$title = '';
 
 	$t_sep = '%WP_TITILE_SEP%'; // Temporary separator, for accurate flipping, if necessary
@@ -445,6 +456,11 @@ function wp_title($sep = '&raquo;', $display = true, $seplocation = '') {
 		$term = $wp_query->get_queried_object();
 		$term = $term->name;
 		$title = "$tax$t_sep$term";
+	}
+
+	//If it's a search
+	if ( is_search() ) {
+		$title = sprintf(__('Search Results %s %s'), $t_sep, strip_tags($search));
 	}
 
 	if ( is_404() ) {
@@ -750,7 +766,7 @@ function wp_get_archives($args = '') {
 	$output = '';
 
 	if ( 'monthly' == $type ) {
-		$query = "SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date DESC $limit";
+		$query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date DESC $limit";
 		$key = md5($query);
 		$cache = wp_cache_get( 'wp_get_archives' , 'general');
 		if ( !isset( $cache[ $key ] ) ) {
@@ -771,7 +787,7 @@ function wp_get_archives($args = '') {
 			}
 		}
 	} elseif ('yearly' == $type) {
-		$query = "SELECT DISTINCT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date DESC $limit";
+		$query = "SELECT YEAR(post_date) AS `year`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date) ORDER BY post_date DESC $limit";
 		$key = md5($query);
 		$cache = wp_cache_get( 'wp_get_archives' , 'general');
 		if ( !isset( $cache[ $key ] ) ) {
@@ -792,7 +808,7 @@ function wp_get_archives($args = '') {
 			}
 		}
 	} elseif ( 'daily' == $type ) {
-		$query = "SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, DAYOFMONTH(post_date) AS `dayofmonth`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date), DAYOFMONTH(post_date) ORDER BY post_date DESC $limit";
+		$query = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, DAYOFMONTH(post_date) AS `dayofmonth`, count(ID) as posts FROM $wpdb->posts $join $where GROUP BY YEAR(post_date), MONTH(post_date), DAYOFMONTH(post_date) ORDER BY post_date DESC $limit";
 		$key = md5($query);
 		$cache = wp_cache_get( 'wp_get_archives' , 'general');
 		if ( !isset( $cache[ $key ] ) ) {
@@ -902,22 +918,29 @@ function calendar_week_mod($num) {
 function get_calendar($initial = true) {
 	global $wpdb, $m, $monthnum, $year, $wp_locale, $posts;
 
+	$cache = array();
 	$key = md5( $m . $monthnum . $year );
 	if ( $cache = wp_cache_get( 'get_calendar', 'calendar' ) ) {
-		if ( isset( $cache[ $key ] ) ) {
+		if ( is_array($cache) && isset( $cache[ $key ] ) ) {
 			echo $cache[ $key ];
 			return;
 		}
 	}
 
-	ob_start();
+	if ( !is_array($cache) )
+		$cache = array();
+
 	// Quick check. If we have no posts at all, abort!
 	if ( !$posts ) {
-		$gotsome = $wpdb->get_var("SELECT ID from $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' ORDER BY post_date DESC LIMIT 1");
-		if ( !$gotsome )
+		$gotsome = $wpdb->get_var("SELECT 1 FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' LIMIT 1");
+		if ( !$gotsome ) {
+			$cache[ $key ] = '';
+			wp_cache_set( 'get_calendar', $cache, 'calendar' );
 			return;
+		}
 	}
 
+	ob_start();
 	if ( isset($_GET['w']) )
 		$w = ''.intval($_GET['w']);
 
@@ -961,8 +984,10 @@ function get_calendar($initial = true) {
 			ORDER	BY post_date ASC
 			LIMIT 1");
 
+	/* translators: Calendar caption: 1: month name, 2: 4-digit year */
+	$calendar_caption = _x('%1$s %2$s', 'calendar caption');
 	echo '<table id="wp-calendar" summary="' . __('Calendar') . '">
-	<caption>' . sprintf(_c('%1$s %2$s|Used as a calendar caption'), $wp_locale->get_month($thismonth), date('Y', $unixmonth)) . '</caption>
+	<caption>' . sprintf($calendar_caption, $wp_locale->get_month($thismonth), date('Y', $unixmonth)) . '</caption>
 	<thead>
 	<tr>';
 
@@ -1169,12 +1194,13 @@ function the_date($d='', $before='', $after='', $echo = true) {
 			$the_date .= mysql2date($d, $post->post_date);
 		$the_date .= $after;
 		$previousday = $day;
-	}
+
 	$the_date = apply_filters('the_date', $the_date, $d, $before, $after);
 	if ( $echo )
 		echo $the_date;
 	else
 		return $the_date;
+	}
 }
 
 /**
@@ -1364,6 +1390,100 @@ function wp_footer() {
 }
 
 /**
+ * Enable/disable automatic general feed link outputting.
+ *
+ * @since 2.8.0
+ *
+ * @param boolean $add Add or remove links. Defaults to true.
+ */
+function automatic_feed_links( $add = true ) {
+	if ( $add )
+		add_action( 'wp_head', 'feed_links', 2 );
+	else {
+		remove_action( 'wp_head', 'feed_links', 2 );
+		remove_action( 'wp_head', 'feed_links_extra', 3 );
+	}
+}
+
+/**
+ * Display the links to the general feeds.
+ *
+ * @since 2.8.0
+ *
+ * @param array $args Optional arguments.
+ */
+function feed_links( $args ) {
+	$defaults = array(
+		/* translators: Separator between blog name and feed type in feed links */
+		'separator'   => _x('&raquo;', 'feed link'),
+		'feedtitle' => __('%s Feed'),
+		'comstitle' => __('%s Comments Feed'),
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+
+	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . attribute_escape(sprintf( $args['feedtitle'], get_bloginfo('name') )) . '" href="' . get_feed_link() . "\" />\n";
+	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . attribute_escape(sprintf( $args['comstitle'], get_bloginfo('name') )) . '" href="' . get_feed_link( 'comments_' . get_default_feed() ) . "\" />\n";
+}
+
+/**
+ * Display the links to the extra feeds such as category feeds.
+ *
+ * @since 2.8.0
+ *
+ * @param array $args Optional arguments.
+ */
+function feed_links_extra( $args ) {
+	$defaults = array(
+		/* translators: Separator between blog name and feed type in feed links */
+		'separator'   => _x('&raquo;', 'feed link'),
+		/* translators: 1: blog name, 2: separator(raquo), 3: post title */
+		'singletitle' => __('%1$s %2$s %3$s Comments Feed'),
+		/* translators: 1: blog name, 2: separator(raquo), 3: category name */
+		'cattitle'    => __('%1$s %2$s %3$s Category Feed'),
+		/* translators: 1: blog name, 2: separator(raquo), 3: tag name */
+		'tagtitle'    => __('%1$s %2$s %3$s Tag Feed'),
+		/* translators: 1: blog name, 2: separator(raquo), 3: author name  */
+		'authortitle' => __('%1$s %2$s Posts by %3$s Feed'),
+		/* translators: 1: blog name, 2: separator(raquo), 3: search phrase */
+		'searchtitle' => __('%1$s %2$s Search Results for &quot;%3$s&quot; Feed'),
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+
+	if ( is_single() || is_page() ) {
+		$post = &get_post( $id = 0 );
+
+		if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
+			$title = attribute_escape(sprintf( $args['singletitle'], get_bloginfo('name'), $args['separator'], wp_specialchars( get_the_title() ) ));
+			$href = get_post_comments_feed_link( $post->ID );
+		}
+	} elseif ( is_category() ) {
+		$cat_id = intval( get_query_var('cat') );
+
+		$title = attribute_escape(sprintf( $args['cattitle'], get_bloginfo('name'), $args['separator'], get_cat_name( $cat_id ) ));
+		$href = get_category_feed_link( $cat_id );
+	} elseif ( is_tag() ) {
+		$tag_id = intval( get_query_var('tag_id') );
+		$tag = get_tag( $tag_id );
+
+		$title = attribute_escape(sprintf( $args['tagtitle'], get_bloginfo('name'), $args['separator'], $tag->name ));
+		$href = get_tag_feed_link( $tag_id );
+	} elseif ( is_author() ) {
+		$author_id = intval( get_query_var('author') );
+
+		$title = attribute_escape(sprintf( $args['authortitle'], get_bloginfo('name'), $args['separator'], get_author_name( $author_id ) ));
+		$href = get_author_feed_link( $author_id );
+	} elseif ( is_search() ) {
+		$title = attribute_escape(sprintf( $args['searchtitle'], get_bloginfo('name'), $args['separator'], get_search_query() ));
+		$href = get_search_feed_link();
+	}
+
+	if ( isset($title) && isset($href) )
+		echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . $title . '" href="' . $href . '" />' . "\n";
+}
+
+/**
  * Display the link to the Really Simple Discovery service endpoint.
  *
  * @link http://archipelago.phrasewise.com/rsd
@@ -1525,27 +1645,9 @@ function the_editor($content, $id = 'content', $prev_id = 'title', $media_button
 
 	?>
 	<script type="text/javascript">
-	// <![CDATA[
+	/* <![CDATA[ */
 	edCanvas = document.getElementById('<?php echo $id; ?>');
-	<?php if ( user_can_richedit() && $prev_id ) { ?>
-	var dotabkey = true;
-	// If tinyMCE is defined.
-	if ( typeof tinyMCE != 'undefined' ) {
-		// This code is meant to allow tabbing from Title to Post (TinyMCE).
-		jQuery('#<?php echo $prev_id; ?>')[jQuery.browser.opera ? 'keypress' : 'keydown'](function (e) {
-			if (e.which == 9 && !e.shiftKey && !e.controlKey && !e.altKey) {
-				if ( (jQuery("#post_ID").val() < 1) && (jQuery("#title").val().length > 0) ) { autosave(); }
-				if ( tinyMCE.activeEditor && ! tinyMCE.activeEditor.isHidden() && dotabkey ) {
-					e.preventDefault();
-					dotabkey = false;
-					tinyMCE.activeEditor.focus();
-					return false;
-				}
-			}
-		});
-	}
-	<?php } ?>
-	// ]]>
+	/* ]]> */
 	</script>
 	<?php
 }
@@ -1875,10 +1977,10 @@ function the_generator( $type ) {
 function get_the_generator( $type ) {
 	switch ($type) {
 		case 'html':
-			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '">' . "\n";
+			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '">';
 			break;
 		case 'xhtml':
-			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '" />' . "\n";
+			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '" />';
 			break;
 		case 'atom':
 			$gen = '<generator uri="http://wordpress.org/" version="' . get_bloginfo_rss( 'version' ) . '">WordPress</generator>';

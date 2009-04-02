@@ -17,8 +17,8 @@
  * @global array $wp_taxonomies
  */
 $wp_taxonomies = array();
-$wp_taxonomies['category'] = (object) array('name' => 'category', 'object_type' => 'post', 'hierarchical' => true, 'update_count_callback' => '_update_post_term_count');
-$wp_taxonomies['post_tag'] = (object) array('name' => 'post_tag', 'object_type' => 'post', 'hierarchical' => false, 'update_count_callback' => '_update_post_term_count');
+$wp_taxonomies['category'] = (object) array('name' => 'category', 'object_type' => 'post', 'hierarchical' => true, 'update_count_callback' => '_update_post_term_count', 'label' => __('Categories'));
+$wp_taxonomies['post_tag'] = (object) array('name' => 'post_tag', 'object_type' => 'post', 'hierarchical' => false, 'update_count_callback' => '_update_post_term_count', 'label' => __('Post Tags'));
 $wp_taxonomies['link_category'] = (object) array('name' => 'link_category', 'object_type' => 'link', 'hierarchical' => false);
 
 /**
@@ -535,7 +535,7 @@ function get_term_to_edit( $id, $taxonomy ) {
  * 'exclude' is ignored.
  *
  * exclude_tree - A comma- or space-delimited string of term ids to exclude
- * from the return array, along with all of their descendant terms according to 
+ * from the return array, along with all of their descendant terms according to
  * the primary taxonomy.  If 'include' is non-empty, 'exclude_tree' is ignored.
  *
  * include - Default is an empty string.  A comma- or space-delimited string
@@ -692,7 +692,7 @@ function &get_terms($taxonomies, $args = '') {
 	if ( ! empty( $exclude_tree ) ) {
 		$excluded_trunks = preg_split('/[\s,]+/',$exclude_tree);
 		foreach( (array) $excluded_trunks as $extrunk ) {
-			$excluded_children = (array) get_terms($taxonomies[0], array('child_of' => intval($extrunk), 'fields' => 'ids'));	
+			$excluded_children = (array) get_terms($taxonomies[0], array('child_of' => intval($extrunk), 'fields' => 'ids'));
 			$excluded_children[] = $extrunk;
 			foreach( (array) $excluded_children as $exterm ) {
 				if ( empty($exclusions) )
@@ -736,7 +736,7 @@ function &get_terms($taxonomies, $args = '') {
 	if ( $hide_empty && !$hierarchical )
 		$where .= ' AND tt.count > 0';
 
-	// don't limit the query results when we have to descend the family tree 
+	// don't limit the query results when we have to descend the family tree
 	if ( ! empty($number) && ! $hierarchical && empty( $child_of ) && '' == $parent ) {
 		if( $offset )
 			$limit = 'LIMIT ' . $offset . ',' . $number;
@@ -1059,7 +1059,9 @@ function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
  *
  * The $args 'default' will only override the terms found, if there is only one
  * term found. Any other and the found terms are used.
- *
+ * 
+ * The $args 'force_default' will force the term supplied as default to be
+ * assigned even if the object was not going to be termless
  * @package WordPress
  * @subpackage Taxonomy
  * @since 2.3.0
@@ -1110,10 +1112,13 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 
 	foreach ( (array) $objects as $object ) {
 		$terms = wp_get_object_terms($object, $taxonomy, 'fields=ids');
-		if ( 1 == count($terms) && isset($default) )
+		if ( 1 == count($terms) && isset($default) ) {
 			$terms = array($default);
-		else
+		} else {
 			$terms = array_diff($terms, array($term));
+			if (isset($default) && isset($force_default) && $force_default)
+				$terms = array_merge($terms, array($default));
+		}
 		$terms = array_map('intval', $terms);
 		wp_set_object_terms($object, $terms, $taxonomy);
 	}
@@ -1329,7 +1334,7 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 		} else {
 			// The alias isn't in a group, so let's create a new one and firstly add the alias term to it.
 			$term_group = $wpdb->get_var("SELECT MAX(term_group) FROM $wpdb->terms") + 1;
-			$wpdb->query( $wpdb->prepare( "UPDATE $wpdb->terms SET term_group = %d WHERE term_id = %d", $term_group, $alias->term_id ) );
+			$wpdb->update($wpdb->terms, compact('term_group'), array('term_id' => $alias->term_id) );
 		}
 	}
 
@@ -1451,6 +1456,7 @@ function wp_set_object_terms($object_id, $terms, $taxonomy, $append = false) {
 			$wpdb->query("INSERT INTO $wpdb->term_relationships (object_id, term_taxonomy_id, term_order) VALUES " . join(',', $values) . " ON DUPLICATE KEY UPDATE term_order = VALUES(term_order)");
 	}
 
+	do_action('set_object_terms', $object_id, $terms, $tt_ids, $taxonomy, $append);
 	return $tt_ids;
 }
 
@@ -1560,6 +1566,9 @@ function wp_update_term( $term, $taxonomy, $args = array() ) {
 
 	// First, get all of the original args
 	$term = get_term ($term_id, $taxonomy, ARRAY_A);
+
+	if ( is_wp_error( $term ) )
+		return $term;
 
 	// Escape data pulled from DB.
 	$term = add_magic_quotes($term);

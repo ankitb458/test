@@ -109,17 +109,17 @@ if ( isset( $_GET['approved'] ) || isset( $_GET['deleted'] ) || isset( $_GET['sp
 		echo '<div id="moderated" class="updated fade"><p>';
 
 		if ( $approved > 0 ) {
-			printf( __ngettext( '%s comment approved', '%s comments approved', $approved ), $approved );
+			printf( _n( '%s comment approved', '%s comments approved', $approved ), $approved );
 			echo '<br />';
 		}
 
 		if ( $deleted > 0 ) {
-			printf( __ngettext( '%s comment deleted', '%s comments deleted', $deleted ), $deleted );
+			printf( _n( '%s comment deleted', '%s comments deleted', $deleted ), $deleted );
 			echo '<br />';
 		}
 
 		if ( $spam > 0 ) {
-			printf( __ngettext( '%s comment marked as spam', '%s comments marked as spam', $spam ), $spam );
+			printf( _n( '%s comment marked as spam', '%s comments marked as spam', $spam ), $spam );
 			echo '<br />';
 		}
 
@@ -136,10 +136,10 @@ $num_comments = ( $post_id ) ? wp_count_comments( $post_id ) : wp_count_comments
 //, number_format_i18n($num_comments->moderated) ), "<span class='comment-count'>" . number_format_i18n($num_comments->moderated) . "</span>"),
 //, number_format_i18n($num_comments->spam) ), "<span class='spam-comment-count'>" . number_format_i18n($num_comments->spam) . "</span>")
 $stati = array(
-		'all' => __ngettext_noop('All', 'All'), // singular not used
-		'moderated' => __ngettext_noop('Pending (<span class="pending-count">%s</span>)', 'Pending (<span class="pending-count">%s</span>)'),
-		'approved' => __ngettext_noop('Approved', 'Approved'), // singular not used
-		'spam' => __ngettext_noop('Spam (<span class="spam-count">%s</span>)', 'Spam (<span class="spam-count">%s</span>)')
+		'all' => _n_noop('All', 'All'), // singular not used
+		'moderated' => _n_noop('Pending (<span class="pending-count">%s</span>)', 'Pending (<span class="pending-count">%s</span>)'),
+		'approved' => _n_noop('Approved', 'Approved'), // singular not used
+		'spam' => _n_noop('Spam (<span class="spam-count">%s</span>)', 'Spam (<span class="spam-count">%s</span>)')
 	);
 $class = ( '' === $comment_status ) ? ' class="current"' : '';
 // $status_links[] = "<li><a href='edit-comments.php'$class>" . __( 'All' ) . '</a>';
@@ -163,7 +163,7 @@ foreach ( $stati as $status => $label ) {
 		$link = add_query_arg( 's', attribute_escape( stripslashes( $_GET['s'] ) ), $link );
 	*/
 	$status_links[] = "<li class='$status'><a href='$link'$class>" . sprintf(
-		__ngettext( $label[0], $label[1], $num_comments->$status ),
+		_n( $label[0], $label[1], $num_comments->$status ),
 		number_format_i18n( $num_comments->$status )
 	) . '</a>';
 }
@@ -182,7 +182,10 @@ unset($status_links);
 </p>
 
 <?php
-$comments_per_page = apply_filters('comments_per_page', 20, $comment_status);
+$comments_per_page = get_user_option('edit_comments_per_page');
+if ( empty($comments_per_page) )
+	$comments_per_page = 20;
+$comments_per_page = apply_filters('comments_per_page', $comments_per_page, $comment_status);
 
 if ( isset( $_GET['apage'] ) )
 	$page = abs( (int) $_GET['apage'] );
@@ -230,9 +233,12 @@ $page_links = paginate_links( array(
 <div class="tablenav-pages"><?php $page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s' ) . '</span>%s',
 	number_format_i18n( $start + 1 ),
 	number_format_i18n( min( $page * $comments_per_page, $total ) ),
-	number_format_i18n( $total ),
+	'<span class="total-type-count">' . number_format_i18n( $total ) . '</span>',
 	$page_links
 ); echo $page_links_text; ?></div>
+<input type="hidden" name="_total" value="<?php echo $total; ?>" />
+<input type="hidden" name="_per_page" value="<?php echo $comments_per_page; ?>" />
+<input type="hidden" name="_page" value="<?php echo $page; ?>" />
 <?php endif; ?>
 
 <div class="alignleft actions">
@@ -275,7 +281,7 @@ $page_links = paginate_links( array(
 <?php }
 
 if ( 'spam' == $comment_status ) {
-	wp_nonce_field('bulk-spam-delete', '_spam_nonce'); 
+	wp_nonce_field('bulk-spam-delete', '_spam_nonce');
         if ( current_user_can ('moderate_comments')) { ?>
 		<input type="submit" name="delete_all_spam" value="<?php _e('Delete All Spam'); ?>" class="button-secondary apply" />
 <?php	}
@@ -372,21 +378,6 @@ if ( $page_links )
 
 <?php } ?>
 </div>
-
-<script type="text/javascript">
-/* <![CDATA[ */
-(function($){
-	$(document).ready(function(){
-		$('#doaction, #doaction2').click(function(){
-			if ( $('select[name^="action"]').val() == 'delete' ) {
-				var m = '<?php echo js_escape(__("You are about to delete the selected comments.\n  'Cancel' to stop, 'OK' to delete.")); ?>';
-				return showNotice.warn(m);
-			}
-		});
-	});
-})(jQuery);
-/* ]]> */
-</script>
 
 <?php
 wp_comment_reply('-1', true, 'detail');

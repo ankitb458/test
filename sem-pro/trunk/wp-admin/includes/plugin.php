@@ -98,6 +98,7 @@ function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
 				);
 	if ( $markup || $translate )
 		$plugin_data = _get_plugin_data_markup_translate($plugin_data, $markup, $translate);
+
 	return $plugin_data;
 }
 
@@ -138,6 +139,46 @@ function _get_plugin_data_markup_translate($plugin_data, $markup = true, $transl
 	$plugin_data['Author']      = wp_kses($plugin_data['Author'], $plugins_allowedtags);
 
 	return $plugin_data;
+}
+
+/**
+ * Get a list of a plugin's files.
+ *
+ * @since 2.8.0
+ *
+ * @param string $plugin Plugin ID
+ * @return array List of files relative to the plugin root.
+ */
+function get_plugin_files($plugin) {
+	$plugin_file = WP_PLUGIN_DIR . '/' . $plugin;
+	$dir = dirname($plugin_file);
+	$plugin_files = array($plugin);
+	if ( is_dir($dir) && $dir != WP_PLUGIN_DIR ) {
+		$plugins_dir = @ opendir( $dir );
+		if ( $plugins_dir ) {
+			while (($file = readdir( $plugins_dir ) ) !== false ) {
+				if ( substr($file, 0, 1) == '.' )
+					continue;
+				if ( is_dir( $dir . '/' . $file ) ) {
+					$plugins_subdir = @ opendir( $dir . '/' . $file );
+					if ( $plugins_subdir ) {
+						while (($subfile = readdir( $plugins_subdir ) ) !== false ) {
+							if ( substr($subfile, 0, 1) == '.' )
+								continue;
+							$plugin_files[] = plugin_basename("$dir/$file/$subfile");
+						}
+						@closedir( $plugins_subdir );
+					}
+				} else {
+					if ( plugin_basename("$dir/$file") != $plugin )
+						$plugin_files[] = plugin_basename("$dir/$file");
+				}
+			}
+			@closedir( $plugins_dir );
+		}
+	}
+
+	return $plugin_files;
 }
 
 /**
@@ -430,7 +471,7 @@ function delete_plugins($plugins, $redirect = '' ) {
 		return new WP_Error('could_not_remove_plugin', sprintf(__('Could not fully remove the plugin(s) %s'), implode(', ', $errors)) );
 
 	// Force refresh of plugin update information
-	delete_option('update_plugins');
+	delete_transient('update_plugins');
 
 	return true;
 }
@@ -476,6 +517,9 @@ function validate_plugin($plugin) {
 	if ( ! file_exists(WP_PLUGIN_DIR . '/' . $plugin) )
 		return new WP_Error('plugin_not_found', __('Plugin file does not exist.'));
 
+	$installed_plugins = get_plugins();
+	if ( ! isset($installed_plugins[$plugin]) )
+		return new WP_Error('no_plugin_header', __('The plugin does not have a valid header.'));
 	return 0;
 }
 
@@ -623,7 +667,7 @@ function add_submenu_page( $parent, $page_title, $menu_title, $access_level, $fi
 	// parent file someone is trying to link back to the parent manually.  In
 	// this case, don't automatically add a link back to avoid duplication.
 	if (!isset( $submenu[$parent] ) && $file != $parent  ) {
-		foreach ( $menu as $parent_menu ) {
+		foreach ( (array)$menu as $parent_menu ) {
 			if ( $parent_menu[2] == $parent && current_user_can( $parent_menu[1] ) )
 				$submenu[$parent][] = $parent_menu;
 		}
@@ -721,7 +765,7 @@ function get_admin_page_parent( $parent = '' ) {
 */
 
 	if ( $pagenow == 'admin.php' && isset( $plugin_page ) ) {
-		foreach ( $menu as $parent_menu ) {
+		foreach ( (array)$menu as $parent_menu ) {
 			if ( $parent_menu[2] == $plugin_page ) {
 				$parent_file = $plugin_page;
 				if ( isset( $_wp_real_parent_file[$parent_file] ) )
@@ -744,7 +788,7 @@ function get_admin_page_parent( $parent = '' ) {
 		return $parent_file;
 	}
 
-	foreach (array_keys( $submenu ) as $parent) {
+	foreach (array_keys( (array)$submenu ) as $parent) {
 		foreach ( $submenu[$parent] as $submenu_array ) {
 			if ( isset( $_wp_real_parent_file[$parent] ) )
 				$parent = $_wp_real_parent_file[$parent];
@@ -780,7 +824,7 @@ function get_admin_page_title() {
 	$parent = $parent1 = get_admin_page_parent();
 
 	if ( empty ( $parent) ) {
-		foreach ( $menu as $menu_array ) {
+		foreach ( (array)$menu as $menu_array ) {
 			if ( isset( $menu_array[3] ) ) {
 				if ( $menu_array[2] == $pagenow ) {
 					$title = $menu_array[3];
@@ -1041,9 +1085,11 @@ function remove_option_whitelist( $del_options, $options = '' ) {
 	}
 	foreach( $del_options as $page => $keys ) {
 		foreach( $keys as $key ) {
-			$pos = array_search( $key, $whitelist_options[ $page ] );
-			if( $pos !== false )
-				unset( $whitelist_options[ $page ][ $pos ] );
+			if ( isset($whitelist_options[ $page ]) && is_array($whitelist_options[ $page ]) ) {
+				$pos = array_search( $key, $whitelist_options[ $page ] );
+				if( $pos !== false )
+					unset( $whitelist_options[ $page ][ $pos ] );
+			}
 		}
 	}
 	return $whitelist_options;

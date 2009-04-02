@@ -77,17 +77,32 @@ default:
 	if ( !current_user_can('edit_themes') )
 		wp_die('<p>'.__('You do not have sufficient permissions to edit themes for this blog.').'</p>');
 
+	wp_enqueue_script( 'codepress' );
+	add_action( 'admin_print_footer_scripts', 'codepress_footer_js' );
 	require_once('admin-header.php');
 
 	update_recently_edited($file);
 
-	if (!is_file($real_file))
+	if ( !is_file($real_file) )
 		$error = 1;
 
-	if (!$error && filesize($real_file) > 0) {
+	if ( !$error && filesize($real_file) > 0 ) {
 		$f = fopen($real_file, 'r');
 		$content = fread($f, filesize($real_file));
-		$content = htmlspecialchars($content);
+
+		if ( '.php' == substr( $real_file, strrpos( $real_file, '.' ) ) ) {
+			$functions = wp_doc_link_parse( $content );
+
+			$docs_select = '<select name="docs-list" id="docs-list">';
+			$docs_select .= '<option value="">' . __( 'Function Name...' ) . '</option>';
+			foreach ( $functions as $function ) {
+				$docs_select .= '<option value="' . urlencode( $function ) . '">' . htmlspecialchars( $function ) . '()</option>';
+			}
+			$docs_select .= '</select>';
+		}
+
+		$content = htmlspecialchars( $content );
+		$codepress_lang = codepress_get_lang($real_file);
 	}
 
 	?>
@@ -136,7 +151,7 @@ if ($allowed_files) :
 <?php
 	$template_mapping = array();
 	$template_dir = $themes[$theme]['Template Dir'];
-	foreach($themes[$theme]['Template Files'] as $template_file) {
+	foreach ( $themes[$theme]['Template Files'] as $template_file ) {
 		$description = trim( get_file_description($template_file) );
 		$template_show = basename($template_file);
 		$filedesc = ( $description != $template_file ) ? "$description <span class='nonessential'>($template_show)</span>" : "$description";
@@ -158,11 +173,11 @@ if ($allowed_files) :
 		<li><a href="theme-editor.php?file=<?php echo "$template_file"; ?>&amp;theme=<?php echo urlencode($theme) ?>"><?php echo $filedesc ?></a></li>
 <?php endwhile; ?>
 	</ul>
-	<h4><?php echo _c('Styles|Theme stylesheets in theme editor'); ?></h4>
+	<h4><?php /* translators: Theme stylesheets in theme editor */ echo _x('Styles', 'Theme stylesheets in theme editor'); ?></h4>
 	<ul>
 <?php
 	$template_mapping = array();
-	foreach($themes[$theme]['Stylesheet Files'] as $style_file) {
+	foreach ( $themes[$theme]['Stylesheet Files'] as $style_file ) {
 		$description = trim( get_file_description($style_file) );
 		$style_show = basename($style_file);
 		$filedesc = ( $description != $style_file ) ? "$description <span class='nonessential'>($style_show)</span>" : "$description";
@@ -182,11 +197,18 @@ if ($allowed_files) :
 	?>
 	<form name="template" id="template" action="theme-editor.php" method="post">
 	<?php wp_nonce_field('edit-theme_' . $file . $theme) ?>
-		 <div><textarea cols="70" rows="25" name="newcontent" id="newcontent" tabindex="1"><?php echo $content ?></textarea>
+		 <div><textarea cols="70" rows="25" name="newcontent" id="newcontent" tabindex="1" class="codepress <?php echo $codepress_lang ?>"><?php echo $content ?></textarea>
 		 <input type="hidden" name="action" value="update" />
 		 <input type="hidden" name="file" value="<?php echo $file ?>" />
 		 <input type="hidden" name="theme" value="<?php echo $theme ?>" />
 		 </div>
+	<?php if ( isset($functions ) && count($functions) ) { ?>
+		<div id="documentation">
+		<label for="docs-list"><?php _e('Documentation:') ?></label>
+		<?php echo $docs_select; ?>
+		<input type="button" class="button" value=" <?php _e( 'Lookup' ); ?> " onclick="if ( '' != jQuery('#docs-list').val() ) { window.open( 'http://api.wordpress.org/core/handbook/1.0/?function=' + escape( jQuery( '#docs-list' ).val() ) + '&locale=<?php echo urlencode( get_locale() ) ?>&version=<?php echo urlencode( $wp_version ) ?>&redirect=true'); }" />
+		</div>
+	<?php } ?>
 
 		<div>
 <?php if ( is_writeable($real_file) ) : ?>

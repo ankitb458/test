@@ -1596,11 +1596,11 @@ class WP_Rewrite {
 	 * @return array Rewrite rules.
 	 */
 	function wp_rewrite_rules() {
-		$this->rules = get_option('rewrite_rules');
+		$this->rules = get_transient('rewrite_rules');
 		if ( empty($this->rules) ) {
 			$this->matches = 'matches';
 			$this->rewrite_rules();
-			update_option('rewrite_rules', $this->rules);
+			set_transient('rewrite_rules', $this->rules);
 		}
 
 		return $this->rules;
@@ -1783,7 +1783,7 @@ class WP_Rewrite {
 	 * @access public
 	 */
 	function flush_rules() {
-		delete_option('rewrite_rules');
+		delete_transient('rewrite_rules');
 		$this->wp_rewrite_rules();
 		if ( function_exists('save_mod_rewrite_rules') )
 			save_mod_rewrite_rules();
@@ -1792,8 +1792,8 @@ class WP_Rewrite {
 	/**
 	 * Sets up the object's properties.
 	 *
-	 * The 'use_verbose_page_rules' object property will be turned on, if the
-	 * permalink structure includes the following: '%postname%', '%category%',
+	 * The 'use_verbose_page_rules' object property will be set to true if the
+	 * permalink structure begins with one of the following: '%postname%', '%category%',
 	 * '%tag%', or '%author%'.
 	 *
 	 * @since 1.5.0

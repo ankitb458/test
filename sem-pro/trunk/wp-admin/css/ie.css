@@ -7,8 +7,7 @@ input.button-highlighted {
 }
 
 #minor-publishing-actions input,
-#major-publishing-actions input,
-#minor-publishing-actions .preview {
+#major-publishing-actions input {
 	min-width: auto;
 	padding-left: 0;
 	padding-right: 0;
@@ -22,8 +21,9 @@ input.button-highlighted {
 	margin-bottom: -1px;
 }
 
-* html #side-info-column {
-	height: auto;
+* html .inner-sidebar #side-sortables,
+* html .postbox-container .meta-box-sortables {
+	height: 300px;
 }
 
 * html #wpbody-content #screen-options-link-wrap {
@@ -38,16 +38,6 @@ input.button-highlighted {
 	text-align: center;
 }
 
-/*
-* html body.minwidth {
-	_width: expression(document.documentElement.clientWidth < 810 ? "808px" : "99.9%");
-}
-
-* html #wpbody {
-	_width: expression(document.documentElement.clientWidth > 982 ? "980px" : "99.9%");
-}
-*/
-
 * html #adminmenu {
 	margin-left: -80px;
 }
@@ -59,6 +49,10 @@ input.button-highlighted {
 * html #wpcontent #adminmenu li.menu-top {
 	display: inline;
 	padding: 0;
+	margin: 0;
+}
+
+* html #footer {
 	margin: 0;
 }
 
@@ -208,6 +202,7 @@ ul#widget-list li.widget-list-item {
 a.button {
 	line-height: 1.4em;
 	margin: 1px;
+	padding: 4px 6px;
 }
 
 * html div.widget-liquid-left-holder,
@@ -233,7 +228,6 @@ a.button {
 #post-status-info,
 #wpwrap,
 #wpcontent,
-#post,
 #wrap,
 #postdivrich,
 #postdiv,
@@ -249,7 +243,7 @@ li.widget-list-control-item,
 li.widget-list-control-item h4,
 .widget-sortable,
 .widget-control-actions,
-#tagchecklist,
+.tagchecklist,
 #col-container,
 #col-left,
 #col-right {
@@ -301,12 +295,12 @@ div#dashboard-widgets {
 	padding-right: 1px;
 }
 
-#tagchecklist span, #tagchecklist span a {
+.tagchecklist span, .tagchecklist span a {
 	display: inline-block;
 	display: block;
 }
 
-#tagchecklist span a {
+.tagchecklist span a {
 	margin: 4px 0 0 -9px;
 }
 
@@ -346,4 +340,10 @@ table.ie-fixed {
 .tablenav a.button-secondary {
 	display: inline-block;
 	padding: 2px 5px;
+}
+
+* html .stuffbox,
+* html .stuffbox input,
+* html .stuffbox textarea {
+	border: 1px solid #DFDFDF;
 }

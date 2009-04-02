@@ -19,6 +19,9 @@
 function comment_exists($comment_author, $comment_date) {
 	global $wpdb;
 
+	$comment_author = stripslashes($comment_author);
+	$comment_date = stripslashes($comment_date);
+
 	return $wpdb->get_var( $wpdb->prepare("SELECT comment_post_ID FROM $wpdb->comments
 			WHERE comment_author = %s AND comment_date = %s", $comment_author, $comment_date) );
 }
@@ -156,7 +159,7 @@ function enqueue_comment_hotkeys_js() {
 		wp_enqueue_script( 'jquery-table-hotkeys' );
 }
 
-if ( is_admin() && ('edit-comments.php' == $pagenow || 'edit.php' == $pagenow) ) {
+if ( is_admin() && isset($pagenow) && ('edit-comments.php' == $pagenow || 'edit.php' == $pagenow) ) {
 	if ( get_option('show_avatars') )
 		add_filter( 'comment_author', 'floated_admin_avatar' );
 }

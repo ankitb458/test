@@ -442,7 +442,7 @@ function comment_ID() {
  *
  * @param object|string|int $comment Comment to retrieve.
  * @param array $args Optional args.
- * @return string The permalink to the current comment
+ * @return string The permalink to the given comment.
  */
 function get_comment_link( $comment = null, $args = array() ) {
 	global $wp_rewrite, $in_comment_loop;
@@ -472,12 +472,14 @@ function get_comment_link( $comment = null, $args = array() ) {
 			$args['page'] = ( !empty($in_comment_loop) ) ? get_query_var('cpage') : get_page_of_comment( $comment->comment_ID, $args );
 
 		if ( $wp_rewrite->using_permalinks() )
-			return user_trailingslashit( trailingslashit( get_permalink( $comment->comment_post_ID ) ) . 'comment-page-' . $args['page'], 'comment' ) . '#comment-' . $comment->comment_ID;
+			$link = user_trailingslashit( trailingslashit( get_permalink( $comment->comment_post_ID ) ) . 'comment-page-' . $args['page'], 'comment' );
 		else
-			return add_query_arg( 'cpage', $args['page'], get_permalink( $comment->comment_post_ID ) ) . '#comment-' . $comment->comment_ID;
+			$link = add_query_arg( 'cpage', $args['page'], get_permalink( $comment->comment_post_ID ) );
 	} else {
-		return get_permalink( $comment->comment_post_ID ) . '#comment-' . $comment->comment_ID;
+		$link = get_permalink( $comment->comment_post_ID );
 	}
+
+	return apply_filters( 'get_comment_link', $link . '#comment-' . $comment->comment_ID, $comment, $args );
 }
 
 /**
@@ -814,11 +816,11 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 
 	/** @todo Use API instead of SELECTs. */
 	if ( $user_ID) {
-		$comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND (comment_approved = '1' OR ( user_id = %d AND comment_approved = '0' ) )  ORDER BY comment_date", $post->ID, $user_ID));
+		$comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND (comment_approved = '1' OR ( user_id = %d AND comment_approved = '0' ) )  ORDER BY comment_date_gmt", $post->ID, $user_ID));
 	} else if ( empty($comment_author) ) {
-		$comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved = '1' ORDER BY comment_date", $post->ID));
+		$comments = get_comments( array('post_id' => $post->ID, 'status' => 'approve', 'order' => 'ASC') );
 	} else {
-		$comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND ( comment_approved = '1' OR ( comment_author = %s AND comment_author_email = %s AND comment_approved = '0' ) ) ORDER BY comment_date", $post->ID, $comment_author, $comment_author_email));
+		$comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND ( comment_approved = '1' OR ( comment_author = %s AND comment_author_email = %s AND comment_approved = '0' ) ) ORDER BY comment_date_gmt", $post->ID, $comment_author, $comment_author_email));
 	}
 
 	// keep $comments for legacy's sake
@@ -901,9 +903,6 @@ function comments_popup_script($width=400, $height=400, $file='') {
  */
 function comments_popup_link( $zero = 'No Comments', $one = '1 Comment', $more = '% Comments', $css_class = '', $none = 'Comments Off' ) {
 	global $id, $wpcommentspopupfile, $wpcommentsjavascript, $post;
-
-	if ( is_single() || is_page() )
-		return;
 
 	$number = get_comments_number( $id );
 
@@ -1030,7 +1029,7 @@ function get_post_reply_link($args = array(), $post = null) {
 	$args = wp_parse_args($args, $defaults);
 	extract($args, EXTR_SKIP);
 	$post = get_post($post);
-	
+
 	if ( !comments_open($post->ID) )
 		return false;
 

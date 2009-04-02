@@ -308,6 +308,7 @@ if ( 0 === strpos( $content_func, 'media' ) )
 <script type="text/javascript">
 //<![CDATA[
 function addLoadEvent(func) {if ( typeof wpOnload!='function'){wpOnload=func;}else{ var oldonload=wpOnload;wpOnload=function(){oldonload();func();}}}
+var userSettings = {'url':'<?php echo SITECOOKIEPATH; ?>','uid':'<?php if ( ! isset($current_user) ) $current_user = wp_get_current_user(); echo $current_user->ID; ?>','time':'<?php echo time() ?>'};
 //]]>
 </script>
 <?php
@@ -348,10 +349,10 @@ function media_buttons() {
 	$audio_title = __('Add Audio');
 	$out = <<<EOF
 
-	<a href="{$image_upload_iframe_src}&amp;TB_iframe=true" id="add_image" class="thickbox" title='$image_title'><img src='images/media-button-image.gif' alt='$image_title' /></a>
-	<a href="{$video_upload_iframe_src}&amp;TB_iframe=true" id="add_video" class="thickbox" title='$video_title'><img src='images/media-button-video.gif' alt='$video_title' /></a>
-	<a href="{$audio_upload_iframe_src}&amp;TB_iframe=true" id="add_audio" class="thickbox" title='$audio_title'><img src='images/media-button-music.gif' alt='$audio_title' /></a>
-	<a href="{$media_upload_iframe_src}&amp;TB_iframe=true" id="add_media" class="thickbox" title='$media_title'><img src='images/media-button-other.gif' alt='$media_title' /></a>
+	<a href="{$image_upload_iframe_src}&amp;TB_iframe=true" id="add_image" class="thickbox" title='$image_title' onclick="return false;"><img src='images/media-button-image.gif' alt='$image_title' /></a>
+	<a href="{$video_upload_iframe_src}&amp;TB_iframe=true" id="add_video" class="thickbox" title='$video_title' onclick="return false;"><img src='images/media-button-video.gif' alt='$video_title' /></a>
+	<a href="{$audio_upload_iframe_src}&amp;TB_iframe=true" id="add_audio" class="thickbox" title='$audio_title' onclick="return false;"><img src='images/media-button-music.gif' alt='$audio_title' /></a>
+	<a href="{$media_upload_iframe_src}&amp;TB_iframe=true" id="add_media" class="thickbox" title='$media_title' onclick="return false;"><img src='images/media-button-other.gif' alt='$media_title' /></a>
 
 EOF;
 	printf($context, $out);
@@ -373,7 +374,7 @@ function media_upload_form_handler() {
 		$keys = array_keys($_POST['send']);
 		$send_id = (int) array_shift($keys);
 	}
-	
+
 	if ( !empty($_POST['attachments']) ) foreach ( $_POST['attachments'] as $attachment_id => $attachment ) {
 		$post = $_post = get_post($attachment_id, ARRAY_A);
 		if ( isset($attachment['post_content']) )
@@ -384,6 +385,7 @@ function media_upload_form_handler() {
 			$post['post_excerpt'] = $attachment['post_excerpt'];
 		if ( isset($attachment['menu_order']) )
 			$post['menu_order'] = $attachment['menu_order'];
+
 		if ( isset($send_id) && $attachment_id == $send_id ) {
 			if ( isset($attachment['post_parent']) )
 				$post['post_parent'] = $attachment['post_parent'];
@@ -462,6 +464,7 @@ function media_upload_image() {
 		}
 		if ( !empty($src) )
 			$html = "<img src='$src' alt='$alt'$class />";
+		$html = apply_filters('image_send_to_editor_url', $html, $src, $alt, $align);
 		return media_send_to_editor($html);
 	}
 
@@ -553,6 +556,7 @@ function media_upload_audio() {
 			$title = basename($href);
 		if ( !empty($title) && !empty($href) )
 			$html = "<a href='$href' >$title</a>";
+		$html = apply_filters('audio_send_to_editor_url', $html, $href, $title);
 		return media_send_to_editor($html);
 	}
 
@@ -606,6 +610,7 @@ function media_upload_video() {
 			$title = basename($href);
 		if ( !empty($title) && !empty($href) )
 			$html = "<a href='$href' >$title</a>";
+		$html = apply_filters('video_send_to_editor_url', $html, $href, $title);
 		return media_send_to_editor($html);
 	}
 
@@ -659,6 +664,7 @@ function media_upload_file() {
 			$title = basename($href);
 		if ( !empty($title) && !empty($href) )
 			$html = "<a href='$href' >$title</a>";
+		$html = apply_filters('file_send_to_editor_url', $html, $href, $title);
 		return media_send_to_editor($html);
 	}
 
@@ -737,7 +743,7 @@ function media_upload_library() {
  */
 function image_align_input_fields($post, $checked='') {
 
-	$alignments = array('none' => 'None', 'left' => 'Left', 'center' => 'Center', 'right' => 'Right');
+	$alignments = array('none' => __('None'), 'left' => __('Left'), 'center' => __('Center'), 'right' => __('Right'));
 	if ( !array_key_exists($checked, $alignments) )
 		$checked = 'none';
 
@@ -746,7 +752,7 @@ function image_align_input_fields($post, $checked='') {
 
 		$out[] = "<input type='radio' name='attachments[{$post->ID}][align]' id='image-align-{$name}-{$post->ID}' value='$name'".
 		 	( $checked == $name ? " checked='checked'" : "" ) .
-			" /><label for='image-align-{$name}-{$post->ID}' class='align image-align-{$name}-label'>" . __($label) . "</label>";
+			" /><label for='image-align-{$name}-{$post->ID}' class='align image-align-{$name}-label'>" . $label . "</label>";
 	}
 	return join("\n", $out);
 }
@@ -836,6 +842,9 @@ function image_link_input_fields($post, $url_type='') {
 function image_attachment_fields_to_edit($form_fields, $post) {
 	if ( substr($post->post_mime_type, 0, 5) == 'image' ) {
 		$form_fields['post_title']['required'] = true;
+		$file = wp_get_attachment_url($post->ID);
+
+		$form_fields['image_url']['value'] = $file;
 
 		$form_fields['post_excerpt']['label'] = __('Caption');
 		$form_fields['post_excerpt']['helps'][] = __('Also used as alternate text for the image');
@@ -866,6 +875,11 @@ add_filter('attachment_fields_to_edit', 'image_attachment_fields_to_edit', 10, 2
  */
 function media_single_attachment_fields_to_edit( $form_fields, $post ) {
 	unset($form_fields['url'], $form_fields['align'], $form_fields['image-size']);
+	return $form_fields;
+}
+
+function media_post_single_attachment_fields_to_edit( $form_fields, $post ) {
+	unset($form_fields['image_url']);
 	return $form_fields;
 }
 
@@ -941,6 +955,8 @@ function get_attachment_fields_to_edit($post, $errors = null) {
 	if ( is_array($post) )
 		$post = (object) $post;
 
+	$image_url = wp_get_attachment_url($post->ID);
+
 	$edit_post = sanitize_post($post, 'edit');
 
 	$form_fields = array(
@@ -967,6 +983,13 @@ function get_attachment_fields_to_edit($post, $errors = null) {
 			'label'      => __('Order'),
 			'value'      => $edit_post->menu_order
 		),
+		'image_url'	=> array(
+			'label'      => __('File URL'),
+			'input'      => 'html',
+			'html'       => "<input type='text' class='urlfield' readonly='readonly' name='attachments[$post->ID][url]' value='" . attribute_escape($image_url) . "' /><br />",
+			'value'      => $edit_post->post_url,
+			'helps'      => __('Location of the uploaded file.'),
+		)
 	);
 
 	foreach ( get_attachment_taxonomies($post) as $taxonomy ) {
@@ -1167,7 +1190,7 @@ function get_media_item( $attachment_id, $args = null ) {
 		if ( !empty($field[$field['input']]) )
 			$item .= $field[$field['input']];
 		elseif ( $field['input'] == 'textarea' ) {
-			$item .= "<textarea type='text' id='$name' name='$name'" . $aria_required . ">" . htmlspecialchars( $field['value'] ) . "</textarea>";
+			$item .= "<textarea type='text' id='$name' name='$name'" . $aria_required . ">" . wp_specialchars( $field['value'] ) . "</textarea>";
 		} else {
 			$item .= "<input type='text' id='$name' name='$name' value='" . attribute_escape( $field['value'] ) . "'" . $aria_required . "/>";
 		}
@@ -1244,6 +1267,14 @@ function media_upload_form( $errors = null ) {
 	$post_id = isset($_REQUEST['post_id']) ? intval($_REQUEST['post_id']) : 0;
 
 ?>
+<script type="text/javascript">
+//<!--
+jQuery(document).ready(function($){
+	$('.upload-html-bypass a').click(function(){deleteUserSetting('uploader');swfuploadPreLoad(0);return false;});
+	$('.upload-flash-bypass a').click(function(){setUserSetting('uploader', '1');swfuploadPreLoad(1);return false;});
+});
+//-->
+</script>
 <div id="media-upload-notice">
 <?php if (isset($errors['upload_notice']) ) { ?>
 	<?php echo $errors['upload_notice']; ?>
@@ -1317,12 +1348,11 @@ SWFUpload.onload = function() {
 	<p id="async-upload-wrap">
 	<input type="file" name="async-upload" id="async-upload" /> <input type="submit" class="button" name="html-upload" value="<?php echo attribute_escape(__('Upload')); ?>" /> <a href="#" onclick="return top.tb_remove();"><?php _e('Cancel'); ?></a>
 	</p>
-
-	<br class="clear" />
+	<div class="clear"></div>
 	<?php if ( is_lighttpd_before_150() ): ?>
 	<p><?php _e('If you want to use all capabilities of the uploader, like uploading multiple files at once, please upgrade to lighttpd 1.5.'); ?></p>
 	<?php endif;?>
-<?php do_action('post-html-upload-ui'); ?>
+<?php do_action('post-html-upload-ui', $flash); ?>
 </div>
 <?php do_action('post-upload-ui'); ?>
 <?php
@@ -1369,6 +1399,7 @@ jQuery(function($){
 <?php
 if ( $id ) {
 	if ( !is_wp_error($id) ) {
+		add_filter('attachment_fields_to_edit', 'media_post_single_attachment_fields_to_edit', 10, 2);
 		echo get_media_items( $id, $errors );
 	} else {
 		echo '<div id="media-upload-error">'.wp_specialchars($id->get_error_message()).'</div>';
@@ -1486,7 +1517,7 @@ var addExtImage = {
 
 <div id="media-items">
 <div class="media-item media-blank">
-<?php echo call_user_func($callback); ?>
+<?php echo apply_filters($callback, call_user_func($callback)); ?>
 </div>
 </div>
 </form>
@@ -1524,7 +1555,17 @@ jQuery(function($){
 });
 -->
 </script>
-
+<div id="sort-buttons" class="hide-if-no-js">
+<span>
+<?php _e('All Tabs:'); ?>
+<a href="#" id="showall" class="toggle"><?php _e('Show'); ?></a>
+<a href="#" id="hideall" class="toggle" style="display:none;"><?php _e('Hide'); ?></a>
+</span>
+<?php _e('Sort Order:'); ?>
+<a href="#" id="asc"><?php _e('Ascending'); ?></a> | 
+<a href="#" id="desc"><?php _e('Descending'); ?></a> | 
+<a href="#" id="clear"><?php _e('Clear'); ?></a>
+</div>
 <form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form validate" id="gallery-form">
 <?php wp_nonce_field('media-form'); ?>
 <?php //media_upload_form( $errors ); ?>
@@ -1535,6 +1576,7 @@ jQuery(function($){
 </tr></thead>
 </table>
 <div id="media-items">
+<?php add_filter('attachment_fields_to_edit', 'media_post_single_attachment_fields_to_edit', 10, 2); ?>
 <?php echo get_media_items($post_id, $errors); ?>
 </div>
 
@@ -1572,8 +1614,9 @@ jQuery(function($){
 	<td class="field">
 		<select id="orderby" name="orderby">
 			<option value="menu_order" selected="selected"><?php _e('Menu order'); ?></option>
-			<option value="post_name"><?php _e('Name'); ?></option>
+			<option value="title"><?php _e('Title'); ?></option>
 			<option value="ID"><?php _e('Date/Time'); ?></option>
+			<option value="rand"><?php _e('Random'); ?></option>
 		</select>
 	</td>
 	</tr>
@@ -1688,7 +1731,7 @@ foreach ( $post_mime_types as $mime_type => $label ) {
 	if ( wp_match_mime_types($mime_type, $_GET['post_mime_type']) )
 		$class = ' class="current"';
 
-	$type_links[] = "<li><a href='" . clean_url(add_query_arg(array('post_mime_type'=>$mime_type, 'paged'=>false))) . "'$class>" . sprintf(__ngettext($label[2][0], $label[2][1], $num_posts[$mime_type]), "<span id='$mime_type-counter'>" . number_format_i18n( $num_posts[$mime_type] ) . '</span>') . '</a>';
+	$type_links[] = "<li><a href='" . clean_url(add_query_arg(array('post_mime_type'=>$mime_type, 'paged'=>false))) . "'$class>" . sprintf(_n($label[2][0], $label[2][1], $num_posts[$mime_type]), "<span id='$mime_type-counter'>" . number_format_i18n( $num_posts[$mime_type] ) . '</span>') . '</a>';
 }
 echo implode(' | </li>', $type_links) . '</li>';
 unset($type_links);
@@ -1768,6 +1811,7 @@ jQuery(function($){
 </script>
 
 <div id="media-items">
+<?php add_filter('attachment_fields_to_edit', 'media_post_single_attachment_fields_to_edit', 10, 2); ?>
 <?php echo get_media_items(null, $errors); ?>
 </div>
 <p class="ml-submit">
@@ -2000,16 +2044,15 @@ function media_upload_flash_bypass() {
  *
  * @since unknown
  */
-function media_upload_html_bypass() {
+function media_upload_html_bypass($flash = true) {
 	echo '<p class="upload-html-bypass">';
-	if ( array_key_exists('flash', $_REQUEST) )
+	_e('You are using the Browser uploader.');
+	if ( $flash ) {
 		// the user manually selected the browser uploader, so let them switch back to Flash
-		printf( __('You are using the Browser uploader.  Try the <a href="%s">Flash uploader</a> instead.'), clean_url(add_query_arg('flash', 1)) );
-	else
-		// the user probably doesn't have Flash
-		printf( __('You are using the Browser uploader.') );
-
-	echo '</p>';
+		echo ' ';
+		printf( __('Try the <a href="%s">Flash uploader</a> instead.'), clean_url(add_query_arg('flash', 1)) );
+	}
+	echo "</p>\n";
 }
 
 add_action('post-flash-upload-ui', 'media_upload_flash_bypass');
@@ -2032,8 +2075,6 @@ function media_upload_bypass_url($url) {
 }
 
 add_filter('media_upload_form_url', 'media_upload_bypass_url');
-
-
 
 add_filter('async_upload_image', 'get_media_item', 10, 2);
 add_filter('async_upload_audio', 'get_media_item', 10, 2);

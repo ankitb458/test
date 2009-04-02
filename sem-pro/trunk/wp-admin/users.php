@@ -39,6 +39,7 @@ if ( empty($_REQUEST) ) {
 
 switch ($doaction) {
 
+/* Bulk Dropdown menu Role changes */
 case 'promote':
 	check_admin_referer('bulk-users');
 
@@ -47,8 +48,9 @@ case 'promote':
 		exit();
 	}
 
-	if ( !current_user_can('edit_users') )
-		wp_die(__('You can&#8217;t edit users.'));
+	$editable_roles = get_editable_roles();
+	if (!$editable_roles[$_REQUEST['new_role']])
+		wp_die(__('You can&#8217;t give users that role.'));
 
 	$userids = $_REQUEST['users'];
 	$update = 'promote';
@@ -185,8 +187,6 @@ default:
 		exit;
 	}
 
-	wp_enqueue_script('admin-users');
-
 	include('admin-header.php');
 
 	$usersearch = isset($_GET['usersearch']) ? $_GET['usersearch'] : null;
@@ -202,7 +202,7 @@ default:
 		case 'del':
 		case 'del_many':
 			$delete_count = isset($_GET['delete_count']) ? (int) $_GET['delete_count'] : 0;
-			$messages[] = '<div id="message" class="updated fade"><p>' . sprintf(__ngettext('%s user deleted', '%s users deleted', $delete_count), $delete_count) . '</p></div>';
+			$messages[] = '<div id="message" class="updated fade"><p>' . sprintf(_n('%s user deleted', '%s users deleted', $delete_count), $delete_count) . '</p></div>';
 			break;
 		case 'add':
 			$messages[] = '<div id="message" class="updated fade"><p>' . __('New user created.') . '</p></div>';
@@ -240,8 +240,8 @@ if ( ! empty($messages) ) {
 <div class="wrap">
 <?php screen_icon(); ?>
 <h2><?php echo wp_specialchars( $title );
-if ( isset($_GET['s']) && $_GET['s'] )
-	printf( '<span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', wp_specialchars( get_search_query() ) ); ?>
+if ( isset($_GET['usersearch']) && $_GET['usersearch'] )
+	printf( '<span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', wp_specialchars( $_GET['usersearch'] ) ); ?>
 </h2>
 
 <div class="filter">
@@ -264,7 +264,7 @@ unset($users_of_blog);
 
 $current_role = false;
 $class = empty($role) ? ' class="current"' : '';
-$role_links[] = "<li><a href='users.php'$class>" . sprintf( __ngettext( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users ), number_format_i18n( $total_users ) ) . '</a>';
+$role_links[] = "<li><a href='users.php'$class>" . sprintf( _n( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_users ), number_format_i18n( $total_users ) ) . '</a>';
 foreach ( $wp_roles->get_names() as $this_role => $name ) {
 	if ( !isset($avail_roles[$this_role]) )
 		continue;
@@ -276,8 +276,9 @@ foreach ( $wp_roles->get_names() as $this_role => $name ) {
 		$class = ' class="current"';
 	}
 
-	$name = translate_with_context($name);
-	$name = sprintf( _c('%1$s <span class="count">(%2$s)</span>|user role with count'), $name, $avail_roles[$this_role] );
+	$name = translate_user_role( $name );
+	/* translators: User role name with count */
+	$name = sprintf( __('%1$s <span class="count">(%2$s)</span>'), $name, $avail_roles[$this_role] );
 	$role_links[] = "<li><a href='users.php?role=$this_role'$class>$name</a>";
 }
 echo implode( " |</li>\n", $role_links) . '</li>';
