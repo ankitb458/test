@@ -208,7 +208,7 @@ class sem_panels
 				);
 		}
 		
-		if ( is_admin() )
+		if ( is_admin() || isset($_GET['preview']) && isset($_GET['template']) && isset($_GET['stylesheet']) )
 		{
 			add_action('init', array('sem_panels', 'autofill'));
 		}
