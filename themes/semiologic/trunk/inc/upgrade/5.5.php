@@ -12,8 +12,6 @@ if ( ( $active_plugins = get_option('active_plugins') ) === false )
 }
 
 $extra_plugins = array(
-	'tinymce-advanced/tinymce-advanced.php',
-	'archive-widgets/archive-widgets.php',
 	);
 
 foreach ( $extra_plugins as $plugin )

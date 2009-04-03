@@ -12,12 +12,7 @@ if ( ( $active_plugins = get_option('active_plugins') ) === false )
 }
 
 $extra_plugins = array(
-	'page-tags/page-tags.php',
-	'smart-update-pinger.php',
-	'tinymce-advanced/tinymce-advanced.php',
-	'order-categories/category-order.php',
 	'pc-robots-txt/pc-robots-txt.php',
-	'archive-widgets/archive-widgets.php'
 	);
 
 foreach ( $extra_plugins as $plugin )

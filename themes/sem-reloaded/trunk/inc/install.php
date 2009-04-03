@@ -222,7 +222,6 @@ if ( ( $active_plugins = get_option('active_plugins') ) === false )
 
 $extra_plugins = array(
 	'ad-manager/ad-manager.php',
-	'archive-widgets/archive-widgets.php',
 	'autotag/autotag.php',
 	'auto-thickbox/auto-thickbox.php',
 	'contact-form/contact-form.php',
