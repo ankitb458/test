@@ -15,6 +15,8 @@ The archives widgets plugin for WordPress replaces its default, single archive w
 
 This lets you insert multiple instances of archive widget when using the [Semiologic theme](http://www.semiologic.com/software/sem-reloaded/) or [Widget Contexts](http://www.semiologic.com/software/widget-contexts/).
 
+Note: This plugin is **NOT** needed in WordPress 2.8 or greater.
+
 
 == Installation ==
 
