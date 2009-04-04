@@ -665,24 +665,6 @@ sem_entry::init();
 
 
 #
-# prev_next_page_link()
-#
-
-function prev_next_page_link()
-{
-	global $sem_captions;
-
-	echo '<div class="prev_next_page">';
-	posts_nav_link(
-		' &bull; ',
-		'&laquo;&nbsp;' . $sem_captions['prev_page'],
-		$sem_captions['next_page'] . '&nbsp;&raquo;'
-		);
-	echo '</div>';
-} # prev_next_page_link()
-
-
-#
 # sem_postnav_widget()
 #
 
@@ -694,9 +676,16 @@ function sem_postnav_widget($args)
 		&& $GLOBALS['wp_query']->max_num_pages > 1
 		)
 	{
-		echo $args['before_widget'];
-		prev_next_page_link();
-		echo $args['after_widget'];
+		global $sem_captions;
+		echo $args['before_widget']
+			. '<div class="prev_next_page">' . "\n";
+		posts_nav_link(
+			' &bull; ',
+			'&laquo;&nbsp;' . $sem_captions['prev_page'],
+			$sem_captions['next_page'] . '&nbsp;&raquo;'
+			);
+		echo '</div>' . "\n"
+			. $args['after_widget'];
 	}
 } # sem_postnav_widget()
 
