@@ -2,7 +2,7 @@
 /*
  * Multipart User Form
  * Author: Denis de Bernardy <http://www.mesoconcepts.com>
- * Version: 1.0 alpha
+ * Version: 1.0
  */
 
 /**
