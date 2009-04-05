@@ -73,18 +73,26 @@ class bookmark_me
 	function get_services()
 	{
 		return array(
-			'delicious' => array(
-				'name' => 'del.icio.us',
-				'url' => 'http://del.icio.us/post?title=%title%&amp;url=%url%'
-				),
+			'buzzup' => array(
+			 	'name' => 'Buzz Up!',
+			 	'url' => 'http://buzz.yahoo.com/submit/?submitHeadline=%title%&submitUrl=%url%'
+			 	),
 			'digg' => array(
 				'name' => 'Digg',
 				'url' => 'http://digg.com/submit?phase=2&amp;title=%title%&amp;url=%url%'
+				),
+			'facebook' => array(
+				'name' => 'Facebook',
+				 'url' => 'http://www.facebook.com/share.php?u=%url%'
 				),
 			'stumbleupon' => array(
 				'name' => 'StumbleUpon',
 				'url' => 'http://www.stumbleupon.com/submit?title=%title%&amp;url=%url%'
 				),
+			'twitter' => array(
+		        'name' => 'Twitter',
+				'url' => 'http://twitthis.com/twit?url=%url%',
+				),				
 			'ask' => array(
 				'name' => 'Ask',
 				'url' => 'http://myjeeves.ask.com/mysearch/BookmarkIt?v=1.2&amp;t=webpages&amp;title=%title%&amp;url=%url%'
@@ -105,17 +113,13 @@ class bookmark_me
 				'name' => 'BUMPzee',
 				'url' => 'http://www.bumpzee.com/bump.php?u=%url%'
 				),
-			// 'buzzup' => array(
-			// 	'name' => 'Buzz Up!',
-			// 	'url' => 'http://buzz.yahoo.com/submit/?submitHeadline=%title%&submitUrl=%url%'
-			// 	),
 			'dzone' => array(
 				'name' => 'DZone',
 				'url' => 'http://www.dzone.com/links/add.html?title=%title%&amp;url=%url%',
 				),				
-			'facebook' => array(
-				'name' => 'Facebook',
-				 'url' => 'http://www.facebook.com/share.php?u=%url%'
+			'delicious' => array(
+				'name' => 'del.icio.us',
+				'url' => 'http://del.icio.us/post?title=%title%&amp;url=%url%'
 				),
 			'furl' => array(
 				'name' => 'Furl',
@@ -201,10 +205,6 @@ class bookmark_me
 				'name' => 'Tip\'d',
 				'url' => 'http://tipd.com/submit.php?url=%url%'
 				),
-			'twitter' => array(
-		        'name' => 'Twitter',
-				'url' => 'http://twitthis.com/twit?url=%url%',
-				),				
 			'windows_live' => array(
 				'name' => 'Windows Live',
 				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;title=%title%&amp;top=1&amp;url=%url%'
@@ -217,7 +217,6 @@ class bookmark_me
 				'name' => 'YahooMyWeb',
 				'url' => 'http://myweb2.search.yahoo.com/myresults/bookmarklet?title=%title%&amp;popup=true&amp;u=%url%'
 				),
-			
 			'help' => array(
 				'name' => 'Help',
 				'url' => 'http://www.semiologic.com/resources/blogging/help-with-social-bookmarking-sites/'
@@ -687,14 +686,16 @@ class bookmark_me
 	function default_options()
 	{
 		return array(
-			'title' => __('Spread the Word!'),
+			'title' => '',
 			'dropdown' => false,
 			'show_names' => true,
-			'add_nofollow' => false,
+			'add_nofollow' => true,
 			'services' => array(
-				'delicious',
+				'buzzup',
 				'digg',
+				'facebook',
 				'stumbleupon',
+				'twitter',
 				'help'
 				),
 			);
