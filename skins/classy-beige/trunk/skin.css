@@ -87,15 +87,15 @@ html {
 }
 
 .mmm #navbar {
-	background: url(images/mmm-navbar.jpg) center repeat;
+	background: url(images/mmm-navbar.jpg) top center repeat;
 }
 
 .mm #navbar {
-	background: url(images/mm-navbar.jpg) center repeat;
+	background: url(images/mm-navbar.jpg) top center repeat;
 }
 
 .m #navbar {
-	background: url(images/m-navbar.jpg) center repeat;
+	background: url(images/m-navbar.jpg) top center repeat;
 }
 
 
