@@ -459,9 +459,12 @@ h2 a {
 	margin: 0px auto;
 }
 
-.entry,
+.entry {
+	margin-bottom: 2em;
+}
+
 .widget {
-	margin-bottom: 1.2em;
+	margin-bottom: 1.5em;
 }
 
 .entry_content h1, .entry_content h2, .entry_content h3,
