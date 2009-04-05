@@ -329,11 +329,10 @@ span.avatar {
 	list-style: none !important;
 }
 
-.entry_header .admin_link {
-	font-weight: normal !important;
-	font:13px/1.231 Trebuchet MS, Tahoma, Arial, Helvetica, Clean, Sans-Serif !important;
-	*font-size:small !important;
-	*font:x-small !important;
+div.admin_link {
+	float: right;
+	margin-left: .5em;
+	margin-bottom: .2em;
 }
 
 .entry_header .admin_link a {

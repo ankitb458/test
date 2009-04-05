@@ -17,6 +17,8 @@ class sem_entry
 			add_action('entry_' . $area, array('sem_entry', $area));
 			add_action('entry_' . $area . '_control', array('sem_entry_admin', $area));
 		}
+		
+		add_action('the_entry', array('sem_entry', 'admin_link'), 5);
 	} # init()
 
 
@@ -392,13 +394,6 @@ class sem_entry
 
 		if ( $title = sem_entry::get('title') )
 		{
-			$edit_link = sem_entry::get('edit_link');
-
-			if ( $edit_link )
-			{
-				$edit_link = ' <span class="admin_link">' . $edit_link . '</span>';
-			}
-
 			$o .= '<div class="entry_header">' . "\n"
 				. '<div class="entry_header_top"><div class="hidden"></div></div>' . "\n"
 				. '<div class="pad">' . "\n"
@@ -436,29 +431,18 @@ class sem_entry
 		{
 			$o .= sem_entry::get('excerpt');
 		}
-		elseif ( is_page() )
-		{
-			$o .= sem_entry::get('content')
-				. sem_entry::get('paginate');
-			
-			switch ( get_post_meta(get_the_ID(), '_wp_page_template', true) )
-			{
-			case 'letter.php':
-				if ( ( $edit_link = sem_entry::get('edit_link') )
-					&& !( $_GET['action'] == 'print' )
-					)
-				{
-					$edit_link = '<p class="admin_link" style="text-align: right;">' . $edit_link . '</p>' . "\n";
-
-					$o = $edit_link . $o . $edit_link;
-				}
-				break;
-			}
-		}
 		else
 		{
 			$o .= sem_entry::get('content')
 				. sem_entry::get('paginate');
+		}
+		
+		if ( ( $_GET['action'] != 'print' ) && ( $edit_link = sem_entry::get('edit_link') ) )
+		{
+			$o = '<div class="admin_link">'
+				. $edit_link
+				. '</div>'
+				. $o;
 		}
 		
 		if ( $o )
@@ -622,13 +606,6 @@ class sem_entry
 			}
 		}
 
-		if ( $edit_link = sem_entry::get('edit_link') )
-		{
-			$edit_link = '<span class="entry_action edit_entry">' . $edit_link . '</span>';
-
-			$o .= $edit_link;
-		}
-
 		if ( $o )
 		{
 			echo '<div class="spacer"></div>' . "\n"
@@ -659,6 +636,16 @@ class sem_entry
 			echo '</div>' . "\n";
 		}
 	} # comments()
+	
+	
+	#
+	# admin_link()
+	#
+	
+	function admin_link()
+	{
+		
+	} # admin_link()
 } # sem_entry
 
 sem_entry::init();
