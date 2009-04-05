@@ -56,11 +56,11 @@ html {
 }
 
 .mm #navbar {
-	background: url(images/mm-navbar.jpg) center repeat-y #7a1618;
+	background: url(images/mm-navbar.jpg) top center repeat-y #7a1618;
 }
 
 .m #navbar {
-	background: url(images/m-navbar.jpg) center repeat-y #7a1618;
+	background: url(images/m-navbar.jpg) top center repeat-y #7a1618;
 }
 
 

@@ -81,7 +81,7 @@ html {
  */
 
 #navbar {
-	background: url(images/navbar.jpg) center repeat #991c1f;
+	background: url(images/navbar.jpg) top center repeat #991c1f;
 	color: #ffe;
 	border-bottom: solid 1px #666;
 }
