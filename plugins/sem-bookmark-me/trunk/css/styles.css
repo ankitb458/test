@@ -1,0 +1,151 @@
+.bookmark_me a {
+	display: block;
+	padding-left: 20px;
+	padding-right: 6px;
+	line-height: 20px;
+	height: 20px;
+	margin-top: .1em;
+	margin-bottom: .1em;
+	float: left;
+	background-image: url(icons.gif);
+	background-repeat: no-repeat;
+	background-position: 0px 20px;
+	white-space: nowrap;
+}
+
+.bookmark_me_actions a {
+	float: right;
+}
+
+.bookmark_me_actions a.email_entry {
+	padding-right: 0px;
+}
+
+.bookmark_me_extra a {
+	width: 137px;
+	overflow: hidden;
+	color: #22e;
+}
+
+.bookmark_me_extra a:hover {
+	color: #c22;
+}
+
+.bookmark_me_extra a.help {
+	width: auto;
+}
+
+.bookmark_me_spacer {
+	clear: both;
+}
+
+.bookmark_me_extra {
+	position: absolute;
+	background: #eee;
+	color: #000;
+	border: solid 1px #999;
+	padding: 5px 5px;
+	margin-left: -6px;
+	width: 490px;
+	-moz-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+}
+
+.bookmark_me a.email_entry {
+	background-position: 0px 0px;
+}
+
+.bookmark_me a.print_entry {
+	background-position: 0px -20px;
+}
+
+.bookmark_me a.help {
+	background-position: 0px -40px;
+}
+
+.bookmark_me a.buzzup {
+	background-position: 0px -60px;
+}
+
+.bookmark_me a.current {
+	background-position: 0px -80px;
+}
+
+.bookmark_me a.delicious {
+	background-position: 0px -100px;
+}
+
+.bookmark_me a.digg {
+	background-position: 0px -120px;
+}
+
+.bookmark_me a.facebook {
+	background-position: 0px -140px;
+}
+
+.bookmark_me a.fark {
+	background-position: 0px -160px;
+}
+
+.bookmark_me a.google {
+	background-position: 0px -180px;
+}
+
+.bookmark_me a.live {
+	background-position: 0px -200px;
+}
+
+.bookmark_me a.meneame {
+	background-position: 0px -220px;
+}
+
+.bookmark_me a.mixx {
+	background-position: 0px -240px;
+}
+
+.bookmark_me a.myspace {
+	background-position: 0px -260px;
+}
+
+.bookmark_me a.newsvine {
+	background-position: 0px -280px;
+}
+
+.bookmark_me a.propeller {
+	background-position: 0px -300px;
+}
+
+.bookmark_me a.reddit {
+	background-position: 0px -320px;
+}
+
+.bookmark_me a.slashdot {
+	background-position: 0px -340px;
+}
+
+.bookmark_me a.sphinn {
+	background-position: 0px -360px;
+}
+
+.bookmark_me a.stumbleupon {
+	background-position: 0px -380px;
+}
+
+.bookmark_me a.tipd {
+	background-position: 0px -400px;
+}
+
+.bookmark_me a.twitter {
+	background-position: 0px -420px;
+}
+
+.bookmark_me a.yahoo {
+	background-position: 0px -440px;
+}
+
+.bookmark_me_sidebar a {
+	width: 60px;
+	padding-right: 5px;
+}
