@@ -45,7 +45,7 @@ class bookmark_me_admin {
 				$options[$num] = compact('title');
 			}
 			
-			update_option('bookmark_me_widgets', $options);
+			update_option('bookmark_me', $options);
 			$updated = true;
 		}
 

@@ -39,6 +39,19 @@ add_action('wp_print_styles', array('bookmark_me', 'css'));
 
 add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
 
+foreach ( array(
+		'generate_rewrite_rules',
+		'switch_theme',
+		'update_option_active_plugins',
+		'update_option_sidebars_widgets',
+		) as $hook)
+{
+	add_action($hook, array('bookmark_me', 'clear_cache'));
+}
+
+register_activation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
+register_deactivation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
+
 class bookmark_me {
 	/**
 	 * template_redirect
@@ -386,9 +399,30 @@ class bookmark_me {
 	 **/
 
 	function init_options() {
-		$o = array();
+		if ( ( $o = get_option('bookmark_me_widgets') ) !== false ) {
+			foreach ( $o as $k => $opt ) {
+				if ( is_numeric($k) ) {
+					$o[$k] = array('title' => $opt['title']);
+				}
+			}
+		} elseif ( ( $o = get_option('sem_bookmark_me_params') ) !== false ) {
+			unset($o['before_widget']);
+			unset($o['after_widget']);
+			unset($o['before_title']);
+			unset($o['after_title']);
+			
+			$o = array( 1 => $o );
+		} else {
+			$o = array();
+		}
 		
-		return get_option('bookmark_me_widgets');
+		delete_option('sem_bookmark_me_services');
+		delete_option('sem_bookmark_me_params');
+		delete_option('bookmark_me_widgets');
+		
+		update_option('bookmark_me', $o);
+		
+		return $o;
 	} # init_options()
 	
 	
@@ -403,123 +437,19 @@ class bookmark_me {
 			'title' => __('Spread the Word!', 'bookmark-me'),
 			);
 	} # default_options()
-} # bookmark_me
-
-
-
-
-
-#load_plugin_textdomain('sem-bookmark-me');
-
-class old_bookmark_me
-{
-	#
-	# init()
-	#
-	
-	function init()
-	{
-		foreach ( array(
-				'generate_rewrite_rules',
-				'switch_theme',
-				'update_option_active_plugins',
-				'update_option_show_on_front',
-				'update_option_page_on_front',
-				'update_option_page_for_posts',
-				'update_option_sidebars_widgets',
-				'update_option_sem5_options',
-				'update_option_sem6_options',
-				'save_post',
-				) as $hook)
-		{
-			add_action($hook, array('bookmark_me', 'clear_cache'));
-		}
-		
-		register_activation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
-		register_deactivation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
-	} # init()
-
-
-	#
-	# widget()
-	#
-
-	function widget($args, $widget_args = 1)
-	{
-		$options = bookmark_me::get_options();
-		
-		if ( is_numeric($widget_args) )
-			$widget_args = array( 'number' => $widget_args );
-		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
-		extract( $widget_args, EXTR_SKIP );
-		
-		$args = array_merge((array) $options[$number], (array) $args);
-		
-		if ( is_admin() )
-		{
-			echo $args['before_widget']
-				. $args['before_title']
-				. $args['title']
-				. $args['after_title']
-				. $args['after_widget'];
-			
-			return;
-		}
-		
-		echo bookmark_me::display($args, $widget_args);
-	} # widget()
 	
 	
-	#
-	# get_options()
-	#
-	
-	function get_options()
-	{
-		if ( ( $o = get_option('bookmark_me_widgets') ) === false )
-		{
-			if ( ( $o = get_option('sem_bookmark_me_params') ) !== false )
-			{
-				unset($o['before_widget']);
-				unset($o['after_widget']);
-				unset($o['before_title']);
-				unset($o['after_title']);
-				
-				if ( !is_array($o['services']) )
-				{
-					$o['services'] = get_option('sem_bookmark_me_services');
-					
-					if ( !$o['services'] )
-					{
-						$defaults = bookmark_me::default_options();
-						$o['services'] = $defaults['services'];
-					}
-				}
-				
-				$o = array( 1 => $o );
-			}
-			else
-			{
-				$o = array();
-			}
-			
-			update_option('bookmark_me_widgets', $o);
-		}
-		
-		return $o;
-	} # get_options()
-	
-	
-	#
-	# new_widget()
-	#
-	
-	function new_widget($k = null)
-	{
+	/**
+	 * new_widget()
+	 *
+	 * @param int $widget_id arbitrary widget id
+	 * @return array $widget_options
+	 **/
+
+	function new_widget($k = null) {
 		$o = bookmark_me::get_options();
 		
-		if ( !( isset($k) && isset($o[$k]) ) )
-		{
+		if ( !( isset($k) && isset($o[$k]) ) ) {
 			$k = time();
 			while ( isset($o[$k]) ) $k++;
 			$o[$k] = bookmark_me::default_options();
@@ -531,13 +461,24 @@ class old_bookmark_me
 	} # new_widget()
 	
 	
-	#
-	# default_options()
-	#
-	
-} # bookmark_me
+	/**
+	 * clear_cache()
+	 *
+	 * @return void
+	 **/
 
-#bookmark_me::init();
+	function clear_cache($in = null) {
+		$o = bookmark_me::get_options();
+		
+		if ( !$o ) return $in;
+		
+		foreach ( array_keys($o) as $widget_id ) {
+			wp_delete_cache($widget_id, 'widget');
+		}
+		
+		return $in;
+	} # clear_cache()
+} # bookmark_me
 
 
 /**
