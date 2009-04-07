@@ -109,7 +109,7 @@ class sem_header
 				. htmlspecialchars(get_option('blogdescription'))
 				. '"';
 		
-		if ( !$flash && !is_front_page() )
+		if ( !$flash && !( is_front_page() && !is_paged() ) )
 		{
 			echo ' style="cursor: pointer;"'
 				. ' onclick="top.location.href = \'' . user_trailingslashit(get_option('home')) . '\'"';
@@ -142,7 +142,7 @@ class sem_header
 				else
 				{
 					$site_name = '<div id="sitename" class="sitename">'
-						. ( !is_front_page()
+						. ( !( is_front_page() && !is_paged() )
 							? ( '<a href="' . user_trailingslashit(get_option('home')) . '">' . sem_header::display_logo($header) . '</a>' )
 							: sem_header::display_logo($header)
 							)
@@ -152,7 +152,7 @@ class sem_header
 			else
 			{
 				$site_name = '<div id="sitename" class="sitename">'
-					. ( !$flash && !is_front_page()
+					. ( !$flash && !( is_front_page() && !is_paged() )
 						? ( '<a href="' . user_trailingslashit(get_option('home')) . '">' . get_option('blogname') . '</a>' )
 						: get_option('blogname')
 						)

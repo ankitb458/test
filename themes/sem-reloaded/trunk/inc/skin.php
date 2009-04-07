@@ -22,32 +22,42 @@ class sem_skin
 	{
 		global $sem_options;
 		
+		$files = array();
+		
+		if ( file_exists(sem_path . '/skins/' . $sem_options['active_skin'] . '/icons.css') )
+		{
+			$files[] = 'skins/' . $sem_options['active_skin'] . '/icons.css';
+		}
+		else
+		{
+			$files[] = 'css/icons.css';
+		}
+		
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' )
 		{
-			$files = array(
-				'css/print.css',
-				);
+			if ( file_exists(sem_path . '/skins/' . $sem_options['active_skin'] . '/print.css') )
+			{
+				$files[] = 'skins/' . $sem_options['active_skin'] . '/print.css';
+			}
+			else
+			{
+				$files[] = 'css/print.css';
+			}
 		}
 		elseif ( apply_filters('active_layout', $sem_options['active_layout']) == 'letter' )
 		{
 			if ( file_exists(sem_path . '/skins/' . $sem_options['active_skin'] . '/letter.css') )
 			{
-				$files = array(
-					'skins/' . $sem_options['active_skin'] . '/letter.css',
-					);
+				$files[] = 'skins/' . $sem_options['active_skin'] . '/letter.css';
 			}
 			else
 			{
-				$files = array(
-					'css/letter.css',
-					);
+				$files[] = 'css/letter.css';
 			}
 		}
 		else
 		{
-			$files = array(
-				'skins/' . $sem_options['active_skin'] . '/skin.css',
-				);
+			$files[] = 'skins/' . $sem_options['active_skin'] . '/skin.css';
 		}
 		
 		foreach ( $files as $file )

@@ -42,7 +42,7 @@ if ( $comments )
 	$caption = $sem_captions['comments_on'];
 	$caption = str_replace('%title%', $title, $caption);
 
-	if ( comments_open() )
+	if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
 	{
 
 		$comment_form_link = ' <span class="comment_entry">'
@@ -63,7 +63,7 @@ if ( $comments )
 		. '<div class="comments_header_bottom"><div class="hidden"></div></div>' . "\n"
 		. '</div>' . "\n"
 		. '</div>' . "\n";
-
+	
 	foreach ( (array) $comments as $comment )
 	{
 		do_action('display_comment');
@@ -76,7 +76,9 @@ if ( $comments )
 			echo '<div class="spacer"></div>' . "\n"
 				. '<div class="comment_date">' . "\n"
 				. '<div class="pad">' . "\n"
+				. '<span>'
 				. $cur_date
+				. '</span>'
 				. '</div>' . "\n"
 				. '</div>' . "\n";
 		}
@@ -93,11 +95,11 @@ if ( $comments )
 				. ' '
 				. get_comment_author_link()
 				. '</span>'
-#			. ' @ '
-#			. '<span class="comment_time">'
-#			. get_comment_date('g:i a')
-#			. '</span>'
-			. comment_type('', ' (' . __('Trackback') . ')', ' (' . __('Pingback') . ')')
+			. '<br/>' . "\n"
+			. '<span class="comment_time">'
+			. get_comment_date('g:i a')
+			. '</span>'
+			. comment_type('', '<br/>' . "\n" . '(' . __('Trackback') . ')', '<br/>' . "\n". '(' . __('Pingback') . ')')
 			. '</h3>' . "\n";
 
 		echo '</div>' . "\n"
@@ -111,49 +113,34 @@ if ( $comments )
 
 		echo '<div class="comment_content">' . "\n"
 			. '<div class="comment_content_top"><div class="hidden"></div></div>' . "\n"
-			. '<div class="pad">' . "\n"
-			. apply_filters('comment_text', get_comment_text())
-			. '</div>' . "\n"
-			. '<div class="comment_content_bottom"><div class="hidden"></div></div>' . "\n"
-			. '</div>' . "\n";
-
-
-		echo '<div class="spacer"></div>';
-
-
-		if ( !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
-		{
-			echo '<div class="comment_actions">' . "\n"
-				. '<div class="comment_actions_top"><div class="hidden"></div></div>' . "\n"
-				. '<div class="pad">' . "\n"
-				. '<p>' . "\n";
-
-			if ( $sem_options['show_comment_permalink'] )
-			{
-				echo '<span class="comment_action link_comment">'
-					. '<a href="#comment-'. get_comment_ID() . '">'
-					. $sem_captions['comment_permalink']
-					. '</a>'
-					. '</span>' . "\n";
-			}
+			. '<div class="pad">' . "\n";
+		
+		if ( !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
+			echo '<div class="comment_actions">' . "\n";
 
 			if ( comments_open() )
 			{
-				echo '<span class="comment_action reply_comment">'
+				echo '<span class="reply_comment">'
 				. '<a href="#postcomment">'
 				. $sem_captions['reply_link']
 				. '</a>'
 				. '</span>' . "\n";
 			}
 
-			edit_comment_link(__('Edit'), '<span class="comment_action admin_link edit_comment">', '</span>' . "\n");
+			edit_comment_link(__('Edit'), '<span class="edit_comment">', '</span>' . "\n");
 
-			echo '</p>' . "\n"
-				. '</div>' . "\n"
-				. '<div class="comment_actions_bottom"><div class="hidden"></div></div>' . "\n"
-				. '</div>' . "\n";
+			echo '</div>' . "\n";
 		}
 		
+		echo apply_filters('comment_text', get_comment_text());
+		
+		echo '</div>' . "\n"
+			. '<div class="comment_content_bottom"><div class="hidden"></div></div>' . "\n"
+			. '</div>' . "\n";
+
+
+		echo '<div class="spacer"></div>';
+
 		echo '</div>' . "\n"
 			. '<div class="comment_bottom"><div class="hidden"></div></div>' . "\n"
 			. '</div> <!-- comment -->' . "\n";
@@ -216,45 +203,56 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		}
 		else
 		{
-			echo '<p>'
+			echo '<p class="comment_label name_label">'
 				. '<label for="author">'
 				. $sem_captions['name_field']
 				. ( $req
 					? ( ' ' . $sem_captions['required_field'] )
 					: ''
 					)
-				. ':<br />'
-				. '<input type="text" name="author" id="author" class="comment_field"'
-					. ' value="' . htmlspecialchars($comment_author) . '" />'
 				. '</label>'
 				. '</p>' . "\n";
-
-			echo '<p>'
+			
+			echo '<p class="comment_field name_field">'
+				. '<input type="text" name="author" id="author"'
+					. ' value="' . htmlspecialchars($comment_author) . '" />'
+				. '</p>' . "\n";
+			
+			echo '<div class="spacer"></div>' . "\n";
+			
+			echo '<p class="comment_label email_label">'
 				. '<label for="email">'
 				. $sem_captions['email_field']
 				. ( $req
 					? ( ' ' . $sem_captions['required_field'] )
 					: ''
 					)
-				. ':<br />'
-				. '<input type="text" name="email" id="email" class="comment_field"'
-					. ' value="' . htmlspecialchars($comment_author_email) . '" />'
 				. '</label>'
 				. '</p>' . "\n";
-
-
-			echo '<p>'
+			
+			echo '<p class="comment_field email_field">'
+				. '<input type="text" name="email" id="email"'
+					. ' value="' . htmlspecialchars($comment_author_email) . '" />'
+				. '</p>' . "\n";
+			
+			echo '<div class="spacer"></div>' . "\n";
+			
+			echo '<p class="comment_label url_label">'
 				. '<label for="url">'
 				. $sem_captions['url_field']
-				. ':<br />'
-				. '<input type="text" name="url" id="url" class="comment_field"'
-					. ' value="' . htmlspecialchars($comment_author_url) . '" />'
 				. '</label>'
 				. '</p>' . "\n";
+			
+			echo '<p class="comment_field url_field">'
+				. '<input type="text" name="url" id="url"'
+					. ' value="' . htmlspecialchars($comment_author_url) . '" />'
+				. '</p>' . "\n";
+			
+			echo '<div class="spacer"></div>' . "\n";
 		} # if ( $user_ID )
 
 
-		echo '<textarea name="comment" id="comment" cols="48" rows="10" class="comment_field"></textarea>' . "\n";
+		echo '<textarea name="comment" id="comment" cols="48" rows="10"></textarea>' . "\n";
 
 		echo '<p class="submit">'
 			. '<input name="submit" type="submit" id="submit" class="button"'

@@ -72,10 +72,10 @@ class sem_entry
 				'label' => __('Categories'),
 				'desc' => 'Entry: Categories. If placed outside of the loop, it will only display on individual entries.',
 				),
-			'actions' => array(
-				'label' => __('Actions'),
-				'desc' => 'Entry: Permalink, email link, etc. Only works in the loop (each entry).',
-				),
+		#	'actions' => array(
+		#		'label' => __('Actions'),
+		#		'desc' => 'Entry: Permalink, email link, etc. Only works in the loop (each entry).',
+		#		),
 			'comments' => array(
 				'label' => __('Comments'),
 				'desc' => 'Entry: Comments. Only works in the loop (each entry).',
@@ -134,10 +134,16 @@ class sem_entry
 			case 'date':
 				$format = get_option('date_format');
 				$sem_entry['date'] = apply_filters('the_date', get_the_time($format), $format);
+				if ( $sem_entry['date'] ) {
+					$sem_entry['date'] = '<span>' . $sem_entry['date'] . '</span>';
+				}
 				break;
 
 			case 'optional_date':
 				$sem_entry['optional_date'] = the_date('', '', '', false);
+				if ( $sem_entry['optional_date'] ) {
+					$sem_entry['optional_date'] = '<span>' . $sem_entry['optional_date'] . '</span>';
+				}
 				break;
 
 			case 'title':
@@ -223,11 +229,18 @@ class sem_entry
 				$author_url = get_the_author_url();
 				$sem_entry['author'] = get_the_author();
 
-				if ( $author_url )
-				{
-					$sem_entry['author'] = '<a href="' . htmlspecialchars($author_url) . '" class="entry_author">'
+				if ( $author_url ) {
+					$sem_entry['author'] = '<span class="entry_author">'
+						. '<a href="' . htmlspecialchars($author_url) . '">'
 						. $sem_entry['author']
-						. '</a>';
+						. '</a>'
+						. '</span>';
+				} else {
+					$sem_entry['author'] = '<span class="entry_author">'
+						. '<span>'
+						. $sem_entry['author']
+						. '</span>'
+						. '</span>';
 				}
 				break;
 
@@ -439,7 +452,7 @@ class sem_entry
 		
 		if ( ( $_GET['action'] != 'print' ) && ( $edit_link = sem_entry::get('edit_link') ) )
 		{
-			$o = '<div class="admin_link">'
+			$o = '<div class="entry_actions edit_entry">'
 				. $edit_link
 				. '</div>'
 				. $o;
@@ -664,15 +677,21 @@ function sem_postnav_widget($args)
 		)
 	{
 		global $sem_captions;
-		echo $args['before_widget']
-			. '<div class="prev_next_page">' . "\n";
-		posts_nav_link(
-			' &bull; ',
-			'&laquo;&nbsp;' . $sem_captions['prev_page'],
-			$sem_captions['next_page'] . '&nbsp;&raquo;'
-			);
-		echo '</div>' . "\n"
-			. $args['after_widget'];
+		global $wp_query;
+		
+		if ( !is_singular() ) {
+			echo $args['before_widget']
+				. '<div class="prev_next_page">' . "\n";
+			
+			posts_nav_link(
+				' &bull; ',
+				'&laquo;&nbsp;' . $sem_captions['prev_page'],
+				$sem_captions['next_page'] . '&nbsp;&raquo;'
+				);
+			
+			echo '</div>' . "\n"
+				. $args['after_widget'];
+		}
 	}
 } # sem_postnav_widget()
 

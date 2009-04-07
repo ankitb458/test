@@ -263,18 +263,9 @@ h1 {
 }
 
 blockquote {
-	background: url(icons/blockquote.gif) top left no-repeat;
+	background: url(../../icons/blockquote.gif) top left no-repeat;
 	padding: 10px 10px 10px 50px;
 	margin-left: 0px;
-}
-
-.comment_header {
-	width: 160px;
-	float: left;
-}
-
-.comment {
-	margin-left: 170px;
 }
 
 
@@ -363,89 +354,4 @@ blockquote {
 
 #wp-calendar tfoot a:hover {
 	color: #c22;
-}
-
-
-/*
- * Icons
- */
-
-.header_widget ul,
-.footer_widget ul,
-.inline_box ul,
-.main_widget ul,
-.inline_widget ul,
-.post_list ul,
-.widget ul {
-	list-style-image: url(icons/file.gif);
-}
-
-.widget_categories ul,
-.widget_archive ul {
-	list-style-image: url(icons/folder.gif);
-}
-
-li.nav_home,
-li.nav_blog,
-li.nav_branch {
-	list-style-image: url(icons/folder.gif);
-}
-
-li.nav_leaf {
-	list-style-image: url(icons/file.gif);
-}
-
-.link_entry a,
-.link_comment a {
-	background: url(icons/file.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.admin_link a,
-.edit_entry a,
-.edit_comment a {
-	background: url(icons/edit.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.entry_comment a {
-	background: url(icons/comment.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.comment_entry a,
-.reply_comment a {
-	background: url(icons/add_comment.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.email_entry a {
-	background: url(icons/email.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.print_entry a {
-	background: url(icons/print.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.entry_tags a,
-.entry_categories a {
-	background: url(icons/folder.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.entry_author a,
-.signed_in_author a,
-.loginout a {
-	background: url(icons/user.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
 }

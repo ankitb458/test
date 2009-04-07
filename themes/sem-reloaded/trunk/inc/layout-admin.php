@@ -18,8 +18,8 @@ class sem_layout_admin
 	function admin_menu()
 	{
 		add_theme_page(
-			__('Width &amp; Layout'),
-			__('Width &amp; Layout'),
+			__('Layout'),
+			__('Layout'),
 			'switch_themes',
 			basename(__FILE__),
 			array('sem_layout_admin', 'admin_page')
@@ -74,7 +74,7 @@ class sem_layout_admin
 				. "</div>" . "\n";
 		}
 		
-		echo '<h2>' . __('Width &amp; Layout Settings') . '</h2>' . "\n";
+		echo '<h2>' . __('Layout Settings') . '</h2>' . "\n";
 		
 		$layouts = sem_layout_admin::get_layouts();
 

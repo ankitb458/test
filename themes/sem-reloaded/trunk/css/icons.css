@@ -1,0 +1,109 @@
+/*
+Fam Fam Fam silk icons are copyright Mark James (http://www.famfamfam.com/lab/icons/silk/), and CC-By licensed:
+
+http://creativecommons.org/licenses/by/2.5/
+
+To override these icons, create a copy of this file and drop it, as icons.css, into your skin's folder.
+*/
+
+.header_widget ul,
+.footer_widget ul,
+.inline_box ul,
+.main_widget ul,
+.inline_widget ul,
+.post_list ul,
+.widget ul {
+	list-style-image: url(../icons/page_white_text.gif);
+}
+
+.widget_categories ul,
+.widget_archive ul {
+	list-style-image: url(../icons/folder.gif);
+}
+
+li.nav_blog,
+li.nav_branch {
+	list-style-image: url(../icons/folder.gif);
+}
+
+li.nav_home {
+	list-style-image: url(../icons/house.gif);
+}
+
+li.nav_leaf {
+	list-style-image: url(../icons/page_white_text.gif);
+}
+
+.link_entry a,
+.link_comment a {
+	background: url(../icons/page_white_text.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.admin_link a,
+.edit_entry a {
+	background: url(../icons/page_white_edit.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_comment a {
+	background: url(icons/comment.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.comment_entry a,
+.reply_comment a {
+	background: url(../icons/comment_add.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.edit_comment a {
+	background: url(../icons/comment_edit.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_tags a,
+.entry_categories a {
+	background: url(../icons/folder.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_author a,
+.entry_author span,
+.signed_in_author a,
+.loginout a {
+	background: url(../icons/user.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_date span,
+.comment_date span {
+	background: url(../icons/calendar.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.name_label label {
+	background: url(../icons/user.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.email_label label {
+	background: url(../icons/email.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.url_label label {
+	background: url(../icons/world_link.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}

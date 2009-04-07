@@ -32,7 +32,7 @@ html {
 }
 
 .pad {
-	padding: 15px 30px 10px;
+	padding: 0px 30px 0px;
 }
 
 #header_img {
@@ -46,83 +46,10 @@ html {
 }
 
 .entry {
+	padding-top: 15px;
+	padding-bottom: 10px;
 	margin-top: 0px;
 	margin-bottom: 0px;
-}
-
-.main_widget ul,
-.inline_widget ul {
-	list-style-image: url(icons/file.gif);
-}
-
-.widget_categories ul,
-.widget_archive ul {
-	list-style-image: url(icons/folder.gif);
-}
-
-li.nav_home,
-li.nav_blog,
-li.nav_branch {
-	list-style-image: url(icons/folder.gif);
-}
-
-li.nav_leaf {
-	list-style-image: url(icons/file.gif);
-}
-
-.link_entry a,
-.link_comment a {
-	background: url(icons/file.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.admin_link a,
-.edit_entry a,
-.edit_comment a {
-	background: url(icons/edit.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.entry_comment a {
-	background: url(icons/comment.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.comment_entry a,
-.reply_comment a {
-	background: url(icons/add_comment.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.email_entry a {
-	background: url(icons/email.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.print_entry a {
-	background: url(icons/print.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.entry_tags a,
-.entry_categories a {
-	background: url(icons/folder.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
-}
-
-.entry_author a,
-.signed_in_author a,
-.loginout a {
-	background: url(icons/user.gif) center left no-repeat;
-	padding-left: 14px;
-	padding-right: 0px;
 }
 
 #wp-calendar {
