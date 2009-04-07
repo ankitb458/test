@@ -338,23 +338,23 @@ img.avatar {
 }
 
 .comment_box a {
-	display: block;
-	text-align: center;
-	height: 68px;
-	width: 80px;
-	overflow: hidden;
-	background: url(icons/comment_box.gif) top center no-repeat;
-	color: #333;
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 12px;
-	line-height: 13px;
-	padding-top: 2px;
-	padding-bottom: 2px;
+	display: block !important;
+	text-align: center !important;
+	height: 68px !important;
+	width: 80px !important;
+	overflow: hidden !important;
+	background: url(icons/comment_box.gif) top center no-repeat !important;
+	color: #333 !important;
+	text-decoration: none !important;
+	font-weight: bold !important;
+	font-size: 12px !important;
+	line-height: 12px !important;
+	padding-top: 3px !important;
+	padding-bottom: 1px !important;
 }
 
 .comment_box a:hover {
-	color: #c22;
+	color: #c22 !important;
 }
 
 .num_comments {
