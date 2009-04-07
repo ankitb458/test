@@ -181,10 +181,6 @@ class bookmark_me {
 		
 		ob_start();
 		
-		$title = 'Spread the Word!';
-		$email_entry = 'Email';
-		$print_entry = 'Print';
-		
 		if ( !( $o = wp_cache_get($widget_id, 'widget') ) ) {
 			echo $before_widget;
 
@@ -207,13 +203,13 @@ class bookmark_me {
 				echo '<div class="bookmark_me_actions">' . "\n";
 
 				echo '<a href="mailto:?subject=%email_title%&body=%email_url%"'
-					. ' title="' . htmlspecialchars($email_entry) .  '" class="entry_action email_entry">'
-					. $email_entry
+					. ' title="' . htmlspecialchars(__('Email', 'bookmark-me')) .  '" class="email_entry">'
+					. __('Email', 'bookmark-me')
 					. '</a>' . "\n";
 
 				echo '<a href="%print_url%"'
-					. ' title="' . htmlspecialchars($print_entry) .  '" class="entry_action print_entry">'
-					. $print_entry
+					. ' title="' . htmlspecialchars(__('Print', 'bookmark-me')) .  '" class="print_entry">'
+					. __('Print', 'bookmark-me')
 					. '</a>' . "\n";
 
 				echo '</div>' . "\n";
@@ -504,7 +500,7 @@ function the_bookmark_links($args = null) {
 	
 	$args = array_merge($args, $defaults);
 	
-	echo bookmark_me::widget($args);
+	bookmark_me::widget($args);
 } # the_bookmark_links()
 
 
