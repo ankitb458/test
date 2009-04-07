@@ -47,8 +47,13 @@ function sem_clean_up_options()
 	delete_option('download_mgr');						# download manager
 	delete_option('do_not_email');						# subscribe to comments
 	delete_option('preformatted_version');				# an old caching plugin
-	if ( get_option('bookmark_me_widgets') )
+	if ( get_option('bookmark_me') ) {
+		delete_option('bookmark_me_widgets');
 		delete_option('sem_bookmark_me_params');
+		delete_option('sem_bookmark_me_services');
+		delete_option('bookmark_me_cache');
+		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '\_bookmark\_me\_cache%'");
+	}
 	delete_option('sem_cache_created');					# legacy caching
 	delete_option('sem_fancy_excerpt_params');
 	if ( get_option('google_analytics') )
