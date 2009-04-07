@@ -350,7 +350,7 @@ class sem_nav_menus
 		
 		if ( !( is_front_page() && !is_paged() ) )
 		{
-			$link = '<a href="' . htmlspecialchars(get_option('home')) . '">'
+			$link = '<a href="' . htmlspecialchars(user_trailingslashit(get_option('home'))) . '">'
 				. $link
 				. '</a>';
 		}
