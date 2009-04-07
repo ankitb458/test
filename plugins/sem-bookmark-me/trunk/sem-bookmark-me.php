@@ -469,7 +469,7 @@ class bookmark_me {
 		if ( !$o ) return $in;
 		
 		foreach ( array_keys($o) as $widget_id ) {
-			wp_delete_cache($widget_id, 'widget');
+			wp_cache_delete($widget_id, 'widget');
 		}
 		
 		return $in;
