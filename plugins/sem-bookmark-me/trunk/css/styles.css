@@ -23,7 +23,7 @@
 	height: 20px;
 	overflow: hidden;
 	color: #22e;
-	background-image: url(../images/icons.gif);
+	background-image: url(../icons/icons.gif);
 }
 
 .bookmark_me_extra a:hover {
@@ -53,32 +53,32 @@
 }
 
 .bookmark_me a.email_entry {
-	background-image: url(../images/email.gif);
+	background-image: url(../icons/email.gif);
 	background-position: left center;
 }
 
 .bookmark_me a.print_entry {
-	background-image: url(../images/print.gif);
+	background-image: url(../icons/print.gif);
 	background-position: left center;
 }
 
 .bookmark_me a.buzzup {
-	background-image: url(../images/buzzup.gif);
+	background-image: url(../icons/buzzup.gif);
 	background-position: left center;
 }
 
 .bookmark_me a.digg {
-	background-image: url(../images/digg.gif);
+	background-image: url(../icons/digg.gif);
 	background-position: left center;
 }
 
 .bookmark_me a.mixx {
-	background-image: url(../images/mixx.gif);
+	background-image: url(../icons/mixx.gif);
 	background-position: left center;
 }
 
 .bookmark_me a.twitter {
-	background-image: url(../images/twitter.gif);
+	background-image: url(../icons/twitter.gif);
 	background-position: left center;
 }
 
