@@ -37,7 +37,27 @@ add_action('widgets_init', array('bookmark_me', 'widgetize'));
 add_action('wp_print_scripts', array('bookmark_me', 'js'));
 add_action('wp_print_styles', array('bookmark_me', 'css'));
 
+add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
+
 class bookmark_me {
+	/**
+	 * template_redirect
+	 *
+	 * @return void
+	 **/
+
+	function template_redirect() {
+		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
+			if ( file_exists(TEMPLATEPATH . '/print.php') ) {
+				include sem_path . '/print.php';
+			} else {
+				include dirname(__FILE__) . '/print.php';
+			}	
+			die;
+		}
+	} # template_redirect()
+	
+	
 	/**
 	 * js()
 	 *
@@ -141,6 +161,8 @@ class bookmark_me {
 		} elseif ( strpos($page_url, '?') !== false ) {
 			$print_action = '&action=print';
 		} else {
+			# An endpoint would have been better, but:
+			# http://core.trac.wordpress.org/ticket/9477
 			$print_action = '?action=print';
 		}
 		
