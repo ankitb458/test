@@ -34,14 +34,6 @@ li.nav_leaf {
 	list-style-image: url(../icons/page_white_text.gif);
 }
 
-.link_entry a,
-.link_comment a {
-	background: url(../icons/page_white_text.gif) center left no-repeat;
-	padding-left: 18px;
-	padding-right: 0px;
-}
-
-.admin_link a,
 .edit_entry a {
 	background: url(../icons/page_white_edit.gif) center left no-repeat;
 	padding-left: 18px;

@@ -17,8 +17,6 @@ class sem_entry
 			add_action('entry_' . $area, array('sem_entry', $area));
 			add_action('entry_' . $area . '_control', array('sem_entry_admin', $area));
 		}
-		
-		add_action('the_entry', array('sem_entry', 'admin_link'), 5);
 	} # init()
 
 
@@ -312,19 +310,23 @@ class sem_entry
 
 			case 'num_comments':
 				$number = get_comments_number();
-
-				if ( $number > 1 )
-				{
-					$sem_entry['num_comments'] = str_replace('%num%', $number, $sem_captions['n_comments_link']);
-				}
-				elseif ( $number )
-				{
-					$sem_entry['num_comments'] = $sem_captions['1_comment_link'];
-				}
-				else
-				{
+				
+				if ( $number || comments_open() ) {
+					$sem_entry['num_comments'] = $number;
+					if ( !$link = sem_entry::get('comments_link') ) {
+						$link = sem_entry::get('comment_link');
+					}
+					$sem_entry['num_comments'] = '<a href="' . htmlspecialchars($link) . '">'
+						. '<span class="num_comments">'
+						. $sem_entry['num_comments']
+						. '</span>'
+						. '<br />'
+						. __('Comments')
+						. '</a>';
+				} else {
 					$sem_entry['num_comments'] = false;
 				}
+				
 				break;
 
 			case 'edit_link':
@@ -412,7 +414,6 @@ class sem_entry
 				. '<div class="pad">' . "\n"
 				. '<h1>'
 				. $title
-				. $edit_link
 				. '</h1>' . "\n"
 				. '</div>' . "\n"
 				. '<div class="entry_header_bottom"><div class="hidden"></div></div>' . "\n"
@@ -421,7 +422,6 @@ class sem_entry
 		
 		if ( $o )
 		{
-				
 			echo # spacer in case a short, previous item contains floating elements
 				'<div class="spacer"></div>' . "\n"
 				. $o
@@ -438,6 +438,7 @@ class sem_entry
 	function content($args)
 	{
 		global $sem_options;
+		global $sem_captions;
 		$o = '';
 
 		if ( $sem_options['show_excerpts'] && !is_singular() )
@@ -450,17 +451,34 @@ class sem_entry
 				. sem_entry::get('paginate');
 		}
 		
-		if ( ( $_GET['action'] != 'print' ) && ( $edit_link = sem_entry::get('edit_link') ) )
+		if ( !is_feed() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
 		{
-			$o = '<div class="entry_actions edit_entry">'
-				. $edit_link
-				. '</div>'
-				. $o;
+			$extra = '';
+			
+			if ( $edit_link = sem_entry::get('edit_link') ) {
+				$extra .= '<span class="edit_entry">'
+					. $edit_link
+					. '</span>' . "\n";
+			}
+			
+			if ( $num_comments = sem_entry::get('num_comments') ) {
+				$extra .= '<span class="comment_box">'
+					. $num_comments
+					. '</span>' . "\n";
+			}
+			
+			if ( $extra ) {
+				$o = '<div class="entry_actions">' . "\n"
+					. $extra
+					. '</div>' . "\n" . $o;
+			}
 		}
 		
-		if ( $o )
-		{
-			echo $args['before_widget'] . "\n" . $o . $args['after_widget'] . "\n";
+		if ( $o ) {
+			echo $args['before_widget'] . "\n"
+				. $o
+				. '<div class="spacer"></div>' . "\n"
+				. $args['after_widget'] . "\n";
 		}
 	} # content()
 
@@ -649,16 +667,6 @@ class sem_entry
 			echo '</div>' . "\n";
 		}
 	} # comments()
-	
-	
-	#
-	# admin_link()
-	#
-	
-	function admin_link()
-	{
-		
-	} # admin_link()
 } # sem_entry
 
 sem_entry::init();

@@ -326,12 +326,6 @@ h1 {
 .comment_date {
 }
 
-.entry_actions p,
-.comment_actions p {
-	padding-top: 1px;
-	border-top: solid 1px #444;
-}
-
 blockquote {
 	background: url(../../icons/blockquote.gif) top left no-repeat;
 	padding: 5px 10px 0px 50px;

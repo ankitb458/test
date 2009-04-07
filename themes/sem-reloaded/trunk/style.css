@@ -313,12 +313,10 @@ th,
  * Avatars
  */
 
-span.avatar {
+img.avatar {
 	float: left;
-	margin-right: .5em;
+	margin-right: .3em;
 	margin-bottom: .1em;
-	height: 32px;
-	width: 32px;
 }
 
 
@@ -332,17 +330,38 @@ span.avatar {
 	list-style: none !important;
 }
 
-div.entry_actions,
-div.comment_actions {
+.entry_actions a,
+.comment_actions a {
 	float: right;
 	margin-left: .5em;
 	margin-bottom: .2em;
 }
 
-.entry_header .admin_link a {
-	text-decoration: underline !important;
+.comment_box a {
+	display: block;
+	text-align: center;
+	height: 68px;
+	width: 80px;
+	overflow: hidden;
+	background: url(icons/comment_box.gif) top center no-repeat;
+	color: #333;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 12px;
+	line-height: 13px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 
+.comment_box a:hover {
+	color: #c22;
+}
+
+.num_comments {
+	padding-top: 10px;
+	font-size: 36px;
+	line-height: 36px;
+}
 
 #header a,
 #header a:hover {
@@ -368,16 +387,6 @@ div.comment_actions {
 .float_nav #footer_nav span {
 	margin-left: 12px;
 	margin-right: 0px;
-}
-
-.entry_actions,
-.comment_actions {
-	text-align: right;
-}
-
-.entry_actions span,
-.comment_actions span {
-	margin-left: 4px;
 }
 
 #credits {
@@ -467,6 +476,7 @@ h2 a {
 	margin-bottom: 2em;
 }
 
+.comment,
 .widget {
 	margin-bottom: 1.5em;
 }
@@ -494,13 +504,16 @@ h2 a {
 
 .entry_date,
 .comment_date {
-	margin-bottom: 2px;
+	margin-bottom: .2em;
 }
 
 .entry_header,
-.comments_header,
-.comment_header {
+.comments_header, {
 	margin-bottom: 1em;
+}
+
+.comment_header h3 {
+	margin-top: 0px;
 }
 
 .entry_content,
@@ -508,22 +521,16 @@ h2 a {
 	margin-bottom: 1em;
 }
 
-.entry_actions,
-.comment_actions {
-	margin-bottom: 1em;
-}
-
 .comment_header,
 .comment_label {
-	width: 160px;
+	width: 190px;
 	float: left;
 }
 
-.comment,
+.comment_content,
 .comment_field {
-	margin-left: 170px;
+	margin-left: 200px;
 }
-
 
 .comment_field input,
 #comment {

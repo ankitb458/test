@@ -66,15 +66,12 @@ if ( $comments )
 	
 	foreach ( (array) $comments as $comment )
 	{
-		do_action('display_comment');
-		
 		$cur_date = get_comment_date();
 		
 		if ( !isset($prev_date) || $cur_date != $prev_date )
 		{
 			$prev_date = $cur_date;
-			echo '<div class="spacer"></div>' . "\n"
-				. '<div class="comment_date">' . "\n"
+			echo '<div class="comment_date">' . "\n"
 				. '<div class="pad">' . "\n"
 				. '<span>'
 				. $cur_date
@@ -83,16 +80,19 @@ if ( $comments )
 				. '</div>' . "\n";
 		}
 		
+		echo '<div class="spacer"></div>' . "\n";
+		
+		echo '<div id="comment-' . get_comment_ID() . '" class="comment">' . "\n"
+			. '<div class="comment_top"><div class="hidden"></div></div>' . "\n"
+			. '<div class="comment_pad">' . "\n";
+
 		echo '<div class="comment_header">' . "\n"
 			. '<div class="comment_header_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="pad">' . "\n";
 		
 		echo '<h3>'
 			. '<span class="comment_author">'
-				. '<span class="avatar">'
-					. get_avatar( $comment, 32 )
-					. '</span>'
-				. ' '
+				. get_avatar( $comment, 48 )
 				. get_comment_author_link()
 				. '</span>'
 			. '<br/>' . "\n"
@@ -107,10 +107,6 @@ if ( $comments )
 			. '</div>' . "\n";
 
 
-		echo '<div id="comment-' . get_comment_ID() . '" class="comment">' . "\n"
-			. '<div class="comment_top"><div class="hidden"></div></div>' . "\n"
-			. '<div class="comment_pad">' . "\n";
-
 		echo '<div class="comment_content">' . "\n"
 			. '<div class="comment_content_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="pad">' . "\n";
@@ -118,16 +114,15 @@ if ( $comments )
 		if ( !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 			echo '<div class="comment_actions">' . "\n";
 
-			if ( comments_open() )
-			{
+			edit_comment_link(__('Edit'), '<span class="edit_comment">', '</span>' . "\n");
+
+			if ( comments_open() ) {
 				echo '<span class="reply_comment">'
 				. '<a href="#postcomment">'
 				. $sem_captions['reply_link']
 				. '</a>'
 				. '</span>' . "\n";
 			}
-
-			edit_comment_link(__('Edit'), '<span class="edit_comment">', '</span>' . "\n");
 
 			echo '</div>' . "\n";
 		}

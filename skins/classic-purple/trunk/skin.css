@@ -300,12 +300,6 @@ h1 {
 	color: #444;
 }
 
-.entry_actions p,
-.comment_actions p {
-	padding-top: 1px;
-	border-top: solid 1px #e0a6dd;
-}
-
 blockquote {
 	background: url(../../icons/blockquote.gif) top left no-repeat;
 	padding: 5px 10px 0px 50px;
