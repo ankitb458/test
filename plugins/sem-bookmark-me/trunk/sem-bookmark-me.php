@@ -359,7 +359,7 @@ class bookmark_me {
 				'url' => 'http://bookmarks.yahoo.com/toolbar/savebm?opener=tb&t=%title%&u=%url%',
 				),
 			'help' => array(
-				'name' => __('Help With Social Media Sites', 'bookmark-me'),
+				'name' => __('What\'s This?', 'bookmark-me'),
 				'url' => 'http://www.semiologic.com/resources/blogging/help-with-social-media-sites/',
 				),
 			);
