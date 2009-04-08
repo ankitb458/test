@@ -3,6 +3,32 @@
 class sem_entry_admin
 {
 	#
+	# discussion_options()
+	#
+	
+	function discussion_options()
+	{
+		if ( get_option('thread_comments') || get_option('page_comments') ) {
+			add_action('admin_notices', array('sem_entry_admin', 'discussion_notices'));
+		}
+	} # discussion_options()
+	
+	
+	#
+	# discussion_notices()
+	#
+	
+	function discussion_notices()
+	{
+		echo '<div class="updated fade">'
+			. '<p>'
+			. __('<strong>Note</strong>: Threaded and paged comments are not supported in the Semiologic Reloaded theme. They never will be. Supporting threaded comments would, simply put, nullify the ability to create more advanced skins. As for paged comments, they do not play well with the separation of comments by type, and they can potentially disrupt your readers\' browsing experience, by rendering permanent links to comments invalid as they switch from a page to the next.')
+			. '</p>'
+			. '</div>' . "\n";
+	} # discussion_notices()
+	
+	
+	#
 	# widget_control()
 	#
 
