@@ -169,7 +169,12 @@ if ( $comments )
 			. '<br/>' . "\n"
 			. '<span class="comment_time">'
 			. get_comment_date('g:i a')
-			. '</span>'
+			. '</span>' . "\n"
+			. '<span class="link_comment">'
+			. '<a href="#comment-' . get_comment_ID() . '">'
+			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="12" class="noicon" alt="#" />'
+			. '</a>'
+			. '</span>' . "\n"
 			. '</h3>' . "\n";
 
 		echo '</div>' . "\n"
@@ -185,18 +190,9 @@ if ( $comments )
 			echo '<div class="comment_actions">' . "\n";
 
 			edit_comment_link(__('Edit'), '<span class="edit_comment">', '</span>' . "\n");
-
+			
 			if ( comments_open() && $comment->comment_approved ) {
 				
-				$link = get_comment_reply_link(
-					array(
-						'reply_text' => $sem_captions['reply_link'],
-						'login_text' => $sem_captions['reply_link'],
-						'depth' => 1,
-						'max_depth' => 3,
-						),
-					$comment,
-					$post);
 				echo '<span class="reply_comment">'
 				. '<a href="#respond"'
 					. ' onclick="return addComment.moveForm('

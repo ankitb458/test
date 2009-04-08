@@ -177,7 +177,7 @@ class sem_header
 			if ( !$flash )
 			{
 				echo '<div id="header_img" class="pad">'
-					. '<img src="' . sem_url . '/inc/img/spacer.gif" height="100%" width="100%" alt="'
+					. '<img src="' . sem_url . '/icons/pixel.gif" height="100%" width="100%" alt="'
 						. htmlspecialchars(get_option('blogname'))
 						. ' &bull; '
 						. htmlspecialchars(get_option('blogdescription'))
@@ -231,7 +231,7 @@ class sem_header
 			if ( !$flash )
 			{
 				echo '<div id="header_img">'
-					. '<img src="' . sem_url . '/inc/img/spacer.gif" height="100%" width="100%" alt="'
+					. '<img src="' . sem_url . '/icons/pixel.gif" height="100%" width="100%" alt="'
 						. htmlspecialchars(get_option('blogname'))
 						. ' &bull; '
 						. htmlspecialchars(get_option('blogdescription'))

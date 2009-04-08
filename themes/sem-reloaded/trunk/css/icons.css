@@ -104,3 +104,7 @@ li.nav_leaf {
 	padding-left: 18px;
 	padding-right: 0px;
 }
+
+.link_comment img {
+	background: url(../icons/anchor.gif) bottom center no-repeat;
+}
