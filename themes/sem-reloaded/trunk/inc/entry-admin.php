@@ -292,8 +292,8 @@ class sem_entry_admin
 			$new_captions['login_required'] = strip_tags(stripslashes($_POST['sem_entry']['login_required']));
 			$new_captions['name_field'] = strip_tags(stripslashes($_POST['sem_entry']['name_field']));
 			$new_captions['email_field'] = strip_tags(stripslashes($_POST['sem_entry']['email_field']));
-			$new_captions['required_field'] = strip_tags(stripslashes($_POST['sem_entry']['required_field']));
 			$new_captions['url_field'] = strip_tags(stripslashes($_POST['sem_entry']['url_field']));
+			$new_captions['required_fields'] = strip_tags(stripslashes($_POST['sem_entry']['required_fields']));
 			$new_captions['submit_field'] = strip_tags(stripslashes($_POST['sem_entry']['submit_field']));
 
 			if ( $new_options != $sem_options )
@@ -352,7 +352,7 @@ class sem_entry_admin
 
 		echo '<div style="margin-bottom: .2em;">'
 			. '<label>'
-			. __('Logged in as User, e.g. Logged in as %identity%')
+			. __('Logged in as User, e.g. Logged in as %identity%.')
 			. '<br />'
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_entry[logged_in_as]"'
@@ -363,7 +363,7 @@ class sem_entry_admin
 
 		echo '<div style="margin-bottom: .2em;">'
 			. '<label>'
-			. __('Login Required, e.g. You must be logged in to comment')
+			. __('Login Required, e.g. You must be logged in to post a comment. %login_url%.')
 			. '<br />'
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_entry[login_required]"'
@@ -396,22 +396,22 @@ class sem_entry_admin
 
 		echo '<div style="margin-bottom: .2em;">'
 			. '<label>'
-			. __('Required Field, e.g. (Required)')
+			. __('URL Field, e.g. URL')
 			. '<br />'
 			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[required_field]"'
-				. ' value="' . attribute_escape($sem_captions['required_field']) . '"'
+				. ' name="sem_entry[url_field]"'
+				. ' value="' . attribute_escape($sem_captions['url_field']) . '"'
 				. ' />'
 			. '</label>'
 			. '</div>';
 
 		echo '<div style="margin-bottom: .2em;">'
 			. '<label>'
-			. __('URL Field, e.g. URL')
+			. __('Required Fields, e.g. (Fields marked by an asterisk (*) are required.)')
 			. '<br />'
 			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[url_field]"'
-				. ' value="' . attribute_escape($sem_captions['url_field']) . '"'
+				. ' name="sem_entry[required_fields]"'
+				. ' value="' . attribute_escape($sem_captions['required_fields']) . '"'
 				. ' />'
 			. '</label>'
 			. '</div>';

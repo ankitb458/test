@@ -14,12 +14,12 @@ $sem_captions = array(
 	# entry: content
 	"comment_box" => __('Comments'),
 	"paginate" => __("Pages"),
-	"more_link" => __("More on %title%"),
+	"more_link" => __("More on %title%."),
 	# entry: categories
 	"cats_title" => __('Categories'),
-	"filed_under" => __("Filed under %categories% by %author%"),
+	"filed_under" => __("Filed under %categories% by %author%."),
 	# entry: tags
-	"tags" => __("Tags: %tags%"),
+	"tags" => __("Tags: %tags%."),
 	"tags_title" => __("Tags"),
 	# entry: comments
 	"comments_on" => __('Comments on %title%'),
@@ -27,12 +27,12 @@ $sem_captions = array(
 	"reply_link" => __("Reply"),
 	# comment form
 	"leave_comment" => __("Leave a Comment"),
-	"logged_in_as" => __("Logged in as %identity%"),
-	"login_required" => __("You must be logged in to comment"),
+	"logged_in_as" => __("Logged in as %identity%."),
+	"login_required" => __("You must be logged in to post a comment. %login_url%."),
 	"name_field" => __("Name"),
 	"email_field" => __("Email"),
 	"url_field" => __("URL"),
-	"required_field" => __("(Required Field)"),
+	"required_fields" => __("Fields marked by an asterisk (*) are required."),
 	"submit_field" => __("Submit Comment"),
 	# next/prev posts
 	"next_page" => __("Next Page"),

@@ -144,26 +144,36 @@ if ( $comments )
 
 if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
 {
-	echo '<div id="comment_form">' . "\n";
+	echo '<div id="respond">' . "\n";
+	
+	$sem_captions['leave_reply'] = __('Leave a Reply to %user%');
+	$sem_captions['leave_reply'] = str_replace('%user%', '%s', $sem_captions['leave_reply']);
 	
 	echo '<div class="comments_header" id="postcomment">' . "\n"
 		. '<div class="comments_header_top"><div class="hidden"></div></div>' . "\n"
 		. '<div class="pad">' . "\n"
-		. '<h2>' . $sem_captions['leave_comment'] . '</h2>' . "\n"
-		. '</div>' . "\n"
+		. '<h2>';
+	comment_form_title($sem_captions['leave_comment'], $sem_captions['leave_reply']);
+	echo '</h2>' . "\n";
+	
+	echo '<p class="cancel-comment-reply">';
+	cancel_comment_reply_link();
+	echo '</p>' . "\n";
+	
+	echo '</div>' . "\n"
 		. '<div class="comments_header_bottom"><div class="hidden"></div></div>' . "\n"
 		. '</div>' . "\n";
 
 	if ( get_option('comment_registration') && !$user_ID )
 	{
-		$login_url = trailingslashit(site_url())
+		$login_url = trailingslashit(site_url('login'))
 			. 'wp-login.php?redirect_to='
 			. urlencode(get_permalink());
-
+		
 		echo '<div class="comments_login">' . "\n"
 			. '<div class="pad">' . "\n"
 			. '<p>'
-			. str_replace('%login_url%', $login_url, $sem_captions['login_required'])
+			. str_replace('%login_url%', '<a href="' . htmlspecialchars($login_url) . '">' . __('Login') . '</a>', $sem_captions['login_required'])
 			. '</p>' . "\n"
 			. '</div>' . "\n"
 			. '</div>' . "\n";
@@ -193,7 +203,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '<label for="author">'
 				. $sem_captions['name_field']
 				. ( $req
-					? ( ' ' . $sem_captions['required_field'] )
+					? ' (*)'
 					: ''
 					)
 				. '</label>'
@@ -210,7 +220,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '<label for="email">'
 				. $sem_captions['email_field']
 				. ( $req
-					? ( ' ' . $sem_captions['required_field'] )
+					? ' (*)'
 					: ''
 					)
 				. '</label>'
@@ -239,7 +249,12 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 
 		echo '<textarea name="comment" id="comment" cols="48" rows="10"></textarea>' . "\n";
-
+		
+		if ( !$user_ID && $req )
+			echo '<p>'
+				.  $sem_captions['required_fields']
+				. '</p>' . "\n";
+		
 		echo '<p class="submit">'
 			. '<input name="submit" type="submit" id="submit" class="button"'
 				. ' value="' . htmlspecialchars($sem_captions['submit_field']) . '"'
@@ -247,9 +262,10 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. '</p>' . "\n";
 
 		do_action('comment_form', $post->ID);
-
-		echo '<input type="hidden" name="comment_post_ID" value="' . $post->ID . '" />' . "\n"
-			. '</div>' . "\n"
+		
+		comment_id_fields();
+		
+		echo '</div>' . "\n"
 			. '</form>' . "\n";
 
 		if ( function_exists('show_manual_subscription_form') )

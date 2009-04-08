@@ -11,6 +11,7 @@ class sem_entry
 		$GLOBALS['sem_entry'] = array();
 
 		add_action('widgets_init', array('sem_entry', 'widgetize'));
+		add_action('wp_print_scripts', array('sem_entry', 'scripts'));
 
 		foreach ( array_keys(sem_entry::get_areas()) as $area )
 		{
@@ -18,6 +19,19 @@ class sem_entry
 			add_action('entry_' . $area . '_control', array('sem_entry_admin', $area));
 		}
 	} # init()
+	
+	
+	#
+	# scripts()
+	#
+	
+	function scripts() {
+		if ( is_singular() && get_option('option_thread_comments')
+			&& comments_open($GLOBALS['wp_query']->get_queried_object_id())
+		) {
+			wp_enqueue_script('comment-reply');
+		}	
+	} # scripts()
 
 
 	#

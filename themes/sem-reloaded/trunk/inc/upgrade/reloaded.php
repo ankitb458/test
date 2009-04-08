@@ -165,9 +165,23 @@ unset($sem_captions['n_comments_link']);
 unset($sem_captions['permalink']);
 unset($sem_captions['print_link']);
 unset($sem_captions['comment_trackback']);
+unset($sem_captions['required_field']);
 
 if ( !isset($sem_captions['comment_box']) ) {
 	$sem_captions['comment_box'] = __('Comments');
+}
+
+if ( !isset($sem_captions['required_fields']) ) {
+	$sem_captions["required_fields"] = __("Fields marked by an asterisk (*) are required.");
+}
+
+if ( strpos($sem_captions['login_required'], '%login_url%') === false ) {
+	$sem_captions['login_required'] .=
+		( substr($sem_captions['login_required'], -1) != '.'
+			? '. '
+			: ' '
+			)
+		. '%login_url%.';
 }
 
 #dump($sem_options, $sem_captions);
