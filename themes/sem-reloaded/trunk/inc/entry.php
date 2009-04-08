@@ -723,7 +723,12 @@ function display_archive_header()
 	}
 	elseif ( is_author() )
 	{
-		echo wpautop($user->description);
+		$desc = wpautop($user->description);
+		
+		if ( trim($desc) != '<br />' )
+		{
+			echo $desc;
+		}
 	}
 } # display_archive_header()
 
