@@ -77,7 +77,8 @@ li.nav_leaf {
 
 .entry_date span,
 .comment_date span,
-.pings_date span {
+.pings_date span,
+.post_list h3 {
 	background: url(../icons/calendar.gif) center left no-repeat;
 	padding-left: 18px;
 	padding-right: 0px;
