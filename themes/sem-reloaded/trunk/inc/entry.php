@@ -687,6 +687,14 @@ function display_archive_header()
 	{
 		single_month_title(' ');
 	}
+	elseif ( is_author() )
+	{
+		global $wp_query;
+		
+		$user = new WP_User($wp_query->get_queried_object_id());
+		
+		echo $user->display_name;
+	}
 	elseif ( is_search() )
 	{
 		global $wp_query;
@@ -712,6 +720,10 @@ function display_archive_header()
 		{
 			echo $desc;
 		}
+	}
+	elseif ( is_author() )
+	{
+		echo wpautop($user->description);
 	}
 } # display_archive_header()
 
