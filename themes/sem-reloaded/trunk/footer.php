@@ -50,7 +50,7 @@
 			
 			# split
 			
-			echo '<div id="sidebars_split"><div class="hidden"></div></div>' . "\n";
+			echo '<div id="top_sidebar_split" class="sidebars_split"><div class="hidden"></div></div>' . "\n";
 			
 			
 			# left sidebar
@@ -81,7 +81,7 @@
 			
 			# split
 			
-			echo '<div id="sidebars_split"><div class="hidden"></div></div>' . "\n";
+			echo '<div id="bottom_sidebar_split" class="sidebars_split"><div class="hidden"></div></div>' . "\n";
 			
 			
 			# spacer
