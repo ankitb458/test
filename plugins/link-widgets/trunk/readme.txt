@@ -15,6 +15,8 @@ The link widgets plugin for WordPress replaces its default, single link widget w
 
 This lets you insert separate instances of link widgets with various settings for different link categories.
 
+This plugin is **NOT** needed in WP 2.8 or later.
+
 
 == Installation ==
 
