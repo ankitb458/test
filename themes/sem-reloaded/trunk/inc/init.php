@@ -243,7 +243,7 @@ add_filter('option_thread_comments', 'false');
 #
 # set content width
 #
-dump($sem_options, $sem_captions);
+
 global $content_width;
 $content_width = 480;
 ?>
