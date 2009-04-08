@@ -112,12 +112,12 @@ table {
 }
 
 /* inner 2 column liquid layout */
-
 .inner-sidebar {
 	float: right;
 	clear: right;
 	display: none;
 	width: 281px;
+	position: relative;
 }
 
 .inner-sidebar #side-sortables {
@@ -130,6 +130,13 @@ table {
 }
 
 .has-right-sidebar #post-body {
+	float: left;
+	clear: left;
+	width: 100%;
+	margin-right: -340px;
+}
+
+.has-right-sidebar #post-body-content {
 	margin-right: 300px;
 }
 
@@ -179,8 +186,9 @@ table {
 }
 
 .hidden,
-.closed .inside,
-.hide-if-js {
+.js .closed .inside,
+.js .hide-if-js,
+.no-js .hide-if-no-js {
 	display: none;
 }
 

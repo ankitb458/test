@@ -14,7 +14,7 @@ adminMenu = {
 		this.favorites();
 
 		$('.wp-menu-separator').click(function(){
-			if ( $('#wpcontent').hasClass('folded') ) {
+			if ( $('body').hasClass('folded') ) {
 				adminMenu.fold(1);
 				setUserSetting( 'mfold', 'o' );
 			} else {
@@ -54,10 +54,10 @@ adminMenu = {
 
 	fold : function(off) {
 		if (off) {
-			$('#wpcontent').removeClass('folded');
+			$('body').removeClass('folded');
 			$('#adminmenu li.wp-has-submenu').unbind();
 		} else {
-			$('#wpcontent').addClass('folded');
+			$('body').addClass('folded');
 			$('#adminmenu li.wp-has-submenu').hoverIntent({
 				over: function(e){
 					var m = $(this).find('.wp-submenu'), t = e.clientY, H = $(window).height(), h = m.height(), o;
@@ -108,7 +108,7 @@ columns = {
 		$.post(ajaxurl, {
 			action: 'hidden-columns',
 			hidden: hidden,
-			hiddencolumnsnonce: $('#hiddencolumnsnonce').val(),
+			screenoptionnonce: $('#screenoptionnonce').val(),
 			page: pagenow
 		});
 	}
@@ -118,15 +118,16 @@ $(document).ready(function(){columns.init();});
 
 screenOptions = {
 	init : function() {
-		$('.screen-option').change(function() {
-			var option = $(this).map(function() { return this.id; }).get();
-			var value = $(this).val();
+		$('.screen-per-page').change(function() {
+			var option = this.id, value = parseInt($(this).val(), 10);
+			if ( isNaN(value) ) {
+				$(this).val('');
+				return;
+			}
 			screenOptions.save_screen_option(option, value);
-		});
-		$('.screen-option').submit(function() {
-			var option = $(this).map(function() { return this.id; }).get();
-			var value = $(this).val();
-			screenOptions.save_screen_option(option, value);
+		}).parents('form').submit(function(e) {
+			e.preventDefault();
+			return false;
 		});
 	},
 
@@ -173,7 +174,7 @@ jQuery(document).ready( function($) {
 
 	// show warnings
 	$('#doaction, #doaction2').click(function(){
-		if ( $('select[name^="action"]').val() == 'delete' ) {
+		if ( $('select[name="action"]').val() == 'delete' || $('select[name="action2"]').val() == 'delete' ) {
 			return showNotice.warn();
 		}
 	});

@@ -60,7 +60,7 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'utils', "/wp-admin/js/utils$suffix.js", false, '20090102' );
 
-	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), '20090327' );
+	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), '20090406' );
 	$scripts->add_data( 'common', 'group', 1 );
 	$scripts->localize( 'common', 'commonL10n', array(
 		'warnDelete' => __("You are about to delete the selected items.\n  'Cancel' to stop, 'OK' to delete."),
@@ -167,7 +167,7 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'thickbox', "/wp-includes/js/thickbox/thickbox.js", array('jquery'), '3.1-20090123');
 	$scripts->add_data( 'thickbox', 'group', 1 );
 
-	$scripts->add( 'jcrop', "/wp-includes/js/jcrop/jquery.Jcrop$suffix.js", array('jquery'), '0.9.5');
+	$scripts->add( 'jcrop', "/wp-includes/js/jcrop/jquery.Jcrop$suffix.js", array('jquery'), '0.9.5-1');
 	
 	if ( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) {
 		$scripts->add( 'swfupload', '/wp-includes/js/swfupload/swfupload.js', false, '2.2.0-20081031');
@@ -179,7 +179,7 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'swfupload-queue', false, array('swfupload') );
 	}
 
-	$scripts->add( 'swfupload-handlers', "/wp-includes/js/swfupload/handlers$suffix.js", array('swfupload'), '2.2.0-20090327');
+	$scripts->add( 'swfupload-handlers', "/wp-includes/js/swfupload/handlers$suffix.js", array('swfupload'), '2.2.0-20090403');
 	// these error messages came from the sample swfupload js, they might need changing.
 	$scripts->localize( 'swfupload-handlers', 'swfuploadL10n', array(
 			'queue_limit_exceeded' => __('You have attempted to queue too many files.'),
@@ -425,19 +425,19 @@ function wp_default_styles( &$styles ) {
 
 	$rtl_styles = array( 'global', 'colors', 'dashboard', 'ie', 'install', 'login', 'media', 'theme-editor', 'upload', 'widgets', 'press-this', 'plugin-install', 'farbtastic' );
 
-	$styles->add( 'wp-admin', '/wp-admin/wp-admin.css', array(), '20081210' );
+	$styles->add( 'wp-admin', '/wp-admin/wp-admin.css', array(), '20090405' );
 	$styles->add_data( 'wp-admin', 'rtl', '/wp-admin/rtl.css' );
 
-	$styles->add( 'ie', '/wp-admin/css/ie.css', array(), '20081210' );
+	$styles->add( 'ie', '/wp-admin/css/ie.css', array(), '20090407' );
 	$styles->add_data( 'ie', 'conditional', 'lte IE 7' );
 
-	$styles->add( 'colors', true, array(), '20081210' ); // Register "meta" stylesheet for admin colors
+	$styles->add( 'colors', true, array(), '20090405' ); // Register "meta" stylesheet for admin colors
 	$styles->add( 'colors-fresh', '/wp-admin/css/colors-fresh.css', array(), '20081210'); // for login.php.  Is there a better way?
 	$styles->add_data( 'colors-fresh', 'rtl', true );
 	$styles->add( 'colors-classic', '/wp-admin/css/colors-classic.css', array(), '20081210');
 	$styles->add_data( 'colors-classic', 'rtl', true );
 
-	$styles->add( 'global', '/wp-admin/css/global.css', array(), '20081226' );
+	$styles->add( 'global', '/wp-admin/css/global.css', array(), '20090407' );
 	$styles->add( 'media', '/wp-admin/css/media.css', array(), '20090325' );
 	$styles->add( 'widgets', '/wp-admin/css/widgets.css', array(), '20081210' );
 	$styles->add( 'dashboard', '/wp-admin/css/dashboard.css', array(), '20090305' );
