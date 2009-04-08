@@ -309,7 +309,10 @@ class sem_header
 						: ''
 						)
 					. '/>'
-					. '<input type="submit" id="go" class="go button" value="' . htmlspecialchars($go) . '" />'
+					. ( $go
+						? ( '<input type="submit" id="go" class="go button" value="' . htmlspecialchars($go) . '" />' )
+						: ''
+						)
 					. '</form>';
 			
 			echo '</div><!-- search_form -->';
