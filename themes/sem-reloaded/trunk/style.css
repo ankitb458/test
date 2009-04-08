@@ -191,6 +191,12 @@ blockquote, q, ul, ol, dl {
 	margin-left: 1.7em;
 }
 
+ul ul,
+ol ol,
+dl dl {
+	margin-left: .5em;
+}
+
 strong {
 	font-weight: bold;
 }
