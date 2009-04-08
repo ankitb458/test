@@ -39,6 +39,10 @@ a:hover {
 	color: #fc0;
 }
 
+a em {
+	color: #fc0;
+}
+
 
 /*
  * Header

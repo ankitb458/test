@@ -276,6 +276,10 @@ html {
 	color: #c22;
 }
 
+#main a em {
+	color: #c22;
+}
+
 #main_top,
 #main_bottom {
 	height: 15px;

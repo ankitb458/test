@@ -39,6 +39,10 @@ a:hover {
 	color: #c22;
 }
 
+a em {
+	color: #c22;
+}
+
 
 /*
  * Header

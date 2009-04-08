@@ -213,6 +213,11 @@ a:hover {
 	color: #c22;
 }
 
+a em {
+	font-style: normal;
+	color: #c22;
+}
+
 .align_center {
 	text-align: center;
 }
