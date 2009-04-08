@@ -167,10 +167,6 @@ unset($sem_captions['print_link']);
 unset($sem_captions['comment_trackback']);
 unset($sem_captions['required_field']);
 
-if ( !isset($sem_captions['comment_box']) ) {
-	$sem_captions['comment_box'] = __('Comments');
-}
-
 if ( !isset($sem_captions['required_fields']) ) {
 	$sem_captions["required_fields"] = __("Fields marked by an asterisk (*) are required.");
 }

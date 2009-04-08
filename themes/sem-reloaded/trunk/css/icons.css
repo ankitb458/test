@@ -76,10 +76,15 @@ li.nav_leaf {
 }
 
 .entry_date span,
-.comment_date span {
+.comment_date span,
+.pings_date span {
 	background: url(../icons/calendar.gif) center left no-repeat;
 	padding-left: 18px;
 	padding-right: 0px;
+}
+
+.pings_list ul {
+	list-style-image: url(../icons/world_link.gif);
 }
 
 .name_label label {

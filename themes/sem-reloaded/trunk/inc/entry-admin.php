@@ -75,7 +75,6 @@ class sem_entry_admin
 
 			$new_captions['more_link'] = strip_tags(stripslashes($_POST['sem_entry']['more_link']));
 			$new_captions['paginate'] = strip_tags(stripslashes($_POST['sem_entry']['paginate']));
-			$new_captions['comment_box'] = strip_tags(stripslashes($_POST['sem_entry']['comment_box']));
 
 			if ( $new_options != $sem_options )
 			{
@@ -134,17 +133,6 @@ class sem_entry_admin
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_entry[paginate]"'
 				. ' value="' . attribute_escape($sem_captions['paginate']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Comment Box, e.g. Comments')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[comment_box]"'
-				. ' value="' . attribute_escape($sem_captions['comment_box']) . '"'
 				. ' />'
 			. '</label>'
 			. '</div>';

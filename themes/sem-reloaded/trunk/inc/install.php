@@ -12,7 +12,6 @@ $sem_captions = array(
 	"search_button" => __("Go"),
 	"search_field" => __("Search"),
 	# entry: content
-	"comment_box" => __('Comments'),
 	"paginate" => __("Pages"),
 	"more_link" => __("More on %title%."),
 	# entry: categories

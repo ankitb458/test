@@ -26,10 +26,9 @@ class sem_entry
 	#
 	
 	function scripts() {
-		if ( is_singular() && get_option('thread_comments')
+		if ( is_singular()
 			&& comments_open($GLOBALS['wp_query']->get_queried_object_id())
 		) {
-			dump('test');
 			wp_enqueue_script('comment-reply');
 		}	
 	} # scripts()
@@ -303,7 +302,7 @@ class sem_entry
 				if ( comments_open() && !( is_front_page() && is_page() ) )
 				{
 					$sem_entry['comment_link'] = sem_entry::get('permalink')
-						. '#postcomment';
+						. '#respond';
 				}
 				else
 				{
@@ -319,12 +318,14 @@ class sem_entry
 					if ( !$link = sem_entry::get('comments_link') ) {
 						$link = sem_entry::get('comment_link');
 					}
+					$cap = _n('1 Comment', '% Comments', $number);
+					$cap = preg_replace("/\s*(?:1|\%)\s*/", '', $cap);
 					$sem_entry['num_comments'] = '<a href="' . htmlspecialchars($link) . '">'
 						. '<span class="num_comments">'
 						. $sem_entry['num_comments']
 						. '</span>'
 						. '<br />'
-						. $sem_captions['comment_box']
+						. $cap
 						. '</a>';
 				} else {
 					$sem_entry['num_comments'] = false;

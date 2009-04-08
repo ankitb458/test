@@ -188,7 +188,7 @@ pre {
 }
 
 blockquote, q, ul, ol, dl {
-	margin-left: 1.5em;
+	margin-left: 1.7em;
 }
 
 strong {
@@ -258,7 +258,8 @@ h2 {
 h3,
 th,
 .entry_date,
-.comment_date {
+.comment_date,
+.pings_date {
 	font-weight: bold;
 }
 
@@ -503,11 +504,13 @@ h2 a {
 }
 
 .entry_date,
-.comment_date {
+.comment_date,
+.pings_date {
 	margin-bottom: .2em;
 }
 
 .entry_header,
+.pings_header,
 .comments_header, {
 	margin-bottom: 1em;
 }
