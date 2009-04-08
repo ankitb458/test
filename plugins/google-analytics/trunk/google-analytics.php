@@ -169,7 +169,7 @@ function ga_track_anchor()
 }
 
 // add the above method to every anchor
-for ( i = 0; i < document.getElementsByTagName("a").length; i++ )
+for ( i = 0; i &lt; document.getElementsByTagName("a").length; i++ )
 {
 	document.getElementsByTagName("a")[i].ga_track = ga_track_anchor;
 	
