@@ -179,9 +179,9 @@ class bookmark_me {
 			$print_action = '?action=print';
 		}
 		
-		ob_start();
-		
 		if ( !( $o = wp_cache_get($widget_id, 'widget') ) ) {
+			ob_start();
+
 			echo $before_widget;
 
 			if ( $title )
