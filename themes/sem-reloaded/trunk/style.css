@@ -188,13 +188,13 @@ pre {
 }
 
 blockquote, q, ul, ol, dl {
-	margin-left: 1.7em;
+	margin-left: 1.6em;
 }
 
 ul ul,
 ol ol,
 dl dl {
-	margin-left: .5em;
+	margin-left: .6em;
 }
 
 strong {
