@@ -7,7 +7,7 @@ update_option('current_theme', 'Semiologic Reloaded');
 update_option('template', 'sem-reloaded');
 update_option('stylesheet', 'sem-reloaded');
 
-include ABSPATH . 'wp-content/themes/sem-reloaded/inc/init.php';
+include WP_CONTENT_DIR . '/themes/sem-reloaded/inc/init.php';
 
 endif;
 ?>

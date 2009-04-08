@@ -526,7 +526,7 @@ EOF;
 		if ( defined('GLOB_BRACE') )
 		{
 			if ( isset($post_ID)
-				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) ) )
+				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) ) )
 			{
 				$header = current($header);
 			}
@@ -567,7 +567,7 @@ EOF;
 					break;
 				}
 			}
-			elseif ( $header = glob(ABSPATH . 'wp-content/header/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+			elseif ( $header = glob(WP_CONTENT_DIR . '/header/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 			{
 				$header = current($header);
 			}
@@ -579,11 +579,11 @@ EOF;
 		else
 		{
 			if ( $post_ID
-				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') ) )
+				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') ) )
 			{
 				$header = current($header);
 			}
-			elseif ( $header = glob(ABSPATH . 'wp-content/header/header-*.jpg') )
+			elseif ( $header = glob(WP_CONTENT_DIR . '/header/header-*.jpg') )
 			{
 				$header = current($header);
 			}
@@ -640,11 +640,11 @@ EOF;
 
 			$name = str_replace('.' . $ext, '', $name);
 
-			@mkdir(ABSPATH . 'wp-content/header');
-			@chmod(ABSPATH . 'wp-content/header', 0777);
+			@mkdir(WP_CONTENT_DIR . '/header');
+			@chmod(WP_CONTENT_DIR . '/header', 0777);
 
-			@rename($header, ABSPATH . 'wp-content/headers/header.' . $ext);
-			@chmod(ABSPATH . 'wp-content/headers/header.' . $ext, 0666);
+			@rename($header, WP_CONTENT_DIR . '/headers/header.' . $ext);
+			@chmod(WP_CONTENT_DIR . '/headers/header.' . $ext, 0666);
 
 			switch ( $name )
 			{

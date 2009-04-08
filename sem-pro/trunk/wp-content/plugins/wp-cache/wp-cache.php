@@ -1,6 +1,6 @@
 <?php
-$wp_cache_config_file = ABSPATH . 'wp-content/wp-cache-config.php';
-$wp_cache_link = ABSPATH . 'wp-content/advanced-cache.php';
+$wp_cache_config_file = WP_CONTENT_DIR . '/wp-cache-config.php';
+$wp_cache_link = WP_CONTENT_DIR . '/advanced-cache.php';
 $wp_config_file = ABSPATH . 'wp-config.php';
 
 if ( is_writable($wp_config_file) )

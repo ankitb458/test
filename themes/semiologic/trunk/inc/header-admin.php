@@ -284,8 +284,8 @@ class sem_header_admin
 			echo '</p>' . "\n";
 		}
 
-		@mkdir(ABSPATH . 'wp-content/header');
-		@chmod(ABSPATH . 'wp-content/header', 0777);
+		@mkdir(WP_CONTENT_DIR . '/header');
+		@chmod(WP_CONTENT_DIR . '/header', 0777);
 
 		if ( !$header
 			|| is_writable($header)
@@ -297,13 +297,13 @@ class sem_header_admin
 					. '</label>'
 				. '<br />' . "\n";
 
-			if ( is_writable(ABSPATH . 'wp-content/header') )
+			if ( is_writable(WP_CONTENT_DIR . '/header') )
 			{
 				echo '<input type="file" style="width: 480px;"'
 					. ' id="header_file" name="header_file"'
 					. ' />' . "\n";
 			}
-			elseif ( !is_writable(ABSPATH . 'wp-content') )
+			elseif ( !is_writable(WP_CONTENT_DIR . '') )
 			{
 				echo __('The wp-content folder is not writeable by the server') . "\n";
 			}
@@ -430,7 +430,7 @@ class sem_header_admin
 
 				update_option('sem_entropy', $entropy);
 
-				$name = ABSPATH . 'wp-content/header/header-' . $entropy . '.' . $ext;
+				$name = WP_CONTENT_DIR . '/header/header-' . $entropy . '.' . $ext;
 
 				@move_uploaded_file($tmp_name, $name);
 				@chmod($name, 0666);
@@ -481,7 +481,7 @@ class sem_header_admin
 		if ( defined('GLOB_BRACE') )
 		{
 			if ( $post_ID > 0
-				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 				)
 			{
 				$header = current($header);
@@ -490,7 +490,7 @@ class sem_header_admin
 		else
 		{
 			if ( $post_ID > 0
-				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') )
+				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') )
 				)
 			{
 				$header = current($header);
@@ -546,8 +546,8 @@ class sem_header_admin
 			echo '<p>' . __('Notice: <a href="http://www.php.net/glob">GLOB_BRACE</a> is an undefined constant on your server. Non .jpg files will be ignored.') . '</p>';
 		}
 
-		@mkdir(ABSPATH . 'wp-content/header');
-		@chmod(ABSPATH . 'wp-content/header', 0777);
+		@mkdir(WP_CONTENT_DIR . '/header');
+		@chmod(WP_CONTENT_DIR . '/header', 0777);
 
 		if ( !$header
 			|| is_writable($header)
@@ -559,7 +559,7 @@ class sem_header_admin
 					. '</label>'
 				. '<br />' . "\n";
 
-			if ( is_writable(ABSPATH . 'wp-content/header') )
+			if ( is_writable(WP_CONTENT_DIR . '/header') )
 			{
 				echo '<input type="file" tabindex="5"'
 					. ' id="header_file" name="header_file"'
@@ -569,7 +569,7 @@ class sem_header_admin
 					. ' value="' . __('Save') . '"'
 					. ' />';
 			}
-			elseif ( !is_writable(ABSPATH . 'wp-content') )
+			elseif ( !is_writable(WP_CONTENT_DIR . '') )
 			{
 				echo __('The wp-content folder is not writeable by the server') . "\n";
 			}
@@ -597,7 +597,7 @@ class sem_header_admin
 		{
 			if ( defined('GLOB_BRACE') )
 			{
-				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 				{
 					$header = current($header);
 					@unlink($header);
@@ -605,7 +605,7 @@ class sem_header_admin
 			}
 			else
 			{
-				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') )
+				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') )
 				{
 					$header = current($header);
 					@unlink($header);
@@ -635,10 +635,10 @@ class sem_header_admin
 
 				update_option('sem_entropy', $entropy);
 
-				$name = ABSPATH . 'wp-content/header/' . $post_ID . '/header-' . $entropy . '.' . $ext;
+				$name = WP_CONTENT_DIR . '/header/' . $post_ID . '/header-' . $entropy . '.' . $ext;
 
-				@mkdir(ABSPATH . 'wp-content/header/' . $post_ID);
-				@chmod(ABSPATH . 'wp-content/header/' . $post_ID, 0777);
+				@mkdir(WP_CONTENT_DIR . '/header/' . $post_ID);
+				@chmod(WP_CONTENT_DIR . '/header/' . $post_ID, 0777);
 				@move_uploaded_file($tmp_name, $name);
 				@chmod($name, 0666);
 			}
@@ -647,7 +647,7 @@ class sem_header_admin
 		{
 			if ( defined('GLOB_BRACE') )
 			{
-				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 				{
 					$header = current($header);
 					@unlink($header);
@@ -655,7 +655,7 @@ class sem_header_admin
 			}
 			else
 			{
-				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') )
+				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') )
 				{
 					$header = current($header);
 					@unlink($header);
