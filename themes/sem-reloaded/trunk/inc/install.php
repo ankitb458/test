@@ -27,7 +27,7 @@ $sem_captions = array(
 	"reply_link" => __("Reply"),
 	# comment form
 	"leave_comment" => __("Leave a Comment"),
-	"logged_in_as" => __("Logged in as %identity%."),
+	"logged_in_as" => __("Logged in as %identity%. %logout_url%."),
 	"login_required" => __("You must be logged in to post a comment. %login_url%."),
 	"name_field" => __("Name"),
 	"email_field" => __("Email"),

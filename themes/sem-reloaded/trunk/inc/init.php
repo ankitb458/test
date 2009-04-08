@@ -237,7 +237,7 @@ elseif ( $GLOBALS['sem_options']['version'] != sem_version || $force_update )
 #
 
 add_filter('option_page_comments', 'false');
-add_filter('option_thread_comments', 'false');
+#add_filter('option_thread_comments', 'false');
 
 
 #

@@ -352,7 +352,7 @@ class sem_entry_admin
 
 		echo '<div style="margin-bottom: .2em;">'
 			. '<label>'
-			. __('Logged in as User, e.g. Logged in as %identity%.')
+			. __('Logged in as User, e.g. Logged in as %identity%. %logout_url%.')
 			. '<br />'
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_entry[logged_in_as]"'

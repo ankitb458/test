@@ -184,6 +184,15 @@ if ( strpos($sem_captions['login_required'], '%login_url%') === false ) {
 		. '%login_url%.';
 }
 
+if ( strpos($sem_captions['logged_in_as'], '%logout_url%') === false ) {
+	$sem_captions['logged_in_as'] .=
+		( substr($sem_captions['logged_in_as'], -1) != '.'
+			? '. '
+			: ' '
+			)
+		. '%logout_url%.';
+}
+
 #dump($sem_options, $sem_captions);
 #die;
 ?>

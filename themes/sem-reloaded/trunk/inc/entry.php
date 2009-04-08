@@ -26,9 +26,10 @@ class sem_entry
 	#
 	
 	function scripts() {
-		if ( is_singular() && get_option('option_thread_comments')
+		if ( is_singular() && get_option('thread_comments')
 			&& comments_open($GLOBALS['wp_query']->get_queried_object_id())
 		) {
+			dump('test');
 			wp_enqueue_script('comment-reply');
 		}	
 	} # scripts()

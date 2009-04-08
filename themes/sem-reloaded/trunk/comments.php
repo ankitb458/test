@@ -170,10 +170,19 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. 'wp-login.php?redirect_to='
 			. urlencode(get_permalink());
 		
+		$login_url = apply_filters('loginout',
+			'<a href="'
+					. htmlspecialchars($login_url)
+					. '"'
+				. '>'
+				. __('Logout')
+				. '</a>'
+			);
+			
 		echo '<div class="comments_login">' . "\n"
 			. '<div class="pad">' . "\n"
 			. '<p>'
-			. str_replace('%login_url%', '<a href="' . htmlspecialchars($login_url) . '">' . __('Login') . '</a>', $sem_captions['login_required'])
+			. str_replace('%login_url%', $login_url, $sem_captions['login_required'])
 			. '</p>' . "\n"
 			. '</div>' . "\n"
 			. '</div>' . "\n";
@@ -187,6 +196,15 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 		if ( $user_ID )
 		{
+			$logout_url = apply_filters('loginout',
+				'<a href="'
+						. htmlspecialchars(wp_logout_url())
+						. '"'
+					. '>'
+					. __('Logout')
+					. '</a>'
+				);
+
 			$identity = '<span class="signed_in_author">'
 				. '<a href="' . trailingslashit(site_url()) . 'wp-admin/profile.php">'
 				. $user_identity
@@ -194,7 +212,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '</span>';
 
 			echo '<p>'
-				. str_replace('%identity%', $identity, $sem_captions['logged_in_as'])
+				. str_replace(array('%identity%', '%logout_url%'), array($identity, $logout_url), $sem_captions['logged_in_as'])
 				. '</p>' . "\n";
 		}
 		else
