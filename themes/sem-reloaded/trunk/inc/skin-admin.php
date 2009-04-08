@@ -39,8 +39,9 @@ class sem_skin_admin
 		global $sem_options;
 
 		$sem_options['active_skin'] = preg_replace("/\//", '', $_POST['active_skin']);
+		$sem_options['skin_data'] = sem_skin::get_skin_data($sem_options['active_skin']);
 		$sem_options['active_font'] = preg_replace("/[^a-z]/", '', $_POST['active_font']);
-
+		
 		update_option('sem6_options', $sem_options);
 	} # update_options()
 	

@@ -15,17 +15,17 @@ class sem_footer_admin
 			$new_options = $sem_options;
 			$new_captions = $sem_captions;
 
-			$new_options['show_copyright'] = isset($_POST['sem_footer']['show_copyright']);
 			$new_options['float_footer'] = isset($_POST['sem_footer']['float_footer']);
-			$new_options['show_credits'] = isset($_POST['sem_footer']['show_credits']);
 
 			if ( current_user_can('unfiltered_html') )
 			{
 				$new_captions['copyright'] = stripslashes($_POST['sem_footer']['label_copyright']);
+				$new_captions['credits'] = stripslashes($_POST['sem_footer']['label_credits']);
 			}
 			else
 			{
 				$new_captions['copyright'] = strip_tags(stripslashes($_POST['sem_footer']['label_copyright']));
+				$new_captions['credits'] = strip_tags(stripslashes($_POST['sem_footer']['label_credits']));
 			}
 
 			if ( $new_options != $sem_options )
@@ -51,20 +51,6 @@ class sem_footer_admin
 		echo '<div style="margin-bottom: .2em;">'
 			. '<label>'
 			. '<input type="checkbox"'
-				. ' name="sem_footer[show_copyright]"'
-				. ( $sem_options['show_copyright']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Copyright Notice')
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
 				. ' name="sem_footer[float_footer]"'
 				. ( $sem_options['float_footer']
 					? ' checked="checked"'
@@ -76,20 +62,6 @@ class sem_footer_admin
 			. '</label>'
 			. '</div>';
 		
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_footer[show_credits]"'
-				. ( $sem_options['show_credits']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Theme Credits')
-			. '</label>'
-			. '</div>';
-			
 		echo '<h3>'
 			. __('Captions')
 			. '</h3>';
@@ -98,10 +70,23 @@ class sem_footer_admin
 			. '<label>'
 			. __('Copyright Notice, e.g. Copyright %year%')
 			. '<br />'
-			. '<input type="text" style="width: 95%"'
+			. '<textarea class="widefat" cols="3"'
 				. ' name="sem_footer[label_copyright]"'
-				. ' value="' . attribute_escape($sem_captions['copyright']) . '"'
-				. ' />'
+				. '>'
+			. format_to_edit($sem_captions['copyright'])
+			. '</textarea>'
+			. '</label>'
+			. '</div>';
+
+		echo '<div style="margin-bottom: .2em;">'
+			. '<label>'
+			. __('Credits, e.g. Made with %semiologic% &amp;bull; %skin_name% skin by %skin_author%')
+			. '<br />'
+			. '<textarea class="widefat" cols="3"'
+				. ' name="sem_footer[label_credits]"'
+				. '>'
+			. format_to_edit($sem_captions['credits'])
+			. '</textarea>'
 			. '</label>'
 			. '</div>';
 

@@ -127,12 +127,19 @@ class sem_skin
 	# get_skin_data()
 	#
 
-	function get_skin_data($skin_id)
+	function get_skin_data($skin_id, $autofix = false)
 	{
 		if ( !( $skin_data = @file_get_contents(sem_path . '/skins/' . $skin_id . '/skin.css') ) )
 		{
 			$skin_id = 'copywriter-gold';
 			$skin_data = @file_get_contents(sem_path . '/skins/copywriter-gold/skin.css');
+			
+			if ( $autofix ) {
+				global $sem_options;
+				$sem_options['active_skin'] = $skin_id;
+				$sem_options['skin_data'] = $skin_data;
+				update_option('sem6_options', $sem_options);
+			}
 			
 			if ( !$skin_data ) return array();
 		}

@@ -46,11 +46,12 @@ class sem_footer
 	function footer_widget($args)
 	{
 		global $sem_options;
+		global $sem_captions;
 		
 		if ( is_admin() || !$GLOBALS['the_footer'] ) return;
 		
 		echo '<div id="footer" class="wrapper'
-				. ( $sem_options['float_footer'] && $sem_options['show_copyright']
+				. ( $sem_options['float_footer'] && $sem_captions['copyright']
 					? ' float_nav'
 					: ''
 					)
@@ -69,12 +70,9 @@ class sem_footer
 		
 		echo '</div><!-- footer_nav -->' . "\n";
 		
-		if ( $sem_options['show_copyright'] )
+		if ( $copyright_notice = $sem_captions['copyright'] )
 		{
 			global $wpdb;
-			global $sem_captions;
-
-			$copyright_notice = $sem_captions['copyright'];
 
 			$year = date('Y');
 
@@ -142,26 +140,37 @@ class sem_footer
 	
 	function display_credits($args)
 	{
-		global $sem_options;
+		global $sem_captions;
 		
 		echo '<div id="credits">' . "\n"
 			. '<div id="credits_top"><div class="hidden"></div></div>' . "\n"
-			. '<div id="credits_bg">' . "\n"
-			. ( $sem_options['show_credits']
-				? ( '<div>' . "\n"
-					. '<div class="pad">' . "\n"
-					. 'Made with '
-					. sem_footer::get_theme_credits()
-					. ( ( $sem_options['active_layout'] != 'm' )
-						? ' &bull; '
-						: '<br />'
-						)
-					. sem_footer::get_skin_credits()
-					. '</div>' . "\n"
-					. '</div>' . "\n" )
-				: ''
-				)
-			. '</div>' . "\n"
+			. '<div id="credits_bg">' . "\n";
+		if ( $sem_captions['credits'] ) {
+			$theme_credits = sem_footer::get_theme_credits();
+			$skin_credits = sem_footer::get_skin_credits();
+			
+			$credits = str_replace(
+				array(
+					'%wordpress%',
+					'%semiologic%',
+					'%skin_name%',
+					'%skin_author%',
+					),
+				array(
+					'<a href="http://wordpress.org">' . __('WordPress') . '</a>',
+					$theme_credits,
+					$skin_credits['skin_name'],
+					$skin_credits['skin_author'],
+					),
+				$sem_captions['credits']
+				);
+			
+			echo '<div class="pad">'
+				. $credits
+				. '</div>' . "\n";
+		}
+		
+		echo '</div>' . "\n"
 			. '<div id="credits_bottom"><div class="hidden"></div></div>' . "\n"
 			. '</div><!-- credits -->' . "\n";
 	} # display_credits()
@@ -173,28 +182,20 @@ class sem_footer
 
 	function get_theme_credits()
 	{
-		$theme_descriptions = array(
-			'<a href="http://www.semiologic.com">Semiologic</a>',
-			'a healthy dose of <a href="http://www.semiologic.com">Semiologic</a>',
-			'the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic theme and CMS</a>',
-			'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to use WordPress theme</a>',
-			'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to customize WordPress theme</a>',
-			'a <a href="http://www.semiologic.com/software/sem-reloaded/">search engine optimized WordPress theme</a>'
-			);
-
-		$theme_descriptions = apply_filters('theme_descriptions', $theme_descriptions);
-
-		if ( sizeof($theme_descriptions) )
-		{
+		if ( defined('sem_fixes_path') || defined('sem_docs_path') ) {
+			return '<a href="http://www.getsemiologic.com">'
+				. __('Semiologic Pro')
+				. '</a>';
+		} else {
+			$theme_descriptions = array(
+				'the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic Reloaded theme</a>',
+				'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to use WordPress theme</a>',
+				'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to customize WordPress theme</a>',
+				);
+			
 			$i = rand(0, sizeof($theme_descriptions) - 1);
 
-			return '<a href="http://wordpress.org">WordPress</a>'
-				. ' and '
-				. $theme_descriptions[$i];
-		}
-		else
-		{
-			return '<a href="http://www.semiologic.com">Semiologic</a>';
+			return '<a href="http://wordpress.org">WordPress</a> and ' . $theme_descriptions[$i];
 		}
 	} # get_theme_credits()
 	
@@ -207,12 +208,19 @@ class sem_footer
 	{
 		global $sem_options;
 		
-		$skin_data = sem_skin::get_skin_data($sem_options['active_skin']);
-
-		return str_replace(
-			array('%name%', '%author%', '%author_uri%'),
-			array($skin_data['name'], $skin_data['author'], $skin_data['author_uri']),
-			__('%name% skin by <a href="%author_uri%">%author%</a>')
+		if ( !isset($sem_options['skin_data']) || !is_array($sem_options['skin_data']) ) {
+			$skin_data = sem_skin::get_skin_data($sem_options['active_skin']);
+			$sem_options['skin_data'] = $skin_data;
+			update_option('sem6_options', $sem_options);
+		} else {
+			$skin_data = $sem_options['skin_data'];
+		}
+		
+		return array(
+			'skin_name' => $skin_data['name'],
+			'skin_author' => '<a href="' . htmlspecialchars($skin_data['author_uri']) . '">'
+				. $skin_data['author']
+				. '</a>'
 			);
 	} # get_skin_credits()
 } # sem_footer

@@ -38,6 +38,7 @@ $sem_captions = array(
 	"prev_page" => __("Previous Page"),
 	# footer
 	"copyright" => __("Copyright %year%, $site_name"),
+	'credits' => __("Made with %semiologic% &bull; %skin_name% by %skin_author%"),
 	);
 
 # Update
@@ -87,8 +88,6 @@ $sem_options['show_print_link'] = true;
 $sem_options['show_email_link'] = true;
 $sem_options['show_comment_link'] = true;
 $sem_options['show_search_form'] = true;
-$sem_options['show_copyright'] = true;
-$sem_options['show_credits'] = true;
 
 # Version
 $sem_options['version'] = sem_version;
