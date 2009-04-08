@@ -75,6 +75,7 @@ class sem_entry_admin
 
 			$new_captions['more_link'] = strip_tags(stripslashes($_POST['sem_entry']['more_link']));
 			$new_captions['paginate'] = strip_tags(stripslashes($_POST['sem_entry']['paginate']));
+			$new_captions['comment_box'] = strip_tags(stripslashes($_POST['sem_entry']['comment_box']));
 
 			if ( $new_options != $sem_options )
 			{
@@ -133,6 +134,17 @@ class sem_entry_admin
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_entry[paginate]"'
 				. ' value="' . attribute_escape($sem_captions['paginate']) . '"'
+				. ' />'
+			. '</label>'
+			. '</div>';
+
+		echo '<div style="margin-bottom: .2em;">'
+			. '<label>'
+			. __('Comment Box, e.g. Comments')
+			. '<br />'
+			. '<input type="text" style="width: 95%"'
+				. ' name="sem_entry[comment_box]"'
+				. ' value="' . attribute_escape($sem_captions['comment_box']) . '"'
 				. ' />'
 			. '</label>'
 			. '</div>';
@@ -259,181 +271,6 @@ class sem_entry_admin
 
 
 	#
-	# actions()
-	#
-
-	function actions()
-	{
-		global $sem_options;
-		global $sem_captions;
-
-		if ( $_POST['update_sem_entry']['actions'] )
-		{
-			$new_options = $sem_options;
-			$new_captions = $sem_captions;
-
-			$new_options['show_permalink'] = isset($_POST['sem_entry']['show_permalink']);
-			$new_options['show_print_link'] = isset($_POST['sem_entry']['show_print_link']);
-			$new_options['show_email_link'] = isset($_POST['sem_entry']['show_email_link']);
-			$new_options['show_comment_link'] = isset($_POST['sem_entry']['show_comment_link']);
-
-			$new_captions['permalink'] = strip_tags(stripslashes($_POST['sem_entry']['permalink']));
-			$new_captions['print_link'] = strip_tags(stripslashes($_POST['sem_entry']['print_link']));
-			$new_captions['email_link'] = strip_tags(stripslashes($_POST['sem_entry']['email_link']));
-			$new_captions['comment_link'] = strip_tags(stripslashes($_POST['sem_entry']['comment_link']));
-			$new_captions['1_comment_link'] = strip_tags(stripslashes($_POST['sem_entry']['1_comment_link']));
-			$new_captions['n_comments_link'] = strip_tags(stripslashes($_POST['sem_entry']['n_comments_link']));
-
-			if ( $new_options != $sem_options )
-			{
-				$sem_options = $new_options;
-
-				update_option('sem6_options', $sem_options);
-			}
-
-			if ( $new_captions != $sem_captions )
-			{
-				$sem_captions = $new_captions;
-
-				update_option('sem6_captions', $sem_captions);
-			}
-		}
-
-		echo '<input type="hidden" name="update_sem_entry[actions]" value="1" />';
-
-		echo '<h3>'
-			. __('Config')
-			. '</h3>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_entry[show_permalink]"'
-				. ( $sem_options['show_permalink']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Permalink')
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_entry[show_print_link]"'
-				. ( $sem_options['show_print_link']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Print Link')
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_entry[show_email_link]"'
-				. ( $sem_options['show_email_link']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Email Link')
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_entry[show_comment_link]"'
-				. ( $sem_options['show_comment_link']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Comment Link')
-			. '</label>'
-			. '</div>';
-
-		echo '<h3>'
-			. __('Captions')
-			. '</h3>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Permalink, e.g. Permalink')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[permalink]"'
-				. ' value="' . attribute_escape($sem_captions['permalink']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Print, e.g. Print')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[print_link]"'
-				. ' value="' . attribute_escape($sem_captions['print_link']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Email, e.g. Email')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[email_link]"'
-				. ' value="' . attribute_escape($sem_captions['email_link']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Comment, e.g. Comment')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[comment_link]"'
-				. ' value="' . attribute_escape($sem_captions['comment_link']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('1 Comment, e.g. 1 Comment')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[1_comment_link]"'
-				. ' value="' . attribute_escape($sem_captions['1_comment_link']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('n Comments, e.g. %num% Comments')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[n_comments_link]"'
-				. ' value="' . attribute_escape($sem_captions['n_comments_link']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-	} # actions()
-
-
-	#
 	# comments()
 	#
 
@@ -447,12 +284,7 @@ class sem_entry_admin
 			$new_options = $sem_options;
 			$new_captions = $sem_captions;
 
-			$new_options['show_trackback_uri'] = isset($_POST['sem_entry']['show_trackback_uri']);
-			$new_options['show_comment_permalink'] = isset($_POST['sem_entry']['show_comment_permalink']);
-
 			$new_captions['comments_on'] = strip_tags(stripslashes($_POST['sem_entry']['comments_on']));
-			$new_captions['comment_trackback'] = strip_tags(stripslashes($_POST['sem_entry']['comment_trackback']));			
-			$new_captions['comment_permalink'] = strip_tags(stripslashes($_POST['sem_entry']['comment_permalink']));
 			$new_captions['reply_link'] = strip_tags(stripslashes($_POST['sem_entry']['reply_link']));
 
 			$new_captions['leave_comment'] = strip_tags(stripslashes($_POST['sem_entry']['leave_comment']));
@@ -482,39 +314,6 @@ class sem_entry_admin
 		echo '<input type="hidden" name="update_sem_entry[comments]" value="1" />';
 
 		echo '<h3>'
-			. __('Config')
-			. '</h3>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_entry[show_trackback_uri]"'
-				. ( $sem_options['show_trackback_uri']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Trackback URI')
-			. '</label>'
-			. '</div>';
-			
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_entry[show_comment_permalink]"'
-				. ( $sem_options['show_comment_permalink']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Permalink')
-			. '</label>'
-			. '</div>';
-
-
-		echo '<h3>'
 			. __('Captions')
 			. '</h3>';
 
@@ -525,28 +324,6 @@ class sem_entry_admin
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_entry[comments_on]"'
 				. ' value="' . attribute_escape($sem_captions['comments_on']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Trackback URI, e.g. Trackback URI')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[comment_trackback]"'
-				. ' value="' . attribute_escape($sem_captions['comment_trackback']) . '"'
-				. ' />'
-			. '</label>'
-			. '</div>';
-			
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. __('Permalink, e.g. Permalink')
-			. '<br />'
-			. '<input type="text" style="width: 95%"'
-				. ' name="sem_entry[comment_permalink]"'
-				. ' value="' . attribute_escape($sem_captions['comment_permalink']) . '"'
 				. ' />'
 			. '</label>'
 			. '</div>';

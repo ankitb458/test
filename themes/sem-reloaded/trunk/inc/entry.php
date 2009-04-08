@@ -309,10 +309,7 @@ class sem_entry
 						. $sem_entry['num_comments']
 						. '</span>'
 						. '<br />'
-						. ( isset($sem_captions['comment_box'])
-							? $sem_captions['comment_box']
-							: __('Comments')
-							)
+						. $sem_captions['comment_box']
 						. '</a>';
 				} else {
 					$sem_entry['num_comments'] = false;

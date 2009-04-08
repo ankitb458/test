@@ -166,6 +166,10 @@ unset($sem_captions['permalink']);
 unset($sem_captions['print_link']);
 unset($sem_captions['comment_trackback']);
 
+if ( !isset($sem_captions['comment_box']) ) {
+	$sem_captions['comment_box'] = __('Comments');
+}
+
 #dump($sem_options, $sem_captions);
 #die;
 ?>
