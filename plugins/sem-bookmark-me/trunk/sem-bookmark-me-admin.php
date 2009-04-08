@@ -70,7 +70,7 @@ class bookmark_me_admin {
 			. '<label>'
 				. __('Title:', 'bookmark-me')
 				. '<br />'
-				. '<input style="width: 300px;"'
+				. '<input class="widefat"'
 					. ' name="widget-bookmark-me[' . $number. '][title]"'
 					. ' type="text" value="' . $title . '" />'
 				. '</label>'

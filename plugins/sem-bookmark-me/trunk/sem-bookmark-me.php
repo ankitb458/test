@@ -105,7 +105,7 @@ class bookmark_me {
 		$options = bookmark_me::get_options();
 		
 		$widget_options = array('classname' => 'bookmark_me', 'description' => __( "Social bookmarking links", 'bookmark-me') );
-		$control_options = array('width' => 320, 'id_base' => 'bookmark_me');
+		$control_options = array('id_base' => 'bookmark_me');
 		
 		$id = false;
 		
