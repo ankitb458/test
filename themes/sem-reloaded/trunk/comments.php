@@ -171,12 +171,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. urlencode(get_permalink());
 		
 		$login_url = apply_filters('loginout',
-			'<a href="'
-					. htmlspecialchars($login_url)
-					. '"'
-				. '>'
-				. __('Logout')
-				. '</a>'
+			'<a href="' . $login_url . '">' . __('Logout') . '</a>'
 			);
 			
 		echo '<div class="comments_login">' . "\n"
@@ -197,12 +192,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		if ( $user_ID )
 		{
 			$logout_url = apply_filters('loginout',
-				'<a href="'
-						. htmlspecialchars(wp_logout_url())
-						. '"'
-					. '>'
-					. __('Logout')
-					. '</a>'
+				'<a href="' . wp_logout_url() . '">' . __('Logout') . '</a>'
 				);
 
 			$identity = '<span class="signed_in_author">'
