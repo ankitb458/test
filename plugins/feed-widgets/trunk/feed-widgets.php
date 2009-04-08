@@ -40,12 +40,9 @@ class feed_widgets
 	{
 		$sidebars_widgets = get_option('sidebars_widgets');
 		
-		if ( !$sidebars_widgets['feed_widgets'] )
+		if ( !isset($sidebars_widgets['feed_widgets']) )
 		{
-			if ( method_exists('bookmark_me', 'new_widget') )
-			{
-				$sidebars_widgets['feed_widgets'][] = bookmark_me::new_widget();
-			}
+			$sidebars_widgets['feed_widgets'] = array();
 			
 			update_option('sidebars_widgets', $sidebars_widgets);
 		}
