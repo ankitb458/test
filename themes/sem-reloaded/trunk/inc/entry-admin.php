@@ -22,7 +22,7 @@ class sem_entry_admin
 	{
 		echo '<div class="updated fade">'
 			. '<p>'
-			. __('<strong>Note</strong>: Threaded and paged comments are not supported in the Semiologic Reloaded theme. They never will be. Supporting threaded comments would, simply put, nullify the ability to create more advanced skins. As for paged comments, they do not play well with the separation of comments by type, and they can potentially disrupt your readers\' browsing experience, by rendering permanent links to comments invalid as they switch from a page to the next.')
+			. __('<strong>Note</strong>: Threaded and paged comments are not supported in the Semiologic Reloaded theme. They never will be. Supporting threaded comments would, simply put, nullify the ability to create more advanced skins. As for paged comments, they turn into all sorts of weird issues when comments are split by type, and they can potentially disrupt your readers\' browsing experience by rendering permanent links to comments invalid as they switch from a page to the next.')
 			. '</p>'
 			. '</div>' . "\n";
 	} # discussion_notices()
