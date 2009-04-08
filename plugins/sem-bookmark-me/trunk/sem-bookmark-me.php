@@ -202,7 +202,7 @@ class bookmark_me {
 			if ( $print_action ) {
 				echo '<div class="bookmark_me_actions">' . "\n";
 
-				echo '<a href="mailto:?subject=%email_title%&body=%email_url%"'
+				echo '<a href="mailto:?subject=%email_title%&amp;body=%email_url%"'
 					. ' title="' . htmlspecialchars(__('Email', 'bookmark-me')) .  '" class="email_entry">'
 					. __('Email', 'bookmark-me')
 					. '</a>' . "\n";
