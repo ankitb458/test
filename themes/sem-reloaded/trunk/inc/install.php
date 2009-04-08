@@ -21,8 +21,8 @@ $sem_captions = array(
 	"tags" => __("Tags: %tags%."),
 	"tags_title" => __("Tags"),
 	# entry: comments
+	"pings_on" => __('Pings on %title%'),
 	"comments_on" => __('Comments on %title%'),
-	"comment_trackback" => __("Trackback URI"),
 	"reply_link" => __("Reply"),
 	# comment form
 	"leave_comment" => __("Leave a Comment"),

@@ -171,6 +171,10 @@ if ( !isset($sem_captions['required_fields']) ) {
 	$sem_captions["required_fields"] = __("Fields marked by an asterisk (*) are required.");
 }
 
+if ( !isset($sem_captions['pings_on']) ) {
+	$sem_captions["pings_on"] = __('Pings on %title%');
+}
+
 if ( strpos($sem_captions['login_required'], '%login_url%') === false ) {
 	$sem_captions['login_required'] .=
 		( substr($sem_captions['login_required'], -1) != '.'

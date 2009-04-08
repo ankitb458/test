@@ -29,13 +29,14 @@ $comments = $pings['comment'];
 $pings = $pings['pings'];
 
 
+if ( $pings || $comments )
+	echo '<div id="comments">' . "\n";
+	
 #
 # Display pings
 #
 
 if ( $pings ) {
-	echo '<div id="pings">' . "\n";
-	
 	$title = the_title('', '', false);
 
 	$caption = $sem_captions['pings_on'];
@@ -234,11 +235,12 @@ if ( $comments )
 		
 		echo '</div> <!-- comment-id -->' . "\n";
 	} # foreach $comments as $comment
-	
-	echo '</div><!-- #comments -->' . "\n";
 } # if $comments
 
 
+if ( $pings || $comments )
+	echo '</div><!-- #comments -->' . "\n";
+	
 #
 # Display comment form
 #

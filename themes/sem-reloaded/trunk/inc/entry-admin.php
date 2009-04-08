@@ -273,6 +273,7 @@ class sem_entry_admin
 			$new_captions = $sem_captions;
 
 			$new_captions['comments_on'] = strip_tags(stripslashes($_POST['sem_entry']['comments_on']));
+			$new_captions['pings_on'] = strip_tags(stripslashes($_POST['sem_entry']['comments_on']));
 			$new_captions['reply_link'] = strip_tags(stripslashes($_POST['sem_entry']['reply_link']));
 
 			$new_captions['leave_comment'] = strip_tags(stripslashes($_POST['sem_entry']['leave_comment']));
@@ -304,6 +305,17 @@ class sem_entry_admin
 		echo '<h3>'
 			. __('Captions')
 			. '</h3>';
+
+		echo '<div style="margin-bottom: .2em;">'
+			. '<label>'
+			. __('Pings on Entry, e.g. Pings on %title%')
+			. '<br />'
+			. '<input type="text" style="width: 95%"'
+				. ' name="sem_entry[pings_on]"'
+				. ' value="' . attribute_escape($sem_captions['pings_on']) . '"'
+				. ' />'
+			. '</label>'
+			. '</div>';
 
 		echo '<div style="margin-bottom: .2em;">'
 			. '<label>'
