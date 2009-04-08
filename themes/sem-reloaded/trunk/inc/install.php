@@ -229,7 +229,6 @@ $extra_plugins = array(
 	'fuzzy-widgets/fuzzy-widgets.php',
 	'google-analytics/google-analytics.php',
 	'inline-widgets/inline-widgets.php',
-	'link-widgets/link-widgets.php',
 	'mediacaster/mediacaster.php',
 	'newsletter-manager/newsletter-manager.php',
 	'nav-menus/nav-menus.php',

@@ -31,7 +31,6 @@ $extra_plugins = array(
 	'contact-form/contact-form.php',
 	'feed-widgets/feed-widgets.php',
 	'inline-widgets/inline-widgets.php',
-	'link-widgets/link-widgets.php',
 	'nav-menus/nav-menus.php',
 	'script-manager/script-manager.php',
 	'sem-docs/sem-docs.php',
