@@ -70,10 +70,6 @@ class sem_entry
 				'label' => __('Categories'),
 				'desc' => 'Entry: Categories. If placed outside of the loop, it will only display on individual entries.',
 				),
-		#	'actions' => array(
-		#		'label' => __('Actions'),
-		#		'desc' => 'Entry: Permalink, email link, etc. Only works in the loop (each entry).',
-		#		),
 			'comments' => array(
 				'label' => __('Comments'),
 				'desc' => 'Entry: Comments. Only works in the loop (each entry).',
@@ -129,14 +125,6 @@ class sem_entry
 		{
 			switch ( $tag )
 			{
-			case 'date':
-				$format = get_option('date_format');
-				$sem_entry['date'] = apply_filters('the_date', get_the_time($format), $format);
-				if ( $sem_entry['date'] ) {
-					$sem_entry['date'] = '<span>' . $sem_entry['date'] . '</span>';
-				}
-				break;
-
 			case 'optional_date':
 				$sem_entry['optional_date'] = the_date('', '', '', false);
 				if ( $sem_entry['optional_date'] ) {
@@ -321,7 +309,10 @@ class sem_entry
 						. $sem_entry['num_comments']
 						. '</span>'
 						. '<br />'
-						. __('Comments')
+						. ( isset($sem_captions['comment_box'])
+							? $sem_captions['comment_box']
+							: __('Comments')
+							)
 						. '</a>';
 				} else {
 					$sem_entry['num_comments'] = false;
@@ -568,96 +559,12 @@ class sem_entry
 
 
 	#
-	# actions()
-	#
-
-	function actions($args)
-	{
-		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) return;
-		
-		if ( !class_exists('widget_contexts')
-			&& get_post_meta(get_the_ID(), '_wp_page_template', true) == 'letter.php'
-			)
-		{
-			return;
-		}
-		
-		global $sem_options;
-		global $sem_captions;
-		$o = '';
-
-		if ( $sem_options['show_permalink'] )
-		{
-			$o .= '<span class="entry_action link_entry">'
-				. '<a href="' . htmlspecialchars(sem_entry::get('permalink')) . '">'
-				. $sem_captions['permalink']
-				. '</a>'
-				. '</span>' . "\n";
-		}
-
-		if ( $sem_options['show_print_link'] )
-		{
-			$o .= '<span class="entry_action print_entry">'
-				. '<a href="' . htmlspecialchars(sem_entry::get('print_link')) . '">'
-				. $sem_captions['print_link']
-				. '</a>'
-				. '</span>' . "\n";
-		}
-
-		if ( $sem_options['show_email_link'] )
-		{
-			$o .= '<span class="entry_action email_entry">'
-				. '<a href="' . htmlspecialchars(sem_entry::get('email_link')) . '">'
-				. $sem_captions['email_link']
-				. '</a>'
-				. '</span>' . "\n";
-		}
-
-		if ( $sem_options['show_comment_link'] )
-		{
-			if ( !is_singular()
-				&& ( $comments_link = sem_entry::get('comments_link') )
-				)
-			{
-				$o .= '<span class="entry_action entry_comment">'
-					. '<a href="' . htmlspecialchars($comments_link) . '">'
-					. sem_entry::get('num_comments')
-					. '</a>'
-					. '</span>' . "\n";
-			}
-			elseif ( !( is_front_page() && is_page() )
-				&& ( $comment_link = sem_entry::get('comment_link') )
-				)
-			{
-				$o .= '<span class="entry_action comment_entry">'
-					. '<a href="' . htmlspecialchars($comment_link) . '">'
-					. $sem_captions['comment_link']
-					. '</a>'
-					. '</span>' . "\n";
-			}
-		}
-
-		if ( $o )
-		{
-			echo '<div class="spacer"></div>' . "\n"
-				. '<div class="entry_actions">' . "\n"
-				. '<div class="entry_actions_top"><div class="hidden"></div></div>' . "\n"
-				. '<div class="pad">' . "\n"
-				. '<p>' . $o . '</p>' . "\n"
-				. '</div>' . "\n"
-				. '<div class="entry_actions_bottom"><div class="hidden"></div></div>' . "\n"
-				. '</div>' . "\n";
-		}
-	} # actions()
-
-
-	#
 	# comments()
 	#
 
 	function comments($args)
 	{
-		if ( is_single() || is_page() )
+		if ( is_singular() )
 		{
 			echo '<div class="entry_comments">' . "\n"
 				. '<div class="spacer"></div>' . "\n";
@@ -834,30 +741,4 @@ function archive_header_widgetize()
 } # archive_header_widgetize()
 
 add_action('widgets_init', 'archive_header_widgetize');
-
-
-#
-# display_entry_trackback_uri()
-#
-
-function display_trackback_uri()
-{
-	global $sem_captions;
-	
-	if ( is_singular() && pings_open() )
-	{
-		echo '<div class="entry_trackback">' . "\n"
-			. '<div class="entry_trackback_top"><div class="hidden"></div></div>' . "\n"
-			. '<div class="pad">' . "\n"
-			. '<h2>' . $sem_captions['comment_trackback'] . '</h2>' . "\n"
-			. '<p>'
-				. '<a href="' . get_trackback_url() . '" rel="trackback nofollow">'
-					. get_trackback_url()
-					. '</a>'
-				. '</p>' . "\n"
-			. '<div class="entry_trackback_bottom"><div class="hidden"></div></div>' . "\n"
-			. '</div>' . "\n"
-			. '</div>' . "\n";
-	}
-} # display_trackback_uri()
 ?>

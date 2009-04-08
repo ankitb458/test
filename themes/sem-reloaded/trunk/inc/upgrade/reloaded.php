@@ -131,7 +131,7 @@ update_option('sidebars_widgets', $sidebars_widgets);
 
 
 #
-# unset unused stuff
+# upgrade options and captions
 #
 
 unset($sem_options['api_key']);
@@ -143,7 +143,28 @@ unset($sem_options['scripts']);
 unset($sem_options['active_header']);
 unset($sem_options['active_font_size']);
 unset($sem_options['active_width']);
+unset($sem_options['show_trackback_uri']);
+unset($sem_options['show_comment_permalink']);
+unset($sem_options['show_email_link']);
+unset($sem_options['show_comment_link']);
+unset($sem_options['show_print_link']);
+unset($sem_options['show_permalink']);
+
+if ( is_array($sem_options['header']) ) {
+	if ( !isset($sem_options['header_mode']) )
+		$sem_options['header_mode'] = $sem_options['header']['mode'];
+	unset($sem_options['header']);
+}
+
 unset($sem_captions['entry_author']);
+unset($sem_captions['1_comment_link']);
+unset($sem_captions['comment_link']);
+unset($sem_captions['comment_permalink']);
+unset($sem_captions['email_link']);
+unset($sem_captions['n_comments_link']);
+unset($sem_captions['permalink']);
+unset($sem_captions['print_link']);
+unset($sem_captions['comment_trackback']);
 
 #dump($sem_options, $sem_captions);
 #die;

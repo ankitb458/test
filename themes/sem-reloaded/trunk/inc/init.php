@@ -226,7 +226,7 @@ if ( !$GLOBALS['sem_options'] )
 {
 	include sem_path . '/inc/install.php';
 }
-elseif ( version_compare($GLOBALS['sem_options']['version'], sem_version, '<') || $force_update )
+elseif ( $GLOBALS['sem_options']['version'] != sem_version || $force_update )
 {
 	include sem_path . '/inc/upgrade.php';
 }
@@ -243,7 +243,7 @@ add_filter('option_thread_comments', 'false');
 #
 # set content width
 #
-
+dump($sem_options, $sem_captions);
 global $content_width;
 $content_width = 480;
 ?>

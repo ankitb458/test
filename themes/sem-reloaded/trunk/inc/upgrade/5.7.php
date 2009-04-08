@@ -3,7 +3,7 @@
 #
 # Step 1
 # ------
-# Deactivate new plugins
+# Deactivate old plugins
 #
 
 if ( ( $active_plugins = get_option('active_plugins') ) === false )

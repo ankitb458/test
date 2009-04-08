@@ -21,15 +21,6 @@ if ( $post->post_password !== ''
 }
 
 #
-# Display trackback uri
-#
-
-if ( $sem_options['show_trackback_uri'] )
-{
-	display_trackback_uri();
-}
-
-#
 # Display comments
 #
 
@@ -92,7 +83,7 @@ if ( $comments )
 		
 		echo '<h3>'
 			. '<span class="comment_author">'
-				. get_avatar( $comment, 48 )
+				. get_avatar($comment, 48)
 				. get_comment_author_link()
 				. '</span>'
 			. '<br/>' . "\n"

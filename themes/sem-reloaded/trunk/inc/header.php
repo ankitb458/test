@@ -81,7 +81,7 @@ class sem_header
 			
 			$flash = ( $ext == 'swf' );
 
-			switch ( $sem_options['header']['mode'] )
+			switch ( $sem_options['header_mode'] )
 			{
 			case 'logo':
 				$logo = true;
@@ -358,7 +358,7 @@ class sem_header
 			}
 			else
 			{
-				switch ( $sem_options['header']['mode'] )
+				switch ( $sem_options['header_mode'] )
 				{
 				case 'header':
 					reset_plugin_hook('display_header_spacer');
@@ -481,7 +481,7 @@ EOF;
 
 		if ( sem_header::get_header() )
 		{
-			switch ( $sem_options['header']['mode'] )
+			switch ( $sem_options['header_mode'] )
 			{
 			case 'header':
 			case 'background':
@@ -513,7 +513,7 @@ EOF;
 
 		global $sem_options;
 
-		if ( !isset($sem_options['header']['mode']) )
+		if ( !isset($sem_options['header_mode']) )
 		{
 			sem_header::upgrade();
 		}
@@ -543,25 +543,25 @@ EOF;
 				{
 				case 'header':
 				case 'header-background':
-					if ( $sem_options['header']['mode'] != 'header' )
+					if ( $sem_options['header_mode'] != 'header' )
 					{
-						$sem_options['header']['mode'] = 'header';
+						$sem_options['header_mode'] = 'header';
 						update_option('sem6_options', $sem_options);
 					}
 					break;
 
 				case 'header-bg':
-					if ( $sem_options['header']['mode'] != 'background' )
+					if ( $sem_options['header_mode'] != 'background' )
 					{
-						$sem_options['header']['mode'] = 'background';
+						$sem_options['header_mode'] = 'background';
 						update_option('sem6_options', $sem_options);
 					}
 					break;
 
 				case 'logo':
-					if ( $sem_options['header']['mode'] != 'logo' )
+					if ( $sem_options['header_mode'] != 'logo' )
 					{
-						$sem_options['header']['mode'] = 'logo';
+						$sem_options['header_mode'] = 'logo';
 						update_option('sem6_options', $sem_options);
 					}
 					break;
@@ -607,7 +607,7 @@ EOF;
 
 		if ( !defined('GLOB_BRACE') )
 		{
-			$sem_options['header']['mode'] = 'header';
+			$sem_options['header_mode'] = 'header';
 			update_option('sem6_options', $sem_options);
 			return;
 		}
@@ -649,34 +649,34 @@ EOF;
 			switch ( $name )
 			{
 			case 'header-background':
-				$sem_options['header']['mode'] = 'header';
+				$sem_options['header_mode'] = 'header';
 				break;
 
 			case 'header-bg':
-				$sem_options['header']['mode'] = 'background';
+				$sem_options['header_mode'] = 'background';
 				break;
 
 			case 'header':
 				switch ( $ext )
 				{
 				case 'swf':
-					$sem_options['header']['mode'] = 'background';
+					$sem_options['header_mode'] = 'background';
 					break;
 
 				default:
-					$sem_options['header']['mode'] = 'logo';
+					$sem_options['header_mode'] = 'logo';
 					break;
 				}
 				break;
 
 			default:
-				$sem_options['header']['mode'] = 'background';
+				$sem_options['header_mode'] = 'background';
 				break;
 			}
 		}
 		else
 		{
-			$sem_options['header']['mode'] = 'header';
+			$sem_options['header_mode'] = 'header';
 		}
 
 		update_option('sem6_options', $sem_options);

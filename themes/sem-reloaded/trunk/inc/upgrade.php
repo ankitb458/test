@@ -26,6 +26,8 @@ endif;
 
 include sem_path . '/inc/upgrade/reloaded.php';
 
+include sem_path . '/inc/upgrade/options.php';
+
 
 #
 # Update Version

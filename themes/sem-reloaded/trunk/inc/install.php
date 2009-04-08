@@ -8,36 +8,37 @@
 $site_name = get_option('blogname');
 
 $sem_captions = array(
-	"1_comment_link" => "1 Comment",
-	"cats_title" => "Categories",
-	"comment_link" => "Comment",
-	"comments_on" => "Comments on %title%",
-	"comment_permalink" => "Permalink",
-	"comment_trackback" => "Trackback URI",	
-	"copyright" => "Copyright %year%, $site_name",
-	"email_field" => "Email",
-	"email_link" => "Email",
-	"required_field" => "(Required Field)",
-	"filed_under" => "Filed under %categories% by %author%",
-	"leave_comment" => "Leave a Comment",
-	"logged_in_as" => "Logged in as %identity%",
-	"login_required" => "You must be logged in to comment",
-	"more_link" => "More on %title%",
-	"n_comments_link" => "%num% Comments",
-	"name_field" => "Name",
-	"next_page" => "Next Page",
-	"paginate" => "Pages",
-	"permalink" => "Permalink",
-	"prev_page" => "Previous Page",
-	"print_link" => "Print",
-	"reply_link" => "Reply",
-	"search_button" => "Go",
-	"search_field" => "Search",
-	"sidebar_nav_title" => "Navigate",
-	"submit_field" => "Submit Comment",
-	"tags" => "Tags: %tags%",
-	"tags_title" => "Tags",
-	"url_field" => "URL",
+	# header: nav menu
+	"search_button" => __("Go"),
+	"search_field" => __("Search"),
+	# entry: content
+	"comment_box" => __('Comments'),
+	"paginate" => __("Pages"),
+	"more_link" => __("More on %title%"),
+	# entry: categories
+	"cats_title" => __('Categories'),
+	"filed_under" => __("Filed under %categories% by %author%"),
+	# entry: tags
+	"tags" => __("Tags: %tags%"),
+	"tags_title" => __("Tags"),
+	# entry: comments
+	"comments_on" => __('Comments on %title%'),
+	"comment_trackback" => __("Trackback URI"),
+	"reply_link" => __("Reply"),
+	# comment form
+	"leave_comment" => __("Leave a Comment"),
+	"logged_in_as" => __("Logged in as %identity%"),
+	"login_required" => __("You must be logged in to comment"),
+	"name_field" => __("Name"),
+	"email_field" => __("Email"),
+	"url_field" => __("URL"),
+	"required_field" => __("(Required Field)"),
+	"submit_field" => __("Submit Comment"),
+	# next/prev posts
+	"next_page" => __("Next Page"),
+	"prev_page" => __("Previous Page"),
+	# footer
+	"copyright" => __("Copyright %year%, $site_name"),
 	);
 
 # Update
@@ -77,7 +78,7 @@ $sem_options['active_skin'] = 'copywriter-gold';
 $sem_options['active_layout'] = 'mts';
 
 # Header
-$sem_options['header']['mode'] = 'header';
+$sem_options['header_mode'] = 'header';
 $sem_options['invert_header'] = false;
 
 # Template

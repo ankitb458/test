@@ -328,9 +328,9 @@ class sem_header_admin
 			. __('Header Options')
 			. '</h3>';
 
-		if ( !isset($sem_options['header']['mode']) )
+		if ( !isset($sem_options['header_mode']) )
 		{
-			$sem_options['header']['mode'] = 'header';
+			$sem_options['header_mode'] = 'header';
 		}
 
 		echo '<p>'
@@ -338,7 +338,7 @@ class sem_header_admin
 			. '<input type="radio"'
 				. 'id=header[mode][header] name="header[mode]"'
 				. ' value="header"'
-				. ( ( $sem_options['header']['mode'] == 'header' )
+				. ( ( $sem_options['header_mode'] == 'header' )
 					? ' checked="checked"'
 					: ''
 					)
@@ -353,7 +353,7 @@ class sem_header_admin
 			. '<input type="radio"'
 				. 'id=header[mode][background] name="header[mode]"'
 				. ' value="background"'
-				. ( ( $sem_options['header']['mode'] == 'background' )
+				. ( ( $sem_options['header_mode'] == 'background' )
 					? ' checked="checked"'
 					: ''
 					)
@@ -368,7 +368,7 @@ class sem_header_admin
 			. '<input type="radio"'
 				. 'id=header[mode][logo] name="header[mode]"'
 				. ' value="logo"'
-				. ( ( $sem_options['header']['mode'] == 'logo' )
+				. ( ( $sem_options['header_mode'] == 'logo' )
 					? ' checked="checked"'
 					: ''
 					)
@@ -468,7 +468,7 @@ class sem_header_admin
 			$_POST['header']['mode'] = 'header';
 		}
 
-		$sem_options['header'] = $_POST['header'];
+		$sem_options['header_mode'] = $_POST['header']['mode'];
 
 		update_option('sem6_options', $sem_options);
 	} # save_header()
