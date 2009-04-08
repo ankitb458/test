@@ -207,7 +207,7 @@ if ( !$GLOBALS['sem_options'] )
 {
 	include sem_path . '/inc/autoinstall.php';
 }
-elseif ( version_compare($GLOBALS['sem_options']['version'], sem_version, '<') )
+elseif ( $GLOBALS['sem_options']['version'] != sem_version )
 {
 	include sem_path . '/inc/upgrade.php';
 }

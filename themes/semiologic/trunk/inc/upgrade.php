@@ -24,6 +24,8 @@ include sem_path . '/inc/upgrade/5.7.php';
 
 endif;
 
+include_once sem_path . '/inc/upgrade/options.php';
+
 
 #
 # Update Version
