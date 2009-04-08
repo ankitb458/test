@@ -91,8 +91,6 @@ if ( $pings ) {
 		. '<div class="pings_list_bottom"><div class="hidden"></div></div>' . "\n"
 		. '</div> <!-- pings_list -->' . "\n";
 	
-	echo '</div>' . "\n";
-	
 	unset($prev_date);
 } # if ( $pings )
 
@@ -103,8 +101,6 @@ if ( $pings ) {
 
 if ( $comments )
 {
-	echo '<div id="comments">' . "\n";
-
 	$title = the_title('', '', false);
 
 	$caption = $sem_captions['comments_on'];
