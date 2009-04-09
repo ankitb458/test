@@ -448,7 +448,7 @@ class bookmark_me {
 
 	function default_options() {
 		return array(
-			'title' => __('Spread the Word!', 'bookmark-me'),
+			'title' => '',
 			);
 	} # default_options()
 	
