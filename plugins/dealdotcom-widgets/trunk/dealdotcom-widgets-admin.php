@@ -46,9 +46,8 @@ class dealdotcom_admin {
 
 			foreach ( (array) $_POST['widget-dealdotcom'] as $num => $opt ) {
 				$aff_id = stripslashes(strip_tags($opt['aff_id']));
-				$nofollow = isset($opt['nofollow']);
 				
-				$options[$num] = compact( 'aff_id', 'nofollow' );
+				$options[$num] = compact( 'aff_id', );
 			}
 
 			update_option('dealdotcom_widgets', $options);
@@ -82,21 +81,6 @@ class dealdotcom_admin {
 			. ' />'
 			. '</label>'
 			. '<div style="clear: both;"></div>'
-			. '</div>';
-
-		echo '<div style="margin: 0px 0px 6px 0px;">'
-			. '<label>'
-			. '<input'
-			. ' name="widget-dealdotcom[' . $number. '][nofollow]"'
-			. ' type="checkbox"'
-			. ( $nofollow
-				? ' checked="checked"'
-				: ''
-				)
-			. ' />'
-			. '&nbsp;'
-			. __('Add nofollow', 'dealdotcom')
-			. '</label>'
 			. '</div>';
 	} # widget_control()
 } # dealdotcom_admin

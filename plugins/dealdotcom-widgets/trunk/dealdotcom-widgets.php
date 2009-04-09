@@ -114,10 +114,7 @@ class dealdotcom {
 					. ' title="' . htmlspecialchars(
 							$deal['name'] . ' @ $' . $deal['price']
 							) . '"'
-					. ( $options[$number]['nofollow']
-						? ' rel="nofollow"'
-						: ''
-						)
+					. ' rel="nofollow"'
 					. '>'
 				. '<img src="'
 					. $plugin_path
