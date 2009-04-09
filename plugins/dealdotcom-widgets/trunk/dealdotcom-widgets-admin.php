@@ -47,7 +47,7 @@ class dealdotcom_admin {
 			foreach ( (array) $_POST['widget-dealdotcom'] as $num => $opt ) {
 				$aff_id = stripslashes(strip_tags($opt['aff_id']));
 				
-				$options[$num] = compact( 'aff_id', );
+				$options[$num] = compact( 'aff_id' );
 			}
 
 			update_option('dealdotcom_widgets', $options);
