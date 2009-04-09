@@ -30,6 +30,7 @@ class sem_entry
 			&& comments_open($GLOBALS['wp_query']->get_queried_object_id())
 		) {
 			wp_enqueue_script('comment-reply');
+			wp_enqueue_script('jquery');
 		}	
 	} # scripts()
 

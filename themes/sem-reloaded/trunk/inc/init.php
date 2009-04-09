@@ -241,6 +241,14 @@ if ( is_admin() )
 
 
 #
+# kill paged comments
+#
+
+if ( !is_admin() )
+	add_filter('option_page_comments', 'false');
+
+
+#
 # set content width
 #
 

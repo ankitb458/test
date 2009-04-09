@@ -158,7 +158,7 @@ if ( $comments )
 			. '<div class="pad">' . "\n";
 		
 		echo '<h3>'
-			. '<span class="comment_author">'
+			. '<span class="comment_author" id="comment_author-' . get_comment_ID() . '">'
 				. get_avatar($comment, 48)
 				. get_comment_author_link()
 				. '</span>'
@@ -191,10 +191,16 @@ if ( $comments )
 				
 				echo '<span class="reply_comment">'
 				. '<a href="#respond"'
-					. ' onclick="return addComment.moveForm('
-						. "'comment-$comment->comment_ID', '$comment->comment_ID',"
-						. " 'respond', '$post->ID'"
-						. ');"'
+					. ' onclick="'
+						. "jQuery('#comment').val("
+							. "'@&lt;a href=&quot;#comment-$comment->comment_ID&quot;&gt;'"
+							. " + jQuery('#comment_author-$comment->comment_ID').text()"
+							. " + '&lt;/a&gt;: '"
+							. ");"
+						. ' return addComment.moveForm('
+							. "'comment-$comment->comment_ID', '$comment->comment_ID',"
+							. " 'respond', '$post->ID'"
+							. ');"'
 					. '>'
 				. $sem_captions['reply_link']
 				. '</a>'
@@ -355,8 +361,8 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			
 			echo '<div class="spacer"></div>' . "\n";
 		} # if ( $user_ID )
-
-
+		
+		
 		echo '<textarea name="comment" id="comment" cols="48" rows="10"></textarea>' . "\n";
 		
 		if ( !$user_ID && $req )
