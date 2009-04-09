@@ -40,7 +40,7 @@ class bookmark_me_admin {
 			}
 
 			foreach ( (array) $_POST['widget-bookmark-me'] as $num => $opt ) {
-				$title = stripslashes(wp_filter_post_kses(strip_tags($opt['title'])));
+				$title = strip_tags(stripslashes($opt['title']));
 				
 				$options[$num] = compact('title');
 			}

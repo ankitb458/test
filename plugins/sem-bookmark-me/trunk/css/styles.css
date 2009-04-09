@@ -18,16 +18,16 @@
 }
 
 .bookmark_me_extra a {
-	width: 137px;
-	line-height: 20px;
-	height: 20px;
+	width: 139px;
+	line-height: 20px !important;
+	height: 20px !important;
 	overflow: hidden;
-	color: #22e;
-	background-image: url(../icons/icons.gif);
+	color: #22e !important;
+	background-image: url(../icons/icons.gif) !important;
 }
 
 .bookmark_me_extra a:hover {
-	color: #c22;
+	color: #c22 !important;
 }
 
 .bookmark_me_extra a.help {

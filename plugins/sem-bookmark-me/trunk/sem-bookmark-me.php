@@ -16,7 +16,7 @@ This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is di
 
 http://www.opensource.org/licenses/gpl-2.0.php
 
-Fam Fam Fam silk icons (email_go, printer, help) are copyright Mark James (http://www.famfamfam.com/lab/icons/silk/), and CC-By licensed:
+Fam Fam Fam silk icons (email_go, printer, information) are copyright Mark James (http://www.famfamfam.com/lab/icons/silk/), and CC-By licensed:
 
 http://creativecommons.org/licenses/by/2.5/
 
@@ -180,8 +180,23 @@ class bookmark_me {
 		}
 		
 		if ( !( $o = wp_cache_get($widget_id, 'widget') ) ) {
+			# check if the widget has a class
+			if ( strpos($before_widget, 'bookmark_me') === false ) {
+				if ( preg_match("/^(<[^>]+>)/", $before_widget, $tag) ) {
+					if ( preg_match("/\bclass\s*=\s*(\"|')(.*?)\\1/", $tag[0], $class) ) {
+						$tag[1] = str_replace($class[2], $class[2] . ' bookmark_me', $tag[1]);
+					} else {
+						$tag[1] = str_replace('>', ' class="bookmark_me"', $tag[1]);
+					}
+					$before_widget = preg_replace("/^$tag[0]/", $tag[1], $before_widget);
+				} else {
+					$before_widget = '<div class="bookmark_me">' . $before_widget;
+					$after_widget = $after_widget . '</div>' . "\n";
+				}
+			}
+			
 			ob_start();
-
+			
 			echo $before_widget;
 
 			if ( $title )
@@ -244,7 +259,7 @@ class bookmark_me {
 		
 		echo str_replace(
 			array(
-				'%url%', '%title%',
+				'%enc_url%', '%enc_title%',
 				'%email_url%', '%email_title%',
 				'%print_url%',
 				),
@@ -267,19 +282,19 @@ class bookmark_me {
 		return array(
 			'buzzup' => array(
 			 	'name' => __('Buzz Up!', 'bookmark-me'),
-			 	'url' => 'http://buzz.yahoo.com/buzz?headline=%title%&targetUrl=%url%',
+			 	'url' => 'http://buzz.yahoo.com/buzz?headline=%enc_title%&targetUrl=%enc_url%',
 			 	),
 			'digg' => array(
 				'name' => __('Digg', 'bookmark-me'),
-				'url' => 'http://digg.com/submit?phase=2&title=%title%&url=%url%',
+				'url' => 'http://digg.com/submit?phase=2&title=%enc_title%&url=%enc_url%',
 				),
 			'mixx' => array(
 				'name' => __('Mixx', 'bookmark-me'),
-				'url' => 'http://www.mixx.com/submit?page_url=%url%',
+				'url' => 'http://www.mixx.com/submit?page_url=%enc_url%',
 				),
 			'twitter' => array(
 		        'name' => __('Twitter', 'bookmark-me'),
-				'url' => 'http://twitter.com/timeline/home/?status=%url%',
+				'url' => 'http://twitter.com/timeline/home/?status=%enc_url%',
 				),
 			);
 	} # get_main_services()
@@ -288,75 +303,74 @@ class bookmark_me {
 	/**
 	 * get_extra_services()
 	 *
-	 * @param bool $main
-	 * @return array $service
+	 * @return array $services
 	 **/
 
 	function get_extra_services() {
 		return array(
 			'current' => array(
 				'name' => __('Current', 'bookmark-me'),
-				'url' => 'http://current.com/clipper.htm?src=st&title=%title%&url=%url%',
+				'url' => 'http://current.com/clipper.htm?src=st&title=%enc_title%&url=%enc_url%',
 				),
 			'delicious' => array(
 				'name' => __('Delicious', 'bookmark-me'),
-				'url' => 'http://del.icio.us/post?title=%title%&url=%url%',
+				'url' => 'http://del.icio.us/post?title=%enc_title%&url=%enc_url%',
 				),
 			'facebook' => array(
 				'name' => __('Facebook', 'bookmark-me'),
-				 'url' => 'http://www.facebook.com/share.php?t=%title%&u=%url%'
+				 'url' => 'http://www.facebook.com/share.php?t=%enc_title%&u=%enc_url%'
 				),
 			'fark' => array(
 				'name' => __('Fark', 'bookmark-me'),
-				'url' => 'http://cgi.fark.com/cgi/farkit.pl?h=%title%&u=%url%',
+				'url' => 'http://cgi.fark.com/cgi/farkit.pl?h=%enc_title%&u=%enc_url%',
 				),
 			'google' => array(
 				'name' => __('Google', 'bookmark-me'),
-				'url' => 'http://www.google.com/bookmarks/mark?op=add&title=%title%&bkmk=%url%',
+				'url' => 'http://www.google.com/bookmarks/mark?op=add&title=%enc_title%&bkmk=%enc_url%',
 				),
 			'live' => array(
 				'name' => __('Live', 'bookmark-me'),
-				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&mkt=en-us&top=1&title=%title%&url=%url%',
+				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&mkt=en-us&top=1&title=%enc_title%&url=%enc_url%',
 				),
 			'meneame' => array(
 				'name' => __('Meneame', 'bookmark-me'),
-				'url' => 'http://meneame.net/submit.php?url=%url%',
+				'url' => 'http://meneame.net/submit.php?url=%enc_url%',
 				),
 			'myspace' => array(
 				'name' => __('MySpace', 'bookmark-me'),
-				'url' => 'http://www.myspace.com/Modules/PostTo/Pages/?l=3&t=t=%title%&u=%url%',
+				'url' => 'http://www.myspace.com/Modules/PostTo/Pages/?l=3&t=t=%enc_title%&u=%enc_url%',
 				),
 			'newsvine' => array(
 				'name' => __('Newsvine', 'bookmark-me'),
-				'url' => 'http://www.newsvine.com/_tools/seed&save?h=%title%&u=%url%',
+				'url' => 'http://www.newsvine.com/_tools/seed&save?h=%enc_title%&u=%enc_url%',
 				),
 			'propeller' => array(
 				'name' => __('Propeller', 'bookmark-me'),
-				'url' => 'http://www.propeller.com/submit/?T=%title%&U=%url%',
+				'url' => 'http://www.propeller.com/submit/?T=%enc_title%&U=%enc_url%',
 				),
 			'reddit' => array(
 				'name' => __('Reddit', 'bookmark-me'),
-				'url' => 'http://reddit.com/submit?title=%title%&url=%url%',
+				'url' => 'http://reddit.com/submit?title=%enc_title%&url=%enc_url%',
 				),
 			'slashdot' => array(
 				'name' => __('Slashdot', 'bookmark-me'),
-				'url' => 'http://slashdot.org/bookmark.pl?title=%title%&url=%url%',
+				'url' => 'http://slashdot.org/bookmark.pl?title=%enc_title%&url=%enc_url%',
 				),
 			'sphinn' => array(
 				'name' => __('Sphinn', 'bookmark-me'),
-				'url' => 'http://sphinn.com/submit.php?title=%title%&url=%url%',
+				'url' => 'http://sphinn.com/submit.php?title=%enc_title%&url=%enc_url%',
 				),					
 			'stumbleupon' => array(
 				'name' => __('StumbleUpon', 'bookmark-me'),
-				'url' => 'http://www.stumbleupon.com/submit?title=%title%&url=%url%',
+				'url' => 'http://www.stumbleupon.com/submit?title=%enc_title%&url=%enc_url%',
 				),
 		    'tipd' => array(
 				'name' => __('Tip\'d', 'bookmark-me'),
-				'url' => 'http://tipd.com/submit.php?url=%url%',
+				'url' => 'http://tipd.com/submit.php?url=%enc_url%',
 				),
 			'yahoo' => array(
 				'name' => __('Yahoo!', 'bookmark-me'),
-				'url' => 'http://bookmarks.yahoo.com/toolbar/savebm?opener=tb&t=%title%&u=%url%',
+				'url' => 'http://bookmarks.yahoo.com/toolbar/savebm?opener=tb&t=%enc_title%&u=%enc_url%',
 				),
 			'help' => array(
 				'name' => __('What\'s This?', 'bookmark-me'),
@@ -391,7 +405,7 @@ class bookmark_me {
 	/**
 	 * init_options()
 	 *
-	 * @return void
+	 * @return array $options
 	 **/
 
 	function init_options() {
@@ -425,7 +439,7 @@ class bookmark_me {
 	/**
 	 * default_options()
 	 *
-	 * @return array $options default widget options
+	 * @return array $widget_options
 	 **/
 
 	function default_options() {
@@ -438,8 +452,8 @@ class bookmark_me {
 	/**
 	 * new_widget()
 	 *
-	 * @param int $widget_id arbitrary widget id
-	 * @return array $widget_options
+	 * @param int $k arbitrary widget number
+	 * @return string $widget_id
 	 **/
 
 	function new_widget($k = null) {
@@ -450,7 +464,7 @@ class bookmark_me {
 			while ( isset($o[$k]) ) $k++;
 			$o[$k] = bookmark_me::default_options();
 			
-			update_option('bookmark_me_widgets', $o);
+			update_option('bookmark_me', $o);
 		}
 		
 		return 'bookmark_me-' . $k;
