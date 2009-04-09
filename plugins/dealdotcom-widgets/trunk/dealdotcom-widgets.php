@@ -204,7 +204,6 @@ class dealdotcom {
 	function default_options() {
 		return array(
 			'aff_id' => '',
-			'nofollow' => true
 			);
 	} # default_options()
 	
