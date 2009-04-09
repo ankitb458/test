@@ -239,7 +239,6 @@ class sem_panels
 			{
 				$sidebars_widgets['the_entry'][] = bookmark_me::new_widget(1);
 			}
-			$sidebars_widgets['the_entry'][] = 'entry_actions';
 			if ( method_exists('related_widgets', 'new_widget') )
 			{
 				$sidebars_widgets['the_entry'][] = related_widgets::new_widget();
