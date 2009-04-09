@@ -504,8 +504,6 @@ class bookmark_me {
 function the_bookmark_links($args = null) {
 	if ( is_string($args) ) {
 		$args = array('title' => $args);
-	} else {
-		$args = array();
 	}
 	
 	$defaults = array(
