@@ -149,7 +149,12 @@ if ( $comments )
 		
 		echo '<div id="comment-' . get_comment_ID() . '">' . "\n";
 		
-		echo '<div class="comment">' . "\n"
+		echo '<div class="comment'
+				. ( $comment->user_id == $post->post_author
+					? ' comment_entry_author'
+					: ''
+					)
+				. '">' . "\n"
 			. '<div class="comment_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="comment_pad">' . "\n";
 
