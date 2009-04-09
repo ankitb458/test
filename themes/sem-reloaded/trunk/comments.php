@@ -165,7 +165,10 @@ if ( $comments )
 		echo '<h3>'
 			. '<span class="comment_author" id="comment_author-' . get_comment_ID() . '">'
 				. get_avatar($comment, 48)
-				. get_comment_author_link()
+				. ( $comment->user_id == $post->post_author
+					? ( '<em>' . get_comment_author_link() . '</em>' )
+					: get_comment_author_link()
+					)
 				. '</span>'
 			. '<br/>' . "\n"
 			. '<span class="comment_time">'

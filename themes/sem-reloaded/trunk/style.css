@@ -530,6 +530,14 @@ h2 a {
 	margin-top: 0px;
 }
 
+.comment_header em {
+	font-style: normal;
+}
+
+.comment_time {
+	font-weight: normal;
+}
+
 .entry_content,
 .comment_content {
 	margin-bottom: 1em;
