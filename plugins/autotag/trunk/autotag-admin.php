@@ -171,11 +171,6 @@ class autotag
 			
 			if ( $fetch_terms )
 			{
-				if ( !class_exists('extract_terms') )
-				{
-					include dirname(__FILE__) . '/extract-terms.php';
-				}
-				
 				$terms = extract_terms::get_post_terms($post);
 
 				if ( $terms )
@@ -237,4 +232,9 @@ class autotag
 } # end autotag
 
 autotag::init();
+
+if ( !class_exists('extract_terms') )
+{
+	include dirname(__FILE__) . '/extract-terms.php';
+}
 ?>
