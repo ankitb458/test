@@ -69,7 +69,8 @@ class dealdotcom_admin {
 
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<label>'
-			. '<a href="http://go.semiologic.com/dealdotcom" target="_blank">'
+			. '<a href="http://go.semiologic.com/dealdotcom"'
+				. ' onclick="window.open(this.href); return false;">'
 				. __('Your DealDotCom Affiliate ID', 'dealdotcom')
 				. '</a>'
 				. ':'

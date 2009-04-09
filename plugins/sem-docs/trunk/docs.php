@@ -447,9 +447,9 @@ class sem_docs
 		$strip[] = '<h5>' . __('Other Help') . '</h5>';
 		$strip[] = '<h5>' . __('Help') . '</h5>';
 		$strip[] = '<div class="metabox-prefs">'
-			. __('<a href="http://codex.wordpress.org/" target="_blank">Documentation</a>')
+			. __('<a href="http://codex.wordpress.org/" onclick="window.open(this.href); return false;">Documentation</a>')
 			. '<br />'
-			. __('<a href="http://wordpress.org/support/" target="_blank">Support Forums</a>')
+			. __('<a href="http://wordpress.org/support/" onclick="window.open(this.href); return false;">Support Forums</a>')
 			. "</div>\n";
 		
 		$o = str_replace($strip, '', $o);
