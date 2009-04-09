@@ -17,7 +17,7 @@ border: 1px solid #ccc;
 
 /* BLIX fixies */
 #democracy input { width: auto; }
-#democracy ul { padding: 0; }
+#democracy ul { padding: 0; margin-left: 0px; !important;}
 #democracy label {
 float: none;
 display: inline;

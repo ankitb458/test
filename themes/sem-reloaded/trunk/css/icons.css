@@ -6,33 +6,34 @@ http://creativecommons.org/licenses/by/2.5/
 To override these icons, create a copy of this file and drop it, as icons.css, into your skin's folder.
 */
 
-.header_widget ul,
-.footer_widget ul,
-.inline_box ul,
-.main_widget ul,
-.inline_widget ul,
-.post_list ul,
-.widget ul,
-.related_widget ul {
-	list-style-image: url(../icons/page_white_text.gif);
+li.nav_home {
+	list-style-image: url(../icons/house.gif);
 }
 
 .widget_categories ul,
-.widget_archive ul {
-	list-style-image: url(../icons/folder.gif);
-}
-
+.widget_archive ul,
 li.nav_blog,
 li.nav_branch {
 	list-style-image: url(../icons/folder.gif);
 }
 
-li.nav_home {
-	list-style-image: url(../icons/house.gif);
-}
-
+.post_list ul,
+.fuzzy_widget ul,
+.random_widget ul,
+.related_widget ul,
+.widget_pages ul,
 li.nav_leaf {
 	list-style-image: url(../icons/page_white_text.gif);
+}
+
+.pings_list ul,
+.widget_links ul,
+.widget_rss ul{
+	list-style-image: url(../icons/world_link.gif);
+}
+
+.countdown ul {
+	list-style-image: url(../icons/calendar.gif);
 }
 
 .edit_entry a {
@@ -87,10 +88,6 @@ li.nav_leaf {
 	background: url(../icons/calendar.gif) center left no-repeat;
 	padding-left: 18px;
 	padding-right: 0px;
-}
-
-.pings_list ul {
-	list-style-image: url(../icons/world_link.gif);
 }
 
 .name_label label {
