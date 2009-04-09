@@ -94,60 +94,64 @@
 	background-position: 0px -40px;
 }
 
-.bookmark_me a.facebook {
+.bookmark_me a.diigo {
 	background-position: 0px -60px;
 }
 
-.bookmark_me a.fark {
+.bookmark_me a.facebook {
 	background-position: 0px -80px;
 }
 
-.bookmark_me a.google {
+.bookmark_me a.fark {
 	background-position: 0px -100px;
 }
 
-.bookmark_me a.live {
+.bookmark_me a.google {
 	background-position: 0px -120px;
 }
 
-.bookmark_me a.meneame {
+.bookmark_me a.linkedin {
 	background-position: 0px -140px;
 }
 
-.bookmark_me a.myspace {
+.bookmark_me a.live {
 	background-position: 0px -160px;
 }
 
-.bookmark_me a.newsvine {
+.bookmark_me a.myspace {
 	background-position: 0px -180px;
 }
 
-.bookmark_me a.propeller {
+.bookmark_me a.newsvine {
 	background-position: 0px -200px;
 }
 
-.bookmark_me a.reddit {
+.bookmark_me a.propeller {
 	background-position: 0px -220px;
 }
 
-.bookmark_me a.slashdot {
+.bookmark_me a.reddit {
 	background-position: 0px -240px;
 }
 
-.bookmark_me a.sphinn {
+.bookmark_me a.slashdot {
 	background-position: 0px -260px;
 }
 
-.bookmark_me a.stumbleupon {
+.bookmark_me a.sphinn {
 	background-position: 0px -280px;
 }
 
-.bookmark_me a.tipd {
+.bookmark_me a.stumbleupon {
 	background-position: 0px -300px;
 }
 
-.bookmark_me a.yahoo {
+.bookmark_me a.tipd {
 	background-position: 0px -320px;
+}
+
+.bookmark_me a.yahoo {
+	background-position: 0px -340px;
 }
 
 .bookmark_me_sidebar a {

@@ -316,6 +316,10 @@ class bookmark_me {
 				'name' => __('Delicious', 'bookmark-me'),
 				'url' => 'http://del.icio.us/post?title=%enc_title%&url=%enc_url%',
 				),
+			'diigo' => array(
+				'name' => __('Diigo', 'bookmark-me'),
+				'url' => 'http://secure.diigo.com/post?title=%enc_title%&url=%enc_url%',
+				),
 			'facebook' => array(
 				'name' => __('Facebook', 'bookmark-me'),
 				 'url' => 'http://www.facebook.com/share.php?t=%enc_title%&u=%enc_url%'
@@ -328,13 +332,13 @@ class bookmark_me {
 				'name' => __('Google', 'bookmark-me'),
 				'url' => 'http://www.google.com/bookmarks/mark?op=add&title=%enc_title%&bkmk=%enc_url%',
 				),
+			'linkedin' => array(
+				'name' => __('LinkedIn', 'bookmark-me'),
+				'url' => 'http://www.linkedin.com/shareArticle?mini=true&summary=&source=&title=%enc_title%&url=%enc_url%',
+				),
 			'live' => array(
 				'name' => __('Live', 'bookmark-me'),
 				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&mkt=en-us&top=1&title=%enc_title%&url=%enc_url%',
-				),
-			'meneame' => array(
-				'name' => __('Meneame', 'bookmark-me'),
-				'url' => 'http://meneame.net/submit.php?url=%enc_url%',
 				),
 			'myspace' => array(
 				'name' => __('MySpace', 'bookmark-me'),
