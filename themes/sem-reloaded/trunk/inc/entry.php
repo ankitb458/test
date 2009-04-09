@@ -613,8 +613,8 @@ function sem_postnav_widget($args)
 			
 			posts_nav_link(
 				' &bull; ',
-				'&laquo;&nbsp;' . $sem_captions['prev_page'],
-				$sem_captions['next_page'] . '&nbsp;&raquo;'
+				'&larr;&nbsp;' . $sem_captions['prev_page'],
+				$sem_captions['next_page'] . '&nbsp;&rarr;'
 				);
 			
 			echo '</div>' . "\n"
