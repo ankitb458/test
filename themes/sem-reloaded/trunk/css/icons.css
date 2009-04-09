@@ -12,7 +12,8 @@ To override these icons, create a copy of this file and drop it, as icons.css, i
 .main_widget ul,
 .inline_widget ul,
 .post_list ul,
-.widget ul {
+.widget ul,
+.related_widget ul {
 	list-style-image: url(../icons/page_white_text.gif);
 }
 
@@ -46,11 +47,15 @@ li.nav_leaf {
 	padding-right: 0px;
 }
 
-.comment_entry a,
 .reply_comment a {
 	background: url(../icons/comment_add.gif) center left no-repeat;
 	padding-left: 18px;
 	padding-right: 0px;
+}
+
+.comment_entry img {
+	background: url(../icons/comment_add.gif) bottom center no-repeat;
+	vertical-align: middle;
 }
 
 .edit_comment a {
@@ -108,6 +113,7 @@ li.nav_leaf {
 
 .link_comment img {
 	background: url(../icons/anchor.gif) bottom center no-repeat;
+	vertical-align: middle;
 }
 
 #s {

@@ -110,8 +110,8 @@ if ( $comments )
 	{
 
 		$comment_form_link = ' <span class="comment_entry">'
-			. '<a href="#respond" title="' . htmlspecialchars($sem_captions['leave_comment']) . '">'
-			. '&raquo;'
+			. '<a href="#respond" title="' . htmlspecialchars($sem_captions['leave_comment']) . '" class="noicon">'
+			. '<img src="' . sem_url . '/icons/pixel.gif" height="16" width="16" alt="' . htmlspecialchars($sem_captions['leave_comment']) . '" />'
 			. '</a>'
 			. '</span>';
 	}
@@ -167,7 +167,7 @@ if ( $comments )
 			. get_comment_date('g:i a')
 			. '</span>' . "\n"
 			. '<span class="link_comment">'
-			. '<a href="#comment-' . get_comment_ID() . '">'
+			. '<a href="#comment-' . get_comment_ID() . '" title="#">'
 			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="12" class="noicon" alt="#" />'
 			. '</a>'
 			. '</span>' . "\n"
