@@ -7,6 +7,8 @@
 	float: left;
 	background-repeat: no-repeat;
 	white-space: nowrap;
+	line-height: 20px !important;
+	height: 20px !important;
 }
 
 .bookmark_me_actions a {
@@ -19,8 +21,6 @@
 
 .bookmark_me_extra a {
 	width: 139px;
-	line-height: 20px !important;
-	height: 20px !important;
 	overflow: hidden;
 	color: #22e !important;
 	background-image: url(../icons/icons.gif) !important;
