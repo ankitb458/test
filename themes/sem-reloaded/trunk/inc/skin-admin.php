@@ -195,14 +195,14 @@ class sem_skin_admin
 		
 		foreach ( array(
 			'' =>  __('Use the skin\'s default'),
-			'antica' => __('Book Antica, Times, Serif'),
 			'arial' => __('Arial, Helvetica, Sans-Serif'),
+			'antica' => __('Book Antica, Times, Serif'),
 			'bookman' => __('Bookman Old Style, Times, Serif'),
 			'comic' => __('Comic Sans MS, Helvetica, Sans-Serif'),
-			'corsiva' => __('Monotype Corsiva, Courier, Monospace'),
 			'courier' => __('Courier New, Courier, Monospace'),
 			'garamond' => __('Garamond, Times, Serif'),
 			'georgia' => __('Georgia, Times, Serif'),
+			'corsiva' => __('Monotype Corsiva, Courier, Monospace'),
 			'tahoma' => __('Tahoma, Helvetica, Sans-Serif'),
 			'times' => __('Times New Roman, Times, Serif'),
 			'trebuchet' => __('Trebuchet MS, Tahoma, Helvetica, Sans-Serif'),

@@ -273,16 +273,9 @@ class sem_panels
 				$sidebars_widgets['the_footer'][] = 'footer';
 			}
 
-			if ( !$sidebars_widgets['sidebar-1'] && $sem_options['active_layout'] == 'ms' )
-			{
-				if ( method_exists('newsletter_manager', 'new_widget') )
-				{
-					$sidebars_widgets['sidebar-1'][] = newsletter_manager::new_widget();
-				}
-				if ( method_exists('subscribe_me', 'new_widget') )
-				{
-					$sidebars_widgets['sidebar-1'][] = subscribe_me::new_widget();
-				}
+			if ( $sem_options['active_layout'] == 'mts'
+				&& !$sidebars_widgets['sidebar-1'] && !$sidebars_widgets['sidebar-2']
+			) {
 				if ( method_exists('silo', 'new_widget') )
 				{
 					$sidebars_widgets['sidebar-1'][] = silo::new_widget();
@@ -290,6 +283,14 @@ class sem_panels
 				if ( method_exists('fuzzy_widgets', 'new_widget') )
 				{
 					$sidebars_widgets['sidebar-1'][] = fuzzy_widgets::new_widget();
+				}
+				if ( method_exists('newsletter_manager', 'new_widget') )
+				{
+					$sidebars_widgets['sidebar-2'][] = newsletter_manager::new_widget();
+				}
+				if ( method_exists('subscribe_me', 'new_widget') )
+				{
+					$sidebars_widgets['sidebar-2'][] = subscribe_me::new_widget();
 				}
 			}
 			

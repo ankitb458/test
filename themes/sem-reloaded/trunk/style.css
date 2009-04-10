@@ -106,21 +106,26 @@ pre, code, kbd, samp, tt {
 /*
 Theme Fonts
 -----------
- */
+*/
+
+.skin {
+	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
+	font-size: .9em;
+}
 
 .antica {
 	font-family: "Book Antica", Times, Serif;
-	font-size: 1.1em;
+	font-size: 1em;
 }
 
 .arial {
 	font-family: Arial, Helvetica, Sans-Serif;
-	font-size: 1em;
+	font-size: .9em;
 }
 
 .bookman {
 	font-family: "Bookman Old Style", Times, Serif;
-	font-size: 1em;
+	font-size: .9em;
 }
 
 .comic {
@@ -140,32 +145,32 @@ Theme Fonts
 
 .garamond {
 	font-family: Garamond, Times, Serif;
-	font-size: 1.1em;
+	font-size: 1em;
 }
 
 .georgia {
 	font-family: Georgia, Times, Serif;
-	font-size: 1.1em;
+	font-size: .9em;
 }
 
 .tahoma {
 	font-family: Tahoma, Helvetica, Sans-Serif;
-	font-size: 1em;
+	font-size: .9em;
 }
 
 .times {
 	font-family: "Times New Roman", Times, Serif;
-	font-size: 1.1em;
+	font-size: 1em;
 }
 
 .trebuchet {
 	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
-	font-size: 1em;
+	font-size: .9em;
 }
 
 .verdana {
 	font-family: Verdana, Helvetica, Sans-Serif;
-	font-size: 1em;
+	font-size: .85em;
 }
 
 
