@@ -276,7 +276,7 @@ a:hover
 	Calendar style
 	--------------
 */
-.widget_calendar
+.widget_calendar table
 {
 	border: solid 1px black;
 	background-color: white;

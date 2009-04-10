@@ -350,7 +350,7 @@ blockquote {
  * Calendar
  */
 
-.widget_calendar {
+.widget_calendar table {
 	border: solid 1px #444;
 	background: #222;
 }

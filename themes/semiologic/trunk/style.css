@@ -621,7 +621,7 @@ div.announcement
 
 /* calendar */
 
-.widget_calendar
+.widget_calendar table
 {
 	margin-left: auto;
 	margin-right: auto;

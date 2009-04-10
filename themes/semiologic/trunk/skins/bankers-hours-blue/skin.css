@@ -153,7 +153,7 @@ a:active, a:hover
 	--------------
 */
 
-.widget_calendar
+.widget_calendar table
 {
 	border: solid 1px #c1c1c1;
 	background-color: white;

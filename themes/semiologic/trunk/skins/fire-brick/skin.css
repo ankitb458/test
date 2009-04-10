@@ -101,7 +101,7 @@ a:hover
 	background-color: ghostwhite;
 }
 
-.widget_calendar
+.widget_calendar table
 {
 	border: solid 1px silver;
 	background-color: white;

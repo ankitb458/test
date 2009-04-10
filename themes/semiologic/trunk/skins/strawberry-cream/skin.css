@@ -55,7 +55,7 @@ h2 a
 	background-color: #eeeeee;
 }
 
-.widget_calendar
+.widget_calendar table
 {
 	background-color: white;
 }
@@ -103,7 +103,7 @@ h2 a
 	border: solid 1px dimgray;
 }
 
-.widget_calendar
+.widget_calendar table
 {
 	border: solid 1px dimgray;
 }

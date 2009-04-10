@@ -279,7 +279,7 @@ th,
  * calendar
  */
 
-.widget_calendar {
+.widget_calendar table {
 	border-collapse: collapse;
 	margin-right: auto;
 	margin-left: auto;

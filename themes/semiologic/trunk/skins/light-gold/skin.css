@@ -58,7 +58,7 @@ a:hover
 	background-color: gold;
 }
 
-.widget_calendar
+.widget_calendar table
 {
 	background-color: white;
 }
@@ -82,7 +82,7 @@ h1 a
 
 #navbar,
 #footer,
-.widget_calendar
+.widget_calendar table
 {
 	border: solid 1px dimgray;
 }
