@@ -712,24 +712,24 @@ function display_archive_header()
 	}
 
 	echo '</h1>' . "\n";
-
+	
+	$desc = '';
+	
 	if ( is_category() )
 	{
 		$desc = category_description();
-		
-		if ( trim($desc) != '<br />' )
-		{
-			echo $desc;
-		}
+	}
+	elseif ( is_tag() ) {
+		$desc = tag_description();
 	}
 	elseif ( is_author() )
 	{
 		$desc = wpautop($user->description);
+	}
 		
-		if ( trim($desc) != '<br />' )
-		{
-			echo $desc;
-		}
+	if ( trim($desc) != '<br />' )
+	{
+		echo $desc;
 	}
 } # display_archive_header()
 
