@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: text-widgets, widget, widgets, semiologic
 Requires at least: 2.5
-Tested up to: 2.7.2
+Tested up to: 2.8
 Stable tag: trunk
 
 Replaces WordPress' default text widget with formatting-enabled text widgets.

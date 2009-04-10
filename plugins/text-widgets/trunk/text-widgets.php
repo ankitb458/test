@@ -3,7 +3,7 @@
 Plugin Name: Text Widgets
 Plugin URI: http://www.semiologic.com/software/text-widgets/
 Description: Replaces WordPress' default text widgets with advanced text widgets
-Version: 1.0.2 alpha
+Version: 1.1 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */
@@ -26,7 +26,11 @@ class text_widgets
 	
 	function init()
 	{
-		add_action('widgets_init', array('text_widgets', 'widgetize'), 0);
+		if ( !class_exists('WP_Widget') ) {
+			add_action('widgets_init', array('text_widgets', 'widgetize'), 0);
+		} else {
+			add_action('widgets_init', array('text_widgets', 'widgetize'), 200);
+		}
 	} # init()
 	
 	
@@ -39,16 +43,20 @@ class text_widgets
 		# kill/change broken widgets
 		global $wp_registered_widgets;
 		global $wp_registered_widget_controls;
-
+		global $wp_registered_widget_updates;
+		
 		foreach ( array_keys($wp_registered_widgets) as $widget_id )
 		{
-			if ( $wp_registered_widgets[$widget_id]['callback'] == 'wp_widget_text' )
-			{
+			if ( strpos($widget_id, 'text-') === 0
+				|| $wp_registered_widgets[$widget_id]['callback'] == 'wp_widget_text'
+			) {
 				$wp_registered_widgets[$widget_id]['callback'] = array('text_widgets', 'widget_text');
 				$wp_registered_widget_controls[$widget_id]['callback'] = array('text_widgets_admin', 'widget_text_control');
+				if ( isset($wp_registered_widget_updates[$widget_id]) ) {
+					$wp_registered_widget_updates[$widget_id]['callback'] = array('text_widgets_admin', 'widget_text_control');
+				}
 			}
 		}
-		
 	} # widgetize()
 	
 	
