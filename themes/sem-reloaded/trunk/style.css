@@ -279,31 +279,31 @@ th,
  * calendar
  */
 
-#wp-calendar {
+.widget_calendar {
 	border-collapse: collapse;
 	margin-right: auto;
 	margin-left: auto;
 	width: 160px;
 }
 
-#wp-calendar caption {
+.widget_calendar caption {
 	margin: .5em auto;
 	font-size: 16px;
 	font-weight: bold;
 	text-align: center;
 }
 
-#wp-calendar th,
-#wp-calendar td {
+.widget_calendar th,
+.widget_calendar td {
 	padding: 1px 3px;
 	text-align: center;
 }
 
-#wp-calendar #prev {
+.widget_calendar #prev {
 	text-align: left;
 }
 
-#wp-calendar #next {
+.widget_calendar #next {
 	text-align: right;
 }
 

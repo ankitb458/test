@@ -1,6 +1,6 @@
 /*
 Skin name: Christmas Colorblock
-Version: 1.0
+Version: 1.0.1
 Author: Techie Coach
 Author uri: http://www.techiecoachtutorials.com
 Description: Red and Green color block squares
@@ -170,18 +170,18 @@ a:active, a:hover
 	--------------
 */
 
-#wp-calendar
+.widget_calendar
 {
 	border: solid 1px #c1c1c1;
 	background-color: white;
 }
 
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	border-bottom: solid 1px #c1c1c1;
 }
 
-#wp-calendar tfoot td
+.widget_calendar tfoot td
 {
 	background-color: white;
 }

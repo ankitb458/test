@@ -136,7 +136,7 @@ code
 }
 
 .small h2,
-.small #wp-calendar caption
+.small .widget_calendar caption
 {
 	font-size: medium;
 	font-weight: bold;
@@ -171,7 +171,7 @@ body.small,
 }
 
 .medium h2,
-.medium #wp-calendar caption
+.medium .widget_calendar caption
 {
 	font-size: large;
 	font-weight: bold;
@@ -206,7 +206,7 @@ body.medium,
 }
 
 .large h2,
-.large #wp-calendar caption
+.large .widget_calendar caption
 {
 	font-size: x-large;
 	font-weight: bold;

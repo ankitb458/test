@@ -1,6 +1,6 @@
 /*
 Skin name: Light Gold
-Version: 1.1
+Version: 1.1.1
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: Light Gold skin
@@ -53,18 +53,18 @@ a:hover
 
 
 #navbar,
-#wp-calendar thead
+.widget_calendar thead
 {
 	background-color: gold;
 }
 
-#wp-calendar
+.widget_calendar
 {
 	background-color: white;
 }
 
 #footer,
-#wp-calendar tfoot
+.widget_calendar tfoot
 {
 	background-color: ghostwhite;
 }
@@ -82,17 +82,17 @@ h1 a
 
 #navbar,
 #footer,
-#wp-calendar
+.widget_calendar
 {
 	border: solid 1px dimgray;
 }
 
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	border-bottom: solid 1px dimgray;
 }
 
-#wp-calendar tfoot td
+.widget_calendar tfoot td
 {
 	border-top: solid 1px dimgray;
 }

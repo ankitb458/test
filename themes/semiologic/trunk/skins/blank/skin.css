@@ -1,6 +1,6 @@
 /*
 Skin name: Blank
-Version: 1.0
+Version: 1.0.1
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: A Starting Point for New Skins
@@ -901,19 +901,19 @@ li.widget
 	--------------
 */
 /*
-#wp-calendar
+.widget_calendar
 {
 	border: solid 1px black;
 	background-color: white;
 }
 
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	border-bottom: solid 1px black;
 	background-color: gainsboro;
 }
 
-#wp-calendar tfoot td
+.widget_calendar tfoot td
 {
 	border-top: solid 1px black;
 	background-color: gainsboro;

@@ -1,6 +1,6 @@
 /*
 Skin name: Fire Brick
-Version: 1.1
+Version: 1.1.1
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: Fire Brick Red Skin
@@ -101,20 +101,20 @@ a:hover
 	background-color: ghostwhite;
 }
 
-#wp-calendar
+.widget_calendar
 {
 	border: solid 1px silver;
 	background-color: white;
 }
 
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	border-bottom: solid 1px silver;
 	background-color: firebrick;
 	color: white;
 }
 
-#wp-calendar tfoot td
+.widget_calendar tfoot td
 {
 	border-top: solid 1px silver;
 	background-color: ghostwhite;

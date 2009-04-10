@@ -1,6 +1,6 @@
 /*
 Skin name: Colorblock-blue
-Version: 1.0
+Version: 1.0.1
 Author: Techie Coach
 Author uri: http://www.techiecoachtutorials.com
 Description: Color block squares in blue
@@ -164,18 +164,18 @@ h1 a:active, h1 a:hover, a:active, a:hover
 	--------------
 */
 
-#wp-calendar
+.widget_calendar
 {
 	border: solid 1px #c1c1c1;
 	background-color: white;
 }
 
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	border-bottom: solid 1px #c1c1c1;
 }
 
-#wp-calendar tfoot td
+.widget_calendar tfoot td
 {
 	background-color: white;
 }

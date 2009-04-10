@@ -195,7 +195,7 @@ class/tag                     notes
                               each sidebar
 
 
-Other classes and ids exist, e.g. #wp-calendar, .sem_subscribe_me. They are typically created by WordPress and/or the various plugins. They are not mentionned here because they have little or no importance when it comes to creating or customizing a skin.
+Other classes and ids exist, e.g. .widget_calendar, .sem_subscribe_me. They are typically created by WordPress and/or the various plugins. They are not mentionned here because they have little or no importance when it comes to creating or customizing a skin.
 
 
 Time for an example... Drop this file into the sky gold skin folder to see it transform the skin.
@@ -225,7 +225,7 @@ The font size
 }
 
 .custom h2,
-.custom #wp-calendar caption
+.custom .widget_calendar caption
 {
 	font-size: medium;
 }
@@ -278,7 +278,7 @@ The navbar and calendar header colors
 */
 
 #navbar,
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	background-color: #CCCFBC;
 }

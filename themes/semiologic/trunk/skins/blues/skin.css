@@ -1,6 +1,6 @@
 /*
 Skin name: Blues
-Version: 1.0
+Version: 1.0.1
 Author: TechieCoach
 Author uri: http://www.TechieCoachTutorials.com
 Description: Ocean, blues calm
@@ -52,14 +52,14 @@ a:hover, a:active {
 	text-decoration: underline;
 }
 
-#wp-calendar thead
+.widget_calendar thead
 {
 	background-color: #4477AA;
 }
 
 
 #footer,
-#wp-calendar tfoot
+.widget_calendar tfoot
 {
 	background-color: white;
 }
@@ -83,7 +83,7 @@ a:hover, a:active {
 .sidebar h2 a,
 .main h1, 
 .main h1 a,
-#wp-calendar caption
+.widget_calendar caption
 {
 	color: #335588;
 }
@@ -139,17 +139,17 @@ a:hover, a:active {
 	border-top: solid 1px dimgray;
 }
 
-#wp-calendar
+.widget_calendar
 {
 	border: solid 1px dimgray;
 }
 
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	border-bottom: solid 1px dimgray;
 }
 
-#wp-calendar tfoot td
+.widget_calendar tfoot td
 {
 	border-top: solid 1px dimgray;
 }

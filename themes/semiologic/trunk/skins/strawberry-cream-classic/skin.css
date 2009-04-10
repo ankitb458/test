@@ -1,6 +1,6 @@
 /*
 Skin name: Strawberry Cream, Classic
-Version: 1.1
+Version: 1.1.1
 Author: Antonella Pavese
 Author uri: http://www.antonellapavese.com
 Description: Strawberry Cream skin, classic version
@@ -54,12 +54,12 @@ a:hover
 
 #navbar,
 #footer,
-#wp-calendar thead
+.widget_calendar thead
 {
 	background-color: #eeeeee;
 }
 
-#wp-calendar
+.widget_calendar
 {
 	background-color: white;
 }
@@ -115,17 +115,17 @@ h2 a
 	border: solid 1px dimgray;
 }
 
-#wp-calendar
+.widget_calendar
 {
 	border: solid 1px dimgray;
 }
 
-#wp-calendar thead th
+.widget_calendar thead th
 {
 	border-bottom: solid 1px dimgray;
 }
 
-#wp-calendar tfoot td
+.widget_calendar tfoot td
 {
 	border-top: solid 1px dimgray;
 }

@@ -1,6 +1,6 @@
 /*
 Skin name: Minimalist
-Version: 1.1
+Version: 1.1.1
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: Minimalist skin
@@ -76,13 +76,13 @@ a:hover
 	border-right: solid 1px dimgray;
 }
 
-#wp-calendar thead
+.widget_calendar thead
 {
 	border-bottom: solid 1px dimgray;
 	border-top: solid 1px dimgray;
 }
 
-#wp-calendar tfoot
+.widget_calendar tfoot
 {
 	border-top: solid 1px dimgray;
 }

@@ -1,6 +1,6 @@
 /*
 Skin name: Digital Moon
-Version: 1.1
+Version: 1.1.1
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: Digital Moon skin
@@ -68,13 +68,13 @@ h2 a
 	border-right: solid 1px silver;
 }
 
-#wp-calendar thead
+.widget_calendar thead
 {
 	border-bottom: solid 1px silver;
 	border-top: solid 1px silver;
 }
 
-#wp-calendar tfoot
+.widget_calendar tfoot
 {
 	border-top: solid 1px silver;
 }

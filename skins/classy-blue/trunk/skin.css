@@ -361,7 +361,7 @@ h1 {
 }
 
 h2,
-#wp-calendar caption {
+.widget_calendar caption {
 	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
 	font-weight: normal;
 	font-size: 18px;
@@ -404,25 +404,25 @@ blockquote {
  * Calendar
  */
 
-#wp-calendar {
+.widget_calendar {
 	border: solid 1px #666;
 }
 
-#wp-calendar thead {
+.widget_calendar thead {
 	border-bottom: solid 1px #666;
 	background: #0f294d;
 	color: #fff;
 }
 
-#wp-calendar tfoot {
+.widget_calendar tfoot {
 	border-top: solid 1px #666;
 	background: #8fa3cc;
 }
 
-#wp-calendar tfoot a {
+.widget_calendar tfoot a {
 	color: #22e;
 }
 
-#wp-calendar tfoot a:hover {
+.widget_calendar tfoot a:hover {
 	color: #c22;
 }

@@ -52,18 +52,18 @@ html {
 	margin-bottom: 0px;
 }
 
-#wp-calendar {
+.widget_calendar {
 	border: solid 1px #dcdcdc;
 }
 
-#wp-calendar thead th {
+.widget_calendar thead th {
 	border-bottom: solid 1px #dcdcdc;
 }
 
-#wp-calendar tbody td {
+.widget_calendar tbody td {
 	border: solid 1px #dcdcdc;
 }
 
-#wp-calendar tfoot td {
+.widget_calendar tfoot td {
 	border-top: solid 1px #dcdcdc;
 }
