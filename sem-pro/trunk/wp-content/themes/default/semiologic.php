@@ -3,7 +3,7 @@
 
 if ( !get_option('sem6_options') ) :
 
-update_option('current_theme', 'Semiologic Reloaded');
+delete_option('current_theme');
 update_option('template', 'sem-reloaded');
 update_option('stylesheet', 'sem-reloaded');
 
