@@ -484,6 +484,11 @@ h2 a {
 	margin: 0px auto;
 }
 
+.widget_calendar td.pad {
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
 .entry {
 	margin-bottom: 2em;
 }
