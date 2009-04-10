@@ -20,4 +20,13 @@ foreach ( (array) $active_plugins as $key => $plugin )
 sort($active_plugins);
 
 update_option('active_plugins', $active_plugins);
+
+if ( $sem_opt = get_option('link_widgets') ) {
+	$wp_opt = get_option('widget_links');
+	if ( !isset($wp_opt['_multiwidget']) ) {
+		$sem_opt['_multiwidget'] = 1;
+		update_option('widget_links' ,$sem_opt);
+	}
+	delete_option('link_widgets');
+}
 ?>
