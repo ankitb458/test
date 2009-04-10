@@ -90,6 +90,8 @@ function sem_clean_up_options()
 		delete_option('link_widgets');
 	}
 	
+	delete_option('link_widgets_cache');
+	
 	# clean up cache
 	foreach ( glob(ABSPATH . "wp-content/cache/yt-*") as $cache_file )
 	{
