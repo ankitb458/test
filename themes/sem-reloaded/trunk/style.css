@@ -279,6 +279,11 @@ th,
 	font-weight: bold;
 }
 
+.button {
+	min-height: 23px;
+	font-weight: bold;
+}
+
 
 /*
  * calendar
@@ -614,6 +619,7 @@ h2 a {
     -moz-border-radius-bottomright:3px;
     -moz-border-radius-topleft:3px;
     -moz-border-radius-topright:3px;
+	border-radius: 3px;
     background-color:#F3F3F3;
     border:1px solid #DDDDDD;
     margin:10px;
