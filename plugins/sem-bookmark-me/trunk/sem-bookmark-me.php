@@ -281,7 +281,7 @@ class bookmark_me {
 	function get_main_services() {
 		return array(
 			'buzzup' => array(
-			 	'name' => __('Buzz Up!', 'bookmark-me'),
+			 	'name' => __('Buzz Up', 'bookmark-me'),
 			 	'url' => 'http://buzz.yahoo.com/buzz?headline=%enc_title%&targetUrl=%enc_url%',
 			 	),
 			'digg' => array(
