@@ -14,6 +14,10 @@ html {
 	background: #f3edda;
 }
 
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
 .skin #navbar {
 	width: 100%;
 }

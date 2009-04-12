@@ -15,6 +15,10 @@ html {
 	color: #eee;
 }
 
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
 body {
 	background: #381e01;
 }
