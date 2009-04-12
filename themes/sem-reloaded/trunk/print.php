@@ -25,7 +25,7 @@ else
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 <?php do_action('wp_head'); ?>
 </head>
-<body class="<?php echo implode(' ', apply_filters('page_class', array('skin', 'custom'))) ?>">
+<body class="<?php echo implode(' ', get_body_class(array('skin', 'custom'))); ?>">
 <?php
 do_action('before_the_entries');
 

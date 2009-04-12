@@ -8,7 +8,7 @@ class sem_skin
 	
 	function init()
 	{
-		add_filter('page_class', array('sem_skin', 'page_class'));
+		add_filter('body_class', array('sem_skin', 'body_class'));
 		add_action('wp_head', array('sem_skin', 'css'));
 		add_action('wp_head', array('sem_skin', 'custom_css'), 200);
 	} # init()
@@ -95,10 +95,10 @@ class sem_skin
 	
 	
 	#
-	# page_class()
+	# body_class()
 	#
 	
-	function page_class($classes)
+	function body_class($classes)
 	{
 		global $sem_options;
 		
@@ -120,7 +120,7 @@ class sem_skin
 		$classes[] = preg_replace("/[^a-z]+/", '_', $sem_options['active_font']);
 		
 		return $classes;
-	} # page_class()
+	} # body_class()
 	
 	
 	#

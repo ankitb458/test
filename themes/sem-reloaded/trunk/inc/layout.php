@@ -8,7 +8,7 @@ class sem_layout
 	
 	function init()
 	{
-		add_filter('page_class', array('sem_layout', 'page_class'));
+		add_filter('body_class', array('sem_layout', 'body_class'));
 		add_action('wp_head', array('sem_layout', 'css'));
 	} # init()
 	
@@ -34,10 +34,10 @@ class sem_layout
 	
 	
 	#
-	# page_class()
+	# body_class()
 	#
 	
-	function page_class($classes)
+	function body_class($classes)
 	{
 		global $sem_options;
 		
@@ -58,7 +58,7 @@ class sem_layout
 		}
 		
 		return $classes;
-	} # page_class()
+	} # body_class()
 } # sem_layout
 
 sem_layout::init();
