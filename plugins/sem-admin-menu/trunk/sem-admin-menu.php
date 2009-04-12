@@ -31,6 +31,8 @@ add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
 add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
 
 add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
+add_filter('body_class', array('sem_admin_menu', 'body_class'));
+
 
 class sem_admin_menu {
 	/**
@@ -45,6 +47,29 @@ class sem_admin_menu {
 		
 		wp_enqueue_style('sem_admin_menu', $css, null, '5.2');
 	} # add_css()
+	
+	
+	/**
+	 * body_class()
+	 *
+	 * @param array $classes
+	 * @return array $classes
+	 **/
+
+	function body_class($classes) {
+		if ( isset($_GET['action']) && $_GET['action'] == 'print' )
+			return $classes;
+		
+		$user = wp_get_current_user();
+		$options = sem_admin_menu::get_options();
+		
+		if ( !$user->ID && !$options['always_on'] )
+			return $classes;
+		
+		$classes[] = 'admin_menu';
+		
+		return $classes;
+	} # body_class()
 
 
 	/**
