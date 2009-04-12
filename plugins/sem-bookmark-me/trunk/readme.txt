@@ -2,7 +2,7 @@
 Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: bookmark-me, social-bookmarking, social-media, buzzup, delicious, digg, facebook, mixx, reddit, stumbleupon, twitter, bookmarking, widget, semiologic
-Requires at least: 2.5
+Requires at least: 2.8
 Tested up to: 2.8
 Stable tag: trunk
 

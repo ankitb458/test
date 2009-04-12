@@ -2,8 +2,8 @@
 Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: dealdotcom, marketing, internet-marketing, monetize, money, adsense, widget, semiologic
-Requires at least: 2.7
-Tested up to: 2.7.2
+Requires at least: 2.8
+Tested up to: 2.8
 Stable tag: trunk
 
 [Dealdotcom](http://go.semiologic.com/dealdotcom) is a great place to look for deals on internet marketing related materials.

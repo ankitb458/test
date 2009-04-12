@@ -42,8 +42,8 @@ class sem_admin_menu {
 	 **/
 
 	function add_css() {
-		$folder = plugins_url() . '/' . basename(dirname(__FILE__));
-		$css = $folder . '/css/sem-admin-menu.css';
+		$folder = plugin_dir_url(__FILE__);
+		$css = $folder . 'css/sem-admin-menu.css';
 		
 		wp_enqueue_style('sem_admin_menu', $css, null, '5.2');
 	} # add_css()

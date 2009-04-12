@@ -99,7 +99,7 @@ class dealdotcom {
 				$deal['image'] = str_replace('http://', 'https://', $deal['image']);
 			}
 			
-			$plugin_path = plugins_url() . '/' . basename(dirname(__FILE__));
+			$plugin_path = plugin_dir_url(__FILE__);
 
 			echo '<div style="'
 					. 'width: 148px;'
@@ -118,7 +118,7 @@ class dealdotcom {
 					. '>'
 				. '<img src="'
 					. $plugin_path
-					. '/dealdotcom-top.gif'
+					. 'dealdotcom-top.gif'
 					. '" alt="" />'
 				. '<br />'
 				. '<img src="'
@@ -136,7 +136,7 @@ class dealdotcom {
 				. '<br />'
 				. '<img src="'
 					. $plugin_path
-					. '/dealdotcom-bottom.gif'
+					. 'dealdotcom-bottom.gif'
 					. '" alt="" />'
 				. '</a>'
 				. '</div>';

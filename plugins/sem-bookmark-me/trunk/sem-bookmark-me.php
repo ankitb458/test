@@ -78,8 +78,8 @@ class bookmark_me {
 	 **/
 
 	function js() {
-		$folder = plugins_url() . '/' . basename(dirname(__FILE__));
-		wp_enqueue_script('bookmark_me', $folder . '/js/scripts.js', array('jquery'), '5.0');
+		$folder = plugin_dir_url(__FILE__);
+		wp_enqueue_script('bookmark_me', $folder . 'js/scripts.js', array('jquery'), '5.0');
 	} # js()
 	
 	
@@ -90,8 +90,8 @@ class bookmark_me {
 	 **/
 
 	function css() {
-		$folder = plugins_url() . '/' . basename(dirname(__FILE__));
-		wp_enqueue_style('bookmark_me', $folder . '/css/styles.css', false, '5.0');
+		$folder = plugin_dir_url(__FILE__);
+		wp_enqueue_style('bookmark_me', $folder . 'css/styles.css', false, '5.0');
 	} # css()
 	
 	

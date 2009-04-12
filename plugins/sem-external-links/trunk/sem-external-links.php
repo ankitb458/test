@@ -66,8 +66,8 @@ class external_links
 
 		if ( $options['add_css'] )
 		{
-			$folder = plugins_url() . '/' . basename(dirname(__FILE__));
-			$css = $folder . '/sem-external-links.css';
+			$folder = plugin_dir_url(__FILE__);
+			$css = $folder . 'sem-external-links.css';
 
 			wp_enqueue_style('external_links', $css, null, '3.0.5');
 		}
