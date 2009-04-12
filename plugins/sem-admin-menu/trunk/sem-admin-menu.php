@@ -66,7 +66,7 @@ class sem_admin_menu {
 		if ( !$user->ID && !$options['always_on'] )
 			return $classes;
 		
-		$classes[] = 'admin_menu';
+		$classes[] = 'sem_admin_menu';
 		
 		return $classes;
 	} # body_class()
