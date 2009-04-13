@@ -1544,20 +1544,19 @@ table.form-table td .updated {
 	clear: left;
 }
 
-.widget .widget-top,
-.postbox h3 {
-	cursor: move;
+.ui-sortable .postbox h3 {
+	cursor: pointer;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-khtml-user-select: none;
 	user-select: none;
 }
 
-.postbox .hndle span {
+.ui-sortable .postbox .hndle span {
 	padding: 6px 0;
 }
 
-.postbox .hndle {
+.ui-sortable .postbox .hndle {
 	cursor: move;
 }
 
@@ -1570,7 +1569,7 @@ table.form-table td .updated {
 	margin: 0 5px;
 }
 
-.postbox .handlediv {
+.meta-box-sortables .postbox .handlediv {
 	float: right;
 	width: 23px;
 	height: 26px;
@@ -1591,9 +1590,9 @@ table.form-table td .updated {
 	line-height: 1;
 }
 
-.widget,
-.postbox,
-.stuffbox {
+.metabox-holder .postbox,
+#poststuff .postbox,
+#poststuff .stuffbox {
 	margin-bottom: 20px;
 	border-width: 1px;
 	border-style: solid;
@@ -1604,10 +1603,9 @@ table.form-table td .updated {
 	border-radius: 6px;
 }
 
-.widget .widget-top,
-.postbox h3,
-.postbox h3,
-.stuffbox h3 {
+.metabox-holder .postbox h3,
+#poststuff .postbox h3,
+#poststuff .stuffbox h3 {
 	-moz-border-radius: 6px 6px 0 0;
 	-webkit-border-top-right-radius: 6px;
 	-webkit-border-top-left-radius: 6px;
@@ -3051,9 +3049,4 @@ p.popular-tags a {
 
 .stuffbox .editcomment {
 	clear: none;
-}
-
-.ajax-feedback {
-	visibility: hidden;
-	vertical-align: bottom;
 }
