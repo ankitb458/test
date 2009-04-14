@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: asides, opt-in-front-page, opt-in front page, opt-in, semiologic
 Requires at least: 2.3
-Tested up to: 2.7.2
+Tested up to: 2.8
 Stable tag: trunk
 
 The Opt-In Front Page plugin lets you add posts to your front page on an opt-in basis, rather than remove posts on an opt-out basis. This allows you to manage any number of asides categories.
