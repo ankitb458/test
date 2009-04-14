@@ -196,11 +196,12 @@ $GLOBALS['wp_rewrite']->flush_rules();
 #
 # Step 7
 # ------
-# Ping List and Comments Status
+# Set default options
 #
 
 update_option('default_comment_status', 'closed');
 update_option('default_ping_status', 'closed');
+update_option('use_balanceTags', '1');
 
 
 #
@@ -239,9 +240,7 @@ $extra_plugins = array(
 	'script-manager/script-manager.php',
 	'search-reloaded/search-reloaded.php',	
 	'sem-admin-menu/sem-admin-menu.php',
-	'sem-author-image/sem-author-image.php',
 	'sem-bookmark-me/sem-bookmark-me.php',
-	'sem-cloner/sem-cloner.php',
 	'sem-docs/sem-docs.php',
 	'sem-fancy-excerpt/sem-fancy-excerpt.php',
 	'sem-fixes/sem-fixes.php',
@@ -251,7 +250,6 @@ $extra_plugins = array(
 	'sem-subscribe-me/sem-subscribe-me.php',
 	'sem-unfancy-quote/sem-unfancy-quote.php',
 	'silo/silo.php',
-	'singular.php',
 	'tag-cloud-widgets/tag-cloud-widgets.php',
 	'text-widgets/text-widgets.php',
 	'uploads-folder/uploads-folder.php',
