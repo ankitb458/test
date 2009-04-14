@@ -471,6 +471,8 @@ class sem_header_admin
 		$sem_options['header_mode'] = $_POST['header']['mode'];
 
 		update_option('sem6_options', $sem_options);
+		
+		delete_option('sem_header');
 	} # save_header()
 
 
@@ -646,6 +648,8 @@ class sem_header_admin
 				@move_uploaded_file($tmp_name, $name);
 				@chmod($name, 0666);
 			}
+			
+			delete_post_meta($post_ID, '_sem_header');
 		}
 		elseif ( isset($_POST['delete_header']) )
 		{
@@ -665,6 +669,8 @@ class sem_header_admin
 					@unlink($header);
 				}
 			}
+			
+			delete_post_meta($post_ID, '_sem_header');
 		}
 	} # save_entry_header()
 	

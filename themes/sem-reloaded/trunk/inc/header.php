@@ -403,8 +403,7 @@ EOF;
 					break;
 				}
 
-				$site_url = trailingslashit(site_url());
-				$header_url = str_replace(ABSPATH, $site_url, $header);
+				$header_url = str_replace(WP_CONTENT_DIR, WP_CONTENT_URL, $header);
 
 				list($header_width, $header_height) = getimagesize($header);
 
@@ -524,14 +523,29 @@ EOF;
 		if ( is_singular() )
 		{
 			$post_ID = intval($GLOBALS['wp_query']->get_queried_object_id());
+			
+			if ( $header = get_post_meta($post_ID, '_sem_header') ) {
+				if ( $header != 'default' ) {
+					return $header;
+				}
+			}
 		}
-
+		
+		$header = get_option('sem_header');
+		
+		if ( $header !== false ) {
+			$header = $header ? $header : false;
+			return $header;
+		}
+		
 		if ( defined('GLOB_BRACE') )
 		{
 			if ( isset($post_ID)
 				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) ) )
 			{
 				$header = current($header);
+				update_post_meta($post_ID, '_sem_header', $header);
+				return $header;
 			}
 			elseif ( $header = glob(sem_path . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 			{
@@ -585,6 +599,8 @@ EOF;
 				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') ) )
 			{
 				$header = current($header);
+				update_post_meta($post_ID, '_sem_header', $header);
+				return $header;
 			}
 			elseif ( $header = glob(WP_CONTENT_DIR . '/header/header-*.jpg') )
 			{
@@ -595,11 +611,21 @@ EOF;
 				$header = false;
 			}
 		}
-
+		
+		if ( is_singular() ) {
+			update_post_meta($post_ID, '_sem_header', 'default');
+		}
+		
+		if ( $header ) {
+			update_option('sem_header', $header);
+		} else {
+			update_option('sem_header', '0');
+		}
+		
 		return $header;
 	} # get_header()
-
-
+	
+	
 	#
 	# upgrade()
 	#
