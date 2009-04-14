@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: fancy excerpt, fancy-excerpt, excerpt, semiologic
 Requires at least: 2.0
-Tested up to: 2.7.2
+Tested up to: 2.8
 Stable tag: trunk
 
 The fancy excerpt plugin for WordPress replaces the default automatic excerpt generator with a sentence aware excerpt generator.
@@ -12,15 +12,23 @@ The fancy excerpt plugin for WordPress replaces the default automatic excerpt ge
 
 The fancy excerpt plugin for WordPress replaces the default automatic excerpt generator with a sentence aware excerpt generator.
 
-When automatically generating an excerpt, WordPress will no longer cut your posts after an arbitrary number of characters. Instead, it will keep adding complete sentences until 200 characters or more are returned.
+When automatically generating an excerpt, WordPress will no longer cut your posts after an arbitrary number of characters. Instead, it will keep adding complete paragraphs until 30 words or more are returned. It then completes the excerpt with a More... link.
 
 Before:
 
-> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut in sem eget est pharetra hendrerit. Nulla condimentum venenatis lectus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin lacus. Aenean eget libero. Suspendisse volutpat nonummy magna. Fusce pharetra volutpat mi. Fusce auctor cursus arcu. Maecenas feugiat dolor a felis. Vivamus facilisis [...]
+> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut in sem eget est pharetra hendrerit. Nulla condimentum venenatis lectus.
+
+> Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin lacus. Aenean eget libero. Suspendisse volutpat nonummy magna.
+
+> Fusce pharetra volutpat mi. Fusce auctor cursus arcu. Maecenas feugiat dolor a felis. Vivamus facilisis [...]
 
 After:
 
-> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut in sem eget est pharetra hendrerit. Nulla condimentum venenatis lectus. (…)
+> Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut in sem eget est pharetra hendrerit. Nulla condimentum venenatis lectus.
+
+> Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Proin lacus. Aenean eget libero. Suspendisse volutpat nonummy magna.
+
+> More...
 
 
 == Installation ==
