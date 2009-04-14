@@ -673,20 +673,26 @@ add_action('get_single_book', 'disable_next_prev_page_link');
 function display_archive_header()
 {
 	global $sem_options;
+	global $sem_captions;
+	
+	$desc = '';
 	
 	echo '<h1>';
 
 	if ( is_category() )
 	{
 		single_cat_title();
+		$desc = category_description();
 	}
 	elseif ( is_tag() )
 	{
 		single_tag_title();
+		$desc = tag_description();
 	}
 	elseif ( is_month() )
 	{
 		single_month_title(' ');
+		$desc = wpautop($user->description);
 	}
 	elseif ( is_author() )
 	{
@@ -700,34 +706,21 @@ function display_archive_header()
 	{
 		global $wp_query;
 		
-		echo __('Search:') . ' ' . implode(' ', $wp_query->query_vars['search_terms']);
+		echo str_replace('%query%', implode(' ', $wp_query->query_vars['search_terms']), $sem_captions['search_title']);
 	}
 	elseif ( is_404() )
 	{
-		echo __('404 Error: Not Found!');
+		echo $sem_captions['404_title'];
+		$desc = $sem_captions['404_desc'];
 	}
 	else
 	{
-		echo __('Archives');
+		echo $sem_captions['archives_title'];
 	}
 
 	echo '</h1>' . "\n";
-	
-	$desc = '';
-	
-	if ( is_category() )
-	{
-		$desc = category_description();
-	}
-	elseif ( is_tag() ) {
-		$desc = tag_description();
-	}
-	elseif ( is_author() )
-	{
-		$desc = wpautop($user->description);
-	}
 		
-	if ( trim($desc) != '<br />' )
+	if ( $desc && trim($desc) != '<br />' )
 	{
 		echo $desc;
 	}
@@ -768,6 +761,13 @@ function archive_header_widgetize()
 		'Blog: Archives Header',
 		'archive_header_widget',
 		$widget_options
+		);
+
+	wp_register_widget_control(
+		'archives_header',
+		'Blog: Archives Header',
+		'archive_header_widget_control',
+		$control_options
 		);
 } # archive_header_widgetize()
 

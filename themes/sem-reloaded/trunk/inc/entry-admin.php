@@ -507,4 +507,77 @@ function sem_postnav_widget_control()
 		. '</label>'
 		. '</div>';
 } # sem_postnav_widget_control()
+
+
+#
+# archive_header_widget_control()
+#
+
+function archive_header_widget_control() {
+	global $sem_captions;
+
+	if ( $_POST['update_sem_entry']['archives_header'] )
+	{
+		$new_captions = $sem_captions;
+
+		$new_captions['search_title'] = strip_tags(stripslashes($_POST['sem_entry']['label_search_title']));
+		$new_captions['archives_title'] = strip_tags(stripslashes($_POST['sem_entry']['label_archives_title']));
+		$new_captions['404_title'] = strip_tags(stripslashes($_POST['sem_entry']['label_404_title']));
+		$new_captions['404_desc'] = strip_tags(stripslashes($_POST['sem_entry']['label_404_desc']));
+		
+		if ( $new_captions != $sem_captions )
+		{
+			$sem_captions = $new_captions;
+
+			update_option('sem6_captions', $sem_captions);
+		}
+	}
+
+	echo '<input type="hidden" name="update_sem_entry[archives_header]" value="1" />';
+
+	echo '<div style="margin-bottom: .2em;">'
+		. '<label>'
+		. __('Search Title, e.g. Search %query%')
+		. '<br />'
+		. '<input type="text" class="widefat"'
+			. ' name="sem_entry[label_search_title]"'
+			. ' value="' . attribute_escape($sem_captions['search_title']) . '"'
+			. ' />'
+		. '</label>'
+		. '</div>' . "\n";
+
+	echo '<div style="margin-bottom: .2em;">'
+		. '<label>'
+		. __('Archives Title, e.g. Archives')
+		. '<br />'
+		. '<input type="text" class="widefat"'
+			. ' name="sem_entry[label_archives_title]"'
+			. ' value="' . attribute_escape($sem_captions['archives_title']) . '"'
+			. ' />'
+		. '</label>'
+		. '</div>' . "\n";
+
+	echo '<div style="margin-bottom: .2em;">'
+		. '<label>'
+		. __('404 Title, e.g. 404 Error: Not Found!')
+		. '<br />'
+		. '<input type="text" class="widefat"'
+			. ' name="sem_entry[label_404_title]"'
+			. ' value="' . attribute_escape($sem_captions['404_title']) . '"'
+			. ' />'
+		. '</label>'
+		. '</div>' . "\n";
+
+	echo '<div style="margin-bottom: .2em;">'
+		. '<label>'
+		. __('404 Description')
+		. '<br />'
+		. '<textarea class="widefat" cols="20" rows="5"'
+			. ' name="sem_entry[label_404_desc]"'
+			. ' />'
+			. format_to_edit($sem_captions['404_desc'])
+		. '</textarea>'
+		. '</label>'
+		. '</div>' . "\n";
+} # archive_header_widget_control()
 ?>

@@ -179,6 +179,15 @@ if ( isset($sem_options['show_copyright']) && !$sem_options['show_copyright'] ) 
 	$sem_captions['copyright'] = '';
 }
 
+foreach ( array(
+	"search_title" => __('Search: %query%'),
+	"archives_title" => __('Archives'),
+	"404_title" => __('404 Error: Not Found!'),
+	"404_desc" => '',
+	) as $k => $v )
+	if ( !isset($sem_captions[$k]) )
+		$sem_captions[$k] = $v;
+
 
 unset($sem_options['api_key']);
 unset($sem_options['theme_archives']);

@@ -11,6 +11,11 @@ $sem_captions = array(
 	# header: nav menu
 	"search_button" => __("Go"),
 	"search_field" => __("Search"),
+	# blog: archives_header
+	"search_title" => __('Search: %query%'),
+	"archives_title" => __('Archives'),
+	"404_title" => __('404 Error: Not Found!'),
+	"404_desc" => '',
 	# entry: content
 	"paginate" => __("Pages"),
 	"more_link" => __("More on %title%."),
