@@ -441,7 +441,7 @@ class sem_nav_menus
 	{
 		if ( !empty($sep) )
 		{
-			return '<span>' . $sep . '</span>' . "\n";
+			return '<span class="nav_sep">' . $sep . '</span>' . "\n";
 		}	
 	} # display_seperator()	
 	

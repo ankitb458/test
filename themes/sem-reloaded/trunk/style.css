@@ -419,6 +419,11 @@ img.avatar {
 	margin-right: 0px;
 }
 
+span.nav_sep {
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+}
+
 #credits {
 	font-size: .8em;
 }
