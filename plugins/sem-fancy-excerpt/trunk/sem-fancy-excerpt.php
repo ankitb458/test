@@ -62,7 +62,7 @@ class fancy_excerpt {
 		) {
 			# automatically add a more... tag
 			
-			$bits = preg_split("~(<(?:h[1-6]|p|li|dd|tr|pre|blockquote)\b[^>]*>|\n+)~i", $text, null, PREG_SPLIT_DELIM_CAPTURE);
+			$bits = preg_split("~(<(?:h[1-6]|p|ul|ol|li|dl|dd|table|tr|pre|blockquote)\b[^>]*>|\n+)~i", $text, null, PREG_SPLIT_DELIM_CAPTURE);
 			$text = '';
 			$length = 0;
 			
