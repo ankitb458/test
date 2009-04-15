@@ -28,9 +28,25 @@ load_plugin_textdomain('redirect-manager', null, basename(dirname(__FILE__)) . '
  * @package Redirect Manager
  **/
 
+add_action('admin_menu', array('redirect_manager', 'meta_boxes'));
 add_action('template_redirect', array('redirect_manager', 'redirect'), -1000000);
 
 class redirect_manager {
+	/**
+	 * meta_boxes()
+	 *
+	 * @return void
+	 **/
+	
+	function meta_boxes() {
+		if ( current_user_can('edit_posts') )
+			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'edit_entry'), 'post');
+		
+		if ( current_user_can('edit_pages') )
+			add_meta_box('redirect_manager', __('Redirect', 'redirect-manager'), array('redirect_manager_admin', 'edit_entry'), 'page');
+	} # meta_boxes()
+	
+	
 	/**
 	 * redirect()
 	 *
