@@ -131,6 +131,23 @@ update_option('sidebars_widgets', $sidebars_widgets);
 
 
 #
+# fix text widgets
+#
+
+$opt = get_option('widget_text');
+
+if ( $opt && !isset($opt['_multiwidget']) ) {
+	foreach ( array_keys($opt) as $k ) {
+		if ( !is_numeric($k) ) {
+			unset($opt[$k]);
+		}
+	}
+	$opt['_multiwidget'] = 1;
+	update_option('widget_text', $opt);
+}
+
+
+#
 # upgrade options and captions
 #
 
