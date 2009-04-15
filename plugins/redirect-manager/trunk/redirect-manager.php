@@ -80,6 +80,13 @@ class redirect_manager {
 	} # display()
 } # redirect_manager
 
-if ( is_admin() )
+function redirect_manager_admin() {
 	include dirname(__FILE__) . '/redirect-manager-admin.php';
+}
+
+foreach ( array(
+	'page-new.php', 'page.php',
+	'post-new.php', 'post.php',
+	) as $admin_page )
+	add_action("load-$admin_page", 'redirect_manager_admin');
 ?>
