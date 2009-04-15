@@ -336,6 +336,4 @@ function sem_admin_menu_admin() {
 
 foreach ( array('load-page-new.php', 'load-settings_page_admin-menu') as $admin_page )
 	add_action($admin_page, 'sem_admin_menu_admin');
-
-add_action('load-settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'));
 ?>
