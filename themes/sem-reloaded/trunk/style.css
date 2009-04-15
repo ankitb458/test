@@ -202,12 +202,20 @@ dl dl {
 	margin-left: .8em;
 }
 
-strong {
+strong, b {
 	font-weight: bold;
 }
 
-em {
+em, i {
 	font-style: italic;
+}
+
+del, s {
+	text-decoration: line-through;
+}
+
+ins, u {
+	text-decoration: underline;
 }
 
 a {
