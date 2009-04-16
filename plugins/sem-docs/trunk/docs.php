@@ -13,15 +13,15 @@ class sem_docs
 		define('sem_docs_version', preg_replace("/^(\d+(?:\.\d+)).*$/", "$1", sem_version));
 		
 		global $wpdb;
-		$wpdb->sem_docs = $wpdb->prefix . 'sem_docs';
+		$wpdb->sem_docs = 'sem_docs';
 		
 		# install docs
-		if ( !get_option('sem_docs_version') )
+		if ( get_option('sem_docs_version') < 2.02 )
 		{
 			sem_docs::init_db();
 			sem_docs::update(true);
 			
-			update_option('sem_docs_version', 2);
+			update_option('sem_docs_version', 2.02);
 		}
 		# force update on domain.com/wp-admin/?update_docs
 		elseif ( isset($_GET['update_docs']) && current_user_can('administrator') )
@@ -122,6 +122,12 @@ class sem_docs
 			if ( ! empty($wpdb->collate) )
 				$charset_collate .= " COLLATE $wpdb->collate";
 		}
+		
+		$old_table = $wpdb->prefix . 'sem_docs';
+		
+		$wpdb->query("
+			DROP TABLE IF EXISTS $old_table;
+		");
 		
 		$wpdb->query("
 			CREATE TABLE IF NOT EXISTS $wpdb->sem_docs (
