@@ -104,7 +104,7 @@ class extract_terms
 			}
 			
 			$old_yt_cache = $wpdb->prefix . 'yt_cache';
-			$wpdb->show_errors();
+			
 			$wpdb->query("
 				DROP TABLE IF EXISTS $old_yt_cache;
 			");
@@ -152,7 +152,7 @@ Content-Length: " . strlen($content) . "
 			$fp = @fsockopen("api.search.yahoo.com", 80);
 
 			# Discard the call if it times out
-			
+
 			if ( !$fp )
 			{
 				return false;
