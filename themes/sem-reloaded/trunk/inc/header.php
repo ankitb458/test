@@ -524,7 +524,7 @@ EOF;
 		{
 			$post_ID = intval($GLOBALS['wp_query']->get_queried_object_id());
 			
-			if ( $header = get_post_meta($post_ID, '_sem_header') ) {
+			if ( $header = get_post_meta($post_ID, '_sem_header', true) ) {
 				if ( $header != 'default' ) {
 					return $header;
 				}
