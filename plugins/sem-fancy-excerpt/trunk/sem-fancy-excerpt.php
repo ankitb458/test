@@ -38,11 +38,8 @@ class fancy_excerpt {
 	function process($text) {
 		$text = trim($text);
 		
-		if ( $text ) {
-			return $text;
-		} elseif ( !in_the_loop() ) {
+		if ( $text || !in_the_loop() )
 			return wp_trim_excerpt($text);
-		}
 		
 		global $sem_captions;
 		
@@ -86,7 +83,7 @@ class fancy_excerpt {
 			$text = apply_filters('the_content', $text);
 		}
 		
-		return $text;
+		return apply_filters('wp_trim_excerpt', $text, '');
 	} # process()
 } # fancy_excerpt
 ?>
