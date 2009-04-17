@@ -143,6 +143,7 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 	}
 	else
 	{
+		setcookie('add_stops', null, time() - 3600);
 		add_action('init', create_function('', '
 			header("HTTP/1.1 301 Moved Permanently");
 	        header("Status: 301 Moved Permanently");
