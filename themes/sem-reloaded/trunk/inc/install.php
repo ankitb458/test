@@ -241,7 +241,6 @@ $extra_plugins = array(
 	'redirect-manager/redirect-manager.php',
 	'related-widgets/related-widgets.php',
 	'script-manager/script-manager.php',
-	'search-reloaded/search-reloaded.php',	
 	'sem-admin-menu/sem-admin-menu.php',
 	'sem-bookmark-me/sem-bookmark-me.php',
 	'sem-docs/sem-docs.php',
