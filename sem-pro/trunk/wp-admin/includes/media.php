@@ -1565,8 +1565,8 @@ jQuery(function($){
 <a href="#" id="hideall" class="toggle" style="display:none;"><?php _e('Hide'); ?></a>
 </span>
 <?php _e('Sort Order:'); ?>
-<a href="#" id="asc"><?php _e('Ascending'); ?></a> | 
-<a href="#" id="desc"><?php _e('Descending'); ?></a> | 
+<a href="#" id="asc"><?php _e('Ascending'); ?></a> |
+<a href="#" id="desc"><?php _e('Descending'); ?></a> |
 <a href="#" id="clear"><?php _e('Clear'); ?></a>
 </div>
 <form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form validate" id="gallery-form">
@@ -1705,7 +1705,7 @@ function media_upload_library_form($errors) {
 
 <p id="media-search" class="search-box">
 	<label class="hidden" for="media-search-input"><?php _e('Search Media');?>:</label>
-	<input type="text" id="media-search-input" class="search-input" name="s" value="<?php the_search_query(); ?>" />
+	<input type="text" id="media-search-input" name="s" value="<?php the_search_query(); ?>" />
 	<input type="submit" value="<?php echo attribute_escape( __( 'Search Media' ) ); ?>" class="button" />
 </p>
 

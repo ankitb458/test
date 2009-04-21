@@ -78,7 +78,7 @@ include('./admin-header.php');
 </tr>
 <tr valign="top">
 <th scope="row"><label for="admin_email"><?php _e('E-mail address') ?> </label></th>
-<td><input name="admin_email" type="text" id="admin_email" value="<?php form_option('admin_email'); ?>" class="regular-text code" />
+<td><input name="admin_email" type="text" id="admin_email" value="<?php form_option('admin_email'); ?>" class="regular-text" />
 <span class="setting-description"><?php _e('This address is used for admin purposes, like new user notification.') ?></span></td>
 </tr>
 <tr valign="top">
@@ -137,8 +137,8 @@ else: // looks like we can do nice timezone selection!
 $current_offset = get_option('gmt_offset');
 $tzstring = get_option('timezone_string');
 if (empty($tzstring)) { // set the Etc zone if no timezone string exists
-	if ($current_offset < 0) $offnum = ceil($current_offset);
-	else $offnum = floor($current_offset);
+	if ($current_offset < 0) $offnum = - ceil($current_offset);
+	else $offnum = - floor($current_offset);
 	$tzstring = 'Etc/GMT' . (($offnum >= 0) ? '+' : '') . $offnum;
 }
 ?>

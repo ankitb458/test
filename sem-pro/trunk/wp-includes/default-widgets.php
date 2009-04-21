@@ -140,7 +140,7 @@ class WP_Widget_Links extends WP_Widget {
 ?>
 		<p>
 		<label for="<?php echo $this->get_field_id('category'); ?>">
-		<select id="<?php echo $this->get_field_id('category'); ?>" name="<?php echo $this->get_field_name('category'); ?>" style="width: 97%;" />
+		<select class="widefat" id="<?php echo $this->get_field_id('category'); ?>" name="<?php echo $this->get_field_name('category'); ?>">
 		<option value=""><?php _e('All Links'); ?></option>
 		<?php
 		foreach ( $link_cats as $link_cat ) {
@@ -149,7 +149,8 @@ class WP_Widget_Links extends WP_Widget {
 				. '>' . $link_cat->name . "</option>\n";
 		}
 		?>
-		</select></label><br />
+		</select></label></p>
+		<p>
 		<label for="<?php echo $this->get_field_id('images'); ?>">
 		<input class="checkbox" type="checkbox" <?php checked($instance['images'], true) ?> id="<?php echo $this->get_field_id('images'); ?>" name="<?php echo $this->get_field_name('images'); ?>" /> <?php _e('Show Link Image'); ?></label><br />
 		<label for="<?php echo $this->get_field_id('name'); ?>">
@@ -354,7 +355,7 @@ class WP_Widget_Text extends WP_Widget {
 		$text = apply_filters( 'widget_text', $instance['text'] );
 		echo $before_widget;
 		if ( !empty( $title ) ) { echo $before_title . $title . $after_title; } ?>
-			<div class="textwidget"><?php echo $text; ?></div>
+			<div class="textwidget"><?php echo $instance['filter'] ? wpautop($text) : $text; ?></div>
 		<?php
 		echo $after_widget;
 	}
@@ -366,6 +367,7 @@ class WP_Widget_Text extends WP_Widget {
 			$instance['text'] =  $new_instance['text'];
 		else
 			$instance['text'] = wp_filter_post_kses( $new_instance['text'] );
+		$instance['filter'] = isset($new_instance['filter']);
 		return $instance;
 	}
 
@@ -376,6 +378,7 @@ class WP_Widget_Text extends WP_Widget {
 ?>
 			<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attribute_escape($title); ?>" /></label></p>
 			<textarea class="widefat" rows="16" cols="20" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo $text; ?></textarea>
+			<p><label for="<?php echo $this->get_field_id('filter'); ?>"><input id="<?php echo $this->get_field_id('filter'); ?>" name="<?php echo $this->get_field_name('filter'); ?>" type="checkbox" <?php checked($instance['filter']); ?> />&nbsp;<?php _e('Automatically add paragraphs.') ?></label></p>
 <?php
 	}
 }
@@ -882,7 +885,7 @@ function wp_widget_rss_control($widget_args) {
 		$url = '';
 		$items = 10;
 		$error = false;
-		$number = '%i%';
+		$number = '__i__';
 		$show_summary = 0;
 		$show_author = 0;
 		$show_date = 0;

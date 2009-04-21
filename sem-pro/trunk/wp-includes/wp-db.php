@@ -266,7 +266,7 @@ class wpdb {
 	 * @access public
 	 * @war array
 	 */
-	var $field_type = array();
+	var $field_types = array();
 
 	/**
 	 * Database table columns charset
@@ -751,7 +751,7 @@ class wpdb {
 		return $this->query( $this->prepare( $sql, $data) );
 	}
 
-        
+
 	/**
 	 * Update a row in the table
 	 *

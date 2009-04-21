@@ -23,7 +23,7 @@
  */
 class WP_Widget {
 
-	var $id_base;         	// Root id for all widgets of this type.
+	var $id_base;			// Root id for all widgets of this type.
 	var $name;				// Name for this widget type.
 	var $widget_options;	// Option array passed to wp_register_sidebar_widget()
 	var $control_options;	// Option array passed to wp_register_widget_control()
@@ -35,7 +35,7 @@ class WP_Widget {
 	// Member functions that you must over-ride.
 
 	/** Echo the widget content.
-	 * 
+	 *
 	 * Subclasses should over-ride this function to generate their widget code.
 	 *
 	 * @param array $args Display arguments including before_title, after_title, before_widget, and after_widget.
@@ -46,24 +46,26 @@ class WP_Widget {
 	}
 
 	/** Update a particular instance.
-	 * 
+	 *
 	 * This function should check that $new_instance is set correctly.
 	 * The newly calculated value of $instance should be returned.
+	 * If "false" is returned, the instance won't be saved/updated.
 	 *
 	 * @param array $new_instance New settings for this instance as input by the user via form()
 	 * @param array $old_instance Old settings for this instance
-	 * @return array Settings to save
+	 * @return array Settings to save or bool false to cancel saving
 	 */
 	function update($new_instance, $old_instance) {
 		return $new_instance;
 	}
 
 	/** Echo the settings update form
-	 * 
-	 * @param array $instance Current settings 
+	 *
+	 * @param array $instance Current settings
 	 */
 	function form($instance) {
 		echo '<p>' . __('There are no options for this widget.') . '</p>';
+		return false;
 	}
 
 	// Functions you'll need to call.
@@ -86,18 +88,17 @@ class WP_Widget {
 	 */
 	function __construct( $id_base, $name, $widget_options = array(), $control_options = array() ) {
 		$this->id_base = $id_base;
+	//	$this->id_base = str_replace( 'wp_widget_', '', strtolower(get_class($this)) );
 		$this->name = $name;
 		$this->option_name = 'widget_' . $id_base;
 		$this->widget_options = wp_parse_args( $widget_options, array('classname' => $this->option_name) );
 		$this->control_options = wp_parse_args( $control_options, array('id_base' => $this->id_base) );
-
-		//add_action( 'widgets_init', array( &$this, '_register' ) );
 	}
 
 	/** Constructs name attributes for use in form() fields
-	 * 
+	 *
 	 * This function should be used in form() methods to create name attributes for fields to be saved by update()
-	 * 
+	 *
 	 * @param string $field_name Field name
 	 * @return string Name attribute for $field_name
 	 */
@@ -106,9 +107,9 @@ class WP_Widget {
 	}
 
 	/** Constructs id attributes for use in form() fields
-	 * 
+	 *
 	 * This function should be used in form() methods to create id attributes for fields to be saved by update()
-	 * 
+	 *
 	 * @param string $field_name Field name
 	 * @return string ID attribute for $field_name
 	 */
@@ -191,34 +192,40 @@ class WP_Widget {
 			else
 				$this_sidebar = array();
 
-			foreach ( $this_sidebar as $_widget_id )	{
-				// Remove all widgets of this type from the sidebar. We'll add the
-				// new data in a second. This makes sure we don't get any duplicate
-				// data since widget ids aren't necessarily persistent across multiple
-				// updates
-				if ( $this->_get_display_callback() == $wp_registered_widgets[$_widget_id]['callback'] && isset($wp_registered_widgets[$_widget_id]['params'][0]['number']) ) {
-					$number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
-					if( !in_array( $this->id_base . '-' . $number, (array)$_POST['widget-id'] ) ) {
-						// the widget has been removed.
+			if ( isset($_POST['delete_widget']) && $_POST['delete_widget'] ) {
+				// Delete the settings for this instance of the widget
+				if ( isset($_POST['widget-id']) )
+					$del_id = $_POST['widget-id'];
+				else
+					return;
+
+				if ( $this->_get_display_callback() == $wp_registered_widgets[$del_id]['callback'] && isset($wp_registered_widgets[$del_id]['params'][0]['number']) ) {
+					$number = $wp_registered_widgets[$del_id]['params'][0]['number'];
+
+					if ( $this->id_base . '-' . $number == $del_id ) {
 						unset($all_instances[$number]);
 					}
 				}
-			}
+			} else {
+				if ( isset($_POST['widget-' . $this->id_base]) && is_array($_POST['widget-' . $this->id_base]) ) {
+					$settings = $_POST['widget-' . $this->id_base];
+				} else {
+					$num = $_POST['multi_number'] ? (int) $_POST['multi_number'] : (int) $_POST['widget_number'];
+					$settings = array( $num => array() );
+				}
 
-			foreach ( (array) $_POST['widget-' . $this->id_base] as $number => $new_instance ) {
-				$new_instance = stripslashes_deep($new_instance);
-				$this->_set($number);
+				foreach ( $settings as $number => $new_instance ) {
+					$new_instance = stripslashes_deep($new_instance);
+					$this->_set($number);
 
-				if ( !isset($new_instance['submit']) )
-					continue;
+					if ( isset($all_instances[$number]) )
+						$instance = $this->update($new_instance, $all_instances[$number]);
+					else
+						$instance = $this->update($new_instance, array());
 
-				if ( isset($all_instances[$number]) )
-					$instance = $this->update($new_instance, $all_instances[$number]);
-				else
-					$instance = $this->update($new_instance, array());
-
-				if ( !empty($instance) )
-					$all_instances[$number] = $instance;
+					if ( false !== $instance )
+						$all_instances[$number] = $instance;
+				}
 			}
 
 			$this->save_settings($all_instances);
@@ -236,24 +243,21 @@ class WP_Widget {
 		$all_instances = $this->get_settings();
 
 		if ( -1 == $widget_args['number'] ) {
-			// We echo out a form where 'number' can be set later via JS
-			$this->_set('%i%');
+			// We echo out a form where 'number' can be set later
+			$this->_set('__i__');
 			$instance = array();
 		} else {
 			$this->_set($widget_args['number']);
 			$instance = $all_instances[ $widget_args['number'] ];
 		}
 
-		$this->form($instance);
-?>
-		<input type="hidden" id="<?php echo $this->get_field_id('submit'); ?>" name="<?php echo $this->get_field_name('submit'); ?>" value="1" />
-<?php
+		return $this->form($instance);
 	}
 
 	/** Helper function: Registers a single instance. */
 	function _register_one($number = -1) {
 		wp_register_sidebar_widget(	$this->id, $this->name,	$this->_get_display_callback(), $this->widget_options, array( 'number' => $number ) );
-		_register_widget_update_callback(	$this->id, $this->name,	$this->_get_update_callback(), $this->control_options, array( 'number' => $number ) );
+		_register_widget_update_callback( $this->id_base, $this->_get_update_callback(), $this->control_options, array( 'number' => -1 ) );
 		_register_widget_form_callback(	$this->id, $this->name,	$this->_get_form_callback(), $this->control_options, array( 'number' => $number ) );
 	}
 
@@ -293,7 +297,12 @@ class WP_Widget_Factory {
 	}
 
 	function register($widget_class) {
-		$this->widgets[] = new $widget_class();
+		$this->widgets[$widget_class] = new $widget_class();
+	}
+
+	function unregister($widget_class) {
+		if ( isset($this->widgets[$widget_class]) )
+			unset($this->widgets[$widget_class]);
 	}
 
 	function _register_widgets() {
@@ -351,6 +360,26 @@ function register_widget($widget_class) {
 	global $wp_widget_factory;
 
 	$wp_widget_factory->register($widget_class);
+}
+
+/**
+ * Unregister a widget
+ *
+ * Unregisters a WP_Widget widget. Useful for unregistering default widgets.
+ * Run within a function hooked to the widgets_init action.
+ *
+ * @since 2.8.0
+ *
+ * @see WP_Widget
+ * @see WP_Widget_Factory
+ * @uses WP_Widget_Factory
+ *
+ * @param string $widget_class The name of a class that extends WP_Widget
+ */
+function unregister_widget($widget_class) {
+	global $wp_widget_factory;
+
+	$wp_widget_factory->unregister($widget_class);
 }
 
 /**
@@ -579,10 +608,11 @@ function wp_register_widget_control($id, $name, $control_callback, $options = ar
 	global $wp_registered_widget_controls, $wp_registered_widget_updates;
 
 	$id = strtolower($id);
+	$update_id = preg_replace( '/-[0-9]+$/', '', $id );
 
 	if ( empty($control_callback) ) {
 		unset($wp_registered_widget_controls[$id]);
-		unset($wp_registered_widget_updates[$id]);
+		unset($wp_registered_widget_updates[$update_id]);
 		return;
 	}
 
@@ -602,36 +632,34 @@ function wp_register_widget_control($id, $name, $control_callback, $options = ar
 	);
 	$widget = array_merge($widget, $options);
 
-	$wp_registered_widget_controls[$id] = $wp_registered_widget_updates[$id] = $widget;
+	$wp_registered_widget_controls[$id] = $widget;
+
+	if ( isset($wp_registered_widget_updates[$update_id]) )
+		return;
+
+	if ( isset($widget['params'][0]['number']) )
+		$widget['params'][0]['number'] = -1;
+
+	unset($widget['width'], $widget['height'], $widget['name'], $widget['id']);
+	$wp_registered_widget_updates[$update_id] = $widget;
 }
 
-function _register_widget_update_callback($id, $name, $update_callback, $options = array()) {
+function _register_widget_update_callback($id_base, $update_callback, $options = array()) {
 	global $wp_registered_widget_updates;
 
-	$id = strtolower($id);
-
-	if ( empty($update_callback) ) {
-		unset($wp_registered_widget_updates[$id]);
+	if ( isset($wp_registered_widget_updates[$id_base]) ) {
+		if ( empty($update_callback) )
+			unset($wp_registered_widget_updates[$id_base]);
 		return;
 	}
 
-	if ( isset($wp_registered_widget_updates[$id]) && !did_action( 'widgets_init' ) )
-		return;
-
-	$defaults = array('width' => 250, 'height' => 200 ); // height is never used
-	$options = wp_parse_args($options, $defaults);
-	$options['width'] = (int) $options['width'];
-	$options['height'] = (int) $options['height'];
-
 	$widget = array(
-		'name' => $name,
-		'id' => $id,
 		'callback' => $update_callback,
-		'params' => array_slice(func_get_args(), 4)
+		'params' => array_slice(func_get_args(), 3)
 	);
-	$widget = array_merge($widget, $options);
 
-	$wp_registered_widget_updates[$id] = $widget;
+	$widget = array_merge($widget, $options);
+	$wp_registered_widget_updates[$id_base] = $widget;
 }
 
 function _register_widget_form_callback($id, $name, $form_callback, $options = array()) {
@@ -647,7 +675,7 @@ function _register_widget_form_callback($id, $name, $form_callback, $options = a
 	if ( isset($wp_registered_widget_controls[$id]) && !did_action( 'widgets_init' ) )
 		return;
 
-	$defaults = array('width' => 250, 'height' => 200 ); // height is never used
+	$defaults = array('width' => 250, 'height' => 200 );
 	$options = wp_parse_args($options, $defaults);
 	$options['width'] = (int) $options['width'];
 	$options['height'] = (int) $options['height'];

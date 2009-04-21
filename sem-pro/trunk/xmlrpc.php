@@ -468,7 +468,7 @@ class wp_xmlrpc_server extends IXR_Server {
 				'url'			=> get_option( 'home' ) . '/',
 				'blogid'		=> $blog_id,
 				'blogName'		=> get_option( 'blogname' ),
-				'xmlrpc'		=> get_option( 'home' ) . '/xmlrpc.php'
+				'xmlrpc'		=> site_url( 'xmlrpc.php' )
 			);
 
 			restore_current_blog( );
@@ -519,8 +519,8 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 
 			// Determine comment and ping settings.
-			$allow_comments = ("open" == $page->comment_status) ? 1 : 0;
-			$allow_pings = ("open" == $page->ping_status) ? 1 : 0;
+			$allow_comments = comments_open($page->ID) ? 1 : 0;
+			$allow_pings = pings_open($page->ID) ? 1 : 0;
 
 			// Format page date.
 			$page_date = mysql2date("Ymd\TH:i:s", $page->post_date);
@@ -1601,7 +1601,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			'url'      => get_option('home') . '/',
 			'blogid'   => '1',
 			'blogName' => get_option('blogname'),
-			'xmlrpc'   => get_option('home') . '/xmlrpc.php',
+			'xmlrpc'   => site_url( 'xmlrpc.php' )
 		);
 
 		return array($struct);

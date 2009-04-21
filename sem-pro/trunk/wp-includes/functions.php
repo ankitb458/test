@@ -96,11 +96,11 @@ function date_i18n( $dateformatstring, $unixtimestamp = false, $gmt = false ) {
 		// specially computed timestamp
 		$gmt = true;
 	}
-	
+
 	// store original value for language with untypical grammars
 	// see http://core.trac.wordpress.org/ticket/9396
 	$req_format = $dateformatstring;
-	
+
 	$datefunc = $gmt? 'gmdate' : 'date';
 
 	if ( ( !empty( $wp_locale->month ) ) && ( !empty( $wp_locale->weekday ) ) ) {
@@ -226,8 +226,7 @@ function get_weekstartend( $mysqlstring, $start_of_week = '' ) {
  */
 function maybe_unserialize( $original ) {
 	if ( is_serialized( $original ) ) // don't attempt to unserialize data that wasn't serialized going in
-		if ( false !== $gm = @unserialize( $original ) )
-			return $gm;
+		return @unserialize( $original );
 	return $original;
 }
 
@@ -935,9 +934,7 @@ function make_url_footnote( $content ) {
 function xmlrpc_getposttitle( $content ) {
 	global $post_default_title;
 	if ( preg_match( '/<title>(.+?)<\/title>/is', $content, $matchtitle ) ) {
-		$post_title = $matchtitle[0];
-		$post_title = preg_replace( '/<title>/si', '', $post_title );
-		$post_title = preg_replace( '/<\/title>/si', '', $post_title );
+		$post_title = $matchtitle[1];
 	} else {
 		$post_title = $post_default_title;
 	}
@@ -1676,15 +1673,20 @@ function is_blog_installed() {
 	global $wpdb;
 
 	// Check cache first. If options table goes away and we have true cached, oh well.
-	if ( wp_cache_get('is_blog_installed') )
+	if ( wp_cache_get( 'is_blog_installed' ) )
 		return true;
 
 	$suppress = $wpdb->suppress_errors();
-	$installed = $wpdb->get_var( "SELECT option_value FROM $wpdb->options WHERE option_name = 'siteurl'" );
-	$wpdb->suppress_errors($suppress);
+	$alloptions = wp_load_alloptions();
+	// If siteurl is not set to autoload, check it specifically
+	if ( !isset( $alloptions['siteurl'] ) )
+		$installed = $wpdb->get_var( "SELECT option_value FROM $wpdb->options WHERE option_name = 'siteurl'" );
+	else
+		$installed = $alloptions['siteurl'];
+	$wpdb->suppress_errors( $suppress );
 
-	$installed = !empty( $installed ) ? true : false;
-	wp_cache_set('is_blog_installed', $installed);
+	$installed = !empty( $installed );
+	wp_cache_set( 'is_blog_installed', $installed );
 
 	return $installed;
 }
@@ -2118,7 +2120,7 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 function wp_ext2type( $ext ) {
 	$ext2type = apply_filters('ext2type', array(
 		'audio' => array('aac','ac3','aif','aiff','mp1','mp2','mp3','m3a','m4a','m4b','ogg','ram','wav','wma'),
-		'video' => array('asf','avi','divx','dv','mov','mpg','mpeg','mp4','mpv','ogm','qt','rm','vob','wmv'),
+		'video' => array('asf','avi','divx','dv','mov','mpg','mpeg','mp4','mpv','ogm','qt','rm','vob','wmv', 'm4v'),
 		'document' => array('doc','docx','pages','odt','rtf','pdf'),
 		'spreadsheet' => array('xls','xlsx','numbers','ods'),
 		'interactive' => array('ppt','pptx','key','odp','swf'),
@@ -2155,12 +2157,13 @@ function wp_check_filetype( $filename, $mimes = null ) {
 		'avi' => 'video/avi',
 		'divx' => 'video/divx',
 		'mov|qt' => 'video/quicktime',
-		'mpeg|mpg|mpe|mp4' => 'video/mpeg',
+		'mpeg|mpg|mpe' => 'video/mpeg',
 		'txt|c|cc|h' => 'text/plain',
 		'rtx' => 'text/richtext',
 		'css' => 'text/css',
 		'htm|html' => 'text/html',
 		'mp3|m4a' => 'audio/mpeg',
+		'mp4|m4v' => 'video/mp4',
 		'ra|ram' => 'audio/x-realaudio',
 		'wav' => 'audio/wav',
 		'ogg' => 'audio/ogg',
@@ -2239,8 +2242,8 @@ function wp_explain_nonce( $action ) {
 		$trans['update']['attachment'] = array( __( 'Your attempt to edit this attachment: &quot;%s&quot; has failed.' ), 'get_the_title' );
 
 		$trans['add']['category']      = array( __( 'Your attempt to add this category has failed.' ), false );
-		$trans['delete']['category']   = array( __( 'Your attempt to delete this category: &quot;%s&quot; has failed.' ), 'get_catname' );
-		$trans['update']['category']   = array( __( 'Your attempt to edit this category: &quot;%s&quot; has failed.' ), 'get_catname' );
+		$trans['delete']['category']   = array( __( 'Your attempt to delete this category: &quot;%s&quot; has failed.' ), 'get_cat_name' );
+		$trans['update']['category']   = array( __( 'Your attempt to edit this category: &quot;%s&quot; has failed.' ), 'get_cat_name' );
 
 		$trans['delete']['comment']    = array( __( 'Your attempt to delete this comment: &quot;%s&quot; has failed.' ), 'use_id' );
 		$trans['unapprove']['comment'] = array( __( 'Your attempt to unapprove this comment: &quot;%s&quot; has failed.' ), 'use_id' );
@@ -2317,7 +2320,7 @@ function wp_nonce_ays( $action ) {
 	if ( wp_get_referer() )
 		$html .= "</p><p><a href='" . remove_query_arg( 'updated', clean_url( wp_get_referer() ) ) . "'>" . __( 'Please try again.' ) . "</a>";
 	elseif ( 'log-out' == $action )
-		$html .= "</p><p>" . sprintf( __( "Do you really want to <a href='%s'>log out</a>?"), wp_nonce_url( site_url('wp-login.php?action=logout', 'login'), 'log-out' ) );
+		$html .= "</p><p>" . sprintf( __( "Do you really want to <a href='%s'>log out</a>?"), wp_logout_url() );
 
 	wp_die( $html, $title);
 }
@@ -2652,7 +2655,9 @@ function wp_widgets_add_menu() {
  * @since 2.2.0
  */
 function wp_ob_end_flush_all() {
-	while ( @ob_end_flush() );
+	$levels = ob_get_level(); 
+	for ($i=0; $i<$levels; $i++) 
+		ob_end_flush(); 
 }
 
 /**
@@ -3028,24 +3033,6 @@ function wp_suspend_cache_invalidation($suspend = true) {
 	$current_suspend = $_wp_suspend_cache_invalidation;
 	$_wp_suspend_cache_invalidation = $suspend;
 	return $current_suspend;
-}
-
-/**
- * Copy an object.
- *
- * Returns a cloned copy of an object.
- *
- * @since 2.7.0
- *
- * @param object $object The object to clone
- * @return object The cloned object
- */
-function wp_clone( $object ) {
-	static $can_clone;
-	if ( !isset( $can_clone ) ) {
-		$can_clone = version_compare( phpversion(), '5.0', '>=' );
-	}
-	return $can_clone ? clone( $object ) : $object;
 }
 
 function get_site_option( $key, $default = false, $use_cache = true ) {

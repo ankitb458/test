@@ -934,7 +934,7 @@ function get_adjacent_post_rel_link($title = '%title', $in_same_cat = false, $ex
 		$post->post_title = $previous ? __('Previous Post') : __('Next Post');
 
 	$date = mysql2date(get_option('date_format'), $post->post_date);
-	
+
 	$title = str_replace('%title', $post->post_title, $title);
 	$title = str_replace('%date', $date, $title);
 	$title = apply_filters('the_title', $title, $post);
@@ -1050,8 +1050,8 @@ function get_boundary_post($in_same_cat = false, $excluded_categories = '', $sta
  */
 function get_boundary_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '', $start = true) {
         $posts = get_boundary_post($in_same_cat,$excluded_categories,$start);
-	// Even though we limited get_posts to return only 1 item it still returns an array of objects.  
-	$post = $posts[0];	
+	// Even though we limited get_posts to return only 1 item it still returns an array of objects.
+	$post = $posts[0];
 
         if ( empty($post) )
                 return;
@@ -1094,7 +1094,7 @@ function start_post_rel_link($title = '%title', $in_same_cat = false, $excluded_
  * @return string
  */
 function get_index_rel_link() {
-	$link = "<link rel='index' title='" . get_bloginfo('name') . "' href='" . get_bloginfo('siteurl') . "' />\n";
+	$link = "<link rel='index' title='" . attribute_escape(get_bloginfo('name')) . "' href='" . get_bloginfo('siteurl') . "' />\n";
 	return apply_filters( "index_rel_link", $link );
 }
 
@@ -1104,7 +1104,7 @@ function get_index_rel_link() {
  * @since 2.8.0
  */
 function index_rel_link() {
-	echo get_index_rel_link(); 
+	echo get_index_rel_link();
 }
 
 /**
@@ -1695,7 +1695,7 @@ function admin_url($path = '') {
 	if ( !empty($path) && is_string($path) && strpos($path, '..') === false )
 		$url .= ltrim($path, '/');
 
-	return $url;
+	return apply_filters('admin_url', $url, $path);
 }
 
 /**
@@ -1713,7 +1713,7 @@ function includes_url($path = '') {
 	if ( !empty($path) && is_string($path) && strpos($path, '..') === false )
 		$url .= ltrim($path, '/');
 
-	return $url;
+	return apply_filters('includes_url', $url, $path);
 }
 
 /**
@@ -1736,7 +1736,7 @@ function content_url($path = '') {
 	if ( !empty($path) && is_string($path) && strpos($path, '..') === false )
 		$url .= '/' . ltrim($path, '/');
 
-	return $url;
+	return apply_filters('content_url', $url, $path);
 }
 
 /**
@@ -1768,7 +1768,7 @@ function plugins_url($path = '', $plugin = '') {
 	if ( !empty($path) && is_string($path) && strpos($path, '..') === false )
 		$url .= '/' . ltrim($path, '/');
 
-	return $url;
+	return apply_filters('plugins_url', $url, $path, $plugin);
 }
 
 ?>

@@ -384,7 +384,7 @@ add_meta_box('postexcerpt', __('Excerpt'), 'post_excerpt_meta_box', 'post', 'nor
  * @param object $post
  */
 function post_trackback_meta_box($post) {
-	$form_trackback = '<input type="text" name="trackback_url" id="trackback_url" tabindex="7" value="'. attribute_escape( str_replace("\n", ' ', $post->to_ping) ) .'" />';
+	$form_trackback = '<input type="text" name="trackback_url" id="trackback_url" class="code" tabindex="7" value="'. attribute_escape( str_replace("\n", ' ', $post->to_ping) ) .'" />';
 	if ('' != $post->pinged) {
 		$pings = '<p>'. __('Already pinged:') . '</p><ul>';
 		$already_pinged = explode("\n", trim($post->pinged));
@@ -613,7 +613,7 @@ endif; ?>
 
 <?php the_editor($post->post_content); ?>
 
-<table id="post-status-info"><tbody><tr>
+<table id="post-status-info" cellspacing="0"><tbody><tr>
 	<td id="wp-word-count"></td>
 	<td class="autosave-info">
 	<span id="autosave">&nbsp;</span>

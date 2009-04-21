@@ -1564,6 +1564,23 @@ function display_page_row( $page, $level = 0 ) {
 	$post = $page;
 	setup_postdata($page);
 
+	if ( 0 == $level && (int)$page->post_parent > 0 ) {
+		//sent level 0 by accident, by default, or because we don't know the actual level
+		$find_main_page = (int)$page->post_parent;
+		while ( $find_main_page > 0 ) {
+			$parent = get_page($find_main_page);
+
+			if ( is_null($parent) )
+				break;
+
+			$level++;
+			$find_main_page = (int)$parent->post_parent;
+
+			if ( !isset($parent_name) )
+				$parent_name = $parent->post_title;
+		}
+	}
+
 	$page->post_title = wp_specialchars( $page->post_title );
 	$pad = str_repeat( '&#8212; ', $level );
 	$id = (int) $page->ID;
@@ -1626,7 +1643,7 @@ foreach ($posts_columns as $column_name=>$column_display_name) {
 		$attributes = 'class="post-title page-title column-title"' . $style;
 		$edit_link = get_edit_post_link( $page->ID );
 		?>
-		<td <?php echo $attributes ?>><strong><?php if ( current_user_can( 'edit_post', $page->ID ) ) { ?><a class="row-title" href="<?php echo $edit_link; ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $pad; echo $title ?></a><?php } else { echo $pad; echo $title; }; _post_states($page); ?></strong>
+		<td <?php echo $attributes ?>><strong><?php if ( current_user_can( 'edit_post', $page->ID ) ) { ?><a class="row-title" href="<?php echo $edit_link; ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $pad; echo $title ?></a><?php } else { echo $pad; echo $title; }; _post_states($page); echo isset($parent_name) ? ' | ' . __('Parent Page: ') . wp_specialchars($parent_name) : ''; ?></strong>
 		<?php
 		$actions = array();
 		if ( current_user_can('edit_page', $page->ID) ) {
@@ -2048,6 +2065,7 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 	$comment = get_comment( $comment_id );
 	$post = get_post($comment->comment_post_ID);
 	$the_comment_status = wp_get_comment_status($comment->comment_ID);
+	$user_can = current_user_can('edit_post', $post->ID);
 
 	$author_url = get_comment_author_url();
 	if ( 'http://' == $author_url )
@@ -2085,7 +2103,7 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 			case 'cb':
 				if ( !$checkbox ) break;
 				echo '<th scope="row" class="check-column">';
-				if ( current_user_can('edit_post', $post->ID) ) echo "<input type='checkbox' name='delete_comments[]' value='$comment->comment_ID' />";
+				if ( $user_can ) echo "<input type='checkbox' name='delete_comments[]' value='$comment->comment_ID' />";
 				echo '</th>';
 				break;
 			case 'comment':
@@ -2096,15 +2114,15 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 				comment_text(); ?>
 				<div id="inline-<?php echo $comment->comment_ID; ?>" class="hidden">
 				<textarea class="comment" rows="3" cols="10"><?php echo $comment->comment_content; ?></textarea>
-				<div class="author-email"><?php echo attribute_escape( $comment->comment_author_email ); ?></div>
-				<div class="author"><?php echo attribute_escape( $comment->comment_author ); ?></div>
+				<div class="author-email"><?php if ( $user_can ) echo attribute_escape( $comment->comment_author_email ); ?></div>
+				<div class="author"><?php if ( $user_can ) echo attribute_escape( $comment->comment_author ); ?></div>
 				<div class="author-url"><?php echo attribute_escape( $comment->comment_author_url ); ?></div>
 				<div class="comment_status"><?php echo $comment->comment_approved; ?></div>
 				</div>
 				<?php
 				$actions = array();
 
-				if ( current_user_can('edit_post', $post->ID) ) {
+				if ( $user_can ) {
 					$actions['approve'] = "<a href='$approve_url' class='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3:new=approved vim-a' title='" . __( 'Approve this comment' ) . "'>" . __( 'Approve' ) . '</a>';
 					$actions['unapprove'] = "<a href='$unapprove_url' class='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3:new=unapproved vim-u' title='" . __( 'Unapprove this comment' ) . "'>" . __( 'Unapprove' ) . '</a>';
 					if ( $comment_status ) { // not looking at all comments
@@ -2147,7 +2165,7 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 				echo "<td $attributes><strong>"; comment_author(); echo '</strong><br />';
 				if ( !empty($author_url) )
 					echo "<a title='$author_url' href='$author_url'>$author_url_display</a><br />";
-				if ( current_user_can( 'edit_post', $post->ID ) ) {
+				if ( $user_can ) {
 					if ( !empty($comment->comment_author_email) ) {
 						comment_author_email_link();
 						echo '<br />';
@@ -2174,7 +2192,7 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 						$_comment_pending_count_temp = (array) get_pending_comments_num( array( $post->ID ) );
 						$pending_comments = $_comment_pending_count[$post->ID] = $_comment_pending_count_temp[$post->ID];
 					}
-					if ( current_user_can( 'edit_post', $post->ID ) ) {
+					if ( $user_can ) {
 						$post_link = "<a href='" . get_edit_post_link($post->ID) . "'>";
 						$post_link .= get_the_title($post->ID) . '</a>';
 					} else {
@@ -2194,6 +2212,12 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 					echo "<a href='" . get_permalink( $post->ID ) . "'>#</a>";
 					echo '</div></td>';
 				}
+				break;
+			default:
+				echo "<td $attributes>\n";
+				do_action( 'manage_comments_custom_column', $column_name, $comment->comment_ID );
+				echo "</td>\n";
+				break;
 		}
 	}
 	echo "</tr>\n";
@@ -2423,7 +2447,7 @@ function meta_form() {
 		FROM $wpdb->postmeta
 		WHERE meta_key NOT LIKE '\_%'
 		GROUP BY meta_key
-		ORDER BY meta_id DESC
+		ORDER BY meta_key
 		LIMIT $limit" );
 	if ( $keys )
 		natcasesort($keys);
@@ -3124,7 +3148,7 @@ function find_posts_div($found_action = '') {
 				<input type="hidden" name="affected" id="affected" value="" />
 				<?php wp_nonce_field( 'find-posts', '_ajax_nonce', false ); ?>
 				<label class="hidden" for="find-posts-input"><?php _e( 'Search' ); ?></label>
-				<input type="text" id="find-posts-input" class="search-input" name="ps" value="" />
+				<input type="text" id="find-posts-input" name="ps" value="" />
 				<input type="button" onclick="findPosts.send();" value="<?php _e( 'Search' ); ?>" class="button" /><br />
 
 				<input type="radio" name="find-posts-what" id="find-posts-posts" checked="checked" value="posts" />
@@ -3135,8 +3159,8 @@ function find_posts_div($found_action = '') {
 			<div id="find-posts-response"></div>
 		</div>
 		<div class="find-box-buttons">
-			<input type="button" class="button" onclick="findPosts.close();" value="<?php _e('Close'); ?>" />
-			<input id="find-posts-submit" type="submit" class="button" value="<?php _e('Select'); ?>" />
+			<input type="button" class="button alignleft" onclick="findPosts.close();" value="<?php _e('Close'); ?>" />
+			<input id="find-posts-submit" type="submit" class="button-primary alignright" value="<?php _e('Select'); ?>" />
 		</div>
 	</div>
 <?php
@@ -3376,7 +3400,7 @@ function screen_meta($screen) {
 	if ( $show_screen ) :
 ?>
 <div id="screen-options-wrap" class="hidden">
-	<form id="adv-settings" action="" method="get">
+	<form id="adv-settings" action="" method="post">
 	<h5><?php _e('Show on screen') ?></h5>
 	<div class="metabox-prefs">
 <?php
@@ -3541,7 +3565,9 @@ function screen_options($screen) {
 	$return = '<h5>' . __('Options') . "</h5>\n";
 	$return .= "<div class='screen-options'>\n";
 	if ( !empty($per_page_label) )
-		$return .=  "<label for='$option'>$per_page_label</label> <input type='text' class='screen-per-page' name='$option' id='$option' maxlength='3' value='$per_page' />\n";
+		$return .= "<label for='$option'>$per_page_label</label> <input type='text' class='screen-per-page' name='wp_screen_options[value]' id='$option' maxlength='3' value='$per_page' />\n";
+		$return .= "<input type='submit' class='button' value='" . __('Apply') . "' />";
+		$return .= "<input type='hidden' name='wp_screen_options[option]' value='$option' />";
 	$return .= "</div>\n";
 	return $return;
 }
