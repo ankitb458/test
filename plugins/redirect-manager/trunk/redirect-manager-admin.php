@@ -47,6 +47,7 @@ class redirect_manager_admin {
 			$value = $_POST['redirect_manager'];
 			$value = stripslashes($value);
 			$value = clean_url($value);
+			$value = addslashes($value);
 			
 			if ( $value ) {
 				update_post_meta($post_id, '_redirect_url', $value);
