@@ -34,8 +34,11 @@ load_plugin_textdomain('bookmark-me', null, basename(dirname(__FILE__)) . '/lang
  **/
 
 add_action('widgets_init', array('bookmark_me', 'widgetize'));
-add_action('wp_print_scripts', array('bookmark_me', 'js'));
-add_action('wp_print_styles', array('bookmark_me', 'css'));
+
+if ( !is_admin() ) {
+	add_action('wp_print_scripts', array('bookmark_me', 'js'));
+	add_action('wp_print_styles', array('bookmark_me', 'css'));
+}
 
 add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
 
