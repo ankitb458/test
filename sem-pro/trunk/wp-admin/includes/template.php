@@ -2199,9 +2199,8 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 						$post_link = get_the_title($post->ID);
 					}
 					echo "<td $attributes>\n";
-					echo $post_link;
-
 					echo '<div class="response-links"><span class="post-com-count-wrapper">';
+					echo $post_link . '<br />';
 					$pending_phrase = sprintf( __('%s pending'), number_format( $pending_comments ) );
 					if ( $pending_comments )
 						echo '<strong>';
@@ -2210,7 +2209,10 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 						echo '</strong>';
 					echo '</span> ';
 					echo "<a href='" . get_permalink( $post->ID ) . "'>#</a>";
-					echo '</div></td>';
+					echo '</div>';
+					if ( 'attachment' == $post->post_type && ( $thumb = wp_get_attachment_image( $post->ID, array(80, 60), true ) ) )
+						echo $thumb;
+					echo '</td>';
 				}
 				break;
 			default:
@@ -3185,7 +3187,52 @@ function the_post_password() {
  *
  * @since unknown
  */
-function favorite_actions() {
+function favorite_actions( $screen = null ) {
+	switch ( $screen ) {
+		case 'post-new.php':
+			$default_action = array('edit.php' => array(__('Edit Posts'), 'edit_posts'));
+			break;
+		case 'edit-pages.php':
+			$default_action = array('page-new.php' => array(__('New Page'), 'edit_pages'));
+			break;
+		case 'page-new.php':
+			$default_action = array('edit-pages.php' => array(__('Edit Pages'), 'edit_pages'));
+			break;
+		case 'upload.php':
+			$default_action = array('media-new.php' => array(__('New Media'), 'upload_files'));
+			break;
+		case 'media-new.php':
+			$default_action = array('upload.php' => array(__('Edit Media'), 'upload_files'));
+			break;
+		case 'link-manager.php':
+			$default_action = array('link-add.php' => array(__('New Link'), 'manage_links'));
+			break;
+		case 'link-add.php':
+			$default_action = array('link-manager.php' => array(__('Edit Links'), 'manage_links'));
+			break;
+		case 'users.php':
+			$default_action = array('user-new.php' => array(__('New User'), 'create_users'));
+			break;
+		case 'user-new.php':
+			$default_action = array('users.php' => array(__('Edit Users'), 'edit_users'));
+			break;
+		case 'plugins.php':
+			$default_action = array('plugin-install.php' => array(__('Install Plugins'), 'install_plugins'));
+			break;
+		case 'plugin-install.php':
+			$default_action = array('plugins.php' => array(__('Manage Plugins'), 'activate_plugins'));
+			break;
+		case 'themes.php':
+			$default_action = array('theme-install.php' => array(__('Install Themes'), 'install_themes'));
+			break;
+		case 'theme-install.php':
+			$default_action = array('themes.php' => array(__('Manage Themes'), 'switch_themes'));
+			break;
+		default:
+			$default_action = array('post-new.php' => array(__('New Post'), 'edit_posts'));
+			break;
+	}
+
 	$actions = array(
 		'post-new.php' => array(__('New Post'), 'edit_posts'),
 		'edit.php?post_status=draft' => array(__('Drafts'), 'edit_posts'),
@@ -3194,6 +3241,11 @@ function favorite_actions() {
 		'edit-comments.php' => array(__('Comments'), 'moderate_comments')
 		);
 
+	$default_key = array_keys($default_action);
+	$default_key = $default_key[0];
+	if ( isset($actions[$default_key]) )
+		unset($actions[$default_key]);
+	$actions = array_merge($default_action, $actions);
 	$actions = apply_filters('favorite_actions', $actions);
 
 	$allowed_actions = array();
@@ -3349,7 +3401,14 @@ function screen_meta($screen) {
 	if ( isset($meta_screens[$screen]) )
 		$screen = $meta_screens[$screen];
 	$show_screen = false;
-	if ( !empty($wp_meta_boxes[$screen]) || !empty($column_screens) )
+	$show_on_screen = false;
+	if ( !empty($wp_meta_boxes[$screen]) || !empty($column_screens) ) {
+		$show_screen = true;
+		$show_on_screen = true;
+	}
+
+	$screen_options = screen_options($screen);
+	if ( $screen_options )
 		$show_screen = true;
 
 	if ( !isset($_wp_contextual_help) )
@@ -3401,6 +3460,7 @@ function screen_meta($screen) {
 ?>
 <div id="screen-options-wrap" class="hidden">
 	<form id="adv-settings" action="" method="post">
+<?php if ( $show_on_screen ) : ?>
 	<h5><?php _e('Show on screen') ?></h5>
 	<div class="metabox-prefs">
 <?php
@@ -3410,8 +3470,9 @@ function screen_meta($screen) {
 ?>
 	<br class="clear" />
 	</div>
+<?php endif; ?>
 <?php echo screen_layout($screen); ?>
-<?php echo screen_options($screen); ?>
+<?php echo $screen_options; ?>
 <div><?php wp_nonce_field( 'screen-options-nonce', 'screenoptionnonce', false ); ?></div>
 </form>
 </div>
@@ -3553,6 +3614,9 @@ function screen_options($screen) {
 		case 'edit-tags':
 			$per_page_label = __('Tags per page:');
 			break;
+		case 'plugins':
+			$per_page_label = __('Plugins per page:');
+			break;
 		default:
 			return '';
 	}
@@ -3566,8 +3630,8 @@ function screen_options($screen) {
 	$return .= "<div class='screen-options'>\n";
 	if ( !empty($per_page_label) )
 		$return .= "<label for='$option'>$per_page_label</label> <input type='text' class='screen-per-page' name='wp_screen_options[value]' id='$option' maxlength='3' value='$per_page' />\n";
-		$return .= "<input type='submit' class='button' value='" . __('Apply') . "' />";
-		$return .= "<input type='hidden' name='wp_screen_options[option]' value='$option' />";
+	$return .= "<input type='submit' class='button' value='" . __('Apply') . "' />";
+	$return .= "<input type='hidden' name='wp_screen_options[option]' value='$option' />";
 	$return .= "</div>\n";
 	return $return;
 }
