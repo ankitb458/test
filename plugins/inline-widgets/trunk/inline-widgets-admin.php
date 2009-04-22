@@ -70,7 +70,10 @@ class inline_widgets_admin
 			
 			if ( preg_match("/%BEG_OF_TITLE%(.*?)%END_OF_TITLE%/", "$label", $label) )
 			{
-				$label = $widget['name'] . ': ' . end($label);
+				$label = end($label);
+				$label = strip_tags($label);
+				$label = html_entity_decode($label, ENT_COMPAT, get_option('blog_charset'));
+				$label = $widget['name'] . ': ' . $label;
 			}
 			else
 			{
