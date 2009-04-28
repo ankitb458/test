@@ -1,9 +1,11 @@
 <?php
 /*
-Favicon Head
-http://timjoh.com/wordpress-plugin-favicon-head/
-Tim A. Johansson
-1.4 fork
+Plugin Name: Favicon Head
+Plugin URI: http://timjoh.com/wordpress-plugin-favicon-head/
+Description: Favicon Head adds meta tags in the head of every page, specifying the location of your blog's favicon.ico.
+Author: Tim A. Johansson
+Version: 1.4 fork
+Author URI: http://timjoh.com/
 
 Copyright 2006  Tim A. Johansson
 
