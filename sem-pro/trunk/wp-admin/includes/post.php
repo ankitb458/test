@@ -1080,6 +1080,9 @@ function wp_create_post_autosave( $post_id ) {
 		return wp_update_post( $new_autosave );
 	}
 
+	// _wp_put_post_revision() expects unescaped.
+	$_POST = stripslashes_deep($_POST);
+
 	// Otherwise create the new autosave as a special post revision
 	return _wp_put_post_revision( $_POST, true );
 }
@@ -1301,9 +1304,6 @@ function wp_tiny_mce( $teeny = false ) {
 		'convert_urls' => false,
 		'apply_source_formatting' => false,
 		'remove_linebreaks' => true,
-		'paste_convert_middot_lists' => true,
-		'paste_remove_spans' => true,
-		'paste_remove_styles' => true,
 		'gecko_spellcheck' => true,
 		'entities' => '38,amp,60,lt,62,gt',
 		'accessibility_focus' => true,

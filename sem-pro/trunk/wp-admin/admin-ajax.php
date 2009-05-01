@@ -133,7 +133,7 @@ function _wp_ajax_delete_comment_response( $comment_id ) {
 	$per_page = (int) @$_POST['_per_page'];
 	$page = (int) @$_POST['_page'];
 	$url = clean_url( @$_POST['_url'], null, 'url' );
-	// JS didn't send us everything we need to know.  Just die with success message
+	// JS didn't send us everything we need to know. Just die with success message
 	if ( !$total || !$per_page || !$page || !$url )
 		die( (string) time() );
 
@@ -426,7 +426,7 @@ case 'add-link-category' : // On the Fly
 		$x->add( array(
 			'what' => 'link-category',
 			'id' => $cat_id,
-			'data' => "<li id='link-category-$cat_id'><label for='in-link-category-$cat_id' class='selectit'><input value='$cat_id' type='checkbox' checked='checked' name='link_category[]' id='in-link-category-$cat_id'/> $cat_name</label></li>",
+			'data' => "<li id='link-category-$cat_id'><label for='in-link-category-$cat_id' class='selectit'><input value='" . attr($cat_id) . "' type='checkbox' checked='checked' name='link_category[]' id='in-link-category-$cat_id'/> $cat_name</label></li>",
 			'position' => -1
 		) );
 	}
@@ -474,7 +474,7 @@ case 'add-cat' : // From Manage->Categories
 		$cat_full_name = $_cat->name . ' &#8212; ' . $cat_full_name;
 		$level++;
 	}
-	$cat_full_name = attribute_escape($cat_full_name);
+	$cat_full_name = attr($cat_full_name);
 
 	$x = new WP_Ajax_Response( array(
 		'what' => 'cat',
@@ -552,7 +552,7 @@ case 'add-tag' : // From Manage->Tags
 		die('0');
 
 	$tag_full_name = $tag->name;
-	$tag_full_name = attribute_escape($tag_full_name);
+	$tag_full_name = attr($tag_full_name);
 
 	$x = new WP_Ajax_Response( array(
 		'what' => 'tag',
@@ -975,10 +975,10 @@ case 'closed-postboxes' :
 	$page = isset( $_POST['page'] ) ? $_POST['page'] : '';
 
 	if ( !preg_match( '/^[a-z_-]+$/', $page ) )
-		die(-1);
+		die('-1');
 
 	if ( ! $user = wp_get_current_user() )
-		die(-1);
+		die('-1');
 
 	if ( is_array($closed) )
 		update_usermeta($user->ID, 'closedpostboxes_'.$page, $closed);
@@ -997,10 +997,10 @@ case 'hidden-columns' :
 	$page = isset( $_POST['page'] ) ? $_POST['page'] : '';
 
 	if ( !preg_match( '/^[a-z_-]+$/', $page ) )
-		die(-1);
+		die('-1');
 
 	if ( ! $user = wp_get_current_user() )
-		die(-1);
+		die('-1');
 
 	if ( is_array($hidden) )
 		update_usermeta($user->ID, "manage-$page-columns-hidden", $hidden);
@@ -1014,10 +1014,10 @@ case 'meta-box-order':
 	$page = isset( $_POST['page'] ) ? $_POST['page'] : '';
 
 	if ( !preg_match( '/^[a-z_-]+$/', $page ) )
-		die(-1);
+		die('-1');
 
 	if ( ! $user = wp_get_current_user() )
-		die(-1);
+		die('-1');
 
 	if ( $order )
 		update_user_option($user->ID, "meta-box-order_$page", $order);
@@ -1213,7 +1213,7 @@ case 'find_posts':
 			$time = mysql2date(__('Y/m/d'), $post->post_date);
 		}
 
-		$html .= '<tr class="found-posts"><td class="found-radio"><input type="radio" id="found-'.$post->ID.'" name="found_post_id" value="'.$post->ID.'"></td>';
+		$html .= '<tr class="found-posts"><td class="found-radio"><input type="radio" id="found-'.$post->ID.'" name="found_post_id" value="' . attr($post->ID) . '"></td>';
 		$html .= '<td><label for="found-'.$post->ID.'">'.wp_specialchars($post->post_title, true).'</label></td><td>'.wp_specialchars($time, true).'</td><td>'.wp_specialchars($stat, true).'</td></tr>'."\n\n";
 	}
 	$html .= '</tbody></table>';

@@ -12,9 +12,11 @@ if (!isset($_GET["page"])) require_once('admin.php');
 get_admin_page_title();
 $title = wp_specialchars( strip_tags( $title ) );
 wp_user_settings();
+wp_menu_unfold();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" <?php do_action('admin_xml_ns'); ?> <?php language_attributes(); ?>>
+<html xmlns="http://www.w3.org/1999/xhtml" <?php do_action('admin_xml_ns'); ?> <?php language_attributes();
+echo strpos($_SERVER['HTTP_USER_AGENT'], 'Firefox/3.5') !== false ? ' manifest="cache-manifest.php"' : ''; ?>>
 <head>
 <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 <title><?php echo $title; ?> &lsaquo; <?php bloginfo('name') ?>  &#8212; WordPress</title>
@@ -38,7 +40,7 @@ var pagenow = '<?php echo substr($pagenow, 0, -4); ?>';
 <?php
 
 if ( in_array( $pagenow, array('post.php', 'post-new.php', 'page.php', 'page-new.php') ) ) {
-	add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
+	add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 5 );
 	wp_enqueue_script('quicktags');
 }
 
@@ -59,6 +61,9 @@ do_action("admin_head-$hook_suffix");
 do_action('admin_head');
 
 $admin_body_class = preg_replace('/[^a-z0-9_-]+/i', '-', $hook_suffix);
+if ( get_user_setting('mfold') ) {
+	$admin_body_class .= ' folded';
+}
 
 if ( $is_iphone ) { ?>
 <style type="text/css">.row-actions{visibility:visible;}</style>
@@ -70,9 +75,6 @@ if ( $is_iphone ) { ?>
 (function(){
 var c = document.body.className;
 c = c.replace(/no-js/, 'js');
-<?php if ( get_user_setting('mfold') == 'f' ) { ?>
-c += ' folded';
-<?php } ?>
 document.body.className = c;
 })();
 //]]>
@@ -101,7 +103,7 @@ if ( function_exists('mb_strlen') ) {
 }
 ?>
 
-<img id="header-logo" src="../wp-includes/images/blank.gif" alt="" width="32" height="32" /> <h1 <?php echo $title_class ?>><a href="<?php echo trailingslashit( get_bloginfo('url') ); ?>" title="<?php _e('Visit site') ?>"><?php echo $blog_name ?> <span>&larr; <?php _e('Visit site') ?></span></a></h1>
+<img id="header-logo" src="../wp-includes/images/blank.gif" alt="" width="32" height="32" /> <h1 id="site-heading" <?php echo $title_class ?>><a href="<?php echo trailingslashit( get_bloginfo('url') ); ?>" title="<?php _e('Visit Site') ?>"><span id="site-title"><?php echo $blog_name ?></span> <em id="site-visit-button"><?php _e('Visit Site') ?></em></a></h1>
 
 <div id="wphead-info">
 <div id="user_info">

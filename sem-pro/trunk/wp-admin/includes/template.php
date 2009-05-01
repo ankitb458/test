@@ -21,8 +21,25 @@
  * @param unknown_type $per_page
  */
 function cat_rows( $parent = 0, $level = 0, $categories = 0, $page = 1, $per_page = 20 ) {
+	
 	$count = 0;
-	_cat_rows($categories, $count, $parent, $level, $page, $per_page);
+	
+	if ( empty($categories) ) {
+		
+		$args = array('hide_empty' => 0);
+		if ( !empty($_GET['s']) )
+			$args['search'] = $_GET['s'];
+			
+		$categories = get_categories( $args ); 
+		
+		if ( empty($categories) )
+			return false;
+	}
+
+	$children = _get_term_hierarchy('category'); 
+	
+	_cat_rows( $parent, $level, $categories, $children, $page, $per_page, $count ); 
+	
 }
 
 /**
@@ -38,42 +55,32 @@ function cat_rows( $parent = 0, $level = 0, $categories = 0, $page = 1, $per_pag
  * @param unknown_type $per_page
  * @return unknown
  */
-function _cat_rows( $categories, &$count, $parent = 0, $level = 0, $page = 1, $per_page = 20 ) {
-	if ( empty($categories) ) {
-		$args = array('hide_empty' => 0);
-		if ( !empty($_GET['s']) )
-			$args['search'] = $_GET['s'];
-		$categories = get_categories( $args );
-	}
-
-	if ( !$categories )
-		return false;
-
-	$children = _get_term_hierarchy('category');
-
+function _cat_rows( $parent = 0, $level = 0, $categories, &$children, $page = 1, $per_page = 20, &$count ) { 
+	
 	$start = ($page - 1) * $per_page;
 	$end = $start + $per_page;
-	$i = -1;
 	ob_start();
-	foreach ( $categories as $category ) {
+	
+	foreach ( $categories as $key => $category ) {
 		if ( $count >= $end )
 			break;
-
-		$i++;
-
-		if ( $category->parent != $parent )
+			
+		if ( $category->parent != $parent && empty($_GET['s']) )
 			continue;
 
 		// If the page starts in a subtree, print the parents.
 		if ( $count == $start && $category->parent > 0 ) {
+			
 			$my_parents = array();
-			while ( $my_parent) {
-				$my_parent = get_category($my_parent);
+			$p = $category->parent;
+			while ( $p ) {
+				$my_parent = get_category( $p );
 				$my_parents[] = $my_parent;
-				if ( !$my_parent->parent )
+				if ( $my_parent->parent == 0 )
 					break;
-				$my_parent = $my_parent->parent;
+				$p = $my_parent->parent;
 			}
+			
 			$num_parents = count($my_parents);
 			while( $my_parent = array_pop($my_parents) ) {
 				echo "\t" . _cat_row( $my_parent, $level - $num_parents );
@@ -84,12 +91,12 @@ function _cat_rows( $categories, &$count, $parent = 0, $level = 0, $page = 1, $p
 		if ( $count >= $start )
 			echo "\t" . _cat_row( $category, $level );
 
-		unset($categories[$i]); // Prune the working set
+		unset( $categories[ $key ] ); 
+		
 		$count++;
 
 		if ( isset($children[$category->term_id]) )
-			_cat_rows( $categories, $count, $category->term_id, $level + 1, $page, $per_page );
-
+			_cat_rows( $category->term_id, $level + 1, $categories, $children, $page, $per_page, $count ); 
 	}
 
 	$output = ob_get_contents();
@@ -118,7 +125,7 @@ function _cat_row( $category, $level, $name_override = false ) {
 	$name = ( $name_override ? $name_override : $pad . ' ' . $category->name );
 	$edit_link = "categories.php?action=edit&amp;cat_ID=$category->term_id";
 	if ( current_user_can( 'manage_categories' ) ) {
-		$edit = "<a class='row-title' href='$edit_link' title='" . attribute_escape(sprintf(__('Edit "%s"'), $category->name)) . "'>" . attribute_escape( $name ) . '</a><br />';
+		$edit = "<a class='row-title' href='$edit_link' title='" . attr(sprintf(__('Edit "%s"'), $category->name)) . "'>" . attr( $name ) . '</a><br />';
 		$actions = array();
 		$actions['edit'] = '<a href="' . $edit_link . '">' . __('Edit') . '</a>';
 		$actions['inline hide-if-no-js'] = '<a href="#" class="editinline">' . __('Quick&nbsp;Edit') . '</a>';
@@ -257,7 +264,7 @@ function inline_edit_term_row($type) {
 	<p class="inline-edit-save submit">
 		<a accesskey="c" href="#inline-edit" title="<?php _e('Cancel'); ?>" class="cancel button-secondary alignleft"><?php _e('Cancel'); ?></a>
 		<?php $update_text = ( $is_tag ) ? __( 'Update Tag' ) : __( 'Update Category' ); ?>
-		<a accesskey="s" href="#inline-edit" title="<?php echo attribute_escape( $update_text ); ?>" class="save button-primary alignright"><?php echo $update_text; ?></a>
+		<a accesskey="s" href="#inline-edit" title="<?php echo attr( $update_text ); ?>" class="save button-primary alignright"><?php echo $update_text; ?></a>
 		<img class="waiting" style="display:none;" src="images/loading.gif" alt="" />
 		<span class="error" style="display:none;"></span>
 		<?php wp_nonce_field( 'taxinlineeditnonce', '_inline_edit', false ); ?>
@@ -289,7 +296,7 @@ function link_cat_row( $category, $name_override = false ) {
 	$name = ( $name_override ? $name_override : $category->name );
 	$edit_link = "link-category.php?action=edit&amp;cat_ID=$category->term_id";
 	if ( current_user_can( 'manage_categories' ) ) {
-		$edit = "<a class='row-title' href='$edit_link' title='" . attribute_escape(sprintf(__('Edit "%s"'), $category->name)) . "'>$name</a><br />";
+		$edit = "<a class='row-title' href='$edit_link' title='" . attr(sprintf(__('Edit "%s"'), $category->name)) . "'>$name</a><br />";
 		$actions = array();
 		$actions['edit'] = '<a href="' . $edit_link . '">' . __('Edit') . '</a>';
 		$actions['inline hide-if-no-js'] = '<a href="#" class="editinline">' . __('Quick&nbsp;Edit') . '</a>';
@@ -510,11 +517,13 @@ function wp_category_checklist( $post_id = 0, $descendants_and_self = 0, $select
 
 	// Post process $categories rather than adding an exclude to the get_terms() query to keep the query the same across all posts (for any query cache)
 	$checked_categories = array();
-	for ( $i = 0; isset($categories[$i]); $i++ ) {
-		if ( in_array($categories[$i]->term_id, $args['selected_cats']) ) {
-			$checked_categories[] = $categories[$i];
-			unset($categories[$i]);
-		}
+	$keys = array_keys( $categories ); 
+	
+	foreach( $keys as $k ) {
+		if ( in_array( $categories[$k]->term_id, $args['selected_cats'] ) ) {
+			$checked_categories[] = $categories[$k];
+			unset( $categories[$k] );
+		}	
 	}
 
 	// Put checked cats on top
@@ -649,7 +658,7 @@ function _tag_row( $tag, $class = '', $taxonomy = 'post_tag' ) {
 					$out .= '<th scope="row" class="check-column"> <input type="checkbox" name="delete_tags[]" value="' . $tag->term_id . '" /></th>';
 					break;
 				case 'name':
-					$out .= '<td ' . $attributes . '><strong><a class="row-title" href="' . $edit_link . '" title="' . attribute_escape(sprintf(__('Edit "%s"'), $name)) . '">' . $name . '</a></strong><br />';
+					$out .= '<td ' . $attributes . '><strong><a class="row-title" href="' . $edit_link . '" title="' . attr(sprintf(__('Edit "%s"'), $name)) . '">' . $name . '</a></strong><br />';
 					$actions = array();
 					$actions['edit'] = '<a href="' . $edit_link . '">' . __('Edit') . '</a>';
 					$actions['inline hide-if-no-js'] = '<a href="#" class="editinline">' . __('Quick&nbsp;Edit') . '</a>';
@@ -1247,12 +1256,12 @@ function inline_edit_row( $type ) {
 			wp_nonce_field( 'inlineeditnonce', '_inline_edit', false );
 			$update_text = ( $is_page ) ? __( 'Update Page' ) : __( 'Update Post' );
 			?>
-			<a accesskey="s" href="#inline-edit" title="<?php _e('Update'); ?>" class="button-primary save alignright"><?php echo attribute_escape( $update_text ); ?></a>
+			<a accesskey="s" href="#inline-edit" title="<?php _e('Update'); ?>" class="button-primary save alignright"><?php echo attr( $update_text ); ?></a>
 			<img class="waiting" style="display:none;" src="images/loading.gif" alt="" />
 		<?php } else {
 			$update_text = ( $is_page ) ? __( 'Update Pages' ) : __( 'Update Posts' );
 		?>
-			<input accesskey="s" class="button-primary alignright" type="submit" name="bulk_edit" value="<?php echo attribute_escape( $update_text ); ?>" />
+			<input accesskey="s" class="button-primary alignright" type="submit" name="bulk_edit" value="<?php echo attr( $update_text ); ?>" />
 		<?php } ?>
 		<input type="hidden" name="post_view" value="<?php echo $m; ?>" />
 		<br class="clear" />
@@ -1278,7 +1287,7 @@ function get_inline_data($post) {
 	if ( ! current_user_can('edit_' . $post->post_type, $post->ID) )
 		return;
 
-	$title = attribute_escape($post->post_title);
+	$title = attr($post->post_title);
 
 	echo '
 <div class="hidden" id="inline_' . $post->ID . '">
@@ -1427,22 +1436,22 @@ function _post_row($a_post, $pending_comments, $mode) {
 		case 'title':
 			$attributes = 'class="post-title column-title"' . $style;
 		?>
-		<td <?php echo $attributes ?>><strong><?php if ( current_user_can( 'edit_post', $post->ID ) ) { ?><a class="row-title" href="<?php echo $edit_link; ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $title ?></a><?php } else { echo $title; }; _post_states($post); ?></strong>
+		<td <?php echo $attributes ?>><strong><?php if ( current_user_can( 'edit_post', $post->ID ) ) { ?><a class="row-title" href="<?php echo $edit_link; ?>" title="<?php echo attr(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $title ?></a><?php } else { echo $title; }; _post_states($post); ?></strong>
 		<?php
 			if ( 'excerpt' == $mode )
 				the_excerpt();
 
 			$actions = array();
 			if ( current_user_can('edit_post', $post->ID) ) {
-				$actions['edit'] = '<a href="' . get_edit_post_link($post->ID, true) . '" title="' . attribute_escape(__('Edit this post')) . '">' . __('Edit') . '</a>';
-				$actions['inline hide-if-no-js'] = '<a href="#" class="editinline" title="' . attribute_escape(__('Edit this post inline')) . '">' . __('Quick&nbsp;Edit') . '</a>';
-				$actions['delete'] = "<a class='submitdelete' title='" . attribute_escape(__('Delete this post')) . "' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post->ID", 'delete-post_' . $post->ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n 'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n 'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete') . "</a>";
+				$actions['edit'] = '<a href="' . get_edit_post_link($post->ID, true) . '" title="' . attr(__('Edit this post')) . '">' . __('Edit') . '</a>';
+				$actions['inline hide-if-no-js'] = '<a href="#" class="editinline" title="' . attr(__('Edit this post inline')) . '">' . __('Quick&nbsp;Edit') . '</a>';
+				$actions['delete'] = "<a class='submitdelete' title='" . attr(__('Delete this post')) . "' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post->ID", 'delete-post_' . $post->ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n 'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n 'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete') . "</a>";
 			}
 			if ( in_array($post->post_status, array('pending', 'draft')) ) {
 				if ( current_user_can('edit_post', $post->ID) )
-					$actions['view'] = '<a href="' . get_permalink($post->ID) . '" title="' . attribute_escape(sprintf(__('Preview "%s"'), $title)) . '" rel="permalink">' . __('Preview') . '</a>';
+					$actions['view'] = '<a href="' . get_permalink($post->ID) . '" title="' . attr(sprintf(__('Preview "%s"'), $title)) . '" rel="permalink">' . __('Preview') . '</a>';
 			} else {
-				$actions['view'] = '<a href="' . get_permalink($post->ID) . '" title="' . attribute_escape(sprintf(__('View "%s"'), $title)) . '" rel="permalink">' . __('View') . '</a>';
+				$actions['view'] = '<a href="' . get_permalink($post->ID) . '" title="' . attr(sprintf(__('View "%s"'), $title)) . '" rel="permalink">' . __('View') . '</a>';
 			}
 			$actions = apply_filters('post_row_actions', $actions, $post);
 			$action_count = count($actions);
@@ -1643,19 +1652,19 @@ foreach ($posts_columns as $column_name=>$column_display_name) {
 		$attributes = 'class="post-title page-title column-title"' . $style;
 		$edit_link = get_edit_post_link( $page->ID );
 		?>
-		<td <?php echo $attributes ?>><strong><?php if ( current_user_can( 'edit_post', $page->ID ) ) { ?><a class="row-title" href="<?php echo $edit_link; ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $pad; echo $title ?></a><?php } else { echo $pad; echo $title; }; _post_states($page); echo isset($parent_name) ? ' | ' . __('Parent Page: ') . wp_specialchars($parent_name) : ''; ?></strong>
+		<td <?php echo $attributes ?>><strong><?php if ( current_user_can( 'edit_post', $page->ID ) ) { ?><a class="row-title" href="<?php echo $edit_link; ?>" title="<?php echo attr(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $pad; echo $title ?></a><?php } else { echo $pad; echo $title; }; _post_states($page); echo isset($parent_name) ? ' | ' . __('Parent Page: ') . wp_specialchars($parent_name) : ''; ?></strong>
 		<?php
 		$actions = array();
 		if ( current_user_can('edit_page', $page->ID) ) {
-			$actions['edit'] = '<a href="' . $edit_link . '" title="' . attribute_escape(__('Edit this page')) . '">' . __('Edit') . '</a>';
+			$actions['edit'] = '<a href="' . $edit_link . '" title="' . attr(__('Edit this page')) . '">' . __('Edit') . '</a>';
 			$actions['inline'] = '<a href="#" class="editinline">' . __('Quick&nbsp;Edit') . '</a>';
-			$actions['delete'] = "<a class='submitdelete' title='" . attribute_escape(__('Delete this page')) . "' href='" . wp_nonce_url("page.php?action=delete&amp;post=$page->ID", 'delete-page_' . $page->ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $page->post_status) ? __("You are about to delete this draft '%s'\n 'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this page '%s'\n 'Cancel' to stop, 'OK' to delete."), $page->post_title )) . "') ) { return true;}return false;\">" . __('Delete') . "</a>";
+			$actions['delete'] = "<a class='submitdelete' title='" . attr(__('Delete this page')) . "' href='" . wp_nonce_url("page.php?action=delete&amp;post=$page->ID", 'delete-page_' . $page->ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $page->post_status) ? __("You are about to delete this draft '%s'\n 'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this page '%s'\n 'Cancel' to stop, 'OK' to delete."), $page->post_title )) . "') ) { return true;}return false;\">" . __('Delete') . "</a>";
 		}
 		if ( in_array($post->post_status, array('pending', 'draft')) ) {
 			if ( current_user_can('edit_page', $page->ID) )
-				$actions['view'] = '<a href="' . get_permalink($page->ID) . '" title="' . attribute_escape(sprintf(__('Preview "%s"'), $title)) . '" rel="permalink">' . __('Preview') . '</a>';
+				$actions['view'] = '<a href="' . get_permalink($page->ID) . '" title="' . attr(sprintf(__('Preview "%s"'), $title)) . '" rel="permalink">' . __('Preview') . '</a>';
 		} else {
-			$actions['view'] = '<a href="' . get_permalink($page->ID) . '" title="' . attribute_escape(sprintf(__('View "%s"'), $title)) . '" rel="permalink">' . __('View') . '</a>';
+			$actions['view'] = '<a href="' . get_permalink($page->ID) . '" title="' . attr(sprintf(__('View "%s"'), $title)) . '" rel="permalink">' . __('View') . '</a>';
 		}
 		$actions = apply_filters('page_row_actions', $actions, $page);
 		$action_count = count($actions);
@@ -2114,9 +2123,9 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true,
 				comment_text(); ?>
 				<div id="inline-<?php echo $comment->comment_ID; ?>" class="hidden">
 				<textarea class="comment" rows="3" cols="10"><?php echo $comment->comment_content; ?></textarea>
-				<div class="author-email"><?php if ( $user_can ) echo attribute_escape( $comment->comment_author_email ); ?></div>
-				<div class="author"><?php if ( $user_can ) echo attribute_escape( $comment->comment_author ); ?></div>
-				<div class="author-url"><?php echo attribute_escape( $comment->comment_author_url ); ?></div>
+				<div class="author-email"><?php if ( $user_can ) echo attr( $comment->comment_author_email ); ?></div>
+				<div class="author"><?php if ( $user_can ) echo attr( $comment->comment_author ); ?></div>
+				<div class="author-url"><?php echo attr( $comment->comment_author_url ); ?></div>
 				<div class="comment_status"><?php echo $comment->comment_approved; ?></div>
 				</div>
 				<?php
@@ -2417,7 +2426,7 @@ function _list_meta_row( $entry, &$count ) {
 		}
 	}
 
-	$entry['meta_key'] = attribute_escape($entry['meta_key']);
+	$entry['meta_key'] = attr($entry['meta_key']);
 	$entry['meta_value'] = htmlspecialchars($entry['meta_value']); // using a <textarea />
 	$entry['meta_id'] = (int) $entry['meta_id'];
 
@@ -2427,8 +2436,8 @@ function _list_meta_row( $entry, &$count ) {
 	$r .= "\n\t\t<td class='left'><label class='hidden' for='meta[{$entry['meta_id']}][key]'>" . __( 'Key' ) . "</label><input name='meta[{$entry['meta_id']}][key]' id='meta[{$entry['meta_id']}][key]' tabindex='6' type='text' size='20' value='{$entry['meta_key']}' />";
 
 	$r .= "\n\t\t<div class='submit'><input name='deletemeta[{$entry['meta_id']}]' type='submit' ";
-	$r .= "class='delete:the-list:meta-{$entry['meta_id']}::_ajax_nonce=$delete_nonce deletemeta' tabindex='6' value='".attribute_escape(__( 'Delete' ))."' />";
-	$r .= "\n\t\t<input name='updatemeta' type='submit' tabindex='6' value='".attribute_escape(__( 'Update' ))."' class='add:the-list:meta-{$entry['meta_id']}::_ajax_nonce=$update_nonce updatemeta' /></div>";
+	$r .= "class='delete:the-list:meta-{$entry['meta_id']}::_ajax_nonce=$delete_nonce deletemeta' tabindex='6' value='".attr(__( 'Delete' ))."' />";
+	$r .= "\n\t\t<input name='updatemeta' type='submit' tabindex='6' value='".attr(__( 'Update' ))."' class='add:the-list:meta-{$entry['meta_id']}::_ajax_nonce=$update_nonce updatemeta' /></div>";
 	$r .= wp_nonce_field( 'change-meta', '_ajax_nonce', false, false );
 	$r .= "</td>";
 
@@ -2447,12 +2456,16 @@ function meta_form() {
 	$keys = $wpdb->get_col( "
 		SELECT meta_key
 		FROM $wpdb->postmeta
-		WHERE meta_key NOT LIKE '\_%'
 		GROUP BY meta_key
 		ORDER BY meta_key
 		LIMIT $limit" );
-	if ( $keys )
+	if ( $keys ) {
+		function filter_private_keys($key) {
+			return ( 0 === strpos($key, '_') ) ? false : true;
+		}
+		$keys = array_filter($keys, 'filter_private_keys');
 		natcasesort($keys);
+	}
 ?>
 <p><strong><?php _e( 'Add new custom field:' ) ?></strong></p>
 <table id="newmeta">
@@ -2472,7 +2485,7 @@ function meta_form() {
 <?php
 
 	foreach ( $keys as $key ) {
-		$key = attribute_escape( $key );
+		$key = attr( $key );
 		echo "\n<option value='$key'>$key</option>";
 	}
 ?>
@@ -2782,7 +2795,7 @@ function wp_import_upload_form( $action ) {
 		<p><strong><?php echo $upload_dir['error']; ?></strong></p></div><?php
 	else :
 ?>
-<form enctype="multipart/form-data" id="import-upload-form" method="post" action="<?php echo attribute_escape($action) ?>">
+<form enctype="multipart/form-data" id="import-upload-form" method="post" action="<?php echo attr($action) ?>">
 <p>
 <?php wp_nonce_field('import-upload'); ?>
 <label for="upload"><?php _e( 'Choose a file from your computer:' ); ?></label> (<?php printf( __('Maximum size: %s' ), $size ); ?>)
@@ -2805,7 +2818,7 @@ function wp_import_upload_form( $action ) {
  */
 function wp_remember_old_slug() {
 	global $post;
-	$name = attribute_escape($post->post_name); // just in case
+	$name = attr($post->post_name); // just in case
 	if ( strlen($name) )
 		echo '<input type="hidden" id="wp-old-slug" name="wp-old-slug" value="' . $name . '" />';
 }
@@ -3171,15 +3184,15 @@ function find_posts_div($found_action = '') {
 /**
  * Display the post password.
  *
- * The password is passed through {@link attribute_escape()} to ensure that it
+ * The password is passed through {@link attr()} to ensure that it
  * is safe for placing in an html attribute.
  *
- * @uses attribute_escape
+ * @uses attr
  * @since 2.7.0
  */
 function the_post_password() {
 	global $post;
-	if ( isset( $post->post_password ) ) echo attribute_escape( $post->post_password );
+	if ( isset( $post->post_password ) ) echo attr( $post->post_password );
 }
 
 /**
@@ -3297,12 +3310,12 @@ function _draft_or_post_title($post_id = 0)
  * A simple wrapper to display the "s" parameter in a GET URI. This function
  * should only be used when {@link the_search_query()} cannot.
  *
- * @uses attribute_escape
+ * @uses attr
  * @since 2.7.0
  *
  */
 function _admin_search_query() {
-	echo isset($_GET['s']) ? attribute_escape( stripslashes( $_GET['s'] ) ) : '';
+	echo isset($_GET['s']) ? attr( stripslashes( $_GET['s'] ) ) : '';
 }
 
 /**
@@ -3452,6 +3465,12 @@ function screen_meta($screen) {
 				$_wp_contextual_help[$screen] = $help;
 			}
 			break;
+		case 'widgets':
+			if ( !isset($_wp_contextual_help['widgets']) ) {
+				$help = widgets_help();
+				$_wp_contextual_help['widgets'] = $help;
+			}
+			break;
 	}
 ?>
 <div id="screen-meta">
@@ -3556,30 +3575,27 @@ function plugins_search_help() {
 ';
 }
 
+function widgets_help() {
+	return '
+	<p>' .	__('Widgets can be added or arranged by dragging. If you hover your mouse over the title bar of a widget you&rsquo;ll notice the 4 arrow cursor appears to let you know it is movable. Click on it, hold down the mouse button and start dragging the widget to a new location. As you drag the module, notice the dotted gray box that also moves. This box indicates where the widget will be placed when you release the mouse button.') . '</p>
+	<p>' . __('To show or hide the settings for a widget, click on the arrow that appears on the right of the widget title.') . '</p>
+	<p>' . __('The Inactive Widgets area stores all widgets that are configured but not curently used on the web site. After changing themes if the new theme has less sidebars than the old theme, all widgets that were in these sidebars will be transfered to Inactive Widgets.') . '</p>
+';
+}
+
 function screen_layout($screen) {
 	global $screen_layout_columns;
 
-	switch ( $screen ) {
-		case 'dashboard':
-			$screen_layout_columns = get_user_option('screen_layout_dashboard');
-			$num = 4;
-			break;
-		case 'post':
-			$screen_layout_columns = get_user_option('screen_layout_post');
-			$num = 2;
-			break;
-		case 'page':
-			$screen_layout_columns = get_user_option('screen_layout_page');
-			$num = 2;
-			break;
-		case 'link':
-			$screen_layout_columns = get_user_option('screen_layout_link');
-			$num = 2;
-			break;
-		default:
-			$screen_layout_columns = 0;
-			return '';
-	}
+	$columns = array('dashboard' => 4, 'post' => 2, 'page' => 2, 'link' => 2);
+	$columns = apply_filters('screen_layout_columns', $columns, $screen);
+
+	if ( !isset($columns[$screen]) ) {
+		$screen_layout_columns = 0;
+		return '';
+ 	}
+	
+	$screen_layout_columns = get_user_option("screen_layout_$screen");
+	$num = $columns[$screen];
 
 	if ( ! $screen_layout_columns )
 			$screen_layout_columns = 2;

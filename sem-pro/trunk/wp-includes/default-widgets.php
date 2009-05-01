@@ -60,8 +60,8 @@ class WP_Widget_Pages extends WP_Widget {
 	function form( $instance ) {
 		//Defaults
 		$instance = wp_parse_args( (array) $instance, array( 'sortby' => 'post_title', 'title' => '', 'exclude' => '') );
-		$title = attribute_escape( $instance['title'] );
-		$exclude = attribute_escape( $instance['exclude'] );
+		$title = attr( $instance['title'] );
+		$exclude = attr( $instance['exclude'] );
 	?>
 		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
 		<p>
@@ -210,7 +210,7 @@ class WP_Widget_Archives extends WP_Widget {
 
 		if ( $d ) {
 ?>
-		<select name="archive-dropdown" onchange='document.location.href=this.options[this.selectedIndex].value;'> <option value=""><?php echo attribute_escape(__('Select Month')); ?></option> <?php wp_get_archives("type=monthly&format=option&show_post_count=$c"); ?> </select>
+		<select name="archive-dropdown" onchange='document.location.href=this.options[this.selectedIndex].value;'> <option value=""><?php echo attr(__('Select Month')); ?></option> <?php wp_get_archives("type=monthly&format=option&show_post_count=$c"); ?> </select>
 <?php
 		} else {
 ?>
@@ -239,7 +239,7 @@ class WP_Widget_Archives extends WP_Widget {
 		$count = $instance['count'] ? 'checked="checked"' : '';
 		$dropdown = $instance['dropdown'] ? 'checked="checked"' : '';
 ?>
-		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attribute_escape($title); ?>" /></label></p>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attr($title); ?>" /></label></p>
 		<p>
 			<label for="<?php echo $this->get_field_id('count'); ?>"><input class="checkbox" type="checkbox" <?php echo $count; ?> id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>" /> <?php _e('Show post counts'); ?></label>
 			<br />
@@ -273,9 +273,9 @@ class WP_Widget_Meta extends WP_Widget {
 			<ul>
 			<?php wp_register(); ?>
 			<li><?php wp_loginout(); ?></li>
-			<li><a href="<?php bloginfo('rss2_url'); ?>" title="<?php echo attribute_escape(__('Syndicate this site using RSS 2.0')); ?>"><?php _e('Entries <abbr title="Really Simple Syndication">RSS</abbr>'); ?></a></li>
-			<li><a href="<?php bloginfo('comments_rss2_url'); ?>" title="<?php echo attribute_escape(__('The latest comments to all posts in RSS')); ?>"><?php _e('Comments <abbr title="Really Simple Syndication">RSS</abbr>'); ?></a></li>
-			<li><a href="http://wordpress.org/" title="<?php echo attribute_escape(__('Powered by WordPress, state-of-the-art semantic personal publishing platform.')); ?>">WordPress.org</a></li>
+			<li><a href="<?php bloginfo('rss2_url'); ?>" title="<?php echo attr(__('Syndicate this site using RSS 2.0')); ?>"><?php _e('Entries <abbr title="Really Simple Syndication">RSS</abbr>'); ?></a></li>
+			<li><a href="<?php bloginfo('comments_rss2_url'); ?>" title="<?php echo attr(__('The latest comments to all posts in RSS')); ?>"><?php _e('Comments <abbr title="Really Simple Syndication">RSS</abbr>'); ?></a></li>
+			<li><a href="http://wordpress.org/" title="<?php echo attr(__('Powered by WordPress, state-of-the-art semantic personal publishing platform.')); ?>">WordPress.org</a></li>
 			<?php wp_meta(); ?>
 			</ul>
 <?php
@@ -293,7 +293,7 @@ class WP_Widget_Meta extends WP_Widget {
 		$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );
 		$title = strip_tags($instance['title']);
 ?>
-			<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attribute_escape($title); ?>" /></label></p>
+			<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attr($title); ?>" /></label></p>
 <?php
 	}
 }
@@ -331,7 +331,10 @@ class WP_Widget_Calendar extends WP_Widget {
 		$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );
 		$title = strip_tags($instance['title']);
 ?>
-			<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attribute_escape($title); ?>" /></label></p>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>">
+		<?php _e('Title:'); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attr($title); ?>" />
+		</label></p>
 <?php
 	}
 }
@@ -376,9 +379,16 @@ class WP_Widget_Text extends WP_Widget {
 		$title = strip_tags($instance['title']);
 		$text = format_to_edit($instance['text']);
 ?>
-			<p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attribute_escape($title); ?>" /></label></p>
-			<textarea class="widefat" rows="16" cols="20" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo $text; ?></textarea>
-			<p><label for="<?php echo $this->get_field_id('filter'); ?>"><input id="<?php echo $this->get_field_id('filter'); ?>" name="<?php echo $this->get_field_name('filter'); ?>" type="checkbox" <?php checked($instance['filter']); ?> />&nbsp;<?php _e('Automatically add paragraphs.') ?></label></p>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>">
+		<?php _e('Title:'); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo attr($title); ?>" />
+		</label></p>
+
+		<textarea class="widefat" rows="16" cols="20" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>"><?php echo $text; ?></textarea>
+
+		<p><label for="<?php echo $this->get_field_id('filter'); ?>">
+		<input id="<?php echo $this->get_field_id('filter'); ?>" name="<?php echo $this->get_field_name('filter'); ?>" type="checkbox" <?php checked($instance['filter']); ?> />&nbsp;<?php _e('Automatically add paragraphs.') ?>
+		</label></p>
 <?php
 	}
 }
@@ -429,10 +439,10 @@ class WP_Widget_Categories extends WP_Widget {
 		} else {
 ?>
 		<ul>
-		<?php
-			$cat_args['title_li'] = '';
-			wp_list_categories($cat_args);
-		?>
+<?php
+		$cat_args['title_li'] = '';
+		wp_list_categories($cat_args);
+?>
 		</ul>
 <?php
 		}
@@ -453,152 +463,172 @@ class WP_Widget_Categories extends WP_Widget {
 	function form( $instance ) {
 		//Defaults
 		$instance = wp_parse_args( (array) $instance, array( 'title' => '') );
-		$title = attribute_escape( $instance['title'] );
+		$title = attr( $instance['title'] );
 		$count = (bool) $instance['count'];
 		$hierarchical = (bool) $instance['hierarchical'];
 		$dropdown = (bool) $instance['dropdown'];
 ?>
-			<p>
-				<label for="<?php echo $this->get_field_id('title'); ?>">
-					<?php _e( 'Title:' ); ?>
-					<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
-				</label>
-			</p>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>">
+		<?php _e( 'Title:' ); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+		</label></p>
 
-			<p>
-				<label for="<?php echo $this->get_field_id('dropdown'); ?>">
-					<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('dropdown'); ?>" name="<?php echo $this->get_field_name('dropdown'); ?>"<?php checked( $dropdown ); ?> />
-					<?php _e( 'Show as dropdown' ); ?>
-				</label>
-				<br />
-				<label for="<?php echo $this->get_field_id('count'); ?>">
-					<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>"<?php checked( $count ); ?> />
-					<?php _e( 'Show post counts' ); ?>
-				</label>
-				<br />
-				<label for="<?php echo $this->get_field_id('hierarchical'); ?>">
-					<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('hierarchical'); ?>" name="<?php echo $this->get_field_name('hierarchical'); ?>"<?php checked( $hierarchical ); ?> />
-					<?php _e( 'Show hierarchy' ); ?>
-				</label>
-			</p>
+		<p><label for="<?php echo $this->get_field_id('dropdown'); ?>">
+		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('dropdown'); ?>" name="<?php echo $this->get_field_name('dropdown'); ?>"<?php checked( $dropdown ); ?> />
+		<?php _e( 'Show as dropdown' ); ?>
+		</label><br />
+
+		<label for="<?php echo $this->get_field_id('count'); ?>">
+		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>"<?php checked( $count ); ?> />
+		<?php _e( 'Show post counts' ); ?>
+		</label><br />
+
+		<label for="<?php echo $this->get_field_id('hierarchical'); ?>">
+		<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('hierarchical'); ?>" name="<?php echo $this->get_field_name('hierarchical'); ?>"<?php checked( $hierarchical ); ?> />
+		<?php _e( 'Show hierarchy' ); ?>
+		</label></p>
 <?php
 	}
 
 }
 
 /**
- * Display recent entries widget.
+ * Recent_Posts widget class
  *
- * @since 2.2.0
- *
- * @param array $args Widget arguments.
- * @return int Displayed cache.
+ * @since 2.8.0
  */
-function wp_widget_recent_entries($args) {
-	if ( '%BEG_OF_TITLE%' != $args['before_title'] ) {
-		if ( $output = wp_cache_get('widget_recent_entries', 'widget') )
-			return print($output);
-		ob_start();
+class WP_Widget_Recent_Posts extends WP_Widget {
+
+	function WP_Widget_Recent_Posts() {
+		$widget_ops = array('classname' => 'widget_recent_entries', 'description' => __( "The most recent posts on your blog") );
+		$this->WP_Widget('recent-posts', __('Recent Posts'), $widget_ops);
+		$this->alt_option_name = 'widget_recent_entries';
+
+		add_action( 'save_post', array(&$this, 'flush_widget_cache') );
+		add_action( 'deleted_post', array(&$this, 'flush_widget_cache') );
+		add_action( 'switch_theme', array(&$this, 'flush_widget_cache') );
 	}
 
-	extract($args);
-	$options = get_option('widget_recent_entries');
-	$title = empty($options['title']) ? __('Recent Posts') : apply_filters('widget_title', $options['title']);
-	if ( !$number = (int) $options['number'] )
-		$number = 10;
-	else if ( $number < 1 )
-		$number = 1;
-	else if ( $number > 15 )
-		$number = 15;
+	function widget($args, $instance) {
+		$cache = wp_cache_get('widget_recent_posts', 'widget');
 
-	$r = new WP_Query(array('showposts' => $number, 'what_to_show' => 'posts', 'nopaging' => 0, 'post_status' => 'publish', 'caller_get_posts' => 1));
-	if ($r->have_posts()) :
+		if ( !is_array($cache) )
+			$cache = array();
+
+		if ( isset($cache[$args['widget_id']]) )
+			return $cache[$args['widget_id']];
+
+		ob_start();
+		extract($args);
+
+		$title = empty($instance['title']) ? __('Recent Posts') : apply_filters('widget_title', $instance['title']);
+		if ( !$number = (int) $instance['number'] )
+			$number = 10;
+		else if ( $number < 1 )
+			$number = 1;
+		else if ( $number > 15 )
+			$number = 15;
+
+		$r = new WP_Query(array('showposts' => $number, 'what_to_show' => 'posts', 'nopaging' => 0, 'post_status' => 'publish', 'caller_get_posts' => 1));
+		if ($r->have_posts()) :
 ?>
 		<?php echo $before_widget; ?>
-			<?php echo $before_title . $title . $after_title; ?>
-			<ul>
-			<?php  while ($r->have_posts()) : $r->the_post(); ?>
-			<li><a href="<?php the_permalink() ?>"><?php if ( get_the_title() ) the_title(); else the_ID(); ?> </a></li>
-			<?php endwhile; ?>
-			</ul>
+		<?php echo $before_title . $title . $after_title; ?>
+		<ul>
+		<?php  while ($r->have_posts()) : $r->the_post(); ?>
+		<li><a href="<?php the_permalink() ?>"><?php if ( get_the_title() ) the_title(); else the_ID(); ?> </a></li>
+		<?php endwhile; ?>
+		</ul>
 		<?php echo $after_widget; ?>
 <?php
-		wp_reset_query();  // Restore global post data stomped by the_post().
-	endif;
+			wp_reset_query();  // Restore global post data stomped by the_post().
+		endif;
 
-	if ( '%BEG_OF_TITLE%' != $args['before_title'] )
-		wp_cache_add('widget_recent_entries', ob_get_flush(), 'widget');
-}
-
-/**
- * Remove recent entries widget items cache.
- *
- * @since 2.2.0
- */
-function wp_flush_widget_recent_entries() {
-	wp_cache_delete('widget_recent_entries', 'widget');
-}
-
-add_action('save_post', 'wp_flush_widget_recent_entries');
-add_action('deleted_post', 'wp_flush_widget_recent_entries');
-add_action('switch_theme', 'wp_flush_widget_recent_entries');
-
-/**
- * Display and process recent entries widget options form.
- *
- * @since 2.2.0
- */
-function wp_widget_recent_entries_control() {
-	$options = $newoptions = get_option('widget_recent_entries');
-	if ( isset($_POST["recent-entries-submit"]) ) {
-		$newoptions['title'] = strip_tags(stripslashes($_POST["recent-entries-title"]));
-		$newoptions['number'] = (int) $_POST["recent-entries-number"];
+		$cache[$args['widget_id']] = ob_get_flush();
+		wp_cache_add('widget_recent_posts', $cache, 'widget');
 	}
-	if ( $options != $newoptions ) {
-		$options = $newoptions;
-		update_option('widget_recent_entries', $options);
-		wp_flush_widget_recent_entries();
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['number'] = (int) $new_instance['number'];
+		$this->flush_widget_cache();
+
+		$alloptions = wp_cache_get( 'alloptions', 'options' );
+		if ( isset($alloptions['widget_recent_entries']) )
+			delete_option('widget_recent_entries');
+
+		return $instance;
 	}
-	$title = attribute_escape($options['title']);
-	if ( !$number = (int) $options['number'] )
-		$number = 5;
+
+	function flush_widget_cache() {
+		wp_cache_delete('widget_recent_posts', 'widget');
+	}
+
+	function form( $instance ) {
+		$title = attr($instance['title']);
+		if ( !$number = (int) $instance['number'] )
+			$number = 5;
 ?>
+		<p><label for="<?php echo $this->get_field_id('title'); ?>">
+		<?php _e('Title:'); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
 
-			<p><label for="recent-entries-title"><?php _e('Title:'); ?> <input class="widefat" id="recent-entries-title" name="recent-entries-title" type="text" value="<?php echo $title; ?>" /></label></p>
-			<p>
-				<label for="recent-entries-number"><?php _e('Number of posts to show:'); ?> <input style="width: 25px; text-align: center;" id="recent-entries-number" name="recent-entries-number" type="text" value="<?php echo $number; ?>" /></label>
-				<br />
-				<small><?php _e('(at most 15)'); ?></small>
-			</p>
-			<input type="hidden" id="recent-entries-submit" name="recent-entries-submit" value="1" />
+		<p><label for="<?php echo $this->get_field_id('number'); ?>">
+		<?php _e('Number of posts to show:'); ?>
+		<input id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo $number; ?>" /></label>
+		<br /><small><?php _e('(at most 15)'); ?></small></p>
 <?php
+	}
 }
 
 /**
- * Display recent comments widget.
+ * Recent_Comments widget class
  *
- * @since 2.2.0
- *
- * @param array $args Widget arguments.
+ * @since 2.8.0
  */
-function wp_widget_recent_comments($args) {
-	global $wpdb, $comments, $comment;
-	extract($args, EXTR_SKIP);
-	$options = get_option('widget_recent_comments');
-	$title = empty($options['title']) ? __('Recent Comments') : apply_filters('widget_title', $options['title']);
-	if ( !$number = (int) $options['number'] )
-		$number = 5;
-	else if ( $number < 1 )
-		$number = 1;
-	else if ( $number > 15 )
-		$number = 15;
+class WP_Widget_Recent_Comments extends WP_Widget {
 
-	if ( !$comments = wp_cache_get( 'recent_comments', 'widget' ) ) {
-		$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT $number");
-		wp_cache_add( 'recent_comments', $comments, 'widget' );
+	function WP_Widget_Recent_Comments() {
+		$widget_ops = array('classname' => 'widget_recent_comments', 'description' => __( 'The most recent comments' ) );
+		$this->WP_Widget('recent-comments', __('Recent Comments'), $widget_ops);
+		$this->alt_option_name = 'widget_recent_comments';
+
+		if ( is_active_widget(false, false, $this->id_base) )
+			add_action( 'wp_head', array(&$this, 'recent_comments_style') );
+
+		add_action( 'comment_post', array(&$this, 'flush_widget_cache') );
+		add_action( 'wp_set_comment_status', array(&$this, 'flush_widget_cache') );
 	}
-?>
 
+	function recent_comments_style() { ?>
+	<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+<?php
+	}
+
+	function flush_widget_cache() {
+		wp_cache_delete('recent_comments', 'widget');
+	}
+
+	function widget( $args, $instance ) {
+		global $wpdb, $comments, $comment;
+
+		extract($args, EXTR_SKIP);
+		$title = empty($instance['title']) ? __('Recent Comments') : apply_filters('widget_title', $instance['title']);
+		if ( !$number = (int) $instance['number'] )
+			$number = 5;
+		else if ( $number < 1 )
+			$number = 1;
+		else if ( $number > 15 )
+			$number = 15;
+
+		if ( !$comments = wp_cache_get( 'recent_comments', 'widget' ) ) {
+			$comments = $wpdb->get_results("SELECT * FROM $wpdb->comments WHERE comment_approved = '1' ORDER BY comment_date_gmt DESC LIMIT 15");
+			wp_cache_add( 'recent_comments', $comments, 'widget' );
+		}
+
+		$comments = array_slice( (array) $comments, 0, $number );
+?>
 		<?php echo $before_widget; ?>
 			<?php echo $before_title . $title . $after_title; ?>
 			<ul id="recentcomments"><?php
@@ -607,132 +637,107 @@ function wp_widget_recent_comments($args) {
 			endforeach; endif;?></ul>
 		<?php echo $after_widget; ?>
 <?php
-}
-
-/**
- * Remove the cache for recent comments widget.
- *
- * @since 2.2.0
- */
-function wp_delete_recent_comments_cache() {
-	wp_cache_delete( 'recent_comments', 'widget' );
-}
-add_action( 'comment_post', 'wp_delete_recent_comments_cache' );
-add_action( 'wp_set_comment_status', 'wp_delete_recent_comments_cache' );
-
-/**
- * Display and process recent comments widget options form.
- *
- * @since 2.2.0
- */
-function wp_widget_recent_comments_control() {
-	$options = $newoptions = get_option('widget_recent_comments');
-	if ( isset($_POST["recent-comments-submit"]) ) {
-		$newoptions['title'] = strip_tags(stripslashes($_POST["recent-comments-title"]));
-		$newoptions['number'] = (int) $_POST["recent-comments-number"];
 	}
-	if ( $options != $newoptions ) {
-		$options = $newoptions;
-		update_option('widget_recent_comments', $options);
-		wp_delete_recent_comments_cache();
+
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['number'] = (int) $new_instance['number'];
+		$this->flush_widget_cache();
+
+		$alloptions = wp_cache_get( 'alloptions', 'options' );
+		if ( isset($alloptions['widget_recent_comments']) )
+			delete_option('widget_recent_comments');
+
+		return $instance;
 	}
-	$title = attribute_escape($options['title']);
-	if ( !$number = (int) $options['number'] )
-		$number = 5;
+
+	function form( $instance ) {
+		$title = attr($instance['title']);
+		if ( !$number = (int) $instance['number'] )
+			$number = 5;
 ?>
-			<p><label for="recent-comments-title"><?php _e('Title:'); ?> <input class="widefat" id="recent-comments-title" name="recent-comments-title" type="text" value="<?php echo $title; ?>" /></label></p>
-			<p>
-				<label for="recent-comments-number"><?php _e('Number of comments to show:'); ?> <input style="width: 25px; text-align: center;" id="recent-comments-number" name="recent-comments-number" type="text" value="<?php echo $number; ?>" /></label>
-				<br />
-				<small><?php _e('(at most 15)'); ?></small>
-			</p>
-			<input type="hidden" id="recent-comments-submit" name="recent-comments-submit" value="1" />
+		<p><label for="<?php echo $this->get_field_id('title'); ?>">
+		<?php _e('Title:'); ?>
+		<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></label></p>
+
+		<p><label for="<?php echo $this->get_field_id('number'); ?>">
+		<?php _e('Number of comments to show:'); ?>
+		<input id="<?php echo $this->get_field_id('number'); ?>" name="<?php echo $this->get_field_name('number'); ?>" type="text" value="<?php echo $number; ?>" /></label>
+		<br /><small><?php _e('(at most 15)'); ?></small></p>
 <?php
+	}
 }
 
 /**
- * Display the style for recent comments widget.
+ * RSS widget class
  *
- * @since 2.2.0
+ * @since 2.8.0
  */
-function wp_widget_recent_comments_style() {
-?>
-<style type="text/css">.recentcomments a{display:inline !important;padding: 0 !important;margin: 0 !important;}</style>
-<?php
-}
+class WP_Widget_RSS extends WP_Widget {
 
-/**
- * Register recent comments with control and hook for 'wp_head' action.
- *
- * @since 2.2.0
- */
-function wp_widget_recent_comments_register() {
-	$widget_ops = array('classname' => 'widget_recent_comments', 'description' => __( 'The most recent comments' ) );
-	wp_register_sidebar_widget('recent-comments', __('Recent Comments'), 'wp_widget_recent_comments', $widget_ops);
-	wp_register_widget_control('recent-comments', __('Recent Comments'), 'wp_widget_recent_comments_control');
+	function WP_Widget_RSS() {
+		$widget_ops = array( 'description' => __('Entries from any RSS or Atom feed') );
+		$control_ops = array( 'width' => 400, 'height' => 200 );
+		$this->WP_Widget( 'rss', __('RSS'), $widget_ops, $control_ops );
+	}
 
-	if ( is_active_widget('wp_widget_recent_comments') )
-		add_action('wp_head', 'wp_widget_recent_comments_style');
-}
+	function widget($args, $instance) {
 
-/**
- * Display RSS widget.
- *
- * Allows for multiple widgets to be displayed.
- *
- * @since 2.2.0
- *
- * @param array $args Widget arguments.
- * @param int $number Widget number.
- */
-function wp_widget_rss($args, $widget_args = 1) {
-	extract($args, EXTR_SKIP);
-	if ( is_numeric($widget_args) )
-		$widget_args = array( 'number' => $widget_args );
-	$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
-	extract($widget_args, EXTR_SKIP);
+		if ( isset($instance['error']) && $instance['error'] )
+			return;
 
-	$options = get_option('widget_rss');
+		extract($args, EXTR_SKIP);
 
-	if ( !isset($options[$number]) )
-		return;
+		$url = $instance['url'];
+		while ( stristr($url, 'http') != $url )
+			$url = substr($url, 1);
 
-	if ( isset($options[$number]['error']) && $options[$number]['error'] )
-		return;
+		if ( empty($url) )
+			return;
 
-	$url = $options[$number]['url'];
-	while ( stristr($url, 'http') != $url )
-		$url = substr($url, 1);
-	if ( empty($url) )
-		return;
+		$rss = fetch_feed($url);
+		$title = $instance['title'];
+		$desc = '';
+		$link = '';
 
-	$rss = fetch_feed($url);
-	$title = $options[$number]['title'];
-	$desc = '';
-	$link = '';
-	if ( ! is_wp_error($rss) ) {
-		$desc = attribute_escape(strip_tags(html_entity_decode($rss->get_description(), ENT_QUOTES, get_option('blog_charset'))));
+		if ( ! is_wp_error($rss) ) {
+			$desc = attr(strip_tags(@html_entity_decode($rss->get_description(), ENT_QUOTES, get_option('blog_charset'))));
+			if ( empty($title) )
+				$title = htmlentities(strip_tags($rss->get_title()));
+			$link = clean_url(strip_tags($rss->get_permalink()));
+			while ( stristr($link, 'http') != $link )
+				$link = substr($link, 1);
+		}
+
 		if ( empty($title) )
-			$title = htmlentities(strip_tags($rss->get_title()));
-		$link = clean_url(strip_tags($rss->get_permalink()));
-		while ( stristr($link, 'http') != $link )
-			$link = substr($link, 1);
+			$title = empty($desc) ? __('Unknown Feed') : $desc;
+
+		$title = apply_filters('widget_title', $title );
+		$url = clean_url(strip_tags($url));
+		$icon = includes_url('images/rss.png');
+		$title = "<a class='rsswidget' href='$url' title='" . attr(__('Syndicate this content')) ."'><img style='background:orange;color:white;border:none;' width='14' height='14' src='$icon' alt='RSS' /></a> <a class='rsswidget' href='$link' title='$desc'>$title</a>";
+
+		echo $before_widget;
+		echo $before_title . $title . $after_title;
+		wp_widget_rss_output( $rss, $instance );
+		echo $after_widget;
 	}
-	if ( empty($title) )
-		$title = $desc;
-	if ( empty($title) )
-		$title = __('Unknown Feed');
-	$title = apply_filters('widget_title', $title );
-	$url = clean_url(strip_tags($url));
-	$icon = includes_url('images/rss.png');
-	$title = "<a class='rsswidget' href='$url' title='" . attribute_escape(__('Syndicate this content')) ."'><img style='background:orange;color:white;border:none;' width='14' height='14' src='$icon' alt='RSS' /></a> <a class='rsswidget' href='$link' title='$desc'>$title</a>";
 
-	echo $before_widget;
-	echo $before_title . $title . $after_title;
+	function update($new_instance, $old_instance) {
+		$testurl = $new_instance['url'] != $old_instance['url'];
+		return wp_widget_rss_process( $new_instance, $testurl );
+	}
 
-	wp_widget_rss_output( $rss, $options[$number] );
+	function form($instance) {
 
-	echo $after_widget;
+		if ( empty($instance) )
+			$instance = array( 'number' => '__i__', 'title' => '', 'url' => '', 'items' => 10, 'error' => false, 'show_summary' => 0, 'show_author' => 0, 'show_date' => 0 );
+		else
+			$instance['number'] = $this->number;
+
+		wp_widget_rss_form( $instance );
+	}
 }
 
 /**
@@ -754,11 +759,9 @@ function wp_widget_rss_output( $rss, $args = array() ) {
 	}
 
 	if ( is_wp_error($rss) ) {
-		if ( is_admin() || current_user_can('manage_options') ) {
-			echo '<p>';
-			printf(__('<strong>RSS Error</strong>: %s'), $rss->get_error_message());
-			echo '</p>';
-		}
+		if ( is_admin() || current_user_can('manage_options') )
+			echo '<p>' . sprintf( __('<strong>RSS Error</strong>: %s'), $rss->get_error_message() ) . '</p>';
+
 		return;
 	}
 
@@ -784,11 +787,11 @@ function wp_widget_rss_output( $rss, $args = array() ) {
 		while ( stristr($link, 'http') != $link )
 			$link = substr($link, 1);
 		$link = clean_url(strip_tags($link));
-		$title = attribute_escape(strip_tags($item->get_title()));
+		$title = attr(strip_tags($item->get_title()));
 		if ( empty($title) )
 			$title = __('Untitled');
 
-		$desc = str_replace(array("\n", "\r"), ' ', attribute_escape(strip_tags(html_entity_decode($item->get_description(), ENT_QUOTES, get_option('blog_charset')))));
+		$desc = str_replace(array("\n", "\r"), ' ', attr(strip_tags(@html_entity_decode($item->get_description(), ENT_QUOTES, get_option('blog_charset')))));
 		$desc = wp_html_excerpt( $desc, 360 ) . ' [&hellip;]';
 		$desc = wp_specialchars( $desc );
 
@@ -826,75 +829,7 @@ function wp_widget_rss_output( $rss, $args = array() ) {
 	echo '</ul>';
 }
 
-/**
- * Display and process RSS widget control form.
- *
- * @since 2.2.0
- *
- * @param int $widget_args Widget number.
- */
-function wp_widget_rss_control($widget_args) {
-	global $wp_registered_widgets;
-	static $updated = false;
 
-	if ( is_numeric($widget_args) )
-		$widget_args = array( 'number' => $widget_args );
-	$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
-	extract($widget_args, EXTR_SKIP);
-
-	$options = get_option('widget_rss');
-	if ( !is_array($options) )
-		$options = array();
-
-	$urls = array();
-	foreach ( (array) $options as $option )
-		if ( isset($option['url']) )
-			$urls[$option['url']] = true;
-
-	if ( !$updated && 'POST' == $_SERVER['REQUEST_METHOD'] && !empty($_POST['sidebar']) ) {
-		$sidebar = (string) $_POST['sidebar'];
-
-		$sidebars_widgets = wp_get_sidebars_widgets();
-		if ( isset($sidebars_widgets[$sidebar]) )
-			$this_sidebar =& $sidebars_widgets[$sidebar];
-		else
-			$this_sidebar = array();
-
-		foreach ( (array) $this_sidebar as $_widget_id ) {
-			if ( 'wp_widget_rss' == $wp_registered_widgets[$_widget_id]['callback'] && isset($wp_registered_widgets[$_widget_id]['params'][0]['number']) ) {
-				$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
-				if ( !in_array( "rss-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
-					unset($options[$widget_number]);
-			}
-		}
-
-		foreach( (array) $_POST['widget-rss'] as $widget_number => $widget_rss ) {
-			if ( !isset($widget_rss['url']) && isset($options[$widget_number]) ) // user clicked cancel
-				continue;
-			$widget_rss = stripslashes_deep( $widget_rss );
-			$url = sanitize_url(strip_tags($widget_rss['url']));
-			$options[$widget_number] = wp_widget_rss_process( $widget_rss, !isset($urls[$url]) );
-		}
-
-		update_option('widget_rss', $options);
-		$updated = true;
-	}
-
-	if ( -1 == $number ) {
-		$title = '';
-		$url = '';
-		$items = 10;
-		$error = false;
-		$number = '__i__';
-		$show_summary = 0;
-		$show_author = 0;
-		$show_date = 0;
-	} else {
-		extract( (array) $options[$number] );
-	}
-
-	wp_widget_rss_form( compact( 'number', 'title', 'url', 'items', 'error', 'show_summary', 'show_author', 'show_date' ) );
-}
 
 /**
  * Display RSS widget options form.
@@ -915,9 +850,9 @@ function wp_widget_rss_form( $args, $inputs = null ) {
 	extract( $args );
 	extract( $inputs, EXTR_SKIP);
 
-	$number = attribute_escape( $number );
-	$title  = attribute_escape( $title );
-	$url    = attribute_escape( $url );
+	$number = attr( $number );
+	$title  = attr( $title );
+	$url    = attr( $url );
 	$items  = (int) $items;
 	if ( $items < 1 || 20 < $items )
 		$items  = 10;
@@ -925,58 +860,45 @@ function wp_widget_rss_form( $args, $inputs = null ) {
 	$show_author    = (int) $show_author;
 	$show_date      = (int) $show_date;
 
-	if ( !empty($error) ) {
-		$message = sprintf( __('Error in RSS Widget: %s'), $error);
-		echo "<div class='error'><p>$message</p></div>";
-		echo "<p class='hide-if-no-js'><strong>$message</strong></p>";
-	}
+	if ( !empty($error) )
+		echo '<p class="widget-error"><strong>' . sprintf( __('RSS Error: %s'), $error) . '</strong></p>';
 
 	if ( $inputs['url'] ) :
 ?>
-	<p>
-		<label for="rss-url-<?php echo $number; ?>"><?php _e('Enter the RSS feed URL here:'); ?>
-			<input class="widefat" id="rss-url-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][url]" type="text" value="<?php echo $url; ?>" />
-		</label>
-	</p>
+	<p><label for="rss-url-<?php echo $number; ?>">
+	<?php _e('Enter the RSS feed URL here:'); ?>
+	<input class="widefat" id="rss-url-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][url]" type="text" value="<?php echo $url; ?>" />
+	</label></p>
 <?php endif; if ( $inputs['title'] ) : ?>
-	<p>
-		<label for="rss-title-<?php echo $number; ?>"><?php _e('Give the feed a title (optional):'); ?>
-			<input class="widefat" id="rss-title-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][title]" type="text" value="<?php echo $title; ?>" />
-		</label>
-	</p>
+	<p><label for="rss-title-<?php echo $number; ?>">
+	<?php _e('Give the feed a title (optional):'); ?>
+	<input class="widefat" id="rss-title-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][title]" type="text" value="<?php echo $title; ?>" />
+	</label></p>
 <?php endif; if ( $inputs['items'] ) : ?>
-	<p>
-		<label for="rss-items-<?php echo $number; ?>"><?php _e('How many items would you like to display?'); ?>
-			<select id="rss-items-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][items]">
-				<?php
-					for ( $i = 1; $i <= 20; ++$i )
-						echo "<option value='$i' " . ( $items == $i ? "selected='selected'" : '' ) . ">$i</option>";
-				?>
-			</select>
-		</label>
-	</p>
+	<p><label for="rss-items-<?php echo $number; ?>">
+	<?php _e('How many items would you like to display?'); ?>
+	<select id="rss-items-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][items]">
+<?php
+		for ( $i = 1; $i <= 20; ++$i )
+			echo "<option value='$i' " . ( $items == $i ? "selected='selected'" : '' ) . ">$i</option>";
+?>
+	</select>
+	</label></p>
 <?php endif; if ( $inputs['show_summary'] ) : ?>
-	<p>
-		<label for="rss-show-summary-<?php echo $number; ?>">
-			<input id="rss-show-summary-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][show_summary]" type="checkbox" value="1" <?php if ( $show_summary ) echo 'checked="checked"'; ?>/>
-			<?php _e('Display item content?'); ?>
-		</label>
-	</p>
+	<p><label for="rss-show-summary-<?php echo $number; ?>">
+	<input id="rss-show-summary-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][show_summary]" type="checkbox" value="1" <?php if ( $show_summary ) echo 'checked="checked"'; ?>/>
+	<?php _e('Display item content?'); ?>
+	</label></p>
 <?php endif; if ( $inputs['show_author'] ) : ?>
-	<p>
-		<label for="rss-show-author-<?php echo $number; ?>">
-			<input id="rss-show-author-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][show_author]" type="checkbox" value="1" <?php if ( $show_author ) echo 'checked="checked"'; ?>/>
-			<?php _e('Display item author if available?'); ?>
-		</label>
-	</p>
+	<p><label for="rss-show-author-<?php echo $number; ?>">
+	<input id="rss-show-author-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][show_author]" type="checkbox" value="1" <?php if ( $show_author ) echo 'checked="checked"'; ?>/>
+	<?php _e('Display item author if available?'); ?>
+	</label></p>
 <?php endif; if ( $inputs['show_date'] ) : ?>
-	<p>
-		<label for="rss-show-date-<?php echo $number; ?>">
-			<input id="rss-show-date-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][show_date]" type="checkbox" value="1" <?php if ( $show_date ) echo 'checked="checked"'; ?>/>
-			<?php _e('Display item date?'); ?>
-		</label>
-	</p>
-	<input type="hidden" name="widget-rss[<?php echo $number; ?>][submit]" value="1" />
+	<p><label for="rss-show-date-<?php echo $number; ?>">
+	<input id="rss-show-date-<?php echo $number; ?>" name="widget-rss[<?php echo $number; ?>][show_date]" type="checkbox" value="1" <?php if ( $show_date ) echo 'checked="checked"'; ?>/>
+	<?php _e('Display item date?'); ?>
+	</label></p>
 <?php
 	endif;
 	foreach ( array_keys($default_inputs) as $input ) :
@@ -1032,80 +954,40 @@ function wp_widget_rss_process( $widget_rss, $check_feed = true ) {
 }
 
 /**
- * Register RSS widget to allow multiple RSS widgets on startup.
+ * Tag cloud widget class
  *
- * @since 2.2.0
+ * @since 2.8.0
  */
-function wp_widget_rss_register() {
-	$options = get_option('widget_rss');
-	if ( !is_array($options) )
-		$options = array();
+class WP_Widget_Tag_Cloud extends WP_Widget {
 
-	$widget_ops = array('classname' => 'widget_rss', 'description' => __( 'Entries from any RSS or Atom feed' ));
-	$control_ops = array('width' => 400, 'height' => 200, 'id_base' => 'rss');
-	$name = __('RSS');
-
-	$id = false;
-	foreach ( (array) array_keys($options) as $o ) {
-		// Old widgets can have null values for some reason
-		if ( !isset($options[$o]['url']) || !isset($options[$o]['title']) || !isset($options[$o]['items']) )
-			continue;
-		$id = "rss-$o"; // Never never never translate an id
-		wp_register_sidebar_widget($id, $name, 'wp_widget_rss', $widget_ops, array( 'number' => $o ));
-		wp_register_widget_control($id, $name, 'wp_widget_rss_control', $control_ops, array( 'number' => $o ));
+	function WP_Widget_Tag_Cloud() {
+		$widget_ops = array( 'description' => __( "Your most used tags in cloud format") );
+		$this->WP_Widget('tag_cloud', __('Tag Cloud'), $widget_ops);
 	}
 
-	// If there are none, we register the widget's existance with a generic template
-	if ( !$id ) {
-		wp_register_sidebar_widget( 'rss-1', $name, 'wp_widget_rss', $widget_ops, array( 'number' => -1 ) );
-		wp_register_widget_control( 'rss-1', $name, 'wp_widget_rss_control', $control_ops, array( 'number' => -1 ) );
-	}
-}
+	function widget( $args, $instance ) {
+		extract($args);
+		$title = empty($instance['title']) ? __('Tags') : apply_filters('widget_title', $instance['title']);
 
-/**
- * Display tag cloud widget.
- *
- * @since 2.3.0
- *
- * @param array $args Widget arguments.
- */
-function wp_widget_tag_cloud($args) {
-	extract($args);
-	$options = get_option('widget_tag_cloud');
-	$title = empty($options['title']) ? __('Tags') : apply_filters('widget_title', $options['title']);
-
-	echo $before_widget;
-	echo $before_title . $title . $after_title;
-	wp_tag_cloud();
-	echo $after_widget;
-}
-
-/**
- * Manage WordPress Tag Cloud widget options.
- *
- * Displays management form for changing the tag cloud widget title.
- *
- * @since 2.3.0
- */
-function wp_widget_tag_cloud_control() {
-	$options = $newoptions = get_option('widget_tag_cloud');
-
-	if ( isset($_POST['tag-cloud-submit']) ) {
-		$newoptions['title'] = strip_tags(stripslashes($_POST['tag-cloud-title']));
+		echo $before_widget;
+		echo $before_title . $title . $after_title;
+		wp_tag_cloud();
+		echo $after_widget;
 	}
 
-	if ( $options != $newoptions ) {
-		$options = $newoptions;
-		update_option('widget_tag_cloud', $options);
+	function update( $new_instance, $old_instance ) {
+		$instance['title'] = strip_tags(stripslashes($new_instance['title']));
+		return $instance;
 	}
 
-	$title = attribute_escape( $options['title'] );
+	function form( $instance ) {
 ?>
-	<p><label for="tag-cloud-title">
-	<?php _e('Title:') ?> <input type="text" class="widefat" id="tag-cloud-title" name="tag-cloud-title" value="<?php echo $title ?>" /></label>
-	</p>
-	<input type="hidden" name="tag-cloud-submit" id="tag-cloud-submit" value="1" />
+	<p><label for="<?php echo $this->get_field_id('title'); ?>">
+	<?php _e('Title:') ?>
+	<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo attr( $instance['title'] ); ?>" />
+	</label></p>
 <?php
+	}
 }
 
 /**
@@ -1136,16 +1018,13 @@ function wp_widgets_init() {
 
 	register_widget('WP_Widget_Categories');
 
-	$widget_ops = array('classname' => 'widget_recent_entries', 'description' => __( "The most recent posts on your blog") );
-	wp_register_sidebar_widget('recent-posts', __('Recent Posts'), 'wp_widget_recent_entries', $widget_ops);
-	wp_register_widget_control('recent-posts', __('Recent Posts'), 'wp_widget_recent_entries_control' );
+	register_widget('WP_Widget_Recent_Posts');
 
-	$widget_ops = array('classname' => 'widget_tag_cloud', 'description' => __( "Your most used tags in cloud format") );
-	wp_register_sidebar_widget('tag_cloud', __('Tag Cloud'), 'wp_widget_tag_cloud', $widget_ops);
-	wp_register_widget_control('tag_cloud', __('Tag Cloud'), 'wp_widget_tag_cloud_control' );
+	register_widget('WP_Widget_Recent_Comments');
 
-	wp_widget_rss_register();
-	wp_widget_recent_comments_register();
+	register_widget('WP_Widget_RSS');
+
+	register_widget('WP_Widget_Tag_Cloud');
 
 	do_action('widgets_init');
 }

@@ -1399,7 +1399,7 @@ class WP_Query {
 			if ( empty($qv['taxonomy']) || empty($qv['term']) ) {
 				$this->is_tax = false;
 				foreach ( $GLOBALS['wp_taxonomies'] as $taxonomy => $t ) {
-					if ( isset($t->query_var) && isset($qv[$t->query_var]) && '' != $qv[$t->query_var] ) {
+					if ( $t->query_var && isset($qv[$t->query_var]) && '' != $qv[$t->query_var] ) {
 						$qv['taxonomy'] = $taxonomy;
 						$qv['term'] = $qv[$t->query_var];
 						$this->is_tax = true;
@@ -1759,8 +1759,11 @@ class WP_Query {
 			if (empty($q['sentence']) && count($q['search_terms']) > 1 && $q['search_terms'][0] != $q['s'] )
 				$search .= " OR ($wpdb->posts.post_title LIKE '{$n}{$term}{$n}') OR ($wpdb->posts.post_content LIKE '{$n}{$term}{$n}')";
 
-			if ( !empty($search) )
+			if ( !empty($search) ) {
 				$search = " AND ({$search}) ";
+				if ( !is_user_logged_in() )
+					$search .= " AND ($wpdb->posts.post_password = '') ";
+			}
 		}
 
 		// Category stuff
@@ -1804,18 +1807,14 @@ class WP_Query {
 				$whichcat .= " AND $wpdb->posts.ID NOT IN ( SELECT tr.object_id FROM $wpdb->term_relationships AS tr INNER JOIN $wpdb->term_taxonomy AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy = 'category' AND tt.term_id IN ($cat_string) )";
 			} else {
 				$ids = get_objects_in_term($q['category__not_in'], 'category');
-				if ( is_wp_error( $ids ) )
-					$ids = array();
-				if ( is_array($ids) && count($ids > 0) ) {
-					$out_posts = "'" . implode("', '", $ids) . "'";
-					$whichcat .= " AND $wpdb->posts.ID NOT IN ($out_posts)";
-				}
+				if ( !is_wp_error($ids) && is_array($ids) && count($ids) > 0 )
+					$whichcat .= " AND $wpdb->posts.ID NOT IN ('" . implode("', '", $ids) . "')";
 			}
 		}
 
 		// Category stuff for nice URLs
 		if ( '' != $q['category_name'] && !$this->is_singular ) {
-			$q['category_name'] = sanitize_title($q['category_name']);
+			$q['category_name'] = implode('/', array_map('sanitize_title', explode('/', $q['category_name'])));
 			$reqcat = get_category_by_path($q['category_name']);
 			$q['category_name'] = str_replace('%2F', '/', urlencode(urldecode($q['category_name'])));
 			$cat_paths = '/' . trim($q['category_name'], '/');
@@ -1898,12 +1897,8 @@ class WP_Query {
 				$whichcat .= " AND $wpdb->posts.ID NOT IN ( SELECT tr.object_id FROM $wpdb->term_relationships AS tr INNER JOIN $wpdb->term_taxonomy AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.taxonomy = 'post_tag' AND tt.term_id IN ($tag_string) )";
 			} else {
 				$ids = get_objects_in_term($q['tag__not_in'], 'post_tag');
-				if ( is_wp_error( $ids ) )
-					$ids = array();
-				if ( is_array($ids) && count($ids > 0) ) {
-					$out_posts = "'" . implode("', '", $ids) . "'";
-					$whichcat .= " AND $wpdb->posts.ID NOT IN ($out_posts)";
-				}
+				if ( !is_wp_error($ids) && is_array($ids) && count($ids) > 0 )
+					$whichcat .= " AND $wpdb->posts.ID NOT IN ('" . implode("', '", $ids) . "')";
 			}
 		}
 
@@ -1943,7 +1938,7 @@ class WP_Query {
 				$terms = get_terms($q['taxonomy'], array('slug'=>$q['term']));
 			} else {
 				foreach ( $GLOBALS['wp_taxonomies'] as $taxonomy => $t ) {
-					if ( isset($t->query_var) && '' != $q[$t->query_var] ) {
+					if ( $t->query_var && '' != $q[$t->query_var] ) {
 						$terms = get_terms($taxonomy, array('slug'=>$q[$t->query_var]));
 						if ( !is_wp_error($terms) )
 							break;

@@ -253,7 +253,7 @@ class WP {
 		$this->public_query_vars = apply_filters('query_vars', $this->public_query_vars);
 
 		foreach ( $GLOBALS['wp_taxonomies'] as $taxonomy => $t )
-			if ( isset($t->query_var) )
+			if ( $t->query_var )
 				$taxonomy_query_vars[$t->query_var] = $taxonomy;
 
 		for ($i=0; $i<count($this->public_query_vars); $i += 1) {
@@ -1187,7 +1187,7 @@ class Walker_Page extends Walker {
 
 		$css_class = implode(' ', apply_filters('page_css_class', $css_class, $page));
 
-		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page->ID) . '" title="' . attribute_escape(apply_filters('the_title', $page->post_title)) . '">' . $link_before . apply_filters('the_title', $page->post_title) . $link_after . '</a>';
+		$output .= $indent . '<li class="' . $css_class . '"><a href="' . get_page_link($page->ID) . '" title="' . attr(apply_filters('the_title', $page->post_title)) . '">' . $link_before . apply_filters('the_title', $page->post_title) . $link_after . '</a>';
 
 		if ( !empty($show_date) ) {
 			if ( 'modified' == $show_date )
@@ -1325,13 +1325,13 @@ class Walker_Category extends Walker {
 	function start_el(&$output, $category, $depth, $args) {
 		extract($args);
 
-		$cat_name = attribute_escape( $category->name);
+		$cat_name = attr( $category->name);
 		$cat_name = apply_filters( 'list_cats', $cat_name, $category );
 		$link = '<a href="' . get_category_link( $category->term_id ) . '" ';
 		if ( $use_desc_for_title == 0 || empty($category->description) )
 			$link .= 'title="' . sprintf(__( 'View all posts filed under %s' ), $cat_name) . '"';
 		else
-			$link .= 'title="' . attribute_escape( apply_filters( 'category_description', $category->description, $category )) . '"';
+			$link .= 'title="' . attr( apply_filters( 'category_description', $category->description, $category )) . '"';
 		$link .= '>';
 		$link .= $cat_name . '</a>';
 

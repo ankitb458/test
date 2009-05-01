@@ -144,7 +144,7 @@ endif; ?>
 <p class="search-box">
 	<label class="hidden" for="category-search-input"><?php _e('Search Categories'); ?>:</label>
 	<input type="text" id="category-search-input" name="s" value="<?php _admin_search_query(); ?>" />
-	<input type="submit" value="<?php _e( 'Search Categories' ); ?>" class="button" />
+	<input type="submit" value="<?php _ea( 'Search Categories' ); ?>" class="button" />
 </p>
 </form>
 <br class="clear" />
@@ -166,12 +166,17 @@ if ( empty($cats_per_page) )
 	$cats_per_page = 20;
 $cats_per_page = apply_filters('edit_categories_per_page', $cats_per_page);
 
+if ( !empty($_GET['s']) )
+	$num_cats = count(get_categories(array('hide_empty' => 0, 'search' => $_GET['s'])));
+else
+	$num_cats = wp_count_terms('category');
+
 $page_links = paginate_links( array(
 	'base' => add_query_arg( 'pagenum', '%#%' ),
 	'format' => '',
 	'prev_text' => __('&laquo;'),
 	'next_text' => __('&raquo;'),
-	'total' => ceil(wp_count_terms('category') / $cats_per_page),
+	'total' => ceil($num_cats / $cats_per_page),
 	'current' => $pagenum
 ));
 
@@ -184,7 +189,7 @@ if ( $page_links )
 <option value="" selected="selected"><?php _e('Bulk Actions'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 <?php wp_nonce_field('bulk-categories'); ?>
 </div>
 
@@ -224,7 +229,7 @@ if ( $page_links )
 <option value="" selected="selected"><?php _e('Bulk Actions'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 <?php wp_nonce_field('bulk-categories'); ?>
 </div>
 
@@ -278,7 +283,7 @@ if ( $page_links )
     <p><?php _e('The description is not prominent by default, however some themes may show it.'); ?></p>
 </div>
 
-<p class="submit"><input type="submit" class="button" name="submit" value="<?php _e('Add Category'); ?>" /></p>
+<p class="submit"><input type="submit" class="button" name="submit" value="<?php _ea('Add Category'); ?>" /></p>
 <?php do_action('edit_category_form', $category); ?>
 </form></div>
 

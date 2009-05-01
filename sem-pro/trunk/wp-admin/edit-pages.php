@@ -150,7 +150,7 @@ $status_links = array();
 $num_posts = wp_count_posts('page', 'readable');
 $total_posts = array_sum( (array) $num_posts );
 $class = empty($_GET['post_status']) ? ' class="current"' : '';
-$status_links[] = "<li><a href='edit-pages.php'$class>" . sprintf( _n( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts ), number_format_i18n( $total_posts ) ) . '</a>';
+$status_links[] = "<li><a href='edit-pages.php'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts, 'pages' ), number_format_i18n( $total_posts ) ) . '</a>';
 foreach ( $post_stati as $status => $label ) {
 	$class = '';
 
@@ -171,11 +171,11 @@ endif;
 <p class="search-box">
 	<label class="hidden" for="page-search-input"><?php _e( 'Search Pages' ); ?>:</label>
 	<input type="text" id="page-search-input" name="s" value="<?php _admin_search_query(); ?>" />
-	<input type="submit" value="<?php _e( 'Search Pages' ); ?>" class="button" />
+	<input type="submit" value="<?php _ea( 'Search Pages' ); ?>" class="button" />
 </p>
 
 <?php if ( isset($_GET['post_status'] ) ) : ?>
-<input type="hidden" name="post_status" value="<?php echo attribute_escape($_GET['post_status']) ?>" />
+<input type="hidden" name="post_status" value="<?php echo attr($_GET['post_status']) ?>" />
 <?php endif; ?>
 
 <?php if ($posts) { ?>
@@ -215,7 +215,7 @@ if ( $page_links ) : ?>
 <option value="edit"><?php _e('Edit'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 <?php wp_nonce_field('bulk-pages'); ?>
 </div>
 
@@ -254,7 +254,7 @@ if ( $page_links )
 <option value="edit"><?php _e('Edit'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 </div>
 
 <br class="clear" />

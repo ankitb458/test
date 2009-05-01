@@ -12,20 +12,14 @@
 //
 
 /**
- * Default Taxonomy Objects
- * @since 2.3.0
- * @global array $wp_taxonomies
+ * Creates the initial taxonomies when 'init' action is fired.
  */
-$wp_taxonomies = array();
-
 function create_initial_taxonomies() {
-	global $wp_taxonomies;
-	$wp_taxonomies['category'] = (object) array('name' => 'category', 'object_type' => 'post', 'hierarchical' => true, 'update_count_callback' => '_update_post_term_count', 'label' => __('Categories'));
-	$wp_taxonomies['post_tag'] = (object) array('name' => 'post_tag', 'object_type' => 'post', 'hierarchical' => false, 'update_count_callback' => '_update_post_term_count', 'label' => __('Post Tags'));
-	$wp_taxonomies['link_category'] = (object) array('name' => 'link_category', 'object_type' => 'link', 'hierarchical' => false);
-
+	register_taxonomy( 'category', 'post', array('hierarchical' => true, 'update_count_callback' => '_update_post_term_count', 'label' => __('Categories'), 'query_var' => false, 'rewrite' => false) ) ; 
+	register_taxonomy( 'post_tag', 'post', array('hierarchical' => false, 'update_count_callback' => '_update_post_term_count', 'label' => __('Post Tags'), 'query_var' => false, 'rewrite' => false) ) ; 
+	register_taxonomy( 'link_category', 'link', array('hierarchical' => false, 'label' => __('Categories'), 'query_var' => false, 'rewrite' => false) ) ; 
 }
-add_action( 'init', 'create_initial_taxonomies' );
+add_action( 'init', 'create_initial_taxonomies', 0 ); // highest priority
 
 /**
  * Return all of the taxonomy names that are of $object_type.
@@ -172,6 +166,9 @@ function is_taxonomy_hierarchical($taxonomy) {
  */
 function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 	global $wp_taxonomies, $wp_rewrite, $wp;
+
+	if (!is_array($wp_taxonomies)) 
+		$wp_taxonomies = array();
 
 	$defaults = array('hierarchical' => false, 'update_count_callback' => '', 'rewrite' => true, 'query_var' => true);
 	$args = wp_parse_args($args, $defaults);
@@ -412,10 +409,10 @@ function get_term_by($field, $value, $taxonomy, $output = OBJECT, $filter = 'raw
 }
 
 /**
- * Merge all term children into a single array.
+ * Merge all term children into a single array of their IDs.
  *
  * This recursive function will merge all of the children of $term into the same
- * array. Only useful for taxonomies which are hierarchical.
+ * array of term IDs. Only useful for taxonomies which are hierarchical.
  *
  * Will return an empty array if $term does not exist in $taxonomy.
  *
@@ -427,22 +424,24 @@ function get_term_by($field, $value, $taxonomy, $output = OBJECT, $filter = 'raw
  * @uses _get_term_hierarchy()
  * @uses get_term_children() Used to get the children of both $taxonomy and the parent $term
  *
- * @param string $term Name of Term to get children
+ * @param string $term ID of Term to get children
  * @param string $taxonomy Taxonomy Name
  * @return array|WP_Error List of Term Objects. WP_Error returned if $taxonomy does not exist
  */
-function get_term_children( $term, $taxonomy ) {
+function get_term_children( $term_id, $taxonomy ) {
 	if ( ! is_taxonomy($taxonomy) )
 		return new WP_Error('invalid_taxonomy', __('Invalid Taxonomy'));
 
+	$term_id = intval( $term_id );
+
 	$terms = _get_term_hierarchy($taxonomy);
 
-	if ( ! isset($terms[$term]) )
+	if ( ! isset($terms[$term_id]) )
 		return array();
 
-	$children = $terms[$term];
+	$children = $terms[$term_id];
 
-	foreach ( (array) $terms[$term] as $child ) {
+	foreach ( (array) $terms[$term_id] as $child ) {
 		if ( isset($terms[$child]) )
 			$children = array_merge($children, get_term_children($child, $taxonomy));
 	}
@@ -663,10 +662,10 @@ function &get_terms($taxonomies, $args = '') {
 		wp_cache_set('last_changed', $last_changed, 'terms');
 	}
 	$cache_key = "get_terms:$key:$last_changed";
-
-	if ( $cache = wp_cache_get( $cache_key, 'terms' ) ) {
-		$terms = apply_filters('get_terms', $cache, $taxonomies, $args);
-		return $terms;
+	$cache = wp_cache_get( $cache_key, 'terms' );
+	if ( false !== $cache ) {
+		$cache = apply_filters('get_terms', $cache, $taxonomies, $args);
+		return $cache;
 	}
 
 	if ( 'count' == $orderby )
@@ -781,8 +780,7 @@ function &get_terms($taxonomies, $args = '') {
 	}
 
 	if ( empty($terms) ) {
-		$cache[ $key ] = array();
-		wp_cache_set( 'get_terms', $cache, 'terms' );
+		wp_cache_add( $cache_key, array(), 'terms' );
 		$terms = apply_filters('get_terms', array(), $taxonomies, $args);
 		return $terms;
 	}
@@ -991,7 +989,7 @@ function sanitize_term_field($field, $value, $term_id, $taxonomy, $context) {
 		if ( 'description' == $field )
 			$value = format_to_edit($value);
 		else
-			$value = attribute_escape($value);
+			$value = attr($value);
 	} else if ( 'db' == $context ) {
 		$value = apply_filters("pre_term_$field", $value, $taxonomy);
 		$value = apply_filters("pre_${taxonomy}_$field", $value);
@@ -1009,7 +1007,7 @@ function sanitize_term_field($field, $value, $term_id, $taxonomy, $context) {
 	}
 
 	if ( 'attribute' == $context )
-		$value = attribute_escape($value);
+		$value = attr($value);
 	else if ( 'js' == $context )
 		$value = js_escape($value);
 
@@ -1965,7 +1963,7 @@ function update_term_cache($terms, $taxonomy = '') {
 
 
 /**
- * Retrieves children of taxonomy.
+ * Retrieves children of taxonomy as Term IDs.
  *
  * @package WordPress
  * @subpackage Taxonomy
@@ -1976,7 +1974,7 @@ function update_term_cache($terms, $taxonomy = '') {
  *	 option. That is the name of the taxonomy, immediately followed by '_children'.
  *
  * @param string $taxonomy Taxonomy Name
- * @return array Empty if $taxonomy isn't hierarachical or returns children.
+ * @return array Empty if $taxonomy isn't hierarachical or returns children as Term IDs.
  */
 function _get_term_hierarchy($taxonomy) {
 	if ( !is_taxonomy_hierarchical($taxonomy) )
@@ -2260,7 +2258,7 @@ function get_the_taxonomies($post = 0) {
 		$links = array();
 
 		foreach ( $terms as $term )
-			$links[] = "<a href='" . attribute_escape(get_term_link($term, $taxonomy)) . "'>$term->name</a>";
+			$links[] = "<a href='" . attr(get_term_link($term, $taxonomy)) . "'>$term->name</a>";
 
 		if ( $links )
 			$taxonomies[$taxonomy] = wp_sprintf($t['template'], $t['label'], $links, $terms);

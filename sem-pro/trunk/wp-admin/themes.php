@@ -121,7 +121,7 @@ function theme_update_available( $theme ) {
 <h4><?php
 	/* translators: 1: theme title, 2: theme version, 3: theme author */
 	printf(__('%1$s %2$s by %3$s'), $ct->title, $ct->version, $ct->author) ; ?></h4>
-<p class="description"><?php echo $ct->description; ?></p>
+<p class="theme-description"><?php echo $ct->description; ?></p>
 <?php if ($ct->parent_theme) { ?>
 	<p><?php printf(__('The template files are located in <code>%2$s</code>.  The stylesheet files are located in <code>%3$s</code>.  <strong>%4$s</strong> uses templates from <strong>%5$s</strong>.  Changes made to the templates will affect both themes.'), $ct->title, $ct->template_dir, $ct->stylesheet_dir, $ct->title, $ct->parent_theme); ?></p>
 <?php } else { ?>
@@ -188,14 +188,14 @@ foreach ( $cols as $col => $theme_name ) {
 	$parent_theme = $themes[$theme_name]['Parent Theme'];
 	$preview_link = clean_url( get_option('home') . '/');
 	$preview_link = htmlspecialchars( add_query_arg( array('preview' => 1, 'template' => $template, 'stylesheet' => $stylesheet, 'TB_iframe' => 'true' ), $preview_link ) );
-	$preview_text = attribute_escape( sprintf( __('Preview of "%s"'), $title ) );
+	$preview_text = attr( sprintf( __('Preview of "%s"'), $title ) );
 	$tags = $themes[$theme_name]['Tags'];
 	$thickbox_class = 'thickbox thickbox-preview';
 	$activate_link = wp_nonce_url("themes.php?action=activate&amp;template=".urlencode($template)."&amp;stylesheet=".urlencode($stylesheet), 'switch-theme_' . $template);
-	$activate_text = attribute_escape( sprintf( __('Activate "%s"'), $title ) );
+	$activate_text = attr( sprintf( __('Activate "%s"'), $title ) );
 	$actions = array();
 	$actions[] = '<a href="' . $activate_link .  '" class="activatelink" title="' . $activate_text . '">' . __('Activate') . '</a>';
-	$actions[] = '<a href="' . $preview_link . '" class="thickbox thickbox-preview" title="' . attribute_escape(sprintf(__('Preview "%s"'), $theme_name)) . '">' . __('Preview') . '</a>';
+	$actions[] = '<a href="' . $preview_link . '" class="thickbox thickbox-preview" title="' . attr(sprintf(__('Preview "%s"'), $theme_name)) . '">' . __('Preview') . '</a>';
 	if ( current_user_can('update_themes') )
 		$actions[] = '<a class="submitdelete deletion" href="' . wp_nonce_url("themes.php?action=delete&amp;template=$stylesheet", 'delete-theme_' . $stylesheet) . '" onclick="' . "if ( confirm('" . js_escape(sprintf( __("You are about to delete this theme '%s'\n  'Cancel' to stop, 'OK' to delete."), $theme_name )) . "') ) {return true;}return false;" . '">' . __('Delete') . '</a>';
 	$actions = apply_filters('theme_action_links', $actions, $themes[$theme_name]);

@@ -773,6 +773,18 @@ function convert_chars($content, $deprecated = '') {
 }
 
 /**
+ * Callback used to change %uXXXX to &#YYY; syntax
+ *
+ * @since 2.8?
+ *
+ * @param array $matches Single Match
+ * @return string An HTML entity
+ */
+function funky_javascript_callback($matches) {
+	return "&#".base_convert($matches[1],16,10).";";
+}
+
+/**
  * Fixes javascript bugs in browsers.
  *
  * Converts unicode characters to HTML numbered entities.
@@ -788,9 +800,10 @@ function funky_javascript_fix($text) {
 	// Fixes for browsers' javascript bugs
 	global $is_macIE, $is_winIE;
 
-	/** @todo use preg_replace_callback() instead */
 	if ( $is_winIE || $is_macIE )
-		$text =  preg_replace("/\%u([0-9A-F]{4,4})/e",  "'&#'.base_convert('\\1',16,10).';'", $text);
+		$text =  preg_replace_callback("/\%u([0-9A-F]{4,4})/",
+					       "funky_javascript_callback",
+					       $text);
 
 	return $text;
 }
@@ -1257,7 +1270,7 @@ function translate_smiley($smiley) {
 
 	$smiley = trim(reset($smiley));
 	$img = $wpsmiliestrans[$smiley];
-	$smiley_masked = attribute_escape($smiley);
+	$smiley_masked = attr($smiley);
 
 	return " <img src='$siteurl/wp-includes/images/smilies/$img' alt='$smiley_masked' class='wp-smiley' /> ";
 }
@@ -1991,7 +2004,7 @@ function clean_url( $url, $protocols = null, $context = 'display' ) {
 	 * link starting with / or a php file).
 	 */
 	if ( strpos($url, ':') === false &&
-		substr( $url, 0, 1 ) != '/' && !preg_match('/^[a-z0-9-]+?\.php/i', $url) )
+		substr( $url, 0, 1 ) != '/' && substr( $url, 0, 1 ) != '#' && !preg_match('/^[a-z0-9-]+?\.php/i', $url) )
 		$url = 'http://' . $url;
 
 	// Replace ampersands and single quotes only when displaying.
@@ -2060,15 +2073,30 @@ function js_escape($text) {
 /**
  * Escaping for HTML attributes.
  *
- * @since 2.0.6
+ * @since 2.8.0
  *
  * @param string $text
  * @return string
  */
-function attribute_escape( $text ) {
+function attr( $text ) {
 	$safe_text = wp_check_invalid_utf8( $text );
 	$safe_text = wp_specialchars( $safe_text, ENT_QUOTES );
 	return apply_filters( 'attribute_escape', $safe_text, $text );
+}
+
+/**
+ * Escaping for HTML attributes.
+ *
+ * @since 2.0.6
+ *
+ * @deprecated 2.8.0
+ * @see attr()
+ * 
+ * @param string $text
+ * @return string
+ */
+function attribute_escape( $text ) {
+	return attr( $text );
 }
 
 /**

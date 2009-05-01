@@ -60,7 +60,7 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'utils', "/wp-admin/js/utils$suffix.js", false, '20090102' );
 
-	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), '20090416' );
+	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), '20090428' );
 	$scripts->add_data( 'common', 'group', 1 );
 	$scripts->localize( 'common', 'commonL10n', array(
 		'warnDelete' => __("You are about to delete the selected items.\n  'Cancel' to stop, 'OK' to delete."),
@@ -74,10 +74,10 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->localize( 'quicktags', 'quicktagsL10n', array(
 		'quickLinks' => __('(Quick Links)'),
 		'wordLookup' => __('Enter a word to look up:'),
-		'dictionaryLookup' => attribute_escape(__('Dictionary lookup')),
-		'lookup' => attribute_escape(__('lookup')),
-		'closeAllOpenTags' => attribute_escape(__('Close all open tags')),
-		'closeTags' => attribute_escape(__('close tags')),
+		'dictionaryLookup' => attr(__('Dictionary lookup')),
+		'lookup' => attr(__('lookup')),
+		'closeAllOpenTags' => attr(__('Close all open tags')),
+		'closeTags' => attr(__('close tags')),
 		'enterURL' => __('Enter the URL'),
 		'enterImageURL' => __('Enter the URL of the image'),
 		'enterImageDescription' => __('Enter a description of the image'),
@@ -88,7 +88,7 @@ function wp_default_scripts( &$scripts ) {
 
 	// Modify this version when tinyMCE plugins are changed.
 	function mce_version() {
-		return '20090417';
+		return '20090424';
 	}
 	add_filter( 'tiny_mce_version', 'mce_version' );
 
@@ -212,7 +212,7 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'ajaxcat', "/wp-admin/js/cat$suffix.js", array( 'wp-lists' ), '20090102' );
 		$scripts->add_data( 'ajaxcat', 'group', 1 );
 		$scripts->localize( 'ajaxcat', 'catL10n', array(
-			'add' => attribute_escape(__('Add')),
+			'add' => attr(__('Add')),
 			'how' => __('Separate multiple categories with commas.'),
 			'l10n_print_after' => 'try{convertEntities(catL10n);}catch(e){};'
 		) );
@@ -266,8 +266,8 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add_data( 'post', 'group', 1 );
 		$scripts->localize( 'post', 'postL10n', array(
 			'tagsUsed' =>  __('Tags used on this post:'),
-			'add' => attribute_escape(__('Add')),
-			'addTag' => attribute_escape(__('Add new tag')),
+			'add' => attr(__('Add')),
+			'addTag' => attr(__('Add new tag')),
 			'separate' => __('Separate tags with commas'),
 			'cancel' => __('Cancel'),
 			'edit' => __('Edit'),
@@ -330,7 +330,7 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'media-upload', "/wp-admin/js/media-upload$suffix.js", array( 'thickbox' ), '20090114' );
 		$scripts->add_data( 'media-upload', 'group', 1 );
 
-		$scripts->add( 'admin-widgets', "/wp-admin/js/widgets$suffix.js", array( 'jquery-ui-sortable', 'jquery-ui-draggable' ), '20090413a' );
+		$scripts->add( 'admin-widgets', "/wp-admin/js/widgets$suffix.js", array( 'jquery-ui-sortable', 'jquery-ui-draggable' ), '20090426' );
 		$scripts->add_data( 'admin-widgets', 'group', 1 );
 
 		$scripts->add( 'word-count', "/wp-admin/js/word-count$suffix.js", array( 'jquery' ), '20090422' );
@@ -418,7 +418,7 @@ function wp_default_styles( &$styles ) {
 
 	$rtl_styles = array( 'global', 'colors', 'dashboard', 'ie', 'install', 'login', 'media', 'theme-editor', 'upload', 'widgets', 'press-this', 'plugin-install', 'farbtastic' );
 
-	$styles->add( 'wp-admin', '/wp-admin/wp-admin.css', array(), '20090415' );
+	$styles->add( 'wp-admin', '/wp-admin/wp-admin.css', array(), '20090428' );
 	$styles->add_data( 'wp-admin', 'rtl', '/wp-admin/rtl.css' );
 
 	$styles->add( 'ie', '/wp-admin/css/ie.css', array(), '20090415' );
@@ -604,7 +604,7 @@ function _print_scripts() {
 
 		$ver = md5("$wp_scripts->concat_version");
 		$src = $wp_scripts->base_url . "/wp-admin/load-scripts.php?c={$zip}&load=" . trim($wp_scripts->concat, ', ') . "&ver=$ver";
-		echo "<script type='text/javascript' src='" . attribute_escape($src) . "'></script>\n";
+		echo "<script type='text/javascript' src='" . attr($src) . "'></script>\n";
 	}
 
 	if ( !empty($wp_scripts->print_html) )
@@ -671,7 +671,7 @@ function print_admin_styles() {
 			$dir = $wp_styles->text_direction;
 			$ver = md5("$wp_styles->concat_version{$dir}");
 			$href = $wp_styles->base_url . "/wp-admin/load-styles.php?c={$zip}&dir={$dir}&load=" . trim($wp_styles->concat, ', ') . "&ver=$ver";
-			echo "<link rel='stylesheet' href='" . attribute_escape($href) . "' type='text/css' media='all' />\n";
+			echo "<link rel='stylesheet' href='" . attr($href) . "' type='text/css' media='all' />\n";
 		}
 
 		if ( !empty($wp_styles->print_html) )
@@ -690,7 +690,7 @@ function script_concat_settings() {
 
 	if ( ! isset($concatenate_scripts) ) {
 		$concatenate_scripts = defined('CONCATENATE_SCRIPTS') ? CONCATENATE_SCRIPTS : true;
-		if ( ! is_admin() || ( $concatenate_scripts && -1 == get_user_option('concatenate_scripts') ) )
+		if ( ! is_admin() || ( defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ) )
 			$concatenate_scripts = false;
 	}
 

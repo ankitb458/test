@@ -369,14 +369,14 @@ function sanitize_comment_cookies() {
 	if ( isset($_COOKIE['comment_author_'.COOKIEHASH]) ) {
 		$comment_author = apply_filters('pre_comment_author_name', $_COOKIE['comment_author_'.COOKIEHASH]);
 		$comment_author = stripslashes($comment_author);
-		$comment_author = attribute_escape($comment_author);
+		$comment_author = attr($comment_author);
 		$_COOKIE['comment_author_'.COOKIEHASH] = $comment_author;
 	}
 
 	if ( isset($_COOKIE['comment_author_email_'.COOKIEHASH]) ) {
 		$comment_author_email = apply_filters('pre_comment_author_email', $_COOKIE['comment_author_email_'.COOKIEHASH]);
 		$comment_author_email = stripslashes($comment_author_email);
-		$comment_author_email = attribute_escape($comment_author_email);
+		$comment_author_email = attr($comment_author_email);
 		$_COOKIE['comment_author_email_'.COOKIEHASH] = $comment_author_email;
 	}
 
@@ -1089,6 +1089,8 @@ function wp_update_comment($commentarr) {
 	// Escape data pulled from DB.
 	$comment = $wpdb->escape($comment);
 
+	$old_status = $comment['comment_approved'];
+
 	// Merge old and new fields with new fields overwriting old ones.
 	$commentarr = array_merge($comment, $commentarr);
 
@@ -1117,7 +1119,7 @@ function wp_update_comment($commentarr) {
 	wp_update_comment_count($comment_post_ID);
 	do_action('edit_comment', $comment_ID);
 	$comment = get_comment($comment_ID);
-	wp_transition_comment_status($comment_approved, $comment->comment_approved, $comment);
+	wp_transition_comment_status($comment->comment_approved, $old_status, $comment);
 	return $rval;
 }
 

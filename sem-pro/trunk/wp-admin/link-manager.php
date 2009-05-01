@@ -90,7 +90,7 @@ if ( isset($_GET['deleted']) ) {
 <p class="search-box">
 	<label class="hidden" for="link-search-input"><?php _e( 'Search Links' ); ?>:</label>
 	<input type="text" id="link-search-input" name="s" value="<?php _admin_search_query(); ?>" />
-	<input type="submit" value="<?php _e( 'Search Links' ); ?>" class="button" />
+	<input type="submit" value="<?php _ea( 'Search Links' ); ?>" class="button" />
 </p>
 </form>
 <br class="clear" />
@@ -103,14 +103,14 @@ if ( isset($_GET['deleted']) ) {
 <option value="" selected="selected"><?php _e('Bulk Actions'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 
 <?php
 $categories = get_terms('link_category', "hide_empty=1");
 $select_cat = "<select name=\"cat_id\">\n";
 $select_cat .= '<option value="all"'  . (($cat_id == 'all') ? " selected='selected'" : '') . '>' . __('View all Categories') . "</option>\n";
 foreach ((array) $categories as $cat)
-	$select_cat .= '<option value="' . $cat->term_id . '"' . (($cat->term_id == $cat_id) ? " selected='selected'" : '') . '>' . sanitize_term_field('name', $cat->name, $cat->term_id, 'link_category', 'display') . "</option>\n";
+	$select_cat .= '<option value="' . attr($cat->term_id) . '"' . (($cat->term_id == $cat_id) ? " selected='selected'" : '') . '>' . sanitize_term_field('name', $cat->name, $cat->term_id, 'link_category', 'display') . "</option>\n";
 $select_cat .= "</select>\n";
 
 $select_order = "<select name=\"order_by\">\n";
@@ -124,7 +124,7 @@ echo $select_cat;
 echo $select_order;
 
 ?>
-<input type="submit" id="post-query-submit" value="<?php _e('Filter'); ?>" class="button-secondary" />
+<input type="submit" id="post-query-submit" value="<?php _ea('Filter'); ?>" class="button-secondary" />
 
 </div>
 
@@ -165,7 +165,7 @@ if ( $links ) {
 
 	foreach ($links as $link) {
 		$link = sanitize_bookmark($link);
-		$link->link_name = attribute_escape($link->link_name);
+		$link->link_name = attr($link->link_name);
 		$link->link_category = wp_get_link_cats($link->link_id);
 		$short_url = str_replace('http://', '', $link->link_url);
 		$short_url = preg_replace('/^www\./i', '', $short_url);
@@ -190,11 +190,11 @@ if ( $links ) {
 
 			switch($column_name) {
 				case 'cb':
-					echo '<th scope="row" class="check-column"><input type="checkbox" name="linkcheck[]" value="'.$link->link_id.'" /></th>';
+					echo '<th scope="row" class="check-column"><input type="checkbox" name="linkcheck[]" value="'. attr($link->link_id) .'" /></th>';
 					break;
 				case 'name':
 
-					echo "<td $attributes><strong><a class='row-title' href='$edit_link' title='" . attribute_escape(sprintf(__('Edit "%s"'), $link->link_name)) . "'>$link->link_name</a></strong><br />";
+					echo "<td $attributes><strong><a class='row-title' href='$edit_link' title='" . attr(sprintf(__('Edit "%s"'), $link->link_name)) . "'>$link->link_name</a></strong><br />";
 					$actions = array();
 					$actions['edit'] = '<a href="' . $edit_link . '">' . __('Edit') . '</a>';
 					$actions['delete'] = "<a class='submitdelete' href='" . wp_nonce_url("link.php?action=delete&amp;link_id=$link->link_id", 'delete-bookmark_' . $link->link_id) . "' onclick=\"if ( confirm('" . js_escape(sprintf( __("You are about to delete this link '%s'\n  'Cancel' to stop, 'OK' to delete."), $link->link_name )) . "') ) { return true;}return false;\">" . __('Delete') . "</a>";
@@ -258,7 +258,7 @@ if ( $links ) {
 <option value="" selected="selected"><?php _e('Bulk Actions'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 </div>
 
 <br class="clear" />

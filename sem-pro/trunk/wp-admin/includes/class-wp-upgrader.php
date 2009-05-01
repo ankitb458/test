@@ -1,34 +1,43 @@
 <?php
 /**
- * This file is an attempt at an abstracted version of the plugin/theme/core installer/upgrader which can be used interchangably for all uses needed within WordPress.
- * It is designed to be as flexible as possible, but some logic may seem rather, crazy to say the least.
- * Yes, this header is designed to be replaced before commiting, Hopefully i'll get some proper documentation in here.
+ * A File upgrader class for WordPress.
  *
- * This File obviously needs some new PHPDoc, However:
- * Tested:
- *   Theme/Plugin Upgrades/Installs
- *   Core Upgrade
- *   FTP Extension, FTP Sockets, Direct.
- * Untested:
- *   SSH2 Layer - Needs a good cleanup.
+ * This set of classes are designed to be used to upgrade/install a local set of files on the filesystem via the Filesystem Abstraction classes.
  *
- * TODO: Remove this commentblock and replace with some better docs.
+ * @link http://trac.wordpress.org/ticket/7875 consolidate plugin/theme/core upgrade/install functions
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
  */
 
+/**
+ * WordPress Upgrader class for Upgrading/Installing a local set of files via the Filesystem Abstraction classes from a Zip file.
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class WP_Upgrader {
 	var $strings = array();
 	var $skin = null;
 	var $result = array();
 
 	function WP_Upgrader($skin = null) {
-		return __construct($skin);
+		return $this->__construct($skin);
 	}
 	function __construct($skin = null) {
 		if ( null == $skin )
 			$this->skin = new WP_Upgrader_Skin();
 		else
 			$this->skin = $skin;
+	}
+	
+	function init() {
 		$this->skin->set_upgrader($this);
+		$this->generic_strings();
 	}
 
 	function generic_strings() {
@@ -323,12 +332,20 @@ class WP_Upgrader {
 
 }
 
+/**
+ * Plugin Upgrader class for WordPress Plugins, It is designed to upgrade/install plugins from a local zip, remote zip URL, or uploaded zip file.
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class Plugin_Upgrader extends WP_Upgrader {
 
 	var $result;
 
 	function upgrade_strings() {
-		$this->generic_strings();
 		$this->strings['up_to_date'] = __('The plugin is at the latest version.');
 		$this->strings['no_package'] = __('Upgrade package not available.');
 		$this->strings['downloading_package'] = __('Downloading update from %s.');
@@ -341,7 +358,6 @@ class Plugin_Upgrader extends WP_Upgrader {
 	}
 
 	function install_strings() {
-		$this->generic_strings();
 		$this->strings['no_package'] = __('Install package not available.');
 		$this->strings['downloading_package'] = __('Downloading install package from %s.');
 		$this->strings['unpack_package'] = __('Unpacking the package.');
@@ -352,6 +368,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 
 	function install($package) {
 
+		$this->init();
 		$this->install_strings();
 
 		$this->run(array(
@@ -369,6 +386,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 
 	function upgrade($plugin) {
 
+		$this->init();
 		$this->upgrade_strings();
 
 		$current = get_transient( 'update_plugins' );
@@ -469,13 +487,20 @@ class Plugin_Upgrader extends WP_Upgrader {
 	}
 }
 
-
+/**
+ * Theme Upgrader class for WordPress Themes, It is designed to upgrade/install themes from a local zip, remote zip URL, or uploaded zip file.
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class Theme_Upgrader extends WP_Upgrader {
 
 	var $result;
 
 	function upgrade_strings() {
-		$this->generic_strings();
 		$this->strings['up_to_date'] = __('The theme is at the latest version.');
 		$this->strings['no_package'] = __('Upgrade package not available.');
 		$this->strings['downloading_package'] = __('Downloading update from %s.');
@@ -487,7 +512,6 @@ class Theme_Upgrader extends WP_Upgrader {
 	}
 
 	function install_strings() {
-		$this->generic_strings();
 		$this->strings['no_package'] = __('Install package not available.');
 		$this->strings['downloading_package'] = __('Downloading install package from %s.');
 		$this->strings['unpack_package'] = __('Unpacking the package.');
@@ -497,7 +521,8 @@ class Theme_Upgrader extends WP_Upgrader {
 	}
 
 	function install($package) {
-
+		
+		$this->init();
 		$this->install_strings();
 
 		$options = array(
@@ -523,6 +548,7 @@ class Theme_Upgrader extends WP_Upgrader {
 
 	function upgrade($theme) {
 
+		$this->init();
 		$this->upgrade_strings();
 
 		// Is an update available?
@@ -616,11 +642,18 @@ class Theme_Upgrader extends WP_Upgrader {
 
 }
 
-//Untested.
+/**
+ * Core Upgrader class for WordPress. It allows for WordPress to upgrade itself in combiantion with the wp-admin/includes/update-core.php file
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class Core_Upgrader extends WP_Upgrader {
 
 	function upgrade_strings() {
-		$this->generic_strings();
 		$this->strings['up_to_date'] = __('WordPress is at the latest version.');
 		$this->strings['no_package'] = __('Upgrade package not available.');
 		$this->strings['downloading_package'] = __('Downloading update from %s.');
@@ -630,8 +663,9 @@ class Core_Upgrader extends WP_Upgrader {
 
 	function upgrade($current) {
 		global $wp_filesystem;
-		$this->upgrade_strings();
 
+		$this->init();
+		$this->upgrade_strings();
 
 		if ( !empty($feedback) )
 			add_filter('update_feedback', $feedback);
@@ -668,21 +702,22 @@ class Core_Upgrader extends WP_Upgrader {
 
 }
 
-
 /**
- * Skin stuff here.
- * ============================================
- * ============================================
- * ============================================
+ * Generic Skin for the WordPress Upgrader classes. This skin is designed to be extended for specific purposes.
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
  */
-
 class WP_Upgrader_Skin {
 
 	var $upgrader;
 	var $done_header = false;
 
 	function WP_Upgrader_Skin($args = array()) {
-		return __construct($args);
+		return $this->__construct($args);
 	}
 	function __construct($args = array()) {
 		$defaults = array( 'url' => '', 'nonce' => '', 'title' => '' );
@@ -722,19 +757,25 @@ class WP_Upgrader_Skin {
 		if ( is_string($errors) ) {
 			$this->feedback($errors);
 		} elseif ( is_wp_error($errors) && $errors->get_error_code() ) {
-			foreach ( $errors->get_error_messages() as $message )
-				$this->feedback($message);
+			foreach ( $errors->get_error_messages() as $message ) {
+				if ( $errors->get_error_data() )
+					$this->feedback($message . ' ' . $errors->get_error_data() );
+				else
+					$this->feedback($message);
+			}
 		}
 	}
 
 	function feedback($string) {
-		if ( isset( $this->upgrader->strings[$string]) )
+		if ( isset( $this->upgrader->strings[$string] ) )
 			$string = $this->upgrader->strings[$string];
 
-		$args = func_get_args();
-		$args = array_splice($args, 1);
-		if ( !empty($args) )
-			$string = vsprintf($string, $args);
+		if ( strpos($string, '%') !== false ) {
+			$args = func_get_args();
+			$args = array_splice($args, 1);
+			if ( !empty($args) )
+				$string = vsprintf($string, $args);
+		}
 		if ( empty($string) )
 			return;
 		show_message($string);
@@ -744,12 +785,21 @@ class WP_Upgrader_Skin {
 
 }
 
+/**
+ * Plugin Upgrader Skin for WordPress Plugin Upgrades. 
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	var $plugin = '';
 	var $plugin_active = false;
 
 	function Plugin_Upgrader_Skin($args = array()) {
-		return __construct($args);
+		return $this->__construct($args);
 	}
 
 	function __construct($args = array()) {
@@ -770,8 +820,8 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 			echo '<iframe style="border:0;overflow:hidden" width="100%" height="170px" src="' . wp_nonce_url('update.php?action=activate-plugin&plugin=' . $this->plugin, 'activate-plugin_' . $this->plugin) .'"></iframe>';
 		}
 		$update_actions =  array(
-			'activate_plugin' => '<a href="' . wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $this->plugin, 'activate-plugin_' . $this->plugin) . '" title="' . attribute_escape(__('Activate this plugin')) . '" target="_parent">' . __('Activate Plugin') . '</a>',
-			'plugins_page' => '<a href="' . admin_url('plugins.php') . '" title="' . attribute_escape(__('Goto plugins page')) . '" target="_parent">' . __('Return to Plugins page') . '</a>'
+			'activate_plugin' => '<a href="' . wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $this->plugin, 'activate-plugin_' . $this->plugin) . '" title="' . attr(__('Activate this plugin')) . '" target="_parent">' . __('Activate Plugin') . '</a>',
+			'plugins_page' => '<a href="' . admin_url('plugins.php') . '" title="' . attr(__('Goto plugins page')) . '" target="_parent">' . __('Return to Plugins page') . '</a>'
 		);
 		if ( $this->plugin_active )
 			unset( $update_actions['activate_plugin'] );
@@ -784,13 +834,21 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 }
 
-
+/**
+ * Plugin Installer Skin for WordPress Plugin Installer. 
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	var $api;
 	var $type;
 
 	function Plugin_Installer_Skin($args = array()) {
-		return __construct($args);
+		return $this->__construct($args);
 	}
 
 	function __construct($args = array()) {
@@ -813,17 +871,17 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		$plugin_file = $this->upgrader->plugin_info();
 
 		$install_actions = array(
-			'activate_plugin' => '<a href="' . wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $plugin_file, 'activate-plugin_' . $plugin_file) . '" title="' . attribute_escape(__('Activate this plugin')) . '" target="_parent">' . __('Activate Plugin') . '</a>',
+			'activate_plugin' => '<a href="' . wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $plugin_file, 'activate-plugin_' . $plugin_file) . '" title="' . attr(__('Activate this plugin')) . '" target="_parent">' . __('Activate Plugin') . '</a>',
 							);
 
 		if ( $this->type == 'web' )
-			$install_actions['plugins_page'] = '<a href="' . admin_url('plugin-install.php') . '" title="' . attribute_escape(__('Return to Plugin Installer')) . '" target="_parent">' . __('Return to Plugin Installer') . '</a>';
+			$install_actions['plugins_page'] = '<a href="' . admin_url('plugin-install.php') . '" title="' . attr(__('Return to Plugin Installer')) . '" target="_parent">' . __('Return to Plugin Installer') . '</a>';
 		else
-			$install_actions['plugins_page'] = '<a href="' . admin_url('plugins.php') . '" title="' . attribute_escape(__('Return to Plugins page')) . '" target="_parent">' . __('Return to Plugins page') . '</a>';
+			$install_actions['plugins_page'] = '<a href="' . admin_url('plugins.php') . '" title="' . attr(__('Return to Plugins page')) . '" target="_parent">' . __('Return to Plugins page') . '</a>';
 
 
 		if ( ! $this->result || is_wp_error($this->result) )
-			unset( $update_actions['activate_plugin'] );
+			unset( $install_actions['activate_plugin'] );
 
 		$install_actions = apply_filters('install_plugin_complete_actions', $install_actions, $this->api, $plugin_file);
 		if ( ! empty($install_actions) )
@@ -831,12 +889,21 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	}
 }
 
+/**
+ * Theme Installer Skin for the WordPress Theme Installer. 
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class Theme_Installer_Skin extends WP_Upgrader_Skin {
 	var $api;
 	var $type;
 
 	function Theme_Installer_Skin($args = array()) {
-		return __construct($args);
+		return $this->__construct($args);
 	}
 
 	function __construct($args = array()) {
@@ -869,17 +936,17 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 		$activate_link = wp_nonce_url("themes.php?action=activate&amp;template=" . urlencode($template) . "&amp;stylesheet=" . urlencode($stylesheet), 'switch-theme_' . $template);
 
 		$install_actions = array(
-			'preview' => '<a href="' . $preview_link . '" class="thickbox thickbox-preview" title="' . attribute_escape(sprintf(__('Preview "%s"'), $name)) . '">' . __('Preview') . '</a>',
-			'activate' => '<a href="' . $activate_link .  '" class="activatelink" title="' . attribute_escape( sprintf( __('Activate "%s"'), $name ) ) . '">' . __('Activate') . '</a>'
+			'preview' => '<a href="' . $preview_link . '" class="thickbox thickbox-preview" title="' . attr(sprintf(__('Preview "%s"'), $name)) . '">' . __('Preview') . '</a>',
+			'activate' => '<a href="' . $activate_link .  '" class="activatelink" title="' . attr( sprintf( __('Activate "%s"'), $name ) ) . '">' . __('Activate') . '</a>'
 							);
 
 		if ( $this->type == 'web' )
-			$install_actions['themes_page'] = '<a href="' . admin_url('theme-install.php') . '" title="' . attribute_escape(__('Back to Theme Installer')) . '" target="_parent">' . __('Return to Theme Installer.') . '</a>';
+			$install_actions['themes_page'] = '<a href="' . admin_url('theme-install.php') . '" title="' . attr(__('Back to Theme Installer')) . '" target="_parent">' . __('Return to Theme Installer.') . '</a>';
 		else
-			$install_actions['themes_page'] = '<a href="' . admin_url('themes.php') . '" title="' . attribute_escape(__('Themes page')) . '" target="_parent">' . __('Return to Themes page') . '</a>';
+			$install_actions['themes_page'] = '<a href="' . admin_url('themes.php') . '" title="' . attr(__('Themes page')) . '" target="_parent">' . __('Return to Themes page') . '</a>';
 
 		if ( ! $this->result || is_wp_error($this->result) )
-			unset( $update_actions['activate'], $update_actions['preview'] );
+			unset( $install_actions['activate'], $install_actions['preview'] );
 
 		$install_actions = apply_filters('install_theme_complete_actions', $install_actions, $this->api, $stylesheet, $theme_info);
 		if ( ! empty($install_actions) )
@@ -887,11 +954,20 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 	}
 }
 
+/**
+ * Theme Upgrader Skin for WordPress Theme Upgrades. 
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 	var $theme = '';
 
 	function Theme_Upgrader_Skin($args = array()) {
-		return __construct($args);
+		return $this->__construct($args);
 	}
 
 	function __construct($args = array()) {
@@ -919,9 +995,9 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 		$activate_link = wp_nonce_url("themes.php?action=activate&amp;template=" . urlencode($template) . "&amp;stylesheet=" . urlencode($stylesheet), 'switch-theme_' . $template);
 
 		$update_actions =  array(
-			'preview' => '<a href="' . $preview_link . '" class="thickbox thickbox-preview" title="' . attribute_escape(sprintf(__('Preview "%s"'), $name)) . '">' . __('Preview') . '</a>',
-			'activate' => '<a href="' . $activate_link .  '" class="activatelink" title="' . attribute_escape( sprintf( __('Activate "%s"'), $name ) ) . '">' . __('Activate') . '</a>',
-			'themes_page' => '<a href="' . admin_url('themes.php') . '" title="' . attribute_escape(__('Return to Themes page')) . '" target="_parent">' . __('Return to Themes page') . '</a>',
+			'preview' => '<a href="' . $preview_link . '" class="thickbox thickbox-preview" title="' . attr(sprintf(__('Preview "%s"'), $name)) . '">' . __('Preview') . '</a>',
+			'activate' => '<a href="' . $activate_link .  '" class="activatelink" title="' . attr( sprintf( __('Activate "%s"'), $name ) ) . '">' . __('Activate') . '</a>',
+			'themes_page' => '<a href="' . admin_url('themes.php') . '" title="' . attr(__('Return to Themes page')) . '" target="_parent">' . __('Return to Themes page') . '</a>',
 		);
 		if ( ( ! $this->result || is_wp_error($this->result) ) || $stylesheet == get_stylesheet() )
 			unset($update_actions['preview'], $update_actions['activate']);
@@ -932,12 +1008,21 @@ class Theme_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 }
 
+/**
+ * Upgrade Skin helper for File uploads. This class handles the upload process and passes it as if its a local file to the Upgrade/Installer functions.
+ *
+ * @TODO More Detailed docs, for methods as well.
+ *
+ * @package WordPress
+ * @subpackage Upgrader
+ * @since 2.8.0
+ */
 class File_Upload_Upgrader {
 	var $package;
 	var $filename;
 
 	function File_Upload_Upgrader($form, $urlholder) {
-		return __construct($form, $urlholder);
+		return $this->__construct($form, $urlholder);
 	}
 	function __construct($form, $urlholder) {
 		if ( ! ( ( $uploads = wp_upload_dir() ) && false === $uploads['error'] ) )

@@ -92,7 +92,7 @@ if ( !isset( $_GET['paged'] ) )
 if ( empty($_GET['mode']) )
 	$mode = 'list';
 else
-	$mode = attribute_escape($_GET['mode']); ?>
+	$mode = attr($_GET['mode']); ?>
 
 <div class="wrap">
 <?php screen_icon(); ?>
@@ -141,7 +141,7 @@ $status_links = array();
 $num_posts = wp_count_posts( 'post', 'readable' );
 $total_posts = array_sum( (array) $num_posts );
 $class = empty( $_GET['post_status'] ) ? ' class="current"' : '';
-$status_links[] = "<li><a href='edit.php' $class>" . sprintf( _n( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts ), number_format_i18n( $total_posts ) ) . '</a>';
+$status_links[] = "<li><a href='edit.php' $class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts, 'posts' ), number_format_i18n( $total_posts ) ) . '</a>';
 
 
 foreach ( $post_stati as $status => $label ) {
@@ -166,13 +166,13 @@ endif;
 <p class="search-box">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Posts' ); ?>:</label>
 	<input type="text" id="post-search-input" name="s" value="<?php the_search_query(); ?>" />
-	<input type="submit" value="<?php _e( 'Search Posts' ); ?>" class="button" />
+	<input type="submit" value="<?php _ea( 'Search Posts' ); ?>" class="button" />
 </p>
 
 <?php if ( isset($_GET['post_status'] ) ) : ?>
-<input type="hidden" name="post_status" value="<?php echo attribute_escape($_GET['post_status']) ?>" />
+<input type="hidden" name="post_status" value="<?php echo attr($_GET['post_status']) ?>" />
 <?php endif; ?>
-<input type="hidden" name="mode" value="<?php echo $mode; ?>" />
+<input type="hidden" name="mode" value="<?php echo attr($mode); ?>" />
 
 <?php if ( have_posts() ) { ?>
 
@@ -195,7 +195,7 @@ $page_links = paginate_links( array(
 <option value="edit"><?php _e('Edit'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction" id="doaction" class="button-secondary action" />
 <?php wp_nonce_field('bulk-posts'); ?>
 
 <?php // view filters
@@ -222,7 +222,7 @@ foreach ($arc_result as $arc_row) {
 	else
 		$default = '';
 
-	echo "<option$default value='$arc_row->yyear$arc_row->mmonth'>";
+	echo "<option$default value='" . attr("$arc_row->yyear$arc_row->mmonth") . "'>";
 	echo $wp_locale->get_month($arc_row->mmonth) . " $arc_row->yyear";
 	echo "</option>\n";
 }
@@ -236,7 +236,7 @@ $dropdown_options = array('show_option_all' => __('View all categories'), 'hide_
 wp_dropdown_categories($dropdown_options);
 do_action('restrict_manage_posts');
 ?>
-<input type="submit" id="post-query-submit" value="<?php _e('Filter'); ?>" class="button-secondary" />
+<input type="submit" id="post-query-submit" value="<?php _ea('Filter'); ?>" class="button-secondary" />
 
 <?php } ?>
 </div>
@@ -275,7 +275,7 @@ if ( $page_links )
 <option value="edit"><?php _e('Edit'); ?></option>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
-<input type="submit" value="<?php _e('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
+<input type="submit" value="<?php _ea('Apply'); ?>" name="doaction2" id="doaction2" class="button-secondary action" />
 <br class="clear" />
 </div>
 <br class="clear" />

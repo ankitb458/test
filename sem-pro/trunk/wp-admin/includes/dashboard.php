@@ -194,6 +194,8 @@ function wp_dashboard() {
 /* Dashboard Widgets */
 
 function wp_dashboard_right_now() {
+	global $wp_registered_sidebars;
+
 	$num_posts = wp_count_posts( 'post' );
 	$num_pages = wp_count_posts( 'page' );
 
@@ -315,18 +317,33 @@ function wp_dashboard_right_now() {
 
 	echo "\n\t".'<div class="versions">';
 	$ct = current_theme_info();
-	$sidebars_widgets = wp_get_sidebars_widgets();
-	$num_widgets = array_reduce( $sidebars_widgets, create_function( '$prev, $curr', 'return $prev+count($curr);' ), 0 );
-	$num = number_format_i18n( $num_widgets );
-
+	
 	echo "\n\t<p>";
-	if ( current_user_can( 'switch_themes' ) ) {
-		echo '<a href="themes.php" class="button rbutton">' . __('Change Theme') . '</a>';
-		printf(_n('Theme <span class="b"><a href="themes.php">%1$s</a></span> with <span class="b"><a href="widgets.php">%2$s Widget</a></span>', 'Theme <span class="b"><a href="themes.php">%1$s</a></span> with <span class="b"><a href="widgets.php">%2$s Widgets</a></span>', $num_widgets), $ct->title, $num);
-	} else {
-		printf(_n('Theme <span class="b">%1$s</span> with <span class="b">%2$s Widget</span>', 'Theme <span class="b">%1$s</span> with <span class="b">%2$s Widgets</span>', $num_widgets), $ct->title, $num);
-	}
+	if ( !empty($wp_registered_sidebars) ) {
+		$sidebars_widgets = wp_get_sidebars_widgets();
+		$num_widgets = 0;
+		foreach ( (array) $sidebars_widgets as $k => $v ) {
+			if ( 'wp_inactive_widgets' == $k )
+				continue;
+			if ( is_array($v) )
+				$num_widgets = $num_widgets + count($v);
+		}
+		$num = number_format_i18n( $num_widgets );
 
+		if ( current_user_can( 'switch_themes' ) ) {
+			echo '<a href="themes.php" class="button rbutton">' . __('Change Theme') . '</a>';
+			printf(_n('Theme <span class="b"><a href="themes.php">%1$s</a></span> with <span class="b"><a href="widgets.php">%2$s Widget</a></span>', 'Theme <span class="b"><a href="themes.php">%1$s</a></span> with <span class="b"><a href="widgets.php">%2$s Widgets</a></span>', $num_widgets), $ct->title, $num);
+		} else {
+			printf(_n('Theme <span class="b">%1$s</span> with <span class="b">%2$s Widget</span>', 'Theme <span class="b">%1$s</span> with <span class="b">%2$s Widgets</span>', $num_widgets), $ct->title, $num);
+		}
+	} else {
+		if ( current_user_can( 'switch_themes' ) ) {
+			echo '<a href="themes.php" class="button rbutton">' . __('Change Theme') . '</a>';
+			printf('Theme <span class="b"><a href="themes.php">%1$s</a></span>', $ct->title);
+		} else {
+			printf('Theme <span class="b">%1$s</span>', $ct->title);
+		}
+	}
 	echo '</p>';
 
 	update_right_now_message();
@@ -371,7 +388,7 @@ function wp_dashboard_quick_press() {
 	<form name="post" action="<?php echo clean_url( admin_url( 'post.php' ) ); ?>" method="post" id="quick-press">
 		<h4 id="quick-post-title"><label for="title"><?php _e('Title') ?></label></h4>
 		<div class="input-text-wrap">
-			<input type="text" name="post_title" id="title" tabindex="1" autocomplete="off" value="<?php echo attribute_escape( $post->post_title ); ?>" />
+			<input type="text" name="post_title" id="title" tabindex="1" autocomplete="off" value="<?php echo attr( $post->post_title ); ?>" />
 		</div>
 
 		<?php if ( current_user_can( 'upload_files' ) ) : ?>
@@ -432,7 +449,7 @@ function wp_dashboard_recent_drafts( $drafts = false ) {
 		foreach ( $drafts as $draft ) {
 			$url = get_edit_post_link( $draft->ID );
 			$title = _draft_or_post_title( $draft->ID );
-			$item = "<h4><a href='$url' title='" . sprintf( __( 'Edit "%s"' ), attribute_escape( $title ) ) . "'>$title</a> <abbr title='" . get_the_time(__('Y/m/d g:i:s A'), $draft) . "'>" . get_the_time( get_option( 'date_format' ), $draft ) . '</abbr></h4>';
+			$item = "<h4><a href='$url' title='" . sprintf( __( 'Edit "%s"' ), attr( $title ) ) . "'>$title</a> <abbr title='" . get_the_time(__('Y/m/d g:i:s A'), $draft) . "'>" . get_the_time( get_option( 'date_format' ), $draft ) . '</abbr></h4>';
 			if ( $the_content = preg_split( '#\s#', strip_tags( $draft->post_content ), 11, PREG_SPLIT_NO_EMPTY ) )
 				$item .= '<p>' . join( ' ', array_slice( $the_content, 0, 10 ) ) . ( 10 < count( $the_content ) ? '&hellip;' : '' ) . '</p>';
 			$list[] = $item;
@@ -579,9 +596,9 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 
 			<div id="inline-<?php echo $comment->comment_ID; ?>" class="hidden">
 				<textarea class="comment" rows="3" cols="10"><?php echo $comment->comment_content; ?></textarea>
-				<div class="author-email"><?php echo attribute_escape( $comment->comment_author_email ); ?></div>
-				<div class="author"><?php echo attribute_escape( $comment->comment_author ); ?></div>
-				<div class="author-url"><?php echo attribute_escape( $comment->comment_author_url ); ?></div>
+				<div class="author-email"><?php echo attr( $comment->comment_author_email ); ?></div>
+				<div class="author"><?php echo attr( $comment->comment_author ); ?></div>
+				<div class="author-url"><?php echo attr( $comment->comment_author_url ); ?></div>
 				<div class="comment_status"><?php echo $comment->comment_approved; ?></div>
 			</div>
 			</div>
@@ -800,7 +817,7 @@ function wp_dashboard_plugins_output() {
 			$title = $item->get_title();
 		$title = wp_specialchars( $title );
 
-		$description = wp_specialchars( strip_tags(html_entity_decode($item->get_description(), ENT_QUOTES, get_option('blog_charset'))) );
+		$description = wp_specialchars( strip_tags(@html_entity_decode($item->get_description(), ENT_QUOTES, get_option('blog_charset'))) );
 
 		$ilink = wp_nonce_url('plugin-install.php?tab=plugin-information&plugin=' . $slug, 'install-plugin_' . $slug) .
 							'&amp;TB_iframe=true&amp;width=600&amp;height=800';

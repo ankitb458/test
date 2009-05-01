@@ -135,7 +135,7 @@ table#availablethemes td.bottom {
 	margin: 0;
 }
 
-#current-theme .description {
+#current-theme .theme-description {
 	margin-top: 5px;
 }
 
@@ -841,8 +841,29 @@ div.comment-item:hover .row-actions {
 	padding: 12px 10px 5px;
 }
 
-#wphead h1 span {
+#wphead #site-visit-button {
+	background-repeat:repeat-x;
+	background-position:0 0;
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	-khtml-border-radius:3px;
+	border-radius:3px;
+	cursor:pointer; /* to keep IE happy */
+	display:-moz-inline-stack; /* to keep FF2 happy */
+	display:inline-block;
 	font-size: 50%;
+	font-style:normal;
+	line-height:17px;
+	margin-left:5px;
+	padding:0 6px;
+	vertical-align:middle;
+}
+
+#wphead h1 a:hover {
+	text-decoration:none;
+}
+#wphead h1 a:hover #site-title {
+	text-decoration:underline;
 }
 
 /* side admin menu */
@@ -1017,7 +1038,12 @@ div.comment-item:hover .row-actions {
 	height: 21px;
 	padding: 0;
 	margin: 0;
+}
+
+#adminmenu a.separator {
 	cursor: w-resize;
+	height: 20px;
+	padding: 0;
 }
 
 .folded #adminmenu li.wp-menu-separator {
@@ -1081,6 +1107,15 @@ div.comment-item:hover .row-actions {
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
 }
+
+#adminmenu .wp-menu-image a {
+	height: 24px;
+}
+
+#adminmenu .wp-menu-image img {
+	padding: 6px 0 0 1px;
+}
+
 /* end side admin menu */
 
 /* comments/plugins bubble in menu */
@@ -1333,11 +1368,14 @@ table.form-table td .updated {
 	width: 95%;
 }
 
+p.description,
 .form-wrap p {
 	margin: 2px 0 5px;
+	font-size: 11px;
 }
 
-.setting-description, .form-wrap p {
+.description,
+.form-wrap p {
 	font-style: italic;
 	font-family: "Lucida Grande", Verdana, Arial, "Bitstream Vera Sans", sans-serif;
 }
@@ -1639,6 +1677,17 @@ table.form-table td .updated {
 	-khtml-border-top-left-radius: 6px;
 	border-top-right-radius: 6px;
 	border-top-left-radius: 6px;
+}
+
+.postbox.closed h3 {
+	-moz-border-radius-bottomleft:4px;
+	-webkit-border-bottom-left-radius: 4px;
+	-khtml-border-bottom-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	-moz-border-radius-bottomright:4px;
+	-webkit-border-bottom-right-radius: 4px;
+	-khtml-border-bottom-right-radius: 4px;
+	border-bottom-right-radius: 4px;
 }
 
 .postbox table.form-table {
@@ -2909,9 +2958,6 @@ abbr.required {
 }
 
 #favorite-actions .slide-down {
-	background-image: url(images/fav-top.png);
-	background-repeat: repeat-x;
-	background-position: 0 top;
 	-moz-border-radius: 12px 12px 0 0;
 	-webkit-border-bottom-right-radius: 0;
 	-webkit-border-bottom-left-radius: 0;
