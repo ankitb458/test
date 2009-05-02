@@ -269,17 +269,17 @@ add_meta_box('submitdiv', __('Publish'), 'post_submit_meta_box', 'post', 'side',
  * @param object $post
  */
 function post_tags_meta_box($post, $box) {
-	$tax_name = substr($box['id'], 8);
+	$tax_name = attr(substr($box['id'], 8));
 	$taxonomy = get_taxonomy($tax_name);
 	$helps = isset($taxonomy->helps) ? attr($taxonomy->helps) : __('Separate tags with commas.');
 ?>
 <div class="tagsdiv" id="<?php echo $tax_name; ?>">
 	<p class="jaxtag">
-		<label class="hidden" for="newtag"><?php _e( $box['title'] ); ?></label>
+		<label class="hidden" for="new-tag-<?php echo $tax_name; ?>"><?php echo $box['title']; ?></label>
 		<input type="hidden" name="<?php echo "tax_input[$tax_name]"; ?>" class="the-tags" id="tax-input[<?php echo $tax_name; ?>]" value="<?php echo attr(get_terms_to_edit( $post->ID, $tax_name )); ?>" />
 
 	<span class="ajaxtag">
-		<input type="text" name="newtag[<?php echo $tax_name; ?>]" class="newtag form-input-tip" size="16" autocomplete="off" value="<?php _ea('Add new tag'); ?>" />
+		<input type="text" id="new-tag-<?php echo $tax_name; ?>" name="newtag[<?php echo $tax_name; ?>]" class="newtag form-input-tip" size="16" autocomplete="off" value="<?php _ea('Add new tag'); ?>" />
 		<input type="button" class="button tagadd" value="<?php _ea('Add'); ?>" tabindex="3" />
 	</span></p>
 	<p class="howto"><?php echo $helps; ?></p>
@@ -477,7 +477,7 @@ function post_comment_meta_box($post) {
 <tbody id="the-comment-list" class="list:comment">
 </tbody>
 </table>
-<p class="hide-if-no-js"><a href="#commentstatusdiv" id="show-comments" onclick="commentsBox.get(<?php echo $total; ?>);return false;"><?php _e('Show comments'); ?></a> <img class="waiting" style="display:none;" src="images/loading.gif" alt="" /></p>
+<p class="hide-if-no-js"><a href="#commentstatusdiv" id="show-comments" onclick="commentsBox.get(<?php echo $total; ?>);return false;"><?php _e('Show comments'); ?></a> <img class="waiting" style="display:none;" src="images/wpspin.gif" alt="" /></p>
 <?php
 	$hidden = get_hidden_meta_boxes('post');
 	if ( ! in_array('commentsdiv', $hidden) ) { ?>
@@ -595,6 +595,7 @@ else
 <div id="post-body-content">
 <div id="titlediv">
 <div id="titlewrap">
+	<label class="hidden" for="title"><?php _e('Title') ?></label>
 	<input type="text" name="post_title" size="30" tabindex="1" value="<?php echo attr( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" />
 </div>
 <div class="inside">

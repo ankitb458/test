@@ -152,8 +152,7 @@ function &get_manifest(&$man_ver) {
 		array('images/icons32-vs.png'),
 		array('images/list.png'),
 		array('images/list-vs.png'),
-		array('images/loading.gif'),
-		array('images/loading-publish.gif'),
+		array('images/wpspin.gif'),
 		array('images/logo.gif'),
 		array('images/logo-ghost.png'),
 		array('images/logo-login.gif'),
@@ -249,8 +248,6 @@ function &get_manifest(&$man_ver) {
 		array('../wp-includes/js/tinymce/plugins/paste/pasteword.htm', $mce_ver, true),
 		array('../wp-includes/js/tinymce/plugins/paste/blank.htm', $mce_ver, true),
 		array('../wp-includes/js/tinymce/plugins/paste/pastetext.htm', $mce_ver, true),
-		array('../wp-includes/js/tinymce/plugins/paste/css/pasteword.css', $mce_ver, true),
-		array('../wp-includes/js/tinymce/plugins/paste/css/blank.css', $mce_ver, true),
 
 		array('../wp-includes/js/tinymce/plugins/safari/editor_plugin.js', $mce_ver, true),
 
