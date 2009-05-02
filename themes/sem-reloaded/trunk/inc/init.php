@@ -136,7 +136,7 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 		} # dump_stops()
 		
 		if ( !isset($_GET['drop_stops']) ) {
-			setcookie('add_stops', 1);
+			setcookie('add_stops', 1, null, SITECOOKIEPATH, COOKIE_DOMAIN);
 			
 			add_action('init', create_function('$in', '
 				return add_stop($in, "Load");
@@ -157,14 +157,13 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 			add_action('wp_footer', 'dump_stops', 10000000);
 			add_action('admin_footer', 'dump_stops', 10000000);
 		} else {
-			setcookie('add_stops', null, time() - 3600);
+			setcookie('add_stops', null, time() - 3600, SITECOOKIEPATH, COOKIE_DOMAIN);
 		}
 	} else {
-		setcookie('add_stops', null, time() - 3600);
+		setcookie('add_stops', null, time() - 3600, SITECOOKIEPATH, COOKIE_DOMAIN);
 		add_action('init', create_function('', '
-			header("HTTP/1.1 301 Moved Permanently");
-	        header("Status: 301 Moved Permanently");
-			wp_redirect(get_option("home"));
+			wp_redirect(get_option("home"), 301);
+			die;
 			'));
 	}
 }
