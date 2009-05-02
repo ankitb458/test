@@ -110,6 +110,30 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 			if ( defined('SAVEQUERIES') )
 			{
 				global $wpdb;
+				foreach ( $wpdb->queries as $key => $data ) {
+					$query = trim($data[0]);
+					$query = preg_replace("/
+						\s*
+						(
+							INSERT |
+							UPDATE |
+							SELECT |
+							(?:DELETE\s+)?FROM |
+							(?:(?:INNER|LEFT|RIGHT|CROSS|NATURAL)\s*)?JOIN |
+							WHERE |
+							AND |
+							GROUP\s+BY |
+							HAVING |
+							ORDER\s+BY |
+							LIMIT
+						)
+						/isx", "\n$1", $query) . "\n";
+					$wpdb->queries[$key][0] = $query;
+					$loc = trim($data[2]);
+					$loc = preg_replace("/(require|include)(_once)?,\s*/ix", '', $loc);
+					$loc = "\n" . preg_replace("/,\s*/", ",\n", $loc) . "\n";
+					$wpdb->queries[$key][2] = $loc;
+				}
 				dump($wpdb->queries);
 			}
 
