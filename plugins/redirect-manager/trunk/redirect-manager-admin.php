@@ -46,7 +46,7 @@ class redirect_manager_admin {
 		if ( current_user_can('edit_post', $post_id) ) {
 			$value = $_POST['redirect_manager'];
 			$value = stripslashes($value);
-			$value = clean_url($value);
+			$value = clean_url($value, 'raw');
 			$value = addslashes($value);
 			
 			if ( $value ) {
