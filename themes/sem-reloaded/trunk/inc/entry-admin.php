@@ -1,6 +1,6 @@
 <?php
 
-class sem_entry_admin
+class sem_entry_admin {
 	#
 	# widget_control()
 	#
