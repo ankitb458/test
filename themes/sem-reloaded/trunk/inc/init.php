@@ -212,14 +212,6 @@ elseif ( $GLOBALS['sem_options']['version'] != sem_version || $force_update )
 
 
 #
-# override WP 2.7 comment options
-#
-
-if ( is_admin() )
-	add_action('load-options-discussion.php', array('sem_entry_admin', 'discussion_options'));
-
-
-#
 # kill paged comments
 #
 
