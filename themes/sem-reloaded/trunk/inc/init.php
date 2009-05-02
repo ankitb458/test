@@ -31,25 +31,20 @@ endif;
 #
 
 if ( !function_exists('true') ) :
-function true($bool = null)
-{
+function true($bool = null) {
 	return true;
 } # true()
 endif;
 
 if ( !function_exists('false') ) :
-function false($bool = null)
-{
+function false($bool = null) {
 	return false;
 } # false()
 endif;
 
-function reset_plugin_hook($plugin_hook = null)
-{
+function reset_plugin_hook($plugin_hook = null) {
 	if ( isset($plugin_hook) )
-	{
 		unset($GLOBALS['wp_filter'][$plugin_hook]);
-	}
 } # reset_plugin_hook()
 
 
@@ -58,14 +53,18 @@ function reset_plugin_hook($plugin_hook = null)
 #
 
 if ( !function_exists('dump') ) :
-function dump()
-{
-	foreach ( func_get_args() as $var )
-	{
-		echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
-		var_dump($var);
-		echo '</pre>';
+function dump() {
+	echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
+	foreach ( func_get_args() as $var ) {
+		if ( is_array($var) || is_object($var) ) {
+			echo "\n\n";
+			var_dump($var);
+			echo "\n";
+		} else {
+			echo "\n$var\n";
+		}
 	}
+	echo '</pre>';
 } # dump()
 endif;
 
@@ -74,41 +73,31 @@ endif;
 # stops
 #
 
-if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['drop_stops']) )
-{
-	if ( current_user_can('administrator') )
-	{
-		function add_stop($in = null, $where = null)
-		{
+if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['drop_stops']) ) {
+	if ( current_user_can('administrator') ) {
+		function add_stop($in = null, $where = null) {
 			$queries = get_num_queries();
 			$seconds = timer_stop();
 			$memory = number_format(memory_get_usage() / 1024, 0);
 			
 			$out =  "$queries queries - {$seconds}s - {$memory}kB";
 			
-			if ( $where )
-			{
+			if ( $where ) {
 				$GLOBALS['sem_stops'][$where] = $out;
-			}
-			else
-			{
+			} else {
 				dump($out);
 			}
 
 			return $in;
 		} # add_stop()
 
-		function dump_stops($in = null)
-		{
+		function dump_stops($in = null) {
 			echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
 			foreach ( $GLOBALS['sem_stops'] as $where => $stop )
-			{
 				echo "$where: $stop\n";
-			}
 			echo '</pre>';
 			
-			if ( defined('SAVEQUERIES') )
-			{
+			if ( defined('SAVEQUERIES') ) {
 				global $wpdb;
 				foreach ( $wpdb->queries as $key => $data ) {
 					$query = trim($data[0]);
@@ -117,6 +106,7 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 						(
 							INSERT |
 							UPDATE |
+							REPLACE |
 							SELECT |
 							(?:DELETE\s+)?FROM |
 							(?:(?:INNER|LEFT|RIGHT|CROSS|NATURAL)\s*)?JOIN |
@@ -128,13 +118,18 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 							LIMIT
 						)
 						/isx", "\n$1", $query) . "\n";
-					$wpdb->queries[$key][0] = $query;
+					
+					$duration = number_format($data[1] * 1000, 3) . 'ms';
+					
+					$explain = mysql_query("EXPLAIN $query", $wpdb->dbh);
+					$explain = mysql_fetch_array($explain, MYSQL_ASSOC);
+					
 					$loc = trim($data[2]);
 					$loc = preg_replace("/(require|include)(_once)?,\s*/ix", '', $loc);
 					$loc = "\n" . preg_replace("/,\s*/", ",\n", $loc) . "\n";
-					$wpdb->queries[$key][2] = $loc;
+					
+					dump($query, $duration, $explain, $loc);
 				}
-				dump($wpdb->queries);
 			}
 
 			return $in;
@@ -164,9 +159,7 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 		} else {
 			setcookie('add_stops', null, time() - 3600);
 		}
-	}
-	else
-	{
+	} else {
 		setcookie('add_stops', null, time() - 3600);
 		add_action('init', create_function('', '
 			header("HTTP/1.1 301 Moved Permanently");
