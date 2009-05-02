@@ -171,19 +171,6 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 
 
 #
-# diagnosis (obsolete)
-#
-
-if ( isset($_GET['send_diagnosis']) ) {
-	add_action('init', create_function('', '
-		header("HTTP/1.1 301 Moved Permanently");
-        header("Status: 301 Moved Permanently");
-		wp_redirect(get_option("home"));
-		'));
-}
-
-
-#
 # load options
 #
 
