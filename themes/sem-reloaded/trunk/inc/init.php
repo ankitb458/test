@@ -174,39 +174,13 @@ if ( isset($_COOKIE['add_stops']) || isset($_GET['add_stops']) || isset($_GET['d
 # diagnosis (obsolete)
 #
 
-if ( isset($_GET['send_diagnosis']) )
-{
+if ( isset($_GET['send_diagnosis']) ) {
 	add_action('init', create_function('', '
 		header("HTTP/1.1 301 Moved Permanently");
         header("Status: 301 Moved Permanently");
 		wp_redirect(get_option("home"));
 		'));
 }
-
-
-#
-# catch old wizard upgrader
-#
-
-if ( is_admin() && isset($_GET['page']) && $_GET['page'] == 'wizards/upgrade.php' )
-{
-	wp_redirect(trailingslashit(site_url()) . 'wp-admin/');
-	die;
-}
-
-
-#
-# fix_wp_widgets()
-#
-
-function fix_wp_widgets($o)
-{
-	if ( !isset($o['array_version']) ) $o['array_version'] = 3;
-	
-	return $o;
-} # fix_wp_widgets()
-
-add_filter('pre_update_option_sidebars_widgets', 'fix_wp_widgets');
 
 
 #
