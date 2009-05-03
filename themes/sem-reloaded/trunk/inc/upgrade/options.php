@@ -135,6 +135,9 @@ function sem_clean_up_options()
 
 	$wpdb->query("DELETE FROM $wpdb->options WHERE option_name REGEXP '^rss\_[0-9a-f]{32}';");	# clean up magpie
 	
+	update_option('nav_menus_cache', array());
+	$wpdb->query("DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '\_nav\_menus\_cache%'");
+	
 	# drop obsolete tables
 	$wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}WP_HASHCASH;");
 	

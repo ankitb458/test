@@ -18,7 +18,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('sem-admin-menu', null, basename(dirname(__FILE__)) . '/lang');
+load_plugin_textdomain('sem-admin-menu', null, plugin_dir_path(__FILE__) . '/lang');
 
 
 /**
@@ -132,12 +132,19 @@ class sem_admin_menu {
 			}
 			
 			if ( current_user_can('edit_pages') ) {
+				if ( is_page() && !is_front_page() )
+					$parent_id = $GLOBALS['wp_query']->get_queried_object_id();
+				elseif ( !is_page() && is_home() && get_option('show_on_front') == 'page' )
+					$parent_id = (int) get_option('page_for_posts');
+				else
+					$parent_id = false;
+				
 				echo '<span class="am_new">'
 					. '<a href="'
 						. $admin_url
 						. 'page-new.php'
-						. ( is_page() && !is_front_page()
-							? ( '?parent_id=' . $GLOBALS['wp_query']->get_queried_object_id() )
+						. ( $parent_id
+							? ( '?parent_id=' . $parent_id )
 							: ''
 							)
 						. '"'
