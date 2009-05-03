@@ -16,12 +16,11 @@ remove_action('wp_footer', array('sem_footer', 'display_credits'));
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>><head><title><?php
-if ( $title = wp_title('&raquo;', false) )
-{
+if ( $title = trim(wp_title('&rarr;', false)) ) {
+	if ( strpos($title, '&rarr;') === 0 )
+		$title = trim(substr($title, strlen('&rarr;'), strlen($title)));
 	echo $title;
-}
-else
-{
+} else {
 	bloginfo('description');
 }
 ?></title>

@@ -28,7 +28,8 @@ li.nav_leaf {
 
 .pings_list ul,
 .widget_links ul,
-.widget_rss ul{
+.widget_rss ul,
+li.nav_url {
 	list-style-image: url(../icons/world_link.gif);
 }
 
