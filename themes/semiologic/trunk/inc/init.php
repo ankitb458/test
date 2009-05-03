@@ -56,7 +56,7 @@ if ( !function_exists('dump') ) :
 function dump() {
 	echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
 	foreach ( func_get_args() as $var ) {
-		if ( is_array($var) || is_object($var) ) {
+		if ( is_array($var) || is_object($var) || is_bool($var) ) {
 			echo "\n\n";
 			var_dump($var);
 			echo "\n";
