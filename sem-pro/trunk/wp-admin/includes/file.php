@@ -52,7 +52,7 @@ function get_file_description( $file ) {
 	elseif ( file_exists( WP_CONTENT_DIR . $file ) && is_file( WP_CONTENT_DIR . $file ) ) {
 		$template_data = implode( '', file( WP_CONTENT_DIR . $file ) );
 		if ( preg_match( '|Template Name:(.*)$|mi', $template_data, $name ))
-			return $name[1] . ' Page Template';
+			return _cleanup_header_comment($name[1]) . ' Page Template';
 	}
 
 	return basename( $file );
@@ -67,11 +67,12 @@ function get_file_description( $file ) {
  */
 function get_home_path() {
 	$home = get_option( 'home' );
-	if ( $home != '' && $home != get_option( 'siteurl' ) ) {
-		$home_path = parse_url( $home );
-		$home_path = $home_path['path'];
-		$root = str_replace( $_SERVER["PHP_SELF"], '', $_SERVER["SCRIPT_FILENAME"] );
-		$home_path = trailingslashit( $root.$home_path );
+	$siteurl = get_option( 'siteurl' );
+	if ( $home != '' && $home != $siteurl ) {
+	        $wp_path_rel_to_home = str_replace($home, '', $siteurl); /* $siteurl - $home */
+	        $pos = strpos($_SERVER["SCRIPT_FILENAME"], $wp_path_rel_to_home);
+	        $home_path = substr($_SERVER["SCRIPT_FILENAME"], 0, $pos);        
+		$home_path = trailingslashit( $home_path );
 	} else {
 		$home_path = ABSPATH;
 	}
@@ -194,7 +195,7 @@ function validate_file_to_edit( $file, $allowed_files = '' ) {
 
 	switch ( $code ) {
 		case 1 :
-			wp_die( __('Sorry, can&#8217;t edit files with ".." in the name. If you are trying to edit a file in your WordPress home directory, you can just type the name of the file in.' ));
+			wp_die( __('Sorry, can&#8217;t edit files with &#8220;..&#8221; in the name. If you are trying to edit a file in your WordPress home directory, you can just type the name of the file in.' ));
 
 		case 2 :
 			wp_die( __('Sorry, can&#8217;t call files with their real path.' ));
@@ -731,12 +732,12 @@ jQuery(function($){
 <table class="form-table">
 <tr valign="top">
 <th scope="row"><label for="hostname"><?php _e('Hostname') ?></label></th>
-<td><input name="hostname" type="text" id="hostname" value="<?php echo attr($hostname); if ( !empty($port) ) echo ":$port"; ?>"<?php if( defined('FTP_HOST') ) echo ' disabled="disabled"' ?> size="40" /></td>
+<td><input name="hostname" type="text" id="hostname" value="<?php echo esc_attr($hostname); if ( !empty($port) ) echo ":$port"; ?>"<?php if( defined('FTP_HOST') ) echo ' disabled="disabled"' ?> size="40" /></td>
 </tr>
 
 <tr valign="top">
 <th scope="row"><label for="username"><?php _e('Username') ?></label></th>
-<td><input name="username" type="text" id="username" value="<?php echo attr($username) ?>"<?php if( defined('FTP_USER') ) echo ' disabled="disabled"' ?> size="40" /></td>
+<td><input name="username" type="text" id="username" value="<?php echo esc_attr($username) ?>"<?php if( defined('FTP_USER') ) echo ' disabled="disabled"' ?> size="40" /></td>
 </tr>
 
 <tr valign="top">
@@ -750,14 +751,14 @@ jQuery(function($){
 <label for="public_key"><?php _e('Public Key:') ?></label ><br />
 <label for="private_key"><?php _e('Private Key:') ?></label>
 </div></th>
-<td><br /><input name="public_key" type="text" id="public_key" value="<?php echo attr($public_key) ?>"<?php if( defined('FTP_PUBKEY') ) echo ' disabled="disabled"' ?> size="40" /><br /><input name="private_key" type="text" id="private_key" value="<?php echo attr($private_key) ?>"<?php if( defined('FTP_PRIKEY') ) echo ' disabled="disabled"' ?> size="40" />
+<td><br /><input name="public_key" type="text" id="public_key" value="<?php echo esc_attr($public_key) ?>"<?php if( defined('FTP_PUBKEY') ) echo ' disabled="disabled"' ?> size="40" /><br /><input name="private_key" type="text" id="private_key" value="<?php echo esc_attr($private_key) ?>"<?php if( defined('FTP_PRIKEY') ) echo ' disabled="disabled"' ?> size="40" />
 <div><?php _e('Enter the location on the server where the keys are located. If a passphrase is needed, enter that in the password field above.') ?></div></td>
 </tr>
 
 <tr valign="top">
 <th scope="row"><?php _e('Connection Type') ?></th>
 <td>
-<fieldset><legend class="hidden"><?php _e('Connection Type') ?></legend>
+<fieldset><legend class="invisible"><?php _e('Connection Type') ?></legend>
 <label><input id="ftp" name="connection_type"  type="radio" value="ftp" <?php checked('ftp', $connection_type); if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('FTP') ?></label><br />
 <label><input id="ftps" name="connection_type" type="radio" value="ftps" <?php checked('ftps', $connection_type); if ( defined('FTP_SSH') || defined('FTP_SSH') ) echo ' disabled="disabled"';  ?>/> <?php _e('FTPS (SSL)') ?></label><br />
 <?php if ( extension_loaded('ssh2') ) { ?><label><input id="ssh" name="connection_type" type="radio" value="ssh" <?php checked('ssh', $connection_type);  if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('SSH') ?></label><?php } ?>
@@ -767,13 +768,13 @@ jQuery(function($){
 </table>
 
 <?php if ( isset( $_POST['version'] ) ) : ?>
-<input type="hidden" name="version" value="<?php echo attr($_POST['version']) ?>" />
+<input type="hidden" name="version" value="<?php echo esc_attr($_POST['version']) ?>" />
 <?php endif; ?>
 <?php if ( isset( $_POST['locale'] ) ) : ?>
-<input type="hidden" name="locale" value="<?php echo attr($_POST['locale']) ?>" />
+<input type="hidden" name="locale" value="<?php echo esc_attr($_POST['locale']) ?>" />
 <?php endif; ?>
 <p class="submit">
-<input id="upgrade" name="upgrade" type="submit" class="button" value="<?php _e('Proceed'); ?>" />
+<input id="upgrade" name="upgrade" type="submit" class="button" value="<?php esc_attr_e('Proceed'); ?>" />
 </p>
 </div>
 </form>

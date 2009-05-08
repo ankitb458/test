@@ -370,3 +370,4 @@ function wp_menu_unfold() {
 	 	exit;
 	}
 }
+?>

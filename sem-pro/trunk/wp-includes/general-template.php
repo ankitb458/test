@@ -119,9 +119,9 @@ function get_search_form() {
 		return;
 
 	$form = '<form role="search" method="get" id="searchform" action="' . get_option('home') . '/" >
-	<div><label class="hidden" for="s">' . __('Search for:') . '</label>
-	<input type="text" value="' . attr(apply_filters('the_search_query', get_search_query())) . '" name="s" id="s" />
-	<input type="submit" id="searchsubmit" value="'.attr(__('Search')).'" />
+	<div><label class="invisible" for="s">' . __('Search for:') . '</label>
+	<input type="text" value="' . esc_attr(apply_filters('the_search_query', get_search_query())) . '" name="s" id="s" />
+	<input type="submit" id="searchsubmit" value="'. esc_attr__('Search') .'" />
 	</div>
 	</form>';
 
@@ -688,7 +688,7 @@ function single_month_title($prefix = '', $display = true ) {
  */
 function get_archives_link($url, $text, $format = 'html', $before = '', $after = '') {
 	$text = wptexturize($text);
-	$title_text = attr($text);
+	$title_text = esc_attr($text);
 	$url = clean_url($url);
 
 	if ('link' == $format)
@@ -1076,8 +1076,7 @@ function get_calendar($initial = true) {
 	if ( $ak_post_titles ) {
 		foreach ( (array) $ak_post_titles as $ak_post_title ) {
 
-				$post_title = apply_filters( "the_title", $ak_post_title->post_title );
-				$post_title = str_replace('"', '&quot;', wptexturize( $post_title ));
+				$post_title = esc_attr( apply_filters( 'the_title', $ak_post_title->post_title ) );
 
 				if ( empty($ak_titles_for_day['day_'.$ak_post_title->dom]) )
 					$ak_titles_for_day['day_'.$ak_post_title->dom] = '';
@@ -1434,8 +1433,8 @@ function feed_links( $args ) {
 
 	$args = wp_parse_args( $args, $defaults );
 
-	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . attr(sprintf( $args['feedtitle'], get_bloginfo('name') )) . '" href="' . get_feed_link() . "\" />\n";
-	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . attr(sprintf( $args['comstitle'], get_bloginfo('name') )) . '" href="' . get_feed_link( 'comments_' . get_default_feed() ) . "\" />\n";
+	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . esc_attr(sprintf( $args['feedtitle'], get_bloginfo('name') )) . '" href="' . get_feed_link() . "\" />\n";
+	echo '<link rel="alternate" type="' . feed_content_type() . '" title="' . esc_attr(sprintf( $args['comstitle'], get_bloginfo('name') )) . '" href="' . get_feed_link( 'comments_' . get_default_feed() ) . "\" />\n";
 }
 
 /**
@@ -1458,7 +1457,7 @@ function feed_links_extra( $args ) {
 		/* translators: 1: blog name, 2: separator(raquo), 3: author name  */
 		'authortitle' => __('%1$s %2$s Posts by %3$s Feed'),
 		/* translators: 1: blog name, 2: separator(raquo), 3: search phrase */
-		'searchtitle' => __('%1$s %2$s Search Results for &quot;%3$s&quot; Feed'),
+		'searchtitle' => __('%1$s %2$s Search Results for &#8220;%3$s&#8221; Feed'),
 	);
 
 	$args = wp_parse_args( $args, $defaults );
@@ -1467,27 +1466,27 @@ function feed_links_extra( $args ) {
 		$post = &get_post( $id = 0 );
 
 		if ( comments_open() || pings_open() || $post->comment_count > 0 ) {
-			$title = attr(sprintf( $args['singletitle'], get_bloginfo('name'), $args['separator'], wp_specialchars( get_the_title() ) ));
+			$title = esc_attr(sprintf( $args['singletitle'], get_bloginfo('name'), $args['separator'], wp_specialchars( get_the_title() ) ));
 			$href = get_post_comments_feed_link( $post->ID );
 		}
 	} elseif ( is_category() ) {
 		$cat_id = intval( get_query_var('cat') );
 
-		$title = attr(sprintf( $args['cattitle'], get_bloginfo('name'), $args['separator'], get_cat_name( $cat_id ) ));
+		$title = esc_attr(sprintf( $args['cattitle'], get_bloginfo('name'), $args['separator'], get_cat_name( $cat_id ) ));
 		$href = get_category_feed_link( $cat_id );
 	} elseif ( is_tag() ) {
 		$tag_id = intval( get_query_var('tag_id') );
 		$tag = get_tag( $tag_id );
 
-		$title = attr(sprintf( $args['tagtitle'], get_bloginfo('name'), $args['separator'], $tag->name ));
+		$title = esc_attr(sprintf( $args['tagtitle'], get_bloginfo('name'), $args['separator'], $tag->name ));
 		$href = get_tag_feed_link( $tag_id );
 	} elseif ( is_author() ) {
 		$author_id = intval( get_query_var('author') );
 
-		$title = attr(sprintf( $args['authortitle'], get_bloginfo('name'), $args['separator'], get_author_name( $author_id ) ));
+		$title = esc_attr(sprintf( $args['authortitle'], get_bloginfo('name'), $args['separator'], get_author_name( $author_id ) ));
 		$href = get_author_feed_link( $author_id );
 	} elseif ( is_search() ) {
-		$title = attr(sprintf( $args['searchtitle'], get_bloginfo('name'), $args['separator'], get_search_query() ));
+		$title = esc_attr(sprintf( $args['searchtitle'], get_bloginfo('name'), $args['separator'], get_search_query() ));
 		$href = get_search_feed_link();
 	}
 
@@ -1619,49 +1618,52 @@ function the_editor($content, $id = 'content', $prev_id = 'title', $media_button
 		$media_buttons = false;
 
 	$richedit =  user_can_richedit();
-	$rows = "rows='$rows'";
+	$class = '';
 
 	if ( $richedit || $media_buttons ) { ?>
 	<div id="editor-toolbar">
-	<?php if ( $richedit ) {
+<?php
+	if ( $richedit ) {
 		$wp_default_editor = wp_default_editor(); ?>
 		<div class="zerosize"><input accesskey="e" type="button" onclick="switchEditors.go('<?php echo $id; ?>')" /></div>
-		<?php if ( 'html' == $wp_default_editor ) {
+<?php	if ( 'html' == $wp_default_editor ) {
 			add_filter('the_editor_content', 'wp_htmledit_pre'); ?>
-			<a id="edButtonHTML" class="active" onclick="switchEditors.go('<?php echo $id; ?>', 'html');"><?php _e('HTML'); ?></a>
-			<a id="edButtonPreview" onclick="switchEditors.go('<?php echo $id; ?>', 'tinymce');"><?php _e('Visual'); ?></a>
-		<?php } else {
+			<a id="edButtonHTML" class="active hide-if-no-js" onclick="switchEditors.go('<?php echo $id; ?>', 'html');"><?php _e('HTML'); ?></a>
+			<a id="edButtonPreview" class="hide-if-no-js" onclick="switchEditors.go('<?php echo $id; ?>', 'tinymce');"><?php _e('Visual'); ?></a>
+<?php	} else {
+			$class = " class='theEditor'";
 			add_filter('the_editor_content', 'wp_richedit_pre'); ?>
-			<a id="edButtonHTML" onclick="switchEditors.go('<?php echo $id; ?>', 'html');"><?php _e('HTML'); ?></a>
-			<a id="edButtonPreview" class="active" onclick="switchEditors.go('<?php echo $id; ?>', 'tinymce');"><?php _e('Visual'); ?></a>
-		<?php }
-		}
+			<a id="edButtonHTML" class="hide-if-no-js" onclick="switchEditors.go('<?php echo $id; ?>', 'html');"><?php _e('HTML'); ?></a>
+			<a id="edButtonPreview" class="active hide-if-no-js" onclick="switchEditors.go('<?php echo $id; ?>', 'tinymce');"><?php _e('Visual'); ?></a>
+<?php	}
+	}
 
-		if ( $media_buttons ) { ?>
-			<div id="media-buttons" class="hide-if-no-js">
-			<?php do_action( 'media_buttons' ); ?>
-			</div>
-		<?php } ?>
+	if ( $media_buttons ) { ?>
+		<div id="media-buttons" class="hide-if-no-js">
+<?php	do_action( 'media_buttons' ); ?>
+		</div>
+<?php
+	} ?>
 	</div>
-	<?php } ?>
-
-	<div id="quicktags">
-	<?php wp_print_scripts( 'quicktags' ); ?>
+<?php
+	}
+?>
+	<div id="quicktags"><?php
+	wp_print_scripts( 'quicktags' ); ?>
 	<script type="text/javascript">edToolbar()</script>
 	</div>
 
-	<?php $the_editor = apply_filters('the_editor', "<div id='editorcontainer'><textarea $rows cols='40' name='$id' tabindex='$tab_index' id='$id'>%s</textarea></div>\n");
+<?php
+	$the_editor = apply_filters('the_editor', "<div id='editorcontainer'><textarea rows='$rows'$class cols='40' name='$id' tabindex='$tab_index' id='$id'>%s</textarea></div>\n");
 	$the_editor_content = apply_filters('the_editor_content', $content);
 
 	printf($the_editor, $the_editor_content);
 
-	?>
+?>
 	<script type="text/javascript">
-	/* <![CDATA[ */
 	edCanvas = document.getElementById('<?php echo $id; ?>');
-	/* ]]> */
 	</script>
-	<?php
+<?php
 }
 
 /**
@@ -1678,14 +1680,14 @@ function get_search_query() {
 /**
  * Display the contents of the search query variable.
  *
- * The search query string is passed through {@link attr()}
+ * The search query string is passed through {@link esc_attr()}
  * to ensure that it is safe for placing in an html attribute.
  *
  * @uses attr
  * @since 2.1.0
  */
 function the_search_query() {
-	echo attr( apply_filters( 'the_search_query', get_search_query() ) );
+	echo esc_attr( apply_filters( 'the_search_query', get_search_query() ) );
 }
 
 /**

@@ -132,7 +132,7 @@ function the_author_meta($field = '', $user_id = false) {
  */
 function the_author_link() {
 	if (get_the_author_url()) {
-		echo '<a href="' . get_the_author_url() . '" title="' . sprintf(__("Visit %s's website"), get_the_author()) . '" rel="external">' . get_the_author() . '</a>';
+		echo '<a href="' . get_the_author_url() . '" title="' . sprintf(__("Visit %s&#8217;s website"), get_the_author()) . '" rel="external">' . get_the_author() . '</a>';
 	} else {
 		the_author();
 	}
@@ -181,7 +181,7 @@ function the_author_posts_link($deprecated = '') {
 	printf(
 		'<a href="%1$s" title="%2$s">%3$s</a>',
 		get_author_posts_url( $authordata->ID, $authordata->user_nicename ),
-		sprintf( __( 'Posts by %s' ), attr( get_the_author() ) ),
+		sprintf( __( 'Posts by %s' ), esc_attr( get_the_author() ) ),
 		get_the_author()
 	);
 }
@@ -292,7 +292,7 @@ function wp_list_authors($args = '') {
 			if ( ! $hide_empty )
 				$link = $name;
 		} else {
-			$link = '<a href="' . get_author_posts_url($author->ID, $author->user_nicename) . '" title="' . sprintf(__("Posts by %s"), attr($author->display_name)) . '">' . $name . '</a>';
+			$link = '<a href="' . get_author_posts_url($author->ID, $author->user_nicename) . '" title="' . sprintf(__("Posts by %s"), esc_attr($author->display_name)) . '">' . $name . '</a>';
 
 			if ( (! empty($feed_image)) || (! empty($feed)) ) {
 				$link .= ' ';

@@ -309,6 +309,11 @@ form p.submit a.cancel:hover {
 	margin-left: 18px;
 }
 
+#post-status-display,
+#post-visibility-display {
+	font-weight: bold;
+}
+
 .side-info {
 	margin: 0;
 	padding: 4px;
@@ -407,10 +412,6 @@ a.button-secondary {
 
 .narrow p {
 	line-height: 150%;
-}
-
-table .vers {
-	text-align: center;
 }
 
 textarea.all-options, input.all-options {
@@ -1806,9 +1807,8 @@ input#link_url {
 	border-style: none none solid;
 }
 
-#poststuff #edButtonPreview,
-#poststuff #edButtonHTML {
-	display: block;
+#edButtonPreview,
+#edButtonHTML {
 	height: 18px;
 	margin: 5px 5px 0 0;
 	padding: 4px 5px 2px;
@@ -1823,6 +1823,10 @@ input#link_url {
 	-khtml-border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 	border-top-left-radius: 3px;
+}
+
+.js .theEditor {
+	color: white;
 }
 
 #poststuff #edButtonHTML {
@@ -2126,7 +2130,8 @@ body.wp-admin {
 	margin-right: 20px;
 }
 
-td.action-links, th.action-links {
+td.action-links,
+th.action-links {
 	text-align: right;
 }
 
@@ -3010,9 +3015,13 @@ table.fixed {
 	table-layout: fixed;
 }
 
+.fixed .column-rating,
+.fixed .column-visible {
+	width: 8%;
+}
+
 .fixed .column-date,
 .fixed .column-parent,
-.fixed .column-visible,
 .fixed .column-links {
 	width: 10%;
 }
@@ -3052,6 +3061,12 @@ table.fixed {
 .widefat th,
 .widefat td {
 	overflow: hidden;
+}
+
+table .vers,
+table .column-visible,
+table .column-rating {
+	text-align: center;
 }
 
 .icon32 {
@@ -3125,4 +3140,20 @@ p.popular-tags a {
 .ajax-feedback {
 	visibility: hidden;
 	vertical-align: bottom;
+}
+
+.tagsdiv .newtag {
+	width: 180px;
+}
+
+.tagsdiv .the-tags {
+	display: block;
+	height: 60px;
+	margin: 0 auto;
+	overflow: auto;
+	width: 260px;
+}
+
+#post-body-content .tagsdiv .the-tags {
+	margin: 0 5px;
 }

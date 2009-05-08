@@ -869,7 +869,7 @@ function sanitize_post_field($field, $value, $post_id, $context) {
 			else
 				$value = format_to_edit($value);
 		} else {
-			$value = attr($value);
+			$value = esc_attr($value);
 		}
 	} else if ( 'db' == $context ) {
 		if ( $prefixed ) {
@@ -888,7 +888,7 @@ function sanitize_post_field($field, $value, $post_id, $context) {
 	}
 
 	if ( 'attribute' == $context )
-		$value = attr($value);
+		$value = esc_attr($value);
 	else if ( 'js' == $context )
 		$value = js_escape($value);
 
@@ -1717,7 +1717,7 @@ function wp_unique_post_slug($slug, $post_ID, $post_status, $post_type, $post_pa
 			$check_sql = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_type = %s AND ID != %d AND post_parent = %d LIMIT 1";
 			$post_name_check = $wpdb->get_var($wpdb->prepare($check_sql, $slug, $post_type, $post_ID, $post_parent));
 		}
-
+		
 		if ( $post_name_check || in_array($slug, $wp_rewrite->feeds) ) {
 			$suffix = 2;
 			do {
@@ -1817,15 +1817,15 @@ function wp_set_post_categories($post_ID = 0, $post_categories = array()) {
 /**
  * Transition the post status of a post.
  *
- * Calls hooks to transition post status. If the new post status is not the same
- * as the previous post status, then two hooks will be ran, the first is
- * 'transition_post_status' with new status, old status, and post data. The
- * next action called is 'OLDSTATUS_to_NEWSTATUS' the NEWSTATUS is the
+ * Calls hooks to transition post status.
+ *
+ * The first is 'transition_post_status' with new status, old status, and post data.
+ *
+ * The next action called is 'OLDSTATUS_to_NEWSTATUS' the NEWSTATUS is the
  * $new_status parameter and the OLDSTATUS is $old_status parameter; it has the
  * post data.
  *
- * The final action will run whether or not the post statuses are the same. The
- * action is named 'NEWSTATUS_POSTTYPE', NEWSTATUS is from the $new_status
+ * The final action is named 'NEWSTATUS_POSTTYPE', NEWSTATUS is from the $new_status
  * parameter and POSTTYPE is post_type post data.
  *
  * @since 2.3.0
@@ -1835,10 +1835,8 @@ function wp_set_post_categories($post_ID = 0, $post_categories = array()) {
  * @param object $post Post data.
  */
 function wp_transition_post_status($new_status, $old_status, $post) {
-	if ( $new_status != $old_status ) {
-		do_action('transition_post_status', $new_status, $old_status, $post);
-		do_action("${old_status}_to_$new_status", $post);
-	}
+	do_action('transition_post_status', $new_status, $old_status, $post);
+	do_action("${old_status}_to_$new_status", $post);
 	do_action("${new_status}_$post->post_type", $post->ID, $post);
 }
 
@@ -2417,19 +2415,7 @@ function wp_insert_attachment($object, $file = false, $parent = 0) {
 	else
 		$post_name = sanitize_title($post_name);
 
-	// expected_slashed ($post_name)
-	$post_name_check = $wpdb->get_var( $wpdb->prepare( "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_status = 'inherit' AND ID != %d LIMIT 1", $post_name, $post_ID));
-
-	if ($post_name_check) {
-		$suffix = 2;
-		while ($post_name_check) {
-			$alt_post_name = $post_name . "-$suffix";
-			// expected_slashed ($alt_post_name, $post_name)
-			$post_name_check = $wpdb->get_var( $wpdb->prepare( "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_status = 'inherit' AND ID != %d LIMIT 1", $alt_post_name, $post_ID, $post_parent));
-			$suffix++;
-		}
-		$post_name = $alt_post_name;
-	}
+	$post_name = wp_unique_post_slug($post_name, $post_ID, $post_status, $post_type, $post_parent);
 
 	if ( empty($post_date) )
 		$post_date = current_time('mysql');

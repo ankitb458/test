@@ -612,8 +612,10 @@ function &get_terms($taxonomies, $args = '') {
 	}
 
 	foreach ( (array) $taxonomies as $taxonomy ) {
-		if ( ! is_taxonomy($taxonomy) )
-			return new WP_Error('invalid_taxonomy', __('Invalid Taxonomy'));
+		if ( ! is_taxonomy($taxonomy) ) {
+			$error = & new WP_Error('invalid_taxonomy', __('Invalid Taxonomy'));
+			return $error;
+		}
 	}
 
 	$in_taxonomies = "'" . implode("', '", $taxonomies) . "'";
@@ -991,7 +993,7 @@ function sanitize_term_field($field, $value, $term_id, $taxonomy, $context) {
 		if ( 'description' == $field )
 			$value = format_to_edit($value);
 		else
-			$value = attr($value);
+			$value = esc_attr($value);
 	} else if ( 'db' == $context ) {
 		$value = apply_filters("pre_term_$field", $value, $taxonomy);
 		$value = apply_filters("pre_${taxonomy}_$field", $value);
@@ -1009,7 +1011,7 @@ function sanitize_term_field($field, $value, $term_id, $taxonomy, $context) {
 	}
 
 	if ( 'attribute' == $context )
-		$value = attr($value);
+		$value = esc_attr($value);
 	else if ( 'js' == $context )
 		$value = js_escape($value);
 
@@ -1642,7 +1644,7 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 		if ( $empty_slug || ( $parent != $term->parent) )
 			$slug = wp_unique_term_slug($slug, (object) $args);
 		else
-			return new WP_Error('duplicate_term_slug', sprintf(__('The slug "%s" is already in use by another term'), $slug));
+			return new WP_Error('duplicate_term_slug', sprintf(__('The slug &#8220;%s&#8221; is already in use by another term'), $slug));
 	}
 
 	$wpdb->update($wpdb->terms, compact( 'name', 'slug', 'term_group' ), compact( 'term_id' ) );
@@ -2260,7 +2262,7 @@ function get_the_taxonomies($post = 0) {
 		$links = array();
 
 		foreach ( $terms as $term )
-			$links[] = "<a href='" . attr(get_term_link($term, $taxonomy)) . "'>$term->name</a>";
+			$links[] = "<a href='" . esc_attr(get_term_link($term, $taxonomy)) . "'>$term->name</a>";
 
 		if ( $links )
 			$taxonomies[$taxonomy] = wp_sprintf($t['template'], $t['label'], $links, $terms);

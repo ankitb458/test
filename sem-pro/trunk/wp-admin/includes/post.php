@@ -1003,7 +1003,7 @@ function get_sample_permalink_html( $id, $new_title = null, $new_slug = null ) {
 	$display_link = str_replace(array('%pagename%','%postname%'), $post_name_html, $permalink);
 	$view_link = str_replace(array('%pagename%','%postname%'), $post_name, $permalink);
 	$return = '<strong>' . __('Permalink:') . "</strong>\n" . '<span id="sample-permalink">' . $display_link . "</span>\n";
-	$return .= '<span id="edit-slug-buttons"><a href="#post_name" class="edit-slug button" onclick="edit_permalink(' . $id . '); return false;">' . __('Edit') . "</a></span>\n";
+	$return .= '<span id="edit-slug-buttons"><a href="#post_name" class="edit-slug button hide-if-no-js" onclick="edit_permalink(' . $id . '); return false;">' . __('Edit') . "</a></span>\n";
 	$return .= '<span id="editable-post-name-full">' . $post_name . "</span>\n";
 	if ( isset($view_post) )
 		$return .= "<span id='view-post-btn'><a href='$view_link' class='button' target='_blank'>$view_post</a></span>\n";
@@ -1282,8 +1282,8 @@ function wp_tiny_mce( $teeny = false ) {
 
 	// TinyMCE init settings
 	$initArray = array (
-		'mode' => 'none',
-		'onpageload' => 'switchEditors.edInit',
+		'mode' => 'specific_textareas',
+		'editor_selector' => 'theEditor',
 		'width' => '100%',
 		'theme' => 'advanced',
 		'skin' => 'wp_theme',
@@ -1334,7 +1334,7 @@ function wp_tiny_mce( $teeny = false ) {
 
 	$language = $initArray['language'];
 	$zip = $compress_scripts ? 1 : 0;
-	$ver = apply_filters('tiny_mce_version', '3211');
+	$ver = apply_filters('tiny_mce_version', '323');
 
 	if ( 'en' != $language )
 		include_once(ABSPATH . WPINC . '/js/tinymce/langs/wp-langs.php');

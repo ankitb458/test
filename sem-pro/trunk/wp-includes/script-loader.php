@@ -74,10 +74,10 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->localize( 'quicktags', 'quicktagsL10n', array(
 		'quickLinks' => __('(Quick Links)'),
 		'wordLookup' => __('Enter a word to look up:'),
-		'dictionaryLookup' => attr(__('Dictionary lookup')),
-		'lookup' => attr(__('lookup')),
-		'closeAllOpenTags' => attr(__('Close all open tags')),
-		'closeTags' => attr(__('close tags')),
+		'dictionaryLookup' => esc_attr(__('Dictionary lookup')),
+		'lookup' => esc_attr(__('lookup')),
+		'closeAllOpenTags' => esc_attr(__('Close all open tags')),
+		'closeTags' => esc_attr(__('close tags')),
 		'enterURL' => __('Enter the URL'),
 		'enterImageURL' => __('Enter the URL of the image'),
 		'enterImageDescription' => __('Enter a description of the image'),
@@ -88,7 +88,7 @@ function wp_default_scripts( &$scripts ) {
 
 	// Modify this version when tinyMCE plugins are changed.
 	function mce_version() {
-		return '20090424';
+		return '20090503';
 	}
 	add_filter( 'tiny_mce_version', 'mce_version' );
 
@@ -107,7 +107,7 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'autosave', "/wp-includes/js/autosave$suffix.js", array('schedule', 'wp-ajax-response'), '20090106' );
 	$scripts->add_data( 'autosave', 'group', 1 );
 
-	$scripts->add( 'wp-lists', "/wp-includes/js/wp-lists$suffix.js", array('wp-ajax-response'), '20090128' );
+	$scripts->add( 'wp-lists', "/wp-includes/js/wp-lists$suffix.js", array('wp-ajax-response'), '20090504' );
 	$scripts->add_data( 'wp-lists', 'group', 1 );
 	$scripts->localize( 'wp-lists', 'wpListL10n', array(
 		'url' => admin_url('admin-ajax.php')
@@ -212,7 +212,7 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'ajaxcat', "/wp-admin/js/cat$suffix.js", array( 'wp-lists' ), '20090102' );
 		$scripts->add_data( 'ajaxcat', 'group', 1 );
 		$scripts->localize( 'ajaxcat', 'catL10n', array(
-			'add' => attr(__('Add')),
+			'add' => esc_attr(__('Add')),
 			'how' => __('Separate multiple categories with commas.'),
 			'l10n_print_after' => 'try{convertEntities(catL10n);}catch(e){};'
 		) );
@@ -266,8 +266,8 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add_data( 'post', 'group', 1 );
 		$scripts->localize( 'post', 'postL10n', array(
 			'tagsUsed' =>  __('Tags used on this post:'),
-			'add' => attr(__('Add')),
-			'addTag' => attr(__('Add new tag')),
+			'add' => esc_attr(__('Add')),
+			'addTag' => esc_attr(__('Add new tag')),
 			'separate' => __('Separate tags with commas'),
 			'cancel' => __('Cancel'),
 			'edit' => __('Edit'),
@@ -330,7 +330,7 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'media-upload', "/wp-admin/js/media-upload$suffix.js", array( 'thickbox' ), '20090114' );
 		$scripts->add_data( 'media-upload', 'group', 1 );
 
-		$scripts->add( 'admin-widgets', "/wp-admin/js/widgets$suffix.js", array( 'jquery-ui-sortable', 'jquery-ui-draggable' ), '20090426' );
+		$scripts->add( 'admin-widgets', "/wp-admin/js/widgets$suffix.js", array( 'jquery-ui-sortable', 'jquery-ui-draggable' ), '20090504' );
 		$scripts->add_data( 'admin-widgets', 'group', 1 );
 
 		$scripts->add( 'word-count', "/wp-admin/js/word-count$suffix.js", array( 'jquery' ), '20090422' );
@@ -424,15 +424,15 @@ function wp_default_styles( &$styles ) {
 	$styles->add( 'ie', '/wp-admin/css/ie.css', array(), '20090415' );
 	$styles->add_data( 'ie', 'conditional', 'lte IE 7' );
 
-	$styles->add( 'colors', true, array(), '20090419' ); // Register "meta" stylesheet for admin colors
+	$styles->add( 'colors', true, array(), '20090503' ); // Register "meta" stylesheet for admin colors
 	$styles->add( 'colors-fresh', '/wp-admin/css/colors-fresh.css', array(), '20081210'); // for login.php.  Is there a better way?
 	$styles->add_data( 'colors-fresh', 'rtl', true );
 	$styles->add( 'colors-classic', '/wp-admin/css/colors-classic.css', array(), '20081210');
 	$styles->add_data( 'colors-classic', 'rtl', true );
 
-	$styles->add( 'global', '/wp-admin/css/global.css', array(), '20090415' );
+	$styles->add( 'global', '/wp-admin/css/global.css', array(), '20090504' );
 	$styles->add( 'media', '/wp-admin/css/media.css', array(), '20090325' );
-	$styles->add( 'widgets', '/wp-admin/css/widgets.css', array(), '20090419' );
+	$styles->add( 'widgets', '/wp-admin/css/widgets.css', array(), '20090503' );
 	$styles->add( 'dashboard', '/wp-admin/css/dashboard.css', array(), '20090305' );
 	$styles->add( 'install', '/wp-admin/css/install.css', array(), '20081210' );
 	$styles->add( 'theme-editor', '/wp-admin/css/theme-editor.css', array(), '20081210' );
@@ -604,7 +604,7 @@ function _print_scripts() {
 
 		$ver = md5("$wp_scripts->concat_version");
 		$src = $wp_scripts->base_url . "/wp-admin/load-scripts.php?c={$zip}&load=" . trim($wp_scripts->concat, ', ') . "&ver=$ver";
-		echo "<script type='text/javascript' src='" . attr($src) . "'></script>\n";
+		echo "<script type='text/javascript' src='" . esc_attr($src) . "'></script>\n";
 	}
 
 	if ( !empty($wp_scripts->print_html) )
@@ -671,7 +671,7 @@ function print_admin_styles() {
 			$dir = $wp_styles->text_direction;
 			$ver = md5("$wp_styles->concat_version{$dir}");
 			$href = $wp_styles->base_url . "/wp-admin/load-styles.php?c={$zip}&dir={$dir}&load=" . trim($wp_styles->concat, ', ') . "&ver=$ver";
-			echo "<link rel='stylesheet' href='" . attr($href) . "' type='text/css' media='all' />\n";
+			echo "<link rel='stylesheet' href='" . esc_attr($href) . "' type='text/css' media='all' />\n";
 		}
 
 		if ( !empty($wp_styles->print_html) )

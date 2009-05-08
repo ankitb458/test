@@ -599,6 +599,7 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		'smallest' => 8, 'largest' => 22, 'unit' => 'pt', 'number' => 0,
 		'format' => 'flat', 'orderby' => 'name', 'order' => 'ASC',
 		'topic_count_text_callback' => 'default_topic_count_text',
+		'filter' => 1,
 	);
 
 	if ( !isset( $args['topic_count_text_callback'] ) && isset( $args['single_text'] ) && isset( $args['multiple_text'] ) ) {
@@ -661,7 +662,7 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		$tag_link = '#' != $tag->link ? clean_url( $tag->link ) : '#';
 		$tag_id = isset($tags[ $key ]->id) ? $tags[ $key ]->id : $key;
 		$tag_name = $tags[ $key ]->name;
-		$a[] = "<a href='$tag_link' class='tag-link-$tag_id' title='" . attr( $topic_count_text_callback( $count ) ) . "'$rel style='font-size: " .
+		$a[] = "<a href='$tag_link' class='tag-link-$tag_id' title='" . esc_attr( $topic_count_text_callback( $count ) ) . "'$rel style='font-size: " .
 			( $smallest + ( ( $count - $min_count ) * $font_step ) )
 			. "$unit;'>$tag_name</a>";
 	}
@@ -680,7 +681,10 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		break;
 	endswitch;
 
-	return apply_filters( 'wp_generate_tag_cloud', $return, $tags, $args );
+    if ( $filter )
+		return apply_filters( 'wp_generate_tag_cloud', $return, $tags, $args );
+    else
+		return $return;
 }
 
 //

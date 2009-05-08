@@ -215,7 +215,7 @@ class Dotclear_Import {
 		echo '<form action="admin.php?import=dotclear&amp;step=1" method="post">';
 		wp_nonce_field('import-dotclear');
 		$this->db_form();
-		echo '<p class="submit"><input type="submit" name="submit" class="button" value="'.attr(__('Import Categories')).'" /></p>';
+		echo '<p class="submit"><input type="submit" name="submit" class="button" value="'.esc_attr__('Import Categories').'" /></p>';
 		echo '</form></div>';
 	}
 
@@ -632,7 +632,7 @@ class Dotclear_Import {
 
 		echo '<form action="admin.php?import=dotclear&amp;step=2" method="post">';
 		wp_nonce_field('import-dotclear');
-		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', attr(__('Import Users')));
+		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', esc_attr__('Import Users'));
 		echo '</form>';
 
 	}
@@ -645,7 +645,7 @@ class Dotclear_Import {
 
 		echo '<form action="admin.php?import=dotclear&amp;step=3" method="post">';
 		wp_nonce_field('import-dotclear');
-		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', attr(__('Import Posts')));
+		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', esc_attr__('Import Posts'));
 		echo '</form>';
 	}
 
@@ -659,7 +659,7 @@ class Dotclear_Import {
 
 		echo '<form action="admin.php?import=dotclear&amp;step=4" method="post">';
 		wp_nonce_field('import-dotclear');
-		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', attr(__('Import Comments')));
+		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', esc_attr__('Import Comments'));
 		echo '</form>';
 	}
 
@@ -671,7 +671,7 @@ class Dotclear_Import {
 
 		echo '<form action="admin.php?import=dotclear&amp;step=5" method="post">';
 		wp_nonce_field('import-dotclear');
-		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', attr(__('Import Links')));
+		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', esc_attr__('Import Links'));
 		echo '</form>';
 	}
 
@@ -684,7 +684,7 @@ class Dotclear_Import {
 
 		echo '<form action="admin.php?import=dotclear&amp;step=6" method="post">';
 		wp_nonce_field('import-dotclear');
-		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', attr(__('Finish')));
+		printf('<p class="submit"><input type="submit" name="submit" class="button" value="%s" /></p>', esc_attr__('Finish'));
 		echo '</form>';
 	}
 
@@ -710,11 +710,11 @@ class Dotclear_Import {
 	{
 		echo '<p>'.__('Welcome to WordPress.  We hope (and expect!) that you will find this platform incredibly rewarding!  As a new WordPress user coming from DotClear, there are some things that we would like to point out.  Hopefully, they will help your transition go as smoothly as possible.').'</p>';
 		echo '<h3>'.__('Users').'</h3>';
-		echo '<p>'.sprintf(__('You have already setup WordPress and have been assigned an administrative login and password.  Forget it.  You didn\'t have that login in DotClear, why should you have it here?  Instead we have taken care to import all of your users into our system.  Unfortunately there is one downside.  Because both WordPress and DotClear uses a strong encryption hash with passwords, it is impossible to decrypt it and we are forced to assign temporary passwords to all your users.  <strong>Every user has the same username, but their passwords are reset to password123.</strong>  So <a href="%1$s">Login</a> and change it.'), '/wp-login.php').'</p>';
+		echo '<p>'.sprintf(__('You have already setup WordPress and have been assigned an administrative login and password.  Forget it.  You didn&#8217;t have that login in DotClear, why should you have it here?  Instead we have taken care to import all of your users into our system.  Unfortunately there is one downside.  Because both WordPress and DotClear uses a strong encryption hash with passwords, it is impossible to decrypt it and we are forced to assign temporary passwords to all your users.  <strong>Every user has the same username, but their passwords are reset to password123.</strong>  So <a href="%1$s">Login</a> and change it.'), '/wp-login.php').'</p>';
 		echo '<h3>'.__('Preserving Authors').'</h3>';
 		echo '<p>'.__('Secondly, we have attempted to preserve post authors.  If you are the only author or contributor to your blog, then you are safe.  In most cases, we are successful in this preservation endeavor.  However, if we cannot ascertain the name of the writer due to discrepancies between database tables, we assign it to you, the administrative user.').'</p>';
 		echo '<h3>'.__('Textile').'</h3>';
-		echo '<p>'.__('Also, since you\'re coming from DotClear, you probably have been using Textile to format your comments and posts.  If this is the case, we recommend downloading and installing <a href="http://www.huddledmasses.org/category/development/wordpress/textile/">Textile for WordPress</a>.  Trust me... You\'ll want it.').'</p>';
+		echo '<p>'.__('Also, since you&#8217;re coming from DotClear, you probably have been using Textile to format your comments and posts.  If this is the case, we recommend downloading and installing <a href="http://www.huddledmasses.org/category/development/wordpress/textile/">Textile for WordPress</a>.  Trust me&#8230; You&#8217;ll want it.').'</p>';
 		echo '<h3>'.__('WordPress Resources').'</h3>';
 		echo '<p>'.__('Finally, there are numerous WordPress resources around the internet.  Some of them are:').'</p>';
 		echo '<ul>';
@@ -722,7 +722,7 @@ class Dotclear_Import {
 		echo '<li>'.__('<a href="http://wordpress.org/support/">The WordPress support forums</a>').'</li>';
 		echo '<li>'.__('<a href="http://codex.wordpress.org">The Codex (In other words, the WordPress Bible)</a>').'</li>';
 		echo '</ul>';
-		echo '<p>'.sprintf(__('That\'s it! What are you waiting for? Go <a href="%1$s">login</a>!'), '../wp-login.php').'</p>';
+		echo '<p>'.sprintf(__('That&#8217;s it! What are you waiting for? Go <a href="%1$s">login</a>!'), '../wp-login.php').'</p>';
 	}
 
 	function db_form()

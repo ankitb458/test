@@ -200,8 +200,7 @@ function seems_utf8($Str) { # by bmorel at ssi dot fr
  * @param boolean $double_encode Optional. Whether or not to encode existing html entities. Default is false.
  * @return string The encoded text with HTML entities.
  */
-function wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = false, $double_encode = false )
-{
+function wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = false, $double_encode = false ) {
 	$string = (string) $string;
 
 	if ( 0 === strlen( $string ) ) {
@@ -277,8 +276,7 @@ function wp_specialchars( $string, $quote_style = ENT_NOQUOTES, $charset = false
  * @param mixed $quote_style Optional. Converts double quotes if set to ENT_COMPAT, both single and double if set to ENT_QUOTES or none if set to ENT_NOQUOTES. Also compatible with old wp_specialchars() values; converting single quotes if set to 'single', double if set to 'double' or both if otherwise set. Default is ENT_NOQUOTES.
  * @return string The decoded text without HTML entities.
  */
-function wp_specialchars_decode( $string, $quote_style = ENT_NOQUOTES )
-{
+function wp_specialchars_decode( $string, $quote_style = ENT_NOQUOTES ) {
 	$string = (string) $string;
 
 	if ( 0 === strlen( $string ) ) {
@@ -335,8 +333,7 @@ function wp_specialchars_decode( $string, $quote_style = ENT_NOQUOTES )
  * @param boolean $strip Optional. Whether to attempt to strip out invalid UTF8. Default is false.
  * @return string The checked text.
  */
-function wp_check_invalid_utf8( $string, $strip = false )
-{
+function wp_check_invalid_utf8( $string, $strip = false ) {
 	$string = (string) $string;
 
 	if ( 0 === strlen( $string ) ) {
@@ -566,27 +563,27 @@ function remove_accents($string) {
 }
 
 /**
- * Filters certain characters from the file name.
+ * Sanitizes a filename replacing whitespace with dashes
  *
- * Turns all strings to lowercase removing most characters except alphanumeric
- * with spaces, dashes and periods. All spaces and underscores are converted to
- * dashes. Multiple dashes are converted to a single dash. Finally, if the file
- * name ends with a dash, it is removed.
+ * Removes special characters that are illegal in filenames on certain 
+ * operating systems and special characters requiring special escaping 
+ * to manipulate at the command line. Replaces spaces and consecutive 
+ * dashes with a single dash. Trim period, dash and underscore from beginning
+ * and end of filename.
  *
  * @since 2.1.0
  *
- * @param string $name The file name
- * @return string Sanitized file name
+ * @param string $filename The filename to be sanitized
+ * @return string The sanitized filename
  */
-function sanitize_file_name( $name ) { // Like sanitize_title, but with periods
-	$name = strtolower( $name );
-	$name = preg_replace('/&.+?;/', '', $name); // kill entities
-	$name = str_replace( '_', '-', $name );
-	$name = preg_replace('/[^a-z0-9\s-.]/', '', $name);
-	$name = preg_replace('/\s+/', '-', $name);
-	$name = preg_replace('|-+|', '-', $name);
-	$name = trim($name, '-');
-	return $name;
+function sanitize_file_name( $filename ) {
+	$filename_raw = $filename;
+	$special_chars = array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}");
+	$special_chars = apply_filters('sanitize_file_name_chars', $special_chars, $filename_raw);
+	$filename = str_replace($special_chars, '', $filename);
+	$filename = preg_replace('/[\s-]+/', '-', $filename);
+	$filename = trim($filename, '.-_');
+	return apply_filters('sanitize_file_name', $filename, $filename_raw);
 }
 
 /**
@@ -1270,7 +1267,7 @@ function translate_smiley($smiley) {
 
 	$smiley = trim(reset($smiley));
 	$img = $wpsmiliestrans[$smiley];
-	$smiley_masked = attr($smiley);
+	$smiley_masked = esc_attr($smiley);
 
 	return " <img src='$siteurl/wp-includes/images/smilies/$img' alt='$smiley_masked' class='wp-smiley' /> ";
 }
@@ -2078,7 +2075,7 @@ function js_escape($text) {
  * @param string $text
  * @return string
  */
-function attr( $text ) {
+function esc_attr( $text ) {
 	$safe_text = wp_check_invalid_utf8( $text );
 	$safe_text = wp_specialchars( $safe_text, ENT_QUOTES );
 	return apply_filters( 'attribute_escape', $safe_text, $text );
@@ -2090,13 +2087,13 @@ function attr( $text ) {
  * @since 2.0.6
  *
  * @deprecated 2.8.0
- * @see attr()
+ * @see esc_attr()
  * 
  * @param string $text
  * @return string
  */
 function attribute_escape( $text ) {
-	return attr( $text );
+	return esc_attr( $text );
 }
 
 /**

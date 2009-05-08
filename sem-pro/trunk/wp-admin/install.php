@@ -57,18 +57,18 @@ function display_setup_form( $error = null ) {
 	<table class="form-table">
 		<tr>
 			<th scope="row"><label for="weblog_title"><?php _e('Blog Title'); ?></label></th>
-			<td><input name="weblog_title" type="text" id="weblog_title" size="25" value="<?php echo ( isset($_POST['weblog_title']) ? attr($_POST['weblog_title']) : '' ); ?>" /></td>
+			<td><input name="weblog_title" type="text" id="weblog_title" size="25" value="<?php echo ( isset($_POST['weblog_title']) ? esc_attr($_POST['weblog_title']) : '' ); ?>" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><label for="admin_email"><?php _e('Your E-mail'); ?></label></th>
-			<td><input name="admin_email" type="text" id="admin_email" size="25" value="<?php echo ( isset($_POST['admin_email']) ? attr($_POST['admin_email']) : '' ); ?>" /><br />
+			<td><input name="admin_email" type="text" id="admin_email" size="25" value="<?php echo ( isset($_POST['admin_email']) ? esc_attr($_POST['admin_email']) : '' ); ?>" /><br />
 			<?php _e('Double-check your email address before continuing.'); ?>
 		</tr>
 		<tr>
 			<td colspan="2"><label><input type="checkbox" name="blog_public" value="1"<?php if( isset($_POST) && ! empty($_POST) && isset( $_POST['blog_public'] ) ) : ?> checked="checked"<?php endif; ?> /> <?php _e('Allow my blog to appear in search engines like Google and Technorati.'); ?></label></td>
 		</tr>
 	</table>
-	<p class="step"><input type="submit" name="Submit" value="<?php _ea('Install WordPress'); ?>" class="button" /></p>
+	<p class="step"><input type="submit" name="Submit" value="<?php esc_attr_e('Install WordPress'); ?>" class="button" /></p>
 </form>
 <?php
 }
@@ -82,11 +82,11 @@ switch($step) {
 	  display_header();
 ?>
 <h1><?php _e('Welcome'); ?></h1>
-<p><?php printf(__('Welcome to the famous five minute WordPress installation process! You may want to browse the <a href="%s">ReadMe documentation</a> at your leisure.  Otherwise, just fill in the information below and you\'ll be on your way to using the most extendable and powerful personal publishing platform in the world.'), '../readme.html'); ?></p>
+<p><?php printf(__('Welcome to the famous five minute WordPress installation process! You may want to browse the <a href="%s">ReadMe documentation</a> at your leisure.  Otherwise, just fill in the information below and you&#8217;ll be on your way to using the most extendable and powerful personal publishing platform in the world.'), '../readme.html'); ?></p>
 <!--<h2 class="step"><a href="install.php?step=1"><?php _e('First Step'); ?></a></h2>-->
 
 <h1><?php _e('Information needed'); ?></h1>
-<p><?php _e("Please provide the following information.  Don't worry, you can always change these settings later."); ?></p>
+<p><?php _e('Please provide the following information.  Don&#8217;t worry, you can always change these settings later.'); ?></p>
 
 
 

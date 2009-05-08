@@ -154,7 +154,7 @@ function get_permalink($id = 0, $leavename = false) {
 		$permalink = user_trailingslashit($permalink, 'single');
 		return apply_filters('post_link', $permalink, $post, $leavename);
 	} else { // if they're not using the fancy permalink option
-		$permalink = get_option('home') . '/?p=' . $post->ID;
+		$permalink = user_trailingslashit(get_option('home')) . '?p=' . $post->ID;
 		return apply_filters('post_link', $permalink, $post, $leavename);
 	}
 }
@@ -225,10 +225,10 @@ function _get_page_link( $id = false, $leavename = false, $sample = false ) {
 	if ( '' != $pagestruct && ( ( isset($post->post_status) && 'draft' != $post->post_status ) || $sample ) ) {
 		$link = get_page_uri($id);
 		$link = ( $leavename ) ? $pagestruct : str_replace('%pagename%', $link, $pagestruct);
-		$link = get_option('home') . "/$link";
+		$link = user_trailingslashit(get_option('home')) . "$link";
 		$link = user_trailingslashit($link, 'page');
 	} else {
-		$link = get_option('home') . "/?page_id=$id";
+		$link = user_trailingslashit(get_option('home')) . "?page_id=$id";
 	}
 
 	return apply_filters( '_get_page_link', $link, $id );
@@ -269,7 +269,7 @@ function get_attachment_link($id = false) {
 	}
 
 	if (! $link ) {
-		$link = get_bloginfo('url') . "/?attachment_id=$id";
+		$link = user_trailingslashit(get_bloginfo('url')) . "?attachment_id=$id";
 	}
 
 	return apply_filters('attachment_link', $link, $id);
@@ -292,7 +292,7 @@ function get_year_link($year) {
 		$yearlink = str_replace('%year%', $year, $yearlink);
 		return apply_filters('year_link', get_option('home') . user_trailingslashit($yearlink, 'year'), $year);
 	} else {
-		return apply_filters('year_link', get_option('home') . '/?m=' . $year, $year);
+		return apply_filters('year_link', user_trailingslashit(get_option('home')) . '?m=' . $year, $year);
 	}
 }
 
@@ -317,7 +317,7 @@ function get_month_link($year, $month) {
 		$monthlink = str_replace('%monthnum%', zeroise(intval($month), 2), $monthlink);
 		return apply_filters('month_link', get_option('home') . user_trailingslashit($monthlink, 'month'), $year, $month);
 	} else {
-		return apply_filters('month_link', get_option('home') . '/?m=' . $year . zeroise($month, 2), $year, $month);
+		return apply_filters('month_link', user_trailingslashit(get_option('home')) . '?m=' . $year . zeroise($month, 2), $year, $month);
 	}
 }
 
@@ -347,7 +347,7 @@ function get_day_link($year, $month, $day) {
 		$daylink = str_replace('%day%', zeroise(intval($day), 2), $daylink);
 		return apply_filters('day_link', get_option('home') . user_trailingslashit($daylink, 'day'), $year, $month, $day);
 	} else {
-		return apply_filters('day_link', get_option('home') . '/?m=' . $year . zeroise($month, 2) . zeroise($day, 2), $year, $month, $day);
+		return apply_filters('day_link', user_trailingslashit(get_option('home')) . '?m=' . $year . zeroise($month, 2) . zeroise($day, 2), $year, $month, $day);
 	}
 }
 
@@ -382,7 +382,7 @@ function get_feed_link($feed = '') {
 		if ( false !== strpos($feed, 'comments_') )
 			$feed = str_replace('comments_', 'comments-', $feed);
 
-		$output = get_option('home') . "/?feed={$feed}";
+		$output = user_trailingslashit(get_option('home')) . "?feed={$feed}";
 	}
 
 	return apply_filters('feed_link', $output, $feed);
@@ -414,9 +414,9 @@ function get_post_comments_feed_link($post_id = '', $feed = '') {
 	} else {
 		$type = get_post_field('post_type', $post_id);
 		if ( 'page' == $type )
-			$url = get_option('home') . "/?feed=$feed&amp;page_id=$post_id";
+			$url = user_trailingslashit(get_option('home')) . "?feed=$feed&amp;page_id=$post_id";
 		else
-			$url = get_option('home') . "/?feed=$feed&amp;p=$post_id";
+			$url = user_trailingslashit(get_option('home')) . "?feed=$feed&amp;p=$post_id";
 	}
 
 	return apply_filters('post_comments_feed_link', $url);
@@ -468,7 +468,7 @@ function get_author_feed_link( $author_id, $feed = '' ) {
 		$feed = get_default_feed();
 
 	if ( '' == $permalink_structure ) {
-		$link = get_option('home') . "?feed=$feed&amp;author=" . $author_id;
+		$link = user_trailingslashit(get_option('home')) . "?feed=$feed&amp;author=" . $author_id;
 	} else {
 		$link = get_author_posts_url($author_id);
 		if ( $feed == get_default_feed() )
@@ -512,7 +512,7 @@ function get_category_feed_link($cat_id, $feed = '') {
 	$permalink_structure = get_option('permalink_structure');
 
 	if ( '' == $permalink_structure ) {
-		$link = trailingslashit( get_option('home') ) . "?feed=$feed&amp;cat=" . $cat_id;
+		$link = user_trailingslashit(get_option('home')) . "?feed=$feed&amp;cat=" . $cat_id;
 	} else {
 		$link = get_category_link($cat_id);
 		if( $feed == get_default_feed() )
@@ -551,7 +551,7 @@ function get_tag_feed_link($tag_id, $feed = '') {
 		$feed = get_default_feed();
 
 	if ( '' == $permalink_structure ) {
-		$link = get_option('home') . "?feed=$feed&amp;tag=" . $tag->slug;
+		$link = user_trailingslashit(get_option('home')) . "?feed=$feed&amp;tag=" . $tag->slug;
 	} else {
 		$link = get_tag_link($tag->term_id);
 		if ( $feed == get_default_feed() )
@@ -619,14 +619,14 @@ function edit_tag_link( $link = '', $before = '', $after = '', $tag = null ) {
  */
 function get_search_feed_link($search_query = '', $feed = '') {
 	if ( empty($search_query) )
-		$search = attr(get_search_query());
+		$search = esc_attr(get_search_query());
 	else
-		$search = attr(stripslashes($search_query));
+		$search = esc_attr(stripslashes($search_query));
 
 	if ( empty($feed) )
 		$feed = get_default_feed();
 
-	$link = get_option('home') . "?s=$search&amp;feed=$feed";
+	$link = user_trailingslashit(get_option('home')) . "?s=$search&amp;feed=$feed";
 
 	$link = apply_filters('search_feed_link', $link);
 
@@ -644,14 +644,14 @@ function get_search_feed_link($search_query = '', $feed = '') {
  */
 function get_search_comments_feed_link($search_query = '', $feed = '') {
 	if ( empty($search_query) )
-		$search = attr(get_search_query());
+		$search = esc_attr(get_search_query());
 	else
-		$search = attr(stripslashes($search_query));
+		$search = esc_attr(stripslashes($search_query));
 
 	if ( empty($feed) )
 		$feed = get_default_feed();
 
-	$link = get_option('home') . "?s=$search&amp;feed=comments-$feed";
+	$link = user_trailingslashit(get_option('home')) . "?s=$search&amp;feed=comments-$feed";
 
 	$link = apply_filters('search_feed_link', $link);
 
@@ -730,7 +730,7 @@ function edit_post_link( $link = 'Edit This', $before = '', $after = '' ) {
 			return;
 	}
 
-	$link = '<a class="post-edit-link" href="' . get_edit_post_link( $post->ID ) . '" title="' . attr( __( 'Edit post' ) ) . '">' . $link . '</a>';
+	$link = '<a class="post-edit-link" href="' . get_edit_post_link( $post->ID ) . '" title="' . esc_attr( __( 'Edit post' ) ) . '">' . $link . '</a>';
 	echo $before . apply_filters( 'edit_post_link', $link, $post->ID ) . $after;
 }
 
@@ -940,7 +940,7 @@ function get_adjacent_post_rel_link($title = '%title', $in_same_cat = false, $ex
 	$title = apply_filters('the_title', $title, $post);
 
 	$link = $previous ? "<link rel='prev' title='" : "<link rel='next' title='";
-	$link .= attr( $title );
+	$link .= esc_attr( $title );
 	$link .= "' href='" . get_permalink($post) . "' />\n";
 
 	$adjacent = $previous ? 'previous' : 'next';
@@ -1064,7 +1064,7 @@ function get_boundary_post_rel_link($title = '%title', $in_same_cat = false, $ex
 	$title = apply_filters('the_title', $title, $post);
 
 	$link = $start ? "<link rel='start' title='" : "<link rel='end' title='";
-	$link .= attr($title);
+	$link .= esc_attr($title);
 	$link .= "' href='" . get_permalink($post) . "' />\n";
 
 	$boundary = $start ? 'start' : 'end';
@@ -1092,7 +1092,7 @@ function start_post_rel_link($title = '%title', $in_same_cat = false, $excluded_
  * @return string
  */
 function get_index_rel_link() {
-	$link = "<link rel='index' title='" . attr(get_bloginfo('name')) . "' href='" . get_bloginfo('siteurl') . "' />\n";
+	$link = "<link rel='index' title='" . esc_attr(get_bloginfo('name')) . "' href='" . get_bloginfo('siteurl') . "' />\n";
 	return apply_filters( "index_rel_link", $link );
 }
 
@@ -1127,7 +1127,7 @@ function get_parent_post_rel_link($title = '%title') {
 	$title = apply_filters('the_title', $title, $post);
 
 	$link = "<link rel='up' title='";
-	$link .= attr( $title );
+	$link .= esc_attr( $title );
 	$link .= "' href='" . get_permalink($post) . "' />\n";
 
 	return apply_filters( "parent_post_rel_link", $link );

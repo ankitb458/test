@@ -168,6 +168,8 @@ function &get_comment(&$comment, $output = OBJECT) {
 /**
  * Retrieve a list of comments.
  *
+ * The comment list can be for the blog as a whole or for an individual post.
+ * 
  * The list of comment arguments are 'status', 'orderby', 'comment_date_gmt',
  * 'order', 'number', 'offset', and 'post_id'.
  *
@@ -369,14 +371,14 @@ function sanitize_comment_cookies() {
 	if ( isset($_COOKIE['comment_author_'.COOKIEHASH]) ) {
 		$comment_author = apply_filters('pre_comment_author_name', $_COOKIE['comment_author_'.COOKIEHASH]);
 		$comment_author = stripslashes($comment_author);
-		$comment_author = attr($comment_author);
+		$comment_author = esc_attr($comment_author);
 		$_COOKIE['comment_author_'.COOKIEHASH] = $comment_author;
 	}
 
 	if ( isset($_COOKIE['comment_author_email_'.COOKIEHASH]) ) {
 		$comment_author_email = apply_filters('pre_comment_author_email', $_COOKIE['comment_author_email_'.COOKIEHASH]);
 		$comment_author_email = stripslashes($comment_author_email);
-		$comment_author_email = attr($comment_author_email);
+		$comment_author_email = esc_attr($comment_author_email);
 		$_COOKIE['comment_author_email_'.COOKIEHASH] = $comment_author_email;
 	}
 
@@ -410,9 +412,9 @@ function wp_allow_comment($commentdata) {
 	$dupe .= ") AND comment_content = '$comment_content' LIMIT 1";
 	if ( $wpdb->get_var($dupe) ) {
 		if ( defined('DOING_AJAX') )
-			die( __('Duplicate comment detected; it looks as though you\'ve already said that!') );
+			die( __('Duplicate comment detected; it looks as though you&#8217;ve already said that!') );
 
-		wp_die( __('Duplicate comment detected; it looks as though you\'ve already said that!') );
+		wp_die( __('Duplicate comment detected; it looks as though you&#8217;ve already said that!') );
 	}
 
 	do_action( 'check_comment_flood', $comment_author_IP, $comment_author_email, $comment_date_gmt );

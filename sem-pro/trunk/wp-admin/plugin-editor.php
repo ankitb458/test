@@ -84,46 +84,43 @@ default:
 	}
 
 	wp_enqueue_script( 'codepress' );
-	add_action( 'admin_print_footer_scripts', 'codepress_footer_js' );
-	require_once('admin-header.php');
-
-	update_recently_edited(WP_PLUGIN_DIR . '/' . $file);
-
+	add_action( 'admin_print_footer_scripts', 'codepress_footer_js' );	
+	
 	// List of allowable extensions
 	$editable_extensions = array('php', 'txt', 'text', 'js', 'css', 'html', 'htm', 'xml', 'inc', 'include');
-	$extra_extensions = apply_filters('editable_extensions', null);
-	if ( is_array($extra_extensions) )
-		$editable_extensions = array_merge($editable_extensions, $extra_extensions);
+	$editable_extensions = (array) apply_filters('editable_extensions', $editable_extensions);
 
 	if ( ! is_file($real_file) ) {
-		$error = __('No such file exists! Double check the name and try again.');
+		wp_die(sprintf('<p>%s</p>', __('No such file exists! Double check the name and try again.')));
 	} else {
 		// Get the extension of the file
 		if ( preg_match('/\.([^.]+)$/', $real_file, $matches) ) {
 			$ext = strtolower($matches[1]);
 			// If extension is not in the acceptable list, skip it
 			if ( !in_array( $ext, $editable_extensions) )
-				$error = __('Files of this type are not editable.');
+				wp_die(sprintf('<p>%s</p>', __('Files of this type are not editable.')));
 		}
 	}
+	
+	require_once('admin-header.php');
+	
+	update_recently_edited(WP_PLUGIN_DIR . '/' . $file);
 
-	if ( ! $error ) {
-		$content = file_get_contents( $real_file );
+	$content = file_get_contents( $real_file );
 
-		if ( '.php' == substr( $real_file, strrpos( $real_file, '.' ) ) ) {
-			$functions = wp_doc_link_parse( $content );
+	if ( '.php' == substr( $real_file, strrpos( $real_file, '.' ) ) ) {
+		$functions = wp_doc_link_parse( $content );
 
-			$docs_select = '<select name="docs-list" id="docs-list">';
-			$docs_select .= '<option value="">' . __( 'Function Name...' ) . '</option>';
-			foreach ( $functions as $function) {
-				$docs_select .= '<option value="' . attr( $function ) . '">' . htmlspecialchars( $function ) . '()</option>';
-			}
-			$docs_select .= '</select>';
+		$docs_select = '<select name="docs-list" id="docs-list">';
+		$docs_select .= '<option value="">' . __( 'Function Name...' ) . '</option>';
+		foreach ( $functions as $function) {
+			$docs_select .= '<option value="' . esc_attr( $function ) . '">' . htmlspecialchars( $function ) . '()</option>';
 		}
-
-		$content = htmlspecialchars( $content );
-		$codepress_lang = codepress_get_lang($real_file);
+		$docs_select .= '</select>';
 	}
+
+	$content = htmlspecialchars( $content );
+	$codepress_lang = codepress_get_lang($real_file);
 
 	?>
 <?php if (isset($_GET['a'])) : ?>
@@ -132,7 +129,7 @@ default:
  <div id="message" class="updated fade"><p><?php _e('This plugin has been deactivated because your changes resulted in a <strong>fatal error</strong>.') ?></p>
 	<?php
 		if ( wp_verify_nonce($_GET['_error_nonce'], 'plugin-activation-error_' . $file) ) { ?>
-	<iframe style="border:0" width="100%" height="70px" src="<?php bloginfo('wpurl'); ?>/wp-admin/plugins.php?action=error_scrape&amp;plugin=<?php echo attr($file); ?>&amp;_wpnonce=<?php echo attr($_GET['_error_nonce']); ?>"></iframe>
+	<iframe style="border:0" width="100%" height="70px" src="<?php bloginfo('wpurl'); ?>/wp-admin/plugins.php?action=error_scrape&amp;plugin=<?php echo esc_attr($file); ?>&amp;_wpnonce=<?php echo esc_attr($_GET['_error_nonce']); ?>"></iframe>
 	<?php } ?>
 </div>
 <?php endif; ?>
@@ -141,7 +138,7 @@ default:
 <h2><?php echo wp_specialchars( $title ); ?></h2>
 <div class="bordertitle">
 	<form id="themeselector" action="plugin-editor.php" method="post">
-		<strong><label for="theme"><?php _e('Select plugin to edit:'); ?> </label></strong>
+		<strong><label for="plugin"><?php _e('Select plugin to edit:'); ?> </label></strong>
 		<select name="plugin" id="plugin">
 <?php
 	foreach ( $plugins as $plugin_key => $a_plugin ) {
@@ -150,13 +147,13 @@ default:
 			$selected = " selected='selected'";
 		else
 			$selected = '';
-		$plugin_name = attr($plugin_name);
-		$plugin_key = attr($plugin_key);
+		$plugin_name = esc_attr($plugin_name);
+		$plugin_key = esc_attr($plugin_key);
 		echo "\n\t<option value=\"$plugin_key\" $selected>$plugin_name</option>";
 	}
 ?>
 		</select>
-		<input type="submit" name="Submit" value="<?php _ea('Select') ?>" class="button" />
+		<input type="submit" name="Submit" value="<?php esc_attr_e('Select') ?>" class="button" />
 	</form>
 </div>
 <div class="tablenav">
@@ -195,20 +192,19 @@ foreach ( $plugin_files as $plugin_file ) :
 		continue;
 	}
 ?>
-		<li<?php echo $file == $plugin_file ? ' class="highlight"' : ''; ?>><a href="plugin-editor.php?file=<?php echo $plugin_file; ?>&plugin=<?php echo $plugin; ?>"><?php echo $plugin_file ?></a></li>
+		<li<?php echo $file == $plugin_file ? ' class="highlight"' : ''; ?>><a href="plugin-editor.php?file=<?php echo $plugin_file; ?>&amp;plugin=<?php echo $plugin; ?>"><?php echo $plugin_file ?></a></li>
 <?php endforeach; ?>
 	</ul>
 	</div>
-<?php	if ( ! $error ) { ?>
 	<form name="template" id="template" action="plugin-editor.php" method="post">
 	<?php wp_nonce_field('edit-plugin_' . $file) ?>
 		<div><textarea cols="70" rows="25" name="newcontent" id="newcontent" tabindex="1" class="codepress <?php echo $codepress_lang ?>"><?php echo $content ?></textarea>
 		<input type="hidden" name="action" value="update" />
-		<input type="hidden" name="file" value="<?php echo attr($file) ?>" />
-		<input type="hidden" name="plugin" value="<?php echo attr($plugin) ?>" />
+		<input type="hidden" name="file" value="<?php echo esc_attr($file) ?>" />
+		<input type="hidden" name="plugin" value="<?php echo esc_attr($plugin) ?>" />
 		</div>
 		<?php if ( count( $functions ) ) : ?>
-		<div id="documentation"><label for="docs-list"><?php _e('Documentation:') ?></label> <?php echo $docs_select ?> <input type="button" class="button" value="<?php _ea( 'Lookup' ) ?> " onclick="if ( '' != jQuery('#docs-list').val() ) { window.open( 'http://api.wordpress.org/core/handbook/1.0/?function=' + escape( jQuery( '#docs-list' ).val() ) + '&locale=<?php echo urlencode( get_locale() ) ?>&version=<?php echo urlencode( $wp_version ) ?>&redirect=true'); }" /></div>
+		<div id="documentation"><label for="docs-list"><?php _e('Documentation:') ?></label> <?php echo $docs_select ?> <input type="button" class="button" value="<?php esc_attr_e( 'Lookup' ) ?> " onclick="if ( '' != jQuery('#docs-list').val() ) { window.open( 'http://api.wordpress.org/core/handbook/1.0/?function=' + escape( jQuery( '#docs-list' ).val() ) + '&amp;locale=<?php echo urlencode( get_locale() ) ?>&amp;version=<?php echo urlencode( $wp_version ) ?>&amp;redirect=true'); }" /></div>
 		<?php endif; ?>
 <?php if ( is_writeable($real_file) ) : ?>
 	<?php if ( in_array($file, (array) get_option('active_plugins')) ) { ?>
@@ -217,20 +213,15 @@ foreach ( $plugin_files as $plugin_file ) :
 	<p class="submit">
 	<?php
 		if ( isset($_GET['phperror']) )
-			echo "<input type='hidden' name='phperror' value='1' /><input type='submit' name='submit' class='button-primary' value='" . _a('Update File and Attempt to Reactivate') . "' tabindex='2' />";
+			echo "<input type='hidden' name='phperror' value='1' /><input type='submit' name='submit' class='button-primary' value='" . esc_attr__('Update File and Attempt to Reactivate') . "' tabindex='2' />";
 		else
-			echo "<input type='submit' name='submit' class='button-primary' value='" . _a('Update File') . "' tabindex='2' />";
+			echo "<input type='submit' name='submit' class='button-primary' value='" . esc_attr__('Update File') . "' tabindex='2' />";
 	?>
 	</p>
 <?php else : ?>
 	<p><em><?php _e('You need to make this file writable before you can save your changes. See <a href="http://codex.wordpress.org/Changing_File_Permissions">the Codex</a> for more information.'); ?></em></p>
 <?php endif; ?>
  </form>
-<?php
-	} else {
-		echo '<div class="error"><p>' . $error . '</p></div>';
-	}
-?>
 <div class="clear"> &nbsp; </div>
 </div>
 <?php
