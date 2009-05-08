@@ -10,8 +10,13 @@
 Template Name: Sales Letter
 */
 
-add_filter('active_layout', 'force_letter');
+add_filter('active_layout', array('sem_template', 'force_letter'));
 remove_action('wp_footer', array('sem_footer', 'display_credits'));
+
+global $post;
+global $wp_the_query;
+$post = $wp_the_query->posts[0];
+setup_postdata($post);
 
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -36,33 +41,26 @@ if ( $title = trim(wp_title('&rarr;', false)) ) {
 <div id="wrapper_bg">
 <?php
 # show header
-
-sem_header::letter();
+header::display(get_the_ID());
 ?>
 <div class="pad">
 <?php
-if ( class_exists('widget_contexts') )
-{
-	do_action('before_the_entries');
-}
+sem_panels::display('before_the_entries');
 ?>
 <div class="entry" id="entry-<?php the_ID(); ?>">
 <?php
 		# start loop
 		the_post();
-		
+
 		# show post
-		do_action('the_entry');
+		sem_panels::display('the_entry');
 		
 		# reset in_the_loop
 		have_posts();
 ?>
 </div>
 <?php
-if ( class_exists('widget_contexts') )
-{
-	do_action('after_the_entries');
-}
+sem_panels::display('after_the_entries');
 ?>
 </div>
 </div>

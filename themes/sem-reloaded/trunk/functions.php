@@ -5,7 +5,95 @@
 # You would lose your changes when you upgrade your site. Use php widgets instead.
 #
 
+#
+# initialize
+#
 
 include dirname(__FILE__) . '/inc/init.php';
-include dirname(__FILE__) . '/inc/inc.php';
+
+$content_width = 480;
+
+if ( !is_admin() ) {
+	add_filter('option_page_comments', 'false');
+}
+
+include sem_path . '/inc/panels.php';
+include sem_path . '/inc/widgets.php';
+include sem_path . '/inc/template.php';
+
+
+#
+# include utils
+#
+
+$sem_files = array(
+	);
+
+$sem_admin_files = array(
+	);
+
+
+foreach ( $sem_files as $inc_file )
+{
+	include sem_path . '/inc/' . $inc_file . '.php';
+}
+
+
+#
+# include admin screens
+#
+
+if ( is_admin() )
+{
+	foreach ( $sem_admin_files as $inc_file )
+	{
+		include sem_path . '/inc/' . $inc_file . '-admin.php';
+	}
+}
+
+
+# Semiologic Pro files
+
+add_option('sem_api_key', '');
+
+foreach ( array('sem_docs', 'sem_fixes') as $sem_plugins ) :
+
+$sem_plugin_path = $sem_plugins . '_path';
+
+if ( defined($sem_plugin_path) ) :
+
+$sem_plugin_path = constant($sem_plugin_path);
+$sem_plugin_files = $sem_plugins . '_files';
+$sem_plugin_admin_files = $sem_plugins . '_admin_files';
+
+global $$sem_plugin_files;
+global $$sem_plugin_admin_files;
+
+foreach ( $$sem_plugin_files as $sem_file )
+{
+	include_once $sem_plugin_path . '/' . $sem_file;
+}
+
+if ( is_admin() ) :
+
+foreach ( $$sem_plugin_admin_files as $sem_file )
+{
+	include_once $sem_plugin_path . '/' . $sem_file;
+}
+
+$sem_file = ABSPATH . PLUGINDIR . '/version-checker/sem-api-key.php';
+
+if ( !get_option('sem_api_key')
+	&& !class_exists('sem_api_key') && file_exists($sem_file)
+	&& function_exists('wp_remote_fopen')
+	)
+{
+	include $sem_file;
+}
+
+endif; # is_admin()
+
+endif; # defined()
+
+endforeach; # Semiologic Pro files
 ?>

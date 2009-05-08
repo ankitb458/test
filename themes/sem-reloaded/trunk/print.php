@@ -5,9 +5,6 @@
 # You would lose your changes when you upgrade your site. Use php widgets instead.
 #
 
-add_filter('option_blog_public', create_function('$in', 'return "0";'));
-remove_action('wp_footer', array('sem_footer', 'display_credits'));
-
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>><head><title><?php
@@ -29,10 +26,8 @@ if ( $title = trim(wp_title('&rarr;', false)) ) {
 do_action('before_the_entries');
 
 # show posts
-if ( have_posts() )
-{
-	while ( have_posts() )
-	{
+if ( have_posts() ) :
+	while ( have_posts() ) :
 		the_post();
 
 ?>
@@ -42,14 +37,11 @@ if ( have_posts() )
 ?>
 </div>
 <?php
-	}
-
-}
+	endwhile;
 # or fallback
-elseif ( is_404() )
-{
+elseif ( is_404() ) :
 	do_action('404_error');
-}
+endif;
 
 do_action('after_the_entries');
 

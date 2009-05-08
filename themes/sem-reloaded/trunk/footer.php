@@ -36,7 +36,7 @@
 
 			echo '<div id="top_sidebar_top"><div class="hidden"></div></div>' . "\n";
 
-			do_action('the_top_sidebar');
+			sem_panels::display('top_sidebar');
 
 			echo '<div id="top_sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
@@ -59,7 +59,7 @@
 			
 			echo '<div id="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
-			do_action('the_left_sidebar');
+			sem_panels::display('left_sidebar');
 
 			echo '<div id="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
@@ -72,7 +72,7 @@
 			
 			echo '<div id="sidebar2_top"><div class="hidden"></div></div>' . "\n";
 
-			do_action('the_right_sidebar');
+			sem_panels::display('right_sidebar');
 
 			echo '<div id="sidebar2_bottom"><div class="hidden"></div></div>' . "\n";
 
@@ -95,7 +95,7 @@
 
 			echo '<div id="bottom_sidebar_top"><div class="hidden"></div></div>' . "\n";
 
-			do_action('the_bottom_sidebar');
+			sem_panels::display('bottom_sidebar');
 
 			echo '<div id="bottom_sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
@@ -130,7 +130,7 @@
 
 			echo '<div id="sidebar_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
-			do_action('the_left_sidebar');
+			sem_panels::display('left_sidebar');
 
 			echo '<div id="sidebar_bottom" class="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
@@ -153,7 +153,7 @@
 
 			echo '<div id="sidebar2_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
-			do_action('the_right_sidebar');
+			sem_panels::display('right_sidebar');
 
 			echo '<div id="sidebar2_bottom" class="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
@@ -179,7 +179,7 @@
 
 			echo '<div id="sidebar_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
-			do_action('the_left_sidebar');
+			sem_panels::display('left_sidebar');
 
 			echo '<div id="sidebar_bottom" class="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
 
@@ -211,7 +211,7 @@
 		
 		echo '<div id="footer_wrapper">' . "\n";
 		
-		do_action('the_footer');
+		sem_panels::display('the_footer');
 		
 		echo '</div>' . "\n";
 		

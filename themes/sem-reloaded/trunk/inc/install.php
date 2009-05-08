@@ -252,12 +252,9 @@ $extra_plugins = array(
 	'sem-subscribe-me/sem-subscribe-me.php',
 	'sem-unfancy-quote/sem-unfancy-quote.php',
 	'silo/silo.php',
-	'tag-cloud-widgets/tag-cloud-widgets.php',
-	'text-widgets/text-widgets.php',
 	'uploads-folder/uploads-folder.php',
 	'version-checker/version-checker.php',
 	'widget-contexts/widget-contexts.php',
-	'wp-db-backup/wp-db-backup.php',
 	'wp-hashcash/wp-hashcash.php',
 	);
 

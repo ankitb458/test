@@ -184,8 +184,10 @@ class sem_header_admin
 
 	function display_admin_page()
 	{
+		global $sem_options;
+		
 		if ( defined('GLOB_BRACE')
-			&& ( $header = glob(sem_path . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+			&& ( $header = glob(sem_path . '/skins/' . apply_filters('active_skin', $sem_options['active_skin']) . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 			)
 		{
 			$header = current($header);

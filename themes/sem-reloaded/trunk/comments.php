@@ -53,8 +53,7 @@ if ( $pings ) {
 	foreach ( $pings as $comment ) {
 		$cur_date = get_comment_date();
 		
-		if ( !isset($prev_date) || $cur_date != $prev_date )
-		{
+		if ( !isset($prev_date) || $cur_date != $prev_date ) {
 			if ( isset($prev_date) ) {
 				echo '</ul>' . "\n";
 				
@@ -99,24 +98,20 @@ if ( $pings ) {
 # Display comments
 #
 
-if ( $comments )
-{
+if ( $comments ) {
 	$title = the_title('', '', false);
 
 	$caption = $sem_captions['comments_on'];
 	$caption = str_replace('%title%', $title, $caption);
 
-	if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
-	{
+	if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 
 		$comment_form_link = ' <span class="comment_entry">'
 			. '<a href="#respond" title="' . htmlspecialchars($sem_captions['leave_comment']) . '" class="noicon">'
 			. '<img src="' . sem_url . '/icons/pixel.gif" height="16" width="16" alt="' . htmlspecialchars($sem_captions['leave_comment']) . '" />'
 			. '</a>'
 			. '</span>';
-	}
-	else
-	{
+	} else {
 		$comment_form_link = false;
 	}
 	
@@ -128,12 +123,10 @@ if ( $comments )
 		. '</div>' . "\n"
 		. '</div>' . "\n";
 	
-	foreach ( (array) $comments as $comment )
-	{
+	foreach ( (array) $comments as $comment ) {
 		$cur_date = get_comment_date();
 		
-		if ( !isset($prev_date) || $cur_date != $prev_date )
-		{
+		if ( !isset($prev_date) || $cur_date != $prev_date ) {
 			echo '<div class="comment_date">' . "\n"
 				. '<div class="pad">' . "\n"
 				. '<span>'
@@ -251,8 +244,7 @@ if ( $pings || $comments )
 # Display comment form
 #
 
-if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
-{
+if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 	echo '<div id="respond">' . "\n";
 	
 	$sem_captions['leave_reply'] = __('Leave a Reply to %user%');
@@ -275,8 +267,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		. '<div class="comments_header_bottom"><div class="hidden"></div></div>' . "\n"
 		. '</div>' . "\n";
 
-	if ( get_option('comment_registration') && !$user_ID )
-	{
+	if ( get_option('comment_registration') && !$user_ID ) {
 		$login_url = trailingslashit(site_url('login'))
 			. 'wp-login.php?redirect_to='
 			. urlencode(get_permalink());
@@ -292,16 +283,13 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. '</p>' . "\n"
 			. '</div>' . "\n"
 			. '</div>' . "\n";
-	}
-	else
-	{
+	} else {
 		echo '<form method="post" id="commentform"'
 			. ' action="' . trailingslashit(site_url()) . 'wp-comments-post.php"'
 			. '>' . "\n"
 			. '<div class="pad">' . "\n";
 
-		if ( $user_ID )
-		{
+		if ( $user_ID ) {
 			$logout_url = apply_filters('loginout',
 				'<a href="' . wp_logout_url() . '">' . __('Logout') . '</a>'
 				);
@@ -319,9 +307,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 					$sem_captions['logged_in_as']
 					)
 				. '</p>' . "\n";
-		}
-		else
-		{
+		} else {
 			echo '<p class="comment_label name_label">'
 				. '<label for="author">'
 				. $sem_captions['name_field']
@@ -391,8 +377,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		echo '</div>' . "\n"
 			. '</form>' . "\n";
 
-		if ( function_exists('show_manual_subscription_form') )
-		{
+		if ( function_exists('show_manual_subscription_form') ) {
 			show_manual_subscription_form();
 		}
 	} # get_option('comment_registration') && !$user_ID

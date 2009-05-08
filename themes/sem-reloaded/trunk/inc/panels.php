@@ -1,12 +1,20 @@
 <?php
-class sem_panels
-{
-	#
-	# init()
-	#
-	
-	function init()
-	{
+/**
+ * sem_panels
+ *
+ * @package Semiologic Reloaded
+ **/
+
+sem_panels::register();
+
+class sem_panels {
+	/**
+	 * register()
+	 *
+	 * @return void
+	 **/
+
+	function register() {
 		global $sem_options;
 		
 		$before_widget = '<div class="widget %2$s">' . "\n"
@@ -25,8 +33,7 @@ class sem_panels
 						. '<div class="widget_title_bottom"><div class="hidden"></div></div>' . "\n"
 						. '<div class="pad">';
 		
-		if ( strpos($sem_options['active_layout'], 't') !== false )
-		{
+		if ( strpos($sem_options['active_layout'], 't') !== false ) {
 			register_sidebar(
 				array(
 					'id' => 'top_sidebar',
@@ -67,11 +74,8 @@ class sem_panels
 					'after_title' => $after_title,
 					)
 				);
-		}
-		else
-		{
-			switch ( substr_count($sem_options['active_layout'], 's') )
-			{
+		} else {
+			switch ( substr_count($sem_options['active_layout'], 's') ) {
 			case 2:
 				register_sidebar(
 					array(
@@ -111,16 +115,6 @@ class sem_panels
 		}
 
 		foreach ( array(
-			'the_top_sidebar',
-			'the_bottom_sidebar',
-			'the_left_sidebar',
-			'the_right_sidebar',
-			) as $panel_id )
-		{
-			add_action($panel_id, array('sem_panels', $panel_id));
-		}
-		
-		foreach ( array(
 			'the_header' => 'Header Area',
 			'the_header_boxes' => 'Header Boxes Bar',
 			'before_the_entries' => 'Before the Entries',
@@ -129,15 +123,11 @@ class sem_panels
 			'the_footer_boxes' => 'Footer Boxes Bar',
 			'the_footer' => 'Footer Area',
 			'the_404' => 'Not Found Error (404)',
-			) as $panel_id => $panel_label )
-		{
-			add_action($panel_id, array('sem_panels', $panel_id));
-			
+		) as $panel_id => $panel_label ) {
 			$before_title = '<h2>';
 			$after_title = '</h2>' . "\n";
 			
-			switch ( $panel_id )
-			{
+			switch ( $panel_id ) {
 			case 'the_header':
 				$before_widget = "\n\t"
 					. '<div class="%2$s header_widget wrapper">' . "\n\t"
@@ -207,7 +197,72 @@ class sem_panels
 					)
 				);
 		}
+	} # register()
+	
+	
+	/**
+	 * display()
+	 *
+	 * @param string $panel_id
+	 * @return void
+	 **/
+
+	function display($panel_id) {
+		if ( $panel_id && !class_exists('widget_contexts') && is_letter() )
+			break;
+		global $$panel_id;
+		$$panel_id = true;
 		
+		switch ( $panel_id ) {
+		case 'left_sidebar':
+			dynamic_sidebar('sidebar-1');
+			break;
+		case 'right_sidebar':
+			dynamic_sidebar('sidebar-2');
+			break;
+		case 'top_sidebar':
+		case 'bottom_sidebar':
+		case 'the_header':
+		case 'before_the_entries':
+		case 'the_404':
+		case 'after_the_entries':
+		case 'the_footer':
+		case 'the_entry':
+			dynamic_sidebar($panel_id);
+			break;
+		case 'the_header_boxes':
+		case 'the_footer_boxes':
+			$class = ( $panel_id == 'the_header_boxes' ) ? 'header_boxes' : 'footer_boxes';
+			$sidebars_widgets = wp_get_sidebars_widgets(false);
+
+			if ( !empty($sidebars_widgets[$panel_id]) ) {
+				echo '<div class="spacer"></div>' . "\n"
+					. '<div id="' . $class . '" class="wrapper">' . "\n"
+					. '<div id="' . $class . '_top"><div class="hidden"></div></div>' . "\n"
+					. '<div id="' . $class . '_bg">' . "\n"
+					. '<div class="wrapper_item">' . "\n";
+				dynamic_sidebar($panel_id);
+				echo '<div class="spacer"></div>' . "\n"
+					. '</div>' . "\n"
+					. '</div>' . "\n"
+					. '<div id="' . $class . '_bottom"><div class="hidden"></div></div>' . "\n"
+					. '</div><!-- ' . $class . ' -->' . "\n";
+			}
+			break;
+		}
+		$$panel_id = false;
+	} # display()
+} # sem_panels
+
+
+class old_sem_panels
+{
+	#
+	# init()
+	#
+	
+	function init()
+	{
 		if ( is_admin() || isset($_GET['preview']) && isset($_GET['template']) && isset($_GET['stylesheet']) )
 		{
 			add_action('init', array('sem_panels', 'autofill'));
@@ -321,178 +376,5 @@ class sem_panels
 		
 		#dump( $sidebars_widgets );
 	} # autofill()
-	
-	
-	#
-	# the_header()
-	#
-	
-	function the_header()
-	{
-		$GLOBALS['the_header'] = true;
-		
-		dynamic_sidebar('the_header');
-		
-		$GLOBALS['the_header'] = false;
-	} # the_header()
-	
-	
-	#
-	# the_header_boxes()
-	#
-	
-	function the_header_boxes()
-	{
-		$sidebars_widgets = wp_get_sidebars_widgets();
-
-		if ( $sidebars_widgets['the_header_boxes'] )
-		{
-			$GLOBALS['the_header_boxes'] = true;
-			echo '<div class="spacer"></div>' . "\n"
-				. '<div id="header_boxes" class="wrapper">' . "\n"
-				. '<div id="header_boxes_top"><div class="hidden"></div></div>' . "\n"
-				. '<div id="header_boxes_bg">' . "\n"
-				. '<div class="wrapper_item">' . "\n";
-			dynamic_sidebar('the_header_boxes');
-			echo '<div class="spacer"></div>' . "\n"
-				. '</div>' . "\n"
-				. '</div>' . "\n"
-				. '<div id="header_boxes_bottom"><div class="hidden"></div></div>' . "\n"
-				. '</div><!-- header_boxes -->' . "\n";
-			$GLOBALS['the_header_boxes'] = false;
-		}
-	} # the_header_boxes()
-	
-	
-	#
-	# before_the_entries()
-	#
-
-	function before_the_entries()
-	{
-		$GLOBALS['before_the_entries'] = true;
-		dynamic_sidebar('before_the_entries');
-		$GLOBALS['before_the_entries'] = false;
-	} # before_the_entries()
-
-
-	#
-	# the_entry()
-	#
-	
-	function the_entry()
-	{
-		$GLOBALS['the_entry'] = true;
-		$GLOBALS['sem_entry'] = array();
-		dynamic_sidebar('the_entry');
-		$GLOBALS['the_entry'] = false;
-	} # the_entry()
-
-
-	#
-	# after_the_entries()
-	#
-
-	function after_the_entries()
-	{
-		$GLOBALS['after_the_entries'] = true;
-		dynamic_sidebar('after_the_entries');
-		$GLOBALS['after_the_entries'] = false;
-	} # after_the_entries()
-	
-	
-	#
-	# the_footer_boxes()
-	#
-	
-	function the_footer_boxes()
-	{
-		$sidebars_widgets = wp_get_sidebars_widgets();
-
-		if ( $sidebars_widgets['the_footer_boxes'] )
-		{
-			$GLOBALS['the_footer_boxes'] = true;
-			echo '<div class="spacer"></div>' . "\n"
-				. '<div id="footer_boxes" class="wrapper">' . "\n"
-				. '<div id="footer_boxes_top"><div class="hidden"></div></div>' . "\n"
-				. '<div id="footer_boxes_bg">' . "\n"
-				. '<div class="wrapper_item">' . "\n";
-			dynamic_sidebar('the_footer_boxes');
-			echo '<div class="spacer"></div>' . "\n"
-				. '</div>' . "\n"
-				. '</div>' . "\n"
-				. '<div id="footer_boxes_bottom"><div class="hidden"></div></div>' . "\n"
-				. '</div><!-- footer_boxes -->' . "\n";
-			$GLOBALS['the_footer_boxes'] = false;
-		}
-	} # the_footer_boxes()
-	
-	
-	#
-	# the_footer()
-	#
-	
-	function the_footer()
-	{
-		$GLOBALS['the_footer'] = true;
-		
-		dynamic_sidebar('the_footer');
-		
-		$GLOBALS['the_footer'] = false;
-	} # the_footer()
-	
-	
-	#
-	# the_404()
-	#
-	
-	function the_404()
-	{
-		$GLOBALS['the_404'] = true;
-		dynamic_sidebar('the_404');
-		$GLOBALS['the_404'] = false;
-	} # the_404()
-	
-	
-	#
-	# the_top_sidebar()
-	#
-	
-	function the_top_sidebar()
-	{
-		dynamic_sidebar('top_sidebar');
-	} # the_top_sidebar()
-	
-	
-	#
-	# the_bottom_sidebar()
-	#
-	
-	function the_bottom_sidebar()
-	{
-		dynamic_sidebar('bottom_sidebar');
-	} # the_bottom_sidebar()
-	
-	
-	#
-	# the_left_sidebar()
-	#
-	
-	function the_left_sidebar()
-	{
-		dynamic_sidebar('sidebar-1');
-	} # the_left_sidebar()
-	
-	
-	#
-	# the_right_sidebar()
-	#
-	
-	function the_right_sidebar()
-	{
-		dynamic_sidebar('sidebar-2');
-	} # the_right_sidebar()
-} # sem_panels
-
-sem_panels::init();
+} # old_sem_panels
 ?>

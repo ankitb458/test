@@ -15,7 +15,7 @@ include sem_path . '/header.php';
 
 			# the loop
 			
-			do_action('before_the_entries');
+			sem_panels::display('before_the_entries');
 
 			if ( have_posts() ) :
 
@@ -32,7 +32,7 @@ include sem_path . '/header.php';
 					echo '<div class="entry' . ( $class ? ( ' ' . $class ) : '' ) . '">' . "\n"
 						. '<div class="entry_top"><div class="hidden"></div></div>' . "\n";
 					
-					do_action('the_entry');
+					sem_panels::display('the_entry');
 					
 					echo '<div class="entry_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . '<!-- entry -->' . "\n";
@@ -43,11 +43,11 @@ include sem_path . '/header.php';
 
 				# fallback
 
-				do_action('the_404');
+				sem_panels::display('the_404');
 
 			endif; # have_posts()
 
-			do_action('after_the_entries');
+			sem_panels::display('after_the_entries');
 
 # show footer
 include sem_path . '/footer.php';

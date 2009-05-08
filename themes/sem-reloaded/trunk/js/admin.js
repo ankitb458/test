@@ -1,9 +1,7 @@
-
-nav_menus = {
+var nav_menus = {
 	init : function() {
-		if ( jQuery(this).children("div.nav_menu_item").size() )
-		{
-			jQuery(this).sortable({});
+		if ( jQuery(this).children("div.nav_menu_item").size() ) {
+			jQuery(this).sortable();
 		}
 	},
 	
@@ -15,14 +13,11 @@ nav_menus = {
 		jQuery(select).find("option:selected").each(function() {
 			this.getItem = nav_menus.getItem;
 			var item = this.getItem(number);
-
-			if ( jQuery(menu).children("div.nav_menu_item_empty").size() )
-			{
+			
+			if ( jQuery(menu).children("div.nav_menu_item_empty").size() ) {
 				jQuery(menu).html(item);
 				jQuery(menu).sortable({});
-			}
-			else
-			{
+			} else {
 				jQuery(menu).append(item);
 				jQuery(menu).sortable('refresh');
 			}
@@ -33,8 +28,7 @@ nav_menus = {
 		var item = '#' + this.id.match(/^[0-9a-f]+/);
 		var menu = '#nav-menu-items-' + this.id.match(/(?:[0-9]+|header|footer)$/);
 		
-		if ( jQuery(menu).children().size() > 1 )
-		{
+		if ( jQuery(menu).children().size() > 1 ) {
 			var newHTML = '';
 			
 			jQuery(menu).children().not(item).each(function() {
@@ -45,9 +39,7 @@ nav_menus = {
 			
 			jQuery(menu).html(newHTML);
 			jQuery(menu).sortable('refresh');
-		}
-		else
-		{
+		} else {
 			jQuery(menu).sortable("destroy");
 			jQuery(menu).html(nav_menus.getPlaceHolder());
 		}
@@ -58,8 +50,7 @@ nav_menus = {
 		var i;
 		var letters = '0123456789abcdef';
 		
-		for ( i = 0; i < 32; i++ )
-		{
+		for ( i = 0; i < 32; i++ ) {
 			id = id + letters.charAt(Math.floor(letters.length * Math.random()));
 		}
 		
@@ -86,18 +77,15 @@ nav_menus = {
 		details = details.replace(/&amp;/ig, '&');
 		details = details.split('&');
 		
-		for ( i = 0; i < details.length; i++ )
-		{
+		for ( i = 0; i < details.length; i++ ) {
 			keyval = details[i];
 
 			keyval = keyval.split('=');
 			
-			switch ( keyval[0] )
-			{
+			switch ( keyval[0] ) {
 				case 'type':
 					type = decodeURIComponent(keyval[1]);
-					if ( type == 'url' )
-					{
+					if ( type == 'url' ) {
 						label = 'Url Caption';
 					}
 					break;
@@ -112,7 +100,7 @@ nav_menus = {
 		
 		do {
 			item_id = nav_menus.newId();
-		} while ( jQuery('#nav-menu-item-' + id).size() );
+		} while ( jQuery('#nav-menu-item-' + item_id).size() );
 		
 		str = '<div class="button nav_menu_item" id="' + item_id + '">'
 			+ '<div class="nav_menu_item_header">'
@@ -128,9 +116,8 @@ nav_menus = {
 				+ ' tabindex="-1" value="-" />'
 			+ '</div>'
 			+ '<div class="nav_menu_item_content">';
-
-		switch ( type )
-		{
+		
+		switch ( type ) {
 		case 'url':
 			str += '<input type="text" class="nav_menu_item_ref"'
 				+ ' name="nav-menu[' + number + '][items][' + item_id + '][ref]"'
@@ -145,8 +132,7 @@ nav_menus = {
 			break;
 		}
 		
-		switch ( type )
-		{
+		switch ( type ) {
 		case 'home':
 		case 'page':
 			str += '&rarr;&nbsp;<a href="' + url + '" class="nav_menu_item_preview" onclick="window.open(this.href); return false;">' +  label + '</a>';
@@ -168,7 +154,9 @@ nav_menus = {
 /*
  * Attach Behaviors
  */
-jQuery("div.nav_menu_items").livequery( nav_menus.init );
-jQuery("input.nav_menu_item_button_add").livequery( 'click', nav_menus.add );
-jQuery("input.nav_menu_item_button_remove").livequery( 'click', nav_menus.remove );
-jQuery("input.nav_menu_item_label").livequery('change', nav_menus.onLabelChange );
+jQuery(document).ready(function(){
+	jQuery("div.nav_menu_items").livequery(nav_menus.init);
+	jQuery("input.nav_menu_item_button_add").livequery('click', nav_menus.add);
+	jQuery("input.nav_menu_item_button_remove").livequery('click', nav_menus.remove);
+	jQuery("input.nav_menu_item_label").livequery('change', nav_menus.onLabelChange);
+});

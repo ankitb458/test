@@ -10,7 +10,7 @@
 Template Name: Mono Column
 */
 
-add_filter('active_layout', 'strip_s');
+add_filter('active_layout', array('monocolumn', 'strip_sidebars'));
 
 include sem_path . '/index.php';
 ?>

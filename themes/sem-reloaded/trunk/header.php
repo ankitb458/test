@@ -5,11 +5,17 @@
 # You would lose your changes when you upgrade your site. Use php widgets instead.
 #
 
-# add trackback rdf if relevant
-if ( is_singular() )
-{
-	$GLOBALS['post'] = $GLOBALS['posts'][0];
-	setup_postdata($GLOBALS['post']);
+if ( is_attachment() ) {
+	add_filter('option_blog_public', 'false');
+	add_filter('comments_open', 'false');
+	add_filter('pings_open', 'false');
+}
+
+if ( is_singular() ) {
+	global $post;
+	global $wp_the_query;
+	$post = $wp_the_query->posts[0];
+	setup_postdata($post);
 }
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -49,7 +55,7 @@ echo '<div id="wrapper_bg">' . "\n";
 		
 		echo '<div id="header_wrapper">' . "\n";
 		
-		do_action('the_header');
+		sem_panels::display('the_header');
 		
 		echo '</div>' . "\n";
 		
