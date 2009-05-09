@@ -439,7 +439,7 @@ class entry_categories extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['title'] = trim(strip_tags($new_instance['title']));
 		
 		return $instance;
 	} # update()
@@ -570,7 +570,7 @@ class entry_tags extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['title'] = trim(strip_tags($new_instance['title']));
 		
 		return $instance;
 	} # update()
@@ -1660,14 +1660,14 @@ class sem_nav_menu extends WP_Widget {
 				continue;
 			}
 			
-			$label = trim(strip_tags(stripslashes($new_instance['items']['label'][$key])));
+			$label = trim(strip_tags($new_instance['items']['label'][$key]));
 			
 			switch ( $item['type'] ) {
 				case 'home':
 					$item['label'] = $label;
 					break;
 				case 'url':
-					$item['ref'] = trim(strip_tags(stripslashes($new_instance['items']['ref'][$key])));
+					$item['ref'] = trim(strip_tags($new_instance['items']['ref'][$key]));
 					$item['label'] = $label;
 					break;
 				case 'page':
