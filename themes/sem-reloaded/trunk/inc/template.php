@@ -6,6 +6,7 @@
  **/
 
 if ( !is_admin() ) {
+	add_action('wp', array('sem_template', 'wp'), 0);
 	add_action('template_redirect', array('sem_template' ,'template_redirect'), 0);
 	add_action('wp_print_scripts', array('sem_template', 'scripts'));
 	add_action('wp_print_styles', array('sem_template', 'styles'));
@@ -157,18 +158,37 @@ class sem_template {
 	
 	
 	/**
+	 * wp()
+	 *
+	 * @param object &$wp
+	 * @return void
+	 **/
+
+	function wp(&$wp) {
+		if ( is_attachment() ) {
+			add_filter('option_blog_public', 'false');
+			add_filter('comments_open', 'false');
+			add_filter('pings_open', 'false');
+		}
+		
+		if ( is_singular() ) {
+			global $post;
+			global $wp_the_query;
+			$post = $wp_the_query->posts[0];
+			setup_postdata($post);
+		}
+
+		remove_action('wp', array('sem_template', 'wp'));
+	} # wp()
+	
+	
+	/**
 	 * template_redirect()
 	 *
 	 * @return void
 	 **/
 
 	function template_redirect() {
-		if ( is_attachment() ) {
-			add_filter('option_blog_public', 'false');
-			add_filter('comments_open', 'false');
-			add_filter('pings_open', 'false');
-		}
-
 		if ( !isset($_GET['action']) || $_GET['action'] != 'print' )
 			return;
 

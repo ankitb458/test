@@ -13,11 +13,6 @@ Template Name: Sales Letter
 add_filter('active_layout', array('sem_template', 'force_letter'));
 remove_action('wp_footer', array('sem_footer', 'display_credits'));
 
-global $post;
-global $wp_the_query;
-$post = $wp_the_query->posts[0];
-setup_postdata($post);
-
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>><head><title><?php

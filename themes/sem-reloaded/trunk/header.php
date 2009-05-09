@@ -5,19 +5,6 @@
 # You would lose your changes when you upgrade your site. Use php widgets instead.
 #
 
-if ( is_attachment() ) {
-	add_filter('option_blog_public', 'false');
-	add_filter('comments_open', 'false');
-	add_filter('pings_open', 'false');
-}
-
-if ( is_singular() ) {
-	global $post;
-	global $wp_the_query;
-	$post = $wp_the_query->posts[0];
-	setup_postdata($post);
-}
-
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>><head><title><?php
 if ( $title = trim(wp_title('&rarr;', false)) ) {

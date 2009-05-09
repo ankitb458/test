@@ -6,6 +6,9 @@
  **/
 
 add_action('widgets_init', array('sem_widgets', 'register'));
+add_action('admin_footer-widgets.php', array('sem_widgets', 'widgets_js'));
+
+add_action('wp', array('site_header', 'wire'));
 
 class sem_widgets {
 	/**
@@ -26,8 +29,27 @@ class sem_widgets {
 		register_widget('footer_boxes');
 		register_widget('header_nav');
 		register_widget('footer_nav');
-		register_widget('header');
+		register_widget('site_header');
 	} # register()
+	
+	
+	/**
+	 * footer_js()
+	 *
+	 * @return void
+	 **/
+
+	function widgets_js() {
+		echo <<<EOS
+
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery('#widgets-right .widgets-holder-wrap .widgets-sortables:first').css('minHeight', '');
+});
+</script>
+
+EOS;
+	} # widgets_js()
 } # sem_widgets
 
 
@@ -971,22 +993,22 @@ class footer_nav extends sem_nav_menu {
  * @package Semiologic Reloaded
  **/
 
-class header extends WP_Widget {
+class site_header extends WP_Widget {
 	/**
-	 * header()
+	 * site_header()
 	 *
 	 * @return void
 	 **/
 
-	function header() {
+	function site_header() {
 		$widget_name = __('Header: Site Header', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'header',
 			'description' => __('The site\'s header. Only works in the header area.', 'sem-reloaded'),
 			);
 		
-		$this->WP_Widget('header', $widget_name, $widget_ops);
-	} # header()
+		$this->WP_Widget('site_header', $widget_name, $widget_ops);
+	} # site_header()
 	
 	
 	/**
@@ -1005,7 +1027,7 @@ class header extends WP_Widget {
 		
 		global $sem_options;
 		
-		$header = header::get();
+		$header = site_header::get();
 		
 		if ( $header ) {
 			$ext = preg_match("/\.[^.]+$/", $header, $ext);
@@ -1066,7 +1088,7 @@ class header extends WP_Widget {
 			
 			echo '</div>' . "\n";
 		} else {
-			echo header::display();
+			echo site_header::display();
 		}
 		
 		echo '</div>' . "\n";
@@ -1088,7 +1110,7 @@ class header extends WP_Widget {
 
 	function display($header = null) {
 		if ( !$header )
-			$header = header::get();
+			$header = site_header::get();
 		
 		if ( !$header )
 			return;
@@ -1106,7 +1128,7 @@ class header extends WP_Widget {
 				. '</div>' . "\n";
 		} else {
 			echo '<div id="header_img">'
-				. header::display_flash($header)
+				. site_header::display_flash($header)
 				. '</div>' . "\n";
 		}
 	} # display()
@@ -1121,14 +1143,14 @@ class header extends WP_Widget {
 
 	function display_image($header = null) {
 		if ( !$header )
-			$header = sem_header::get_header();
+			$header = site_header::get_header();
 
 		if ( !$header )
 			return;
 		
-		list($width, $height) = getimagesize(WP_CONTENT_DIR . '/' . $header);
+		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
-		$header = clean_url(content_url() . '/' . $header);
+		$header = clean_url(content_url() . $header);
 		
 		return '<img src="' . $header . '" height="' . $height . '" width="' . $width . '" alt="'
 			. esc_attr(get_option('blogname'))
@@ -1147,14 +1169,14 @@ class header extends WP_Widget {
 
 	function display_flash($header = null) {
 		if ( !$header )
-			$header = header::get_header();
+			$header = site_header::get_header();
 
 		if ( !$header )
 			return;
 		
-		list($width, $height) = getimagesize(WP_CONTENT_DIR . '/' . $header);
+		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
-		$header = clean_url(content_url() . '/' . $header);
+		$header = clean_url(content_url() . $header);
 		
 		return __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.')
 			. '</div>'
@@ -1172,12 +1194,12 @@ class header extends WP_Widget {
 	 **/
 
 	function letter() {
-		$header = header::get();
+		$header = site_header::get();
 		
 		if ( !$header || $header != get_post_meta(get_the_ID(), '_sem_header', true) )
 			return;
 		
-		echo header::display($header);
+		echo site_header::display($header);
 	} # letter()
 	
 	
@@ -1276,5 +1298,58 @@ class header extends WP_Widget {
 		
 		return $header;
 	} # get()
-} # header
+	
+	
+	/**
+	 * wire()
+	 *
+	 * @param object &$wp
+	 * @return void
+	 **/
+
+	function wire(&$wp) {
+		$header = site_header::get();
+		
+		if ( !$header )
+			return;
+		
+		$ext = preg_match("/\.[^.]+$/", $header, $ext);
+		$ext = end($ext);
+		
+		if ( $ext == 'swf' ) {
+			wp_enqueue_script('swfobject', sem_url . '/js/swfobject.js', false, '1.5');
+		} else {
+			add_action('wp_head', array('header', 'css'), 30);
+		}
+	} # wire()
+	
+	
+	/**
+	 * css()
+	 *
+	 * @return void
+	 **/
+
+	function css() {
+		$header = site_header::get();
+		
+		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
+		
+		$header = clean_url(content_url() . $header);
+		
+		echo <<<EOS
+
+<style type="text/css">
+.skin #header_img {
+	background: url(${header}) no-repeat top left;
+	height: ${height}px;
+	border: 0px;
+	overflow: hidden;
+	position: relative;
+}
+</style>
+
+EOS;
+	} # css()
+} # site_header
 ?>

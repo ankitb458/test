@@ -15,6 +15,7 @@ $content_width = 480;
 
 if ( !is_admin() ) {
 	add_filter('option_page_comments', 'false');
+	add_filter('use_balanceTags', 'true');
 }
 
 include sem_path . '/inc/panels.php';
@@ -22,39 +23,8 @@ include sem_path . '/inc/widgets.php';
 include sem_path . '/inc/template.php';
 
 
-#
-# include utils
-#
-
-$sem_files = array(
-	);
-
-$sem_admin_files = array(
-	);
-
-
-foreach ( $sem_files as $inc_file )
-{
-	include sem_path . '/inc/' . $inc_file . '.php';
-}
-
-
-#
-# include admin screens
-#
-
-if ( is_admin() )
-{
-	foreach ( $sem_admin_files as $inc_file )
-	{
-		include sem_path . '/inc/' . $inc_file . '-admin.php';
-	}
-}
-
 
 # Semiologic Pro files
-
-add_option('sem_api_key', '');
 
 foreach ( array('sem_docs', 'sem_fixes') as $sem_plugins ) :
 
