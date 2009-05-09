@@ -163,10 +163,14 @@ function sem_clean_up_options()
 	$hacks = array();
 	
 	if ( $plugins ) {
+		$update = false;
+		
 		foreach ( $plugins as $key => $plugin ) {
 			if ( !preg_match("/\.php$/", $plugin) ) {
-				$hacks[] = $plugin;
 				unset($plugins[$key]);
+				if ( is_file(WP_PLUGIN_DIR . '/' . $plugin) )
+					$hacks[] = $plugin;
+				$update = true;
 			}
 		}
 		
@@ -186,9 +190,10 @@ function sem_clean_up_options()
 			$headers = 'From: ' . addslashes($admin_email);
 			
 			wp_mail($admin_email, $title, $message, $headers);
-			
-			update_option('active_plugins', $plugins);
 		}
+		
+		if ( $update )
+			update_option('active_plugins', $plugins);
 	}
 } # clean_up_options()
 
