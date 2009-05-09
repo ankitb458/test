@@ -36,7 +36,7 @@ if ( $title = trim(wp_title('&rarr;', false)) ) {
 <div id="wrapper_bg">
 <?php
 # show header
-header::display(get_the_ID());
+header::letter();
 ?>
 <div class="pad">
 <?php

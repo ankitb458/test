@@ -6,7 +6,8 @@
  **/
 
 sem_panels::register();
-add_filter('sidebars_widgets', array('sem_panels', 'sidebars_widgets'));
+
+add_action('init', array('sem_panels', 'autofill'), 5);
 
 class sem_panels {
 	/**
@@ -209,8 +210,9 @@ class sem_panels {
 	 **/
 
 	function display($panel_id) {
-		if ( $panel_id && !class_exists('widget_contexts') && is_letter() )
-			break;
+		if ( $panel_id != 'the_entry' && !class_exists('widget_contexts') && is_letter() )
+			return;
+		
 		global $$panel_id;
 		$$panel_id = true;
 		
@@ -233,22 +235,22 @@ class sem_panels {
 			break;
 		case 'the_header_boxes':
 		case 'the_footer_boxes':
+			if ( !is_active_sidebar($panel_id) )
+			 	break;
+			
 			$class = ( $panel_id == 'the_header_boxes' ) ? 'header_boxes' : 'footer_boxes';
-			$sidebars_widgets = wp_get_sidebars_widgets(false);
 
-			if ( !empty($sidebars_widgets[$panel_id]) ) {
-				echo '<div class="spacer"></div>' . "\n"
-					. '<div id="' . $class . '" class="wrapper">' . "\n"
-					. '<div id="' . $class . '_top"><div class="hidden"></div></div>' . "\n"
-					. '<div id="' . $class . '_bg">' . "\n"
-					. '<div class="wrapper_item">' . "\n";
-				dynamic_sidebar($panel_id);
-				echo '<div class="spacer"></div>' . "\n"
-					. '</div>' . "\n"
-					. '</div>' . "\n"
-					. '<div id="' . $class . '_bottom"><div class="hidden"></div></div>' . "\n"
-					. '</div><!-- ' . $class . ' -->' . "\n";
-			}
+			echo '<div class="spacer"></div>' . "\n"
+				. '<div id="' . $class . '" class="wrapper">' . "\n"
+				. '<div id="' . $class . '_top"><div class="hidden"></div></div>' . "\n"
+				. '<div id="' . $class . '_bg">' . "\n"
+				. '<div class="wrapper_item">' . "\n";
+			dynamic_sidebar($panel_id);
+			echo '<div class="spacer"></div>' . "\n"
+				. '</div>' . "\n"
+				. '</div>' . "\n"
+				. '<div id="' . $class . '_bottom"><div class="hidden"></div></div>' . "\n"
+				. '</div><!-- ' . $class . ' -->' . "\n";
 			break;
 		}
 		$$panel_id = false;
@@ -262,8 +264,10 @@ class sem_panels {
 	 **/
 
 	function autofill() {
-		if ( !is_active_sidebar('the_entry') )
-			add_filter('sidebars_widgets', array('sem_panels', 'sidebars_widgets'));
+		if ( is_active_sidebar('the_entry') )
+			return;
+		
+		add_filter('sidebars_widgets', array('sem_panels', 'sidebars_widgets'));
 	} # autofill()
 	
 	
@@ -275,6 +279,8 @@ class sem_panels {
 	 **/
 
 	function sidebars_widgets($sidebars_widgets) {
+		#dump($sidebars_widgets);die;
+		
 		global $wp_widget_factory;
 		global $wp_registered_sidebars;
 		
@@ -297,7 +303,7 @@ class sem_panels {
 				'entry_comments',
 				),
 			'after_the_entries' => array(
-				'bog_footer',
+				'blog_footer',
 				),
 			'the_footer' => array(
 				'footer',
@@ -323,6 +329,7 @@ class sem_panels {
 			);
 		
 		$registered_sidebars = array_keys($wp_registered_sidebars);
+		$registered_sidebars = array_diff($registered_sidebars, array('wp_inactive_widgets'));
 		foreach ( $registered_sidebars as $sidebar )
 			$sidebars_widgets[$sidebar] = (array) $sidebars_widgets[$sidebar];
 		$sidebars_widgets['wp_inactive_widgets'] = (array) $sidebars_widgets['wp_inactive_widgets'];
