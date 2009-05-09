@@ -15,6 +15,22 @@ if ( !is_admin() ) {
 	add_action('admin_print_styles-widgets.php', array('sem_widgets', 'admin_styles'));
 }
 
+foreach ( array(
+		'save_post',
+		'delete_post',
+		'switch_theme',
+		'update_option_active_plugins',
+		'update_option_show_on_front',
+		'update_option_page_on_front',
+		'update_option_page_for_posts',
+		'update_option_sidebars_widgets',
+		'update_option_sem5_options',
+		'update_option_sem6_options',
+		'generate_rewrite_rules',
+		'shutdown',
+		) as $hook)
+	add_action($hook, array('sem_nav_menu', 'flush_cache'));
+
 class sem_widgets {
 	/**
 	 * register()
@@ -348,7 +364,7 @@ class entry_categories extends WP_Widget {
 		$widget_name = __('Entry: Categories', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'entry_categories',
-			'description' => __('The entry\'s categories. Will only display on individual posts if placed outside of the loop.', 'sem-reloaded'),
+			'description' => __('The entry\'s categories. Will only display on individual posts if placed outside of the loop (each entry).', 'sem-reloaded'),
 			);
 		
 		$this->WP_Widget('entry_categories', $widget_name, $widget_ops);
@@ -412,6 +428,47 @@ class entry_categories extends WP_Widget {
 			. '</p>' . "\n"
 			. $after_widget;
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance['title'] = strip_tags($new_instance['title']);
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		extract($instance, EXTR_SKIP);
+		
+		echo '<p>'
+			. '<label>'
+			. __('Title:', 'sem-reloaded')
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+				. ' name="' . $this->get_field_name('title') . '"'
+				. ' value="' . esc_attr($title) . '"'
+				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. __('This widget\'s title gets ignored when it is placed in the loop (each entry).', 'sem-reloaded');
+	} # form()
 } # entry_categories
 
 
@@ -432,7 +489,7 @@ class entry_tags extends WP_Widget {
 		$widget_name = __('Entry: Tags', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'entry_tags',
-			'description' => __('The entry\'s tags. Will only display on individual entries if placed outside of the loop.', 'sem-reloaded'),
+			'description' => __('The entry\'s tags. Will only display on individual entries if placed outside of the loop (each entry).', 'sem-reloaded'),
 			);
 		
 		$this->WP_Widget('entry_tags', $widget_name, $widget_ops);
@@ -502,6 +559,47 @@ class entry_tags extends WP_Widget {
 				. $after_widget;
 		}
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance['title'] = strip_tags($new_instance['title']);
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		extract($instance, EXTR_SKIP);
+		
+		echo '<p>'
+			. '<label>'
+			. __('Title:', 'sem-reloaded')
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+				. ' name="' . $this->get_field_name('title') . '"'
+				. ' value="' . esc_attr($title) . '"'
+				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. __('This widget\'s title gets ignored when it is placed in the loop (each entry).', 'sem-reloaded');
+	} # form()
 } # entry_tags
 
 
@@ -606,29 +704,30 @@ class blog_header extends WP_Widget {
 
 		if ( is_category() ) {
 			single_cat_title();
-			$desc = wpautop(category_description());
+			$desc = trim(category_description());
 		} elseif ( is_tag() ) {
 			single_tag_title();
-			$desc = wpautop(tag_description());
+			$desc = trim(tag_description());
 		} elseif ( is_month() ) {
 			single_month_title(' ');
 		} elseif ( is_author() ) {
 			global $wp_the_query;
 			$user = new WP_User($wp_the_query->get_queried_object_id());
 			echo $user->display_name;
-			$desc = wpautop($user->description);
+			$desc = trim($user->description);
 		} elseif ( is_search() ) {
 			echo str_replace('%query%', get_search_query(), $sem_captions['search_title']);
 		} elseif ( is_404() ) {
 			echo $sem_captions['404_title'];
-			$desc = $sem_captions['404_desc'];
+			$desc = trim($sem_captions['404_desc']);
 		} else {
 			echo $sem_captions['archives_title'];
 		}
 
 		echo '</h1>' . "\n";
 		
-		echo $desc;
+		if ( $desc )
+			echo wpautop($desc);
 		
 		echo $after_widget;
 	} # widget()
@@ -1159,8 +1258,752 @@ class sem_nav_menu extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		echo '<span>menu</span>';
+		extract($args, EXTR_SKIP);
+		$instance = wp_parse_args($instance, sem_nav_menu::defaults());
+		extract($instance, EXTR_SKIP);
+		if ( is_admin() ) {
+			echo $before_widget
+				. $before_title . $title . $after_title
+				. $after_widget;
+			return;
+		}
+		
+		if ( is_page() ) {
+			global $wp_query;
+			$page_id = $wp_query->get_queried_object_id();
+			$cache_id = "_$widget_id";
+			$o = get_post_meta($page_id, $cache_id, true);
+		} else {
+			if ( is_home() && !is_paged() ) {
+				$cache_id = "$widget_id-home";
+			} elseif ( !is_search() && !is_404() ) {
+				$cache_id = "$widget_id-blog";
+			} else {
+				$cache_id = "$widget_id-search";
+			}
+			$cache = get_transient($ache_id);
+		}
+		
+		if ( !sem_widget_cache_debug && $o ) {
+			echo $o;
+			return;
+		}
+		
+		sem_nav_menu::cache_pages();
+		
+		if ( !$items ) {
+			$items = sem_nav_menu::default_items();
+		}
+		
+		ob_start();
+		
+		echo '<div>' . "\n";
+		
+		foreach ( $items as $item ) {
+			switch ( $item['type'] ) {
+			case 'home':
+				sem_nav_menu::display_home($item);
+				break;
+			case 'url':
+				sem_nav_menu::display_url($item);
+				break;
+			case 'page':
+				sem_nav_menu::display_page($item);
+				break;
+			}
+		}
+		
+		echo '</div>' . "\n";
+		
+		$o = ob_get_clean();
+		
+		if ( is_page() ) {
+			update_post_meta($page_id, $cache_id, $o);
+		} else {
+			set_transient($cache_id, $o);
+		}
+		
+		echo $o;
 	} # widget()
+	
+	
+	/**
+	 * display_home()
+	 *
+	 * @param array $item
+	 * @return void
+	 **/
+
+	function display_home($item) {
+		extract($item, EXTR_SKIP);
+		if ( $label === '' )
+			$label = __('Home', 'sem-reloaded');
+		$url = clean_url(user_trailingslashit(get_option('home')));
+		
+		$classes = array('nav_home');
+		$link = $label;
+		
+		if ( get_option('show_on_front') == 'page' ) {
+			$item = array(
+				'type' => 'page',
+				'ref' => get_option('page_on_front'),
+				'label' => $label,
+				);
+			return sem_nav_menu::display_page($item);
+		} else {
+			if ( !is_front_page() || is_front_page() && is_paged() )
+				$link = '<a href="' . $url . '" title="' . esc_attr(get_option('blogname')) . '">'
+					. $link
+					. '</a>';
+			if ( !is_search() && !is_404() && !is_page() )
+				$classes[] = 'nav_active';
+		}
+		
+		echo '<span class="' . implode(' ', $classes) . '">'
+			. $link;
+		
+		echo '</span>' . "\n";
+	} # display_home()
+	
+	
+	/**
+	 * display_url()
+	 *
+	 * @param array $item
+	 * @return void
+	 **/
+
+	function display_url($item) {
+		extract($item, EXTR_SKIP);
+		if ( $label === '' )
+			$label = __('Untitled', 'sem-reloaded');
+		$url = clean_url($ref);
+		if ( !$url || $url == 'http://' )
+			return;
+		
+		$classes = array('nav_url');
+		if ( sem_nav_menu::is_local_url($url) )
+			$classes[] = 'nav_branch';
+		else
+			$classes[] = 'nav_leaf';
+		
+		$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
+			. $label
+			. '</a>';
+		
+		echo '<span class="' . implode(' ', $classes) . '">'
+			. $link
+			. '</span>' . "\n";
+	} # display_url()
+	
+	
+	/**
+	 * display_page()
+	 *
+	 * @param array $item
+	 * @return void
+	 **/
+
+	function display_page($item) {
+		extract($item, EXTR_SKIP);
+		$ref = (int) $ref;
+		$page = get_page($ref);
+		
+		if ( !$page || $page->post_parent != 0 && get_post_meta($page->ID, '_widgets_exclude', true) )
+			return;
+		
+		if ( is_page() ) {
+			global $wp_the_query;
+			$page_id = $wp_the_query->get_queried_object_id();
+		} elseif ( get_option('show_on_front') == 'page' ) {
+			$page_id = (int) get_option('page_for_posts');
+		} else {
+			$page_id = 0;
+		}
+		
+		if ( !isset($label) || $label === '' )
+			$label = get_post_meta($page->ID, '_widgets_label', true);
+		if ( $label === '' )
+			$label = $page->post_title;
+		if ( $label === '' )
+			$label = __('Untitled', 'sem-reloaded');
+		
+		$url = clean_url(get_permalink($page->ID));
+		
+		$ancestors = wp_cache_get($page_id, 'page_ancestors');
+		$children = wp_cache_get($page->ID, 'page_children');
+		
+		$classes = array();
+		$link = $label;
+		
+		if ( get_option('show_on_front') == 'page' && get_option('page_on_front') == $page->ID ) {
+			$classes[] = 'nav_home';
+			if ( !is_front_page() || is_font_page() && is_paged() )
+				$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
+					. $link
+					. '</a>';
+			if ( is_front_page() || in_array($page->ID, $ancestors) )
+				$classes[] = 'nav_active';
+		} elseif ( get_option('show_on_front') == 'page' && get_option('page_for_posts') == $page->ID ) {
+			$classes[] = 'nav_blog';
+			if ( !is_search() && !is_404() && ( !is_home() || is_home() && is_paged() ) )
+				$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
+					. $link
+					. '</a>';
+			if ( !is_search() && !is_404() && ( !is_page() || in_array($page->ID, $ancestors) ) )
+				$classes[] = 'nav_active';
+		} else {
+			if ( $children )
+				$classes[] = 'nav_branch';
+			else
+				$classes[] = 'nav_leaf';
+			
+			if ( $page->ID != $page_id )
+				$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
+					. $link
+					. '</a>';
+			
+			$classes[] = 'nav_page-' . $page->ID;
+			if ( $page->ID == $page_id || in_array($page->ID, $ancestors) )
+				$classes[] = 'nav_active';
+		}
+		
+		echo '<span class="' . implode(' ', $classes) . '">'
+			. $link;
+		
+		echo '</span>' . "\n";
+	} # display_page()
+	
+	
+	/**
+	 * cache_pages()
+	 *
+	 * @return void
+	 **/
+
+	function cache_pages() {
+		if ( is_page() ) {
+			global $wp_the_query;
+			$page_id = (int) $wp_the_query->get_queried_object_id();
+			$page = get_page($page_id);
+		} elseif ( get_option('show_on_front') == 'page' ) {
+			$page_id = (int) get_option('page_for_posts');
+			$page = get_page($page_id);
+		} else {
+			$page_id = 0;
+			$page = null;
+		}
+		
+		$ancestors = wp_cache_get($page_id, 'page_ancestors');
+		if ( $ancestors === false ) {
+			$ancestors = array();
+			while ( $page && $page->post_parent != 0 ) {
+				$ancestors[] = (int) $page->post_parent;
+				$page = get_page($page->post_parent);
+			}
+			$ancestors = array_reverse($ancestors);
+			wp_cache_set($page_id, $ancestors, 'page_ancestors');
+		}
+		
+		$parent_ids = $ancestors;
+		array_unshift($parent_ids, 0);
+		if ( $page_id )
+			$parent_ids[] = $page_id;
+		
+		$cached = true;
+		foreach ( $parent_ids as $parent_id ) {
+			$cached = is_array(wp_cache_get($parent_id, 'page_children'));
+			if ( $cached === false )
+				break;
+		}
+		
+		if ( $cached )
+			return;
+		
+		global $wpdb;
+		
+		$roots = (array) $wpdb->get_col("
+			SELECT	posts.ID
+			FROM	$wpdb->posts as posts
+			WHERE	posts.post_type = 'page'
+			AND		posts.post_parent IN ( 0, $page_id )
+			");
+		
+		$parent_ids = array_merge($parent_ids, $roots, array($page_id));
+		$parent_ids = array_unique($parent_ids);
+		$parent_ids = array_map('intval', $parent_ids);
+		
+		$pages = (array) $wpdb->get_results("
+			SELECT	posts.*
+			FROM	$wpdb->posts as posts
+			WHERE	posts.post_type = 'page'
+			AND		posts.post_status = 'publish'
+			AND		posts.post_parent IN ( " . implode(',', $parent_ids) . " )
+			ORDER BY posts.menu_order, posts.post_title
+			");
+		update_post_cache($pages);
+		
+		$children = array();
+		$to_cache = array();
+		
+		foreach ( $parent_ids as $parent_id )
+			$children[$parent_id] = array();
+		
+		foreach ( $pages as $page ) {
+			$children[$page->post_parent][] = $page->ID;
+			$to_cache[] = $page->ID;
+		}
+
+		update_postmeta_cache($to_cache);
+		
+		$all_ancestors = array();
+		
+		foreach ( $children as $parent => $child_ids ) {
+			foreach ( $child_ids as $key => $child_id ) {
+				$all_ancestors[$child_id][] = $parent;
+				if ( get_post_meta($child_id, '_widgets_exclude', true) )
+					unset($child_ids[$key]);
+			}
+			
+			wp_cache_set($parent, $child_ids, 'page_children');
+		}
+		
+		foreach ( $all_ancestors as $child_id => $parent_ids ) {
+			while ( $parent_ids[0] )
+				$parent_ids = array_merge($all_ancestors[$parent_ids[0]], $parent_ids);
+			wp_cache_set($child_id, $parent_ids, 'page_ancestors');
+		}
+	} # cache_pages()
+	
+	
+	/**
+	 * is_local_url()
+	 *
+	 * @param string $url
+	 * @return bool $is_local_url
+	 **/
+
+	function is_local_url($url) {
+		static $site_domain;
+		
+		if ( !isset($site_domain) ) {
+			$site_domain = get_option('home');
+			$site_domain = parse_url($site_domain);
+			$site_domain = $site_domain['host'];
+			$site_domain = preg_replace("/^www\./i", '', $site_domain);
+			
+			# The following is not bullet proof, but it's good enough for a WP site
+			if ( $site_domain != 'localhost' && !preg_match("/\d+(\.\d+){3}/", $site_domain) ) {
+				if ( preg_match("/\.([^.]+)$/", $site_domain, $tld) ) {
+					$tld = end($tld);
+				} else {
+					$site_domain = false;
+					return false;
+				}
+				
+				$site_domain = substr($site_domain, 0, strlen($site_domain) - 1 - strlen($tld));
+				
+				if ( preg_match("/\.([^.]+)$/", $site_domain, $subtld) ) {
+					$subtld = end($subtld);
+					if ( strlen($subtld) <= 4 ) {
+						$site_domain = substr($site_domain, 0, strlen($site_domain) - 1 - strlen($subtld));
+						$site_domain = explode('.', $site_domain);
+						$site_domain = array_pop($site_domain);
+						$site_domain .= ".$subtld";
+					} else {
+						$site_domain = $subtld;
+					}
+				}
+				
+				$site_domain .= ".$tld";
+			}
+		}
+		
+		if ( !$site_domain )
+			return false;
+		
+		$link_domain = parse_url($url);
+		$link_domain = $link_domain['host'];
+		$link_domain = preg_replace("/^www\./i", '', $link_domain);
+		
+		if ( $site_domain == $link_domain ) {
+			return true;
+		} else {
+			$site_elts = explode('.', $site_domain);
+			$link_elts = explode('.', $link_domain);
+			
+			while ( ( $site_elt = array_pop($site_elts) ) && ( $link_elt = array_pop($link_elts) ) ) {
+				if ( $site_elt !== $link_elt )
+					return false;
+			}
+			
+			return !empty($link_elts);
+		}
+	} # is_local_url()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance = sem_nav_menu::defaults();
+		foreach ( array_keys((array) $new_instance['items']['type']) as $key ) {
+			$item = array();
+			$item['type'] = $new_instance['items']['type'][$key];
+			
+			if ( !in_array($item['type'], array('home', 'url', 'page')) ) {
+				continue;
+			}
+			
+			$label = trim(strip_tags(stripslashes($new_instance['items']['label'][$key])));
+			
+			switch ( $item['type'] ) {
+				case 'home':
+					$item['label'] = $label;
+					break;
+				case 'url':
+					$item['ref'] = trim(strip_tags(stripslashes($new_instance['items']['ref'][$key])));
+					$item['label'] = $label;
+					break;
+				case 'page':
+					$item['ref'] = intval($new_instance['items']['ref'][$key]);
+					$page = get_post($item['ref']);
+					if ( $page->post_title != $label ) {
+						update_post_meta($item['ref'], '_widgets_label', $label);
+					} else {
+						delete_post_meta($item['ref'], '_widgets_label');
+					}
+					break;
+			}
+			
+			$instance['items'][] = $item;
+		}
+		
+		sem_nav_menu::flush_cache();
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$instance = wp_parse_args($instance, sem_nav_menu::defaults());
+		static $pages;
+		
+		if ( !isset($pages) ) {
+			global $wpdb;
+			$pages = $wpdb->get_results("
+				SELECT	posts.*,
+						COALESCE(post_label.meta_value, post_title) as post_label
+				FROM	$wpdb->posts as posts
+				LEFT JOIN $wpdb->postmeta as post_label
+				ON		post_label.post_id = posts.ID
+				AND		post_label.meta_key = '_widgets_label'
+				WHERE	posts.post_type = 'page'
+				AND		posts.post_status = 'publish'
+				AND		posts.post_parent = 0
+				ORDER BY posts.menu_order, posts.post_title
+				");
+			update_post_cache($pages);
+		}
+		
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+				. ' name="' . $this->get_field_name('sep') . '"'
+				. checked($sep, true, false)
+				. ' />'
+			. '&nbsp;'
+			. __('Show Separator (|)', 'sem-reloaded') . "\n"
+			. '</p>' . "\n";
+		
+		echo '<h3>' . __('Menu Items') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. 'Drag and drop menu items to rearrange them.'
+			. '</p>' . "\n";
+		
+		echo '<div class="nav_menu_items">' . "\n";
+		
+		echo '<div class="nav_menu_items_controller">' . "\n";
+		
+		echo '<select class="nav_menu_item_select"'
+			. ' name="' . $this->get_field_name('dropdown') . '">' . "\n"
+			. '<option value="">'
+				. attribute_escape(__('- Select a menu item -', 'sem-reloaded'))
+				. '</option>' . "\n"
+			. '<optgroup label="' . attribute_escape(__('Special', 'nav-menu')) . '">' . "\n"
+			. '<option value="home" class="nav_menu_item_home">'
+				. __('Home', 'nav-menu')
+				. '</option>' . "\n"
+			. '<option value="url" class="nav_menu_item_url">'
+				. __('Url', 'nav-menu')
+				. '</option>' . "\n"
+			. '</optgroup>' . "\n"
+			. '<optgroup class="nav_menu_item_pages"'
+				. ' label="' . attribute_escape(__('Pages', 'nav-menu')) . '"'
+				. '>' . "\n"
+			;
+		
+		foreach ( $pages as $page ) {
+			echo '<option value="page-' . $page->ID . '">'
+				. attribute_escape($page->post_label)
+				. '</option>' . "\n";
+		}
+		
+		echo '</optgroup>' . "\n";
+		
+		echo '</select>';
+		
+		echo '&nbsp;';
+		
+		echo '<input type="button" class="nav_menu_item_add" value="&nbsp;+&nbsp;" />' . "\n";
+		
+		echo '</div>' . "\n"; # controller
+		
+		echo '<div class="nav_menu_item_defaults" style="display: none;">' . "\n";
+		
+		echo '<div class="nav_menu_item_blank">' . "\n"
+			. '<p>' . __('Empty Navigation Menu. Leave it empty to populate it automatically.', 'sem-reloaded') . '</p>' . "\n"
+			. '</div>' . "\n";
+		
+		$default_items = array(
+			array(
+				'type' => 'home',
+				'label' => __('Home', 'sem-reloaded'),
+				),
+			array(
+				'type' => 'url',
+				'ref' => 'http://',
+				'label' => __('Url Label', 'sem-reloaded'),
+				),
+			);
+		
+		foreach ( $pages as $page ) {
+			$default_items[] = array(
+				'type' => 'page',
+				'ref' => $page->ID,
+				'label' => $page->post_label,
+				);
+		}
+		
+		foreach ( $default_items as $item ) {
+			$label = $item['label'];
+			$type = $item['type'];
+			switch ( $type ) {
+			case 'home':
+				$ref = 'home';
+				$url = user_trailingslashit(get_option('home'));
+				$handle = 'home';
+				break;
+			case 'url':
+				$ref = $item['ref'];
+				$url = $ref;
+				$handle = 'url';
+				break;
+			case 'page':
+				$ref = $item['ref'];
+				$url = get_permalink($ref);
+				$handle = 'page-' . $ref;
+				$page = get_post($ref);
+				$label = $page->post_label;
+				break;
+			}
+			
+			echo '<div class="nav_menu_item nav_menu_item-' . $handle . ' button">' . "\n"
+				. '<div class="nav_menu_item_data">' ."\n"
+				. '<input type="text" class="nav_menu_item_label" disabled="disabled"'
+					. ' name="' . $this->get_field_name('items') . '[label][]"'
+					. ' value="' . attribute_escape($label) . '"'
+					. ' />' . "\n"
+				. '&nbsp;'
+				. '<input type="button" class="nav_menu_item_remove" disabled="disabled"'
+					. ' value="&nbsp;-&nbsp;" />' . "\n"
+				. '<input type="hidden" disabled="disabled"'
+					. ' class="nav_menu_item_type"'
+					. ' name="' . $this->get_field_name('items') . '[type][]"'
+					. ' value="' . $type . '"'
+					. ' />' . "\n"
+				. '<input type="' . ( $handle == 'url' ? 'text' : 'hidden' ) . '" disabled="disabled"'
+					. ' class="nav_menu_item_ref"'
+					. ' name="' . $this->get_field_name('items') . '[ref][]"'
+					. ' value="' . $ref . '"'
+					. ' />' . "\n"
+				. '</div>' . "\n" # data
+				. '<div class="nav_menu_item_preview">' . "\n"
+				. '&rarr;&nbsp;<a href="' . clean_url($url) . '"'
+					. ' onclick="window.open(this.href); return false;">'
+					. $label
+					. '</a>'
+				. '</div>' . "\n" # preview
+				. '</div>' . "\n"; # item
+		}
+		
+		echo '</div>' . "\n"; # defaults
+		
+		echo '<div class="nav_menu_item_sortables">' . "\n";
+		
+		foreach ( $items as $item ) {
+			$label = $item['label'];
+			$type = $item['type'];
+			switch ( $type ) {
+			case 'home':
+				$ref = 'home';
+				$url = user_trailingslashit(get_option('home'));
+				$handle = 'home';
+				break;
+			case 'url':
+				$ref = $item['ref'];
+				$url = $ref;
+				$handle = 'url';
+				break;
+			case 'page':
+				$ref = $item['ref'];
+				$url = get_permalink($ref);
+				$handle = 'page-' . $ref;
+				$page = get_post($ref);
+				$label = $page->post_label;
+				break;
+			}
+			
+			echo '<div class="nav_menu_item nav_menu_item-' . $handle . ' button">' . "\n"
+				. '<div class="nav_menu_item_data">' ."\n"
+				. '<input type="text" class="nav_menu_item_label"'
+					. ' name="' . $this->get_field_name('items') . '[label][]"'
+					. ' value="' . attribute_escape($label) . '"'
+					. ' />' . "\n"
+				. '&nbsp;'
+				. '<input type="button" class="nav_menu_item_remove" value="&nbsp;-&nbsp;" />' . "\n"
+					. '<input type="hidden"'
+						. ' class="nav_menu_item_type"'
+						. ' name="' . $this->get_field_name('items') . '[type][]"'
+						. ' value="' . $type . '"'
+						. ' />' . "\n"
+				. '<input type="' . ( $handle == 'url' ? 'text' : 'hidden' ) . '"'
+					. ' class="nav_menu_item_ref"'
+					. ' name="' . $this->get_field_name('items') . '[ref][]"'
+					. ' value="' . $ref . '"'
+					. ' />' . "\n"
+				. '</div>' . "\n" # data
+				. '<div class="nav_menu_item_preview">' . "\n"
+				. '&rarr;&nbsp;<a href="' . clean_url($url) . '"'
+					. ' onclick="window.open(this.href); return false;">'
+					. $label
+					. '</a>'
+				. '</div>' . "\n" # preview
+				. '</div>' . "\n"; # item
+		}
+		
+		if ( !$items ) {
+			echo '<div class="nav_menu_item_blank">' . "\n"
+				. '<p>' . __('Empty Navigation Menu. Leave it empty to populate it automatically.', 'sem-reloaded') . '</p>' . "\n"
+				. '</div>' . "\n";
+		}
+		
+		echo '</div>' . "\n"; # sortables
+		
+		echo '</div>' . "\n"; # items
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $instance default options
+	 **/
+
+	function defaults() {
+		return array(
+			'title' => __('Browse', 'sem-reloaded'),
+			'sep' => false,
+			'items' => array(),
+			);
+	} # defaults()
+	
+	
+	/**
+	 * default_items()
+	 *
+	 * @return array $items
+	 **/
+
+	function default_items() {
+		$items = array(
+			array(
+				'type' => 'home',
+				'label' => __('Home', 'sem-reloaded'),
+				),
+			);
+		
+		$roots = wp_cache_get(0, 'page_children');
+		
+		if ( $roots ) {
+			foreach ( $roots as $root_id ) {
+				$page = get_page($root_id);
+				$label = get_post_meta('_widgets_label', $page->ID, true);
+				if ( $label === '' )
+					$label = $page->post_title;
+				if ( $label === '' )
+					$label = __('Untitled', 'sem-reloaded');
+					
+				$items[] = array(
+					'type' => 'page',
+					'ref' => $root_id,
+					'label' => $label,
+					);
+			}
+		}
+		
+		return $items;
+	} # default_items()
+	
+	
+	/**
+	 * flush_cache()
+	 *
+	 * @param mixed $in
+	 * @return mixed $in
+	 **/
+	
+	function flush_cache($in = null) {
+		$cache_ids = array();
+		
+		foreach ( array('navbar', 'footer') as $type ) {
+			$widgets = get_option("widget_$type");
+			if ( !$widgets )
+				continue;
+			unset($widgets['_multiwidget']);
+			foreach ( array_keys($widgets) as $widget_id ) {
+				$cache_ids[] = "$type-$widget_id";
+			}
+		}
+		
+		foreach ( $cache_ids as $cache_id ) {
+			foreach ( array('home', 'blog', 'search') as $context )
+				delete_transient("$cache_id-$context");
+			delete_post_meta_by_key("_$cache_id");
+		}
+		
+		wp_cache_flush('page_children');
+		wp_cache_flush('page_ancestors');
+		
+		return $in;
+	} # flush_cache()
 } # sem_nav_menu
 
 
@@ -1183,8 +2026,11 @@ class navbar extends sem_nav_menu {
 			'classname' => 'navbar',
 			'description' => __('The header\'s navigation menu, with an optional search form. Only works in the header area.', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('navbar', $widget_name, $widget_ops);
+		$this->WP_Widget('navbar', $widget_name, $widget_ops, $control_ops);
 	} # navbar()
 	
 	
@@ -1295,8 +2141,11 @@ class footer extends sem_nav_menu {
 			'classname' => 'footer',
 			'description' => __('The footer\'s navigation menu, with an optional copyright notice. Only works in the footer area.', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('footer', $widget_name, $widget_ops);
+		$this->WP_Widget('footer', $widget_name, $widget_ops, $control_ops);
 	} # footer()
 	
 	

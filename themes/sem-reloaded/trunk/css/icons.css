@@ -27,6 +27,10 @@ li.nav_leaf {
 	list-style-image: url(../icons/page_white_text.gif);
 }
 
+.widget_recent_comments ul {
+	list-style-image: url(../icons/comment.gif);
+}
+
 .pings_list ul,
 .widget_links ul,
 .widget_rss ul,

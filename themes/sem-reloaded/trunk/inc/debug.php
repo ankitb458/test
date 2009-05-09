@@ -17,6 +17,8 @@ if ( !defined('SAVEQUERIES') && isset($_GET['queries']) )
 
 function add_stop($in = null, $where = null) {
 	global $sem_stops;
+	global $wp_object_cache;
+	
 	$queries = get_num_queries();
 	$milliseconds = timer_stop() * 1000;
 	$out =  "$queries queries - {$milliseconds}ms";
@@ -25,6 +27,8 @@ function add_stop($in = null, $where = null) {
 		$memory = number_format(memory_get_usage() / 1024, 0);
 		$out .= " - {$memory}kB";
 	}
+	
+	$out .= " - $wp_object_cache->cache_hits / " . ( $wp_object_cache->cache_hits + $wp_object_cache->cache_misses ) . " cache hits";
 	
 	if ( $where ) {
 		$sem_stops[$where] = $out;
@@ -48,6 +52,7 @@ function dump_stops($in = null) {
 		return;
 	
 	global $sem_stops;
+	global $wp_object_cache;
 	
 	$stops = '';
 	foreach ( $sem_stops as $where => $stop )
@@ -96,6 +101,10 @@ function dump_stops($in = null) {
 			else
 				dump($query, $duration, $loc);
 		}
+	}
+	
+	if ( sem_widget_cache_debug && $_GET['debug'] == 'cache' ) {
+		dump($wp_object_cache->cache);
 	}
 
 	return $in;

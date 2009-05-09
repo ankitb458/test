@@ -9,6 +9,9 @@ if ( !defined('sem_version') )
 if ( !defined('sem_debug') )
 	define('sem_debug', isset($_GET['debug']) );
 
+if ( !defined('sem_widget_cache_debug') )
+	define('sem_widget_cache_debug', false);
+
 if ( function_exists('memory_get_usage') && ( (int) @ini_get('memory_limit') < 48 ) )
 	@ini_set('memory_limit', '48M');
 

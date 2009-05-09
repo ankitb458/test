@@ -18,14 +18,14 @@ div.nav_menu_item {
 	cursor: move !important;
 }
 
-div.nav_menu_item_empty {
+div.nav_menu_item_blank {
 	padding: 20px;
 	text-align: center;
 	font-style: italic;
 }
 
 div.nav_menu_item:hover,
-div.nav_menu_item_empty:hover {
+div.nav_menu_item_blank:hover {
 	color: inherit !important;
 }
 
