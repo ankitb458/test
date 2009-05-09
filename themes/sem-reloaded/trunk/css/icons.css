@@ -22,6 +22,7 @@ li.nav_branch {
 .random_widget ul,
 .related_widget ul,
 .widget_pages ul,
+.widget_recent_entries ul,
 li.nav_leaf {
 	list-style-image: url(../icons/page_white_text.gif);
 }
