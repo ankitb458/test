@@ -171,7 +171,7 @@ function sem_semiologic_affiliate_add_id($input)
 				(?:
 					\?
 					|
-					&(?:amp;)?
+					&(?:amp;|0*38;)?
 				)
 				(
 				aff
