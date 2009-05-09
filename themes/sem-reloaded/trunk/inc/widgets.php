@@ -8,7 +8,7 @@
 add_action('widgets_init', array('sem_widgets', 'register'));
 add_action('admin_footer-widgets.php', array('sem_widgets', 'widgets_js'));
 
-add_action('wp', array('site_header', 'wire'));
+add_action('wp', array('header', 'wire'));
 
 class sem_widgets {
 	/**
@@ -27,9 +27,9 @@ class sem_widgets {
 		register_widget('blog_footer');
 		register_widget('header_boxes');
 		register_widget('footer_boxes');
-		register_widget('header_nav');
-		register_widget('footer_nav');
-		register_widget('site_header');
+		register_widget('header');
+		register_widget('navbar');
+		register_widget('footer');
 	} # register()
 	
 	
@@ -747,268 +747,27 @@ class footer_boxes extends WP_Widget {
 
 
 /**
- * sem_nav_menu
+ * header
  *
  * @package Semiologic Reloaded
  **/
 
-class sem_nav_menu extends WP_Widget {
+class header extends WP_Widget {
 	/**
-	 * widget()
-	 *
-	 * @param array $args widget args
-	 * @param array $instance widget options
-	 * @return void
-	 **/
-
-	function widget($args, $instance) {
-		echo '<span>menu</span>';
-	} # widget()
-} # sem_nav_menu
-
-
-/**
- * header_nav
- *
- * @package Semiologic Reloaded
- **/
-
-class header_nav extends sem_nav_menu {
-	/**
-	 * header_nav()
+	 * header()
 	 *
 	 * @return void
 	 **/
 
-	function header_nav() {
-		$widget_name = __('Header: Nav Menu', 'sem-reloaded');
-		$widget_ops = array(
-			'classname' => 'header_nav',
-			'description' => __('The header\'s navigation menu, with an optional search form. Only works in the header area.', 'sem-reloaded'),
-			);
-		
-		$this->WP_Widget('header_nav', $widget_name, $widget_ops);
-	} # header_nav()
-	
-	
-	/**
-	 * widget()
-	 *
-	 * @param array $args widget args
-	 * @param array $instance widget options
-	 * @return void
-	 **/
-
-	function widget($args, $instance) {
-		global $the_header;
-		
-		if ( !$the_header )
-			return;
-		
-		global $sem_options;
-		global $sem_captions;
-		
-		echo '<div id="navbar" class="wrapper'
-			. ( $sem_options['show_search_form']
-				? ' float_nav'
-				: ''
-				)
-				. '"'
-			. '>' . "\n";
-		
-		echo '<div id="navbar_top"><div class="hidden"></div></div>' . "\n";
-		
-		echo '<div id="navbar_bg">' . "\n";
-		
-		echo '<div class="wrapper_item">' . "\n";
-		
-		echo '<div class="pad">' . "\n";
-		
-		echo '<div id="header_nav" class="header_nav inline_menu">';
-
-		parent::widget($args, $instance);
-
-		echo '</div><!-- header_nav -->' . "\n";
-
-		if ( $sem_options['show_search_form'] ) {
-			echo '<div id="search_form" class="search_form">';
-
-			if ( is_search() )
-				$search = get_search_query();
-			else
-				$search = $sem_captions['search_field'];
-			
-			if ( $search == $sem_captions['search_field'] ) {
-				$onfocusblur = ' onfocus="if ( this.value == \'' . addslashes(esc_attr($search)) . '\' )'
-							. ' this.value = \'\';"'
-					. ' onblur="if ( this.value == \'\' )'
-					 	. ' this.value = \'' . addslashes(esc_attr($search)) . '\';"';
-			} else {
-				$onfocusblur = '';
-			}
-			
-			$go = $sem_captions['search_button'];
-			
-			if ( $go !== '' )
-				$go = '<input type="submit" id="go" class="go button" value="' . esc_attr($go) . '" />';
-			
-			echo '<form method="get"'
-					. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
-					. ' id="searchform" name="searchform"'
-					. '>'
-				. '&nbsp;'				# force line-height
-				. '<input type="text" id="s" class="s" name="s"'
-					. ' value="' . esc_attr($search) . '"'
-					. $onfocusblur
-					. ' />'
-				. $go
-				. '</form>';
-			
-			echo '</div><!-- search_form -->';
-		}
-
-		echo '<div class="spacer"></div>' . "\n"
-			. '</div>' . "\n"
-			. '</div>' . "\n"
-			. '</div>' . "\n";
-		
-		echo '<div id="navbar_bottom"><div class="hidden"></div></div>' . "\n";
-		
-		echo '</div><!-- navbar -->' . "\n";
-	} # widget()
-} # header_nav
-
-
-/**
- * footer_nav
- *
- * @package Semiologic Reloaded
- **/
-
-class footer_nav extends sem_nav_menu {
-	/**
-	 * footer_nav()
-	 *
-	 * @return void
-	 **/
-
-	function footer_nav() {
-		$widget_name = __('Footer: Nav Menu', 'sem-reloaded');
-		$widget_ops = array(
-			'classname' => 'footer_nav',
-			'description' => __('The footer\'s navigation menu, with an optional copyright notice. Only works in the footer area.', 'sem-reloaded'),
-			);
-		
-		$this->WP_Widget('footer_nav', $widget_name, $widget_ops);
-	} # footer_nav()
-	
-	
-	/**
-	 * widget()
-	 *
-	 * @param array $args widget args
-	 * @param array $instance widget options
-	 * @return void
-	 **/
-
-	function widget($args, $instance) {
-		global $the_footer;
-		
-		if ( !$the_footer )
-			return;
-		
-		global $sem_options;
-		global $sem_captions;
-		
-		echo '<div id="footer" class="wrapper'
-				. ( $sem_options['float_footer'] && $sem_captions['copyright']
-					? ' float_nav'
-					: ''
-					)
-				. '"'
-			. '>' . "\n";
-		
-		echo '<div id="footer_top"><div class="hidden"></div></div>' . "\n";
-		
-		echo '<div id="footer_bg">' . "\n"
-			. '<div class="wrapper_item">' . "\n"
-			. '<div class="pad">' . "\n";
-		
-		echo '<div id="footer_nav" class="inline_menu">';
-		
-		sem_nav_menu::widget($args, $instance);
-		
-		echo '</div><!-- footer_nav -->' . "\n";
-		
-		if ( $copyright_notice = $sem_captions['copyright'] ) {
-			global $wpdb;
-
-			$year = date('Y');
-
-			if ( strpos($copyright_notice, '%admin_name%') !== false ) {
-				$admin_login = $wpdb->get_var("
-					SELECT	user_login
-					FROM	wp_users
-					WHERE	user_email = '" . $wpdb->escape(get_option('admin_email')) . "'
-					ORDER BY user_registered ASC
-					LIMIT 1
-					");
-				$admin_user = get_userdatabylogin($admin_login);
-
-				if ( $admin_user->display_name ) {
-					$admin_name = $admin_user->display_name;
-				} else {
-					$admin_name = preg_replace("/@.*$/", '', $admin_user->user_email);
-
-					$admin_name = preg_replace("/[_.-]/", ' ', $admin_name);
-
-					$admin_name = ucwords($admin_name);
-				}
-
-				$copyright_notice = str_replace('%admin_name%', $admin_name, $copyright_notice);
-			}
-
-			$copyright_notice = str_replace('%year%', $year, $copyright_notice);
-
-			echo '<div id="copyright_notice">';
-			echo $copyright_notice;
-			echo '</div><!-- #copyright_notice -->' . "\n";
-		}
-
-		echo '<div class="spacer"></div>' . "\n"
-			. '</div>' . "\n"
-			. '</div>' . "\n"
-			. '</div>' . "\n";
-		
-		echo '<div id="footer_bottom"><div class="hidden"></div></div>' . "\n";
-		
-		echo '</div><!-- footer -->' . "\n";
-	} # widget()
-} # footer_nav
-
-
-/**
- * site_header
- *
- * @package Semiologic Reloaded
- **/
-
-class site_header extends WP_Widget {
-	/**
-	 * site_header()
-	 *
-	 * @return void
-	 **/
-
-	function site_header() {
+	function header() {
 		$widget_name = __('Header: Site Header', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'header',
 			'description' => __('The site\'s header. Only works in the header area.', 'sem-reloaded'),
 			);
 		
-		$this->WP_Widget('site_header', $widget_name, $widget_ops);
-	} # site_header()
+		$this->WP_Widget('header', $widget_name, $widget_ops);
+	} # header()
 	
 	
 	/**
@@ -1027,7 +786,7 @@ class site_header extends WP_Widget {
 		
 		global $sem_options;
 		
-		$header = site_header::get();
+		$header = header::get();
 		
 		if ( $header ) {
 			$ext = preg_match("/\.[^.]+$/", $header, $ext);
@@ -1088,7 +847,7 @@ class site_header extends WP_Widget {
 			
 			echo '</div>' . "\n";
 		} else {
-			echo site_header::display();
+			echo header::display();
 		}
 		
 		echo '</div>' . "\n";
@@ -1110,7 +869,7 @@ class site_header extends WP_Widget {
 
 	function display($header = null) {
 		if ( !$header )
-			$header = site_header::get();
+			$header = header::get();
 		
 		if ( !$header )
 			return;
@@ -1128,7 +887,7 @@ class site_header extends WP_Widget {
 				. '</div>' . "\n";
 		} else {
 			echo '<div id="header_img">'
-				. site_header::display_flash($header)
+				. header::display_flash($header)
 				. '</div>' . "\n";
 		}
 	} # display()
@@ -1143,7 +902,7 @@ class site_header extends WP_Widget {
 
 	function display_image($header = null) {
 		if ( !$header )
-			$header = site_header::get_header();
+			$header = header::get_header();
 
 		if ( !$header )
 			return;
@@ -1169,7 +928,7 @@ class site_header extends WP_Widget {
 
 	function display_flash($header = null) {
 		if ( !$header )
-			$header = site_header::get_header();
+			$header = header::get_header();
 
 		if ( !$header )
 			return;
@@ -1194,12 +953,12 @@ class site_header extends WP_Widget {
 	 **/
 
 	function letter() {
-		$header = site_header::get();
+		$header = header::get();
 		
 		if ( !$header || $header != get_post_meta(get_the_ID(), '_sem_header', true) )
 			return;
 		
-		echo site_header::display($header);
+		echo header::display($header);
 	} # letter()
 	
 	
@@ -1308,7 +1067,7 @@ class site_header extends WP_Widget {
 	 **/
 
 	function wire(&$wp) {
-		$header = site_header::get();
+		$header = header::get();
 		
 		if ( !$header )
 			return;
@@ -1331,7 +1090,7 @@ class site_header extends WP_Widget {
 	 **/
 
 	function css() {
-		$header = site_header::get();
+		$header = header::get();
 		
 		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
@@ -1351,5 +1110,246 @@ class site_header extends WP_Widget {
 
 EOS;
 	} # css()
-} # site_header
+} # header
+
+
+/**
+ * sem_nav_menu
+ *
+ * @package Semiologic Reloaded
+ **/
+
+class sem_nav_menu extends WP_Widget {
+	/**
+	 * widget()
+	 *
+	 * @param array $args widget args
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function widget($args, $instance) {
+		echo '<span>menu</span>';
+	} # widget()
+} # sem_nav_menu
+
+
+/**
+ * navbar
+ *
+ * @package Semiologic Reloaded
+ **/
+
+class navbar extends sem_nav_menu {
+	/**
+	 * navbar()
+	 *
+	 * @return void
+	 **/
+
+	function navbar() {
+		$widget_name = __('Header: Nav Menu', 'sem-reloaded');
+		$widget_ops = array(
+			'classname' => 'navbar',
+			'description' => __('The header\'s navigation menu, with an optional search form. Only works in the header area.', 'sem-reloaded'),
+			);
+		
+		$this->WP_Widget('navbar', $widget_name, $widget_ops);
+	} # navbar()
+	
+	
+	/**
+	 * widget()
+	 *
+	 * @param array $args widget args
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function widget($args, $instance) {
+		global $the_header;
+		
+		if ( !$the_header )
+			return;
+		
+		global $sem_options;
+		global $sem_captions;
+		
+		echo '<div id="navbar" class="wrapper'
+			. ( $sem_options['show_search_form']
+				? ' float_nav'
+				: ''
+				)
+				. '"'
+			. '>' . "\n";
+		
+		echo '<div id="navbar_top"><div class="hidden"></div></div>' . "\n";
+		
+		echo '<div id="navbar_bg">' . "\n";
+		
+		echo '<div class="wrapper_item">' . "\n";
+		
+		echo '<div class="pad">' . "\n";
+		
+		echo '<div id="header_nav" class="header_nav inline_menu">';
+
+		parent::widget($args, $instance);
+
+		echo '</div><!-- header_nav -->' . "\n";
+
+		if ( $sem_options['show_search_form'] ) {
+			echo '<div id="search_form" class="search_form">';
+
+			if ( is_search() )
+				$search = get_search_query();
+			else
+				$search = $sem_captions['search_field'];
+			
+			if ( $search == $sem_captions['search_field'] ) {
+				$onfocusblur = ' onfocus="if ( this.value == \'' . addslashes(esc_attr($search)) . '\' )'
+							. ' this.value = \'\';"'
+					. ' onblur="if ( this.value == \'\' )'
+					 	. ' this.value = \'' . addslashes(esc_attr($search)) . '\';"';
+			} else {
+				$onfocusblur = '';
+			}
+			
+			$go = $sem_captions['search_button'];
+			
+			if ( $go !== '' )
+				$go = '<input type="submit" id="go" class="go button" value="' . esc_attr($go) . '" />';
+			
+			echo '<form method="get"'
+					. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
+					. ' id="searchform" name="searchform"'
+					. '>'
+				. '&nbsp;'				# force line-height
+				. '<input type="text" id="s" class="s" name="s"'
+					. ' value="' . esc_attr($search) . '"'
+					. $onfocusblur
+					. ' />'
+				. $go
+				. '</form>';
+			
+			echo '</div><!-- search_form -->';
+		}
+
+		echo '<div class="spacer"></div>' . "\n"
+			. '</div>' . "\n"
+			. '</div>' . "\n"
+			. '</div>' . "\n";
+		
+		echo '<div id="navbar_bottom"><div class="hidden"></div></div>' . "\n";
+		
+		echo '</div><!-- navbar -->' . "\n";
+	} # widget()
+} # navbar
+
+
+/**
+ * footer
+ *
+ * @package Semiologic Reloaded
+ **/
+
+class footer extends sem_nav_menu {
+	/**
+	 * footer_nav()
+	 *
+	 * @return void
+	 **/
+
+	function footer() {
+		$widget_name = __('Footer: Nav Menu', 'sem-reloaded');
+		$widget_ops = array(
+			'classname' => 'footer',
+			'description' => __('The footer\'s navigation menu, with an optional copyright notice. Only works in the footer area.', 'sem-reloaded'),
+			);
+		
+		$this->WP_Widget('footer', $widget_name, $widget_ops);
+	} # footer()
+	
+	
+	/**
+	 * widget()
+	 *
+	 * @param array $args widget args
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function widget($args, $instance) {
+		global $the_footer;
+		
+		if ( !$the_footer )
+			return;
+		
+		global $sem_options;
+		global $sem_captions;
+		
+		echo '<div id="footer" class="wrapper'
+				. ( $sem_options['float_footer'] && $sem_captions['copyright']
+					? ' float_nav'
+					: ''
+					)
+				. '"'
+			. '>' . "\n";
+		
+		echo '<div id="footer_top"><div class="hidden"></div></div>' . "\n";
+		
+		echo '<div id="footer_bg">' . "\n"
+			. '<div class="wrapper_item">' . "\n"
+			. '<div class="pad">' . "\n";
+		
+		echo '<div id="footer_nav" class="inline_menu">';
+		
+		sem_nav_menu::widget($args, $instance);
+		
+		echo '</div><!-- footer_nav -->' . "\n";
+		
+		if ( $copyright_notice = $sem_captions['copyright'] ) {
+			global $wpdb;
+
+			$year = date('Y');
+
+			if ( strpos($copyright_notice, '%admin_name%') !== false ) {
+				$admin_login = $wpdb->get_var("
+					SELECT	user_login
+					FROM	wp_users
+					WHERE	user_email = '" . $wpdb->escape(get_option('admin_email')) . "'
+					ORDER BY user_registered ASC
+					LIMIT 1
+					");
+				$admin_user = get_userdatabylogin($admin_login);
+
+				if ( $admin_user->display_name ) {
+					$admin_name = $admin_user->display_name;
+				} else {
+					$admin_name = preg_replace("/@.*$/", '', $admin_user->user_email);
+
+					$admin_name = preg_replace("/[_.-]/", ' ', $admin_name);
+
+					$admin_name = ucwords($admin_name);
+				}
+
+				$copyright_notice = str_replace('%admin_name%', $admin_name, $copyright_notice);
+			}
+
+			$copyright_notice = str_replace('%year%', $year, $copyright_notice);
+
+			echo '<div id="copyright_notice">';
+			echo $copyright_notice;
+			echo '</div><!-- #copyright_notice -->' . "\n";
+		}
+
+		echo '<div class="spacer"></div>' . "\n"
+			. '</div>' . "\n"
+			. '</div>' . "\n"
+			. '</div>' . "\n";
+		
+		echo '<div id="footer_bottom"><div class="hidden"></div></div>' . "\n";
+		
+		echo '</div><!-- footer -->' . "\n";
+	} # widget()
+} # footer
 ?>

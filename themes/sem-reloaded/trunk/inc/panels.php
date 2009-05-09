@@ -6,6 +6,7 @@
  **/
 
 sem_panels::register();
+add_filter('sidebars_widgets', array('sem_panels', 'sidebars_widgets'));
 
 class sem_panels {
 	/**
@@ -252,129 +253,162 @@ class sem_panels {
 		}
 		$$panel_id = false;
 	} # display()
-} # sem_panels
-
-
-class old_sem_panels
-{
-	#
-	# init()
-	#
-	
-	function init()
-	{
-		if ( is_admin() || isset($_GET['preview']) && isset($_GET['template']) && isset($_GET['stylesheet']) )
-		{
-			add_action('init', array('sem_panels', 'autofill'));
-		}
-	} # init()
 	
 	
-	#
-	# autofill()
-	#
-	
-	function autofill()
-	{
-		$sidebars_widgets = get_option('sidebars_widgets');
-		#dump($sidebars_widgets);
-		#die;
-		#$sidebars_widgets = array();
-		
-		$update = false;
-		
-		if ( !$sidebars_widgets['the_entry'] )
-		{
-			$update = true;
-			$sidebars_widgets['the_entry'][] = 'entry_header';
-			$sidebars_widgets['the_entry'][] = 'entry_content';
-			$sidebars_widgets['the_entry'][] = 'entry_tags';
-			$sidebars_widgets['the_entry'][] = 'entry_categories';
-			if ( method_exists('bookmark_me', 'new_widget') )
-			{
-				$sidebars_widgets['the_entry'][] = bookmark_me::new_widget(1);
-			}
-			if ( method_exists('related_widgets', 'new_widget') )
-			{
-				$sidebars_widgets['the_entry'][] = related_widgets::new_widget();
-			}
-			$sidebars_widgets['the_entry'][] = 'entry_comments';
-		}
-		
-		if ( $update )
-		{
-			global $sem_options;
-			
-			if ( !$sidebars_widgets['the_header'] )
-			{
-				$sidebars_widgets['the_header'][] = 'header';
-				$sidebars_widgets['the_header'][] = 'navbar';
-				$sidebars_widgets['the_header'][] = 'header_boxes';
-			}
+	/**
+	 * autofill()
+	 *
+	 * @return void
+	 **/
 
-			if ( !$sidebars_widgets['before_the_entries'] )
-			{
-				$sidebars_widgets['before_the_entries'][] = 'archives_header';
-			}
-
-			if ( !$sidebars_widgets['after_the_entries'] )
-			{
-				$sidebars_widgets['after_the_entries'][] = 'next_prev_posts';
-			}
-
-			if ( !$sidebars_widgets['the_footer'] )
-			{
-				$sidebars_widgets['the_footer'][] = 'footer_boxes';
-				$sidebars_widgets['the_footer'][] = 'footer';
-			}
-
-			if ( $sem_options['active_layout'] == 'mts'
-				&& !$sidebars_widgets['sidebar-1'] && !$sidebars_widgets['sidebar-2']
-			) {
-				if ( method_exists('silo', 'new_widget') )
-				{
-					$sidebars_widgets['sidebar-1'][] = silo::new_widget();
-				}
-				if ( method_exists('fuzzy_widgets', 'new_widget') )
-				{
-					$sidebars_widgets['sidebar-1'][] = fuzzy_widgets::new_widget();
-				}
-				if ( method_exists('newsletter_manager', 'new_widget') )
-				{
-					$sidebars_widgets['sidebar-2'][] = newsletter_manager::new_widget();
-				}
-				if ( method_exists('subscribe_me', 'new_widget') )
-				{
-					$sidebars_widgets['sidebar-2'][] = subscribe_me::new_widget();
-				}
-			}
-			
-			update_option('sidebars_widgets', $sidebars_widgets);
-			
-			if ( method_exists('inline_widgets', 'autofill') )
-			{
-				inline_widgets::autofill();
-			}
-
-			if ( method_exists('feed_widgets', 'autofill') )
-			{
-				feed_widgets::autofill();
-			}
-			
-			if ( function_exists('export_ad_spaces')
-				&& class_exists('ad_manager')
-				&& class_exists('inline_widgets')
-				)
-			{
-				export_ad_spaces();
-			}
-			
-			#dump( get_option('sidebars_widgets') );
-			wp_redirect($_SERVER['REQUEST_URI']);
-			die;
-		}
-		
-		#dump( $sidebars_widgets );
+	function autofill() {
+		if ( !is_active_sidebar('the_entry') )
+			add_filter('sidebars_widgets', array('sem_panels', 'sidebars_widgets'));
 	} # autofill()
-} # old_sem_panels
+	
+	
+	/**
+	 * sidebars_widgets()
+	 *
+	 * @param array $sidebars_widgets
+	 * @return array $sidebars_widgets
+	 **/
+
+	function sidebars_widgets($sidebars_widgets) {
+		global $wp_widget_factory;
+		global $wp_registered_sidebars;
+		
+		$default_widgets = array(
+			'the_header' => array(
+				'header',
+				'navbar',
+				'header_boxes',
+				),
+			'before_the_entries' => array(
+				'blog_header',
+				),
+			'the_entry' => array(
+				'entry_header',
+				'entry_content',
+				'entry_tags',
+				'entry_categories',
+				'bookmark_me',
+				'related_widget',
+				'entry_comments',
+				),
+			'after_the_entries' => array(
+				'bog_footer',
+				),
+			'the_footer' => array(
+				'footer',
+				),
+			'sidebar-1' => array(
+				class_exists('nav_menu') ? 'nav_menu' : 'WP_Widget_Pages',
+				class_exists('fuzzy_widget') ? 'fuzzy_widget' : 'WP_Widget_Recent_Posts',
+				'WP_Widget_Categories',
+				'WP_Widget_Archives',
+				),
+			'sidebar-2' => array(
+				'newsletter_manager',
+				'subscribe_me',
+				!class_exists('sem_admin_menu') ? 'WP_Widget_Meta' : null,
+				),
+			'the_404' => array(
+				'WP_Widget_Tag_Cloud',
+				class_exists('fuzzy_widget') ? 'fuzzy_widget' : 'WP_Widget_Recent_Posts',
+				'WP_Widget_Categories',
+				'WP_Widget_Archives',
+				class_exists('silo_map') ? 'silo_map' : 'WP_Widget_Pages',
+				),
+			);
+		
+		$registered_sidebars = array_keys($wp_registered_sidebars);
+		foreach ( $registered_sidebars as $sidebar )
+			$sidebars_widgets[$sidebar] = (array) $sidebars_widgets[$sidebar];
+		$sidebars_widgets['wp_inactive_widgets'] = (array) $sidebars_widgets['wp_inactive_widgets'];
+		
+		# convert left/right sidebars into sidebar-1/-2 if needed
+		foreach ( array(
+			'sidebar-1' => array(
+				'left_sidebar',
+				'left-sidebar',
+				),
+			'sidebar-2' => array(
+				'right_sidebar',
+				'right-sidebar',
+				),
+			) as $sidebar_id => $old_sidebar_ids ) {
+			if ( !empty($sidebars_widgets[$sidebar_id]) )
+				continue;
+			foreach ( $old_sidebar_ids as $old_sidebar_id ) {
+				if ( !empty($sidebars_widgets[$old_sidebar_id]) ) {
+					$sidebars_widgets[$sidebar_id] = $sidebars_widgets[$old_sidebar_ids];
+					unset($sidebars_widgets[$old_sidebar_ids]);
+				}
+			}
+		}
+		
+		foreach ( $default_widgets as $panel => $widgets ) {
+			if ( empty($sidebars_widgets[$panel]) )
+				$sidebars_widgets[$panel] = (array) $sidebars_widgets[$panel];
+			else
+				continue;
+			
+			foreach ( $widgets as $widget ) {
+				if ( !is_object($wp_widget_factory->widgets[$widget]) )
+					continue;
+				
+				$widget_ids = array_keys((array) $wp_widget_factory->widgets[$widget]->get_settings());
+				$widget_id_base = $wp_widget_factory->widgets[$widget]->id_base;
+				$new_widget_number = $widget_ids ? max($widget_ids) + 1 : 2;
+				foreach ( $widget_ids as $key => $widget_id )
+					$widget_ids[$key] = $widget_id_base . '-' . $widget_id;
+				
+				# check if active already
+				foreach ( $widget_ids as $widget_id ) {
+					if ( in_array($widget_id, $sidebars_widgets[$panel]) )
+						continue 2;
+				}
+
+				# use an inactive widget if available
+				foreach ( $widget_ids as $widget_id ) {
+					foreach ( array_keys($sidebars_widgets) as $sidebar ) {
+						$key = array_search($widget_id, $sidebars_widgets[$sidebar]);
+						
+						if ( $key === false )
+							continue;
+						elseif ( in_array($sidebar, $registered_sidebars) ) {
+							continue 2;
+						}
+						
+						unset($sidebars_widgets[$sidebar][$key]);
+						$sidebars_widgets[$panel][] = $widget_id;
+						continue 3;
+					}
+					
+					$sidebars_widgets[$panel][] = $widget_id;
+					continue 2;
+				}
+				
+				# create a widget on the fly
+				$new_settings = $wp_widget_factory->widgets[$widget]->get_settings();
+				
+				$new_settings[$new_widget_number] = array();
+				$wp_widget_factory->widgets[$widget]->_set($new_widget_number);
+				$wp_widget_factory->widgets[$widget]->_register_one($new_widget_number);
+				
+				$widget_id = "$widget_id_base-$new_widget_number";
+				$sidebars_widgets[$panel][] = $widget_id;
+				
+				$wp_widget_factory->widgets[$widget]->save_settings($new_settings);
+			}
+		}
+		
+		$sidebars_widgets['wp_inactive_widgets'] = array_merge($sidebars_widgets['wp_inactive_widgets']);
+		
+		#dump($sidebars_widgets);die;
+		
+		return $sidebars_widgets;
+	} # sidebars_widgets()
+} # sem_panels
 ?>

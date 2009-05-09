@@ -34,8 +34,7 @@ class sem_template {
 		if ( $active_layout != 'letter' ) {
 			$extra_layout = str_replace(array('s', 't'), 'm', $active_layout);
 			
-			if ( $extra_layout != $active_layout)
-			{
+			if ( $extra_layout != $active_layout) {
 				$classes[] = $extra_layout;
 				$classes[] = str_replace(array('s', 't'), '', $active_layout)
 					. ( substr_count(str_replace('t', 's', $active_layout), 's')) . 's';
@@ -149,7 +148,8 @@ class sem_template {
 	 **/
 	
 	function trackback_rdf() {
-		if ( is_singular() && pings_open() ) {
+		global $wp_the_query;
+		if ( is_singular() && comments_open($wp_the_query->get_queried_object_id()) ) {
 			echo '<!--' . "\n";
 			trackback_rdf();
 			echo "\n" . '-->' . "\n";
