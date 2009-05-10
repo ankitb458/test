@@ -22,6 +22,9 @@ include sem_path . '/inc/panels.php';
 include sem_path . '/inc/widgets.php';
 include sem_path . '/inc/template.php';
 
+if ( file_exists(sem_path . '/custom.php') )
+	include sem_path . '/custom.php';
+
 
 # Semiologic Pro files
 
