@@ -23,7 +23,6 @@ include sem_path . '/inc/widgets.php';
 include sem_path . '/inc/template.php';
 
 
-
 # Semiologic Pro files
 
 foreach ( array('sem_docs', 'sem_fixes') as $sem_plugins ) :

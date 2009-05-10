@@ -1281,7 +1281,7 @@ class sem_nav_menu extends WP_Widget {
 			} else {
 				$cache_id = "$widget_id-search";
 			}
-			$cache = get_transient($ache_id);
+			$o = get_transient($cache_id);
 		}
 		
 		if ( !sem_widget_cache_debug && $o ) {
