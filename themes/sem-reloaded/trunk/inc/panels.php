@@ -338,13 +338,13 @@ class sem_panels {
 		foreach ( array(
 			'sidebar-1' => array(
 				'left',
-				'left_sidebar',
 				'left-sidebar',
+				'left_sidebar',
 				),
 			'sidebar-2' => array(
 				'right',
-				'right_sidebar',
 				'right-sidebar',
+				'right_sidebar',
 				),
 			) as $sidebar_id => $old_sidebar_ids ) {
 			if ( !empty($sidebars_widgets[$sidebar_id]) )
@@ -353,6 +353,7 @@ class sem_panels {
 				if ( !empty($sidebars_widgets[$old_sidebar_id]) ) {
 					$sidebars_widgets[$sidebar_id] = $sidebars_widgets[$old_sidebar_ids];
 					unset($sidebars_widgets[$old_sidebar_ids]);
+					break;
 				}
 			}
 		}
