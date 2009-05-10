@@ -2177,7 +2177,7 @@ function get_page_uri($page_id) {
  *
  * The defaults that can be overridden are the following: 'child_of',
  * 'sort_order', 'sort_column', 'post_title', 'hierarchical', 'exclude',
- * 'include', 'meta_key', 'meta_value', and 'authors'.
+ * 'include', 'meta_key', 'meta_value','authors', 'number', and 'offset'.
  *
  * @since 1.5.0
  * @uses $wpdb
@@ -2193,11 +2193,14 @@ function &get_pages($args = '') {
 		'sort_column' => 'post_title', 'hierarchical' => 1,
 		'exclude' => '', 'include' => '',
 		'meta_key' => '', 'meta_value' => '',
-		'authors' => '', 'parent' => -1, 'exclude_tree' => ''
+		'authors' => '', 'parent' => -1, 'exclude_tree' => '',
+		'number' => '', 'offset' => 0
 	);
 
 	$r = wp_parse_args( $args, $defaults );
 	extract( $r, EXTR_SKIP );
+	$number = (int) $number;
+	$offset = (int) $offset;
 
 	$cache = array();
 	$key = md5( serialize( compact(array_keys($defaults)) ) );
@@ -2294,6 +2297,9 @@ function &get_pages($args = '') {
 	$query = "SELECT * FROM $wpdb->posts $join WHERE (post_type = 'page' AND post_status = 'publish') $where ";
 	$query .= $author_query;
 	$query .= " ORDER BY " . $sort_column . " " . $sort_order ;
+
+	if ( !empty($number) )
+		$query .= ' LIMIT ' . $offset . ',' . $number;
 
 	$pages = $wpdb->get_results($query);
 
