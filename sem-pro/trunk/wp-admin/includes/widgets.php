@@ -19,16 +19,15 @@
 function wp_list_widgets() {
 	global $wp_registered_widgets, $sidebars_widgets, $wp_registered_widget_controls;
 
-	$done = array();
-	$sort = array_keys($wp_registered_widgets);
-	natcasesort($sort); ?>
+	$sort = $wp_registered_widgets;
+	usort( $sort, create_function( '$a, $b', 'return strnatcasecmp( $a["name"], $b["name"] );' ) );
+	$done = array(); ?>
 
 	<div class="widget-holder">
 	<p class="description"><?php _e('Drag widgets from here to a sidebar on the right to activate them.'); ?></p>
 	<div id="widget-list">
 <?php
-	foreach ( $sort as $val ) {
-		$widget = $wp_registered_widgets[$val];
+	foreach ( $sort as $widget ) {
 		if ( in_array( $widget['callback'], $done, true ) ) // We already showed this multi-widget
 			continue;
 
@@ -172,7 +171,7 @@ function wp_widget_control( $sidebar_args ) {
 		<a class="widget-action hide-if-no-js" href="#available-widgets"></a>
 		<a class="widget-control-edit hide-if-js" href="<?php echo clean_url( add_query_arg( $query_arg ) ); ?>"><span class="edit"><?php _e('Edit'); ?></span><span class="add"><?php _e('Add'); ?></span></a>
 	</div>
-	<div class="widget-title"><h4><?php echo $widget_title ?></h4></div>
+	<div class="widget-title"><h4><?php echo $widget_title ?><span class="in-widget-title"></span></h4></div>
 	</div>
 
 	<div class="widget-inside">
