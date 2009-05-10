@@ -365,7 +365,7 @@ class sem_panels {
 				continue;
 			
 			foreach ( $widgets as $widget ) {
-				if ( !is_object($wp_widget_factory->widgets[$widget]) )
+				if ( !is_a($wp_widget_factory->widgets[$widget], 'WP_Widget') )
 					continue;
 				
 				$widget_ids = array_keys((array) $wp_widget_factory->widgets[$widget]->get_settings());
