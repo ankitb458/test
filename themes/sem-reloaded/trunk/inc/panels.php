@@ -337,10 +337,12 @@ class sem_panels {
 		# convert left/right sidebars into sidebar-1/-2 if needed
 		foreach ( array(
 			'sidebar-1' => array(
+				'left',
 				'left_sidebar',
 				'left-sidebar',
 				),
 			'sidebar-2' => array(
+				'right',
 				'right_sidebar',
 				'right-sidebar',
 				),
