@@ -10,7 +10,6 @@ add_action('widgets_init', array('sem_widgets', 'register'));
 if ( !is_admin() ) {
 	add_action('wp', array('header', 'wire'));
 } else {
-	add_action('admin_footer-widgets.php', array('sem_widgets', 'widgets_js'));
 	add_action('admin_print_scripts-widgets.php', array('sem_widgets', 'admin_scripts'));
 	add_action('admin_print_styles-widgets.php', array('sem_widgets', 'admin_styles'));
 }
@@ -52,25 +51,6 @@ class sem_widgets {
 		register_widget('navbar');
 		register_widget('footer');
 	} # register()
-	
-	
-	/**
-	 * footer_js()
-	 *
-	 * @return void
-	 **/
-
-	function widgets_js() {
-		echo <<<EOS
-
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#widgets-right .widgets-holder-wrap .widgets-sortables:first').css('minHeight', '');
-});
-</script>
-
-EOS;
-	} # widgets_js()
 	
 	
 	/**
