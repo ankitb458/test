@@ -1985,12 +1985,13 @@ class sem_nav_menu extends WP_Widget {
 		
 		foreach ( array('navbar', 'footer') as $type ) {
 			$widgets = get_option("widget_$type");
+			
 			if ( !$widgets )
 				continue;
 			unset($widgets['_multiwidget']);
-			foreach ( array_keys($widgets) as $widget_id ) {
+			
+			foreach ( array_keys($widgets) as $widget_id )
 				$cache_ids[] = "$type-$widget_id";
-			}
 		}
 		
 		foreach ( $cache_ids as $cache_id ) {
