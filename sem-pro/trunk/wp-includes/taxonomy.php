@@ -2077,8 +2077,8 @@ function &_get_term_children($term_id, $terms, $taxonomy) {
 function _pad_term_counts(&$terms, $taxonomy) {
 	global $wpdb;
 
-	// This function only works for post categories.
-	if ( 'category' != $taxonomy )
+	// This function only works for hierarchical taxonomies like post categories.
+	if ( !is_taxonomy_hierarchical( $taxonomy ) )
 		return;
 
 	$term_hier = _get_term_hierarchy($taxonomy);
@@ -2151,30 +2151,26 @@ function _update_post_term_count( $terms ) {
  *
  * @since 2.5.0
  *
- * @param object|int|string $term
+ * @param int $term_id The term id for which to get a link.
  * @param string $taxonomy
  * @return string HTML link to taxonomy term archive
  */
-function get_term_link( $term, $taxonomy ) {
+function get_term_link( $term_id, $taxonomy ) {
 	global $wp_rewrite;
+	$term_id = intval($term_id);
 
 	// use legacy functions for core taxonomies until they are fully plugged in
 	if ( $taxonomy == 'category' )
-		return get_category_link($term);
+		return get_category_link((int) $term_id);
 	if ( $taxonomy == 'post_tag' )
-		return get_tag_link($term);
+		return get_tag_link((int) $term_id);
+	
+	$term = &get_term($term_id, $taxonomy);
 
-	$termlink = $wp_rewrite->get_extra_permastruct($taxonomy);
-
-	if ( !is_object($term) ) {
-		if ( is_int($term) ) {
-			$term = &get_term($term, $taxonomy);
-		} else {
-			$term = &get_term_by('slug', $term, $taxonomy);
-		}
-	}
 	if ( is_wp_error( $term ) )
 		return $term;
+
+	$termlink = $wp_rewrite->get_extra_permastruct($taxonomy);
 
 	$slug = $term->slug;
 
