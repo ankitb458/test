@@ -264,6 +264,9 @@ $total_active_plugins = count($active_plugins);
 $total_recent_plugins = count($recent_plugins);
 $total_upgrade_plugins = count($upgrade_plugins);
 
+// Sort active before inactive for all plugins list
+$all_plugins = array_merge($active_plugins, $inactive_plugins);
+
 //Searching.
 if ( isset($_GET['s']) ) {
 	function _search_plugins_filter_callback($plugin) {
@@ -422,7 +425,7 @@ function print_plugin_actions($context) {
 
 <form method="get" action="">
 <p class="search-box">
-	<label class="invisible" for="plugin-search-input"><?php _e( 'Search Plugins' ); ?>:</label>
+	<label class="screen-reader-text" for="plugin-search-input"><?php _e( 'Search Plugins' ); ?>:</label>
 	<input type="text" id="plugin-search-input" name="s" value="<?php _admin_search_query(); ?>" />
 	<input type="submit" value="<?php esc_attr_e( 'Search Plugins' ); ?>" class="button" />
 </p>

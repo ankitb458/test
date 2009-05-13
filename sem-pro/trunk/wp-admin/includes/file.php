@@ -239,7 +239,8 @@ function wp_handle_upload( &$file, $overrides = false, $time = null ) {
 		__( "No file was uploaded." ),
 		'',
 		__( "Missing a temporary folder." ),
-		__( "Failed to write file to disk." ));
+		__( "Failed to write file to disk." ),
+		__( "File upload stopped by extension." ));
 
 	// All tests are on by default. Most can be turned off by $override[{test_name}] = false;
 	$test_form = true;
@@ -340,12 +341,14 @@ function wp_handle_sideload( &$file, $overrides = false ) {
 
 	// Courtesy of php.net, the strings that describe the error indicated in $_FILES[{form field}]['error'].
 	$upload_error_strings = array( false,
-		__( "The file exceeds the <code>upload_max_filesize</code> directive in <code>php.ini</code>." ),
-		__( "The file exceeds the <em>MAX_FILE_SIZE</em> directive that was specified in the HTML form." ),
-		__( "The file was only partially uploaded." ),
-		__( "No file was sent." ),
+		__( "The uploaded file exceeds the <code>upload_max_filesize</code> directive in <code>php.ini</code>." ),
+		__( "The uploaded file exceeds the <em>MAX_FILE_SIZE</em> directive that was specified in the HTML form." ),
+		__( "The uploaded file was only partially uploaded." ),
+		__( "No file was uploaded." ),
+		'',
 		__( "Missing a temporary folder." ),
-		__( "Failed to write file to disk." ));
+		__( "Failed to write file to disk." ),
+		__( "File upload stopped by extension." ));
 
 	// All tests are on by default. Most can be turned off by $override[{test_name}] = false;
 	$test_form = true;
@@ -758,7 +761,7 @@ jQuery(function($){
 <tr valign="top">
 <th scope="row"><?php _e('Connection Type') ?></th>
 <td>
-<fieldset><legend class="invisible"><span><?php _e('Connection Type') ?></span></legend>
+<fieldset><legend class="screen-reader-text"><span><?php _e('Connection Type') ?></span></legend>
 <label><input id="ftp" name="connection_type"  type="radio" value="ftp" <?php checked('ftp', $connection_type); if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('FTP') ?></label><br />
 <label><input id="ftps" name="connection_type" type="radio" value="ftps" <?php checked('ftps', $connection_type); if ( defined('FTP_SSH') || defined('FTP_SSH') ) echo ' disabled="disabled"';  ?>/> <?php _e('FTPS (SSL)') ?></label><br />
 <?php if ( extension_loaded('ssh2') ) { ?><label><input id="ssh" name="connection_type" type="radio" value="ssh" <?php checked('ssh', $connection_type);  if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('SSH') ?></label><?php } ?>
