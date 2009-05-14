@@ -7,7 +7,7 @@
 
 sem_panels::register();
 
-add_action('init', array('sem_panels', 'autofill'), 5);
+add_action('init', array('sem_panels', 'autofill'), 0);
 
 class sem_panels {
 	/**

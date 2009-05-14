@@ -1,60 +1,6 @@
 <?php
 
 class sem_entry_admin {
-	#
-	# widget_control()
-	#
-
-	function widget_control($area)
-	{
-		do_action('entry_' . $area . '_control');
-	} # widget_control()
-
-
-	#
-	# header()
-	#
-
-	function header()
-	{
-		global $sem_options;
-		global $sem_captions;
-
-		if ( $_POST['update_sem_entry']['header'] )
-		{
-			$new_options = $sem_options;
-
-			$new_options['show_post_date'] = isset($_POST['sem_entry']['show_post_date']);
-
-			if ( $new_options != $sem_options )
-			{
-				$sem_options = $new_options;
-
-				update_option('sem6_options', $sem_options);
-			}
-		}
-
-		echo '<input type="hidden" name="update_sem_entry[header]" value="1" />';
-
-		echo '<h3>'
-			. __('Config')
-			. '</h3>';
-
-		echo '<div style="margin-bottom: .2em;">'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="sem_entry[show_post_date]"'
-				. ( $sem_options['show_post_date']
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. ' '
-			. __('Show Post Date')
-			. '</label>'
-			. '</div>';
-	} # header()
-
 
 	#
 	# content()

@@ -26,7 +26,6 @@ foreach ( array(
 		'update_option_sem5_options',
 		'update_option_sem6_options',
 		'generate_rewrite_rules',
-		'shutdown',
 		) as $hook)
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
@@ -98,8 +97,11 @@ class entry_header extends WP_Widget {
 			'classname' => 'entry_header',
 			'description' => __('The entry\'s title and date. Must be placed in the loop (each entry).', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('entry_header', $widget_name, $widget_ops);
+		$this->WP_Widget('entry_header', $widget_name, $widget_ops, $control_ops);
 	} # entry_header()
 	
 	
@@ -117,23 +119,21 @@ class entry_header extends WP_Widget {
 		if ( !$the_entry || !class_exists('widget_contexts') && is_letter() )
 			return;
 		
-		global $sem_options;
-		global $sem_captions;
+		$instance = wp_parse_args($instance, entry_header::defaults());
 		extract($args, EXTR_SKIP);
+		extract($instance, EXTR_SKIP);
 		
-		if ( $sem_options['show_post_date'] && ( is_single() || !is_singular() ) ) {
+		$date = false;
+		if ( $show_post_date && ( is_single() || !is_singular() ) )
 			$date = the_date('', '', '', false);
-		}
 		
 		$title = the_title('', '', false);
 		
-		if ( $title ) {
-			if ( !is_singular() ) {
-				$permalink = apply_filters('the_permalink', get_permalink());
-				$title = '<a href="' . clean_url($permalink) . '" title="' . esc_attr($title) . '">'
-					. $title
-					. '</a>';
-			}
+		if ( $title && !is_singular() ) {
+			$permalink = apply_filters('the_permalink', get_permalink());
+			$title = '<a href="' . clean_url($permalink) . '" title="' . esc_attr($title) . '">'
+				. $title
+				. '</a>';
 		}
 		
 		if ( $date || $title ) {
@@ -164,6 +164,60 @@ class entry_header extends WP_Widget {
 			echo '<div class="spacer"></div>' . "\n";
 		}
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance
+	 * @param array $old_instance
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance['show_post_date'] = isset($new_instance['show_post_date']);
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$instance = wp_parse_args($instance, entry_header::defaults());
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+			. ' name="' . $this->get_field_name('show_post_date') . '"'
+			. checked($show_post_date, true, false)
+			. ' />'
+			. '&nbsp;'
+			. __('Show post dates.', 'sem-reloaded')
+			. '</label>'
+			. '</p>' . "\n";
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+
+	function defaults() {
+		return array(
+			'show_post_date' => true,
+			);
+	} # defaults()
 } # entry_header
 
 
@@ -186,8 +240,11 @@ class entry_content extends WP_Widget {
 			'classname' => 'entry_content',
 			'description' => __('The entry\'s content. Must be placed in the loop (each entry).', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('entry_content', $widget_name, $widget_ops);
+		$this->WP_Widget('entry_content', $widget_name, $widget_ops, $control_ops);
 	} # entry_content()
 	
 	
@@ -205,24 +262,24 @@ class entry_content extends WP_Widget {
 		if ( !$the_entry )
 			return;
 		
-		global $sem_options;
-		global $sem_captions;
 		global $post;
+		$instance = wp_parse_args($instance, entry_header::defaults());
 		extract($args, EXTR_SKIP);
+		extract($instance, EXTR_SKIP);
 		
 		$title = the_title('', '', false);
 		
-		if ( $sem_options['show_excerpts'] && !is_singular() ) {
+		if ( $show_excerpts && !is_singular() ) {
 			$content = apply_filters('the_excerpt', get_the_excerpt());
 		} else {
-			$more_link = str_replace('%title%', $title, $sem_captions['more_link']);
-
+			$more_link = str_replace('%title%', $title, $more_link);
+			
 			$content = get_the_content($more_link, 0, '');
 			
 			if ( is_attachment() ) {
 				# strip wpautop junk
 				$content = preg_replace("/<br\s*\/>\s+$/", '', $content);
-
+				
 				# add gallery links
 				$attachments = array_values(
 					get_children(array(
@@ -232,18 +289,18 @@ class entry_content extends WP_Widget {
 						'order_by' => 'menu_order ASC, ID ASC',
 						))
 					);
-
+				
 				foreach ( $attachments as $k => $attachment )
 					if ( $attachment->ID == $post->ID )
 						break;
-
+				
 				$prev_image = isset($attachments[$k-1])
 					? wp_get_attachment_link($attachments[$k-1]->ID, 'thumbnail', true)
 					: '';
 				$next_image = isset($attachments[$k+1])
 					? wp_get_attachment_link($attachments[$k+1]->ID, 'thumbnail', true)
 					: '';
-
+				
 				if ( $prev_image || $next_image ) {
 					$content .= '<div class="gallery_nav">' . "\n"
 						. '<div class="prev_image">' . "\n"
@@ -262,7 +319,7 @@ class entry_content extends WP_Widget {
 			
 			$content .= wp_link_pages(
 				array(
-					'before' => '<div class="entry_nav"> ' . $sem_captions['paginate'] . ': ',
+					'before' => '<div class="entry_nav"> ' . $paginate . ' ',
 					'after' => '</div>' . "\n",
 					'echo' => 0,
 					)
@@ -291,19 +348,19 @@ class entry_content extends WP_Widget {
 			
 			$num_comments = (int) get_comments_number();
 			
-			if ( $num_comments || comments_open() ) {
+			if ( $show_comment_box && ( $num_comments || comments_open() ) ) {
 				$comments_link = apply_filters('the_permalink', get_permalink());
 				$comments_link .= $num_comments ? '#comments' : '#respond';
 				
-				$caption = _n('1 Comment', '% Comments', $num_comments);
-				$caption = preg_replace("/\s*(?:1|\%)\s*/", '', $caption);
+				$caption = _n($one_comment, $n_comments, $num_comments);
+				$caption = preg_replace("/\s*(?:1|%num%)\s*/", '', $caption);
 				
 				$actions .= '<span class="comment_box">'
 					. '<a href="' . clean_url($comments_link) . '">'
 					. '<span class="num_comments">'
 					. $num_comments
 					. '</span>'
-					. '<br />'
+					. '<br />' . "\n"
 					. $caption
 					. '</a>'
 					. '</span>' . "\n";
@@ -324,6 +381,127 @@ class entry_content extends WP_Widget {
 				. $after_widget;
 		}
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance
+	 * @param array $old_instance
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance['show_comment_box'] = isset($new_instance['show_comment_box']);
+		$instance['show_excerpt'] = isset($new_instance['show_excerpt']);
+		$instance['one_comment'] = trim(strip_tags($new_instance['one_comment']));
+		$instance['n_comments'] = trim(strip_tags($new_instance['n_comments']));
+		$instance['more_link'] = trim(strip_tags($new_instance['more_link']));
+		$instance['paginate'] = trim(strip_tags($new_instance['paginate']));
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$instance = wp_parse_args($instance, entry_content::defaults());
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+			. ' name="' . $this->get_field_name('show_comment_box') . '"'
+			. checked($show_comment_box, true, false)
+			. ' />'
+			. '&nbsp;'
+			. __('Show comment box.', 'sem-reloaded')
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+			. ' name="' . $this->get_field_name('show_excerpt') . '"'
+			. checked($show_excerpt, true, false)
+			. ' />'
+			. '&nbsp;'
+			. __('Use the post\'s excerpt on blog and archive pages.', 'sem-reloaded')
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('1 Comment', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('one_comment') . '"'
+			. ' value="' . esc_attr($one_comment) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('%num% Comments', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('n_comments') . '"'
+			. ' value="' . esc_attr($n_comments) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('More on %title%...', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('more_link') . '"'
+			. ' value="' . esc_attr($more_link) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('Pages:', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('paginate') . '"'
+			. ' value="' . esc_attr($paginate) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array(
+			'show_comment_box' => true,
+			'show_excerpt' => false,
+			'one_comment' => __('1 Comment', 'sem-reloaded'),
+			'n_comments' => __('%num% Comments', 'sem-reloaded'),
+			'more_link' => __('More on %title%...', 'sem-reloaded'),
+			'paginate' => __('Pages:', 'sem-reloaded'),
+			);
+	} # defaults()
 } # entry_content
 
 
@@ -339,15 +517,18 @@ class entry_categories extends WP_Widget {
 	 *
 	 * @return void
 	 **/
-
+	
 	function entry_categories() {
 		$widget_name = __('Entry: Categories', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'entry_categories',
 			'description' => __('The entry\'s categories. Will only display on individual posts if placed outside of the loop (each entry).', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('entry_categories', $widget_name, $widget_ops);
+		$this->WP_Widget('entry_categories', $widget_name, $widget_ops, $control_ops);
 	} # entry_categories()
 	
 	
@@ -374,6 +555,7 @@ class entry_categories extends WP_Widget {
 		}
 		
 		global $sem_captions;
+		$instance = wp_parse_args($instance, entry_categories::defaults());
 		extract($args, EXTR_SKIP);
 		extract($instance, EXTR_SKIP);
 		
@@ -394,19 +576,21 @@ class entry_categories extends WP_Widget {
 				. '</span>';
 		}
 		
-		echo $before_widget
-			. ( !$the_entry && $title
-				? $before_title . $title . $after_title
-				: ''
-				)
-			. '<p>'
-			. str_replace(
-				array('%categories%', '%author%'),
-				array($categories, $author),
-				$sem_captions['filed_under']
-				)
-			. '</p>' . "\n"
-			. $after_widget;
+		if ( $filed_under_by ) {
+			echo $before_widget
+				. ( !$the_entry && $title
+					? $before_title . $title . $after_title
+					: ''
+					)
+				. '<p>'
+				. str_replace(
+					array('%categories%', '%author%'),
+					array($categories, $author),
+					$filed_under_by
+					)
+				. '</p>' . "\n"
+				. $after_widget;
+		}
 	} # widget()
 	
 	
@@ -420,6 +604,7 @@ class entry_categories extends WP_Widget {
 
 	function update($new_instance, $old_instance) {
 		$instance['title'] = trim(strip_tags($new_instance['title']));
+		$instance['filed_under_by'] = trim(strip_tags($new_instance['filed_under_by']));
 		
 		return $instance;
 	} # update()
@@ -431,9 +616,12 @@ class entry_categories extends WP_Widget {
 	 * @param array $instance widget options
 	 * @return void
 	 **/
-
+	
 	function form($instance) {
+		$instance = wp_parse_args($instance, entry_categories::defaults());
 		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
 		
 		echo '<p>'
 			. '<label>'
@@ -447,8 +635,34 @@ class entry_categories extends WP_Widget {
 			. '</p>' . "\n";
 		
 		echo '<p>'
-			. __('This widget\'s title gets ignored when it is placed in the loop (each entry).', 'sem-reloaded');
+			. __('This widget\'s title is displayed only when this widget is placed out of the loop (each entry).', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('Filed under %category% by %author%.', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+				. ' name="' . $this->get_field_name('filed_under_by') . '"'
+				. ' value="' . esc_attr($filed_under_by) . '"'
+				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
 	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array(
+			'title' => __('Categories', 'sem-reloaded'),
+			'filed_under_by' => __('Filed under %categories% by %author%.', 'sem-reloaded'),
+			);
+	} # defaults()
 } # entry_categories
 
 
@@ -471,8 +685,11 @@ class entry_tags extends WP_Widget {
 			'classname' => 'entry_tags',
 			'description' => __('The entry\'s tags. Will only display on individual entries if placed outside of the loop (each entry).', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('entry_tags', $widget_name, $widget_ops);
+		$this->WP_Widget('entry_tags', $widget_name, $widget_ops, $control_ops);
 	} # entry_tags()
 	
 	
@@ -501,7 +718,7 @@ class entry_tags extends WP_Widget {
 		if ( !class_exists('widget_contexts') && is_letter() )
 			return;
 		
-		global $sem_captions;
+		$instance = wp_parse_args($instance, entry_tags::defaults());
 		extract($args, EXTR_SKIP);
 		extract($instance, EXTR_SKIP);
 		
@@ -521,9 +738,9 @@ class entry_tags extends WP_Widget {
 			$term_links = apply_filters( "term_links-post_tag", $term_links );
 		}
 		
-		$tags = apply_filters('the_tags', join(', ', $term_links));
+		$_tags = apply_filters('the_tags', join(', ', $term_links));
 		
-		if ( $tags ) {
+		if ( $_tags ) {
 			echo $before_widget
 				. ( !$the_entry && $title
 					? $before_title . $title . $after_title
@@ -532,8 +749,8 @@ class entry_tags extends WP_Widget {
 				. '<p>'
 				. str_replace(
 					'%tags%',
-					$tags,
-					$sem_captions['tags']
+					$_tags,
+					$tags
 					)
 				. '</p>' . "\n"
 				. $after_widget;
@@ -551,6 +768,7 @@ class entry_tags extends WP_Widget {
 
 	function update($new_instance, $old_instance) {
 		$instance['title'] = trim(strip_tags($new_instance['title']));
+		$instance['tags'] = trim(strip_tags($new_instance['tags']));
 		
 		return $instance;
 	} # update()
@@ -564,6 +782,7 @@ class entry_tags extends WP_Widget {
 	 **/
 
 	function form($instance) {
+		$instance = wp_parse_args($instance, entry_tags::defaults());
 		extract($instance, EXTR_SKIP);
 		
 		echo '<p>'
@@ -578,8 +797,34 @@ class entry_tags extends WP_Widget {
 			. '</p>' . "\n";
 		
 		echo '<p>'
-			. __('This widget\'s title gets ignored when it is placed in the loop (each entry).', 'sem-reloaded');
+			. __('This widget\'s title is displayed only when this widget is placed out of the loop (each entry).', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('Tags: %tags%.', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+				. ' name="' . $this->get_field_name('tags') . '"'
+				. ' value="' . esc_attr($tags) . '"'
+				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
 	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array(
+			'title' => __('Tags', 'sem-reloaded'),
+			'tags' => __('Tags: %tags%.', 'sem-reloaded'),
+			);
+	} # defaults()
 } # entry_tags
 
 
@@ -602,8 +847,11 @@ class entry_comments extends WP_Widget {
 			'classname' => 'entry_comments',
 			'description' => __('The entry\'s comments. Must be placed in the loop (each entry).', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('entry_comments', $widget_name, $widget_ops);
+		$this->WP_Widget('entry_comments', $widget_name, $widget_ops, $control_ops);
 	} # entry_comments()
 	
 	
@@ -1254,14 +1502,15 @@ class sem_nav_menu extends WP_Widget {
 			$cache_id = "_$widget_id";
 			$o = get_post_meta($page_id, $cache_id, true);
 		} else {
-			if ( is_home() && !is_paged() ) {
-				$cache_id = "$widget_id-home";
+			if ( is_front_page() && !is_paged() ) {
+				$cache_id = 'home';
 			} elseif ( !is_search() && !is_404() ) {
-				$cache_id = "$widget_id-blog";
+				$cache_id = 'blog';
 			} else {
-				$cache_id = "$widget_id-search";
+				$cache_id = 'search';
 			}
-			$o = get_transient($cache_id);
+			$cache = get_transient($widget);
+			$o = isset($cache[$cache_id]) ? $cache[$cache_id] : false;
 		}
 		
 		if ( !sem_widget_cache_debug && $o ) {
@@ -1300,7 +1549,8 @@ class sem_nav_menu extends WP_Widget {
 		if ( is_page() ) {
 			update_post_meta($page_id, $cache_id, $o);
 		} else {
-			set_transient($cache_id, $o);
+			$cache[$cache_id] = $o;
+			set_transient($widget_id, $cache);
 		}
 		
 		echo $o;
@@ -1975,13 +2225,20 @@ class sem_nav_menu extends WP_Widget {
 		}
 		
 		foreach ( $cache_ids as $cache_id ) {
-			foreach ( array('home', 'blog', 'search') as $context )
-				delete_transient("$cache_id-$context");
+			delete_transient($cache_id);
 			delete_post_meta_by_key("_$cache_id");
 		}
 		
-		wp_cache_flush('page_children');
-		wp_cache_flush('page_ancestors');
+		if ( wp_cache_get(0, 'page_children') !== false ) {
+			global $wpdb;
+			$page_ids = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE post_type = 'page'");
+			foreach ( $page_ids as $page_id ) {
+				wp_cache_delete($page_id, 'page_ancestors');
+				wp_cache_delete($page_id, 'page_children');
+			}
+			wp_cache_delete(0, 'page_ancestors');
+			wp_cache_delete(0, 'page_children');
+		}
 		
 		return $in;
 	} # flush_cache()
