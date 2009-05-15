@@ -2418,8 +2418,8 @@ if ( ( $wp_locale ) && ( 'rtl' == $wp_locale->text_direction ) ) : ?>
 <body id="error-page">
 <?php endif; ?>
 	<?php echo $message; ?>
-	<?php if ( strlen($message) < 512) echo str_repeat(' ', 512-strlen($message)); ?>
 </body>
+<!-- Ticket #8942, IE bug fix: always pad the error page with enough characters such that it is greater than 512 bytes, even after gzip compression abcdefghijklmnopqrstuvwxyz1234567890aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzz11223344556677889900abacbcbdcdcededfefegfgfhghgihihjijikjkjlklkmlmlnmnmononpopoqpqprqrqsrsrtstsubcbcdcdedefefgfabcadefbghicjkldmnoepqrfstugvwxhyz1i234j567k890laabmbccnddeoeffpgghqhiirjjksklltmmnunoovppqwqrrxsstytuuzvvw0wxx1yyz2z113223434455666777889890091abc2def3ghi4jkl5mno6pqr7stu8vwx9yz11aab2bcc3dd4ee5ff6gg7hh8ii9j0jk1kl2lmm3nnoo4p5pq6qrr7ss8tt9uuvv0wwx1x2yyzz13aba4cbcb5dcdc6dedfef8egf9gfh0ghg1ihi2hji3jik4jkj5lkl6kml7mln8mnm9ono -->
 </html>
 <?php
 	die();
@@ -3094,9 +3094,9 @@ function wp_timezone_supported() {
 		&& function_exists('timezone_open')
 		&& function_exists('timezone_offset_get')
 		)
-		return true;
+		return apply_filters('timezone_support',true);
 
-	return false;
+	return apply_filters('timezone_support',false);
 }
 
 /**
@@ -3106,7 +3106,17 @@ function wp_timezone_supported() {
  *
  */
 function wp_timezone_choice($selectedzone) {
+	static $mo_loaded = false;
+
 	$continents = array('Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific', 'Etc');
+
+	// Load translations for continents and cities
+	if ( ! $mo_loaded ) {
+		$locale = get_locale();
+		$mofile = WP_LANG_DIR . "/continents-cities-$locale.mo";
+		load_textdomain('continents-cities', $mofile);
+		$mo_loaded = true;
+	}
 
 	$all = timezone_identifiers_list();
 
@@ -3123,12 +3133,18 @@ function wp_timezone_choice($selectedzone) {
 
 	usort($zonen, create_function(
 		'$a, $b', '
-		if ( $a["continent"] == $b["continent"] && $a["city"] == $b["city"] )
-			return strnatcasecmp($a["subcity"], $b["subcity"]);
-		elseif ( $a["continent"] == $b["continent"] )
-			return strnatcasecmp($a["city"], $b["city"]);
+		$a_continent = translate($a["continent"], "continents-cities");
+		$b_continent = translate($b["continent"], "continents-cities");
+		$a_city = translate($a["city"], "continents-cities");
+		$b_city = translate($b["city"], "continents-cities");
+		$a_subcity = translate($a["subcity"], "continents-cities");
+		$b_subcity = translate($b["subcity"], "continents-cities");
+		if ( $a_continent == $b_continent && $a_city == $b_city )
+			return strnatcasecmp($a_subcity, $b_subcity);
+		elseif ( $a_continent == $b_continent )
+			return strnatcasecmp($a_city, $b_city);
 		else
-			return strnatcasecmp($a["continent"], $b["continent"]);
+			return strnatcasecmp($a_continent, $b_continent);
 		'));
 	
 	$structure = '';
@@ -3140,7 +3156,7 @@ function wp_timezone_choice($selectedzone) {
 		extract($zone);
 		if ( empty($selectcontinent) && !empty($city) ) {
 			$selectcontinent = $continent;
-			$structure .= '<optgroup label="'. esc_attr( translate( $continent ) ) .'">' . "\n"; // continent
+			$structure .= '<optgroup label="'. esc_attr( translate( $continent, "continents-cities" ) ) .'">' . "\n"; // continent
 		} elseif ( !empty($selectcontinent) && $selectcontinent != $continent ) {
 			$structure .= "</optgroup>\n";
 			$selectcontinent = '';
@@ -3151,16 +3167,19 @@ function wp_timezone_choice($selectedzone) {
 		}
 
 		if ( !empty($city) ) {
-			if ( !empty($subcity) ) {
-				$city = $city . '/'. $subcity;
-			}
 			$display = str_replace('_',' ',$city);
-			$display = translate($display);
+			$display = translate($display, "continents-cities");
+			if ( !empty($subcity) ) {
+				$display_subcity = str_replace('_', ' ', $subcity);
+				$display_subcity = translate($display_subcity, "continents-cities");
+				$city = $city . '/'. $subcity;
+				$display = $display . '/' . $display_subcity;
+			}
 			if ( $continent == 'Etc' )
 				$display = strtr($display, '+-', '-+');
 			$structure .= "\t<option ".((($continent.'/'.$city)==$selectedzone)?'selected="selected"':'')." value=\"".($continent.'/'.$city)."\">$pad".$display."</option>\n"; //Timezone
 		} else {
-			$structure .= "<option ".(($continent==$selectedzone)?'selected="selected"':'')." value=\"".$continent."\">" . translate($continent) . "</option>\n"; //Timezone
+			$structure .= "<option ".(($continent==$selectedzone)?'selected="selected"':'')." value=\"".$continent."\">" . translate($continent, "continents-cities") . "</option>\n"; //Timezone
 		}
 	}
 

@@ -60,7 +60,7 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'utils', "/wp-admin/js/utils$suffix.js", false, '20090102' );
 
-	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), '20090428' );
+	$scripts->add( 'common', "/wp-admin/js/common$suffix.js", array('jquery', 'hoverIntent', 'utils'), '20090514' );
 	$scripts->add_data( 'common', 'group', 1 );
 	$scripts->localize( 'common', 'commonL10n', array(
 		'warnDelete' => __("You are about to delete the selected items.\n  'Cancel' to stop, 'OK' to delete."),
@@ -237,6 +237,9 @@ function wp_default_scripts( &$scripts ) {
 			'strong' => __('Strong'),
 			'l10n_print_after' => 'try{convertEntities(pwsL10n);}catch(e){};'
 		) );
+
+		$scripts->add( 'user-profile', "/wp-admin/js/user-profile$suffix.js", array('jquery'), '20090514' );
+		$scripts->add_data( 'user-profile', 'group', 1 );
 
 		$scripts->add( 'admin-comments', "/wp-admin/js/edit-comments$suffix.js", array('wp-lists', 'jquery-ui-resizable', 'quicktags'), '20090209' );
 		$scripts->add_data( 'admin-comments', 'group', 1 );
@@ -424,10 +427,11 @@ function wp_default_styles( &$styles ) {
 	$styles->add( 'ie', '/wp-admin/css/ie.css', array(), '20090509' );
 	$styles->add_data( 'ie', 'conditional', 'lte IE 7' );
 
-	$styles->add( 'colors', true, array(), '20090509' ); // Register "meta" stylesheet for admin colors
-	$styles->add( 'colors-fresh', '/wp-admin/css/colors-fresh.css', array(), '20081210'); // for login.php.  Is there a better way?
+	// Register "meta" stylesheet for admin colors. All colors-* style sheets should have the same version string.
+	$styles->add( 'colors', true, array(), '20090514' );
+	$styles->add( 'colors-fresh', '/wp-admin/css/colors-fresh.css', array(), '20090514'); // for login.php.  Is there a better way?
 	$styles->add_data( 'colors-fresh', 'rtl', true );
-	$styles->add( 'colors-classic', '/wp-admin/css/colors-classic.css', array(), '20081210');
+	$styles->add( 'colors-classic', '/wp-admin/css/colors-classic.css', array(), '20090514');
 	$styles->add_data( 'colors-classic', 'rtl', true );
 
 	$styles->add( 'global', '/wp-admin/css/global.css', array(), '20090504' );

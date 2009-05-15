@@ -1371,12 +1371,12 @@ table.form-table td .updated {
 p.description,
 .form-wrap p {
 	margin: 2px 0 5px;
-	font-size: 11px;
 }
 
 p.help,
 .description,
 .form-wrap p {
+	font-size: 12px;
 	font-style: italic;
 	font-family: "Lucida Grande", Verdana, Arial, "Bitstream Vera Sans", sans-serif;
 }
@@ -2136,6 +2136,14 @@ body.wp-admin {
 	text-decoration: none;
 }
 
+.indicator-hint {
+	padding-top: 8px;
+}
+
+#display_name {
+	width: 15em;
+}
+
 .tablenav .delete {
 	margin-right: 20px;
 }
@@ -2807,7 +2815,7 @@ abbr.required {
 
 #wpbody-content .describe p.help {
 	margin: 0;
-	padding: 0;
+	padding: 0 0 0 5px;
 }
 
 .describe-toggle-on, .describe-toggle-off {
