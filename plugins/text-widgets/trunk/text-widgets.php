@@ -3,7 +3,7 @@
 Plugin Name: Text Widgets
 Plugin URI: http://www.semiologic.com/software/text-widgets/
 Description: Replaces WordPress' default text widgets with advanced text widgets
-Version: 1.1 RC
+Version: 1.1
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */

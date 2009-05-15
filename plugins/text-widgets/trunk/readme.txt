@@ -3,13 +3,15 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: text-widgets, widget, widgets, semiologic
 Requires at least: 2.5
-Tested up to: 2.8
+Tested up to: 2.7.1
 Stable tag: trunk
 
 Replaces WordPress' default text widget with formatting-enabled text widgets.
 
 
 == Description ==
+
+**This widget is no longer needed in WordPress 2.8.** The widget's feature is now core material.
 
 The text widgets plugin for WordPress replaces its default, text widgets with formatting-enabled text widgets.
 
