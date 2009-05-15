@@ -29,6 +29,8 @@ foreach ( array(
 		) as $hook)
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
+add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
+
 class sem_widgets {
 	/**
 	 * register()
@@ -75,6 +77,19 @@ class sem_widgets {
 		$folder = sem_url . '/css';
 		wp_enqueue_style('nav-menus', $folder . '/admin.css', null, '20090422');
 	} # admin_styles()
+	
+	
+	/**
+	 * tag_cloud_args()
+	 *
+	 * @param array $args
+	 * @return array $args
+	 **/
+
+	function tag_cloud_args($args) {
+		$args = wp_parse_args($args, array('smallest' => '.8', 'largest' => '1.6', 'unit' => 'em'));
+		return $args;
+	} # tag_cloud_args()
 } # sem_widgets
 
 
