@@ -24,7 +24,7 @@ Other icons are copyright their respective holders.
 **/
 
 
-load_plugin_textdomain('bookmark-me', null, plugin_dir_path(__FILE__) . '/lang');
+load_plugin_textdomain('bookmark-me', null, dirname(__FILE__) . '/lang');
 
 
 /**
