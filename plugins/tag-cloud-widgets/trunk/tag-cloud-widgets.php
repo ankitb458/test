@@ -3,7 +3,7 @@
 Plugin Name: Tag Cloud Widgets
 Plugin URI: http://www.semiologic.com/software/tag-cloud/
 Description: Replaces WordPress' default tag widgets with advanced configurable tag widgets
-Version: 1.0.5 RC
+Version: 1.0.5
 Author: Mike Koepke
 Author URI: http://www.getsemiologic.com
 */
