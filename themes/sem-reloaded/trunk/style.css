@@ -97,7 +97,7 @@ table {
 }
 
 pre, code, kbd, samp, tt {
-	font-family:monospace;
+	font-family: "Courier New", Courier, Monospace;
 	*font-size:108%;
 	line-height:100%;
 }
