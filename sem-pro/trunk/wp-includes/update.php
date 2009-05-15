@@ -22,7 +22,7 @@
 function wp_version_check() {
 	if ( defined('WP_INSTALLING') )
 		return;
-dump('checking');
+
 	global $wp_version, $wpdb, $wp_local_package;
 	$php_version = phpversion();
 
