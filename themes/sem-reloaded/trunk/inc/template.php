@@ -196,7 +196,7 @@ class sem_template {
 		add_filter('option_blog_public', 'false');
 		add_filter('comments_open', 'false');
 		add_filter('pings_open', 'false');
-		remove_action('wp_footer', array('sem_footer', 'display_credits'));
+		remove_action('wp_footer', array('sem_template', 'display_credits'));
 		
 		include_once sem_path . '/print.php';
 		die;
