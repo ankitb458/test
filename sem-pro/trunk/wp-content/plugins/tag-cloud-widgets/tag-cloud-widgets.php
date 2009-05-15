@@ -10,7 +10,7 @@ if ( !is_array($active_plugins) )
 
 foreach ( (array) $active_plugins as $key => $plugin )
 {
-	if ( $plugin == 'text-widgets/text-widgets.php' )
+	if ( $plugin == 'tag-cloud-widgets/tag-cloud-widgets.php' )
 	{
 		unset($active_plugins[$key]);
 		break;
