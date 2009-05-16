@@ -26,10 +26,8 @@
 						if (o.node.nodeName == 'IMG' && ed.dom.hasClass(o.node, 'mceInlineWidget')) {
 							var widgetId = ed.dom.getAttrib(o.node, 'alt');
 							var i;
-							for ( i = 0; i < document.inlineWidgetItems.length; i++ )
-							{
-								if ( document.inlineWidgetItems[i].value == widgetId )
-								{
+							for ( i = 0; i < document.inlineWidgetItems.length; i++ ) {
+								if ( document.inlineWidgetItems[i].value == widgetId ) {
 									o.name = document.inlineWidgetItems[i].label;
 									break;
 								}
@@ -51,7 +49,7 @@
 						if (im.indexOf('class="mceInlineWidget') !== -1) {
                             var m = im.match(/alt="(.*?)"/i);
 							var file = m[1];
-
+							
                             im = '[widget:' + file + ']' + "\n\n";
                         }
 						
@@ -72,26 +70,20 @@
 		 * @return {tinymce.ui.Control} New control instance or null if no control was created.
 		 */
 		createControl : function(n, cm) {
-			switch ( n )
-			{
+			switch ( n ) {
 			case 'inline_widgets':
 				// Inline widgets
-				if ( document.inlineWidgetItems )
-				{
+				if ( document.inlineWidgetItems ) {
 					var myInlineWidgetsDropdown = cm.createListBox('InlineWidgetsDropdown', {
 						title : 'Widget',
 						onselect : function(v) {
-							if ( v )
-							{
-								if ( v != 'inline_widget_help' )
-								{
+							if ( v ) {
+								if ( v != 'inline_widget_help' ) {
 									v = '[widget:' + v + ']';
 
 									window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, v);
 									window.tinyMCE.execCommand("mceCleanup");
-								}
-								else
-								{
+								} else {
 									alert('This drop down lets you insert any widget you\'ve configured in your Inline Widgets "sidebar", under Appearance / Widgets. For instance, you could use this to configure and then insert an inline ad unit, a newsletter subscription form, and so on.');
 								}
 							}
@@ -99,17 +91,13 @@
 							tinyMCE.activeEditor.controlManager.get('InlineWidgetsDropdown').reset();
 						}
 					});
-				
+					
 					var i;
-					if ( document.inlineWidgetItems.length )
-					{
-						for ( i = 0; i < document.inlineWidgetItems.length; i++ )
-						{
+					if ( document.inlineWidgetItems.length ) {
+						for ( i = 0; i < document.inlineWidgetItems.length; i++ ) {
 							myInlineWidgetsDropdown.add(document.inlineWidgetItems[i].label, document.inlineWidgetItems[i].value);
 						}
-					}
-					else
-					{
+					} else {
 						myInlineWidgetsDropdown.add('What\'s this?', 'inline_widget_help');
 					}
 
@@ -134,7 +122,7 @@
 				author : 'Denis de Bernardy',
 				authorurl : 'http://www.semiologic.com/',
 				infourl : 'http://www.semiologic.com/software/inline-widgets/',
-				version : "1.5"
+				version : "1.6"
 			};
 		}
 	});
