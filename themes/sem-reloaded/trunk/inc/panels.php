@@ -310,7 +310,7 @@ class sem_panels {
 				),
 			'sidebar-1' => array(
 				class_exists('nav_menu') ? 'nav_menu' : 'WP_Widget_Pages',
-				class_exists('fuzzy_widget') ? 'fuzzy_widget' : 'WP_Widget_Recent_Posts',
+				class_exists('fuzzy_widget') ? 'fuzzy_widget' : null,
 				'WP_Widget_Categories',
 				'WP_Widget_Archives',
 				),
