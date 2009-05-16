@@ -5,19 +5,18 @@
  * @package default
  **/
 
-add_action('admin_head', array('inline_widgets_admin', 'display_js_list'), 0);
-add_filter('admin_footer', array('inline_widgets_admin', 'quicktag'), 0);
+add_filter('admin_footer', array('inline_widgets_admin', 'footer_js'));
 add_filter('mce_external_plugins', array('inline_widgets_admin', 'editor_plugin'));
-add_filter('mce_buttons_4', array('inline_widgets_admin', 'editor_button'));
+add_filter('mce_buttons_3', array('inline_widgets_admin', 'editor_button'));
 
 class inline_widgets_admin {
 	/**
-	 * display_js_list()
+	 * footer_js()
 	 *
 	 * @package default
 	 **/
 	
-	function display_js_list() {
+	function footer_js() {
 		if ( !$GLOBALS['editing'] )
 			return;
 		
@@ -96,22 +95,7 @@ var inlineWidgetItems = new Array();
 <?php echo implode("\n", $js_options) . "\n"; ?>
 document.inlineWidgetItems = inlineWidgetItems;
 //alert(document.inlineWidgetItems);
-</script>
-<?php
-	} # display_js_list()
-	
-	
-	/**
-	 * quicktag()
-	 *
-	 * @return void
-	 **/
-	
-	function quicktag() {
-		if ( !$GLOBALS['editing'] )
-			return;
 
-?><script type="text/javascript">
 if ( document.getElementById('quicktags') ) {
 	function inlineWidgetsAddWidget(elt) {
 		if ( elt.value != '' ) {
@@ -143,7 +127,7 @@ if ( document.getElementById('quicktags') ) {
 } // end if
 </script>
 <?php
-	} # quicktag()
+	} # footer_js()
 	
 	
 	/**
