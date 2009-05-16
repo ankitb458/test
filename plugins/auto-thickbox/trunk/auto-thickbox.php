@@ -146,13 +146,13 @@ class auto_thickbox {
 	 **/
 
 	function add_thickbox_images() {
-		$site_url = site_url();
+		$site_url = includes_url();
 		
 		$js = <<<EOF
 
 <script type="text/javascript">
-var tb_pathToImage = "$site_url/wp-includes/js/thickbox/loadingAnimation.gif";
-var tb_closeImage = "$site_url/wp-includes/js/thickbox/tb-close.png";
+var tb_pathToImage = "$site_url/js/thickbox/loadingAnimation.gif";
+var tb_closeImage = "$site_url/js/thickbox/tb-close.png";
 </script>
 
 EOF;
