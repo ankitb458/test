@@ -588,7 +588,6 @@ h2 a {
 }
 
 
-
 /* External links: only add an icon in the main area */
 
 .header .external,
@@ -650,6 +649,12 @@ h2 a {
 
 .widget_search {
 	text-align: center;
+}
+
+.widget_search .s {
+	width: 140px;
+	padding-top: 1px;
+	padding-bottom: 0px;
 }
 
 /* mediacaster */

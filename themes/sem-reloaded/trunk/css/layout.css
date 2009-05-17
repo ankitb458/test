@@ -172,6 +172,11 @@ To customize this file, create a custom.css file in the theme's folder, and past
 	line-height: 30px;
 }
 
+#s {
+	padding-top: 1px;
+	padding-bottom: 0px;
+}
+
 * html #s {
 	margin: 3px 0px;
 	vertical-align: center;

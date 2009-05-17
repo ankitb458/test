@@ -30,6 +30,8 @@ foreach ( array(
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
 add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
+add_filter('get_search_form', array('sem_widgets', 'get_search_form'));
+add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), null, 3);
 
 class sem_widgets {
 	/**
@@ -90,6 +92,68 @@ class sem_widgets {
 		$args = wp_parse_args($args, array('smallest' => '.8', 'largest' => '1.6', 'unit' => 'em'));
 		return $args;
 	} # tag_cloud_args()
+	
+	
+	/**
+	 * get_search_form
+	 *
+	 * @param string $form
+	 * @return string $form
+	 **/
+
+	function get_search_form($form) {
+		if ( is_search() )
+			$query = apply_filters('the_search_form', get_search_query());
+		else
+			$query = '';
+		
+		return '<form method="get"'
+				. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
+				. ' class="searchform" name="searchform"'
+				. '>'
+			. '<input type="text" class="s" name="s"'
+				. ' value="' . esc_attr($query) . '"'
+				. ' />' . '<br />' . "\n"
+			. '<input type="submit" class="go button" value="' . esc_attr__('Search Site', 'sem-reloaded') . '" />'
+			. '</form>';
+	} # get_search_form()
+	
+	
+	/**
+	 * widget_display_callback()
+	 *
+	 * @param array $instance widget settings
+	 * @param object $widget
+	 * @param array $args sidebar settings
+	 * @return array $instance
+	 **/
+
+	function widget_display_callback($instance, $widget, $args) {
+		if ( $instance === false || get_class($widget) != 'WP_Widget_Calendar' )
+			return $instance;
+		
+		extract($args, EXTR_SKIP);
+		extract($instance, EXTR_SKIP);
+		
+		ob_start();
+		get_calendar();
+		$calendar = ob_get_clean();
+		
+		$calendar = str_replace('<table id="wp-calendar"', '<table class="wp-calendar"', $calendar);
+		
+		$title = apply_filters('widget_title', $title);
+		
+		echo $before_widget;
+		
+		if ( $title )
+			echo $before_title . $title . $after_title;
+		
+		echo $calendar;
+		
+		echo $after_widget;
+		
+		return false;
+	} # widget_display_callback()
 } # sem_widgets
 
 
@@ -129,9 +193,7 @@ class entry_header extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_entry;
-		
-		if ( !$the_entry || !class_exists('widget_contexts') && is_letter() )
+		if ( $args['id'] != 'the_entry' || !class_exists('widget_contexts') && is_letter() )
 			return;
 		
 		$instance = wp_parse_args($instance, entry_header::defaults());
@@ -272,9 +334,7 @@ class entry_content extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_entry;
-		
-		if ( !$the_entry )
+		if ( $args['id'] != 'the_entry' )
 			return;
 		
 		global $post;
@@ -556,11 +616,9 @@ class entry_categories extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_entry;
-		
 		if ( is_admin() || is_singular() && !is_single() ) {
 			return;
-		} elseif ( !$the_entry ) {
+		} elseif ( $args['id'] != 'the_entry' ) {
 			if ( !is_single() )
 				return;
 			
@@ -569,7 +627,6 @@ class entry_categories extends WP_Widget {
 			setup_postdata($post);
 		}
 		
-		global $sem_captions;
 		$instance = wp_parse_args($instance, entry_categories::defaults());
 		extract($args, EXTR_SKIP);
 		extract($instance, EXTR_SKIP);
@@ -592,8 +649,10 @@ class entry_categories extends WP_Widget {
 		}
 		
 		if ( $filed_under_by ) {
+			$title = apply_filters('widget_title', $title);
+				
 			echo $before_widget
-				. ( !$the_entry && $title
+				. ( $args['id'] != 'the_entry' && $title
 					? $before_title . $title . $after_title
 					: ''
 					)
@@ -618,8 +677,8 @@ class entry_categories extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		$instance['title'] = trim(strip_tags($new_instance['title']));
-		$instance['filed_under_by'] = trim(strip_tags($new_instance['filed_under_by']));
+		foreach ( array_keys(entry_categories::defaults()) as $field )
+			$instance[$field] = trim(strip_tags($new_instance[$field]));
 		
 		return $instance;
 	} # update()
@@ -636,7 +695,7 @@ class entry_categories extends WP_Widget {
 		$instance = wp_parse_args($instance, entry_categories::defaults());
 		extract($instance, EXTR_SKIP);
 		
-		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
 		
 		echo '<p>'
 			. '<label>'
@@ -717,12 +776,10 @@ class entry_tags extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_entry;
-		
 		if ( is_admin() ) {
 			return;
 		} elseif ( !in_the_loop() ) {
-			if ( !$the_entry )
+			if ( $args['id'] != 'the_entry' )
 				return;
 			
 			global $post;
@@ -756,8 +813,10 @@ class entry_tags extends WP_Widget {
 		$_tags = apply_filters('the_tags', join(', ', $term_links));
 		
 		if ( $_tags ) {
+			$title = apply_filters('widget_title', $title);
+			
 			echo $before_widget
-				. ( !$the_entry && $title
+				. ( $args['id'] != 'the_entry' && $title
 					? $before_title . $title . $after_title
 					: ''
 					)
@@ -782,8 +841,8 @@ class entry_tags extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		$instance['title'] = trim(strip_tags($new_instance['title']));
-		$instance['tags'] = trim(strip_tags($new_instance['tags']));
+		foreach ( array_keys(entry_tags::defaults()) as $field )
+			$instance[$field] = trim(strip_tags($new_instance[$field]));
 		
 		return $instance;
 	} # update()
@@ -799,6 +858,8 @@ class entry_tags extends WP_Widget {
 	function form($instance) {
 		$instance = wp_parse_args($instance, entry_tags::defaults());
 		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
 		
 		echo '<p>'
 			. '<label>'
@@ -863,7 +924,7 @@ class entry_comments extends WP_Widget {
 			'description' => __('The entry\'s comments. Must be placed in the loop (each entry).', 'sem-reloaded'),
 			);
 		$control_ops = array(
-			'width' => 330,
+			'width' => 430,
 			);
 		
 		$this->WP_Widget('entry_comments', $widget_name, $widget_ops, $control_ops);
@@ -879,9 +940,7 @@ class entry_comments extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_entry;
-		
-		if ( !$the_entry || !is_singular() || !get_comments_number() && !comments_open() )
+		if ( $args['id'] != 'the_entry' || !is_singular() || !get_comments_number() && !comments_open() )
 			return;
 		
 		if ( !class_exists('widget_contexts') && is_letter() )
@@ -890,10 +949,81 @@ class entry_comments extends WP_Widget {
 		echo '<div class="spacer"></div>' . "\n"
 			. '<div class="entry_comments">' . "\n";
 		
+		global $comments_captions;
+		$comments_captions = wp_parse_args($instance, entry_comments::defaults());
+		
 		comments_template('/comments.php');
 		
 		echo '</div>' . "\n";
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		foreach ( array_keys(entry_comments::defaults()) as $field )
+			$instance[$field] = trim(strip_tags($new_instance[$field]));
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$defaults = entry_comments::defaults();
+		$instance = wp_parse_args($instance, $defaults);
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
+		
+		foreach ( $defaults as $field => $default ) {
+			echo '<p>'
+				. '<label>'
+				. '<code>' . $default . '</code>'
+				. '<br />' . "\n"
+				. '<input type="text" class="widefat"'
+					. ' name="' . $this->get_field_name($field) . '"'
+					. ' value="' . esc_attr($$field) . '"'
+					. ' />'
+				. '</label>'
+				. '</p>' . "\n";
+		}
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array(
+			'pings_on' => __('Pings on %title%', 'sem-reloaded'),
+			'comments_on' => __('Comments on %title%', 'sem-reloaded'),
+			'leave_comment' => __('Leave a Comment', 'sem-reloaded'),
+			'reply_link' => __('Reply', 'sem-reloaded'),
+			'login_required' => __('You must be logged in to post a comment. %login_url%.', 'sem-reloaded'),
+			'logged_in_as' => __('You are logged in as %identity%. %logout_url%.'),
+			'name_field' => __('Name:', 'sem-reloaded'),
+			'email_field' => __('Email:', 'sem-reloaded'),
+			'url_field' => __('Url:', 'sem-reloaded'),
+			'required_fields' => __('Fields marked by an asterisk (*) are required.'),
+			'submit_field' => __('Submit Comment'),
+			);
+	} # defaults()
 } # entry_comments
 
 
@@ -916,8 +1046,11 @@ class blog_header extends WP_Widget {
 			'classname' => 'blog_header archives_header',
 			'description' => __('The title and description that appear on category, tag, search, 404 and date archive pages. Must be placed before each entry.', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('blog_header', $widget_name, $widget_ops);
+		$this->WP_Widget('blog_header', $widget_name, $widget_ops, $control_ops);
 	} # blog_header()
 	
 	
@@ -930,9 +1063,7 @@ class blog_header extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $before_the_entries;
-		
-		if ( !$before_the_entries || !is_archive() && !is_search() && !is_404() )
+		if ( $args['id'] != 'before_the_entries' || !is_archive() && !is_search() && !is_404() )
 			return;
 		
 		global $sem_captions;
@@ -959,7 +1090,7 @@ class blog_header extends WP_Widget {
 			echo $user->display_name;
 			$desc = trim($user->description);
 		} elseif ( is_search() ) {
-			echo str_replace('%query%', get_search_query(), $sem_captions['search_title']);
+			echo str_replace('%query%',apply_filters('the_search_query', get_search_query()), $sem_captions['search_title']);
 		} elseif ( is_404() ) {
 			echo $sem_captions['404_title'];
 			$desc = trim($sem_captions['404_desc']);
@@ -1010,10 +1141,9 @@ class blog_footer extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $after_the_entries;
 		global $wp_the_query;
 		
-		if ( !$after_the_entries || is_singular() || $wp_the_query->max_num_pages <= 1 )
+		if ( $args['id'] != 'after_the_entries' || is_singular() || $wp_the_query->max_num_pages <= 1 )
 			return;
 		
 		global $sem_captions;
@@ -1065,9 +1195,7 @@ class header_boxes extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_header;
-		
-		if ( !$the_header )
+		if ( !$args['id'] != 'the_header' )
 			return;
 		
 		sem_panels::display('the_header_boxes');
@@ -1108,9 +1236,7 @@ class footer_boxes extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_footer;
-		
-		if ( !$the_footer )
+		if ( $args['id'] != 'the_footer' )
 			return;
 		
 		sem_panels::display('the_footer_boxes');
@@ -1151,9 +1277,7 @@ class header extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_header;
-		
-		if ( !$the_header )
+		if ( $args['id'] != 'the_header' )
 			return;
 		
 		global $sem_options;
@@ -1504,12 +1628,8 @@ class sem_nav_menu extends WP_Widget {
 		extract($args, EXTR_SKIP);
 		$instance = wp_parse_args($instance, sem_nav_menu::defaults());
 		extract($instance, EXTR_SKIP);
-		if ( is_admin() ) {
-			echo $before_widget
-				. $before_title . $title . $after_title
-				. $after_widget;
+		if ( is_admin() )
 			return;
-		}
 		
 		if ( is_page() ) {
 			global $wp_query;
@@ -2296,9 +2416,7 @@ class navbar extends sem_nav_menu {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_header;
-		
-		if ( !$the_header )
+		if ( $args['id'] != 'the_header' )
 			return;
 		
 		global $sem_options;
@@ -2330,18 +2448,15 @@ class navbar extends sem_nav_menu {
 			echo '<div id="search_form" class="search_form">';
 
 			if ( is_search() )
-				$search = get_search_query();
+				$search = apply_filters('the_search_form', get_search_query());
 			else
 				$search = $sem_captions['search_field'];
 			
-			if ( $search == $sem_captions['search_field'] ) {
-				$onfocusblur = ' onfocus="if ( this.value == \'' . addslashes(esc_attr($search)) . '\' )'
-							. ' this.value = \'\';"'
+			$search_caption = addslashes(esc_attr($sem_captions['search_field']));
+			$onfocusblur = ' onfocus="if ( this.value == \'' . $search_caption . '\' )'
+						. ' this.value = \'\';"'
 					. ' onblur="if ( this.value == \'\' )'
-					 	. ' this.value = \'' . addslashes(esc_attr($search)) . '\';"';
-			} else {
-				$onfocusblur = '';
-			}
+					 	. ' this.value = \'' . $search_caption . '\';"';
 			
 			$go = $sem_captions['search_button'];
 			
@@ -2411,9 +2526,7 @@ class footer extends sem_nav_menu {
 	 **/
 
 	function widget($args, $instance) {
-		global $the_footer;
-		
-		if ( !$the_footer )
+		if ( $args['id'] != 'the_footer' )
 			return;
 		
 		global $sem_options;

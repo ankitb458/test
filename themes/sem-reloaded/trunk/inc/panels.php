@@ -213,9 +213,6 @@ class sem_panels {
 		if ( $panel_id != 'the_entry' && !class_exists('widget_contexts') && is_letter() )
 			return;
 		
-		global $$panel_id;
-		$$panel_id = true;
-		
 		switch ( $panel_id ) {
 		case 'left_sidebar':
 			dynamic_sidebar('sidebar-1');
@@ -253,7 +250,6 @@ class sem_panels {
 				. '</div><!-- ' . $class . ' -->' . "\n";
 			break;
 		}
-		$$panel_id = false;
 	} # display()
 	
 	

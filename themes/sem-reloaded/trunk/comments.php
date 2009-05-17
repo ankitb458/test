@@ -5,20 +5,12 @@
 # You would lose your changes when you upgrade your site. Use php widgets instead.
 #
 
-global $sem_captions;
-global $sem_options;
 
-
-if ( $post->post_password !== ''
-	&& $_COOKIE['wp-postpass_' . COOKIEHASH] != $post->post_password
-	)
-{
-	echo '<p>'
-		. __('Password Protected')
-		. '</p>';
-
+if ( $post->post_password !== '' && $_COOKIE['wp-postpass_' . COOKIEHASH] != $post->post_password )
 	return;
-}
+
+global $comments_captions;
+
 
 #
 # Extract pings
@@ -39,7 +31,7 @@ if ( $pings || $comments )
 if ( $pings ) {
 	$title = the_title('', '', false);
 
-	$caption = $sem_captions['pings_on'];
+	$caption = $comments_captions['pings_on'];
 	$caption = str_replace('%title%', $title, $caption);
 	
 	echo '<div class="pings_header">' . "\n"
@@ -101,14 +93,14 @@ if ( $pings ) {
 if ( $comments ) {
 	$title = the_title('', '', false);
 
-	$caption = $sem_captions['comments_on'];
+	$caption = $comments_captions['comments_on'];
 	$caption = str_replace('%title%', $title, $caption);
 
 	if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 
 		$comment_form_link = ' <span class="comment_entry">'
-			. '<a href="#respond" title="' . htmlspecialchars($sem_captions['leave_comment']) . '" class="noicon">'
-			. '<img src="' . sem_url . '/icons/pixel.gif" height="16" width="16" alt="' . htmlspecialchars($sem_captions['leave_comment']) . '" />'
+			. '<a href="#respond" title="' . esc_attr($comments_captions['leave_comment']) . '" class="noicon">'
+			. '<img src="' . sem_url . '/icons/pixel.gif" height="16" width="16" alt="' . esc_attr($comments_captions['leave_comment']) . '" />'
 			. '</a>'
 			. '</span>';
 	} else {
@@ -203,7 +195,7 @@ if ( $comments ) {
 							. " 'respond', '$post->ID'"
 							. ');"'
 					. '>'
-				. $sem_captions['reply_link']
+				. $comments_captions['reply_link']
 				. '</a>'
 				. '</span>' . "\n";
 			}
@@ -247,15 +239,10 @@ if ( $pings || $comments )
 if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 	echo '<div id="respond">' . "\n";
 	
-	$sem_captions['leave_reply'] = __('Leave a Reply to %user%');
-	$sem_captions['leave_reply'] = str_replace('%user%', '%s', $sem_captions['leave_reply']);
-	
 	echo '<div class="comments_header">' . "\n"
 		. '<div class="comments_header_top"><div class="hidden"></div></div>' . "\n"
 		. '<div class="pad">' . "\n"
-		. '<h2>';
-	comment_form_title($sem_captions['leave_comment'], $sem_captions['leave_reply']);
-	echo '</h2>' . "\n";
+		. '<h2>' . $comments_captions['leave_comment'] . '</h2>' . "\n";
 	
 	echo '<p class="cancel_comment_reply">'
 		. '<a id="cancel-comment-reply-link" href="#respond" style="display:none;">'
@@ -279,7 +266,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		echo '<div class="comments_login">' . "\n"
 			. '<div class="pad">' . "\n"
 			. '<p>'
-			. str_replace('%login_url%', $login_url, $sem_captions['login_required'])
+			. str_replace('%login_url%', $login_url, $comments_captions['login_required'])
 			. '</p>' . "\n"
 			. '</div>' . "\n"
 			. '</div>' . "\n";
@@ -304,13 +291,13 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. str_replace(
 					array('%identity%', '%logout_url%'),
 					array($identity, $logout_url),
-					$sem_captions['logged_in_as']
+					$comments_captions['logged_in_as']
 					)
 				. '</p>' . "\n";
 		} else {
 			echo '<p class="comment_label name_label">'
 				. '<label for="author">'
-				. $sem_captions['name_field']
+				. $comments_captions['name_field']
 				. ( $req
 					? ' (*)'
 					: ''
@@ -320,14 +307,14 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			
 			echo '<p class="comment_field name_field">'
 				. '<input type="text" name="author" id="author"'
-					. ' value="' . htmlspecialchars($comment_author) . '" />'
+					. ' value="' . esc_attr($comment_author) . '" />'
 				. '</p>' . "\n";
 			
 			echo '<div class="spacer"></div>' . "\n";
 			
 			echo '<p class="comment_label email_label">'
 				. '<label for="email">'
-				. $sem_captions['email_field']
+				. $comments_captions['email_field']
 				. ( $req
 					? ' (*)'
 					: ''
@@ -337,20 +324,20 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			
 			echo '<p class="comment_field email_field">'
 				. '<input type="text" name="email" id="email"'
-					. ' value="' . htmlspecialchars($comment_author_email) . '" />'
+					. ' value="' . esc_attr($comment_author_email) . '" />'
 				. '</p>' . "\n";
 			
 			echo '<div class="spacer"></div>' . "\n";
 			
 			echo '<p class="comment_label url_label">'
 				. '<label for="url">'
-				. $sem_captions['url_field']
+				. $comments_captions['url_field']
 				. '</label>'
 				. '</p>' . "\n";
 			
 			echo '<p class="comment_field url_field">'
 				. '<input type="text" name="url" id="url"'
-					. ' value="' . htmlspecialchars($comment_author_url) . '" />'
+					. ' value="' . esc_attr($comment_author_url) . '" />'
 				. '</p>' . "\n";
 			
 			echo '<div class="spacer"></div>' . "\n";
@@ -361,12 +348,12 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		
 		if ( !$user_ID && $req )
 			echo '<p>'
-				.  $sem_captions['required_fields']
+				.  $comments_captions['required_fields']
 				. '</p>' . "\n";
 		
 		echo '<p class="submit">'
 			. '<input name="submit" type="submit" id="submit" class="button"'
-				. ' value="' . htmlspecialchars($sem_captions['submit_field']) . '"'
+				. ' value="' . esc_attr($comments_captions['submit_field']) . '"'
 				. ' />'
 			. '</p>' . "\n";
 

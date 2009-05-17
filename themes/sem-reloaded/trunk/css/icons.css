@@ -119,7 +119,7 @@ li.nav_url {
 	vertical-align: middle;
 }
 
-#s {
+.s {
 	background: url(../icons/magnifier.gif) center left no-repeat #fff;
 	padding-left: 18px;
 	padding-right: 2px;
