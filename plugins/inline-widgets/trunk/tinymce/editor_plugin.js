@@ -76,7 +76,6 @@
 				if ( document.inlineWidgetItems ) {
 					var myInlineWidgetsDropdown = cm.createListBox('InlineWidgetsDropdown', {
 						title : 'inline_widgets.widgets',
-						tip : 'inline_widgets.whats_this_tip',
 						onselect : function(v) {
 							if ( v ) {
 								if ( v != 'inline_widget_help' ) {
@@ -85,7 +84,7 @@
 									window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, v);
 									window.tinyMCE.execCommand("mceCleanup");
 								} else {
-									alert("This drop down lets you insert any widget you've configured in your Inline Widgets \"sidebar\", under Appearance / Widgets. For instance, you could use this to configure and then insert an inline ad unit, a newsletter subscription form, and so on.");
+									tinyMCE.activeEditor.windowManager.alert('inline_widgets.whats_this_tip');
 								}
 							}
 						
