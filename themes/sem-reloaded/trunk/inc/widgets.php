@@ -30,7 +30,6 @@ foreach ( array(
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
 add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
-add_filter('get_search_form', array('sem_widgets', 'get_search_form'));
 add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), null, 3);
 
 class sem_widgets {
@@ -95,31 +94,6 @@ class sem_widgets {
 	
 	
 	/**
-	 * get_search_form
-	 *
-	 * @param string $form
-	 * @return string $form
-	 **/
-
-	function get_search_form($form) {
-		if ( is_search() )
-			$query = apply_filters('the_search_form', get_search_query());
-		else
-			$query = '';
-		
-		return '<form method="get"'
-				. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
-				. ' class="searchform" name="searchform"'
-				. '>'
-			. '<input type="text" class="s" name="s"'
-				. ' value="' . esc_attr($query) . '"'
-				. ' />' . '<br />' . "\n"
-			. '<input type="submit" class="go button" value="' . esc_attr__('Search Site', 'sem-reloaded') . '" />'
-			. '</form>';
-	} # get_search_form()
-	
-	
-	/**
 	 * widget_display_callback()
 	 *
 	 * @param array $instance widget settings
@@ -129,9 +103,26 @@ class sem_widgets {
 	 **/
 
 	function widget_display_callback($instance, $widget, $args) {
-		if ( $instance === false || get_class($widget) != 'WP_Widget_Calendar' )
+		switch ( get_class($widget) ) {
+		case 'WP_Widget_Calendar':
+			return sem_widgets::calendar_widget($instance, $args);
+		case 'WP_Widget_Search':
+			return sem_widgets::search_widget($instance, $args);
+		default:
 			return $instance;
-		
+		}
+	} # widget_display_callback()
+	
+	
+	/**
+	 * calendar_widget()
+	 *
+	 * @param array $instance widget args
+	 * @param array $args sidebar args
+	 * @return false
+	 **/
+
+	function calendar_widget($instance, $args) {
 		extract($args, EXTR_SKIP);
 		extract($instance, EXTR_SKIP);
 		
@@ -153,7 +144,51 @@ class sem_widgets {
 		echo $after_widget;
 		
 		return false;
-	} # widget_display_callback()
+	} # calendar_widget()
+	
+	
+	/**
+	 * undocumented function
+	 *
+	 * @param array $instance widget args
+	 * @param array $args sidebar args
+	 * @return false
+	 **/
+
+	function search_widget($instance, $args) {
+		extract($args, EXTR_SKIP);
+		extract($instance, EXTR_SKIP);
+		
+		if ( is_search() )
+			$query = apply_filters('the_search_form', get_search_query());
+		else
+			$query = '';
+		
+		$title = apply_filters('widget_title', $title);
+		
+		echo $before_widget;
+		
+		if ( $title )
+			echo $before_title . $title . $after_title;
+		
+		echo '<form method="get"'
+				. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
+				. ' class="searchform" name="searchform"'
+				. '>'
+			. '<input type="text" class="s" name="s"'
+				. ' value="' . esc_attr($query) . '"'
+				. ' />'
+			. ( in_array($args['id'], array('sidebar-1', 'sidebar-2') )
+				? "<br />\n"
+				: ''
+				)
+			. '<input type="submit" class="go button" value="' . esc_attr__('Search', 'sem-reloaded') . '" />'
+			. '</form>';
+		
+		echo $after_widget;
+		
+		return false;
+	} # search_widget()
 } # sem_widgets
 
 
