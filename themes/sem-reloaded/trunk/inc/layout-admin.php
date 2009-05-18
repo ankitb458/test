@@ -40,7 +40,6 @@ class sem_layout_admin {
 .available_layout label {
 	cursor: pointer !important;
 }
-
 </style>
 
 <script type="text/javascript">
