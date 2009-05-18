@@ -959,7 +959,7 @@ class entry_comments extends WP_Widget {
 			'description' => __('The entry\'s comments. Must be placed in the loop (each entry).', 'sem-reloaded'),
 			);
 		$control_ops = array(
-			'width' => 430,
+			'width' => 330,
 			);
 		
 		$this->WP_Widget('entry_comments', $widget_name, $widget_ops, $control_ops);
@@ -1125,10 +1125,9 @@ class blog_header extends WP_Widget {
 			echo $user->display_name;
 			$desc = trim($user->description);
 		} elseif ( is_search() ) {
-			echo str_replace('%query%',apply_filters('the_search_query', get_search_query()), $sem_captions['search_title']);
+			echo str_replace('%query%',apply_filters('the_search_query', get_search_query()), $search_title);
 		} elseif ( is_404() ) {
 			echo $title_404;
-			$desc = trim($desc_404);
 		} else {
 			echo $archives_title;
 		}
@@ -1196,8 +1195,8 @@ class blog_header extends WP_Widget {
 	function defaults() {
 		return array(
 			'title_404' => __('404: Not Found', 'sem-reloaded'),
-			'desc_404' => '',
 			'archives_title' => __('Archives', 'sem-reloaded'),
+			'search_title' => __('Search: %query%', 'sem-reloaded'),
 			);
 	} # defaults()
 } # blog_header
@@ -1244,7 +1243,6 @@ class blog_footer extends WP_Widget {
 		if ( $args['id'] != 'after_the_entries' || is_singular() || $wp_the_query->max_num_pages <= 1 )
 			return;
 		
-		global $sem_captions;
 		extract($args, EXTR_SKIP);
 		$instance = wp_parse_args($instance, blog_footer::defaults());
 		extract($instance, EXTR_SKIP);
@@ -1253,8 +1251,8 @@ class blog_footer extends WP_Widget {
 		
 		posts_nav_link(
 			' &bull; ',
-			'&larr;&nbsp;' . $sem_captions['prev_page'],
-			$sem_captions['next_page'] . '&nbsp;&rarr;'
+			'&larr;&nbsp;' . $prev_page,
+			$next_page . '&nbsp;&rarr;'
 			);
 		
 		echo $after_widget;
@@ -1874,7 +1872,7 @@ class sem_nav_menu extends WP_Widget {
 		sem_nav_menu::cache_pages();
 		
 		if ( !$items ) {
-			$items = sem_nav_menu::default_items();
+			$items = call_user_func(array(get_class($this), 'default_items'));
 		}
 		
 		ob_start();
@@ -2839,16 +2837,20 @@ class footer extends sem_nav_menu {
 		if ( $args['id'] != 'the_footer' )
 			return;
 		
-		global $sem_options;
-		global $sem_captions;
+		$instance = wp_parse_args($instance, footer::defaults());
+		extract($args, EXTR_SKIP);
+		extract($instance, EXTR_SKIP);
 		
-		echo '<div id="footer" class="wrapper'
-				. ( $sem_options['float_footer'] && $sem_captions['copyright']
-					? ' float_nav'
-					: ''
-					)
-				. '"'
-			. '>' . "\n";
+		$footer_class = '';
+		if ( $sep )
+			$footer_class .= ' sep_nav';
+		if ( $float_footer && $copyright ) {
+			$footer_class .= ' float_nav';
+			if ( $sep )
+				$footer_class .= ' float_sep_nav';
+		}
+		
+		echo '<div id="footer" class="wrapper' . $footer_class . '">' . "\n";
 		
 		echo '<div id="footer_top"><div class="hidden"></div></div>' . "\n";
 		
@@ -2862,41 +2864,43 @@ class footer extends sem_nav_menu {
 		
 		echo '</div><!-- footer_nav -->' . "\n";
 		
-		if ( $copyright_notice = $sem_captions['copyright'] ) {
-			global $wpdb;
-
-			$year = date('Y');
-
+		if ( $copyright_notice = $copyright ) {
 			if ( strpos($copyright_notice, '%admin_name%') !== false ) {
+				global $wpdb;
+
+				$admin_email = get_option('admin_email');
 				$admin_login = $wpdb->get_var("
 					SELECT	user_login
 					FROM	wp_users
-					WHERE	user_email = '" . $wpdb->escape(get_option('admin_email')) . "'
+					WHERE	user_email = '" . $wpdb->escape($admin_email) . "'
 					ORDER BY user_registered ASC
 					LIMIT 1
 					");
-				$admin_user = get_userdatabylogin($admin_login);
-
-				if ( $admin_user->display_name ) {
+				
+				if ( ( $admin_user = get_userdatabylogin($admin_login) ) && $admin_user->display_name ) {
 					$admin_name = $admin_user->display_name;
 				} else {
-					$admin_name = preg_replace("/@.*$/", '', $admin_user->user_email);
-
+					$admin_name = preg_replace("/@.*$/", '', $admin_email);
 					$admin_name = preg_replace("/[_.-]/", ' ', $admin_name);
-
 					$admin_name = ucwords($admin_name);
 				}
-
+				
 				$copyright_notice = str_replace('%admin_name%', $admin_name, $copyright_notice);
 			}
-
-			$copyright_notice = str_replace('%year%', $year, $copyright_notice);
-
+			
+			$year = date('Y');
+			$site_name = get_option('blogname');
+			
+			$copyright_notice = str_replace(
+				array('%year%', '%site_name%'),
+				array($year, $site_name),
+				$copyright_notice);
+			
 			echo '<div id="copyright_notice">';
 			echo $copyright_notice;
 			echo '</div><!-- #copyright_notice -->' . "\n";
 		}
-
+		
 		echo '<div class="spacer"></div>' . "\n"
 			. '</div>' . "\n"
 			. '</div>' . "\n"
@@ -2906,5 +2910,108 @@ class footer extends sem_nav_menu {
 		
 		echo '</div><!-- footer -->' . "\n";
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance = parent::update($new_instance, $old_instance);
+		$instance['float_footer'] = isset($new_instance['float_footer']);
+		if ( current_user_can('unfiltered_html') ) {
+			$instance['copyright'] = trim($new_instance['copyright']);
+			$instance['credits'] = trim($new_instance['credits']);
+		} else {
+			$instance['copyright'] = trim($old_instance['copyright']);
+			$instance['credits'] = trim($old_instance['credits']);
+		}
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$defaults = footer::defaults();
+		$instance = wp_parse_args($instance, $defaults);
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
+		
+		foreach ( array('copyright', 'credits') as $field ) {
+			echo '<p>'
+				. '<label>'
+				. '<code>' . htmlspecialchars($defaults[$field], ENT_QUOTES, get_option('blog_charset')) . '</code>'
+				. '<br />' . "\n"
+				. '<textarea class="widefat" cols="20" rows="4"'
+					. ' name="' . $this->get_field_name($field) . '"'
+					. ( !current_user_can('unfiltered_html')
+						? ' disabled="disabled"'
+						: ''
+						)
+					. ' >'
+				. format_to_edit($$field)
+				. '</textarea>'
+				. '</label>'
+				. '</p>' . "\n";
+		}
+		
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+				. ' name="' . $this->get_field_name('float_footer') . '"'
+				. checked($float_footer, true, false)
+				. ' />'
+			. '&nbsp;'
+			. __('Place the footer navigation menu and the copyright on a single line.', 'sem-reloaded')
+			. '</label>'
+			. '</p>' . "\n";
+		
+		parent::form($instance);
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array_merge(array(
+			'copyright' => __('Copyright %site_name%, %year%', 'sem-reloaded'),
+			'credits' => __('Made with %semiologic% &bull; %skin_name% by %skin_author%', 'sem-reloaded'),
+			'float_footer' => false,
+			), parent::defaults());
+	} # defaults()
+	
+	
+	/**
+	 * default_items
+	 *
+	 * @return array $default_items
+	 **/
+
+	function default_items() {
+		return array(
+			array(
+				'label' => __('Home', 'sem-reloaded'),
+				'type' => 'home',
+				),
+			);
+	} # default_items()
 } # footer
 ?>

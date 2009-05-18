@@ -414,8 +414,18 @@ img.avatar {
 	margin-right: 6px;
 }
 
+.sep_nav #footer_nav span {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+
 .float_nav #footer_nav span {
 	margin-left: 12px;
+	margin-right: 0px;
+}
+
+.float_sep_nav #footer_nav span {
+	margin-left: 6px;
 	margin-right: 0px;
 }
 
