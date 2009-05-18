@@ -172,18 +172,34 @@ To customize this file, create a custom.css file in the theme's folder, and past
 	line-height: 30px;
 }
 
-#s {
+.s {
 	padding-top: 1px;
 	padding-bottom: 0px;
+	width: 140px;
+}
+
+.go {
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+#s {
+	width: 120px;
+}
+
+#go {
+	margin-right: 0px;
 }
 
 * html #s {
-	margin: 3px 0px;
+	margin-top: 3px;
+	margin-bottom: 3px;
 	vertical-align: center;
 }
 
 * html #go {
-	margin: 3px 0px 1px;
+	margin-top: 3px;
+	margin-bottom: 1px;
 	vertical-align: center;
 }
 
