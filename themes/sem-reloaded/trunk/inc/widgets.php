@@ -1107,7 +1107,6 @@ class blog_header extends WP_Widget {
 		$instance = wp_parse_args($instance, blog_header::defaults());
 		extract($instance, EXTR_SKIP);
 		
-		
 		echo $before_widget;
 		
 		echo '<h1>';
@@ -1152,7 +1151,7 @@ class blog_header extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		foreach ( array_keys(entry_comments::defaults()) as $field )
+		foreach ( array_keys(blog_header::defaults()) as $field )
 			$instance[$field] = trim(strip_tags($new_instance[$field]));
 		
 		return $instance;
@@ -1167,7 +1166,7 @@ class blog_header extends WP_Widget {
 	 **/
 
 	function form($instance) {
-		$defaults = entry_comments::defaults();
+		$defaults = blog_header::defaults();
 		$instance = wp_parse_args($instance, $defaults);
 		extract($instance, EXTR_SKIP);
 		
@@ -1223,8 +1222,11 @@ class blog_footer extends WP_Widget {
 			'classname' => 'blog_footer next_prev_posts',
 			'description' => __('The next/previous blog posts links. Must be placed after each entry.', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('blog_footer', $widget_name, $widget_ops);
+		$this->WP_Widget('blog_footer', $widget_name, $widget_ops, $control_ops);
 	} # blog_footer()
 	
 	
@@ -1244,6 +1246,8 @@ class blog_footer extends WP_Widget {
 		
 		global $sem_captions;
 		extract($args, EXTR_SKIP);
+		$instance = wp_parse_args($instance, blog_footer::defaults());
+		extract($instance, EXTR_SKIP);
 		
 		echo $before_widget;
 		
@@ -1255,6 +1259,65 @@ class blog_footer extends WP_Widget {
 		
 		echo $after_widget;
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		foreach ( array_keys(blog_footer::defaults()) as $field )
+			$instance[$field] = trim(strip_tags($new_instance[$field]));
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$defaults = blog_footer::defaults();
+		$instance = wp_parse_args($instance, $defaults);
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
+		
+		foreach ( $defaults as $field => $default ) {
+			echo '<p>'
+				. '<label>'
+				. '<code>' . $default . '</code>'
+				. '<br />' . "\n"
+				. '<input type="text" class="widefat"'
+					. ' name="' . $this->get_field_name($field) . '"'
+					. ' value="' . esc_attr($$field) . '"'
+					. ' />'
+				. '</label>'
+				. '</p>' . "\n";
+		}
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array(
+			'next_page' => __('Next Page', 'sem-reloaded'),
+			'previous_page' => __('Previous Page', 'sem-reloaded'),
+			);
+	} # defaults()
 } # blog_footer
 
 
