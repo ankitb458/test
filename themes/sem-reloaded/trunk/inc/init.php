@@ -93,7 +93,6 @@ if ( sem_debug )
 
 $sem_options = get_option('sem6_options');
 $sem_captions = get_option('sem6_captions');
-$sem_nav_menus = get_option('sem_nav_menus');
 
 # autoinstall test
 #$sem_options = false;

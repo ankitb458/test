@@ -15,9 +15,35 @@ if ( !is_admin() ) {
 	add_filter('body_class', array('sem_template', 'body_class'));
 	add_filter('widget_title', array('sem_template', 'widget_title'));
 	add_action('wp_footer', array('sem_template', 'display_credits'));
+} else {
+	add_action('admin_menu', array('sem_template', 'admin_menu'));
 }
 
 class sem_template {
+	/**
+	 * admin_menu()
+	 *
+	 * @return void
+	 **/
+
+	function admin_menu() {
+		add_theme_page(
+			__('Skin', 'sem-reloaded'),
+			__('Skin', 'sem-reloaded'),
+			'switch_themes',
+			'skin',
+			array('sem_skin_admin', 'edit_options')
+			);
+		add_theme_page(
+			__('Manage Layout', 'sem-reloaded'),
+			__('Layout', 'sem-reloaded'),
+			'switch_themes',
+			'layout',
+			array('sem_layout_admin', 'edit_options')
+			);
+	} # admin_menu()
+	
+	
 	/**
 	 * body_class()
 	 *
