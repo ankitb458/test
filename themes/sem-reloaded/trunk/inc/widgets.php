@@ -1101,11 +1101,12 @@ class blog_header extends WP_Widget {
 		if ( $args['id'] != 'before_the_entries' || !is_archive() && !is_search() && !is_404() )
 			return;
 		
-		global $sem_captions;
-		
 		$desc = '';
 		
 		extract($args, EXTR_SKIP);
+		$instance = wp_parse_args($instance, blog_header::defaults());
+		extract($instance, EXTR_SKIP);
+		
 		
 		echo $before_widget;
 		
@@ -1127,10 +1128,10 @@ class blog_header extends WP_Widget {
 		} elseif ( is_search() ) {
 			echo str_replace('%query%',apply_filters('the_search_query', get_search_query()), $sem_captions['search_title']);
 		} elseif ( is_404() ) {
-			echo $sem_captions['404_title'];
-			$desc = trim($sem_captions['404_desc']);
+			echo $title_404;
+			$desc = trim($desc_404);
 		} else {
-			echo $sem_captions['archives_title'];
+			echo $archives_title;
 		}
 
 		echo '</h1>' . "\n";
@@ -1140,6 +1141,66 @@ class blog_header extends WP_Widget {
 		
 		echo $after_widget;
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		foreach ( array_keys(entry_comments::defaults()) as $field )
+			$instance[$field] = trim(strip_tags($new_instance[$field]));
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$defaults = entry_comments::defaults();
+		$instance = wp_parse_args($instance, $defaults);
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
+		
+		foreach ( $defaults as $field => $default ) {
+			echo '<p>'
+				. '<label>'
+				. '<code>' . $default . '</code>'
+				. '<br />' . "\n"
+				. '<input type="text" class="widefat"'
+					. ' name="' . $this->get_field_name($field) . '"'
+					. ' value="' . esc_attr($$field) . '"'
+					. ' />'
+				. '</label>'
+				. '</p>' . "\n";
+		}
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array(
+			'title_404' => __('404: Not Found', 'sem-reloaded'),
+			'desc_404' => '',
+			'archives_title' => __('Archives', 'sem-reloaded'),
+			);
+	} # defaults()
 } # blog_header
 
 
