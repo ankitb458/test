@@ -2925,10 +2925,8 @@ class footer extends sem_nav_menu {
 		$instance['float_footer'] = isset($new_instance['float_footer']);
 		if ( current_user_can('unfiltered_html') ) {
 			$instance['copyright'] = trim($new_instance['copyright']);
-			$instance['credits'] = trim($new_instance['credits']);
 		} else {
-			$instance['copyright'] = trim($old_instance['copyright']);
-			$instance['credits'] = trim($old_instance['credits']);
+			$instance['copyright'] = $old_instance['copyright'];
 		}
 		
 		return $instance;
@@ -2949,7 +2947,7 @@ class footer extends sem_nav_menu {
 		
 		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
 		
-		foreach ( array('copyright', 'credits') as $field ) {
+		foreach ( array('copyright') as $field ) {
 			echo '<p>'
 				. '<label>'
 				. '<code>' . htmlspecialchars($defaults[$field], ENT_QUOTES, get_option('blog_charset')) . '</code>'
@@ -2993,7 +2991,6 @@ class footer extends sem_nav_menu {
 	function defaults() {
 		return array_merge(array(
 			'copyright' => __('Copyright %site_name%, %year%', 'sem-reloaded'),
-			'credits' => __('Made with %semiologic% &bull; %skin_name% by %skin_author%', 'sem-reloaded'),
 			'float_footer' => false,
 			), parent::defaults());
 	} # defaults()
