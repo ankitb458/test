@@ -400,13 +400,13 @@ img.avatar {
 }
 
 #header_nav span {
-	margin-left: 6px;
-	margin-right: 6px;
-}
-
-.float_nav #header_nav span {
 	margin-left: 0px;
 	margin-right: 12px;
+}
+
+.sep_nav #header_nav span {
+	margin-left: 0px;
+	margin-right: 6px;
 }
 
 #footer_nav span {
@@ -417,11 +417,6 @@ img.avatar {
 .float_nav #footer_nav span {
 	margin-left: 12px;
 	margin-right: 0px;
-}
-
-span.nav_sep {
-	margin-left: 0px !important;
-	margin-right: 0px !important;
 }
 
 #credits {

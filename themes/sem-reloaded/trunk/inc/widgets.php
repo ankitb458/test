@@ -1422,8 +1422,11 @@ class header extends WP_Widget {
 			'classname' => 'header',
 			'description' => __('The site\'s header. Only works in the header area.', 'sem-reloaded'),
 			);
+		$control_ops = array(
+			'width' => 330,
+			);
 		
-		$this->WP_Widget('header', $widget_name, $widget_ops);
+		$this->WP_Widget('header', $widget_name, $widget_ops, $control_ops);
 	} # header()
 	
 	
@@ -1439,7 +1442,8 @@ class header extends WP_Widget {
 		if ( $args['id'] != 'the_header' )
 			return;
 		
-		global $sem_options;
+		$instance = wp_parse_args($instance, header::defaults());
+		extract($instance, EXTR_SKIP);
 		
 		$header = header::get();
 		
@@ -1452,7 +1456,7 @@ class header extends WP_Widget {
 		}
 		
 		echo '<div id="header" class="wrapper'
-				. ( $sem_options['invert_header']
+				. ( $invert_header
 					? ' invert_header'
 					: ''
 					)
@@ -1492,7 +1496,7 @@ class header extends WP_Widget {
 					)
 				. '</div>' . "\n";
 			
-			if ( $sem_options['invert_header'] ) {
+			if ( $invert_header ) {
 				echo $site_name;
 				echo $tagline;
 			} else {
@@ -1765,6 +1769,61 @@ class header extends WP_Widget {
 
 EOS;
 	} # css()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance['invert_header'] = isset($new_instance['invert_header']);
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$defaults = blog_footer::defaults();
+		$instance = wp_parse_args($instance, $defaults);
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+				. ' name="' . $this->get_field_name('invert_header') . '"'
+				. checked($invert_header, true, false)
+				. ' />'
+			. '&nbsp;'
+			. __('Output the site\'s name before the tagline.', 'sem-reloaded')
+			. '</label>'
+			. '</p>' . "\n";
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array(
+			'invert_header' => false,
+			);
+	} # defaults()
 } # header
 
 
@@ -1822,7 +1881,16 @@ class sem_nav_menu extends WP_Widget {
 		
 		echo '<div>' . "\n";
 		
+		$did_first = false;
+		
 		foreach ( $items as $item ) {
+			if ( $sep ) {
+				if ( $did_first )
+					echo '<span>|</span>' . "\n";
+				else
+					$did_first = true;
+			}
+			
 			switch ( $item['type'] ) {
 			case 'home':
 				sem_nav_menu::display_home($item);
@@ -2176,6 +2244,7 @@ class sem_nav_menu extends WP_Widget {
 
 	function update($new_instance, $old_instance) {
 		$instance = sem_nav_menu::defaults();
+		$instance['sep'] = isset($new_instance['sep']);
 		foreach ( array_keys((array) $new_instance['items']['type']) as $key ) {
 			$item = array();
 			$item['type'] = $new_instance['items']['type'][$key];
@@ -2244,7 +2313,8 @@ class sem_nav_menu extends WP_Widget {
 		
 		extract($instance, EXTR_SKIP);
 		
-		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		if ( get_class($this) == 'sem_nav_menu' )
+			echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
 		
 		echo '<p>'
 			. '<label>'
@@ -2253,7 +2323,7 @@ class sem_nav_menu extends WP_Widget {
 				. checked($sep, true, false)
 				. ' />'
 			. '&nbsp;'
-			. __('Show Separator (|)', 'sem-reloaded') . "\n"
+			. __('Split menu items with a separator (|).', 'sem-reloaded') . "\n"
 			. '</p>' . "\n";
 		
 		echo '<h3>' . __('Menu Items') . '</h3>' . "\n";
@@ -2453,7 +2523,6 @@ class sem_nav_menu extends WP_Widget {
 
 	function defaults() {
 		return array(
-			'title' => __('Browse', 'sem-reloaded'),
 			'sep' => false,
 			'items' => array(),
 			);
@@ -2578,16 +2647,17 @@ class navbar extends sem_nav_menu {
 		if ( $args['id'] != 'the_header' )
 			return;
 		
-		global $sem_options;
-		global $sem_captions;
+		$instance = wp_parse_args($instance, navbar::defaults());
+		extract($args, EXTR_SKIP);
+		extract($instance, EXTR_SKIP);
 		
-		echo '<div id="navbar" class="wrapper'
-			. ( $sem_options['show_search_form']
-				? ' float_nav'
-				: ''
-				)
-				. '"'
-			. '>' . "\n";
+		$navbar_class = '';
+		if ( $show_search_form )
+			$navbar_class .= ' float_nav';
+		if ( $sep )
+			$navbar_class .= ' sep_nav';
+		
+		echo '<div id="navbar" class="wrapper' . $navbar_class . '">' . "\n";
 		
 		echo '<div id="navbar_top"><div class="hidden"></div></div>' . "\n";
 		
@@ -2603,21 +2673,25 @@ class navbar extends sem_nav_menu {
 
 		echo '</div><!-- header_nav -->' . "\n";
 
-		if ( $sem_options['show_search_form'] ) {
+		if ( $show_search_form ) {
 			echo '<div id="search_form" class="search_form">';
 
 			if ( is_search() )
 				$search = apply_filters('the_search_form', get_search_query());
 			else
-				$search = $sem_captions['search_field'];
+				$search = $search_field;
 			
-			$search_caption = addslashes(esc_attr($sem_captions['search_field']));
-			$onfocusblur = ' onfocus="if ( this.value == \'' . $search_caption . '\' )'
-						. ' this.value = \'\';"'
-					. ' onblur="if ( this.value == \'\' )'
-					 	. ' this.value = \'' . $search_caption . '\';"';
+			$search_caption = addslashes(esc_attr($search_field));
+			if ( $search_caption ) {
+				$onfocusblur = ' onfocus="if ( this.value == \'' . $search_caption . '\' )'
+							. ' this.value = \'\';"'
+						. ' onblur="if ( this.value == \'\' )'
+						 	. ' this.value = \'' . $search_caption . '\';"';
+			} else {
+				$onfocus_blur = '';
+			}
 			
-			$go = $sem_captions['search_button'];
+			$go = $search_button;
 			
 			if ( $go !== '' )
 				$go = '<input type="submit" id="go" class="go button" value="' . esc_attr($go) . '" />';
@@ -2646,6 +2720,83 @@ class navbar extends sem_nav_menu {
 		
 		echo '</div><!-- navbar -->' . "\n";
 	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance new widget options
+	 * @param array $old_instance old widget options
+	 * @return array $instance
+	 **/
+
+	function update($new_instance, $old_instance) {
+		$instance = parent::update($new_instance, $old_instance);
+		$instance['show_search_form'] = isset($new_instance['show_search_form']);
+		$instance['search_field'] = trim(strip_tags($new_instance['search_field']));
+		$instance['search_button'] = trim(strip_tags($new_instance['search_button']));
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance widget options
+	 * @return void
+	 **/
+
+	function form($instance) {
+		$defaults = navbar::defaults();
+		$instance = wp_parse_args($instance, $defaults);
+		extract($instance, EXTR_SKIP);
+		
+		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
+		
+		foreach ( array('search_field', 'search_button') as $field ) {
+			echo '<p>'
+				. '<label>'
+				. '<code>' . $defaults[$field] . '</code>'
+				. '<br />' . "\n"
+				. '<input type="text" class="widefat"'
+					. ' name="' . $this->get_field_name($field) . '"'
+					. ' value="' . esc_attr($$field) . '"'
+					. ' />'
+				. '</label>'
+				. '</p>' . "\n";
+		}
+		
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+				. ' name="' . $this->get_field_name('show_search_form') . '"'
+				. checked($show_search_form, true, false)
+				. ' />'
+			. '&nbsp;'
+			. __('Show a search form in the navigation menu.', 'sem-reloaded')
+			. '</label>'
+			. '</p>' . "\n";
+		
+		parent::form($instance);
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $defaults
+	 **/
+	
+	function defaults() {
+		return array_merge(array(
+			'search_field' => __('Search', 'sem-reloaded'),
+			'search_button' => __('Go', 'sem-reloaded'),
+			'show_search_form' => true,
+			), parent::defaults());
+	} # defaults()
 } # navbar
 
 
