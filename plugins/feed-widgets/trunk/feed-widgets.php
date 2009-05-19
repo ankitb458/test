@@ -18,7 +18,7 @@ http://www.mesoconcepts.com/license/
 **/
 
 
-load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('feed-widgets', null, dirname(__FILE__) . '/lang');
 
 
 /**
