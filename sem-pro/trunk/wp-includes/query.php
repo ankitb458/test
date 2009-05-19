@@ -73,7 +73,8 @@ function &query_posts($query) {
  * @uses $wp_query
  */
 function wp_reset_query() {
-	unset($GLOBALS['wp_query']);
+	foreach ( array('id', 'authordata', 'day', 'currentmonth', 'page', 'pages', 'multipage', 'more', 'numpages', 'post', 'wp_query') as $var )
+		unset($GLOBALS[$var]);
 	$GLOBALS['wp_query'] =& $GLOBALS['wp_the_query'];
 	global $wp_query;
 	if ( !empty($wp_query->post) ) {
@@ -1582,7 +1583,6 @@ class WP_Query {
 		$search = '';
 		$groupby = '';
 		$fields = "$wpdb->posts.*";
-		$post_status_join = false;
 		$page = 1;
 
 		if ( !isset($q['caller_get_posts']) )
@@ -1958,7 +1958,6 @@ class WP_Query {
 					$whichcat .= " AND $wpdb->posts.ID IN (" . implode(', ', $post_ids) . ") ";
 					$post_type = 'any';
 					$q['post_status'] = 'publish';
-					$post_status_join = true;
 				} else {
 					$whichcat = " AND 0 ";
 				}
@@ -2065,7 +2064,7 @@ class WP_Query {
 		}
 
 		if ( 'any' == $post_type ) {
-			$where .= '';
+			$where .= " AND $wpdb->posts.post_type != 'revision'";
 		} elseif ( $this->is_attachment ) {
 			$where .= " AND $wpdb->posts.post_type = 'attachment'";
 		} elseif ($this->is_page) {
@@ -2110,11 +2109,6 @@ class WP_Query {
 					$statuswheres[] = "($wpdb->posts.post_author = $user_ID " .  "AND (" . join( ' OR ', $p_status ) . "))";
 				else
 					$statuswheres[] = "(" . join( ' OR ', $p_status ) . ")";
-			}
-			if ( $post_status_join ) {
-				$join .= " JOIN $wpdb->posts AS p2 ON ($wpdb->posts.post_parent = p2.ID) ";
-				foreach ( $statuswheres as $index => $statuswhere )
-					$statuswheres[$index] = "($statuswhere OR ($wpdb->posts.post_status = 'inherit' AND " . str_replace($wpdb->posts, 'p2', $statuswhere) . "))";
 			}
 			foreach ( $statuswheres as $statuswhere )
 				$where .= " AND $statuswhere";
@@ -2378,7 +2372,7 @@ class WP_Query {
 	 * @since 1.5.0
 	 * @access public
 	 * @uses $post
-	 * @uses do_action() Calls 'loop_start' if loop has just started
+	 * @uses do_action_ref_array() Calls 'loop_start' if loop has just started
 	 */
 	function the_post() {
 		unset($GLOBALS['post']); // Break the ref
@@ -2389,7 +2383,7 @@ class WP_Query {
 		do_action('the_post', $post);
 
 		if ( $this->current_post == 0 ) // loop has just started
-			do_action('loop_start');
+			do_action_ref_array('loop_start', array(&$this));
 	}
 
 	/**
@@ -2399,7 +2393,7 @@ class WP_Query {
 	 *
 	 * @since 1.5.0
 	 * @access public
-	 * @uses do_action() Calls 'loop_start' if loop has just started
+	 * @uses do_action_ref_array() Calls 'loop_end' if loop is ended
 	 *
 	 * @return bool True if posts are available, false if end of loop.
 	 */
@@ -2407,7 +2401,7 @@ class WP_Query {
 		if ($this->current_post + 1 < $this->post_count) {
 			return true;
 		} elseif ($this->current_post + 1 == $this->post_count && $this->post_count > 0) {
-			do_action('loop_end');
+			do_action_ref_array('loop_end', array(&$this));
 			// Do some cleaning up after the loop
 			$this->rewind_posts();
 		}
