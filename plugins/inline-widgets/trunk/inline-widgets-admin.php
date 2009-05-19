@@ -7,7 +7,7 @@
 
 add_filter('admin_footer', array('inline_widgets_admin', 'footer_js'));
 add_filter('mce_external_plugins', array('inline_widgets_admin', 'editor_plugin'));
-add_filter('mce_buttons_3', array('inline_widgets_admin', 'editor_button'));
+add_filter('mce_buttons_4', array('inline_widgets_admin', 'editor_button'));
 
 class inline_widgets_admin {
 	/**
