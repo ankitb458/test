@@ -316,7 +316,7 @@ class sem_template {
 	 **/
 
 	function get_theme_credits() {
-		if ( defined('sem_fixes_path') || defined('sem_docs_path') ) {
+		if ( get_option('sem_api_key') ) {
 			return '<a href="http://www.getsemiologic.com">'
 				. __('Semiologic Pro')
 				. '</a>';
