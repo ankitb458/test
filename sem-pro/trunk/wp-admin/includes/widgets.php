@@ -162,14 +162,14 @@ function wp_widget_control( $sidebar_args ) {
 	$wp_registered_widgets[$widget_id]['callback'] = $wp_registered_widgets[$widget_id]['_callback'];
 	unset($wp_registered_widgets[$widget_id]['_callback']);
 
-	$widget_title = wp_specialchars( strip_tags( $sidebar_args['widget_name'] ) );
+	$widget_title = esc_html( strip_tags( $sidebar_args['widget_name'] ) );
 	$has_form = 'noform';
 
 	echo $sidebar_args['before_widget']; ?>
 	<div class="widget-top">
 	<div class="widget-title-action">
 		<a class="widget-action hide-if-no-js" href="#available-widgets"></a>
-		<a class="widget-control-edit hide-if-js" href="<?php echo clean_url( add_query_arg( $query_arg ) ); ?>"><span class="edit"><?php _e('Edit'); ?></span><span class="add"><?php _e('Add'); ?></span></a>
+		<a class="widget-control-edit hide-if-js" href="<?php echo esc_url( add_query_arg( $query_arg ) ); ?>"><span class="edit"><?php _e('Edit'); ?></span><span class="add"><?php _e('Add'); ?></span></a>
 	</div>
 	<div class="widget-title"><h4><?php echo $widget_title ?><span class="in-widget-title"></span></h4></div>
 	</div>

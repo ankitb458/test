@@ -165,7 +165,7 @@ function the_content_rss($more_link_text='(more...)', $stripteaser=0, $more_file
 	if ( $cut && !$encode_html )
 		$encode_html = 2;
 	if ( 1== $encode_html ) {
-		$content = wp_specialchars($content);
+		$content = esc_html($content);
 		$cut = 0;
 	} elseif ( 0 == $encode_html ) {
 		$content = make_url_footnote($content);
@@ -255,7 +255,7 @@ function get_comment_guid($comment_id = null) {
  * @since 1.5.0
  */
 function comment_link() {
-	echo clean_url( get_comment_link() );
+	echo esc_url( get_comment_link() );
 }
 
 /**
@@ -503,7 +503,7 @@ function prep_atom_text_construct($data) {
 function self_link() {
 	$host = @parse_url(get_option('home'));
 	$host = $host['host'];
-	echo clean_url(
+	echo esc_url(
 		'http'
 		. ( (isset($_SERVER['https']) && $_SERVER['https'] == 'on') ? 's' : '' ) . '://'
 		. $host

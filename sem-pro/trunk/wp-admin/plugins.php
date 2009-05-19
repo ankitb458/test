@@ -134,7 +134,7 @@ if ( !empty($action) ) {
 						?>
 					</ul>
 				<p><?php _e('Are you sure you wish to delete these files?') ?></p>
-				<form method="post" action="<?php echo clean_url($_SERVER['REQUEST_URI']); ?>" style="display:inline;">
+				<form method="post" action="<?php echo esc_url($_SERVER['REQUEST_URI']); ?>" style="display:inline;">
 					<input type="hidden" name="verify-delete" value="1" />
 					<input type="hidden" name="action" value="delete-selected" />
 					<?php
@@ -144,7 +144,7 @@ if ( !empty($action) ) {
 					<?php wp_nonce_field('bulk-manage-plugins') ?>
 					<input type="submit" name="submit" value="<?php esc_attr_e('Yes, Delete these files') ?>" class="button" />
 				</form>
-				<form method="post" action="<?php echo clean_url(wp_get_referer()); ?>" style="display:inline;">
+				<form method="post" action="<?php echo esc_url(wp_get_referer()); ?>" style="display:inline;">
 					<input type="submit" name="submit" value="<?php esc_attr_e('No, Return me to the plugin list') ?>" class="button" />
 				</form>
 
@@ -189,7 +189,7 @@ require_once('admin-header.php');
 $invalid = validate_active_plugins();
 if ( !empty($invalid) )
 	foreach ( $invalid as $plugin_file => $error )
-		echo '<div id="message" class="error"><p>' . sprintf(__('The plugin <code>%s</code> has been <strong>deactivated</strong> due to an error: %s'), wp_specialchars($plugin_file), $error->get_error_message()) . '</p></div>';
+		echo '<div id="message" class="error"><p>' . sprintf(__('The plugin <code>%s</code> has been <strong>deactivated</strong> due to an error: %s'), esc_html($plugin_file), $error->get_error_message()) . '</p></div>';
 ?>
 
 <?php if ( isset($_GET['error']) ) : ?>
@@ -222,7 +222,7 @@ if ( !empty($invalid) )
 
 <div class="wrap">
 <?php screen_icon(); ?>
-<h2><?php echo wp_specialchars( $title ); ?></h2>
+<h2><?php echo esc_html( $title ); ?></h2>
 
 <?php
 
@@ -354,7 +354,7 @@ function print_plugins_table($plugins, $context = '') {
 
 	if ( empty($plugins) ) {
 		echo '<tr>
-			<td colspan="6">' . __('No plugins to show') . '</td>
+			<td colspan="3">' . __('No plugins to show') . '</td>
 		</tr>';
 	}
 	foreach ( (array)$plugins as $plugin_file => $plugin_data) {
@@ -369,10 +369,6 @@ function print_plugins_table($plugins, $context = '') {
 		if ( current_user_can('edit_plugins') && is_writable(WP_PLUGIN_DIR . '/' . $plugin_file) )
 			$actions[] = '<a href="plugin-editor.php?file=' . $plugin_file . '" title="' . __('Open this file in the Plugin Editor') . '" class="edit">' . __('Edit') . '</a>';
 
-		if ( ! empty($plugin_data['PluginURI']) ) {
-			$actions[] = '<a href="' . $plugin_data['PluginURI'] . '" title="' . __( 'Visit plugin homepage' ) . '">' . __('View Site') . '</a>';
-		}
-
 		if ( ! $is_active && current_user_can('delete_plugins') )
 			$actions[] = '<a href="' . wp_nonce_url('plugins.php?action=delete-selected&amp;checked[]=' . $plugin_file . '&amp;plugin_status=' . $context . '&amp;paged=' . $page, 'bulk-manage-plugins') . '" title="' . __('Delete this plugin') . '" class="delete">' . __('Delete') . '</a>';
 
@@ -383,7 +379,17 @@ function print_plugins_table($plugins, $context = '') {
 		echo "
 	<tr class='$class'>
 		<th scope='row' class='check-column'><input type='checkbox' name='checked[]' value='" . esc_attr($plugin_file) . "' /></th>
-		<td class='plugin-title'><strong>{$plugin_data['Name']}</strong>";
+		<td class='plugin-title'><strong>{$plugin_data['Name']}</strong></td>
+		<td class='desc'><p>{$plugin_data['Description']}</p></td>
+	</tr>\n";
+
+		do_action( 'after_plugin_row', $plugin_file, $plugin_data, $context );
+		do_action( "after_plugin_row_$plugin_file", $plugin_file, $plugin_data, $context );
+
+		echo "
+	<tr class='$class second'>
+		<td></td>
+		<td class='plugin-title'>";
 		$i = 0;
 		echo '<div class="row-actions-visible">';
 		foreach ( $actions as $action => $link ) {
@@ -391,24 +397,24 @@ function print_plugins_table($plugins, $context = '') {
 			( $i == $action_count ) ? $sep = '' : $sep = ' | ';
 			echo "<span class='$action'>$link$sep</span>";
 		}
-		echo '</div>';
-		echo "</td>
-		<td class='desc'><p>{$plugin_data['Description']}</p>";
-		if ( !empty($plugin_data['Version']) ) {
-			printf(__('Version: %s'), $plugin_data['Version']);
-			echo ' ';
-		}
+		echo "</div></td>
+		<td class='desc'>";
+		$plugin_meta = array();
+		if ( !empty($plugin_data['Version']) )
+			$plugin_meta[] = sprintf(__('Version %s'), $plugin_data['Version']);
 		if ( !empty($plugin_data['Author']) ) {
 			$author = $plugin_data['Author'];
 			if ( !empty($plugin_data['AuthorURI']) )
 				$author = '<a href="' . $plugin_data['AuthorURI'] . '" title="' . __( 'Visit author homepage' ) . '">' . $plugin_data['Author'] . '</a>';
-			echo ' <cite>' . sprintf( __('By: %s'), $author ) . '</cite>';
+			$plugin_meta[] = sprintf( __('By %s'), $author );
 		}
-		echo "</p>";
-		echo '</td>
-	</tr>';
-		do_action( 'after_plugin_row', $plugin_file, $plugin_data, $context );
-		do_action( "after_plugin_row_$plugin_file", $plugin_file, $plugin_data, $context );
+		if ( ! empty($plugin_data['PluginURI']) ) {
+			$plugin_meta[] = '<a href="' . $plugin_data['PluginURI'] . '" title="' . __( 'Visit plugin site' ) . '">' . __('Visit plugin site') . '</a>';
+		}
+		$plugin_meta = apply_filters('plugin_row_meta', $plugin_meta, $plugin_file, $plugin_data, $context);
+		echo implode(' | ', $plugin_meta);
+		echo "</p></td>
+	</tr>\n";
 	}
 ?>
 	</tbody>

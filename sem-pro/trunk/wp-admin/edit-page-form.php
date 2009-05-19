@@ -81,10 +81,10 @@ function page_submit_meta_box($post) {
 <div id="preview-action">
 <?php
 if ( 'publish' == $post->post_status ) {
-	$preview_link = clean_url(get_permalink($post->ID));
+	$preview_link = esc_url(get_permalink($post->ID));
 	$preview_button = __('Preview Changes');
 } else {
-	$preview_link = clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID))));
+	$preview_link = esc_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID))));
 	$preview_button = __('Preview');
 }
 ?>
@@ -158,7 +158,7 @@ if ( 'private' == $post->post_status ) {
 	$visibility_trans = __('Public');
 }
 
-echo wp_specialchars( $visibility_trans ); ?></span>
+echo esc_html( $visibility_trans ); ?></span>
 <?php if ( $can_publish ) { ?>
 <a href="#visibility" class="edit-visibility hide-if-no-js"><?php _e('Edit'); ?></a>
 
@@ -397,7 +397,7 @@ require_once('admin-header.php');
 
 <div class="wrap">
 <?php screen_icon(); ?>
-<h2><?php echo wp_specialchars( $title ); ?></h2>
+<h2><?php echo esc_html( $title ); ?></h2>
 
 <form name="post" action="page.php" method="post" id="post">
 <?php if ( $notice ) : ?>
@@ -420,7 +420,7 @@ if (isset($mode) && 'bookmarklet' == $mode)
 <?php echo $form_extra ?>
 <input type="hidden" id="post_type" name="post_type" value="<?php echo esc_attr($post->post_type) ?>" />
 <input type="hidden" id="original_post_status" name="original_post_status" value="<?php echo esc_attr($post->post_status) ?>" />
-<input name="referredby" type="hidden" id="referredby" value="<?php echo clean_url(stripslashes(wp_get_referer())); ?>" />
+<input name="referredby" type="hidden" id="referredby" value="<?php echo esc_url(stripslashes(wp_get_referer())); ?>" />
 <?php if ( 'draft' != $post->post_status ) wp_original_referer_field(true, 'previous'); ?>
 
 <div id="poststuff" class="metabox-holder<?php echo 2 == $screen_layout_columns ? ' has-right-sidebar' : ''; ?>">
@@ -460,7 +460,7 @@ endif; ?>
 	if ($post_ID) {
 		if ( $last_id = get_post_meta($post_ID, '_edit_last', true) ) {
 			$last_user = get_userdata($last_id);
-			printf(__('Last edited by %1$s on %2$s at %3$s'), wp_specialchars( $last_user->display_name ), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
+			printf(__('Last edited by %1$s on %2$s at %3$s'), esc_html( $last_user->display_name ), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
 		} else {
 			printf(__('Last edited on %1$s at %2$s'), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
 		}

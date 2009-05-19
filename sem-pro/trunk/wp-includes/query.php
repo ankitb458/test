@@ -2381,6 +2381,7 @@ class WP_Query {
 	 * @uses do_action() Calls 'loop_start' if loop has just started
 	 */
 	function the_post() {
+		unset($GLOBALS['post']); // Break the ref
 		global $post;
 		$this->in_the_loop = true;
 		$post = $this->next_post();

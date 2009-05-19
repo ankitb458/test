@@ -193,7 +193,7 @@ function install_themes_dashboard() {
 	foreach ( (array) $feature_list as $feature_name => $features ) {
 		if ( isset($trans[$feature_name]) )
 			 $feature_name = $trans[$feature_name];
-		$feature_name = wp_specialchars( $feature_name );
+		$feature_name = esc_html( $feature_name );
 		echo '<div class="feature-name">' . $feature_name . '</div>';
 
 		echo '<ol style="float: left; width: 725px;" class="feature-group">';
@@ -201,7 +201,7 @@ function install_themes_dashboard() {
 			$feature_name = $feature;
 			if ( isset($trans[$feature]) )
 				$feature_name = $trans[$feature];
-			$feature_name = wp_specialchars( $feature_name );
+			$feature_name = esc_html( $feature_name );
 			$feature = esc_attr($feature);
 ?>
 
@@ -309,9 +309,9 @@ function display_theme($theme, $actions = null, $show_details = true) {
 	$actions = implode ( ' | ', $actions );
 	?>
 <a class='thickbox thickbox-preview screenshot'
-	href='<? echo clean_url($preview_link); ?>'
+	href='<? echo esc_url($preview_link); ?>'
 	title='<?php echo esc_attr(sprintf(__('Preview &#8220;%s&#8221;'), $name)); ?>'>
-<img src='<?php echo clean_url($theme->screenshot_url); ?>' width='150' />
+<img src='<?php echo esc_url($theme->screenshot_url); ?>' width='150' />
 </a>
 <h3><?php echo $name ?></h3>
 <span class='action-links'><?php echo $actions ?></span>
@@ -374,7 +374,7 @@ function display_themes($themes, $page = 1, $totalpages = 1) {
 <div class="tablenav">
 <div class="alignleft actions"><?php do_action('install_themes_table_header'); ?></div>
 	<?php
-	$url = clean_url($_SERVER['REQUEST_URI']);
+	$url = esc_url($_SERVER['REQUEST_URI']);
 	if ( ! empty($term) )
 		$url = add_query_arg('s', $term, $url);
 	if ( ! empty($type) )
@@ -502,7 +502,7 @@ function install_theme_information() {
 ?>
 
 <div class='available-theme'>
-<img src='<?php echo clean_url($api->screenshot_url) ?>' width='300' class="theme-preview-img" />
+<img src='<?php echo esc_url($api->screenshot_url) ?>' width='300' class="theme-preview-img" />
 <h3><?php echo $api->name; ?></h3>
 <p><?php printf(__('by %s'), $api->author); ?></p>
 <p><?php printf(__('Version: %s'), $api->version); ?></p>
