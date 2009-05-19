@@ -657,7 +657,7 @@ class entry_categories extends WP_Widget {
 			if ( !is_single() )
 				return;
 			
-			global $post;
+			global $post, $wp_the_query;
 			$post = $wp_the_query->get_queried_object();
 			setup_postdata($post);
 		}
