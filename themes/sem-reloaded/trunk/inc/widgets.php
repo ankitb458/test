@@ -182,7 +182,7 @@ class sem_widgets {
 				? "<br />\n"
 				: ''
 				)
-			. '<input type="submit" class="go button" value="' . esc_attr__('Search', 'sem-reloaded') . '" />'
+			. '<input type="submit" class="go button submit" value="' . esc_attr__('Search', 'sem-reloaded') . '" />'
 			. '</form>';
 		
 		echo $after_widget;
@@ -2692,7 +2692,7 @@ class navbar extends sem_nav_menu {
 			$go = $search_button;
 			
 			if ( $go !== '' )
-				$go = '<input type="submit" id="go" class="go button" value="' . esc_attr($go) . '" />';
+				$go = '<input type="submit" id="go" class="go button submit" value="' . esc_attr($go) . '" />';
 			
 			echo '<form method="get"'
 					. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
