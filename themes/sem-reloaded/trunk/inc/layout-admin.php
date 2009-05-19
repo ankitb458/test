@@ -37,8 +37,37 @@ class sem_layout_admin {
 	width: 275px;
 }
 
+.available_layout img {
+	border: solid 1px #ccc;
+}
+
 .available_layout label {
 	cursor: pointer !important;
+}
+
+#available_layouts {
+	border-collapse: collapse;
+}
+
+#available_layouts td {
+	padding: 10px;
+	border: solid 1px #ccc;
+}
+
+#available_layouts td.top {
+	border-top: none;
+}
+
+#available_layouts td.bottom {
+	border-bottom: none;
+}
+
+#available_layouts td.left {
+	border-left: none;
+}
+
+#available_layouts td.right {
+	border-right: none;
 }
 </style>
 
@@ -152,9 +181,9 @@ EOS;
 				echo '<tr>' . "\n";
 			
 			$classes = array('available_layout');
-			if ( ceil($i / $row_size) == 1 )
+			if ( ceil(( $i + 1 ) / $row_size) == 1 )
 				$classes[] = 'top';
-			if ( ceil($i / $row_size) == $num_rows )
+			if ( ceil(( $i + 1 ) / $row_size) == $num_rows )
 				$classes[] = 'bottom';
 			if ( !( $i % $row_size ) )
 				$classes[] = 'left';
@@ -214,71 +243,71 @@ EOS;
 				'wrapper' => __('950px', 'sem-reloaded'),
 				'content' => __('550px (520px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('400px (370px net)', 'sem-reloaded'),
-				'sidebars' => __('200px (170px net)', 'sem-reloaded'),
+				'sidebars' => __('2 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
 				),
 			'sms' => array(
 				'name' => __('Sidebar, Content, Sidebar', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
 				'content' => __('550px (520px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('200px (170px net)', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('2 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
 				),
 			'mms' => array(
 				'name' => __('Wide Content, Sidebar', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
 				'content' => __('750px (720px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('200px (170px net)', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
 				),
 			'smm' => array(
 				'name' => __('Sidebar, Wide Content', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
 				'content' => __('750px (720px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('200px (170px net)', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
 				),
 			'ms' => array(
 				'name' => __('Content, Sidebar', 'sem-reloaded'),
 				'wrapper' => __('750px', 'sem-reloaded'),
 				'content' => __('550px (520px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('200px (170px net)', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('3 x 250px (220px net)', 'sem-reloaded'),
 				),
 			'sm' => array(
 				'name' => __('Sidebar, Content', 'sem-reloaded'),
 				'wrapper' => __('750px', 'sem-reloaded'),
 				'content' => __('550px (520px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('200px (170px net)', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('3 x 250px (220px net)', 'sem-reloaded'),
 				),
 			'mm' => array(
 				'name' => __('Wide Content', 'sem-reloaded'),
 				'wrapper' => __('750px', 'sem-reloaded'),
 				'content' => __('750px (720px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('Unavailable', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('Not Available', 'sem-reloaded'),
 				'inline_boxes' => __('3 x 250px (220px net)', 'sem-reloaded'),
 				),
 			'm' => array(
 				'name' => __('Narrow Content', 'sem-reloaded'),
 				'wrapper' => __('620px', 'sem-reloaded'),
 				'content' => __('620px (590px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('Unavailable', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('Not Available', 'sem-reloaded'),
 				'inline_boxes' => __('2 x 310px (290px net)', 'sem-reloaded'),
 				),
 			'mmm' => array(
 				'name' => __('Extra Wide Content', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
 				'content' => __('950px (920px net)', 'sem-reloaded'),
-				'wide_sidebars' => __('Unavailable', 'sem-reloaded'),
-				'sidebars' => __('Unavailable', 'sem-reloaded'),
+				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
+				'sidebars' => __('Not Available', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
 				),
 			'tsm' => array(
@@ -286,7 +315,7 @@ EOS;
 				'wrapper' => __('950px', 'sem-reloaded'),
 				'content' => __('550px (520px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('400px (370px net)', 'sem-reloaded'),
-				'sidebars' => __('200px (170px net)', 'sem-reloaded'),
+				'sidebars' => __('2 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
 				),
 			);
