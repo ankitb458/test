@@ -817,7 +817,7 @@ class entry_tags extends WP_Widget {
 			if ( $args['id'] != 'the_entry' )
 				return;
 			
-			global $post;
+			global $post, $wp_the_query;
 			$post = $wp_the_query->get_queried_object();
 			setup_postdata($post);
 		}
