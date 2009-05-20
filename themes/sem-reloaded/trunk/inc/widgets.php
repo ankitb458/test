@@ -2149,10 +2149,8 @@ class sem_nav_menu extends WP_Widget {
 		$all_ancestors = array();
 		
 		foreach ( $children as $parent => $child_ids ) {
-			foreach ( $child_ids as $key => $child_id ) {
+			foreach ( $child_ids as $key => $child_id )
 				$all_ancestors[$child_id][] = $parent;
-			}
-			
 			wp_cache_set($parent, $child_ids, 'page_children');
 		}
 		
