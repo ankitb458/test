@@ -195,6 +195,9 @@ function sem_clean_up_options()
 		if ( $update )
 			update_option('active_plugins', $plugins);
 	}
+	
+	# clear corrupt cron jobs
+	wp_clear_scheduled_hook('dealdotcom');
 } # clean_up_options()
 
 add_action('shutdown', 'sem_clean_up_options');
