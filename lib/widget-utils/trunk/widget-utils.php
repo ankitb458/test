@@ -155,7 +155,7 @@ class widget_utils
 				)
 			. ' />'
 			. '&nbsp;'
-			. '... except for silo stub, silo map, search reloaded and smart links.'
+			. '... except for silo stub, silo map and smart links.'
 			. '</label>'
 		 	. '</td>' . "\n"
 			. '</tr>' . "\n";
