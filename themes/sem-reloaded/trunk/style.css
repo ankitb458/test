@@ -650,6 +650,12 @@ h2 a {
 	display: none;
 }
 
+/* dropdowns in sidebars */
+
+.sidebar select {
+	width: 99%;
+}
+
 /* WP Search Widget */
 
 .widget_search {
