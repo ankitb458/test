@@ -172,7 +172,7 @@ class sem_widgets {
 			echo $before_title . $title . $after_title;
 		
 		echo '<form method="get"'
-				. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
+				. ' action="' . esc_url(user_trailingslashit(get_option('home'))) . '"'
 				. ' class="searchform" name="searchform"'
 				. '>'
 			. '<input type="text" class="s" name="s"'
@@ -243,7 +243,7 @@ class entry_header extends WP_Widget {
 		
 		if ( $title && !is_singular() ) {
 			$permalink = apply_filters('the_permalink', get_permalink());
-			$title = '<a href="' . clean_url($permalink) . '" title="' . esc_attr($title) . '">'
+			$title = '<a href="' . esc_url($permalink) . '" title="' . esc_attr($title) . '">'
 				. $title
 				. '</a>';
 		}
@@ -445,7 +445,7 @@ class entry_content extends WP_Widget {
 				|| $post->post_type == 'post' && current_user_can('edit_post', $post->ID)
 			) {
 				$edit_link = '<a class="post-edit-link"'
-					. ' href="' . clean_url(get_edit_post_link($post->ID)) . '"'
+					. ' href="' . esc_url(get_edit_post_link($post->ID)) . '"'
 					. ' title="' . esc_attr(__('Edit')) . '">'
 					. __('Edit')
 					. '</a>';
@@ -466,7 +466,7 @@ class entry_content extends WP_Widget {
 				$caption = preg_replace("/\s*(?:1|%num%)\s*/", '', $caption);
 				
 				$actions .= '<span class="comment_box">'
-					. '<a href="' . clean_url($comments_link) . '">'
+					. '<a href="' . esc_url($comments_link) . '">'
 					. '<span class="num_comments">'
 					. $num_comments
 					. '</span>'
@@ -673,7 +673,7 @@ class entry_categories extends WP_Widget {
 		
 		if ( $author_url && $author_url != 'http://' ) {
 			$author = '<span class="entry_author">'
-				. '<a href="' . clean_url($author_url) . '" rel="external">'
+				. '<a href="' . esc_url($author_url) . '" rel="external">'
 				. $author
 				. '</a>'
 				. '</span>';
@@ -839,7 +839,7 @@ class entry_tags extends WP_Widget {
 				$tag_link = get_term_link( $term, 'post_tag' );
 				if ( is_wp_error( $tag_link ) )
 					continue;
-				$term_links[] = '<a href="' . clean_url($tag_link) . '" rel="tag">' . $term->name . '</a>';
+				$term_links[] = '<a href="' . esc_url($tag_link) . '" rel="tag">' . $term->name . '</a>';
 			}
 
 			$term_links = apply_filters( "term_links-post_tag", $term_links );
@@ -1468,7 +1468,7 @@ class header extends WP_Widget {
 		if ( !$flash && !( is_front_page() && !is_paged() ) ) {
 			echo ' style="cursor: pointer;"'
 				. ' onclick="top.location.href = \''
-					. clean_url(user_trailingslashit(get_option('home')))
+					. esc_url(user_trailingslashit(get_option('home')))
 					. '\'"';
 		}
 
@@ -1489,7 +1489,7 @@ class header extends WP_Widget {
 
 			$site_name = '<div id="sitename" class="sitename">'
 				. ( !( is_front_page() && !is_paged() )
-					? ( '<a href="' . clean_url(user_trailingslashit(get_option('home'))) . '">' . get_option('blogname') . '</a>' )
+					? ( '<a href="' . esc_url(user_trailingslashit(get_option('home'))) . '">' . get_option('blogname') . '</a>' )
 					: get_option('blogname')
 					)
 				. '</div>' . "\n";
@@ -1566,7 +1566,7 @@ class header extends WP_Widget {
 		
 		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
-		$header = clean_url(content_url() . $header);
+		$header = esc_url(content_url() . $header);
 		
 		return '<img src="' . $header . '" height="' . $height . '" width="' . $width . '" alt="'
 			. esc_attr(get_option('blogname'))
@@ -1592,7 +1592,7 @@ class header extends WP_Widget {
 		
 		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
-		$header = clean_url(content_url() . $header);
+		$header = esc_url(content_url() . $header);
 		
 		return __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.')
 			. '</div>'
@@ -1751,7 +1751,7 @@ class header extends WP_Widget {
 		
 		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
-		$header = clean_url(content_url() . $header);
+		$header = esc_url(content_url() . $header);
 		
 		echo <<<EOS
 
@@ -1928,7 +1928,7 @@ class sem_nav_menu extends WP_Widget {
 		extract($item, EXTR_SKIP);
 		if ( $label === '' )
 			$label = __('Home', 'sem-reloaded');
-		$url = clean_url(user_trailingslashit(get_option('home')));
+		$url = esc_url(user_trailingslashit(get_option('home')));
 		
 		$classes = array('nav_home');
 		$link = $label;
@@ -1967,7 +1967,7 @@ class sem_nav_menu extends WP_Widget {
 		extract($item, EXTR_SKIP);
 		if ( $label === '' )
 			$label = __('Untitled', 'sem-reloaded');
-		$url = clean_url($ref);
+		$url = esc_url($ref);
 		if ( !$url || $url == 'http://' )
 			return;
 		
@@ -2018,7 +2018,7 @@ class sem_nav_menu extends WP_Widget {
 		if ( $label === '' )
 			$label = __('Untitled', 'sem-reloaded');
 		
-		$url = clean_url(get_permalink($page->ID));
+		$url = esc_url(get_permalink($page->ID));
 		
 		$ancestors = wp_cache_get($page_id, 'page_ancestors');
 		$children = wp_cache_get($page->ID, 'page_children');
@@ -2436,7 +2436,7 @@ class sem_nav_menu extends WP_Widget {
 					. ' />' . "\n"
 				. '</div>' . "\n" # data
 				. '<div class="nav_menu_item_preview">' . "\n"
-				. '&rarr;&nbsp;<a href="' . clean_url($url) . '"'
+				. '&rarr;&nbsp;<a href="' . esc_url($url) . '"'
 					. ' onclick="window.open(this.href); return false;">'
 					. $label
 					. '</a>'
@@ -2491,7 +2491,7 @@ class sem_nav_menu extends WP_Widget {
 					. ' />' . "\n"
 				. '</div>' . "\n" # data
 				. '<div class="nav_menu_item_preview">' . "\n"
-				. '&rarr;&nbsp;<a href="' . clean_url($url) . '"'
+				. '&rarr;&nbsp;<a href="' . esc_url($url) . '"'
 					. ' onclick="window.open(this.href); return false;">'
 					. $label
 					. '</a>'
@@ -2693,7 +2693,7 @@ class navbar extends sem_nav_menu {
 				$go = '<input type="submit" id="go" class="go button submit" value="' . esc_attr($go) . '" />';
 			
 			echo '<form method="get"'
-					. ' action="' . clean_url(user_trailingslashit(get_option('home'))) . '"'
+					. ' action="' . esc_url(user_trailingslashit(get_option('home'))) . '"'
 					. ' id="searchform" name="searchform"'
 					. '>'
 				. '&nbsp;'				# force line-height
