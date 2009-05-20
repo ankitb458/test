@@ -30,7 +30,7 @@ load_plugin_textdomain('dealdotcom', null, dirname(__FILE__) . '/lang');
 add_action('widgets_init', array('dealdotcom', 'widgetize'));
 
 if ( !is_admin() ) {
-	add_action('dealdotcom', array('dealdotcom', 'update'));
+	add_action('dealdotcom_update', array('dealdotcom', 'update'));
 }
 
 class dealdotcom {
@@ -167,8 +167,8 @@ class dealdotcom {
 
 		update_option('dealdotcom_deal', $deal);
 
-		if ( !wp_next_scheduled('dealdotcom') )
-			wp_schedule_event(time(), 'hourly', 'dealdotcom');
+		if ( !wp_next_scheduled('dealdotcom_update') )
+			wp_schedule_event(time(), 'hourly', 'dealdotcom_update');
 
 		return $deal;
 	} # update()
