@@ -6,9 +6,6 @@
  */
 
 
-load_plugin_textdomain('widget-utils', null, dirname(dirname(__FILE__) . '/lang'));
-
-
 /**
  * widget_utils
  *
@@ -28,7 +25,7 @@ class widget_utils {
 		if ( $done )
 			return;
 		
-		add_meta_box('post_widget_config', __('This Post In Widgets', 'widget-utils'), array('widget_utils', 'post_widget_config'), 'post');
+		add_meta_box('post_widget_config', __('This Post In Widgets', widget_utils_textdomain), array('widget_utils', 'post_widget_config'), 'post');
 		add_action('save_post', array('widget_utils', 'post_save_widget_config'));
 
 		$done = true;
@@ -47,7 +44,7 @@ class widget_utils {
 		if ( $done )
 			return;
 		
-		add_meta_box('page_widget_config', __('This Page In Widgets', 'widget-utils'), array('widget_utils', 'page_widget_config'), 'page');
+		add_meta_box('page_widget_config', __('This Page In Widgets', widget_utils_textdomain), array('widget_utils', 'page_widget_config'), 'page');
 		add_action('save_post', array('widget_utils', 'page_save_widget_config'));
 		
 		$done = true;
@@ -114,7 +111,7 @@ class widget_utils {
 		$post_ID = $post->ID;
 
 		echo '<p>'
-			. __('The following fields let you configure options shared by the following Semiologic widgets:', 'widget-utils')
+			. __('The following fields let you configure options shared by the following Semiologic widgets:', widget_utils_textdomain)
 			. '</p>' . "\n";
 
 		echo '<ul class="ul-square">' . "\n";
@@ -122,14 +119,14 @@ class widget_utils {
 		echo '</ul>' . "\n";
 		
 		echo '<p>'
-			. __('It will <b>NOT</b> affect anything else. In particular WordPress\'s built-in Pages widget.', 'widget-utils')
+			. __('It will <b>NOT</b> affect anything else. In particular WordPress\'s built-in Pages widget.', widget_utils_textdomain)
 			. '</p>' . "\n";
 		
 		echo '<table style="width: 100%;">' . "\n";
 		
 		echo '<tr valign="top">' . "\n"
 			. '<th scope="row" width="120px;">'
-			. __('Title', 'widget-utils')
+			. __('Title', widget_utils_textdomain)
 			. '</th>' . "\n"
 			. '<td>'
 			. '<input type="text" size="58" class="widefat" tabindex="5"'
@@ -141,7 +138,7 @@ class widget_utils {
 		
 		echo '<tr valign="top">' . "\n"
 			. '<th scope="row">'
-			. __('Description', 'widget-utils')
+			. __('Description', widget_utils_textdomain)
 			. '</th>' . "\n"
 			. '<td>'
 			. '<textarea size="58" class="widefat" tabindex="5"'
@@ -166,7 +163,7 @@ class widget_utils {
 				)
 			. ' />'
 			. '&nbsp;'
-			. __('Exclude this entry from automatically generated lists', 'widget-utils')
+			. __('Exclude this entry from automatically generated lists', widget_utils_textdomain)
 			. '</label>'
 		 	. '</td>' . "\n"
 			. '</tr>' . "\n";
@@ -185,7 +182,7 @@ class widget_utils {
 				)
 			. ' />'
 			. '&nbsp;'
-			. __('... except for silo stub, silo map and smart links.', 'widget-utils')
+			. __('... except for silo stub, silo map and smart links.', widget_utils_textdomain)
 			. '</label>'
 		 	. '</td>' . "\n"
 			. '</tr>' . "\n";
