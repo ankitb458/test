@@ -241,7 +241,7 @@ EOS;
 			'mts' => array(
 				'name' => __('Content, Wide Sidebar', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
-				'content' => __('550px (520px net)', 'sem-reloaded'),
+				'content' => __('550px (490px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('400px (370px net)', 'sem-reloaded'),
 				'sidebars' => __('2 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
@@ -249,7 +249,7 @@ EOS;
 			'sms' => array(
 				'name' => __('Sidebar, Content, Sidebar', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
-				'content' => __('550px (520px net)', 'sem-reloaded'),
+				'content' => __('550px (490px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('2 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
@@ -257,7 +257,7 @@ EOS;
 			'mms' => array(
 				'name' => __('Wide Content, Sidebar', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
-				'content' => __('750px (720px net)', 'sem-reloaded'),
+				'content' => __('750px (690px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
@@ -265,7 +265,7 @@ EOS;
 			'smm' => array(
 				'name' => __('Sidebar, Wide Content', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
-				'content' => __('750px (720px net)', 'sem-reloaded'),
+				'content' => __('750px (690px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
@@ -273,7 +273,7 @@ EOS;
 			'ms' => array(
 				'name' => __('Content, Sidebar', 'sem-reloaded'),
 				'wrapper' => __('750px', 'sem-reloaded'),
-				'content' => __('550px (520px net)', 'sem-reloaded'),
+				'content' => __('550px (490px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('3 x 250px (220px net)', 'sem-reloaded'),
@@ -281,7 +281,7 @@ EOS;
 			'sm' => array(
 				'name' => __('Sidebar, Content', 'sem-reloaded'),
 				'wrapper' => __('750px', 'sem-reloaded'),
-				'content' => __('550px (520px net)', 'sem-reloaded'),
+				'content' => __('550px (490px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('1 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('3 x 250px (220px net)', 'sem-reloaded'),
@@ -289,7 +289,7 @@ EOS;
 			'mm' => array(
 				'name' => __('Wide Content', 'sem-reloaded'),
 				'wrapper' => __('750px', 'sem-reloaded'),
-				'content' => __('750px (720px net)', 'sem-reloaded'),
+				'content' => __('750px (690px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('Not Available', 'sem-reloaded'),
 				'inline_boxes' => __('3 x 250px (220px net)', 'sem-reloaded'),
@@ -297,7 +297,7 @@ EOS;
 			'm' => array(
 				'name' => __('Narrow Content', 'sem-reloaded'),
 				'wrapper' => __('620px', 'sem-reloaded'),
-				'content' => __('620px (590px net)', 'sem-reloaded'),
+				'content' => __('620px (560px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('Not Available', 'sem-reloaded'),
 				'inline_boxes' => __('2 x 310px (290px net)', 'sem-reloaded'),
@@ -305,7 +305,7 @@ EOS;
 			'mmm' => array(
 				'name' => __('Extra Wide Content', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
-				'content' => __('950px (920px net)', 'sem-reloaded'),
+				'content' => __('950px (890px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('Not Available', 'sem-reloaded'),
 				'sidebars' => __('Not Available', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
@@ -313,7 +313,7 @@ EOS;
 			'tsm' => array(
 				'name' => __('Wide Sidebar, Content', 'sem-reloaded'),
 				'wrapper' => __('950px', 'sem-reloaded'),
-				'content' => __('550px (520px net)', 'sem-reloaded'),
+				'content' => __('550px (490px net)', 'sem-reloaded'),
 				'wide_sidebars' => __('400px (370px net)', 'sem-reloaded'),
 				'sidebars' => __('2 x 200px (170px net)', 'sem-reloaded'),
 				'inline_boxes' => __('4 x 237px (207px net)', 'sem-reloaded'),
