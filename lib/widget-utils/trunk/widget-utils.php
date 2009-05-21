@@ -119,7 +119,9 @@ class widget_utils {
 		echo '</ul>' . "\n";
 		
 		echo '<p>'
-			. __('It will <b>NOT</b> affect anything else. In particular WordPress\'s built-in Pages widget.', widget_utils_textdomain)
+			. '<strong>'
+			. __('It will NOT affect anything else. In particular WordPress\' built-in Pages widget.', widget_utils_textdomain)
+			. '</strong>'
 			. '</p>' . "\n";
 		
 		echo '<table style="width: 100%;">' . "\n";
