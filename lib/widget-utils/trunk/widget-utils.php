@@ -114,7 +114,7 @@ class widget_utils {
 		$post_ID = $post->ID;
 
 		echo '<p>'
-			. __('The following fields let you configure options shared by:', 'widget-utils')
+			. __('The following fields let you configure options shared by the following Semiologic widgets:', 'widget-utils')
 			. '</p>' . "\n";
 
 		echo '<ul class="ul-square">' . "\n";
@@ -122,7 +122,7 @@ class widget_utils {
 		echo '</ul>' . "\n";
 		
 		echo '<p>'
-			. __('It will <b>NOT</b> affect anything else. In particular WordPress\'s built-in Pages widget. (Use the Silo Pages widget instead.)', 'widget-utils')
+			. __('It will <b>NOT</b> affect anything else. In particular WordPress\'s built-in Pages widget.', 'widget-utils')
 			. '</p>' . "\n";
 		
 		echo '<table style="width: 100%;">' . "\n";
