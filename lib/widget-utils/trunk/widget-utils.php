@@ -117,7 +117,7 @@ class widget_utils {
 			. __('The following fields let you configure options shared by:', 'widget-utils')
 			. '</p>' . "\n";
 
-		echo '<ul>' . "\n";
+		echo '<ul class="ul-square">' . "\n";
 		do_action($type . '_widget_config_affected');
 		echo '</ul>' . "\n";
 		
