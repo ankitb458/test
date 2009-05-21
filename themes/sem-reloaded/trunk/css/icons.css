@@ -48,12 +48,6 @@ li.nav_url {
 	padding-right: 0px;
 }
 
-.entry_comment a {
-	background: url(icons/comment.gif) center left no-repeat;
-	padding-left: 18px;
-	padding-right: 0px;
-}
-
 .reply_comment a {
 	background: url(../icons/comment_add.gif) center left no-repeat;
 	padding-left: 18px;
