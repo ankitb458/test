@@ -1099,7 +1099,7 @@ div.comment-item:hover .row-actions {
 	padding: 0;
 }
 
-.folded #adminmenu li.wp-menu-separator {
+.folded #adminmenu a.separator {
  	cursor: e-resize;
 }
 
@@ -3278,4 +3278,8 @@ p.popular-tags a {
 
 #post-body-content .tagsdiv .the-tags {
 	margin: 0 5px;
+}
+
+label {
+	vertical-align: middle;
 }
