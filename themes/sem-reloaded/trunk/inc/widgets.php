@@ -1185,15 +1185,16 @@ class blog_header extends WP_Widget {
 			switch ( $field ) {
 			case 'desc_404':
 				echo '<p>'
-					. '<label>'
+					. '<label for="' . $this->get_field_id($field) . '">'
 					. '<code>' . htmlspecialchars($default, ENT_QUOTES, get_option('blog_charset')) . '</code>'
+					. '</label>'
 					. '<br />' . "\n"
 					. '<textarea type="text" class="widefat" cols="20" rows="3"'
+						. ' id="' . $this->get_field_id($field) . '"'
 						. ' name="' . $this->get_field_name($field) . '"'
 						. ' >'
 						. format_to_edit($$field)
 						. '</textarea>'
-					. '</label>'
 					. '</p>' . "\n";
 				break;
 			default:
@@ -2972,10 +2973,12 @@ class footer extends sem_nav_menu {
 		
 		foreach ( array('copyright') as $field ) {
 			echo '<p>'
-				. '<label>'
+				. '<label for="' . $this->get_field_id($field) . '">'
 				. '<code>' . htmlspecialchars($defaults[$field], ENT_QUOTES, get_option('blog_charset')) . '</code>'
+				. '</label>'
 				. '<br />' . "\n"
 				. '<textarea class="widefat" cols="20" rows="4"'
+					. ' id="' . $this->get_field_id($field) . '"'
 					. ' name="' . $this->get_field_name($field) . '"'
 					. ( !current_user_can('unfiltered_html')
 						? ' disabled="disabled"'
@@ -2984,7 +2987,6 @@ class footer extends sem_nav_menu {
 					. ' >'
 				. format_to_edit($$field)
 				. '</textarea>'
-				. '</label>'
 				. '</p>' . "\n";
 		}
 		

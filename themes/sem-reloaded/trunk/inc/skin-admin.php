@@ -366,14 +366,15 @@ EOS;
 		echo '<h3>' . __('Designer Credits', 'sem-reloaded') . '</h3>' . "\n";
 		
 		echo '<p>'
-			. '<label>'
+			. '<label for="sem_credits">'
 			. '<code>'
 			. htmlspecialchars(__('Made with %semiologic% &bull; %skin_name% skin by %skin_author%', 'sem-reloaded'), ENT_QUOTES, get_option('blog_charset'))
 			. '</code>'
-			. '<textarea name="credits" class="widefat" cols="50" rows="3">'
+			. '</label>'
+			. '<br />' . "\n"
+			. '<textarea id="sem_credits" name="credits" class="widefat" cols="50" rows="3">'
 			. format_to_edit($sem_options['credits'])
 			. '</textarea>'
-			. '</label>'
 			. '</p>' . "\n";
 		
 		echo '<div class="submit">'
