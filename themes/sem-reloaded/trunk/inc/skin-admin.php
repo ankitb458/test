@@ -368,7 +368,7 @@ EOS;
 		echo '<p>'
 			. '<label>'
 			. '<code>'
-			. htmlspecialchars(__('Made with %semiologic% &bull; %skin_name% by %skin_author%', 'sem-reloaded'), ENT_QUOTES, get_option('blog_charset'))
+			. htmlspecialchars(__('Made with %semiologic% &bull; %skin_name% skin by %skin_author%', 'sem-reloaded'), ENT_QUOTES, get_option('blog_charset'))
 			. '</code>'
 			. '<textarea name="credits" class="widefat" cols="50" rows="3">'
 			. format_to_edit($sem_options['credits'])
