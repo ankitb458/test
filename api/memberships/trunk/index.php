@@ -4,7 +4,7 @@ header('Content-Type: text/xml; Charset: UTF-8');
 echo '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
 
 # check user_key
-if ( !isset($_REQUEST['user_key']) || !preg_match("/[0-9a-f]{32}/", $_REQUEST['user_key']) ) {
+if ( !isset($_REQUEST['user_key']) || !preg_match("/^[0-9a-f]{32}$/", $_REQUEST['user_key']) ) {
 	die('<error>Invalid Request</error>');
 }
 
