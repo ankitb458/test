@@ -392,7 +392,7 @@ function countdown_widget_control()
 		}
 	}
 
-	$title = attribute_escape($options['title']);
+	$title = esc_attr($options['title']);
 	$number = $options['number'] ? $options['number'] : '';
 
 	echo '<input type="hidden" name="countdown_widget_update" value="1" />';

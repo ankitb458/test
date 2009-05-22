@@ -66,7 +66,7 @@ class page_tags {
 		$tax_name = 'post_tag';
 		$taxonomy = get_taxonomy($tax_name);
 		$helps = isset($taxonomy->helps)
-			? attribute_escape($taxonomy->helps)
+			? esc_attr($taxonomy->helps)
 			: __('Separate tags with commas.', page_tags_textdomain);
 		?>
 		<div class="tagsdiv" id="<?php echo $tax_name; ?>">

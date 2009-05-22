@@ -128,7 +128,7 @@ function display_semiologic_affiliate_admin()
 
 ?>	<p class="submit">
 	<input type="submit"
-		value="<?php echo attribute_escape(__('Save Changes')); ?>"
+		value="<?php echo esc_attr(__('Save Changes')); ?>"
 		 />
 	</p>
 </div>

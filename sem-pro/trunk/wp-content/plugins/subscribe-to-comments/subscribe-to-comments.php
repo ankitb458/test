@@ -80,7 +80,7 @@ if ( !$sg_subscribe->current_viewer_subscription_status() ) :
 	<form action="" method="post">
 	<input type="hidden" name="solo-comment-subscribe" value="solo-comment-subscribe" />
 	<input type="hidden" name="postid" value="<?php echo (int) $id; ?>" />
-	<input type="hidden" name="ref" value="<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . attribute_escape($_SERVER['REQUEST_URI'])); ?>" />
+	<input type="hidden" name="ref" value="<?php echo urlencode('http://' . $_SERVER['HTTP_HOST'] . esc_attr($_SERVER['REQUEST_URI'])); ?>" />
 
 	<p class="solo-subscribe-to-comments">
 	<?php _e('Subscribe without commenting', 'subscribe-to-comments'); ?>
@@ -211,7 +211,7 @@ class sg_subscribe_settings {
 		sg_subscribe_settings::options_page_contents();
 
 	  echo '<p class="submit"><input type="submit" name="sg_subscribe_settings_submit" value="';
-	  echo attribute_escape(__('Save Changes'));
+	  echo esc_attr(__('Save Changes'));
 	  echo '" /></p></div>';
 
 		if ( function_exists('wp_nonce_field') )
@@ -345,7 +345,7 @@ class sg_subscribe {
 
 		foreach ( array('email', 'key', 'ref', 'new_email') as $var )
 			if ( isset($_REQUEST[$var]) && !empty($_REQUEST[$var]) )
-				$this->{$var} = attribute_escape(trim(stripslashes($_REQUEST[$var])));
+				$this->{$var} = esc_attr(trim(stripslashes($_REQUEST[$var])));
 		if ( !$this->key )
 			$this->key = 'unset';
 	}
@@ -810,7 +810,7 @@ class sg_subscribe {
 			$link = add_query_arg('email', urlencode($email), $link);
 			$link = add_query_arg('key', $this->generate_key($email), $link);
 		}
-		$link = add_query_arg('ref', rawurlencode('http://' . $_SERVER['HTTP_HOST'] . attribute_escape($_SERVER['REQUEST_URI'])), $link);
+		$link = add_query_arg('ref', rawurlencode('http://' . $_SERVER['HTTP_HOST'] . esc_attr($_SERVER['REQUEST_URI'])), $link);
 		//$link = str_replace('+', '%2B', $link);
 		if ( $html )
 			$link = htmlentities($link);

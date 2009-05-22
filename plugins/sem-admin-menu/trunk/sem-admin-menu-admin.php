@@ -88,7 +88,7 @@ class sem_admin_menu_admin {
 
 		echo '<p class="submit">'
 			. '<input type="submit"'
-				. ' value="' . attribute_escape(__('Save Changes', 'sem-admin-menu')) . '"'
+				. ' value="' . esc_attr(__('Save Changes', 'sem-admin-menu')) . '"'
 				. ' />'
 			. '</p>' . "\n";
 		

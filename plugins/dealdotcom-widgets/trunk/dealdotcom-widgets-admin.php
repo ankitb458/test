@@ -64,7 +64,7 @@ class dealdotcom_admin {
 		extract($ops);
 		
 		
-		$aff_id = attribute_escape($aff_id);
+		$aff_id = esc_attr($aff_id);
 
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<label>'

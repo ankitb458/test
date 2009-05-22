@@ -87,9 +87,9 @@ class redirect_manager {
 		$location = get_post_meta($post_id, '_redirect_url', true);
 		
 		if ( $location ) {
-			$location = clean_url($location);
+			$location = esc_url($location);
 			$caption = __('Redirects to <a href="%1$s">%2$s</a>', 'redirect-manager');
-			$content = '<p>' . sprintf($caption, attribute_escape($location), $location) . '</p>';
+			$content = '<p>' . sprintf($caption, esc_attr($location), $location) . '</p>';
 		}
 		
 		return $content;

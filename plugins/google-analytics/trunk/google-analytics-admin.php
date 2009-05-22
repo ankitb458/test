@@ -132,7 +132,7 @@ EOF;
 		
 		echo '<p class="submit">'
 			. '<input type="submit"'
-				. ' value="' . attribute_escape(__('Save Changes')) . '"'
+				. ' value="' . esc_attr(__('Save Changes')) . '"'
 				. " />"
 			. "</p>\n";
 

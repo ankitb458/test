@@ -22,7 +22,7 @@ class redirect_manager_admin {
 		
 		echo '<p>'
 			. '<input type="text" name="redirect_manager" size="58" tabindex="5" class="code" style="width: 90%;"'
-				. ' value="' . attribute_escape($value) . '"'
+				. ' value="' . esc_attr($value) . '"'
 				. ' />'
 			. '</p>';
 		
@@ -46,7 +46,7 @@ class redirect_manager_admin {
 		if ( current_user_can('edit_post', $post_id) ) {
 			$value = $_POST['redirect_manager'];
 			$value = stripslashes($value);
-			$value = clean_url($value, null, 'raw');
+			$value = esc_url_raw($value);
 			$value = addslashes($value);
 			
 			if ( $value ) {

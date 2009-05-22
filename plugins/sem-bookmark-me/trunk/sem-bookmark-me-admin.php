@@ -59,7 +59,7 @@ class bookmark_me_admin {
 		extract($ops);
 		
 		
-		$title = attribute_escape($title);
+		$title = esc_attr($title);
 		
 		echo '<input type="hidden"'
 				. ' id="sem_bookmark_me_widget_update"'
