@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# Author: Denis de Bernardy <http://www.mesoconcepts.com>
+# Version: 0.1
+# BSD licensed
+#
 
 find . -name *.diff -exec rm '{}' \;
 find . -name *.patch -exec rm '{}' \;

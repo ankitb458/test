@@ -1,5 +1,9 @@
 #!/bin/sh
 #
+# Author: Denis de Bernardy <http://www.mesoconcepts.com>
+# Version: 0.1
+# BSD licensed
+#
 # Automatically download and apply a patch from core.trac.wordpress.org
 #
 # Usage:
