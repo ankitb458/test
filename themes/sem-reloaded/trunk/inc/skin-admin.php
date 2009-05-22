@@ -168,8 +168,16 @@ EOS;
 		$sem_options['active_skin'] = preg_replace("/[^a-z0-9_-]/i", "", $_POST['skin']);
 		$sem_options['skin_data'] = sem_template::get_skin_data($sem_options['active_skin']);
 		$sem_options['active_font'] = preg_replace("/[^a-z0-9_-]/i", "", $_POST['font']);
+		if ( current_user_can('unfiltered_html') )
+			$sem_options['credits'] = $_POST['credits'];
 		
 		update_option('sem6_options', $sem_options);
+		
+		echo '<div class="updated fade">'
+			. '<p><strong>'
+			. __('Settings saved.', 'sem-reloaded')
+			. '</strong></p>'
+			. '</div>' . "\n";
 	} # save_options()
 	
 	
@@ -197,7 +205,7 @@ EOS;
 		
 		$details = $skins[$sem_options['active_skin']];
 		$screenshot = sem_url . '/skins/' . $sem_options['active_skin'] . '/screenshot.png';
-		$title = __('%1$s v.%2$s by %3$s', 'sem-reloaded');
+		$title = __('%1$s v.%2$s, by %3$s', 'sem-reloaded');
 		$name = $details['uri']
 			? ( '<a href="' . esc_url($details['uri']) . '"'
 				. ' title="' . esc_attr(__('Visit the skin\' page', 'sem-reloaded')) . '">'
@@ -221,10 +229,6 @@ EOS;
 			. $fonts[$sem_options['active_font']]
 			. '</span>';
 		
-		echo '<p>'
-			. sprintf(__('Font: %s', 'sem-reloaded'), $font)
-			. '</p>' . "\n";
-		
 		if ( $details['description'] ) {
 			echo wpautop($details['description']);
 		}
@@ -234,6 +238,10 @@ EOS;
 				. sprintf(__('Tags: %s', 'sem-reloaded'), implode(',', $details['tags']))
 				. '</p>' . "\n";
 		}
+		
+		echo '<p>'
+			. sprintf(__('Font Used: %s.', 'sem-reloaded'), $font)
+			. '</p>' . "\n";
 		
 		echo '<div style="clear: both;"></div>' . "\n";
 		
@@ -274,6 +282,19 @@ EOS;
 			echo '<td class="' . implode(' ', $classes) . '">' . "\n";
 			
 			$screenshot = sem_url . '/skins/' . $skin . '/screenshot.png';
+			$title = __('%1$s v.%2$s', 'sem-reloaded');
+			$name = $details['uri']
+				? ( '<a href="' . esc_url($details['uri']) . '"'
+					. ' title="' . esc_attr(__('Visit the skin\'s page', 'sem-reloaded')) . '">'
+					. $details['name']
+					. '</a>' )
+				: $details['name'];
+			$author = $details['author_uri']
+				? ( '<a href="' . esc_url($details['author_uri']) . '"'
+					. ' title="' . esc_attr(__('Visit the skin author\'s site', 'sem-reloaded')) . '">'
+					. $details['author_name']
+					. '</a>' )
+				: $details['author_name'];
 			
 			echo '<p>'
 				. '<label for="skin-' . $skin . '">'
@@ -281,14 +302,13 @@ EOS;
 				. '</label>'
 				. '</p>' . "\n"
 				. '<h4>'
-				. '<label for="skin-' . $skin . '">'
 				. '<span class="hide-if-js">'
 				. '<input type="radio" name="skin" value="' . $skin . '" id="skin-' . $skin . '"'
 					. checked($sem_options['active_skin'], $skin, false)
 					. ' />' . '&nbsp;' . "\n"
 				. '</span>'
-				. $details['name']
-				. '</label>'
+				. sprintf($title, $name, $details['version']) . '<br />'
+				. sprintf(__('By %s', 'sem-reloaded'), $author)
 				. '</h4>' . "\n";
 			
 			echo '</td>' . "\n";
@@ -319,9 +339,9 @@ EOS;
 			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
 			. '</p>' . "\n";
 		
-		echo '<h3>' . __('Font Settings') . '</h3>' . "\n";
+		echo '<h3>' . __('Font Settings', 'sem-reloaded') . '</h3>' . "\n";
 		
-		echo '<p>' . __('This will let you set the default font on your site.') . '</p>' . "\n";
+		echo '<p>' . __('This will let you set the default font on your site.', 'sem-reloaded') . '</p>' . "\n";
 		
 		echo '<ul>' . "\n";
 		
@@ -338,6 +358,23 @@ EOS;
 		}
 		
 		echo '</ul>' . "\n";
+		
+		echo '<div class="submit">'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
+			. '</div>' . "\n";
+		
+		echo '<h3>' . __('Designer Credits', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>'
+			. htmlspecialchars(__('Made with %semiologic% &bull; %skin_name% by %skin_author%', 'sem-reloaded'), ENT_QUOTES, get_option('blog_charset'))
+			. '</code>'
+			. '<textarea name="credits" class="widefat" cols="50" rows="3">'
+			. format_to_edit($sem_options['credits'])
+			. '</textarea>'
+			. '</label>'
+			. '</p>' . "\n";
 		
 		echo '<div class="submit">'
 			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'

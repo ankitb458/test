@@ -101,6 +101,12 @@ EOS;
 		$sem_options['active_layout'] = preg_replace("/[^mst]/", "", $_POST['layout']);
 		
 		update_option('sem6_options', $sem_options);
+		
+		echo '<div class="updated fade">'
+			. '<p><strong>'
+			. __('Settings saved.', 'sem-reloaded')
+			. '</strong></p>'
+			. '</div>' . "\n";
 	} # save_options()
 	
 	

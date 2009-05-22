@@ -274,30 +274,28 @@ class sem_template {
 	 **/
 
 	function display_credits() {
-		global $sem_captions;
+		global $sem_options;
 		
 		echo '<div id="credits">' . "\n"
 			. '<div id="credits_top"><div class="hidden"></div></div>' . "\n"
 			. '<div id="credits_bg">' . "\n";
 		
-		if ( $sem_captions['credits'] ) {
+		if ( $sem_options['credits'] ) {
 			$theme_credits = sem_template::get_theme_credits();
 			$skin_credits = sem_template::get_skin_credits();
 			
 			$credits = str_replace(
 				array(
-					'%wordpress%',
 					'%semiologic%',
 					'%skin_name%',
 					'%skin_author%',
 					),
 				array(
-					'<a href="http://wordpress.org">' . __('WordPress') . '</a>',
 					$theme_credits,
 					$skin_credits['skin_name'],
 					$skin_credits['skin_author'],
 					),
-				$sem_captions['credits']
+				$sem_options['credits']
 				);
 			
 			echo '<div class="pad">'
@@ -320,18 +318,18 @@ class sem_template {
 	function get_theme_credits() {
 		if ( get_option('sem_api_key') ) {
 			return '<a href="http://www.getsemiologic.com">'
-				. __('Semiologic Pro')
+				. __('Semiologic Pro', 'sem-reloaded')
 				. '</a>';
 		} else {
 			$theme_descriptions = array(
-				'the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic Reloaded theme</a>',
-				'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to use WordPress theme</a>',
-				'an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to customize WordPress theme</a>',
+				__('the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic Reloaded theme</a>', 'sem-reloaded'),
+				__('an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to use WordPress theme</a>', 'sem-reloaded'),
+				__('an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to customize WordPress theme</a>', 'sem-reloaded'),
 				);
 			
 			$i = rand(0, sizeof($theme_descriptions) - 1);
 
-			return '<a href="http://wordpress.org">WordPress</a> and ' . $theme_descriptions[$i];
+			return $theme_descriptions[$i];
 		}
 	} # get_theme_credits()
 	
