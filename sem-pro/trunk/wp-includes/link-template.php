@@ -711,26 +711,23 @@ function get_edit_post_link( $id = 0, $context = 'display' ) {
 }
 
 /**
- * Retrieve edit posts link for post.
+ * Display edit post link for post.
  *
  * @since 1.0.0
  *
  * @param string $link Optional. Anchor text.
  * @param string $before Optional. Display before edit link.
  * @param string $after Optional. Display after edit link.
+ * @param int $id Optional. Post ID.
  */
-function edit_post_link( $link = 'Edit This', $before = '', $after = '' ) {
-	global $post;
+function edit_post_link( $link = 'Edit This', $before = '', $after = '', $id = 0 ) {
+	if ( !$post = &get_post( $id ) )
+		return;
 
-	if ( $post->post_type == 'page' ) {
-		if ( !current_user_can( 'edit_page', $post->ID ) )
-			return;
-	} else {
-		if ( !current_user_can( 'edit_post', $post->ID ) )
-			return;
-	}
+	if ( !$url = get_edit_post_link( $post->ID ) )
+		return;
 
-	$link = '<a class="post-edit-link" href="' . get_edit_post_link( $post->ID ) . '" title="' . esc_attr( __( 'Edit post' ) ) . '">' . $link . '</a>';
+	$link = '<a class="post-edit-link" href="' . $url . '" title="' . esc_attr( __( 'Edit post' ) ) . '">' . $link . '</a>';
 	echo $before . apply_filters( 'edit_post_link', $link, $post->ID ) . $after;
 }
 
