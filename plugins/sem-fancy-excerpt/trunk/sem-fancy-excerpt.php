@@ -41,18 +41,14 @@ class fancy_excerpt {
 		if ( $text || !in_the_loop() )
 			return wp_trim_excerpt($text);
 		
-		global $sem_captions;
+		global $allowedposttags;
 		
-		if ( isset($sem_captions['more_link']) ) {
-			$more = $sem_captions['more_link'];
-			$more = str_replace('%title%', get_the_title(), $more);
-		} else {
-			$more = __('More...');
-		}
+		$more = __('More...');
 		
 		$text = get_the_content($more);
 		$text = strip_shortcodes($text);
 		$text = str_replace(array("\r\n", "\r"), "\n", $text);
+		$text = wp_kses($text, $allowedposttags);
 		
 		if ( !preg_match("|$more</a>$|", $text)
 			&& count(preg_split("~\s+~", trim(strip_tags($text)))) > 30
@@ -75,7 +71,7 @@ class fancy_excerpt {
 			
 			$text .= "\n\n"
 				. '<p>'
-				. ' <a href="'. htmlspecialchars(get_permalink()) . '" class="more-link">'
+				. ' <a href="'. esc_url(get_permalink()) . '" class="more-link">'
 					. $more
 					. '</a>'
 				. '</p>' . "\n";
