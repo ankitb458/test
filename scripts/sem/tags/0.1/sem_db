@@ -1,0 +1,47 @@
+#!/bin/bash
+#
+# Author: Denis de Bernardy <http://www.mesoconcepts.com>
+# Version: 0.1
+# BSD licensed
+#
+
+if [[ $# == 2 ]];
+then
+	db=$1
+	sql=$2
+elif [[ $# == 1 ]];
+then
+	db=sem
+	sql=$1
+elif [[ $# == 0 ]];
+then
+	db=sem
+	sql=
+else
+	echo 'Usage: sem [db_name] [sql_dump]'
+	exit -1
+fi
+
+mysql -u root -t <<SQL
+DROP DATABASE IF EXISTS $db;
+CREATE DATABASE $db;
+SQL
+
+
+if [[ "$sql" != '' ]];
+then
+	mysql $db -u root < $sql
+
+	mysql $db -u root -t <<SQL
+UPDATE	wp_users
+SET		user_login = 'admin',
+		user_pass = md5('admin')
+ORDER BY ID
+LIMIT 1
+SQL
+
+	#statements
+fi
+
+echo 'DB reset complete'
+exit 0
