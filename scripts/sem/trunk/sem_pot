@@ -1,4 +1,9 @@
 #!/bin/sh
+#
+# Author: Denis de Bernardy <http://www.mesoconcepts.com>
+# Version: 0.1
+# GPL licensed
+#
 # Created by Ryan Boren
 # Later code and patches from
 # Kimmo Suominen (more) and Nikolay Bachiyski (less)

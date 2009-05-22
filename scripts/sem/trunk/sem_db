@@ -1,5 +1,9 @@
 #!/bin/bash
 #
+# Author: Denis de Bernardy <http://www.mesoconcepts.com>
+# Version: 0.1
+# BSD licensed
+#
 
 if [[ $# == 2 ]];
 then
@@ -26,9 +30,9 @@ SQL
 
 if [[ "$sql" != '' ]];
 then
-	mysql sem -u root < $sql
+	mysql $db -u root < $sql
 
-	mysql sem -u root -t <<SQL
+	mysql $db -u root -t <<SQL
 UPDATE	wp_users
 SET		user_login = 'admin',
 		user_pass = md5('admin')
