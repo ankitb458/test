@@ -1,0 +1,76 @@
+#!/bin/sh
+# Created by Ryan Boren
+# Later code and patches from
+# Kimmo Suominen (more) and Nikolay Bachiyski (less)
+# Denis de Bernardy
+
+cwd=`pwd`
+
+if [ -n "$1" ];
+then
+	cd "$1" || exit 1
+	slug=`basename $1`
+	dir=$cwd/$slug
+else
+	dir=$cwd
+	slug=`basename $cwd`
+fi
+
+pot_file=$slug.pot
+
+cp /dev/null "$dir/$pot_file"
+
+find . -name '*.php' -print \
+| sed -e 's,^\./,,' \
+| sort \
+| xargs xgettext \
+    --keyword=__ \
+    --keyword=_e \
+    --keyword=_c \
+	--keyword=__ngettext:1,2 \
+	--keyword=_n:1,2 \
+    --default-domain=$slug \
+    --language=php \
+    --output="$dir/$pot_file" \
+    --join-existing \
+	--from-code utf-8 \
+	--copyright-holder='Mesoconcepts <http://www.mesoconcepts.com>' \
+	--msgid-bugs-address=https://tickets.semiologic.com
+
+# sub only the YEAR in the copyright message (the 2nd line)
+sed -i '' -e '2s/YEAR/'`date +%Y`'/' "$pot_file"
+
+# and the cherry of the pie - extract version using magic - versoextracanus!~
+
+if [ -f $dir/style.css ];
+then
+	name=`fgrep -i 'Theme Name:' $dir/style.css`
+	version=`fgrep -i 'Version:' $dir/style.css`
+elif [ -f $dir/$slug.php ];
+then
+	#statements
+	name=`fgrep -i 'Plugin Name:' $dir/$slug.php`
+	version=`fgrep -i 'Version:' $dir/$slug.php`
+else
+	name=$slug
+	version=
+fi
+
+name=${name##*:}
+name=${name##[[:space:]]}
+version=${version##*:}
+version=${version##[[:space:]]}
+version=${version%%[[:space:]]*}
+
+if [ "$name" != '' ];
+then
+	sed -i '' -e "1s/^# SOME DESCRIPTIVE TITLE/# $name pot file/" "$pot_file"
+	sed -i '' -e "s/\(^#.*\)PACKAGE\(.*\)/\1$name\2/g" "$pot_file"
+fi
+
+if [ "$version" != '' ];
+then
+	sed -i '' -e "s/\(Project-Id-Version: \)PACKAGE VERSION/\1$version/" "$pot_file"
+fi
+
+cd "$cwd"

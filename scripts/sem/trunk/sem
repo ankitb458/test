@@ -1,0 +1,736 @@
+#!/bin/bash
+
+
+#
+# Globals
+#
+
+if [[ "$HOME" == "/Users/denis" ]];
+then
+	readonly debug=1
+	readonly svn_root=https://svn.semiologic.com
+else
+	readonly debug=0
+	readonly svn_root=https://svn.semiologic.com
+fi
+
+
+#
+# Method: sem_info
+#
+
+function sem_info()
+{
+	local svn=$1
+	local package
+	local type
+	
+	local line
+	
+	# extract version
+	if [[ "$svn" =~ ([^/]+)/tags/([^@]+) ]];
+	then
+		package=${BASH_REMATCH[1]}
+		version=${BASH_REMATCH[2]}
+	else
+		[[ "$svn" =~ ^(plugins/|themes/|skins/)?([^/]+)/.+$ ]];
+		
+		type=${BASH_REMATCH[1]%/}
+		package=${BASH_REMATCH[2]}
+		
+		case "$type"
+		in
+			plugins )
+				file=$package.php
+				;;
+			themes )
+				file=style.css
+				;;
+			skins )
+				file=skin.css
+				;;
+		esac
+		
+		if [[ $type != "" ]];
+		then
+			svn cat $svn_root/$svn/$file > $dir/$package.ver
+			
+			line=`head -n 20 $dir/$package.ver | grep -i -m 1 -E 'Version[[:space:]]*:.+'`
+			
+			rm $dir/$package.ver
+			
+			version=$line
+			
+			# strip Version:
+			version=${version##*:}
+
+			# strip leading spaces
+			version=${version##[[:space:]]}
+
+			# strip fork / (fork)
+			version=${version/(fork)/}
+			version=${version/fork/}
+
+			# strip trailing spaces
+			version=${version%%[[:space:]]}
+		fi
+	fi
+	
+	echo "$package $version"
+}
+
+#sem_info plugins/ad-manager/trunk
+#sem_info themes/sem-reloaded/trunk
+#sem_info skins/boxed-blue/trunk
+
+#exit 0
+
+
+#
+# Method: sem_version
+#
+
+function sem_version()
+{
+	local folder=$1
+	local tag=$2
+	
+	shift
+	shift
+	local version=$*
+	
+	if [[ ! $tag =~ ^[a-z-]+$ ]];
+	then
+		echo "Err: Invalid version tag ($tag)"
+		exit -1
+	elif [[ ! "$version" =~ ^[1-9]|^0?\.(0\.)*0*[1-9] ]];
+	then
+		echo "Err: Invalid version format ($version)"
+		exit -1
+	fi
+	
+	if [[ $debug != 0 ]]
+	then
+		folder=~/Desktop/www/version/$folder
+		file=versions.txt
+	else
+		folder=/usr/local/www/version.semiologic.com/www/$folder
+		file=versions.txt
+	fi
+	
+	mkdir -p $folder													|| exit -1
+	
+	grep -E "^[[:space:]]*$tag[[:space:]]*:.*$" $folder/$file &> /dev/null
+	
+	if [[ $? == 0 ]];
+	then
+		sed -i '' -E "s|^[[:space:]]*$tag[[:space:]]*:.*$|$tag: $version|" $folder/$file
+	else
+		echo "$tag: $version" >> $folder/$file
+	fi
+	
+	echo "Updated ${folder/*\/www\//}/$file ($tag: $version)"
+}
+
+
+#
+# Method: sem_dev
+#
+
+function sem_dev()
+{
+	local svn=$1
+	
+	shift
+	local version=$*
+	
+	local type
+	local package
+	
+	local line
+	
+	local dep_svn
+	local dep_version
+	
+	local file
+	local folder
+	
+	local do_version
+	
+	if [[ ! "$svn" =~ ^(plugins/|themes/|skins/)?([^/]+)/.+$ ]];
+	then
+		exit -1
+	fi	
+	
+	do_version=0
+	
+	type=${BASH_REMATCH[1]%/}
+	package=${BASH_REMATCH[2]}
+	
+	if [[ "$type" =~ ^(themes)?$ ]];
+	then
+		echo
+		echo
+		echo "Checking depends for $package..."
+		
+		svn propget svn:externals $svn_root/$svn > $dir/$package.ext || exit -1
+		
+		cat $dir/$package.ext | grep -E '\^/' > $dir/$package.ext.local
+		
+		while read line
+		do
+			# extract svn
+			dep_svn=$line
+			
+			dep_svn=${dep_svn##*^/}
+			
+			# todo: accomodate -r digit as revision arg
+			dep_svn=${dep_svn%%[[:space:]]*}
+			
+			dep_svn=${dep_svn%%/}
+			dep_svn=${dep_svn/%\/@/@}
+			
+			# extract version
+			line=`sem_info $dep_svn`
+			
+			dep_version=${line#*[[:space:]]}
+			
+			if [[ "$dep_version" =~ ^[0-9.]+$ ]];
+			then
+				sem_zip $dep_svn $dep_version || exit -1
+			else
+				sem_dev $dep_svn $dep_version || exit -1
+			fi
+			
+			sleep .1
+		done < $dir/$package.ext.local
+		
+		rm $dir/$package.ext*
+	fi
+	
+	if [[ $type != "" || $version != "" ]];
+	then
+		echo
+		echo
+		echo "Processing $svn_root/$svn ..."
+
+		for file in `svn propget sem:dev $svn_root/$svn`
+		do
+			if [[ $debug != 0 ]];
+			then
+				file=~/Desktop/www/zips/$package.zip
+			elif [[ "$file" =~ ^([^/]+://)?(www\.)?([^/]+)/(.+\.zip)$ ]];
+			then
+				# translate to site folder on hub.org
+				file=/usr/local/www/${BASH_REMATCH[3]}/www/${BASH_REMATCH[4]}
+			else
+				echo "Err: Invalid file ($file)"
+				exit -1
+			fi
+
+			folder=${file%/*}
+			file=${file##*/}
+			
+			if [[ "$package" != sem-pro ]];
+			then
+				zip_folder=$package
+			else
+				zip_folder=wordpress
+			fi
+
+			mkdir -p $folder											|| exit -1
+			svn export $svn_root/$svn $dir/$zip_folder					|| exit -1
+			zip -qr $package.zip $zip_folder							|| exit -1
+			rm -Rf $dir/$zip_folder										|| exit -1
+			mv $package.zip $folder/$file								|| exit -1
+
+			echo "Published ${folder#*/www}/$file"
+			
+			do_version=1
+		done
+		
+		if [[ $do_version != 0 ]];
+		then
+			if [[ "$version" != "" && "$type" == "" ]];
+			then
+				sem_version $package bleeding $version || exit -1
+			fi
+		fi
+	fi
+}
+
+
+#
+# Method: sem_zip
+#
+
+function sem_zip()
+{
+	local svn=$1
+	
+	shift
+	local version=$*
+	
+	local line
+
+	local type
+	local package
+	
+	local dep
+	local dep_package
+	
+	local dep_svn
+	local dep_version
+	
+	local new_svn
+	
+	local old_svn
+	local old_version
+	
+	local file
+	local folder
+	
+	local tag
+	
+	local do_version
+
+	if [[ ! "$svn" =~ ^(plugins/|themes/|skins/)?([^/]+)/.+$ ]];
+	then
+		exit -1
+	fi
+	
+	do_version=0
+	
+	type=${BASH_REMATCH[1]%/}
+	package=${BASH_REMATCH[2]}
+	
+	if [[ "$type" =~ ^(themes)?$ ]];
+	then
+		echo
+		echo
+		echo "Checking depends for $package..."
+		
+		svn propget svn:externals $svn_root/$svn > $dir/$package.ext || exit -1
+		
+		cp $dir/$package.ext $dir/$package.ext.bak
+		cat $dir/$package.ext | grep -E '\^/' > $dir/$package.ext.local
+		
+		while read line
+		do
+			dep=$line
+			dep_svn=$line
+			
+			dep_svn=${dep_svn##*^/}
+			
+			# todo: accomodate -r digit as revision arg
+			dep_svn=${dep_svn%%[[:space:]]*}
+			
+			dep_svn=${dep_svn%%/}
+			dep_svn=${dep_svn/%\/@/@}
+			
+			# extract version
+			line=`sem_info $dep_svn`
+			
+			dep_version=${line#*[[:space:]]}
+			dep_package=${line%%[[:space:]]*}
+			
+			sem_zip $dep_svn $dep_version || exit -1
+			
+			sleep .1
+			
+			if [[ ! $dep_svn =~ /$dep_package/tags/$dep_version ]];
+			then
+				if [[ "$svn" =~ $package/(trunk|branches) ]];
+				then
+					sed -i '' -E "s|/$dep_package/[^[:space:]]+|/$dep_package/tags/$dep_version/|" $dir/$package.ext
+				else
+					echo "Err: Invalid external found in $package: $dep_svn"
+					exit -1
+				fi
+			fi
+		done < $dir/$package.ext.local
+	fi
+	
+	if [[ "$version" != "" ]];
+	then
+		echo
+		echo
+		echo "Processing $svn_root/$svn ..."
+		
+		if [[ ! "$version" =~ ^[0-9.]+$ ]];
+		then
+			echo "Err: $package is not stable ($version)"
+			exit -1
+		fi
+		
+		# freeze externals if necessary
+		if [[ "$type" =~ ^(themes)?$ && "$svn" =~ $package/(trunk|branches) ]];
+		then
+			grep -E '\^/(plugins|themes|skins)/[^/]+/(trunk|branches)' $dir/$package.ext.bak &> /dev/null
+
+			if [[ $? == 0 ]];
+			then
+				svn co --depth empty $svn_root/$svn $dir/$package.branch \
+																		|| exit -1
+				svn ps svn:externals -F $dir/$package.ext $dir/$package.branch \
+																		|| exit -1
+				svn ci $dir/$package.branch -m "Freeze $package $version before tagging" \
+																		|| exit -1
+				
+				echo "Froze externals for $package $version"
+			fi
+		fi
+		
+		# tag/merge if necessary
+		if [[ ! "$svn" =~ $package/tags/$version ]];
+		then
+			if [[ $type == "" ]];
+			then
+				new_svn=$package/tags/$version
+			else
+				new_svn=$type/$package/tags/$version
+			fi
+			
+			svn list $svn_root/$new_svn &> /dev/null
+			
+			if [[ $? != 0 ]];
+			then
+				svn cp $svn_root/$svn $svn_root/$new_svn -m "Tag $package $version" \
+																		|| exit -1
+				
+				echo "Tagged $package $version"
+				
+				sleep .1
+			fi
+			
+			if [[ $type != "" ]];
+			then
+				# merge...
+				for ext_svn in `svn propget sem:ext $svn_root/$svn`
+				do
+					svn co $ext_svn $package							|| exit -1
+					
+					case "$type"
+					in
+						plugins )
+							file=$package.php
+							;;
+						themes )
+							file=style.css
+							;;
+						skins )
+							file=skin.css
+							;;
+					esac
+					
+					line=`head -n 20 $package/$file | grep -i -m 1 -E 'Version[[:space:]]*:.+'`
+					
+					old_version=$line
+
+					# strip Version:
+					old_version=${old_version##*:}
+
+					# strip leading spaces
+					old_version=${old_version##[[:space:]]}
+
+					# strip fork / (fork)
+					old_version=${old_version/(fork)/}
+					old_version=${old_version/fork/}
+
+					# strip trailing spaces
+					old_version=${old_version%%[[:space:]]}
+					
+					if [[ "$old_version" != "$version" ]];
+					then
+						old_svn=$type/$package/tags/$old_version
+						
+						svn list $svn_root/$old_svn &> /dev/null
+						
+						if [[ $? != 0 ]];
+						then
+							echo
+							echo
+							echo "*** Warning ***"
+							echo "Failed to merge $package $version into $ext_svn"
+							echo
+							echo
+							
+							sleep 2
+						else
+							svn export --force $svn_root/$old_svn/readme.txt $dir/$package/readme.txt \
+																		|| exit -1
+							svn merge $svn_root/$old_svn $svn_root/$new_svn $dir/$package \
+																		|| exit -1
+							svn ci $dir/$package -m "$package $version"	\
+																		|| exit -1
+							
+							echo "Merged $package $version into $ext_svn"
+							
+							sleep .1
+						fi
+					else
+						svn export --force $svn_root/$svn/readme.txt $dir/$package/readme.txt \
+																		|| exit -1
+						svn ci $dir/$package -m "$package $version: readme.txt" \
+																		|| exit -1
+						
+						echo "Merged $package/readme.txt into $ext_svn"
+						
+						sleep .1
+					fi
+					
+					rm -Rf $dir/$package								|| exit -1
+				done
+			fi
+		fi
+		
+		for file in `svn propget sem:zip $svn_root/$svn`
+		do
+			if [[ $debug != 0 ]];
+			then
+				file=~/Desktop/www/zips/$package.zip
+			elif [[ "$file" =~ ^([^/]+://)?(www\.)?([^/]+)/(.+\.zip)$ ]];
+			then
+				# translate to site folder on hub.org
+				file=/usr/local/www/${BASH_REMATCH[3]}/www/${BASH_REMATCH[4]}
+			else
+				echo "Err: Invalid file ($file)"
+				exit -1
+			fi
+
+			folder=${file%/*}
+			file=${file##*/}
+			
+			if [[ "$package" != sem-pro ]];
+			then
+				zip_folder=$package
+			else
+				zip_folder=wordpress
+			fi
+			
+			mkdir -p $folder											|| exit -1
+			svn export $svn_root/$svn $dir/$zip_folder					|| exit -1
+			zip -qr $package.zip $zip_folder							|| exit -1
+			rm -Rf $dir/$zip_folder										|| exit -1
+			mv $package.zip $folder/$file								|| exit -1
+
+			echo "Published ${folder#*/www}/$file"
+			
+			do_version=1
+		done
+		
+		# unfreeze externals if necessary
+		if [[ "$type" =~ ^(themes)?$ && "$svn" =~ $package/(trunk|branches) ]];
+		then
+			grep -E '\^/(plugins|themes|skins)/[^/]+/(trunk|branches)' $dir/$package.ext.bak &> /dev/null
+
+			if [[ $? == 0 ]];
+			then
+				svn ps svn:externals -F $dir/$package.ext.bak $dir/$package.branch \
+																		|| exit -1
+				svn ci $dir/$package.branch -m "Unfreeze $package $version" \
+																		|| exit -1
+				rm -Rf $dir/$package.branch								|| exit -1
+				
+				echo "Unfroze externals for $package $version"
+			fi
+			
+			rm $dir/$package.ext*
+		fi
+		
+		# update version tag
+		if [[ $do_version != 0 ]];
+		then
+			if [[ "$type" == "" ]];
+			then
+				sem_version $package stable $version || exit -1
+			else
+				sem_version $type $package $version || exit -1
+			fi
+		fi
+	fi
+}
+
+
+#
+# Method: sem_exec
+#
+
+function sem_exec()
+{
+	local cmd
+	local package
+	local version
+	
+	local svn
+	local type
+	local branch
+	
+	local dep
+	local dep_svn
+	local check
+	
+	local line
+	
+	
+	#
+	# Initialize arguments
+	#
+	
+	cmd=$1
+	
+	case "$cmd"
+	in
+		help )
+			echo 'Usage:'
+			echo
+			echo '  sem dev package [version]: publish bleeding edge zip'
+			echo '  sem zip package [version]: publish stable zip'
+			echo
+			echo 'Omit the version argument to process depends only'
+			
+			exit 0
+			;;
+		
+		dev | devel | bleeding )
+			cmd=dev
+			;;
+		
+		zip | pub | publish | stable )
+			cmd=zip
+			;;
+		
+		* )
+			sem_exec help
+			exit -1
+			;;
+	esac
+	
+	shift
+	package=$1
+	
+	if [[ "$package" == "" ]];
+	then
+		sem_exec help
+		exit -1
+	fi
+	
+	shift
+	version="$*"
+	
+	if [[ "$version" != "" && ! "$version" =~ ^[1-9]|^0?\.(0\.)*0*[1-9] ]];
+	then
+		echo "Err: Invalid version format ($version)"
+		exit -1
+	fi
+	
+	
+	#
+	# Validate package
+	#
+	
+	echo "Scanning $svn_root ..."
+	
+	package=${package##/}
+	package=${package%%/}
+	
+	# use trunk if no branch is supplied
+	if [[ ! "$package" =~ /(trunk|branches|tags) ]];
+	then
+		package=$package/trunk
+	fi
+	
+	if [[ ! $package =~ ^(.*/)?([^/]+)/(trunk|branches/.+|tags/.+)$ ]];
+	then
+		echo "Err: $package is not a valid package"
+		exit -1
+	fi
+	
+	package=${BASH_REMATCH[2]}
+	branch=${BASH_REMATCH[3]}
+	svn=$package/$branch
+	
+	# user hints the type
+	if [[ ${BASH_REMATCH[1]%%/} =~ ^(.+/)?(plugins|themes|skins)$ ]];
+	then
+		type=${BASH_REMATCH[2]}
+		svn=$type/$package/$branch
+		
+		svn list $svn_root/$svn &> /dev/null
+
+		if [[ $? != 0 ]];
+		then
+			echo "Err: $svn was not found in $svn_root"
+			exit -1
+		fi
+	else
+		type=
+		svn=$package/$branch
+		
+		svn list $svn_root/$package/$branch &> /dev/null
+	
+		if [[ $? != 0 ]];
+		then
+			# try each type
+			for check in plugins themes skins
+			do
+				svn list $svn_root/$check/$package/$branch &> /dev/null
+	
+				if [[ $? == 0 ]];
+				then
+					type=$check
+					svn=$type/$package/$branch
+					break
+				fi
+			done
+			
+			if [[ "$type" == "" ]];
+			then
+				echo "Err: $package/$branch was not found in $svn_root"
+				exit -1
+			fi
+		fi
+	fi
+	
+	echo "Found $svn_root/$svn"
+	
+	
+	#
+	# Process cmd
+	#
+	
+	case "$cmd"
+	in
+		dev )
+		sem_dev $svn $version || exit -1
+		;;
+		
+		zip )
+		if [[ "$type" != "" && "$version" == "" ]];
+		then
+			line=`sem_info $svn`
+			version=${line#*[[:space:]]}
+		fi
+
+		sem_zip $svn $version || exit -1
+		;;
+	esac
+}
+
+
+#
+# execute
+#
+
+mkdir tmp && cd tmp || exit -1
+
+readonly dir=$PWD
+
+trap "cd ..; rm -Rf tmp" EXIT
+
+sem_exec $* || exit -1
+
+echo
+echo
+
+exit 0
