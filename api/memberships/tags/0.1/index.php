@@ -10,9 +10,11 @@ if ( !isset($_REQUEST['user_key']) || !preg_match("/^[0-9a-f]{32}$/", $_REQUEST[
 
 $user_key = $_REQUEST['user_key'];
 
+include dirname(dirname(__FILE__)) . '/config.php';
+
 # connect
 try {
-	$dbh = new PDO('pgsql:dbname=semiologic;host=127.0.0.1', 'semiologic', 'apjpfrjh');
+	$dbh = new PDO('pgsql:dbname=' . pg_db . ';host=' . pg_host, pg_user, pg_pass);
 } catch ( PDOException $e ) {
 	die('<error>Failed to connect</error>');
 }
