@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /memberships/
+RewriteRule ^(\d+\.\d+)/([0-9a-f]{32})/?$ /memberships/$1/index.php?user_key=$2 [l]
+RewriteRule ^(\d+\.\d+)/([^/]+)/([0-9a-f]{32})/?$ /memberships/$1/index.php?profile_key=$2&user_key=$3 [l]
