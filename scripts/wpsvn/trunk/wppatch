@@ -1,0 +1,53 @@
+#!/bin/sh
+#
+# Automatically download and apply a patch from core.trac.wordpress.org
+#
+# Usage:
+#
+#   wp_patch http://core.trac.wordpress.org/attachment/ticket/132/132.diff
+#   wp_patch 123			-- http://core.trac.wordpress.org/attachment/ticket/132/132.diff
+#   wp_patch 123.2.diff		-- http://core.trac.wordpress.org/attachment/ticket/132/132.2.diff
+#   wp_patch 123 456.diff	-- http://core.trac.wordpress.org/attachment/ticket/132/456.diff
+#
+
+if [ ! -f wp-config.php ];
+then
+	echo 'Invalid WP install'
+	exit 1
+fi
+
+case $#
+in
+	1 )
+		ticket=$1
+		if [ $ticket != ${ticket%/*} ];
+		then
+			ticket=${ticket##*/ticket/}
+			patch=${ticket##*/}
+			ticket=${ticket%%/*}
+		elif [ $ticket != ${ticket%%.*} ];
+		then
+			patch=$ticket
+			ticket=${ticket%%.*}
+		else
+			patch=$ticket.diff
+		fi
+		;;
+	2 )
+		ticket=$1
+		patch=$2
+		;;
+	* )
+		echo 'Invalid number of args'
+		exit 1
+esac
+
+curl -s --connect-timeout 3 http://core.trac.wordpress.org/raw-attachment/ticket/$ticket/$patch -o $PWD/$patch
+
+if [ $? -ne 0 ];
+then
+	echo 'Error downloading patch'
+	exit 1
+fi
+
+patch -p0 -i $PWD/$patch && rm $PWD/$patch

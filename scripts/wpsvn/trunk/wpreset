@@ -1,0 +1,7 @@
+#!/bin/sh
+
+find . -name *.diff -exec rm '{}' \;
+find . -name *.patch -exec rm '{}' \;
+find . -name *.rej -exec rm '{}' \;
+find . -name *.orig -exec rm '{}' \;
+svn revert -R * -q
