@@ -141,7 +141,7 @@ class sem_header_admin
 			. '<br />'
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_header[label_search_field]"'
-				. ' value="' . attribute_escape($sem_captions['search_field']) . '"'
+				. ' value="' . esc_attr($sem_captions['search_field']) . '"'
 				. ' />'
 			. '</label>'
 			. '</div>';
@@ -152,7 +152,7 @@ class sem_header_admin
 			. '<br />'
 			. '<input type="text" style="width: 95%"'
 				. ' name="sem_header[label_search_button]"'
-				. ' value="' . attribute_escape($sem_captions['search_button']) . '"'
+				. ' value="' . esc_attr($sem_captions['search_button']) . '"'
 				. ' />'
 			. '</label>'
 			. '</div>';

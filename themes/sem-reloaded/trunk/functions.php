@@ -11,10 +11,8 @@
 
 include dirname(__FILE__) . '/inc/init.php';
 
-if ( !is_admin() ) {
+if ( !is_admin() )
 	add_filter('option_page_comments', 'false');
-	add_filter('use_balanceTags', 'true');
-}
 
 switch ( $sem_options['active_layout'] ) {
 case 'm':

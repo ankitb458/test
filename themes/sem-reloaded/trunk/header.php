@@ -9,7 +9,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" <?php language_attributes(); ?>><head><title><?php
 if ( $title = trim(wp_title('&rarr;', false)) ) {
 	if ( strpos($title, '&rarr;') === 0 )
-		$title = trim(substr($title, strlen('&rarr;'), strlen($title)));
+		$title = trim(substr($title, strlen('&rarr;')));
 	echo $title;
 } else {
 	bloginfo('description');

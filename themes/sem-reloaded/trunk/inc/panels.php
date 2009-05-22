@@ -316,6 +316,7 @@ class sem_panels {
 				!class_exists('sem_admin_menu') ? 'WP_Widget_Meta' : null,
 				),
 			'the_404' => array(
+				'WP_Widget_Search',
 				'WP_Widget_Tag_Cloud',
 				class_exists('fuzzy_widget') ? 'fuzzy_widget' : 'WP_Widget_Recent_Posts',
 				'WP_Widget_Categories',

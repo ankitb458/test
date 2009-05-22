@@ -196,6 +196,8 @@ class sem_template {
 			add_filter('option_blog_public', 'false');
 			add_filter('comments_open', 'false');
 			add_filter('pings_open', 'false');
+		} elseif ( is_404() || is_search() ) {
+			add_filter('option_blog_public', 'false');
 		}
 		
 		if ( is_singular() ) {
@@ -204,7 +206,7 @@ class sem_template {
 			$post = $wp_the_query->posts[0];
 			setup_postdata($post);
 		}
-
+		
 		remove_action('wp', array('sem_template', 'wp'));
 	} # wp()
 	
@@ -214,7 +216,7 @@ class sem_template {
 	 *
 	 * @return void
 	 **/
-
+	
 	function template_redirect() {
 		if ( !isset($_GET['action']) || $_GET['action'] != 'print' )
 			return;
@@ -344,18 +346,27 @@ class sem_template {
 		global $sem_options;
 		
 		if ( !isset($sem_options['skin_data']) || !is_array($sem_options['skin_data']) ) {
-			$skin_data = sem_template::get_skin_data($sem_options['active_skin']);
-			$sem_options['skin_data'] = $skin_data;
+			$details = sem_template::get_skin_data($sem_options['active_skin']);
+			$sem_options['skin_data'] = $details;
 			update_option('sem6_options', $sem_options);
 		} else {
-			$skin_data = $sem_options['skin_data'];
+			$details = $sem_options['skin_data'];
 		}
+		;
+		$name = $details['uri']
+			? ( '<a href="' . esc_url($details['uri']) . '">'
+				. $details['name']
+				. '</a>' )
+			: $details['name'];
+		$author = $details['author_uri']
+			? ( '<a href="' . esc_url($details['author_uri']) . '">'
+				. $details['author_name']
+				. '</a>' )
+			: $details['author_name'];
 		
 		return array(
-			'skin_name' => $skin_data['name'],
-			'skin_author' => '<a href="' . htmlspecialchars($skin_data['author_uri']) . '">'
-				. $skin_data['author']
-				. '</a>'
+			'skin_name' => $name,
+			'skin_author' => $author,
 			);
 	} # get_skin_credits()
 	
@@ -367,7 +378,7 @@ class sem_template {
 	 **/
 
 	function get_skin_data($skin_id) {
-		$fields = array( 'name', 'uri', 'version', 'author_name', 'author_uri', 'description' );
+		$fields = array( 'name', 'uri', 'version', 'author_name', 'author_uri', 'description', 'tags' );
 		
 		$allowed_tags = array(
 			'a' => array(
@@ -384,12 +395,12 @@ class sem_template {
 			'strong' => array()
 		);
 
-		
-		$fp = @fopen($plugin_file, 'r');
+		$fp = @fopen(sem_path . '/skins/' . $skin_id . '/skin.css', 'r');
 		
 		if ( !$fp ) {
 			foreach ( $fields as $field )
 				$$field = '';
+			$tags = array();
 			return compact($fields);
 		}
 
@@ -402,9 +413,10 @@ class sem_template {
 		preg_match('/Skin(?:\s+name)?\s*:(.*)/i', $skin_data, $name);
 		preg_match('/Skin\s+ur[il]\s*:(.*)/i', $skin_data, $uri);
 		preg_match('/Version\s*:(.*)/i', $skin_data, $version);
-		preg_match('/Author\s*:(.*)/i', $skin_data, $author);
+		preg_match('/Author\s*:(.*)/i', $skin_data, $author_name);
 		preg_match('/Author\s+ur[il]\s*:(.*)/i', $skin_data, $author_uri);
 		preg_match('/Description\s*:(.*)/i', $skin_data, $description);
+		preg_match('/Tags\s*:(.*)/i', $skin_data, $tags);
 		
 		foreach ( $fields as $field ) {
 			if ( !empty( ${$field} ) )
@@ -415,13 +427,21 @@ class sem_template {
 			switch ( $field ) {
 			case 'uri':
 			case 'author_uri':
-				$$field = clean_url($$field);
+				$$field = esc_url_raw($$field);
 				break;
+			case 'tags':
+				$$field = strip_tags($$field);
+				if ( $$field ) {
+					$$field = explode(',', $$field);
+					$$field = array_map('trim', $$field);
+				} else {
+					$$field = array();
+				}
 			case 'description':
-				$$field = kses($$field, $allowed_tags);
+				$$field = wp_kses($$field, $allowed_tags);
 				break;
 			default:
-				$$field = kses($$field, array());
+				$$field = strip_tags($$field);
 				break;
 			}
 		}

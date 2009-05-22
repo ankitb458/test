@@ -15,67 +15,67 @@ class sem_layout_admin {
 	 *
 	 * @return void
 	 **/
-
+	
 	function admin_head() {
 		echo <<<EOS
 
 <style type="text/css">
-#current_layout img {
+#current_option img {
 	border: solid 1px #999;
 	float: left;
 	clear: right;
 	margin-right: 10px;
 }
 
-.current_layout_details th {
+.current_option_details th {
 	text-align: left;
 	padding-right: 5px;
 }
 
-.available_layout {
+.available_option {
 	text-align: center;
 	width: 275px;
 }
 
-.available_layout img {
+.available_option img {
 	border: solid 1px #ccc;
 }
 
-.available_layout label {
+.available_option label {
 	cursor: pointer !important;
 }
 
-#available_layouts {
+#available_options {
 	border-collapse: collapse;
 }
 
-#available_layouts td {
+#available_options td {
 	padding: 10px;
 	border: solid 1px #ccc;
 }
 
-#available_layouts td.top {
+#available_options td.top {
 	border-top: none;
 }
 
-#available_layouts td.bottom {
+#available_options td.bottom {
 	border-bottom: none;
 }
 
-#available_layouts td.left {
+#available_options td.left {
 	border-left: none;
 }
 
-#available_layouts td.right {
+#available_options td.right {
 	border-right: none;
 }
 </style>
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#available_layouts label').click(function() {
+	jQuery('#available_options label').click(function() {
 		jQuery(this).closest('td').find('input').attr('checked', 'checked');
-		jQuery('#layout_picker').trigger('submit');
+		jQuery('#option_picker').trigger('submit');
 	});
 });
 </script>
@@ -112,7 +112,7 @@ EOS;
 
 	function edit_options() {
 		echo '<div class="wrap">' . "\n";
-		echo '<form method="post" action="" id="layout_picker">' . "\n";
+		echo '<form method="post" action="" id="option_picker">' . "\n";
 		
 		wp_nonce_field('sem_layout');
 		
@@ -128,13 +128,13 @@ EOS;
 		$details = $layouts[$sem_options['active_layout']];
 		$screenshot = sem_url . '/inc/img/' . $sem_options['active_layout'] . '.png';
 		
-		echo '<div id="current_layout">' . "\n";
+		echo '<div id="current_option">' . "\n";
 		
-		echo '<img src="' . clean_url($screenshot) . '" alt="' . esc_attr($details['name']) . '" />' . "\n";
+		echo '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($details['name']) . '" />' . "\n";
 		
 		echo '<h4>' . $details['name'] . '</h4>';
 		
-		echo '<table class="current_layout_details">' . "\n";
+		echo '<table class="current_option_details">' . "\n";
 		
 		foreach ( array(
 			'wrapper' => __('Canvas', 'sem-reloaded'),
@@ -166,7 +166,7 @@ EOS;
 			. __('Click on a layout below to activate it.', 'sem-reloaded')
 			. '</p>' . "\n";
 		
-		echo '<table id="available_layouts" cellspacing="0" cellpadding="0">' . "\n";
+		echo '<table id="available_options" cellspacing="0" cellpadding="0">' . "\n";
 		
 		$row_size = 2;
 		$num_rows = ceil(count($layouts) / $row_size);
@@ -180,7 +180,7 @@ EOS;
 			if ( !( $i % $row_size ) )
 				echo '<tr>' . "\n";
 			
-			$classes = array('available_layout');
+			$classes = array('available_option');
 			if ( ceil(( $i + 1 ) / $row_size) == 1 )
 				$classes[] = 'top';
 			if ( ceil(( $i + 1 ) / $row_size) == $num_rows )
@@ -196,9 +196,9 @@ EOS;
 			
 			$screenshot = sem_url . '/inc/img/' . $layout . '.png';
 			
-			echo '<p>'
+			echo '<h4>'
 				. '<label for="layout-' . $layout . '">'
-				. '<img src="' . clean_url($screenshot) . '" alt="' . esc_attr($details['name']) . '"/>'
+				. '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($details['name']) . '"/>'
 				. '</label>'
 				. '</p>' . "\n"
 				. '<p>'
@@ -210,25 +210,39 @@ EOS;
 				. '</span>'
 				. $details['name']
 				. '</label>'
-				. '</p>' . "\n";
+				. '</h4>' . "\n";
 			
 			echo '</td>' . "\n";
 		}
 		
+		while ( $i % $row_size ) {
+			$classes = array('available_option');
+			if ( ceil(( $i + 1 ) / $row_size) == 1 )
+				$classes[] = 'top';
+			if ( ceil(( $i + 1 ) / $row_size) == $num_rows )
+				$classes[] = 'bottom';
+			if ( !( $i % $row_size ) )
+				$classes[] = 'left';
+			elseif ( !( ( $i + 1 ) % $row_size ) )
+				$classes[] = 'right';
+			
+			$i++;
+			
+			echo '<td class="' . implode(' ', $classes) . '">&nbsp;</td>' . "\n";
+		}
+		
+		echo '</tr>' . "\n";
+		
 		echo '</table>' . "\n";
 		
 		echo '<p class="submit hide-if-js">'
-			. '<input type="submit" value="' . esc_attr(__('Save Settings', 'sem-reloaded')) . '" />'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
 			. '</p>' . "\n";
 		
 		echo '</form>' . "\n";
 		echo '</div>' . "\n";
 	} # edit_options()
 	
-	
-	#
-	# get_layouts()
-	#
 	
 	/**
 	 * get_layouts()
