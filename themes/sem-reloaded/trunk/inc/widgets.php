@@ -440,14 +440,13 @@ class entry_content extends WP_Widget {
 		
 		if ( !isset($_GET['action']) || $_GET['action'] != 'print' ) {
 			global $post;
-
-			if ( $post->post_type == 'page' && current_user_can('edit_page', $post->ID)
-				|| $post->post_type == 'post' && current_user_can('edit_post', $post->ID)
-			) {
+			
+			$edit_link = get_edit_post_link($post->ID);
+			if ( $edit_link ) {
 				$edit_link = '<a class="post-edit-link"'
-					. ' href="' . esc_url(get_edit_post_link($post->ID)) . '"'
-					. ' title="' . esc_attr(__('Edit')) . '">'
-					. __('Edit')
+					. ' href="' . esc_url($edit_link) . '"'
+					. ' title="' . esc_attr(__('Edit', 'sem-reloaded')) . '">'
+					. __('Edit', 'sem-reloaded')
 					. '</a>';
 				$edit_link = apply_filters('edit_post_link', $edit_link, $post->ID);
 				
@@ -1051,12 +1050,12 @@ class entry_comments extends WP_Widget {
 			'leave_comment' => __('Leave a Comment', 'sem-reloaded'),
 			'reply_link' => __('Reply', 'sem-reloaded'),
 			'login_required' => __('You must be logged in to post a comment. %login_url%.', 'sem-reloaded'),
-			'logged_in_as' => __('You are logged in as %identity%. %logout_url%.'),
+			'logged_in_as' => __('You are logged in as %identity%. %logout_url%.', 'sem-reloaded'),
 			'name_field' => __('Name:', 'sem-reloaded'),
 			'email_field' => __('Email:', 'sem-reloaded'),
 			'url_field' => __('Url:', 'sem-reloaded'),
-			'required_fields' => __('Fields marked by an asterisk (*) are required.'),
-			'submit_field' => __('Submit Comment'),
+			'required_fields' => __('Fields marked by an asterisk (*) are required.', 'sem-reloaded'),
+			'submit_field' => __('Submit Comment', 'sem-reloaded'),
 			);
 	} # defaults()
 } # entry_comments
@@ -1128,8 +1127,9 @@ class blog_header extends WP_Widget {
 			echo str_replace('%query%',apply_filters('the_search_query', get_search_query()), $search_title);
 		} elseif ( is_404() ) {
 			echo $title_404;
+			$desc = $desc_404;
 		} else {
-			echo $archives_title;
+			echo trim($archives_title);
 		}
 
 		echo '</h1>' . "\n";
@@ -1150,8 +1150,18 @@ class blog_header extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		foreach ( array_keys(blog_header::defaults()) as $field )
-			$instance[$field] = trim(strip_tags($new_instance[$field]));
+		foreach ( array_keys(blog_header::defaults()) as $field ) {
+			switch ( $field ) {
+			case 'desc_404':
+				if ( current_user_can('unfiltered_html') )
+					$instance[$field] = trim($new_instance[$field]);
+				else
+					$instance[$field] = $old_instance[$field];
+				break;
+			default:
+				$instance[$field] = trim(strip_tags($new_instance[$field]));
+			}
+		}
 		
 		return $instance;
 	} # update()
@@ -1172,16 +1182,32 @@ class blog_header extends WP_Widget {
 		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
 		
 		foreach ( $defaults as $field => $default ) {
-			echo '<p>'
-				. '<label>'
-				. '<code>' . $default . '</code>'
-				. '<br />' . "\n"
-				. '<input type="text" class="widefat"'
-					. ' name="' . $this->get_field_name($field) . '"'
-					. ' value="' . esc_attr($$field) . '"'
-					. ' />'
-				. '</label>'
-				. '</p>' . "\n";
+			switch ( $field ) {
+			case 'desc_404':
+				echo '<p>'
+					. '<label>'
+					. '<code>' . htmlspecialchars($default, ENT_QUOTES, get_option('blog_charset')) . '</code>'
+					. '<br />' . "\n"
+					. '<textarea type="text" class="widefat" cols="20" rows="3"'
+						. ' name="' . $this->get_field_name($field) . '"'
+						. ' >'
+						. format_to_edit($$field)
+						. '</textarea>'
+					. '</label>'
+					. '</p>' . "\n";
+				break;
+			default:
+				echo '<p>'
+					. '<label>'
+					. '<code>' . $default . '</code>'
+					. '<br />' . "\n"
+					. '<input type="text" class="widefat"'
+						. ' name="' . $this->get_field_name($field) . '"'
+						. ' value="' . esc_attr($$field) . '"'
+						. ' />'
+					. '</label>'
+					. '</p>' . "\n";
+			}
 		}
 	} # form()
 	
@@ -1195,6 +1221,7 @@ class blog_header extends WP_Widget {
 	function defaults() {
 		return array(
 			'title_404' => __('404: Not Found', 'sem-reloaded'),
+			'desc_404' => __('The page you\'ve requested was not found.', 'sem-reloaded'),
 			'archives_title' => __('Archives', 'sem-reloaded'),
 			'search_title' => __('Search: %query%', 'sem-reloaded'),
 			);
@@ -1594,7 +1621,7 @@ class header extends WP_Widget {
 		
 		$header = esc_url(content_url() . $header);
 		
-		return __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.')
+		return __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.', 'sem-reloaded')
 			. '</div>'
 			. '<script type="text/javascript">' . "\n"
 			. 'var so = new SWFObject("'. $header . '","header_img","' . $width . '","' . $height . '","7");' . "\n"
@@ -2320,7 +2347,7 @@ class sem_nav_menu extends WP_Widget {
 			. __('Split menu items with a separator (|).', 'sem-reloaded') . "\n"
 			. '</p>' . "\n";
 		
-		echo '<h3>' . __('Menu Items') . '</h3>' . "\n";
+		echo '<h3>' . __('Menu Items', 'sem-reloaded') . '</h3>' . "\n";
 		
 		echo '<p>'
 			. 'Drag and drop menu items to rearrange them.'
@@ -2333,24 +2360,24 @@ class sem_nav_menu extends WP_Widget {
 		echo '<select class="nav_menu_item_select"'
 			. ' name="' . $this->get_field_name('dropdown') . '">' . "\n"
 			. '<option value="">'
-				. attribute_escape(__('- Select a menu item -', 'sem-reloaded'))
+				. esc_attr(__('- Select a menu item -', 'sem-reloaded'))
 				. '</option>' . "\n"
-			. '<optgroup label="' . attribute_escape(__('Special', 'nav-menu')) . '">' . "\n"
+			. '<optgroup label="' . esc_attr(__('Special', 'sem-reloaded')) . '">' . "\n"
 			. '<option value="home" class="nav_menu_item_home">'
-				. __('Home', 'nav-menu')
+				. __('Home', 'sem-reloaded')
 				. '</option>' . "\n"
 			. '<option value="url" class="nav_menu_item_url">'
-				. __('Url', 'nav-menu')
+				. __('Url', 'sem-reloaded')
 				. '</option>' . "\n"
 			. '</optgroup>' . "\n"
 			. '<optgroup class="nav_menu_item_pages"'
-				. ' label="' . attribute_escape(__('Pages', 'nav-menu')) . '"'
+				. ' label="' . esc_attr(__('Pages', 'sem-reloaded')) . '"'
 				. '>' . "\n"
 			;
 		
 		foreach ( $pages as $page ) {
 			echo '<option value="page-' . $page->ID . '">'
-				. attribute_escape($page->post_label)
+				. esc_attr($page->post_label)
 				. '</option>' . "\n";
 		}
 		
@@ -2417,7 +2444,7 @@ class sem_nav_menu extends WP_Widget {
 				. '<div class="nav_menu_item_data">' ."\n"
 				. '<input type="text" class="nav_menu_item_label" disabled="disabled"'
 					. ' name="' . $this->get_field_name('items') . '[label][]"'
-					. ' value="' . attribute_escape($label) . '"'
+					. ' value="' . esc_attr($label) . '"'
 					. ' />' . "\n"
 				. '&nbsp;'
 				. '<input type="button" class="nav_menu_item_remove" disabled="disabled"'
@@ -2473,7 +2500,7 @@ class sem_nav_menu extends WP_Widget {
 				. '<div class="nav_menu_item_data">' ."\n"
 				. '<input type="text" class="nav_menu_item_label"'
 					. ' name="' . $this->get_field_name('items') . '[label][]"'
-					. ' value="' . attribute_escape($label) . '"'
+					. ' value="' . esc_attr($label) . '"'
 					. ' />' . "\n"
 				. '&nbsp;'
 				. '<input type="button" class="nav_menu_item_remove" value="&nbsp;-&nbsp;" />' . "\n"
