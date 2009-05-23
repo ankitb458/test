@@ -1757,7 +1757,7 @@ class header extends WP_Widget {
 		if ( !$header )
 			return;
 		
-		$ext = preg_match("/\.[^.]+$/", $header, $ext);
+		$ext = preg_match("/\.([^.]+)$/", $header, $ext);
 		$ext = end($ext);
 		
 		if ( $ext == 'swf' ) {
