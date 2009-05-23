@@ -406,7 +406,7 @@ img.avatar {
 
 .sep_nav #header_nav span {
 	margin-left: 0px;
-	margin-right: 6px;
+	margin-right: 4px;
 }
 
 #footer_nav span {
@@ -415,8 +415,8 @@ img.avatar {
 }
 
 .sep_nav #footer_nav span {
-	margin-left: 3px;
-	margin-right: 3px;
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 .float_nav #footer_nav span {
@@ -425,7 +425,7 @@ img.avatar {
 }
 
 .float_sep_nav #footer_nav span {
-	margin-left: 6px;
+	margin-left: 4px;
 	margin-right: 0px;
 }
 
