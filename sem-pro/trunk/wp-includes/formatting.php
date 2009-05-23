@@ -719,6 +719,33 @@ function sanitize_sql_orderby( $orderby ){
 }
 
 /**
+ * Santizes a html classname to ensure it only contains valid characters
+ * 
+ * Strips the string down to A-Z,a-z,0-9,'-' if this results in an empty
+ * string then it will return the alternative value supplied.
+ * 
+ * @todo Expand to support the full range of CDATA that a class attribute can contain.
+ *  
+ * @since 2.8.0
+ *  
+ * @param string $class The classname to be sanitized
+ * @param string $fallback The value to return if the sanitization end's up as an empty string.
+ * @return string The sanitized value
+ */
+function sanitize_html_class($class, $fallback){
+	//Strip out any % encoded octets
+	$sanitized = preg_replace('|%[a-fA-F0-9][a-fA-F0-9]|', '', $class);
+	
+	//Limit to A-Z,a-z,0-9,'-'
+	$sanitized = preg_replace('/[^A-Za-z0-9-]/', '', $sanitized);
+	
+	if ('' == $sanitized)
+		$sanitized = $fallback;
+	
+	return apply_filters('sanitize_html_class',$sanitized, $class, $fallback);	
+}
+
+/**
  * Converts a number of characters from a string.
  *
  * Metadata tags <<title>> and <<category>> are removed, <<br>> and <<hr>> are
