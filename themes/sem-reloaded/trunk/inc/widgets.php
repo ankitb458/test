@@ -8,7 +8,7 @@
 add_action('widgets_init', array('sem_widgets', 'register'));
 
 if ( !is_admin() ) {
-	add_action('wp', array('header', 'wire'));
+	add_action('wp', array('header', 'wire'), 20);
 } else {
 	add_action('admin_print_scripts-widgets.php', array('sem_widgets', 'admin_scripts'));
 	add_action('admin_print_styles-widgets.php', array('sem_widgets', 'admin_styles'));
@@ -1704,7 +1704,7 @@ class header extends WP_Widget {
 				$header = current($header);
 				$header = str_replace(WP_CONTENT_DIR, '', $header);
 				update_post_meta($post_ID, '_sem_header', $header);
-				return;
+				return $header;
 			}
 		}
 		

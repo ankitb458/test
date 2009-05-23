@@ -364,35 +364,12 @@ class sem_header {
 		if ( @ $_FILES['header_file']['name'] ) {
 			preg_match("/\.([^.]+)$/", $_FILES['header_file']['name'], $ext);
 			$ext = strtolower(end($ext));
-
+			
 			if ( !in_array($ext, defined('GLOB_BRACE') ? array('jpg', 'jpeg', 'png', 'gif', 'swf') : array('jpg')) ) {
-				echo '<div class="error">'
-					. "<p>"
-						. "<strong>"
-						. __('Invalid File Type.', 'sem-reloaded')
-						. "</strong>"
-					. "</p>\n"
-					. "</div>\n";
 				return;
 			} elseif ( !wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_ID) ) {
-				echo '<div class="error">'
-					. "<p>"
-						. "<strong>"
-						. __('Upload Failed.', 'sem-reloaded')
-						. "</strong>"
-					. "</p>\n"
-					. "</div>\n";
 				return;
-			}
-			
-			if ( $header && !@unlink(WP_CONTENT_DIR . $header) ) {
-				echo '<div class="error">'
-					. "<p>"
-						. "<strong>"
-						. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
-						. "</strong>"
-					. "</p>\n"
-					. "</div>\n";
+			} elseif ( $header && !@unlink(WP_CONTENT_DIR . $header) ) {
 				return;
 			}
 			
@@ -411,13 +388,6 @@ class sem_header {
 			delete_post_meta($post_ID, '_sem_header');
 		} elseif ( $header && isset($_POST['delete_header']) ) {
 			if ( !@unlink(WP_CONTENT_DIR . $header) ) {
-				echo '<div class="error">'
-					. "<p>"
-						. "<strong>"
-						. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
-						. "</strong>"
-					. "</p>\n"
-					. "</div>\n";
 				return;
 			}
 			
