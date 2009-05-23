@@ -243,14 +243,12 @@ $extra_plugins = array(
 	'script-manager/script-manager.php',
 	'sem-admin-menu/sem-admin-menu.php',
 	'sem-bookmark-me/sem-bookmark-me.php',
-	'sem-docs/sem-docs.php',
 	'sem-fancy-excerpt/sem-fancy-excerpt.php',
 	'sem-fixes/sem-fixes.php',
 	'sem-frame-buster/sem-frame-buster.php',
 	'sem-semiologic-affiliate/sem-semiologic-affiliate.php',
 	'sem-seo/sem-seo.php',
 	'sem-subscribe-me/sem-subscribe-me.php',
-	'sem-unfancy-quote/sem-unfancy-quote.php',
 	'silo/silo.php',
 	'uploads-folder/uploads-folder.php',
 	'version-checker/version-checker.php',
@@ -290,24 +288,6 @@ foreach ( $active_plugins as $plugin )
 }
 
 $GLOBALS['plugin_page'] = $plugin_page_backup;
-
-
-#
-# Step 9
-# ------
-# Fetch docs
-#
-
-function sem_update_docs()
-{
-	if ( class_exists('sem_docs') )
-	{
-		sem_docs::update(true);
-		remove_action('init', 'sem_update_docs');
-	}
-} # sem_update_docs()
-
-add_action('init', 'sem_update_docs');
 
 
 #

@@ -42,19 +42,4 @@ if ( !defined('sem_install_test') )
 	update_option('sem_nav_menus', $sem_nav_menus);
 }
 
-
-#
-# Fetch docs
-#
-function sem_update_docs()
-{
-	if ( class_exists('sem_docs') )
-	{
-		sem_docs::update(true);
-		remove_action('init', 'sem_update_docs');
-	}
-} # sem_update_docs()
-
-add_action('init', 'sem_update_docs');
-
 ?>

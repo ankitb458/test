@@ -33,7 +33,6 @@ $extra_plugins = array(
 	'inline-widgets/inline-widgets.php',
 	'nav-menus/nav-menus.php',
 	'script-manager/script-manager.php',
-	'sem-docs/sem-docs.php',
 	'sem-fixes/sem-fixes.php',
 	'sem-seo/sem-seo.php',
 	'text-widgets/text-widgets.php',
@@ -351,39 +350,6 @@ foreach ( array(
 
 #
 # Step 8
-# ------
-# Disable a couple of plugins that are now built-in
-#
-
-foreach ( array('sem_docs', 'sem_fixes') as $sem_plugins ) :
-
-$sem_plugin_path = $sem_plugins . '_path';
-
-if ( defined($sem_plugin_path) ) :
-
-$active_plugins = get_option('active_plugins');
-
-$sem_plugin_path = constant($sem_plugin_path);
-$sem_plugin_files = $sem_plugins . '_files';
-$sem_plugin_admin_files = $sem_plugins . '_admin_files';
-
-global $$sem_plugin_files;
-global $$sem_plugin_admin_files;
-
-$active_plugins = array_diff((array) $active_plugins, (array) $$sem_plugin_files);
-$active_plugins = array_diff((array) $active_plugins, (array) $$sem_plugin_admin_files);
-
-sort($active_plugins);
-
-update_option('active_plugins', $active_plugins);
-
-endif; # defined()
-
-endforeach; # Semiologic Pro files
-
-
-#
-# Step 9
 # ------
 # Rename sidebars
 #
