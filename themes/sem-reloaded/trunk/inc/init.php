@@ -12,6 +12,9 @@ if ( !defined('sem_debug') )
 if ( !defined('sem_widget_cache_debug') )
 	define('sem_widget_cache_debug', false);
 
+if ( !defined('sem_header_cache_debug') )
+	define('sem_header_cache_debug', false);
+
 if ( function_exists('memory_get_usage') && ( (int) @ini_get('memory_limit') < 48 ) )
 	@ini_set('memory_limit', '48M');
 

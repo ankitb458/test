@@ -1668,15 +1668,16 @@ class header extends WP_Widget {
 		}
 		
 		# try cached header
-		if ( !is_admin() ) {
+		if ( !is_admin() && !sem_header_cache_debug ) {
 			switch ( is_singular() ) {
 			case true:
 				$header = get_post_meta($post_ID, '_sem_header', true);
 				if ( !$header ) {
 					$header = false;
 					break;
-				} elseif ( $header != 'default' )
+				} elseif ( $header != 'default' ) {
 					break;
+				}
 			default:
 				$header = get_transient('sem_header');
 			}
