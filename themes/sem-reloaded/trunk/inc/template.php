@@ -17,6 +17,7 @@ if ( !is_admin() ) {
 	add_action('wp_footer', array('sem_template', 'display_credits'));
 } else {
 	add_action('admin_menu', array('sem_template', 'admin_menu'));
+	add_action('admin_menu', array('sem_template', 'meta_boxes'));
 }
 
 class sem_template {
@@ -27,6 +28,13 @@ class sem_template {
 	 **/
 
 	function admin_menu() {
+		add_theme_page(
+			__('Header', 'sem-reloaded'),
+			__('Header', 'sem-reloaded'),
+			'switch_themes',
+			'header',
+			array('sem_header', 'edit_options')
+			);
 		add_theme_page(
 			__('Skin', 'sem-reloaded'),
 			__('Skin', 'sem-reloaded'),
@@ -42,6 +50,20 @@ class sem_template {
 			array('sem_layout', 'edit_options')
 			);
 	} # admin_menu()
+	
+	
+	/**
+	 * meta_boxes()
+	 *
+	 * @return void
+	 **/
+
+	function meta_boxes() {
+		if ( current_user_can('switch_themes') ) {
+			add_meta_box('sem_header', __('Post-Specific Header', 'sem-reloaded'), array('sem_header', 'edit_entry_header'), 'post');
+			add_meta_box('sem_header', __('Page-Specific Header', 'sem-reloaded'), array('sem_header', 'edit_entry_header'), 'page');
+		}
+	} # meta_boxes()
 	
 	
 	/**
