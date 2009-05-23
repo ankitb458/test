@@ -1562,7 +1562,7 @@ class header extends WP_Widget {
 		preg_match("/\.([^.]+)$/", $header, $ext);
 		$ext = strtolower(end($ext));
 		
-		if ( !$ext != 'swf' ) {
+		if ( $ext != 'swf' ) {
 			echo '<div id="header_img" class="pad">'
 				. '<img src="' . sem_url . '/icons/pixel.gif" height="100%" width="100%" alt="'
 					. esc_attr(get_option('blogname'))
@@ -1621,12 +1621,25 @@ class header extends WP_Widget {
 		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
 		$header = esc_url(content_url() . $header);
+		static $i = 0;
+		$i++;
+		$id = 'header_img_' . md5($i . $header);
 		
-		return __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.', 'sem-reloaded')
-			. '</div>'
-			. '<script type="text/javascript">' . "\n"
-			. 'var so = new SWFObject("'. $header . '","header_img","' . $width . '","' . $height . '","7");' . "\n"
-			. 'so.write("header_img");' . "\n";
+		return <<<EOS
+<object id="$id" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$width" height="$height">
+<param name="movie" value="$header" />
+<!--[if !IE]>-->
+<object type="application/x-shockwave-flash" data="$header" width="$width" height="$height">
+<!--<![endif]-->
+<p>Alternative content</p>
+<!--[if !IE]>-->
+</object>
+<!--<![endif]-->
+</object>
+<script type="text/javascript">
+swfobject.registerObject("$id", "9.0.0");
+</script>
+EOS;
 	} # display_flash()
 	
 	
