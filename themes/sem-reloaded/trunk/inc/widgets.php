@@ -1474,7 +1474,7 @@ class header extends WP_Widget {
 		$header = header::get();
 		
 		if ( $header ) {
-			$ext = preg_match("/\.[^.]+$/", $header, $ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = end($ext);
 			$flash = $ext == 'swf';
 		} else {
@@ -1559,7 +1559,7 @@ class header extends WP_Widget {
 		if ( !$header )
 			return;
 		
-		$ext = preg_match("/\.[^.]+$/", $header, $ext);
+		preg_match("/\.([^.]+)$/", $header, $ext);
 		$ext = end($ext);
 		
 		if ( !$ext != 'swf' ) {
@@ -1757,7 +1757,7 @@ class header extends WP_Widget {
 		if ( !$header )
 			return;
 		
-		$ext = preg_match("/\.([^.]+)$/", $header, $ext);
+		preg_match("/\.([^.]+)$/", $header, $ext);
 		$ext = end($ext);
 		
 		if ( $ext == 'swf' ) {
