@@ -3,7 +3,7 @@
 Plugin Name: Do Follow
 Plugin URI: http://www.semiologic.com/software/dofollow/
 Description: The Do Follow plugin removes the nofollow attribute that WordPress adds in comments.
-Version: 3.2 alpha
+Version: 3.2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-dofollow-info
@@ -28,41 +28,32 @@ Hat tips
 
 if ( !is_admin() ) :
 
-function strip_nofollow($text = '')
-{
-	# strip nofollow, even as rel="tag nofollow"
-	$text = preg_replace('/
-		(
-			<a
-			\s+
-			.*
-			\s+
-			rel=["\']
-			[a-z0-9\s\-_\|\[\]]*
-		)
-		(
-			\b
-			nofollow
-			\b
-		)
-		(
-			[a-z0-9\s\-_\|\[\]]*
-			["\']
-			.*
-			>
-		)
-		/isUx', "$1$3", $text);
-
-	# clean up rel=""
-	$text = str_replace(array(' rel=""', " rel=''"), '', $text);
-
-	return $text;
-} # strip_nofollow()
-
-//add filters
 remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
 add_filter('get_comment_author_link', 'strip_nofollow', 15);
 add_filter('comment_text', 'strip_nofollow', 15);
+
+/**
+ * strip_nofollow()
+ *
+ * @param string $text
+ * @return string $text
+ **/
+
+function strip_nofollow($text = '') {
+	return preg_replace_callback("/<a\s+(.+?)>/is", 'strip_nofollow_callback', $text);
+} # strip_nofollow()
+
+
+/**
+ * strip_nofollow_callback()
+ *
+ * @param array $match
+ * @return string $text
+ **/
+
+function strip_nofollow_callback($match) {
+	return '<a ' . str_replace(array(' rel="nofollow"', " rel='nofollow'"), '', $match[1]) . '>';
+} # strip_nofollow_callback()
 
 endif;
 ?>
