@@ -62,6 +62,8 @@ class sem_admin_menu_admin {
 
 		wp_nonce_field('admin_menu');
 
+		screen_icon();
+		
 		echo '<h2>' . __('Admin Menu Settings', 'sem-admin-menu') . '</h2>' . "\n";
 		
 		$options = sem_admin_menu::get_options();
