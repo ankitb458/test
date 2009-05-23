@@ -118,33 +118,6 @@ class sem_header {
 	 **/
 	
 	function edit_options() {
-		if ( defined('GLOB_BRACE') ) {
-			$header_scan = "header{,-*}.{jpg,jpeg,png,gif,swf}";
-			$skin_scan = "header.{jpg,jpeg,png,gif,swf}";
-			$scan_type = GLOB_BRACE;
-		} else {
-			$header_scan = "header-*.jpg";
-			$skin_scan = "header.jpg";
-			$scan_type = false;
-		}
-		
-		$header = glob(sem_path . '/skins/' . $sem_options['active_skin'] . '/' . $skin_scan, $scan_type);
-		
-		if ( $header ) {
-			$header = current($header);
-			
-			echo '<div class="error">'
-				. '<p>'
-				. __('Your Semiologic skin contains a hard-coded header. Delete this file before continuing:', 'sem-reloaded')
-				. '</p>'
-				. '<p>'
-				. 'wp-content' . $header
-				. '</p>'
-				. '</div>';
-			
-			return;
-		}
-		
 		echo '<div class="wrap">';
 		
 		echo '<form enctype="multipart/form-data" method="post" action="">';
@@ -160,7 +133,7 @@ class sem_header {
 		echo '<h2>' . __('Manage Header', 'sem-reloaded') . '</h2>' . "\n";
 
 		echo '<p>'
-			. __('The header\'s height will automatically adjust to fit your image or flash file. The available width depends on your <a href="?page=layout">layout</a>\'s canvas width.', 'sem-reloaded')
+			. __('The header\'s height will automatically adjust to fit your image or flash file. The width to use will depend on your <a href="?page=layout">layout</a>\'s canvas width, and on your <a href="?page=skin">skin</a> (strip 20px if you\'re using the Kubrick skin).', 'sem-reloaded')
 			. '</p>' . "\n";
 		
 		if ( $header ) {
@@ -198,12 +171,12 @@ class sem_header {
 		}
 		
 		wp_mkdir_p(WP_CONTENT_DIR . '/header');
-
+		
 		if ( !$header || is_writable(WP_CONTENT_DIR . $header) ) {
 			if ( is_writable(WP_CONTENT_DIR . '/header') ) {
 				echo '<h3>'
 					. '<label for="header_file">'
-						. ( $scan_type
+						. ( defined('GLOB_BRACE')
 							? __('Upload a New Header (jpg, png, gif, swf)', 'sem-reloaded')
 							: __('Upload a New Header (jpg)', 'sem-reloaded')
 							)

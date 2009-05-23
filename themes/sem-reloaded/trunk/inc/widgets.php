@@ -1710,14 +1710,14 @@ class header extends WP_Widget {
 		
 		switch ( true ) {
 		default:
-			# skin-specific header
-			$active_skin = apply_filters('active_skin', $sem_options['active_skin']);
-			$header = glob(sem_path . "/skins/$active_skin/$skin_scan", $scan_type);
+			# uploaded header
+			$header = glob(WP_CONTENT_DIR . "/header/$header_scan", $scan_type);
 			if ( $header )
 				break;
 			
-			# uploaded header
-			$header = glob(WP_CONTENT_DIR . "/header/$header_scan", $scan_type);
+			# skin-specific header
+			$active_skin = apply_filters('active_skin', $sem_options['active_skin']);
+			$header = glob(sem_path . "/skins/$active_skin/$skin_scan", $scan_type);
 			if ( $header )
 				break;
 			
