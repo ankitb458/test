@@ -1,0 +1,45 @@
+# Semiologic Affiliate pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Semiologic Affiliate package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.9\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-05-24 01:39+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sem-semiologic-affiliate-admin.php:35
+msgid "Settings saved."
+msgstr ""
+
+#: sem-semiologic-affiliate-admin.php:57
+msgid "Semiologic Affiliate Settings"
+msgstr ""
+
+#: sem-semiologic-affiliate-admin.php:64
+msgid ""
+"Filling the above field with one of your own campaign IDs will cause all "
+"links to semiologic.com and getsemiologic.com on the site to use that "
+"campaign ID automatically."
+msgstr ""
+
+#: sem-semiologic-affiliate-admin.php:70
+#, php-format
+msgid "Your <a href=\"%s\">Campaign ID</a>"
+msgstr ""
+
+#: sem-semiologic-affiliate-admin.php:85
+msgid "Save Changes"
+msgstr ""
+
+#: sem-semiologic-affiliate.php:55 sem-semiologic-affiliate.php:56
+msgid "Semiologic Affiliate"
+msgstr ""

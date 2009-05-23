@@ -3,7 +3,7 @@
 Plugin Name: Semiologic Affiliate
 Plugin URI: http://www.semiologic.com/software/sem-affiliate/
 Description: Automatically adds your affiliate ID to all links to Semiologic.
-Version: 1.9 alpha
+Version: 1.9 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-semiologic-affiliate-info
@@ -20,228 +20,137 @@ http://www.mesoconcepts.com/license/
 **/
 
 
-if ( @ini_get('pcre.backtrack_limit') < 250000 )
-	@ini_set('pcre.backtrack_limit', 250000);
+load_plugin_textdomain('semiologic-affiliate', null, dirname(__FILE__) . '/lang');
 
-#
-# sem_semiologic_affiliate_process_links()
-#
 
-function sem_semiologic_affiliate_process_links($buffer = '')
-{
-	$options = get_option('sem_semiologic_affiliate_params');
+/**
+ * semiologic_affiliate
+ *
+ * @package Semiologic Affiliate
+ **/
 
-	#echo '<pre>';
-	#var_dump($options['aff_id']);
-	#echo '</pre>';
+if ( !defined('semiologic_affiliate_debug') )
+	define('semiologic_affiliate_debug', false);
 
-	if ( isset($options['aff_id'])
-		&& $options['aff_id'] !== ''
-		&& !is_admin()
-		)
-	{
-		global $sem_semiologic_affiliate_escape;
-		
-		$sem_semiologic_affiliate_escape = array();
-		
-		$buffer = preg_replace_callback("/
-			<\s*(object|script).*>
-			.+
-			<\s*\/\\1\s*>
-			/isUx", 'sem_semiologic_affiliate_escape', $buffer);
-		
-		$buffer = preg_replace_callback(
-			"/
-				<
-				\s*
-				a
-				\s+
-				([^>]+\s+)?
-				href\s*=\s*
-				(?:\"|'|)
-				\s*
-				(
-					http(?:s)?:\/\/
-				)
-				(
-					[^\.\"'>]+\.
-				)*
-				(
-					semiologic\.com
-					|
-					getsemiologic\.com
-				)
-				(
-					\/
-					[^\s\"'>\?]*
-				)?
-				(
-					\?
-					[^\#\s\"'>]*
-				)?
-				(
-					\#
-					[^\s\"'>]*
-				)?
-				\s*
-				(?:\"|'|)
-				(\s+[^>]+)?
-				\s*
-				>
-			/isUx",
-			'sem_semiologic_affiliate_add_id',
-			$buffer
+add_action('admin_menu', array('semiologic_affiliate', 'admin_menu'));
+
+if ( !is_admin() && semiologic_affiliate::get_campaign() ) {
+	if ( !semiologic_affiliate_debug ) {
+		add_action('wp_head', array('semiologic_affiliate', 'ob_start'), 1000);
+	} else {
+		add_filter('the_content', array('semiologic_affiliate', 'filter'));
+		add_filter('comment_text', array('semiologic_affiliate', 'filter'));
+	}
+}
+
+class semiologic_affiliate {
+	/**
+	 * admin_menu()
+	 *
+	 * @return void
+	 **/
+
+	function admin_menu() {
+		add_options_page(
+			__('Semiologic Affiliate', 'semiologic-affiliate'),
+			__('Semiologic Affiliate', 'semiologic-affiliate'),
+			'manage_options',
+			'semiologic_affiliate',
+			array('semiologic_affiliate_admin', 'edit_options')
 			);
+	} # admin_menu()
+	
+	
+	/**
+	 * get_campaign()
+	 *
+	 * @return string $aff_id
+	 **/
+
+	function get_campaign() {
+		$o = get_option('sem_campaign_key');
 		
-		$find = array_keys($sem_semiologic_affiliate_escape);
-		$repl = array_values($sem_semiologic_affiliate_escape);
+		if ( $o === false )
+			$o = semiologic_affiliate::init_campaign();
 		
-		$buffer = str_replace($find, $repl, $buffer);
-	}
+		return $o;	
+	} # get_campaign()
 	
-	return $buffer;
-} # end sem_semiologic_affiliate_process_links()
-
-add_filter('the_content', 'sem_semiologic_affiliate_process_links');
-
-
-#
-# sem_semiologic_affiliate_ob()
-#
-
-function sem_semiologic_affiliate_ob()
-{
-	ob_start('sem_semiologic_affiliate_process_links');
-} # sem_semiologic_affiliate_ob()
-
-add_action('wp_head', 'sem_semiologic_affiliate_ob', -10000);
-
-
-#
-# sem_semiologic_affiliate_unescape()
-#
-
-function sem_semiologic_affiliate_escape($match)
-{
-	global $sem_semiologic_affiliate_escape;
 	
-	$id = uniqid(rand());
-	$id = "---sem_semiologic_affiliate_escape---$id---";
+	/**
+	 * init_campaign()
+	 *
+	 * @return string $aff_id
+	 **/
+
+	function init_campaign() {
+		$o = get_option('sem_semiologic_affiliate_params');
+		
+		if ( $o !== false ) {
+			$o = isset($options['aff_id']) ? trim($options['aff_id']) : '';
+			delete_option('sem_semiologic_affiliate_params');
+		} else {
+			$o = '';
+		}
+		
+		update_option('sem_campaign_key', $o);
+		
+		return $o;
+	} # init_campaign()
 	
-	$sem_semiologic_affiliate_escape[$id] = $match[0];
+	
+	/**
+	 * ob_start()
+	 *
+	 * @return void
+	 **/
 
-	return $id;
-} # sem_semiologic_affiliate_unescape()
+	function ob_start() {
+		ob_start(array('semiologic_affiliate', 'filter'));
+	} # ob_start()
+	
+	
+	/**
+	 * filter()
+	 *
+	 * @param string $buffer
+	 * @return string $buffer
+	 **/
 
+	function filter($str) {
+		return preg_replace_callback("/<a\s+(.*?)>/ix", array('semiologic_affiliate', 'filter_callback'), $str);
+	} # filter()
+	
+	
+	/**
+	 * filter_callback()
+	 *
+	 * @param array $match
+	 * @return string $str
+	 **/
 
-#
-# sem_semiologic_affiliate_add_id()
-#
-
-function sem_semiologic_affiliate_add_id($input)
-{
-	#echo '<pre>';
-	#foreach ($input as $bit) var_dump(htmlspecialchars($bit));
-	#echo '</pre>';
-
-	$options = get_option('sem_semiologic_affiliate_params');
-
-	$a_params = trim(
-				$input[1] . ' '
-				. ( isset($input[8]) ? trim($input[8]) : '' )
-				);
-	$scheme = strtolower($input[2]);
-	$subdomain = strtolower($input[3]);
-	$domain = strtolower($input[4]);
-	$path = isset($input[5]) ? $input[5] : '';
-	$params = ( isset($input[6]) && $input[6] !== '' ) ? $input[6] : '?';
-	$anchor = isset($input[7]) ? $input[7] : '';
-
-	#echo '<pre>';
-	#var_dump($a_params, $scheme, $subdomain, $domain, $path, $params, $anchor);
-	#echo '</pre>';
-
-	if ( $subdomain == '' )
-	{
-		$subdomain = 'www.';
-	}
-
-
-	if (
-		preg_match(
-			"/
-				(?:
-					\?
-					|
-					&(?:amp;|0*38;)?
-				)
-				(
-				aff
-					\s*
-					=
-					[^&$]*
-				|
-					aff
-				)
-				(
-					&
-				|
-					$
-				)
-			/isx",
-			$params,
-			$aff_match
-			)
-		)
-	{
-		$old_aff = $aff_match[0];
-
-		$new_aff = str_replace(
-			$aff_match[1],
-			'aff=' . $options['aff_id'],
-			$aff_match[0]
-			);
-
-		$params = str_replace($old_aff, $new_aff, $params);
-
-		#echo '<pre>';
-		#var_dump($aff_match, $params);
-		#echo '</pre>';
-
-	}
-	else
-	{
-		$params = $params
-			. ( ( $params != '?' )
-				? '&amp;'
-				: ''
-				)
-			. 'aff='
-			. $options['aff_id'];
-	}
-
-	$output = '<a'
-		. ' href="'
-			. $scheme
-			. $subdomain
-			. $domain
-			. $path
-			. $params
-			. $anchor
-			. '"'
-		. ' ' . $a_params
-		. '>';
-
-	#echo '<pre>';
-	#var_dump(htmlspecialchars($output));
-	#echo '</pre>';
-
-	return $output;
-} # end sem_semiologic_affiliate_add_id()
+	function filter_callback($match) {
+		preg_match("/\bhref=([\"'])(.+?)\\1/i", $match[1], $href);
+		
+		if ( !preg_match("/\b(?:get)?semiologic\.com\b/i", $href[0]) )
+			return $match[0];
+		
+		$raw_href = current($href);
+		$new_href = end($href);
+		
+		$campaign_key = semiologic_affiliate::get_campaign();
+		
+		if ( strpos($new_href, '?') === false )
+			$new_href .= '?aff=' . urlencode($campaign_key);
+		
+		return str_replace($raw_href, 'href="' . $new_href . '"', $match[0]);
+	} # filter_callback()
+} # semiologic_affiliate
 
 
-if ( is_admin() )
-{
+function semiologic_affiliate_admin() {
 	include dirname(__FILE__) . '/sem-semiologic-affiliate-admin.php';
 }
+
+add_action('load-settings_page_semiologic_affiliate', 'semiologic_affiliate_admin');
 ?>
