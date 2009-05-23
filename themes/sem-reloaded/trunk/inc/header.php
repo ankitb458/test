@@ -91,7 +91,7 @@ class sem_header {
 			}
 		} elseif ( isset($_POST['delete_header']) ) {
 			if ( $header ) {
-				if ( strpos($header, "/$active_skin/") === false ) {
+				if ( strpos($header, "/skins/$active_skin/") !== false ) {
 					echo '<div class="error">'
 						. "<p>"
 							. "<strong>"
