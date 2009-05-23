@@ -137,11 +137,10 @@ class sem_header {
 			. '</p>' . "\n";
 		
 		if ( $header ) {
-			preg_match("/\.([^.]+)$/", $header, $ext);
-			
 			echo '<h3>' . __('Current Header', 'sem-reloaded') . '</h3>';
 			
-			$ext = end($ext);
+			preg_match("/\.([^.]+)$/", $header, $ext);
+			$ext = strtolower(end($ext));
 			
 			if ( $ext != 'swf' ) {
 				echo '<p>'

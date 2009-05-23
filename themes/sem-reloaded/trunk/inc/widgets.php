@@ -1475,7 +1475,7 @@ class header extends WP_Widget {
 		
 		if ( $header ) {
 			preg_match("/\.([^.]+)$/", $header, $ext);
-			$ext = end($ext);
+			$ext = strtolower(end($ext));
 			$flash = $ext == 'swf';
 		} else {
 			$flash = false;
@@ -1560,7 +1560,7 @@ class header extends WP_Widget {
 			return;
 		
 		preg_match("/\.([^.]+)$/", $header, $ext);
-		$ext = end($ext);
+		$ext = strtolower(end($ext));
 		
 		if ( !$ext != 'swf' ) {
 			echo '<div id="header_img" class="pad">'
@@ -1755,7 +1755,7 @@ class header extends WP_Widget {
 			return;
 		
 		preg_match("/\.([^.]+)$/", $header, $ext);
-		$ext = end($ext);
+		$ext = strtolower(end($ext));
 		
 		if ( $ext == 'swf' ) {
 			wp_enqueue_script('swfobject', sem_url . '/js/swfobject.js', false, '1.5');
