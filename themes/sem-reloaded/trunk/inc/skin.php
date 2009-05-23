@@ -1,15 +1,15 @@
 <?php
 /**
- * sem_skin_admin
+ * sem_skin
  *
  * @package Semiologic Reloaded
  **/
 
-add_action('appearance_page_skin', array('sem_skin_admin', 'save_options'), 0);
-add_action('admin_head', array('sem_skin_admin', 'admin_head'));
+add_action('appearance_page_skin', array('sem_skin', 'save_options'), 0);
+add_action('admin_head', array('sem_skin', 'admin_head'));
 wp_enqueue_script('jquery');
 
-class sem_skin_admin {
+class sem_skin {
 	/**
 	 * admin_head()
 	 *
@@ -194,8 +194,8 @@ EOS;
 		wp_nonce_field('sem_skin');
 		
 		global $sem_options;
-		$skins = sem_skin_admin::get_skins();
-		$fonts = sem_skin_admin::get_fonts();
+		$skins = sem_skin::get_skins();
+		$fonts = sem_skin::get_fonts();
 		
 		screen_icon();
 		
@@ -437,5 +437,5 @@ EOS;
 			'verdana' => __('Verdana, Helvetica, Sans-Serif', 'sem-reloaded'),
 			);
 	} # get_fonts()
-} # sem_skin_admin
+} # sem_skin
 ?>

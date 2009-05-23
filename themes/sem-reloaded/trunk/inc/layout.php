@@ -1,15 +1,15 @@
 <?php
 /**
- * sem_layout_admin
+ * sem_layout
  *
  * @package Semiologic Reloaded
  **/
 
-add_action('appearance_page_layout', array('sem_layout_admin', 'save_options'), 0);
-add_action('admin_head', array('sem_layout_admin', 'admin_head'));
+add_action('appearance_page_layout', array('sem_layout', 'save_options'), 0);
+add_action('admin_head', array('sem_layout', 'admin_head'));
 wp_enqueue_script('jquery');
 
-class sem_layout_admin {
+class sem_layout {
 	/**
 	 * admin_head()
 	 *
@@ -123,7 +123,7 @@ EOS;
 		wp_nonce_field('sem_layout');
 		
 		global $sem_options;
-		$layouts = apply_filters('sem_layouts', sem_layout_admin::get_layouts());
+		$layouts = apply_filters('sem_layouts', sem_layout::get_layouts());
 		
 		screen_icon();
 		
@@ -340,5 +340,5 @@ EOS;
 				),
 			);
 	} # get_layouts()
-} # sem_layout_admin
+} # sem_layout
 ?>

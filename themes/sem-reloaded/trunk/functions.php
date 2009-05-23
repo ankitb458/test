@@ -40,13 +40,13 @@ if ( file_exists(sem_path . '/custom.php') )
 
 if ( is_admin() ) {
 	function sem_layout_admin() {
-		include_once sem_path . '/inc/layout-admin.php';
+		include_once sem_path . '/inc/layout.php';
 	}
 	
 	add_action('load-appearance_page_layout', 'sem_layout_admin');
 	
 	function sem_skin_admin() {
-		include_once sem_path . '/inc/skin-admin.php';
+		include_once sem_path . '/inc/skin.php';
 	}
 	
 	add_action('load-appearance_page_skin', 'sem_skin_admin');

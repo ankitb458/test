@@ -32,14 +32,14 @@ class sem_template {
 			__('Skin', 'sem-reloaded'),
 			'switch_themes',
 			'skin',
-			array('sem_skin_admin', 'edit_options')
+			array('sem_skin', 'edit_options')
 			);
 		add_theme_page(
 			__('Manage Layout', 'sem-reloaded'),
 			__('Layout', 'sem-reloaded'),
 			'switch_themes',
 			'layout',
-			array('sem_layout_admin', 'edit_options')
+			array('sem_layout', 'edit_options')
 			);
 	} # admin_menu()
 	
