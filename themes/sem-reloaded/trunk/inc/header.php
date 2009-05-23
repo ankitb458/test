@@ -60,7 +60,16 @@ class sem_header {
 						. "</div>\n";
 					return;
 				} elseif ( strpos($header, "/skins/$active_skin/") === false ) {
-					@unlink(WP_CONTENT_DIR . $header);
+					if ( !@unlink(WP_CONTENT_DIR . $header) ) {
+						echo '<div class="error">'
+							. "<p>"
+								. "<strong>"
+								. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
+								. "</strong>"
+							. "</p>\n"
+							. "</div>\n";
+						return;
+					}
 				}
 			}
 
@@ -89,28 +98,33 @@ class sem_header {
 				$perms = $stat['mode'] & 0000666;
 				@chmod($name, $perms);
 			}
-		} elseif ( isset($_POST['delete_header']) ) {
-			if ( $header ) {
-				if ( strpos($header, "/skins/$active_skin/") !== false ) {
-					echo '<div class="error">'
-						. "<p>"
-							. "<strong>"
-							. sprintf(__('%s is a skin-specific header.', 'sem-reloaded'), 'wp-content' . $header)
-							. "</strong>"
-						. "</p>\n"
-						. "</div>\n";
-				} elseif ( !is_writable(WP_CONTENT_DIR . $header) ) {
-					echo '<div class="error">'
-						. "<p>"
-							. "<strong>"
-							. sprintf(__('%s is not writable.', 'sem-reloaded'), 'wp-content' . $header)
-							. "</strong>"
-						. "</p>\n"
-						. "</div>\n";
-					return;
-				} else {
-					@unlink(WP_CONTENT_DIR . $header);
-				}
+		} elseif ( $header && isset($_POST['delete_header']) ) {
+			if ( strpos($header, "/skins/$active_skin/") !== false ) {
+				echo '<div class="error">'
+					. "<p>"
+						. "<strong>"
+						. sprintf(__('%s is a skin-specific header.', 'sem-reloaded'), 'wp-content' . $header)
+						. "</strong>"
+					. "</p>\n"
+					. "</div>\n";
+			} elseif ( !is_writable(WP_CONTENT_DIR . $header) ) {
+				echo '<div class="error">'
+					. "<p>"
+						. "<strong>"
+						. sprintf(__('%s is not writable.', 'sem-reloaded'), 'wp-content' . $header)
+						. "</strong>"
+					. "</p>\n"
+					. "</div>\n";
+				return;
+			} elseif ( !@unlink(WP_CONTENT_DIR . $header) ) {
+				echo '<div class="error">'
+					. "<p>"
+						. "<strong>"
+						. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
+						. "</strong>"
+					. "</p>\n"
+					. "</div>\n";
+				return;
 			}
 		}
 		
@@ -145,7 +159,7 @@ class sem_header {
 		screen_icon();
 		
 		echo '<h2>' . __('Manage Header', 'sem-reloaded') . '</h2>' . "\n";
-
+		
 		echo '<p>'
 			. __('The header\'s height will automatically adjust to fit your image or flash file. The width to use will depend on your <a href="?page=layout">layout</a>\'s canvas width, and on your <a href="?page=skin">skin</a> (strip 20px if you\'re using the Kubrick skin).', 'sem-reloaded')
 			. '</p>' . "\n";
@@ -218,210 +232,199 @@ class sem_header {
 		
 		echo '</div>' . "\n";
 	} # edit_options()
-
-
-	#
-	# edit_entry_header()
-	#
-
-	function edit_entry_header()
+	
+	
+	/**
+	 * edit_entry_header()
+	 *
+	 * @param object $post
+	 * @return void
+	 **/
+	
+	function edit_entry_header($post)
 	{
-		$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
-
-		if ( defined('GLOB_BRACE') )
-		{
-			if ( $post_ID > 0
-				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
-				)
-			{
-				$header = current($header);
-			}
+		$post_ID = $post->ID;
+		
+		if ( defined('GLOB_BRACE') ) {
+			$header_scan = "header{,-*}.{jpg,jpeg,png,gif,swf}";
+			$scan_type = GLOB_BRACE;
+		} else {
+			$header_scan = "header-*.jpg";
+			$scan_type = false;
 		}
-		else
-		{
-			if ( $post_ID > 0
-				&& ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') )
-				)
-			{
-				$header = current($header);
-			}
+		
+		$header = glob(WP_CONTENT_DIR . "/header/$post_ID/$header_scan", $scan_type);
+		
+		if ( $header ) {
+			$header = current($header);
+			$header = str_replace(WP_CONTENT_DIR, '', $header);
+		} else {
+			$header = false;
 		}
-
-		if ( $header )
-		{
-			preg_match("/\.([^.]+)$/", $header, $ext);
-			$ext = end($ext);
+		
+		if ( $header ) {
+			echo '<h4>'
+				. __('Current Header', 'sem-reloaded')
+				. '</h4>' . "\n";
 			
-			echo '<div style="overflow: hidden;">';
+			preg_match("/\.([^.]+)$/", $header, $ext);
+			$ext = strtolower(end($ext));
+			
+			echo '<div style="overflow: hidden;">' . "\n";
 
-			if ( $ext != 'swf' )
-			{
-				echo '<p>';
-
-				echo sem_header::display_logo($header);
-
-				echo '</p>' . "\n";
+			if ( $ext != 'swf' ) {
+				echo '<p>'
+					. header::display_image($header)
+					. '</p>' . "\n";
+			} else {
+				echo header::display_flash($header);
 			}
-
-			else
-			{
-				echo sem_header::display_flash($header);
-			}
-
-			echo '</div>';
-
-			echo '<p>';
-
-			if ( is_writable($header) )
-			{
-				echo '<label for="delete_header">'
-					. '<input type="checkbox" tabindex="4"'
-						. ' id="delete_header" name="delete_header"'
-						. ' style="text-align: left; width: auto;"'
-						. ' />'
+			
+			echo '</div>' . "\n";
+			
+			if ( is_writable(WP_CONTENT_DIR . $header) ) {
+				echo '<p>'
+					. '<label>'
+					. '<input type="checkbox" name="delete_header" />'
 					. '&nbsp;'
-					. __('Delete header')
-					. '</label>';
-			}
-			else
-			{
-				echo __('This header is not writable by the server.');
-			}
-
-			echo '</p>' . "\n";
-		}
-
-		if ( !defined('GLOB_BRACE') )
-		{
-			echo '<p>' . __('Notice: <a href="http://www.php.net/glob">GLOB_BRACE</a> is an undefined constant on your server. Non .jpg files will be ignored.') . '</p>';
-		}
-
-		@mkdir(WP_CONTENT_DIR . '/header');
-		@chmod(WP_CONTENT_DIR . '/header', 0777);
-
-		if ( !$header
-			|| is_writable($header)
-			)
-		{
-			echo '<p>'
-				. '<label for="header_file">'
-					. __('New Header (jpg, png, gif, swf)') . ':'
+					. __('Delete header', 'sem-reloaded')
 					. '</label>'
-				. '<br />' . "\n";
-
-			if ( is_writable(WP_CONTENT_DIR . '/header') )
-			{
-				echo '<input type="file" tabindex="5"'
-					. ' id="header_file" name="header_file"'
-					. ' />'
-					. ' '
-					. '<input type="submit" name="save" class="button" tabindex="5"'
-					. ' value="' . __('Save') . '"'
-					. ' />';
+					. '</p>' . "\n";
+				
+				echo '<p>'
+					. '<input type="submit" name="save" class="button" tabindex="5" value="' . esc_attr(__('Save', 'sem-reloaded')) . '" />'
+					. '</p>' . "\n";
+			} else {
+				echo '<p>'
+					. sprintf(__('This header (%s) is not writable by the server. Please delete it manually to change it.', 'sem-reloaded'), 'wp-content' . $header)
+					. '</p>' . "\n";
 			}
-			elseif ( !is_writable(WP_CONTENT_DIR . '') )
-			{
-				echo __('The wp-content folder is not writeable by the server') . "\n";
+		}
+		
+		wp_mkdir_p(WP_CONTENT_DIR . '/header');
+		
+		if ( !$header || is_writable(WP_CONTENT_DIR . $header) ) {
+			if ( is_writable(WP_CONTENT_DIR . '/header') ) {
+				echo '<h4>'
+					. '<label for="header_file">'
+						. ( defined('GLOB_BRACE')
+							? __('Upload a New Header (jpg, png, gif, swf)', 'sem-reloaded')
+							: __('Upload a New Header (jpg)', 'sem-reloaded')
+							)
+						. '</label>'
+					. '</h4>' . "\n";
+				
+				echo '<p>'
+					. '<input type="file" id="header_file" name="header_file" />'
+					. '&nbsp;'
+					. '<input type="submit" name="save" class="button" tabindex="5" value="' . esc_attr(__('Save', 'sem-reloaded')) . '" />'
+					. '</p>' . "\n";
+			} elseif ( !is_writable(WP_CONTENT_DIR) ) {
+				echo '<p>'
+					. __('Your wp-content folder is not writeable by the server', 'sem-reloaded')
+					. '</p>' . "\n";
+			} else {
+				echo '<p>'
+					. __('Your wp-content/header folder is not writeable by the server', 'sem-reloaded')
+					. '</p>' . "\n";
 			}
-			else
-			{
-				echo __('The wp-content/headers folder is not writeable by the server') . "\n";
-			}
-
-			echo '</p>' . "\n";
 		}
 	} # edit_entry_header()
-
-
-	#
-	# save_entry_header()
-	#
-
-	function save_entry_header($post_ID)
-	{
-		$post = get_post($post_ID);
+	
+	
+	/**
+	 * save_entry_header()
+	 *
+	 * @param int $post_ID
+	 * @return void
+	 **/
+	
+	function save_entry_header($post_ID) {
+		if ( wp_is_post_revision($post_ID) )
+			return;
 		
-		if ( $post->post_type == 'revision' ) return;
 		
-		if ( @ $_FILES['header_file']['name'] )
-		{
-			if ( defined('GLOB_BRACE') )
-			{
-				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
-				{
-					$header = current($header);
-					@unlink($header);
-				}
-			}
-			else
-			{
-				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') )
-				{
-					$header = current($header);
-					@unlink($header);
-				}
-			}
-
-			$tmp_name =& $_FILES['header_file']['tmp_name'];
-			
+		if ( defined('GLOB_BRACE') ) {
+			$header_scan = "header{,-*}.{jpg,jpeg,png,gif,swf}";
+			$scan_type = GLOB_BRACE;
+		} else {
+			$header_scan = "header-*.jpg";
+			$scan_type = false;
+		}
+		
+		$header = glob(WP_CONTENT_DIR . "/header/$post_ID/$header_scan", $scan_type);
+		
+		if ( $header ) {
+			$header = current($header);
+			$header = str_replace(WP_CONTENT_DIR, '', $header);
+		} else {
+			$header = false;
+		}
+		
+		if ( @ $_FILES['header_file']['name'] ) {
 			preg_match("/\.([^.]+)$/", $_FILES['header_file']['name'], $ext);
-			$ext = end($ext);
+			$ext = strtolower(end($ext));
 
-			if ( !in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'swf')) )
-			{
+			if ( !in_array($ext, defined('GLOB_BRACE') ? array('jpg', 'jpeg', 'png', 'gif', 'swf') : array('jpg')) ) {
 				echo '<div class="error">'
 					. "<p>"
 						. "<strong>"
-						. __('Invalid File Type.')
+						. __('Invalid File Type.', 'sem-reloaded')
 						. "</strong>"
 					. "</p>\n"
 					. "</div>\n";
-			}
-			else
-			{
-				$entropy = get_option('sem_entropy');
-
-				$entropy = intval($entropy) + 1;
-
-				update_option('sem_entropy', $entropy);
-
-				$name = WP_CONTENT_DIR . '/header/' . $post_ID . '/header-' . $entropy . '.' . $ext;
-
-				@mkdir(WP_CONTENT_DIR . '/header/' . $post_ID);
-				@chmod(WP_CONTENT_DIR . '/header/' . $post_ID, 0777);
-				@move_uploaded_file($tmp_name, $name);
-				$stat = stat(dirname($name));
-				$perms = $stat['mode'] & 0000666;
-				@chmod($name, $perms);
+				return;
+			} elseif ( !wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_ID) ) {
+				echo '<div class="error">'
+					. "<p>"
+						. "<strong>"
+						. __('Upload Failed.', 'sem-reloaded')
+						. "</strong>"
+					. "</p>\n"
+					. "</div>\n";
+				return;
 			}
 			
-			delete_post_meta($post_ID, '_sem_header');
-		}
-		elseif ( isset($_POST['delete_header']) )
-		{
-			if ( defined('GLOB_BRACE') )
-			{
-				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
-				{
-					$header = current($header);
-					@unlink($header);
-				}
+			if ( $header && !@unlink(WP_CONTENT_DIR . $header) ) {
+				echo '<div class="error">'
+					. "<p>"
+						. "<strong>"
+						. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
+						. "</strong>"
+					. "</p>\n"
+					. "</div>\n";
+				return;
 			}
-			else
-			{
-				if ( $header = glob(WP_CONTENT_DIR . '/header/' . $post_ID . '/header-*.jpg') )
-				{
-					$header = current($header);
-					@unlink($header);
-				}
+			
+			$entropy = intval(get_option('sem_entropy')) + 1;
+			update_option('sem_entropy', $entropy);
+			
+			$name = WP_CONTENT_DIR . '/header/' . $post_ID . '/header-' . $entropy . '.' . $ext;
+			
+			wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_ID);
+			@move_uploaded_file($_FILES['header_file']['tmp_name'], $name);
+			
+			$stat = stat(dirname($name));
+			$perms = $stat['mode'] & 0000666;
+			@chmod($name, $perms);
+			
+			delete_post_meta($post_ID, '_sem_header');
+		} elseif ( $header && isset($_POST['delete_header']) ) {
+			if ( !@unlink(WP_CONTENT_DIR . $header) ) {
+				echo '<div class="error">'
+					. "<p>"
+						. "<strong>"
+						. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
+						. "</strong>"
+					. "</p>\n"
+					. "</div>\n";
+				return;
 			}
 			
 			delete_post_meta($post_ID, '_sem_header');
 		}
 	} # save_entry_header()
 } # sem_header
-
-
 
 
 if ( !function_exists('ob_multipart_entry_form') ) :
