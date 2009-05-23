@@ -3,9 +3,11 @@
 Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/admin-menu/
 Description: Adds a convenient admin menu to your blog.
-Version: 5.2 RC
+Version: 5.2 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
+Text Domain: sem-admin-menu-info
+Domain Path: /lang
 */
 
 /*

@@ -3,9 +3,11 @@
 Plugin Name: Dealdotcom Widgets
 Plugin URI: http://www.semiologic.com/software/dealdotcom/
 Description: Widgets to display <a href="http://go.semiologic.com/dealdotcom">dealdotcom</a>'s deal of the day.
-Version: 1.2 RC
+Version: 1.2 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
+Text Domain: deadotcom-widgets-info
+Domain Path: /lang
 */
 
 /*
@@ -28,10 +30,7 @@ load_plugin_textdomain('dealdotcom', null, dirname(__FILE__) . '/lang');
  **/
 
 add_action('widgets_init', array('dealdotcom', 'widgetize'));
-
-if ( !is_admin() ) {
-	add_action('dealdotcom_update', array('dealdotcom', 'update'));
-}
+add_action('dealdotcom_update', array('dealdotcom', 'update'));
 
 class dealdotcom {
 	/**

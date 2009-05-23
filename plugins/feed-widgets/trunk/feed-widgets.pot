@@ -1,0 +1,21 @@
+# Feed Widgets pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Feed Widgets package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.1\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-05-23 19:13+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: feed-widgets.php:47
+msgid "Feed Widgets (for use in feeds)"
+msgstr ""

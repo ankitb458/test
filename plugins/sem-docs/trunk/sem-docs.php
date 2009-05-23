@@ -3,9 +3,11 @@
 Plugin Name: Semiologic Documentation
 Plugin URI: http://www.semiologic.com/software/sem-docs/
 Description: Semiologic Pro Documentation
-Version: 2.0.2 RC
+Version: 2.1 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
+Text Domain: sem-docs-info
+Domain Path: /lang
 */
 
 /*

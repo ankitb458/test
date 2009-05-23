@@ -3,9 +3,11 @@
 Plugin Name: Fancy Excerpt
 Plugin URI: http://www.semiologic.com/software/fancy-excerpt/
 Description: Enhances WordPress' default excerpt generator by generating paragraph aware excerpts.
-Version: 3.0 RC
+Version: 3.0 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
+Text Domain: sem-fancy-excerpt-info
+Domain Path: /lang
 */
 
 /*
