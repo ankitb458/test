@@ -59,7 +59,7 @@ class sem_header {
 						. "</p>\n"
 						. "</div>\n";
 					return;
-				} elseif ( strpos($header, "/$active_skin/") === false ) {
+				} elseif ( strpos($header, "/skins/$active_skin/") === false ) {
 					@unlink(WP_CONTENT_DIR . $header);
 				}
 			}
