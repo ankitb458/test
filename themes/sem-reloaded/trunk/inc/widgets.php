@@ -1759,7 +1759,7 @@ class header extends WP_Widget {
 		$ext = strtolower(end($ext));
 		
 		if ( $ext == 'swf' ) {
-			wp_enqueue_script('swfobject', sem_url . '/js/swfobject.js', false, '1.5');
+			wp_enqueue_script('swfobject');
 		} else {
 			add_action('wp_head', array('header', 'css'), 30);
 		}
