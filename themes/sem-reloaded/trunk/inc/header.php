@@ -49,7 +49,7 @@ class sem_header {
 		$active_skin = $sem_options['active_skin'];
 		
 		if ( !empty($_FILES['header_file']['name']) ) {
-			if ( $header ) {
+			if ( $header && strpos($header, "/skins/$active_skin/") === false ) {
 				if ( !is_writable(WP_CONTENT_DIR . $header) ) {
 					echo '<div class="error">'
 						. "<p>"
@@ -59,17 +59,15 @@ class sem_header {
 						. "</p>\n"
 						. "</div>\n";
 					return;
-				} elseif ( strpos($header, "/skins/$active_skin/") === false ) {
-					if ( !@unlink(WP_CONTENT_DIR . $header) ) {
-						echo '<div class="error">'
-							. "<p>"
-								. "<strong>"
-								. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
-								. "</strong>"
-							. "</p>\n"
-							. "</div>\n";
-						return;
-					}
+				} elseif ( !@unlink(WP_CONTENT_DIR . $header) ) {
+					echo '<div class="error">'
+						. "<p>"
+							. "<strong>"
+							. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
+							. "</strong>"
+						. "</p>\n"
+						. "</div>\n";
+					return;
 				}
 			}
 
@@ -98,16 +96,8 @@ class sem_header {
 				$perms = $stat['mode'] & 0000666;
 				@chmod($name, $perms);
 			}
-		} elseif ( $header && isset($_POST['delete_header']) ) {
-			if ( strpos($header, "/skins/$active_skin/") !== false ) {
-				echo '<div class="error">'
-					. "<p>"
-						. "<strong>"
-						. sprintf(__('%s is a skin-specific header.', 'sem-reloaded'), 'wp-content' . $header)
-						. "</strong>"
-					. "</p>\n"
-					. "</div>\n";
-			} elseif ( !is_writable(WP_CONTENT_DIR . $header) ) {
+		} elseif ( $header && isset($_POST['delete_header']) && strpos($header, "/skins/$active_skin/") === false ) {
+			if ( !is_writable(WP_CONTENT_DIR . $header) ) {
 				echo '<div class="error">'
 					. "<p>"
 						. "<strong>"
@@ -190,6 +180,10 @@ class sem_header {
 				echo '<div class="submit">'
 					. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
 					. '</div>' . "\n";
+			} elseif ( strpos($header, "/skins/$active_skin/") !== false ) {
+				echo '<p>'
+					. sprintf(__('This header (%s) is hard-coded in your <a href="?page=skin">skin</a>. You cannot delete it, but you can override it.', 'sem-reloaded'), 'wp-content' . $header)
+					. '</p>' . "\n";
 			} else {
 				echo '<p>'
 					. sprintf(__('This header (%s) is not writable by the server. Please delete it manually to change it.', 'sem-reloaded'), 'wp-content' . $header)
@@ -199,7 +193,7 @@ class sem_header {
 		
 		wp_mkdir_p(WP_CONTENT_DIR . '/header');
 		
-		if ( !$header || is_writable(WP_CONTENT_DIR . $header) ) {
+		if ( !$header || is_writable(WP_CONTENT_DIR . $header) || strpos($header, "/skins/$active_skin/") !== false ) {
 			if ( is_writable(WP_CONTENT_DIR . '/header') ) {
 				echo '<h3>'
 					. '<label for="header_file">'

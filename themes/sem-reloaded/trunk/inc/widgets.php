@@ -1674,6 +1674,8 @@ EOS;
 		if ( !is_admin() && isset($header) )
 			return $header;
 		
+		global $sem_options;
+		
 		# try post specific header
 		if ( is_singular() ) {
 			global $wp_the_query;

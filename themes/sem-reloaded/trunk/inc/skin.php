@@ -159,6 +159,7 @@ EOS;
 			$sem_options['credits'] = $_POST['credits'];
 		
 		update_option('sem6_options', $sem_options);
+		delete_transient('sem_header');
 		
 		echo '<div class="updated fade">'
 			. '<p><strong>'
