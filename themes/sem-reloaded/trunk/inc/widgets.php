@@ -1716,7 +1716,7 @@ class header extends WP_Widget {
 				break;
 			
 			# skin-specific header
-			$active_skin = apply_filters('active_skin', $sem_options['active_skin']);
+			$active_skin = $sem_options['active_skin'];
 			$header = glob(sem_path . "/skins/$active_skin/$skin_scan", $scan_type);
 			if ( $header )
 				break;

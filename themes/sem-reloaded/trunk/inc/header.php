@@ -44,7 +44,9 @@ class sem_header {
 		
 		#dump($_POST, $_FILES);
 		
+		global $sem_options;
 		$header = header::get();
+		$active_skin = $sem_options['active_skin'];
 		
 		if ( !empty($_FILES['header_file']['name']) ) {
 			if ( $header ) {
@@ -57,7 +59,7 @@ class sem_header {
 						. "</p>\n"
 						. "</div>\n";
 					return;
-				} else {
+				} elseif ( strpos($header, "/$active_skin/") === false ) {
 					@unlink(WP_CONTENT_DIR . $header);
 				}
 			}
@@ -82,11 +84,22 @@ class sem_header {
 				$name = WP_CONTENT_DIR . '/header/header-' . $entropy . '.' . $ext;
 				
 				@move_uploaded_file($_FILES['header_file']['tmp_name'], $name);
-				@chmod($name, 0666);
+				
+				$stat = stat(dirname($name));
+				$perms = $stat['mode'] & 0000666;
+				@chmod($name, $perms);
 			}
 		} elseif ( isset($_POST['delete_header']) ) {
 			if ( $header ) {
-				if ( !is_writable(WP_CONTENT_DIR . $header) ) {
+				if ( strpos($header, "/$active_skin/") === false ) {
+					echo '<div class="error">'
+						. "<p>"
+							. "<strong>"
+							. sprintf(__('%s is a skin-specific header.', 'sem-reloaded'), 'wp-content' . $header)
+							. "</strong>"
+						. "</p>\n"
+						. "</div>\n";
+				} elseif ( !is_writable(WP_CONTENT_DIR . $header) ) {
 					echo '<div class="error">'
 						. "<p>"
 							. "<strong>"
@@ -127,6 +140,7 @@ class sem_header {
 		global $sem_options;
 		
 		$header = header::get();
+		$active_skin = $sem_options['active_skin'];
 		
 		screen_icon();
 		
@@ -199,7 +213,7 @@ class sem_header {
 				. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
 				. '</div>' . "\n";
 		}
-
+		
 		echo '</form>' . "\n";
 		
 		echo '</div>' . "\n";
@@ -376,7 +390,9 @@ class sem_header {
 				@mkdir(WP_CONTENT_DIR . '/header/' . $post_ID);
 				@chmod(WP_CONTENT_DIR . '/header/' . $post_ID, 0777);
 				@move_uploaded_file($tmp_name, $name);
-				@chmod($name, 0666);
+				$stat = stat(dirname($name));
+				$perms = $stat['mode'] & 0000666;
+				@chmod($name, $perms);
 			}
 			
 			delete_post_meta($post_ID, '_sem_header');
