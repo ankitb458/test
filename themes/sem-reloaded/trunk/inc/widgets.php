@@ -1625,13 +1625,15 @@ class header extends WP_Widget {
 		$i++;
 		$id = 'header_img_' . md5($i . $header);
 		
+		$get_flash = __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash 9.0</a> to see this player.', 'sem-reloaded');
+		
 		return <<<EOS
 <object id="$id" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$width" height="$height">
 <param name="movie" value="$header" />
 <!--[if !IE]>-->
 <object type="application/x-shockwave-flash" data="$header" width="$width" height="$height">
 <!--<![endif]-->
-<p>Alternative content</p>
+<p>$get_flash</p>
 <!--[if !IE]>-->
 </object>
 <!--<![endif]-->
