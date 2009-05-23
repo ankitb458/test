@@ -13,6 +13,8 @@ The unfancy quote plugin for WordPress lets you override WordPress' quote fancif
 
 The unfancy quote plugin for WordPress lets you override WordPress' quote fancification. Curly quotes in the wrong direction and broken code because of curly quotes will be a thing of the past.
 
+Note: This functionality has been mostly fixed since WordPress 2.7.
+
 
 == Installation ==
 
