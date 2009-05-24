@@ -69,6 +69,7 @@ class inline_widgets {
 		
 		$default_widgets = array(
 			'inline_widgets' => array(
+				'ad_manager',
 				'silo_stub',
 				'silo_map',
 				'contact_form',
