@@ -50,6 +50,7 @@ class fancy_excerpt {
 		$text = get_the_content($more);
 		$text = strip_shortcodes($text);
 		$text = str_replace(array("\r\n", "\r"), "\n", $text);
+		$text = preg_replace("/<(script|style|object)(?:\s[^<>]*)?>.*?<\/\\1>/is", '', $text);
 		$text = wp_kses($text, $allowedposttags);
 		
 		if ( !preg_match("|$more</a>$|", $text)
