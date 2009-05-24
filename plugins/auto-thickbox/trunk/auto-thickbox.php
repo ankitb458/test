@@ -4,7 +4,7 @@ Plugin Name: Auto Thickbox
 Plugin URI: http://www.semiologic.com/software/auto-thickbox/
 Description: Automatically enables thickbox on thumbnail images (i.e. opens the images in a fancy pop-up).
 Author: Denis de Bernardy
-Version: 1.3 RC
+Version: 2.0 RC
 Author URI: http://www.getsemiologic.com
 Text Domain: auto-thickbox-info
 Domain Path: /lang
@@ -27,94 +27,46 @@ http://www.opensource.org/licenses/gpl-2.0.php
  **/
 
 if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === false ) {
+	if ( !class_exists('anchor_filters') )
+		include dirname(__FILE__) . '/anchor-filters/anchor-filters.php';
+	
 	add_action('wp_print_scripts', array('auto_thickbox', 'add_scripts'));
 	add_action('wp_print_styles', array('auto_thickbox', 'add_css'));
 	
 	add_action('wp_head', array('auto_thickbox', 'add_thickbox_images'), 20);
 	
-	add_filter('the_content', array('auto_thickbox', 'add_thickbox'), 100);
-	add_filter('the_excerpt', array('auto_thickbox', 'add_thickbox'), 100);
+	add_filter('anchor_filters', array('auto_thickbox', 'add_thickbox'));
 }
 
 class auto_thickbox {
 	/**
 	 * add_thickbox()
 	 *
-	 * @param string $content
-	 * @return string $content
+	 * @param array $anchor
+	 * @return anchor $anchor
 	 **/
 
-	function add_thickbox($content) {
-		$content = preg_replace_callback("/
-			<\s*a\s					# an achnor...
-				(.*\s)?
-				href\s*=\s*?(.+)	# (catch href)
-				(\s.*)?
-				>
-			\s*
-			(.*)
-			\s*
-			<\s*\/\s*a\s*>
-			/isUx", array('auto_thickbox', 'add_thickbox_callback'), $content);
+	function add_thickbox($anchor) {
+		if ( !preg_match("/\.(?:jpe?g|gif|png)\b/i", $anchor['attr']['href']) )
+			return $anchor;
 		
-		return $content;
+		if ( !preg_match("/^<\s*img\s.+?>$/is", $anchor['body']) )
+			return $anchor;
+		
+		$anchor['attr']['class'][] = 'thickbox';
+		$anchor['attr']['class'][] = 'noicon';
+		
+		if ( in_the_loop() && !$anchor['attr']['rel'] )
+			$anchor['attr']['rel'][] = 'gallery-' . get_the_ID();
+		
+		if ( empty($anchor['attr']['title']) ) {
+			if ( preg_match("/\b(?:alt|title)\s*=\s*('|\")(.*?)\\1/i", $anchor['body'], $title) ) {
+				$anchor['attr']['title'] = end($title);
+			}
+		}
+		
+		return $anchor;
 	} # add_thickbox()
-	
-	
-	/**
-	 * add_thickbox_callback()
-	 *
-	 * @param array $match Regexp match
-	 * @return string $link
-	 **/
-	
-	function add_thickbox_callback($match) {
-		# trim surrounding quotes
-		$href = trim(trim($match[2]), '\'"');
-		
-		# return if link isn't pointing to an image
-		if ( !preg_match("/\.(jpe?g|gif|png)$/i", $href) )
-			return $match[0];
-		
-		$img = $match[4];
-		
-		# return if link isn't wrapping an image (lets us work around backtrack limit)
-		if ( !preg_match("|^<\s*img\s[^>]+>$|i", $img) )
-			return $match[0];
-		
-		# link attribute
-		$attr = trim(trim($match[1]) . ' ' . trim($match[3]));
-		
-		# add thickbox class
-		if ( !preg_match("/(\sclass\s*=\s*(.+?))(?:$|\s[a-z_]+\s*=)/i", $attr, $class) ) {
-			$attr .= ' class="thickbox noicon"';
-		} else {
-			# trim surrounding quotes
-			$old_class = trim(trim($class[2]), '\'"');
-			
-			if ( strpos($old_class, 'thickbox') !== false ) {
-				$new_class = $old_class . ' thickbox noicon';
-
-				# replace class
-				$attr = str_replace($class[0], 'class="' . $new_class . '"', $attr);
-			}
-		}
-		
-		# add gallery rel if no rel is present
-		if ( in_the_loop() && !preg_match("/\srel\s*=\s*.+?(?:$|\s[a-z_]+\s*=)/i", $attr) ) {
-			$attr .= ' rel="gallery-' . get_the_ID() . '"';
-		}
-		
-		# add title
-		if ( !preg_match("/title\s*=/i", $attr) ) {
-			if ( preg_match("/(?:alt|title)\s*=\s*('|\")(.*?)\\1/i", $img, $title) ) {
-				$title = end($title);
-				$attr .= ' title="' . $title . '"';
-			}
-		}
-		
-		return '<a href="' . $href . '" ' . trim($attr) . '>' . $img . '</a>';
-	} # add_thickbox_callback()
 	
 	
 	/**
