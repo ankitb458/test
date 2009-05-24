@@ -4,7 +4,7 @@ Plugin Name: Auto Thickbox
 Plugin URI: http://www.semiologic.com/software/auto-thickbox/
 Description: Automatically enables thickbox on thumbnail images (i.e. opens the images in a fancy pop-up).
 Author: Denis de Bernardy
-Version: 1.3 beta
+Version: 1.3 RC
 Author URI: http://www.getsemiologic.com
 Text Domain: auto-thickbox-info
 Domain Path: /lang
@@ -83,7 +83,7 @@ class auto_thickbox {
 			return $match[0];
 		
 		# link attribute
-		$attr = ' ' . $match[1] . $match[3] . ' ';
+		$attr = trim(trim($match[1]) . ' ' . trim($match[3]));
 		
 		# add thickbox class
 		if ( !preg_match("/(\sclass\s*=\s*(.+?))(?:$|\s[a-z_]+\s*=)/i", $attr, $class) ) {
@@ -101,9 +101,7 @@ class auto_thickbox {
 		}
 		
 		# add gallery rel if no rel is present
-		if ( in_the_loop()
-			&& !preg_match("/\srel\s*=\s*.+?(?:$|\s[a-z_]+\s*=)/i", $attr, $rel)
-			) {
+		if ( in_the_loop() && !preg_match("/\srel\s*=\s*.+?(?:$|\s[a-z_]+\s*=)/i", $attr) ) {
 			$attr .= ' rel="gallery-' . get_the_ID() . '"';
 		}
 		
@@ -115,7 +113,7 @@ class auto_thickbox {
 			}
 		}
 		
-		return '<a href="' . $href . '" ' . $attr . '>' . $img . '</a>';
+		return '<a href="' . $href . '" ' . trim($attr) . '>' . $img . '</a>';
 	} # add_thickbox_callback()
 	
 	
