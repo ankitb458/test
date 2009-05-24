@@ -16,12 +16,13 @@ class redirect_manager_admin {
 	 **/
 	
 	function edit_entry($post) {
-		if ( $post->ID > 0 ) {
+		if ( $post->ID > 0 )
 			$value = get_post_meta($post->ID, '_redirect_url', true);
-		}
+		else
+			$value = '';
 		
 		echo '<p>'
-			. '<input type="text" name="redirect_manager" size="58" tabindex="5" class="code" style="width: 90%;"'
+			. '<input type="text" name="redirect_manager" size="58" tabindex="5" class="code widefat"'
 				. ' value="' . esc_attr($value) . '"'
 				. ' />'
 			. '</p>';

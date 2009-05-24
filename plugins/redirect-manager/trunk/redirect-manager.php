@@ -3,7 +3,7 @@
 Plugin Name: Redirect Manager
 Plugin URI: http://www.semiologic.com/software/redirect-manager/
 Description: Lets you manage redirects on your site without messing around with .htaccess files
-Version: 1.1 beta
+Version: 1.1 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: redirect-manager-info
@@ -91,7 +91,7 @@ class redirect_manager {
 		if ( $location ) {
 			$location = esc_url($location);
 			$caption = __('Redirects to <a href="%1$s">%2$s</a>', 'redirect-manager');
-			$content = '<p>' . sprintf($caption, esc_attr($location), $location) . '</p>';
+			$content = '<p>' . sprintf($caption, $location, $location) . '</p>';
 		}
 		
 		return $content;
@@ -105,6 +105,6 @@ function redirect_manager_admin() {
 foreach ( array(
 	'page-new.php', 'page.php',
 	'post-new.php', 'post.php',
-	) as $admin_page )
-	add_action("load-$admin_page", 'redirect_manager_admin');
+	) as $hook )
+	add_action("load-$hook", 'redirect_manager_admin');
 ?>
