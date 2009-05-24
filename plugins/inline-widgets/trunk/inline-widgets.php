@@ -3,7 +3,7 @@
 Plugin Name: Inline Widgets
 Plugin URI: http://www.semiologic.com/software/inline-widgets/
 Description: Creates a special sidebar that lets you insert arbitrary widgets in posts' and pages' content. Configure these inline widgets under Appearance / Widgets.
-Version: 1.1 beta
+Version: 1.1 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: inline-widgets-info
@@ -43,7 +43,7 @@ class inline_widgets {
 		register_sidebar(
 			array(
 				'id' => 'inline_widgets',
-				'name' => 'Inline Widgets (for use in entries)',
+				'name' => __('Inline Widgets (for use in entries)', 'inline-widgets'),
 				'before_widget' => '<div>',
 				'after_widget' => '</div>' . "\n",
 				'before_title' => '<h3>',
@@ -207,6 +207,6 @@ function inline_widgets_admin() {
 foreach ( array(
 	'page-new.php', 'page.php',
 	'post-new.php', 'post.php',
-	) as $admin_page )
-	add_action("load-$admin_page", 'inline_widgets_admin');
+	) as $hook )
+	add_action("load-$hook", 'inline_widgets_admin');
 ?>
