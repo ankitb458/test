@@ -13,6 +13,8 @@
 
 add_filter('the_content', array('anchor_filters', 'apply'), 100);
 add_filter('the_excerpt', array('anchor_filters', 'apply'), 100);
+add_filter('widget_text', array('anchor_filters', 'apply'), 100);
+add_filter('comment_text', array('anchor_filters', 'apply'), 100);
 
 class anchor_filters {
 	/**
