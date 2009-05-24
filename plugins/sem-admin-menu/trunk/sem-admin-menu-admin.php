@@ -30,7 +30,8 @@ class sem_admin_menu_admin {
 	 **/
 
 	function save_options() {
-		if ( !$_POST ) return;
+		if ( !$_POST )
+			return;
 		
 		check_admin_referer('admin_menu');
 		

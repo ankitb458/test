@@ -29,12 +29,13 @@ load_plugin_textdomain('sem-admin-menu', null, dirname(__FILE__) . '/lang');
  * @package Admin Menu
  **/
 
-add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
-add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
+if ( !is_admin() ) {
+	add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
+	add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
 
-add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
-add_filter('body_class', array('sem_admin_menu', 'body_class'));
-
+	add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
+	add_filter('body_class', array('sem_admin_menu', 'body_class'));
+}
 
 class sem_admin_menu {
 	/**
@@ -96,19 +97,18 @@ class sem_admin_menu {
 			
 			if ( get_option('users_can_register') ) {
 				echo '<span class="am_user">'
-							. '<a href="'
-								. wp_login_url() . '?action=register">'
-								. __('Register', 'sem-admin-menu')
-								. "</a>"
+							. apply_filters('loginout',
+								'<a href="' . wp_login_url() . '?action=register">'
+									. __('Register', 'sem-admin-menu')
+									. "</a>"
+								)
 							. "</span>"
 							. ' ';
 			}
 
 			echo '<span class="am_user">'
 					. apply_filters('loginout',
-						'<a href="'
-							. wp_login_url()
-							. '">'
+						'<a href="' . wp_login_url() . '">'
 							. __('Login', 'sem-admin-menu')
 							. "</a>"
 						)
@@ -122,13 +122,9 @@ class sem_admin_menu {
 			
 			if ( current_user_can('edit_posts') ) {
 				echo '<span class="am_new">'
-					. '<a href="'
-						. $admin_url
-						. 'post-new.php'
-						. '"'
-					. '>'
-					. __('New Post', 'sem-admin-menu')
-					. "</a>"
+					. '<a href="' . $admin_url . 'post-new.php">'
+						. __('New Post', 'sem-admin-menu')
+						. "</a>"
 					. '</span>'
 					. ' ';
 			}
@@ -139,42 +135,29 @@ class sem_admin_menu {
 				elseif ( !is_page() && is_home() && get_option('show_on_front') == 'page' )
 					$parent_id = (int) get_option('page_for_posts');
 				else
-					$parent_id = false;
+					$parent_id = '';
+				
+				if ( $parent_id )
+					$parent_id = '?parent_id=' . $parent_id;
 				
 				echo '<span class="am_new">'
-					. '<a href="'
-						. $admin_url
-						. 'page-new.php'
-						. ( $parent_id
-							? ( '?parent_id=' . $parent_id )
-							: ''
-							)
-						. '"'
-					. '>'
-					. __('New Page', 'sem-admin-menu')
-					. '</a>'
+					. '<a href="' . $admin_url . 'page-new.php' . $parent_id . '">'
+						. __('New Page', 'sem-admin-menu')
+						. '</a>'
 					. '</span>'
 					. ' ';
 			}
 			
 			if ( is_page() && current_user_can('edit_pages') ) {
 				echo '<span class="am_manage">'
-					. '<a href="'
-							. $admin_url
-							. 'edit-pages.php'
-							. '"'
-						. '>'
+					. '<a href="' . $admin_url . 'edit-pages.php">'
 						. __('Manage', 'sem-admin-menu')
 						. "</a>"
 					. '</span>'
 					. ' ';
 			} elseif ( current_user_can('edit_posts') ) {
 				echo '<span class="am_manage">'
-					. '<a href="'
-							. $admin_url
-							. 'edit.php'
-							. '"'
-						. '>'
+					. '<a href="' . $admin_url . 'edit.php">'
 						. __('Manage', 'sem-admin-menu')
 						. "</a>"
 					. '</span>'
@@ -183,10 +166,7 @@ class sem_admin_menu {
 			
 			if ( current_user_can('edit_posts') || current_user_can('edit_pages') ) {
 				echo '<span class="am_comments">'
-					. '<a href="'
-							. $admin_url . 'edit-comments.php'
-							. '"'
-						. '>'
+					. '<a href="' . $admin_url . 'edit-comments.php">'
 						. __('Comments', 'sem-admin-menu')
 						. '</a>'
 					. '</span>'
@@ -195,72 +175,55 @@ class sem_admin_menu {
 				
 			if ( current_user_can('activate_plugins') ) {
 				echo '<span class="am_options">'
-					. '<a href="'
-							. $admin_url . 'plugins.php'
-							. '"'
-						. '>'
+					. '<a href="' . $admin_url . 'plugins.php">'
 						. __('Plugins', 'sem-admin-menu')
 						. '</a>'
-						. '</span>'
-						. ' ';
+					. '</span>'
+					. ' ';
 			}
 			
 			if ( current_user_can('switch_themes') ) {
+				global $wp_registered_sidebars;
+				$using_widgets = !empty($wp_registered_sidebars)
+					&& ( !isset($wp_registered_sidebars['wp_inactive_widgets'])
+					|| isset($wp_registered_sidebars['wp_inactive_widgets'])
+						&& count($wp_registered_sidebars) > 1
+					);
+				
 				echo '<span class="am_options">'
-					. '<a href="'
-							. $admin_url
-							. ( $GLOBALS['wp_registered_sidebars']
-								? 'widgets.php'
-								: 'themes.php'
-								)
-							. '"'
-						. '>'
-						. ( $GLOBALS['wp_registered_sidebars']
-							? __('Widgets', 'sem-admin-menu')
-							: __('Themes', 'sem-admin-menu')
-							)
+					. '<a href="' . $admin_url . ( $using_widgets ? 'widgets.php' : 'themes.php' ) . '">'
+						. ( $using_widgets ? __('Widgets', 'sem-admin-menu') : __('Themes', 'sem-admin-menu') )
 						. '</a>'
-						. '</span>'
-						. ' ';
+					. '</span>'
+					. ' ';
 			}
 
 			if ( current_user_can('manage_options') ) {
 				echo '<span class="am_options">'
-					. '<a href="'
-							. $admin_url . 'options-general.php'
-							. '"'
-						. '>'
+					. '<a href="' . $admin_url . 'options-general.php">'
 						. __('Settings', 'sem-admin-menu')
 						. '</a>'
-						. '</span>'
-						. ' ';
+					. '</span>'
+					. ' ';
 			}
 			
 			echo '<span class="am_dashboard">'
-				. '<a href="'
-						. $admin_url
-						. '"'
-					. '>'
+				. '<a href="' . $admin_url . '">'
 					. __('Dashboard', 'sem-admin-menu')
 					. '</a>'
+				. '</span>'
+				. ' ';
+
+			echo '<span class="am_user">'
+					. '<a href="' . $admin_url . 'profile.php">'
+						. __('Profile', 'sem-admin-menu')
+						. '</a>'
 					. '</span>'
 					. ' ';
 
 			echo '<span class="am_user">'
-					. '<a href="'
-							. $admin_url . 'profile.php'
-							. '"'
-						. '>'
-						. __('Profile', 'sem-admin-menu')
-						. '</a>'
-					. '</span>';
-
-			echo '<span class="am_user">'
 					. apply_filters('loginout',
-						'<a href="'
-								. wp_logout_url()
-								. '"'
-							. '>'
+						'<a href="' . wp_logout_url() . '">'
 							. __('Logout', 'sem-admin-menu')
 							. '</a>'
 						)
@@ -343,6 +306,6 @@ function sem_admin_menu_admin() {
  	include dirname(__FILE__) . '/sem-admin-menu-admin.php';
 } # sem_admin_menu_admin()
 
-foreach ( array('load-page-new.php', 'load-settings_page_admin-menu') as $admin_page )
-	add_action($admin_page, 'sem_admin_menu_admin');
+foreach ( array('load-page-new.php', 'load-settings_page_admin-menu') as $hook )
+	add_action($hook, 'sem_admin_menu_admin');
 ?>

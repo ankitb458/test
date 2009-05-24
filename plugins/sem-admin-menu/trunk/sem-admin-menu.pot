@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 5.2\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-04-12 18:10+0200\n"
+"POT-Creation-Date: 2009-05-24 11:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,31 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: sem-admin-menu-admin.php:45
+#: sem-admin-menu-admin.php:47
 msgid "Settings saved."
 msgstr ""
 
-#: sem-admin-menu-admin.php:64
+#: sem-admin-menu-admin.php:68
 msgid "Admin Menu Settings"
 msgstr ""
 
-#: sem-admin-menu-admin.php:81
+#: sem-admin-menu-admin.php:85
 msgid "Display a menu bar with a login link when I am logged out."
 msgstr ""
 
-#: sem-admin-menu-admin.php:90
+#: sem-admin-menu-admin.php:94
 msgid "Save Changes"
 msgstr ""
 
-#: sem-admin-menu.php:99
+#: sem-admin-menu.php:102
 msgid "Register"
 msgstr ""
 
-#: sem-admin-menu.php:110
+#: sem-admin-menu.php:112
 msgid "Login"
 msgstr ""
 
-#: sem-admin-menu.php:128
+#: sem-admin-menu.php:126
 msgid "New Post"
 msgstr ""
 
@@ -48,42 +48,42 @@ msgstr ""
 msgid "New Page"
 msgstr ""
 
-#: sem-admin-menu.php:158 sem-admin-menu.php:169
+#: sem-admin-menu.php:154 sem-admin-menu.php:161
 msgid "Manage"
 msgstr ""
 
-#: sem-admin-menu.php:181
+#: sem-admin-menu.php:170
 msgid "Comments"
 msgstr ""
 
-#: sem-admin-menu.php:193
+#: sem-admin-menu.php:179
 msgid "Plugins"
 msgstr ""
 
-#: sem-admin-menu.php:210
+#: sem-admin-menu.php:195
 msgid "Widgets"
 msgstr ""
 
-#: sem-admin-menu.php:211
+#: sem-admin-menu.php:195
 msgid "Themes"
 msgstr ""
 
-#: sem-admin-menu.php:224
+#: sem-admin-menu.php:204
 msgid "Settings"
 msgstr ""
 
-#: sem-admin-menu.php:235
+#: sem-admin-menu.php:212
 msgid "Dashboard"
 msgstr ""
 
-#: sem-admin-menu.php:245
+#: sem-admin-menu.php:219
 msgid "Profile"
 msgstr ""
 
-#: sem-admin-menu.php:255
+#: sem-admin-menu.php:227
 msgid "Logout"
 msgstr ""
 
-#: sem-admin-menu.php:317 sem-admin-menu.php:318
+#: sem-admin-menu.php:289 sem-admin-menu.php:290
 msgid "Admin Menu"
 msgstr ""

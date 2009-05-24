@@ -40,9 +40,7 @@ Make sure your theme has the following in between its `<body>` and `</body>` tag
 
 = Hiding the Admin Menu to Visitors =
 
-If you disable user registrations on your site, the admin menu will not display to visitors unless you specifically want this to occur.
-
-To disable user registrations, uncheck "Anyone can register" under Settings / General.
+The admin menu will not display to visitors unless you specifically want this to occur.
 
 To configure the behavior, browse Settings / Admin Menu.
 
