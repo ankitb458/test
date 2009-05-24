@@ -16,7 +16,7 @@ add_filter('the_excerpt', array('anchor_filters', 'filter'), 100);
 add_filter('widget_text', array('anchor_filters', 'filter'), 100);
 add_filter('comment_text', array('anchor_filters', 'filter'), 100);
 
-add_action('wp_head', array('anchor_filters', 'wp_head'), 100);
+add_action('wp_head', array('anchor_filters', 'wp_head'), 10000);
 
 class anchor_filters {
 	/**
@@ -82,6 +82,9 @@ class anchor_filters {
 	 **/
 
 	function filter($text) {
+		if ( !has_filter('anchor_filters') )
+			return $text;
+		
 		$text = preg_replace_callback("/
 			<\s*a\s+
 			([^<>]+)
