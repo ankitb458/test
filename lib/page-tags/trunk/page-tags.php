@@ -72,7 +72,7 @@ class page_tags {
 		<div class="tagsdiv" id="<?php echo $tax_name; ?>">
 			<div class="jaxtag">
 			<div class="nojs-tags hide-if-js">
-			<p><?php _e('Add or remove tags'); ?></p>
+			<p><?php _e('Add or remove tags', page_tags_textdomain); ?></p>
 			<textarea name="<?php echo "tax_input[$tax_name]"; ?>" class="the-tags" id="tax-input[<?php echo $tax_name; ?>]"><?php echo esc_attr(get_terms_to_edit( $post->ID, $tax_name )); ?></textarea></div>
 
 			<span class="ajaxtag hide-if-no-js">
