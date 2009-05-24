@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.9\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-05-24 01:39+0200\n"
+"POT-Creation-Date: 2009-05-24 18:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,6 +40,6 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: sem-semiologic-affiliate.php:55 sem-semiologic-affiliate.php:56
+#: sem-semiologic-affiliate.php:57 sem-semiologic-affiliate.php:58
 msgid "Semiologic Affiliate"
 msgstr ""
