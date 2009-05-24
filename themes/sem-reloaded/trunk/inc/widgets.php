@@ -379,7 +379,7 @@ class entry_content extends WP_Widget {
 		
 		$title = the_title('', '', false);
 		
-		if ( $show_excerpts && !is_singular() ) {
+		if ( $show_excerpt && !is_singular() ) {
 			$content = apply_filters('the_excerpt', get_the_excerpt());
 		} else {
 			$more_link = str_replace('%title%', $title, $more_link);

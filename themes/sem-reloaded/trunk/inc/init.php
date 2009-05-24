@@ -69,10 +69,11 @@ if ( !function_exists('dump') ) :
 /**
  * dump()
  *
- * @return void
+ * @param mixed $in
+ * @return mixed $in
  **/
 
-function dump() {
+function dump($in = null) {
 	echo '<pre style="margin-left: 0px; margin-right: 0px; padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
 	foreach ( func_get_args() as $var ) {
 		echo "\n";
@@ -83,6 +84,8 @@ function dump() {
 		}
 	}
 	echo '</pre>' . "\n";
+	
+	return $in;
 } # dump()
 endif;
 
