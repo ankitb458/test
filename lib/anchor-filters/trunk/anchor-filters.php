@@ -11,45 +11,121 @@
  * @package Anchor Filters
  **/
 
-add_filter('the_content', array('anchor_filters', 'apply'), 100);
-add_filter('the_excerpt', array('anchor_filters', 'apply'), 100);
-add_filter('widget_text', array('anchor_filters', 'apply'), 100);
-add_filter('comment_text', array('anchor_filters', 'apply'), 100);
+add_filter('the_content', array('anchor_filters', 'filter'), 100);
+add_filter('the_excerpt', array('anchor_filters', 'filter'), 100);
+add_filter('widget_text', array('anchor_filters', 'filter'), 100);
+add_filter('comment_text', array('anchor_filters', 'filter'), 100);
+
+add_action('wp_head', array('anchor_filters', 'wp_head'), 100);
 
 class anchor_filters {
 	/**
-	 * apply()
+	 * wp_head()
+	 *
+	 * @return void
+	 **/
+
+	function wp_head() {
+		if ( has_filter('anchor_ob_filters') )
+			ob_start(array('anchor_filters', 'ob_filter'));
+	} # wp_head()
+	
+	
+	/**
+	 * ob_filter()
 	 *
 	 * @param string $text
 	 * @return string $text
 	 **/
 
-	function apply($text) {
+	function ob_filter($text) {
 		$text = preg_replace_callback("/
 			<\s*a\s+
 			([^<>]+)
 			>
 			(.+?)
 			<\s*\/\s*a\s*>
-			/isx", array('anchor_filters', 'callback'), $text);
+			/isx", array('anchor_filters', 'ob_callback'), $text);
 		
 		return $text;
-	} # apply()
+	} # ob_filter()
 	
 	
 	/**
-	 * callback()
+	 * ob_callback()
 	 *
 	 * @param array $match
 	 * @return string $str
 	 **/
 
-	function callback($match) {
+	function ob_callback($match) {
 		# skip empty anchors
 		if ( !trim($match[2]) )
 			return $match[0];
 		
 		# parse anchor
+		$anchor = anchor_filters::parse_anchor($match);
+		
+		# filter anchor
+		$anchor = apply_filters('anchor_ob_filters', $anchor);
+		
+		# return anchor
+		return anchor_filters::build_anchor($anchor);
+	} # ob_callback()
+	
+	
+	/**
+	 * filter()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function filter($text) {
+		$text = preg_replace_callback("/
+			<\s*a\s+
+			([^<>]+)
+			>
+			(.+?)
+			<\s*\/\s*a\s*>
+			/isx", array('anchor_filters', 'filter_callback'), $text);
+		
+		return $text;
+	} # filter()
+	
+	
+	/**
+	 * filter_callback()
+	 *
+	 * @param array $match
+	 * @return string $str
+	 **/
+
+	function filter_callback($match) {
+		# skip empty anchors
+		if ( !trim($match[2]) )
+			return $match[0];
+		
+		# parse anchor
+		$anchor = anchor_filters::parse_anchor($match);
+		
+		# filter anchor
+		$anchor = apply_filters('anchor_filters', $anchor);
+		
+		# return anchor
+		return anchor_filters::build_anchor($anchor);
+	} # filter_callback()
+	
+	
+	/**
+	 * parse_anchor()
+	 *
+	 * @param array $match
+	 * @return array $anchor
+	 **/
+
+	function parse_anchor($match) {
+		
 		$anchor = array();
 		
 		$anchor['attr'] = shortcode_parse_atts($match[1]);
@@ -68,10 +144,18 @@ class anchor_filters {
 		
 		$anchor['body'] = $match[2];
 		
-		# filter anchor
-		$anchor = apply_filters('anchor_filters', $anchor);
-		
-		# return anchor
+		return $anchor;
+	} # parse_anchor()
+	
+	
+	/**
+	 * build_anchor()
+	 *
+	 * @param array $anchor
+	 * @return string $anchor
+	 **/
+
+	function build_anchor($anchor) {
 		$str = '<a ';
 		foreach ( $anchor['attr'] as $k => $v ) {
 			if ( is_array($v) ) {
@@ -85,6 +169,6 @@ class anchor_filters {
 		$str .= '>' . $anchor['body'] . '</a>';
 		
 		return $str;
-	} # callback()
+	} # build_anchor()
 } # anchor_filters
 ?>
