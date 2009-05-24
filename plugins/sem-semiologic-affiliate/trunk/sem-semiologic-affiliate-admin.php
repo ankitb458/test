@@ -22,7 +22,7 @@ class semiologic_affiliate_admin {
 		
 		$campaign_key = stripslashes($_POST['campaign_key']);
 		
-		if ( preg_match("/^https?:\/\/(www\.)?(get)?semiologic.com\/?\?aff=(.+)/i", $campaign_key, $match) )
+		if ( preg_match("/\?aff=(.+)/i", $campaign_key, $match) )
 			$campaign_key = end($match);
 		
 		$campaign_key = trim(preg_replace("/[^0-9a-zA-Z_-]/", "", $campaign_key));
