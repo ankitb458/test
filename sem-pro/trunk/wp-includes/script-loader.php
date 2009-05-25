@@ -422,7 +422,7 @@ function wp_default_styles( &$styles ) {
 
 	// all colors stylesheets need to have the same query strings (cache manifest compat)
 	$colors_version = '20090522';
-	
+
 	$styles->add( 'wp-admin', '/wp-admin/wp-admin.css', array(), '20090522' );
 	$styles->add_data( 'wp-admin', 'rtl', '/wp-admin/rtl.css' );
 
@@ -577,6 +577,9 @@ function print_head_scripts() {
  */
 function print_footer_scripts() {
 	global $wp_scripts, $concatenate_scripts;
+
+	if ( ! did_action('wp_print_footer_scripts') )
+		do_action('wp_print_footer_scripts');
 
 	if ( !is_a($wp_scripts, 'WP_Scripts') )
 		return array(); // No need to run if not instantiated.

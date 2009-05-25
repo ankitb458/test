@@ -1,5 +1,6 @@
 <?php
-include dirname(__FILE__) . '/semiologic.php';
+include_once dirname(__FILE__) . '/semiologic.php';
+
 /**
  * @package WordPress
  * @subpackage Default_Theme
