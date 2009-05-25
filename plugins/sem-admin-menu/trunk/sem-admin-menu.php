@@ -2,7 +2,7 @@
 /*
 Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/admin-menu/
-Description: Adds a convenient admin menu to your blog.
+Description: Adds a convenient admin menu to your blog. Configure its visibility under <a href="options-general.php?page=admin-menu">Settings / Admin Menu</a>.
 Version: 5.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
@@ -33,8 +33,9 @@ if ( !is_admin() ) {
 	add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
 	add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
 
-	add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
 	add_filter('body_class', array('sem_admin_menu', 'body_class'));
+} else {
+	add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
 }
 
 class sem_admin_menu {
@@ -268,7 +269,7 @@ class sem_admin_menu {
 			);
 		
 		if ( $old = get_option('sem_admin_menu_params') ) {
-			$o = array_merge($o, $old);
+			$o = wp_parse_args($old, $o);
 			delete_option('sem_admin_menu_params');
 		}
 		

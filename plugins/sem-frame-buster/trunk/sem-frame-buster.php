@@ -3,7 +3,7 @@
 Plugin Name: Frame Buster
 Plugin URI: http://www.semiologic.com/software/frame-buster/
 Description: Prevents your blog from being loaded into a frame.
-Version: 4.1 alpha
+Version: 4.1
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-frame-buster-info
@@ -20,33 +20,25 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-class sem_frame_buster
-{
-	#
-	# Constructor
-	#
+/**
+ * kill_frame()
+ *
+ * @return void
+ **/
 
-	function init()
-	{
-		add_action('wp_footer', array('sem_frame_buster', 'kill_frame'));
-	} # init()
+add_action('wp_footer', 'kill_frame');
 
+function kill_frame() {
+	if ( is_preview() )
+		return;
+	
+	$home_url = strtolower(get_option('home'));
 
-	#
-	# kill_frame()
-	#
+	echo <<<EOS
 
-	function kill_frame()
-	{
-		if ( !is_preview() )
-		{
-			$home_url = strtolower(get_option('home'));
-
-			echo <<<KILL_FRAME_SCRIPT
 <script type="text/javascript">
 <!--
-try
-{
+try {
 	var parent_location = new String(parent.location);
 	var top_location = new String(top.location);
 	var cur_location = new String(document.location);
@@ -54,21 +46,14 @@ try
 	top_location = top_location.toLowerCase();
 	cur_location = cur_location.toLowerCase();
 
-	if ( ( top_location != cur_location ) && parent_location.indexOf('{$home_url}') != 0 )
-	{
+	if ( top_location != cur_location && parent_location.indexOf('$home_url') != 0 )
 		top.location.href = document.location.href;
-	}
-}
-catch ( err )
-{
+} catch ( err ) {
 	top.location.href = document.location.href;
 }
 //-->
 </script>
-KILL_FRAME_SCRIPT;
-		}
-	} # kill_frame()
-} # sem_frame_buster
 
-sem_frame_buster::init();
+EOS;
+} # kill_frame()
 ?>

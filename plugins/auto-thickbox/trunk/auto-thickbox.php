@@ -50,11 +50,11 @@ class auto_thickbox {
 		if ( !preg_match("/\.(?:jpe?g|gif|png)\b/i", $anchor['attr']['href']) )
 			return $anchor;
 		
-		if ( !preg_match("/^<\s*img\s.+?>$/is", $anchor['body']) )
+		if ( !preg_match("/^\s*<\s*img\s.+?>\s*$/is", $anchor['body']) )
 			return $anchor;
 		
 		$anchor['attr']['class'][] = 'thickbox';
-		$anchor['attr']['class'][] = 'noicon';
+		$anchor['attr']['class'][] = 'no_icon';
 		
 		if ( in_the_loop() && !$anchor['attr']['rel'] )
 			$anchor['attr']['rel'][] = 'gallery-' . get_the_ID();

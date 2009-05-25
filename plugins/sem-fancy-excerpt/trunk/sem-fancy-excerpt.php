@@ -2,7 +2,7 @@
 /*
 Plugin Name: Fancy Excerpt
 Plugin URI: http://www.semiologic.com/software/fancy-excerpt/
-Description: Enhances WordPress' default excerpt generator by generating paragraph aware excerpts.
+Description: Enhances WordPress' default excerpt generator by generating paragraph aware excerpts followed by more... links.
 Version: 3.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
@@ -49,9 +49,7 @@ function fancy_excerpt($text) {
 	if ( !preg_match("|$more</a>$|", $text)
 		&& count(preg_split("~\s+~", trim(strip_tags($text)))) > 30
 	) {
-		# automatically add a more... tag
-		
-		$bits = preg_split("~(<(?:h[1-6]|p|ul|ol|li|dl|dd|table|tr|pre|blockquote)\b[^>]*>|\n+)~i", $text, null, PREG_SPLIT_DELIM_CAPTURE);
+		$bits = preg_split("/(<(?:h[1-6]|p|ul|ol|li|dl|dd|table|tr|pre|blockquote)\b[^>]*>|\n{2,})/i", $text, null, PREG_SPLIT_DELIM_CAPTURE);
 		$text = '';
 		$length = 0;
 		

@@ -72,6 +72,9 @@ class sem_admin_menu_admin {
 		echo '<table class="form-table">' . "\n";
 		
 		echo '<tr>' . "\n"
+			. '<th scope="row">'
+			. __('Always On', 'sem-admin-menu')
+			. '</th>' . "\n"
 			. '<td>'
 			. '<label for="always_on">'
 			. '<input type="checkbox"'

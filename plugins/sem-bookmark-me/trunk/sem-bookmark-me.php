@@ -96,7 +96,7 @@ class bookmark_me {
 
 	function css() {
 		$folder = plugin_dir_url(__FILE__);
-		wp_enqueue_style('bookmark_me', $folder . 'css/styles.css', false, '5.0');
+		wp_enqueue_style('bookmark_me', $folder . 'css/styles.css', null, '5.0');
 	} # css()
 	
 	
@@ -210,7 +210,7 @@ class bookmark_me {
 			echo '<div class="bookmark_me_services' . ( !$print_action ? ' bookmark_me_sidebar' : '' ) . '">' . "\n";
 
 			foreach ( bookmark_me::get_main_services() as $service_id =>  $service ) {
-				echo '<a href="' . htmlspecialchars($service['url'])  . '" class="' . $service_id . ' noicon"'
+				echo '<a href="' . htmlspecialchars($service['url'])  . '" class="' . $service_id . ' no_icon"'
 					. ' title="' . htmlspecialchars($service['name']) . '"'
 					. ' rel="nofollow">'
 					. $service['name']
@@ -223,12 +223,12 @@ class bookmark_me {
 				echo '<div class="bookmark_me_actions">' . "\n";
 
 				echo '<a href="mailto:?subject=%email_title%&amp;body=%email_url%"'
-					. ' title="' . htmlspecialchars(__('Email', 'bookmark-me')) .  '" class="email_entry noicon">'
+					. ' title="' . htmlspecialchars(__('Email', 'bookmark-me')) .  '" class="email_entry no_icon">'
 					. __('Email', 'bookmark-me')
 					. '</a>' . "\n";
 
 				echo '<a href="%print_url%"'
-					. ' title="' . htmlspecialchars(__('Print', 'bookmark-me')) .  '" class="print_entry noicon">'
+					. ' title="' . htmlspecialchars(__('Print', 'bookmark-me')) .  '" class="print_entry no_icon">'
 					. __('Print', 'bookmark-me')
 					. '</a>' . "\n";
 
@@ -240,7 +240,7 @@ class bookmark_me {
 			echo '<div class="bookmark_me_extra" style="display: none;">' . "\n";
 
 			foreach ( bookmark_me::get_extra_services() as $service_id =>  $service ) {
-				echo '<a href="' . htmlspecialchars($service['url'])  . '" class="' . $service_id . ' noicon"'
+				echo '<a href="' . htmlspecialchars($service['url'])  . '" class="' . $service_id . ' no_icon"'
 					. ' title="' . htmlspecialchars($service['name']) . '"'
 					. ( $service_id == 'help' && ( strpos(get_option('home'), 'semiologic.com') !== false )
 						? ''
