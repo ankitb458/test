@@ -15,6 +15,7 @@ if ( !is_admin() ) {
 	add_filter('body_class', array('sem_template', 'body_class'));
 	add_filter('widget_title', array('sem_template', 'widget_title'));
 	add_action('wp_footer', array('sem_template', 'display_credits'));
+	remove_action('wp_print_styles', array('external_links', 'styles'), 5);
 } else {
 	add_action('admin_menu', array('sem_template', 'admin_menu'));
 	add_action('admin_menu', array('sem_template', 'meta_boxes'));
@@ -137,32 +138,32 @@ class sem_template {
 		$skin_dir = sem_path . '/skins/' . $sem_options['active_skin'];
 		$skin_url = sem_url . '/skins/' . $sem_options['active_skin'];
 		
-		wp_enqueue_style('style', sem_url . '/style.css', sem_version);
-		wp_enqueue_style('layout', $css_url . '/layout.css', sem_version);
+		wp_enqueue_style('style', sem_url . '/style.css', null, sem_version);
+		wp_enqueue_style('layout', $css_url . '/layout.css', null, sem_version);
 		
 		if ( file_exists($skin_dir . '/icons.css') )
-			wp_enqueue_style('icons', $skin_url . '/icons.css', sem_version);
+			wp_enqueue_style('icons', $skin_url . '/icons.css', null, sem_version);
 		else
-			wp_enqueue_style('icons', $css_url . '/icons.css', sem_version);
+			wp_enqueue_style('icons', $css_url . '/icons.css', null, sem_version);
 		
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
 			if ( file_exists($skin_dir . '/print.css') )
-				wp_enqueue_style('skin', $skin_url . '/print.css', sem_version);
+				wp_enqueue_style('skin', $skin_url . '/print.css', null, sem_version);
 			else
-				wp_enqueue_style('skin', $css_url . '/print.css', sem_version);
+				wp_enqueue_style('skin', $css_url . '/print.css', null, sem_version);
 		} elseif ( apply_filters('active_layout', $sem_options['active_layout']) == 'letter' ) {
 			if ( file_exists($skin_dir . '/letter.css') )
-				wp_enqueue_style('skin', $skin_url . '/letter.css', sem_version);
+				wp_enqueue_style('skin', $skin_url . '/letter.css', null, sem_version);
 			else
-				wp_enqueue_style('skin', $css_url . '/letter.css', sem_version);
+				wp_enqueue_style('skin', $css_url . '/letter.css', null, sem_version);
 		} else {
-			wp_enqueue_style('skin', $skin_url . '/skin.css', sem_version);
+			wp_enqueue_style('skin', $skin_url . '/skin.css', null, sem_version);
 		}
 		
 		if ( file_exists(sem_path . '/custom.css') )
-			wp_enqueue_style('custom', sem_url . '/custom.css', sem_version);
+			wp_enqueue_style('custom', sem_url . '/custom.css', null, sem_version);
 		if ( file_exists($skin_path . '/custom.css') )
-			wp_enqueue_style('custom-skin', $skin_url . '/custom.css', sem_version);
+			wp_enqueue_style('custom-skin', $skin_url . '/custom.css', null, sem_version);
 	} # styles()
 	
 	

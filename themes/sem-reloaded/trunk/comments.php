@@ -99,7 +99,7 @@ if ( $comments ) {
 	if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 
 		$comment_form_link = ' <span class="comment_entry">'
-			. '<a href="#respond" title="' . esc_attr($comments_captions['leave_comment']) . '" class="noicon">'
+			. '<a href="#respond" title="' . esc_attr($comments_captions['leave_comment']) . '" class="no_icon">'
 			. '<img src="' . sem_url . '/icons/pixel.gif" height="16" width="16" alt="' . esc_attr($comments_captions['leave_comment']) . '" />'
 			. '</a>'
 			. '</span>';
@@ -161,7 +161,7 @@ if ( $comments ) {
 			. '</span>' . "\n"
 			. '<span class="link_comment">'
 			. '<a href="#comment-' . get_comment_ID() . '" title="#">'
-			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="12" class="noicon" alt="#" />'
+			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="12" class="no_icon" alt="#" />'
 			. '</a>'
 			. '</span>' . "\n"
 			. '</h3>' . "\n";
@@ -259,9 +259,11 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. 'wp-login.php?redirect_to='
 			. urlencode(get_permalink());
 		
-		$login_url = apply_filters('loginout',
-			'<a href="' . $login_url . '">' . __('Logout') . '</a>'
-			);
+		$login_url = '<span class="login">'
+			. apply_filters('loginout',
+				'<a href="' . $login_url . '">' . __('Logout') . '</a>'
+				)
+			. '</span>';
 			
 		echo '<div class="comments_login">' . "\n"
 			. '<div class="pad">' . "\n"
@@ -277,9 +279,11 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. '<div class="pad">' . "\n";
 
 		if ( $user_ID ) {
-			$logout_url = apply_filters('loginout',
-				'<a href="' . wp_logout_url() . '">' . __('Logout') . '</a>'
-				);
+			$logout_url = '<span class="logout">'
+				. apply_filters('loginout',
+					'<a href="' . wp_logout_url() . '">' . __('Logout') . '</a>'
+					)
+				. '</span>';
 
 			$identity = '<span class="signed_in_author">'
 				. '<a href="' . trailingslashit(site_url()) . 'wp-admin/profile.php">'

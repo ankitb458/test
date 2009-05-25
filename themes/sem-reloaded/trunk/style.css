@@ -433,7 +433,6 @@ img.avatar {
 	font-size: .8em;
 }
 
-
 #sitename {
 	margin: 0px;
 	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
@@ -593,21 +592,9 @@ h2 a {
 }
 
 
-/* External links: only add an icon in the main area */
-
-.header .external,
-.sidebar .external,
-.footer .external
-{
-	background-image: none;
-	padding-right: 0px;
-}
-
-
 /* WP Image Aligns */
 
-.skin .aligncenter
-{
+.skin .aligncenter {
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -616,14 +603,12 @@ h2 a {
 	display: block;
 }
 
-.skin .alignleft
-{
+.skin .alignleft {
 	float: left;
 	margin-right: .5em;
 }
 
-.skin .alignright
-{
+.skin .alignright {
 	float: right;
 	margin-left: .5em;
 }

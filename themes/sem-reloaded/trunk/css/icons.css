@@ -6,6 +6,12 @@ http://creativecommons.org/licenses/by/2.5/
 To override these icons, create a copy of this file and drop it, as icons.css, into your skin's folder.
 */
 
+a.external_icon {
+	background: url(../icons/world_go.gif) center right no-repeat;
+	padding-left: 0px;
+	padding-right: 14px;
+}
+
 li.nav_home {
 	list-style-image: url(../icons/house.gif);
 }
@@ -114,7 +120,7 @@ li.nav_url {
 }
 
 .s {
-	background: url(../icons/magnifier.gif) center left no-repeat #fff;
+	background: url(../icons/magnifier.gif) bottom left no-repeat #fff;
 	padding-left: 18px;
 	padding-right: 2px;
 }

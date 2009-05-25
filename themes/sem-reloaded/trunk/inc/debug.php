@@ -28,7 +28,7 @@ function add_stop($in = null, $where = null) {
 		$out .= " - {$memory}kB";
 	}
 	
-	$out .= " - $wp_object_cache->cache_hits / " . ( $wp_object_cache->cache_hits + $wp_object_cache->cache_misses ) . " cache hits";
+	$out .= " - $wp_object_cache->cache_hits cache hits / " . ( $wp_object_cache->cache_hits + $wp_object_cache->cache_misses );
 	
 	if ( $where ) {
 		$sem_stops[$where] = $out;
@@ -60,7 +60,7 @@ function dump_stops($in = null) {
 	dump($stops);
 	
 	# only show queries to admin users
-	if ( defined('SAVEQUERIES') && current_user_can('manage_options') ) {
+	if ( defined('SAVEQUERIES') && $_GET['debug'] == 'sql' && current_user_can('manage_options') ) {
 		global $wpdb;
 		foreach ( $wpdb->queries as $key => $data ) {
 			$query = trim($data[0]);

@@ -11,9 +11,7 @@
 
 include dirname(__FILE__) . '/inc/init.php';
 
-if ( !is_admin() )
-	add_filter('option_page_comments', 'false');
-
+# set content width
 switch ( $sem_options['active_layout'] ) {
 case 'm':
 	$content_width = 560;
@@ -30,6 +28,17 @@ default:
 	$content_width = 490;
 	break;
 }
+
+# kill page comments
+if ( !is_admin() )
+	add_filter('option_page_comments', 'false');
+
+# kill resource hungry queries
+remove_action('wp_head', 'index_rel_link');
+remove_action('wp_head', 'parent_post_rel_link');
+remove_action('wp_head', 'start_post_rel_link');
+remove_action('wp_head', 'adjacent_posts_rel_link');
+
 
 include sem_path . '/inc/panels.php';
 include sem_path . '/inc/widgets.php';
