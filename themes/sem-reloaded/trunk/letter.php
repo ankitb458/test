@@ -41,8 +41,12 @@ header::letter();
 <div class="pad">
 <?php
 sem_panels::display('before_the_entries');
-while ( have_posts() ) :
-	the_post();
+
+# show posts
+if ( have_posts() ) :
+	while ( have_posts() ) :
+		the_post();
+
 ?>
 <div class="entry" id="entry-<?php the_ID(); ?>">
 <?php
@@ -50,7 +54,12 @@ while ( have_posts() ) :
 ?>
 </div>
 <?php
-endwhile;
+	endwhile;
+# or fallback
+elseif ( is_404() ) :
+	sem_panels::display('the_404');
+endif;
+
 sem_panels::display('after_the_entries');
 ?>
 </div>

@@ -33,14 +33,14 @@ if ( have_posts() ) :
 ?>
 <div class="entry" id="entry-<?php the_ID(); ?>">
 <?php
-		do_action('the_entry');
+		sem_panels::display('the_entry');
 ?>
 </div>
 <?php
 	endwhile;
 # or fallback
 elseif ( is_404() ) :
-	do_action('404_error');
+	sem_panels::display('the_404');
 endif;
 
 do_action('after_the_entries');
