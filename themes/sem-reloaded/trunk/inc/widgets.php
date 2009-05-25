@@ -1279,7 +1279,7 @@ class blog_footer extends WP_Widget {
 		
 		posts_nav_link(
 			' &bull; ',
-			'&larr;&nbsp;' . $prev_page,
+			'&larr;&nbsp;' . $previous_page,
 			$next_page . '&nbsp;&rarr;'
 			);
 		
@@ -1896,15 +1896,16 @@ class sem_nav_menu extends WP_Widget {
 			$cache_id = "_$widget_id";
 			$o = get_post_meta($page_id, $cache_id, true);
 		} else {
-			if ( is_front_page() && !is_paged() ) {
-				$cache_id = 'home';
+			$cache_id = "$widget_id";
+			if ( is_home() && !is_paged() ) {
+				$context = "home";
 			} elseif ( !is_search() && !is_404() ) {
-				$cache_id = 'blog';
+				$context = "blog";
 			} else {
-				$cache_id = 'search';
+				$context = "search";
 			}
-			$cache = get_transient($widget);
-			$o = isset($cache[$cache_id]) ? $cache[$cache_id] : false;
+			$cache = get_transient($cache_id);
+			$o = isset($cache[$context]) ? $cache[$context] : false;
 		}
 		
 		if ( !sem_widget_cache_debug && $o ) {
@@ -1952,8 +1953,8 @@ class sem_nav_menu extends WP_Widget {
 		if ( is_page() ) {
 			update_post_meta($page_id, $cache_id, $o);
 		} else {
-			$cache[$cache_id] = $o;
-			set_transient($widget_id, $cache);
+			$cache[$context] = $o;
+			set_transient($cache_id, $cache);
 		}
 		
 		echo $o;
@@ -2071,7 +2072,7 @@ class sem_nav_menu extends WP_Widget {
 		
 		if ( get_option('show_on_front') == 'page' && get_option('page_on_front') == $page->ID ) {
 			$classes[] = 'nav_home';
-			if ( !is_front_page() || is_font_page() && is_paged() )
+			if ( !is_front_page() || is_front_page() && is_paged() )
 				$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
 					. $link
 					. '</a>';
@@ -2213,6 +2214,9 @@ class sem_nav_menu extends WP_Widget {
 	 **/
 
 	function is_local_url($url) {
+		if ( in_array(substr($url, 0, 1), array('?', '#')) || strpos($url, '://') === false )
+			return true;
+		
 		static $site_domain;
 		
 		if ( !isset($site_domain) ) {
