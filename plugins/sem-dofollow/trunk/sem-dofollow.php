@@ -2,8 +2,8 @@
 /*
 Plugin Name: Do Follow
 Plugin URI: http://www.semiologic.com/software/dofollow/
-Description: The Do Follow plugin removes the nofollow attribute that WordPress adds in comments.
-Version: 3.2
+Description: Removes the <a href="http://www.semiologic.com/2005/02/05/prepare-for-more-comment-spam-not-less/">evil nofollow attribute</a> that WordPress adds in comments.
+Version: 3.3
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-dofollow-info
@@ -26,11 +26,13 @@ Hat tips
 	* Thomas Parisot <http://oncle-tom.net>
 **/
 
-if ( !is_admin() ) :
 
-remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
-add_filter('get_comment_author_link', 'strip_nofollow', 15);
-add_filter('comment_text', 'strip_nofollow', 15);
+if ( !is_admin() ) {
+	remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
+	add_filter('get_comment_author_link', 'strip_nofollow', 15);
+	add_filter('comment_text', 'strip_nofollow', 15);
+}
+
 
 /**
  * strip_nofollow()
@@ -54,6 +56,4 @@ function strip_nofollow($text = '') {
 function strip_nofollow_callback($match) {
 	return '<a ' . str_replace(array(' rel="nofollow"', " rel='nofollow'"), '', $match[1]) . '>';
 } # strip_nofollow_callback()
-
-endif;
 ?>
