@@ -41,20 +41,16 @@ header::letter();
 <div class="pad">
 <?php
 sem_panels::display('before_the_entries');
+while ( have_posts() ) :
+	the_post();
 ?>
 <div class="entry" id="entry-<?php the_ID(); ?>">
 <?php
-		# start loop
-		the_post();
-
-		# show post
 		sem_panels::display('the_entry');
-		
-		# reset in_the_loop
-		have_posts();
 ?>
 </div>
 <?php
+endwhile;
 sem_panels::display('after_the_entries');
 ?>
 </div>
