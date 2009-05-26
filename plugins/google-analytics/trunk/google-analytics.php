@@ -3,7 +3,7 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 3.2 alpha
+Version: 3.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: google-analytics-info
@@ -23,84 +23,43 @@ http://www.mesoconcepts.com/license/
 load_plugin_textdomain('google-analytics');
 
 
-class google_analytics
-{
-	#
-	# init()
-	#
+/**
+ * google_analytics
+ *
+ * @package Google Analytics
+ **/
 
-	function init()
-	{
-		add_action('wp_footer', array('google_analytics', 'display_script'), 0);
-	} # init()
+if ( !defined('sem_google_analytics_debug') )
+	define('sem_google_analytics_debug', false);
 
+if ( !is_admin() ) {
+	add_action('wp_footer', array('google_analytics', 'scripts'));
+} else {
+	add_action('admin_menu', array('google_analytics', 'admin_menu'));
+}
 
-	#
-	# get_options()
-	#
+class google_analytics {
+	/**
+	 * scripts()
+	 *
+	 * @return void
+	 **/
 
-	function get_options()
-	{
-		if ( ( $o = get_option('google_analytics') ) === false )
-		{
-			if ( ( $o = get_option('sem_google_analytics_params') ) !== false
-				&& is_string($o['script'])
-				&& preg_match("/
-					_uacct\s+=\s+\"([^\"]+)\";
-					/ix", $o['script'], $match)
-				)
-			{
-				$o = array(
-					'uacct' => $match[1]
-					);
-			}
-			else
-			{
-				$o = array(
-					'uacct' => false
-					);
-			}
-			
-			update_option('google_analytics', $o);
-		}
-		
-		return $o;
-	} # get_options()
-
-
-	#
-	# display_script()
-	#
-
-	function display_script()
-	{
+	function scripts() {
 		$options = google_analytics::get_options();
+		extract($options, EXTR_SKIP);
 
-		if ( !$options['uacct'] )
-		{
-			echo __('<!-- Configure Google Analytics under Settings / Google Analytics -->') . "\n";
-			$script = str_replace('{uacct}', $options['uacct'], $script);
-
+		if ( !$uacct ) {
+			echo "\n" . '<!-- '
+				. __('Configure Google Analytics under Settings / Google Analytics', 'google-analytics')
+				. ' -->' . "\n";
 			return;
 		}
-
+		
 		$url = $_SERVER['REQUEST_URI'];
 		$url = preg_replace("/#.*$/", '', $url);
-
-		if ( isset($_GET['subscribed']) )
-		{
-			$url = '/subscription' . preg_replace("/(?:\?|&)subscribed/", "", $url);
-		}
-		elseif ( is_404() || ( is_singular() && !have_posts() ) )
-		{
-			$url = '/404' . $url;
-		}
-		elseif ( is_search() )
-		{
-			$url = "/search/" . urlencode($_REQUEST['s']);
-		}
 		
-		$ga_script = <<<EOF
+		$ga_script = <<<EOS
 
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -108,29 +67,29 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 </script>
 <script type="text/javascript">
 try {
-var pageTracker = _gat._getTracker("{uacct}");
+var pageTracker = _gat._getTracker("$uacct");
 
-
-EOF;
-		if ( current_user_can('publish_posts') )
-		{
-			echo "\n" . __('<!-- You are a site author, editor or admin, and aren\'t tracked as a result -->');
+EOS;
+		if ( current_user_can('publish_posts') ) {
+			echo "\n" . '<!-- '
+				. __('You are a site author, editor or admin, and aren\'t tracked as a result')
+				. '  -->' . "\n";
 			$ga_script .= '// ';
 		}
 
-		$ga_script .= <<<EOF
-pageTracker._trackPageview("{url}");
-} catch(err) {}</script>
+		$ga_script .= <<<EOS
+pageTracker._trackPageview("$url");
+} catch(err) {}
+</script>
 
-EOF;
-
-		$ga_script = str_replace(array('{url}', '{uacct}'), array($url, $options['uacct']), $ga_script);
+EOS;
 
 		echo $ga_script;
 		
-		if ( !current_user_can('publish_posts') || true )
-		{
-			$evt_script = <<<EOF
+		if ( !sem_google_analytics_debug && current_user_can('publish_posts') )
+		 	return;
+		
+		$evt_script = <<<EOS
 
 <script type="text/javascript">
 //
@@ -149,20 +108,16 @@ var ga_base_url_regexp = new RegExp("^.+?://" + document.domain, "i");
 var ga_file_regexp = new RegExp("\\\\.(?:phps|inc|js|css|exe|com|dll|reg|jpg|jpeg|gif|png|zip|tar\\.gz|tgz|mp3|wav|mpeg|avi|mov|swf|pdf|doc|rtf|xls|txt|csv)(?:\\\\?.*)?$", "i");
 
 // automatically track relevant anchors
-function ga_track_anchor()
-{
+function ga_track_anchor() {
 	var url = new String(this.href);
 	url = url.replace(new RegExp("#.*$"), '');
 	
-	if ( !url.match(ga_base_url_regexp) )
-	{
+	if ( !url.match(ga_base_url_regexp) ) {
 		url = url.replace(new RegExp("^.+?://(www\\\\.)?", "i"), '/');
 		url = "/outbound" + url;
 		//alert(url);
 		pageTracker._trackPageview(url);
-	}
-	else if ( url.match(ga_file_regexp) )
-	{
+	} else if ( url.match(ga_file_regexp) ) {
 		url = url.replace(ga_base_url_regexp, '');
 		url = '/file' + url;
 		//alert(url);
@@ -171,40 +126,98 @@ function ga_track_anchor()
 }
 
 // add the above method to every anchor
-for ( i = 0; i &lt; document.getElementsByTagName("a").length; i++ )
-{
+for ( i = 0; i &lt; document.getElementsByTagName("a").length; i++ ) {
 	document.getElementsByTagName("a")[i].ga_track = ga_track_anchor;
 	
 	var oldonclick = document.getElementsByTagName("a")[i].onclick;	
-	if ( typeof document.getElementsByTagName("a")[i].onclick == 'function' )
-	{
+	if ( typeof document.getElementsByTagName("a")[i].onclick == 'function' ) {
 		document.getElementsByTagName("a")[i].onclick = function() { 
 			oldonclick(); 
 			this.ga_track(); 
 		}
-	}
-	else
-	{
+	} else {
 		document.getElementsByTagName("a")[i].onclick = function() { 
 			this.ga_track(); 
 		}
 	}	
 }
-
 </script>
 
-EOF;
-			echo $evt_script;
+EOS;
+		
+		echo $evt_script;
+	} # scripts()
+	
+	
+	/**
+	 * get_options
+	 *
+	 * @return array $options
+	 **/
+
+	function get_options() {
+		static $o;
+		
+		if ( !is_admin() && isset($o) )
+			return $o;
+		
+		$o = get_option('google_analytics');
+		
+		if ( $o === false )
+			$o = google_analytics::init_options();
+		
+		return $o;
+	} # get_options()
+	
+	
+	/**
+	 * init_options()
+	 *
+	 * @return array $options
+	 **/
+
+	function init_options() {
+		$o = get_option('sem_google_analytics_params');
+		
+		if ( $o !== false && is_string($o['script'])
+			&& preg_match("/_uacct\s*=\s*\"([^\"]+)\"\s*;/", $o['script'], $match)
+			) {
+			$o = array(
+				'uacct' => $match[1],
+				);
+			delete_option('sem_google_analytics_params');
+		} else {
+			$o = false;
 		}
-	} # display_script()
-} # google_analytics()
+		
+		$o = wp_parse_args($o, array('uacct' => false));
+		
+		update_option('google_analytics', $o);
+		
+		return $o;
+	} # init_options()
+	
+	
+	/**
+	 * admin_menu()
+	 *
+	 * @return void
+	 **/
 
-google_analytics::init();
+	function admin_menu() {
+		add_options_page(
+			__('Google Analytics', 'google-analytics'),
+			__('Google Analytics', 'google-analytics'),
+			'manage_options',
+			'google-analytics',
+			array('google_analytics_admin', 'edit_options')
+			);
+	} # admin_menu()
+} # google_analytics
 
-
-# include admin stuff when relevant
-if ( is_admin() )
-{
+function google_analytics_admin() {
 	include dirname(__FILE__) . '/google-analytics-admin.php';
 }
+
+add_action('load-settings_page_google-analytics', 'google_analytics_admin');
 ?>

@@ -1,0 +1,180 @@
+# Google Analytics pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Google Analytics package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 3.2\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-05-26 11:36+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: google-analytics-admin.php:37
+msgid "Settings saved."
+msgstr ""
+
+#: google-analytics-admin.php:55
+msgid "Your Account ID"
+msgstr ""
+
+#: google-analytics-admin.php:78
+msgid "Google Analytics Settings"
+msgstr ""
+
+#: google-analytics-admin.php:84
+msgid "GA Script"
+msgstr ""
+
+#: google-analytics-admin.php:88
+msgid ""
+"Paste the <b>ga.js</b> script from <a href=\"http://www.google.com/analytics/"
+"\">Google analytics</a> into the following textarea (<a href=\"http://www."
+"google.com/support/googleanalytics/bin/answer.py?answer=55603\">where do I "
+"find it?</a>):"
+msgstr ""
+
+#: google-analytics-admin.php:97
+msgid ""
+"<strong>Important</strong>: Use the new <strong>ga.js</strong> script, not "
+"the legacy urchin.js script."
+msgstr ""
+
+#: google-analytics-admin.php:106
+msgid "Save Changes"
+msgstr ""
+
+#: google-analytics-admin.php:113
+msgid "Quick Reference"
+msgstr ""
+
+#: google-analytics-admin.php:119
+msgid "Special Users"
+msgstr ""
+
+#: google-analytics-admin.php:123
+msgid "Authors, editors and site admins are not tracked when logged in."
+msgstr ""
+
+#: google-analytics-admin.php:130
+msgid "Special Urls"
+msgstr ""
+
+#: google-analytics-admin.php:134
+msgid ""
+"The Google Analytics plugin tracks a few special use-cases differently, for "
+"quick reference:"
+msgstr ""
+
+#: google-analytics-admin.php:138
+msgid "File downloads get tracked as /file/[url]"
+msgstr ""
+
+#: google-analytics-admin.php:141
+msgid "Clicks on outbound links get tracked as /outbound/[url]"
+msgstr ""
+
+#: google-analytics-admin.php:149
+msgid "Site Usage Patterns"
+msgstr ""
+
+#: google-analytics-admin.php:153
+msgid ""
+"Make sure to spot Google Analytics's navigation summary and site overlay "
+"reports for individual urls. They're located to the right when you visit any "
+"url's statistics."
+msgstr ""
+
+#: google-analytics-admin.php:157
+msgid ""
+"The first is a concise report. It lets you know, at a glance, where users "
+"came from upon entering the page, and where they left upon leaving it."
+msgstr ""
+
+#: google-analytics-admin.php:160
+msgid ""
+"The second is more graphical. It outputs your page with an overlay that "
+"shows where visitors are clicking."
+msgstr ""
+
+#: google-analytics-admin.php:169
+msgid "Advanced Tracking With The Script Manager Plugin"
+msgstr ""
+
+#: google-analytics-admin.php:172
+msgid ""
+"To insert extra site-wide tracking code, activate the script manager plugin "
+"and, under <a href=\"?page=script-manager\">Settings / Scripts</a>, add the "
+"relevant lines that follow in the footer scripts."
+msgstr ""
+
+#: google-analytics-admin.php:176
+msgid ""
+"To insert post- or page-specific tracking, edit that post or page and insert "
+"the lines in its footer scripts."
+msgstr ""
+
+#: google-analytics-admin.php:190
+msgid "Sampling Rate"
+msgstr ""
+
+#: google-analytics-admin.php:194
+#, php-format
+msgid ""
+"<a href=\"http://code.google.com/apis/analytics/docs/"
+"gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSampleRate\">To set the "
+"sampling rate</a> at 50% on a high traffic site (this can speed up GA "
+"reports quite a bit):"
+msgstr ""
+
+#: google-analytics-admin.php:213
+msgid "Shared Stats"
+msgstr ""
+
+#: google-analytics-admin.php:217
+msgid ""
+"To <a href=\"http://code.google.com/apis/analytics/docs/gaTracking."
+"html#Multiple\">share your stats</a> with your sales team's Google Analytics "
+"account:"
+msgstr ""
+
+#: google-analytics-admin.php:234
+msgid "Visitor Segmentation"
+msgstr ""
+
+#: google-analytics-admin.php:238
+msgid ""
+"To <a href=\"http://code.google.com/apis/analytics/docs/"
+"gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setVar\">segment visitors</"
+"a> who visit your &quot;Thank you for subscribing&quot; page:"
+msgstr ""
+
+#: google-analytics-admin.php:255
+msgid "Session Timeout"
+msgstr ""
+
+#: google-analytics-admin.php:259
+msgid ""
+"To <a href=\"http://code.google.com/apis/analytics/docs/"
+"gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSessionTimeout"
+"\">increase the session duration</a> on a very long sales copy that visitors "
+"actually read:"
+msgstr ""
+
+#: google-analytics.php:54
+msgid "Configure Google Analytics under Settings / Google Analytics"
+msgstr ""
+
+#: google-analytics.php:75
+msgid "You are a site author, editor or admin, and aren't tracked as a result"
+msgstr ""
+
+#: google-analytics.php:209 google-analytics.php:210
+msgid "Google Analytics"
+msgstr ""
