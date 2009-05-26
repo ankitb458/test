@@ -356,7 +356,7 @@ EOS;
 		echo '<p>'
 			. '<label for="sem_credits">'
 			. '<code>'
-			. htmlspecialchars(__('Made with %semiologic% &bull; %skin_name% skin by %skin_author%', 'sem-reloaded'), ENT_QUOTES, get_option('blog_charset'))
+			. htmlspecialchars(__('Made with %semiologic% &bull; %skin_name% skin by %skin_author%', 'sem-reloaded'), ENT_COMPAT, get_option('blog_charset'))
 			. '</code>'
 			. '</label>'
 			. '<br />' . "\n"
