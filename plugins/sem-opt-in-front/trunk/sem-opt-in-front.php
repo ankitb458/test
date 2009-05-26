@@ -96,7 +96,6 @@ class sem_opt_in_front {
 		}
 		
 		global $wpdb;
-		global $wp_the_query;
 		
 		$extra = str_replace(array("\t", "\r", "\n"), ' ', "
 			INNER JOIN $wpdb->term_relationships AS sem_relationships
@@ -105,9 +104,6 @@ class sem_opt_in_front {
 			");
 		
 		$posts_join .= $extra;
-		
-		$wp_the_query->is_home = !is_feed();
-		$wp_the_query->is_category = false;
 		
 		remove_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
 		
