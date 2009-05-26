@@ -20,6 +20,9 @@ http://www.mesoconcepts.com/license/
 **/
 
 
+load_plugin_textdomain('article-uploader', null, dirname(__FILE__) . '/lang');
+
+
 /**
  * article_uploader
  *

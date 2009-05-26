@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-05-27 00:57+0200\n"
+"POT-Creation-Date: 2009-05-27 01:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,6 +89,6 @@ msgid ""
 "rich text editor will remain turned on."
 msgstr ""
 
-#: article-uploader.php:43 article-uploader.php:44
+#: article-uploader.php:45 article-uploader.php:46
 msgid "Article Uploader"
 msgstr ""
