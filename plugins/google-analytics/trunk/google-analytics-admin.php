@@ -191,7 +191,7 @@ EOS;
 			. '</th>' . "\n"
 			. '<td>'
 			. '<p>'
-			. __('<a href="http://code.google.com/apis/analytics/docs/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSampleRate">To set the sampling rate</a> at 50% on a high traffic site (this can speed up GA reports quite a bit):', 'google-analytics')
+			. __('To <a href="http://code.google.com/apis/analytics/docs/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSampleRate">set the sampling rate</a> at 50% on a high traffic site (this can speed up GA reports quite a bit):', 'google-analytics')
 			. '</p>' . "\n"
 			. '<textarea cols="58" rows="5" class="code widefat" onfocus="var this_val=eval(this); this_val.select();">'
 			. format_to_edit($adv_js)
