@@ -29,7 +29,10 @@ load_plugin_textdomain('autotag', null, dirname(__FILE__) . '/lang');
  * @package AutoTag
  **/
 
-add_action('admin_menu', array('autotag', 'meta_boxes'));
+if ( extension_loaded('simplexml') )
+	add_action('admin_menu', array('autotag', 'meta_boxes'));
+else
+	add_action('admin_notices', array('autotag', 'admin_notices'));
 
 class autotag {
 	/**
@@ -41,6 +44,21 @@ class autotag {
 	function meta_boxes() {
 		add_meta_box('autotag', __('AutoTag', 'autotag'), array('autotag_admin', 'entry_editor'), 'post', 'normal');
 	} # meta_boxes()
+	
+	
+	/**
+	 * admin_notices()
+	 *
+	 * @return void
+	 **/
+
+	function admin_notices() {
+		echo '<div class="error">'
+			. '<p>'
+			. __('AutoTags requires the Simple XML extension to query Yahoo!\'s web services. Please contact your host and request that your server be configured accordingly.', 'autotag')
+			. '</p>'
+			. '</div>' . "\n";
+	} # admin_notices()
 } # autotag
 
 
