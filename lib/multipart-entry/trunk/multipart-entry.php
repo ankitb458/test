@@ -7,8 +7,8 @@
 
 ob_start('ob_multipart_entry');
 
-add_action('edit_form_advanced', 'add_file_max_size');
-add_action('edit_page_form', 'add_file_max_size');
+add_action('edit_form_advanced', 'add_max_file_size');
+add_action('edit_page_form', 'add_max_file_size');
 
 /**
  * ob_multipart_entry()
