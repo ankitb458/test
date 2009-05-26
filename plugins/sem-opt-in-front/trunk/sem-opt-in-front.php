@@ -87,13 +87,6 @@ class sem_opt_in_front {
 	 **/
 
 	function posts_join($posts_join) {
-		static $done = false;
-		
-		if ( $done )
-			return $posts_join;
-		
-		$done = true;
-		
 		if ( is_feed() ) {
 			if ( is_archive() || is_singular() || is_search() || is_404() || is_robots() || is_trackback() )
 				return $posts_join;
@@ -115,6 +108,8 @@ class sem_opt_in_front {
 		
 		$wp_the_query->is_home = !is_feed();
 		$wp_the_query->is_category = false;
+		
+		remove_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
 		
 		return $posts_join;
 	} # posts_join()
