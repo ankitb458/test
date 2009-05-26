@@ -27,7 +27,6 @@ http://www.mesoconcepts.com/license/
  **/
 
 add_action('admin_menu', array('article_uploader', 'meta_boxes'), 30);
-add_action('loop_start', array('article_uploader', 'loop_start'));
 add_action('the_post', array('article_uploader', 'the_post'));
 add_action('loop_end', array('article_uploader', 'loop_end'));
 
@@ -45,17 +44,6 @@ class article_uploader {
 			add_action('save_post', array('article_uploader_admin', 'save_entry'));
 		}
 	} # meta_boxes()
-	
-	
-	/**
-	 * loop_start()
-	 *
-	 * @return void
-	 **/
-
-	function loop_start() {
-		article_uploader::restore_filters();
-	} # loop_start()
 	
 	
 	/**
