@@ -1,0 +1,94 @@
+# Article Uploader pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Article Uploader package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-05-27 00:57+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: article-uploader-admin.php:42
+msgid ""
+"The article uploader lets you bypass WordPress' editor when it stops working "
+"as expected -- which is frequent when you're pasting complicated copy, since "
+"WordPress destroys forms and scripts as it reformats html."
+msgstr ""
+
+#: article-uploader-admin.php:54
+msgid ""
+"Turn off WordPress's rich text editor and content reformatting features on "
+"this entry."
+msgstr ""
+
+#: article-uploader-admin.php:62
+msgid "Save"
+msgstr ""
+
+#: article-uploader-admin.php:67
+msgid "A few points to keep in mind when uploading an article:"
+msgstr ""
+
+#: article-uploader-admin.php:73
+msgid ""
+"Everything within the &lt;body&gt; and &lt;/body&gt; tags of your uploaded "
+"file will <strong>replace</strong> the entry's contents."
+msgstr ""
+
+#: article-uploader-admin.php:77
+msgid ""
+"It will <strong><em>really</em></strong> replace the entry's contents. No "
+"kidding!"
+msgstr ""
+
+#: article-uploader-admin.php:81
+msgid ""
+"Your html is inserted <em>as is</em>, complete with any html error you may "
+"have left behind. If your site looks like a train wreck after you use the "
+"article uploader, it is because you've uploaded invalidly nested html -- and "
+"you're on your own to fix it."
+msgstr ""
+
+#: article-uploader-admin.php:85
+msgid ""
+"Expanding on this, and as a tip... Prefer Dreamweaver to FrontPage if you're "
+"using the latter, consider checking your html document's syntax with an <a "
+"href=\"http://validator.w3.org\">html validator</a>, and, if all else fails, "
+"have someone from a site like eLance fix the html code."
+msgstr ""
+
+#: article-uploader-admin.php:89
+msgid "The article uploader also works with plain text files."
+msgstr ""
+
+#: article-uploader-admin.php:93
+msgid ""
+"Uploading an html file using the above form will force off WordPress' rich "
+"text editor and content reformatting features on this entry."
+msgstr ""
+
+#: article-uploader-admin.php:97
+msgid ""
+"If you're not writing in English, make sure your document's character "
+"encoding matches that of your site (find it under <a href=\"options-general."
+"php\">Settings / General</a>). Because if it doesn't, you may end up with "
+"odd looking characters all over the place."
+msgstr ""
+
+#: article-uploader-admin.php:103
+msgid ""
+"The article uploader also works with plain text files. In this case, the "
+"rich text editor will remain turned on."
+msgstr ""
+
+#: article-uploader.php:43 article-uploader.php:44
+msgid "Article Uploader"
+msgstr ""

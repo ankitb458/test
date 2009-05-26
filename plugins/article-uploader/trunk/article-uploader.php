@@ -3,7 +3,7 @@
 Plugin Name: Article Uploader
 Plugin URI: http://www.semiologic.com/software/article-uploader/
 Description: Lets you upload files in place of using the WP editor when writing your entries.
-Version: 2.0 alpha
+Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: article-uploader-info
@@ -26,135 +26,113 @@ http://www.mesoconcepts.com/license/
  * @package Article Uploader
  **/
 
+add_action('admin_menu', array('article_uploader', 'meta_boxes'), 30);
+add_action('loop_start', array('article_uploader', 'loop_start'));
+add_action('the_post', array('article_uploader', 'the_post'));
+add_action('loop_end', array('article_uploader', 'loop_end'));
+
 class article_uploader {
+	/**
+	 * meta_boxes()
+	 *
+	 * @return void
+	 **/
 	
-} # article_uploader
-
-
-class old_article_uploader
-{
-	#
-	# init()
-	#
-
-	function init()
-	{
-		if ( !is_admin() )
-		{
-			add_action('loop_start', array('article_uploader', 'start'));
+	function meta_boxes() {
+		if ( current_user_can('unfiltered_html') ) {
+			add_meta_box('article_uploader', __('Article Uploader', 'article-uploader'), array('article_uploader_admin', 'entry_editor'), 'post');
+			add_meta_box('article_uploader', __('Article Uploader', 'article-uploader'), array('article_uploader_admin', 'entry_editor'), 'page');
+			add_action('save_post', array('article_uploader_admin', 'save_entry'));
 		}
-	} # init()
+	} # meta_boxes()
 	
 	
-	#
-	# start()
-	#
+	/**
+	 * loop_start()
+	 *
+	 * @return void
+	 **/
+
+	function loop_start() {
+		article_uploader::restore_filters();
+	} # loop_start()
 	
-	function start()
-	{
-		static $did_backup = false;
+	
+	/**
+	 * loop_end()
+	 *
+	 * @return void
+	 **/
+
+	function loop_end() {
+		article_uploader::restore_filters();
+	} # loop_end()
+	
+	
+	/**
+	 * the_post()
+	 *
+	 * @return void
+	 **/
+	
+	function the_post(&$post) {
+		$kill_formatting = get_post_meta($post->ID, '_kill_formatting', true);
 		
-		if ( $did_backup ) return;
-		
-		global $wp_query;
-		global $the_content_filter_backup;
-		
-		$the_content_filter_backup = array();
-		
-		if ( $wp_query->post_count )
-		{
-			foreach ( array(
-				'wptexturize',
-				'wpautop',
-				'Markdown'
-				) as $callback )
-			{
-				if ( ( $priority = has_filter('the_content', $callback) ) !== false )
-				{
-					$the_content_filter_backup[$priority][] = $callback;
-				}
-			}
-		
-			$post_id = $wp_query->posts[0]->ID;
+		if ( $kill_formatting === '1' ) {
+			article_uploader::strip_filters();
+		} else {
+			article_uploader::restore_filters();
 			
-			if ( get_post_meta($post_id, '_kill_formatting', true) )
-			{
-				foreach ( $the_content_filter_backup as $priority => $filters )
-				{
-					foreach ( $filters as $filter )
-					{
-						remove_filter('the_content', $filter, $priority);
-					}
-				}
-			}
+			if ( $kill_formatting === '' )
+				update_post_meta($post->ID, '_kill_formatting', '0');
 		}
+	} # the_post()
+	
+	
+	/**
+	 * strip_filters()
+	 *
+	 * @return void
+	 **/
+
+	function strip_filters() {
+		global $article_uploader_filter_backup;
 		
-		$did_backup = true;
-		add_action('the_content', array('article_uploader', 'next'));
-		add_action('loop_end', array('article_uploader', 'reset'));
-	} # start()
-	
-	
-	#
-	# next()
-	#
-	
-	function next($in = '')
-	{
-		if ( in_the_loop() )
-		{
-			global $wp_query;
-			global $the_content_filter_backup;
-	
-			$next_post = $wp_query->current_post + 1;
-
-			if ( $next_post != $wp_query->post_count )
-			{
-				$post_id = $wp_query->posts[$next_post]->ID;
-
-				if ( get_post_meta($post_id, '_kill_formatting', true) )
-				{
-					foreach ( $the_content_filter_backup as $priority => $filters )
-					{
-						foreach ( $filters as $filter )
-						{
-							remove_filter('the_content', $filter, $priority);
-						}
-					}
-				}
-				else
-				{
-					foreach ( $the_content_filter_backup as $priority => $filters )
-					{
-						foreach ( $filters as $filter )
-						{
-							add_filter('the_content', $filter, $priority);
-						}
-					}
-				}
-			}
-		}
+		if ( !isset($article_uploader_filter_backup) )
+			$article_uploader_filter_backup = array();
 		
-		return $in;
-	} # next()
-	
-	
-	#
-	# reset()
-	#
-	
-	function reset()
-	{
-		global $the_content_filter_backup;
-
-		foreach ( (array) $the_content_filter_backup as $priority => $filters )
-		{
-			foreach ( $filters as $filter )
-			{
-				add_filter('the_content', $filter, $priority);
-			}
+		foreach ( array(
+			'wptexturize',
+			'wpautop',
+			'Markdown',
+			) as $callback ) {
+			$priority = has_filter('the_content', $callback);
+			
+			if ( $priority === false )
+				continue;
+			
+			$article_uploader_filter_backup[$priority][] = $callback;
+			remove_filter('the_content', $callback, $priority);
 		}
-	} # reset()
+	} # strip_filters()
+	
+	
+	/**
+	 * restore_filters()
+	 *
+	 * @return void
+	 **/
+
+	function restore_filters() {
+		global $article_uploader_filter_backup;
+		
+		if ( empty($article_uploader_filter_backup) )
+			return;
+		
+		foreach ( $article_uploader_filter_backup as $priority => $callbacks )
+			foreach ( $callbacks as $callback )
+				add_filter('the_content', $callback, $priority);
+	} # restore_filters()
 } # article_uploader
 
 

@@ -1,65 +1,46 @@
 <?php
+/**
+ * article_uploader_admin
+ *
+ * @package Article Uploader
+ **/
 
-class article_uploader_admin
-{
-	#
-	# init()
-	#
-	
-	function init()
-	{
-		add_filter('get_user_option_rich_editing', array('article_uploader_admin', 'disable_tinymce'));
+add_filter('get_user_option_rich_editing', array('article_uploader_admin', 'disable_tinymce'));
 
-		add_action('admin_menu', array('article_uploader_admin', 'meta_boxes'), 30);
-	} # init()
+class article_uploader_admin {
+	/**
+	 * disable_tinymce()
+	 *
+	 * @param string $bool pseudo boolean
+	 * @return string $bool
+	 **/
 	
-	
-	#
-	# disable_tinymce()
-	#
-	
-	function disable_tinymce($in)
-	{
+	function disable_tinymce($bool) {
 		global $post_ID;
 		
-		if ( !$GLOBALS['editing'] || $post_ID <= 0 ) return $in;
-		#var_dump($post_ID);
-		if ( get_post_meta($post_ID, '_kill_formatting', true) )
-		{
-			return 'false';
-		}
+		if ( !isset($post_ID) || $post_ID <= 0 )
+			return $bool;
 		
-		return $in;
+		if ( get_post_meta($post_ID, '_kill_formatting', true) === '1' )
+			return 'false';
+		else
+			return $bool;
 	} # disable_tinymce()
 	
 	
-	#
-	# meta_boxes()
-	#
+	/**
+	 * entry_editor()
+	 *
+	 * @param object $post
+	 * @return void
+	 **/
 	
-	function meta_boxes()
-	{
-		if ( current_user_can('unfiltered_html') )
-		{
-			add_meta_box('article_uploader', 'Article Uploader', array('article_uploader_admin', 'entry_editor'), 'post');
-			add_meta_box('article_uploader', 'Article Uploader', array('article_uploader_admin', 'entry_editor'), 'page');
-			add_action('save_post', array('article_uploader_admin', 'save_entry'));
-		}
-	} # meta_boxes()
-	
-	
-	#
-	# entry_editor()
-	#
-	
-	function entry_editor()
-	{
-		$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
+	function entry_editor($post) {
+		$post_ID = $post->ID;
 		
-		$str = <<<EOF
-<p>The article uploader lets you bypass WordPress' editor when it stops working as expected -- which is frequent when you're pasting complicated copy, since WordPress destroys forms and scripts as it reformats html.</p>
-EOF;
-		echo $str;
+		echo '<p>'
+			. __('The article uploader lets you bypass WordPress\' editor when it stops working as expected -- which is frequent when you\'re pasting complicated copy, since WordPress destroys forms and scripts as it reformats html.', 'article-uploader')
+			. '</p>' . "\n";
 		
 		echo '<p>'
 			. '<label>'
@@ -70,180 +51,128 @@ EOF;
 				)
 			. ' />'
 			. '&nbsp;'
-			. 'Turn off WordPress\'s rich text editor and content reformatting features on this entry.'
+			. __('Turn off WordPress\'s rich text editor and content reformatting features on this entry.', 'article-uploader')
 			. '</label>'
-			. '</p>';
+			. '</p>' . "\n";
 		
 		echo '<p>'
 			. '<input type="file" name="upload_article" tabindex="5" />'
 			. ' '
 			. '<input type="submit" name="save" class="button" tabindex="5"'
-			. ' value="' . __('Save') . '"'
+			. ' value="' . __('Save', 'article-uploader') . '"'
 			. ' />'
-			. '</p>';
+			. '</p>' . "\n";
 		
-		$str = <<<EOF
-<p>A few points to keep in mind when uploading an article:</p>
-<ul>
-<li>Everything within the &lt;body&gt; and &lt;/body&gt; tags of your uploaded file will <b style="color: firebrick;">replace</b> the entry's contents at once.</li>
-<li>It will <em>really</em> replace the entrie's contents. No kidding!</li>
-<li>Uploading an html file using the above form will force off WordPress's rich text editor and content reformatting features on this entry.</li>
-<li>Your html is inserted <i>as is</i>, complete with any html error you may have left behind.</li>
-<li>Adding to the previous point: If your site looks like a train wreck after you use the article uploader, it is because you've uploaded invalidly nested html. Prefer Dreamweaver to FrontPage if you're using the latter, consider checking your document's syntax with an <a href="http://validator.w3.org">html validator</a>, and, if all else fails, have someone from a site like eLance fix the html code.</li>
-<li>If you're not writing in English, make sure your document's character encoding matches that of your site (find it under Settings / General). Because if it doesn't, you may end up with odd looking characters all over the place.</li>
-<li>Have you checked out Michel Fortin's <a href="http://go.semiologic.com/scribejuice">ScribeJuice</a>?</li>
-</ul>
-<p>The article uploader also works with plain text files. In this case, the rich text editor will remain turned on.</p>
-EOF;
-		echo $str;
+		echo '<p>'
+			. __('A few points to keep in mind when uploading an article:')
+			. '</p>' . "\n";
 		
+		echo '<ul class="ul-square">' . "\n";
+		
+		echo '<li>'
+			. __('Everything within the &lt;body&gt; and &lt;/body&gt; tags of your uploaded file will <strong>replace</strong> the entry\'s contents.', 'article-uploader')
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. __('It will <strong><em>really</em></strong> replace the entry\'s contents. No kidding!', 'article-uploader')
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. __('Your html is inserted <em>as is</em>, complete with any html error you may have left behind. If your site looks like a train wreck after you use the article uploader, it is because you\'ve uploaded invalidly nested html -- and you\'re on your own to fix it.', 'article-uploader')
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. __('Expanding on this, and as a tip... Prefer Dreamweaver to FrontPage if you\'re using the latter, consider checking your html document\'s syntax with an <a href="http://validator.w3.org">html validator</a>, and, if all else fails, have someone from a site like eLance fix the html code.', 'article-uploader')
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. __('The article uploader also works with plain text files.', 'article-uploader')
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. __('Uploading an html file using the above form will force off WordPress\' rich text editor and content reformatting features on this entry.', 'article-uploader')
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. __('If you\'re not writing in English, make sure your document\'s character encoding matches that of your site (find it under <a href="options-general.php">Settings / General</a>). Because if it doesn\'t, you may end up with odd looking characters all over the place.', 'article-uploader')
+			. '</li>' . "\n";
+		
+		echo '</ul>' . "\n";
+		
+		echo '<p>'
+			. __('The article uploader also works with plain text files. In this case, the rich text editor will remain turned on.', 'article-uploader')
+			. '</p>' . "\n";
 	} # entry_editor()
 	
-
-	#
-	# save_entry()
-	#
-
-	function save_entry($post_ID)
-	{
-		$post = get_post($post_ID);
-		
-		if ( $post->post_type == 'revision' ) return;
-		
+	
+	/**
+	 * save_entry()
+	 *
+	 * @param int $post_ID
+	 * @return void
+	 **/
+	
+	function save_entry($post_ID) {
+		if ( wp_is_post_revision($post_ID) || !current_user_can('unfiltered_html') )
+			return;
 		
 		global $wpdb;
 		
-		if ( current_user_can('unfiltered_html') )
-		{
-			delete_post_meta($post_ID, '_kill_formatting');
+		if ( isset($_POST['kill_formatting']) )
+			update_post_meta($post_ID, '_kill_formatting', '1');
+		else
+			update_post_meta($post_ID, '_kill_formatting', '0');
+		
+		if ( empty($_FILES['upload_article']['name']) )
+			return;
+		
+		preg_match("/\.([^.]+)$/", $_FILES['upload_article']['name'], $ext);
+		$ext = end($ext);
+		
+		switch ( strtolower($ext) ) {
+		case 'htm':
+		case 'html':
+			$content = file_get_contents($_FILES['upload_article']['tmp_name']);
 			
-			if ( $file_name = $_FILES['upload_article']['name'] )
-			{
-				preg_match("/\.([^.]+)$/", $file_name, $ext);
-				$ext = end($ext);
-				
-				switch ( strtolower($ext) )
-				{
-				case 'htm':
-				case 'html':
-					$content = file_get_contents($_FILES['upload_article']['tmp_name']);
-					
-					if ( preg_match("/
-						<\s*body(?:\s.*?)?\s*>
-						(.*)
-						<\s*\/\s*body\s*>
-						/isx", $content, $body)
-						)
-					{
-						$content = end($body);
-					}
-					
-					if ( trim($content) )
-					{
-						$_POST['content'] = addslashes($content);
-						$_POST['kill_formatting'] = true;
-						
-						$wpdb->query("
-							UPDATE	$wpdb->posts
-							SET		post_content = '" . $wpdb->escape($content) . "'
-							WHERE	ID = " . intval($post_ID)
-							);
-					}
-					
-					if ( isset($_POST['kill_formatting']) )
-					{
-						add_post_meta($post_ID, '_kill_formatting', '1', true);
-					}
-					break;
-
-				case 'txt':
-				case 'text':
-					$content = file_get_contents($_FILES['upload_article']['tmp_name']);
-					
-					if ( trim($content) )
-					{
-						$_POST['content'] = addslashes($content);
-						
-						$wpdb->query("
-							UPDATE	$wpdb->posts
-							SET		post_content = '" . $wpdb->escape($content) . "'
-							WHERE	ID = " . intval($post_ID)
-							);
-					}
-					
-					if ( isset($_POST['kill_formatting']) )
-					{
-						add_post_meta($post_ID, '_kill_formatting', '1', true);
-					}
-					
-					break;
-				}
-				
+			if ( preg_match("/
+				<\s*body(?:\s.*?)?\s*>
+				(.*?)
+				<\s*\/\s*body\s*>
+				/isx", $content, $body)
+				) {
+				$content = end($body);
 			}
-			elseif ( isset($_POST['kill_formatting']) )
-			{
+			
+			$content = trim($content);
+			
+			if ( $content ) {
 				$wpdb->query("
 					UPDATE	$wpdb->posts
-					SET		post_content = '" . $wpdb->escape(stripslashes($_POST['content'])) . "'
+					SET		post_content = '" . $wpdb->escape($content) . "'
 					WHERE	ID = " . intval($post_ID)
 					);
 				
-				add_post_meta($post_ID, '_kill_formatting', '1', true);
+				update_post_meta($post_ID, '_kill_formatting', '1');
 			}
+			
+			break;
+
+		case 'txt':
+		case 'text':
+			$content = file_get_contents($_FILES['upload_article']['tmp_name']);
+			$content = trim($content);
+			$content = htmlspecialchars($content, ENT_COMPAT, get_option('blog_charset'));
+			
+			if ( $content ) {
+				$wpdb->query("
+					UPDATE	$wpdb->posts
+					SET		post_content = '" . $wpdb->escape($content) . "'
+					WHERE	ID = " . intval($post_ID)
+					);
+			}
+			
+			break;
 		}
 	} # save_entry()
 } # article_uploader_admin
-
-article_uploader_admin::init();
-
-
-
-
-
-if ( !function_exists('ob_multipart_entry_form') ) :
-#
-# ob_multipart_entry_form_callback()
-#
-
-function ob_multipart_entry_form_callback($buffer)
-{
-	$buffer = str_replace(
-		'<form name="post"',
-		'<form enctype="multipart/form-data" name="post"',
-		$buffer
-		);
-
-	return $buffer;
-} # ob_multipart_entry_form_callback()
-
-
-#
-# ob_multipart_entry_form()
-#
-
-function ob_multipart_entry_form()
-{
-	if ( $GLOBALS['editing'] )
-	{
-		ob_start('ob_multipart_entry_form_callback');
-	}
-} # ob_multipart_entry_form()
-
-add_action('admin_head', 'ob_multipart_entry_form');
-
-
-#
-# add_file_max_size()
-#
-
-function add_file_max_size()
-{
-	$bytes = apply_filters( 'import_upload_size_limit', wp_max_upload_size() );
-	
-	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="' . $bytes .'" />' . "\n";
-}
-
-add_action('edit_form_advanced', 'add_file_max_size');
-add_action('edit_page_form', 'add_file_max_size');
-endif;
 ?>
