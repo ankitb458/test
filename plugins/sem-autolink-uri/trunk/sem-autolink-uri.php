@@ -141,7 +141,7 @@ class autolink_uri {
 				<\s*\/\s*head\s*>
 				/isx",
 			'blocks' => "/
-				<\s*(script|object|textarea)(?:\s.*?)?>
+				<\s*(script|style|object|textarea)(?:\s.*?)?>
 				.*?
 				<\s*\/\s*\\1\s*>
 				/isx",
