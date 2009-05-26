@@ -48,10 +48,10 @@ if ( file_exists(sem_path . '/custom.php') )
 	include sem_path . '/custom.php';
 
 if ( is_admin() ) {
-	if ( !function_exists('multipart_entry') ) :
-	function multipart_entry() {
+	if ( !function_exists('load_multipart_entry') ) :
+	function load_multipart_entry() {
 		include dirname(__FILE__) . '/inc/multipart-entry/multipart-entry.php';
-	} # multipart_entry()
+	} # load_multipart_entry()
 	endif;
 
 	function sem_header_admin() {
