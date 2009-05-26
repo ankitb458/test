@@ -48,7 +48,7 @@ class page_tags {
 		add_meta_box('tagsdiv', __('Tags', page_tags_textdomain), array('page_tags', 'display_page_tags'), 'page', 'normal');
 		
 		if ( class_exists('autotag') )
-			add_meta_box('autotag', __('Autotag', page_tags_textdomain), array('autotag', 'entry_editor'), 'page', 'normal');
+			add_meta_box('autotag', __('Autotag', page_tags_textdomain), array('autotag_admin', 'entry_editor'), 'page', 'normal');
 		
 		$done = true;
 	} # meta_boxes()

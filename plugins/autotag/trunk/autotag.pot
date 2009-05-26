@@ -1,0 +1,56 @@
+# AutoTag pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the AutoTag package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.2\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-05-26 19:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: autotag-admin.php:24
+msgid "Create tags automatically?"
+msgstr ""
+
+#: autotag-admin.php:43
+msgid "No. Do not autotag this entry."
+msgstr ""
+
+#: autotag-admin.php:47 autotag-admin.php:72
+msgid "Yes. Fetch new tags immediately."
+msgstr ""
+
+#: autotag-admin.php:55
+msgid "Yes. Fetch new tags upon publishing."
+msgstr ""
+
+#: autotag-admin.php:66
+msgid "No. I did this already."
+msgstr ""
+
+#: autotag-admin.php:67
+msgid "No. This entry has been published already."
+msgstr ""
+
+#: autotag-admin.php:86
+msgid "Only keep terms that match existing tags."
+msgstr ""
+
+#: autotag-admin.php:91
+msgid ""
+"<b>Notice</b>: AutoTag will only work provided your server's IP address "
+"hasn't hit Yahoo's web services 5,000 times in the past 24h. If it stops "
+"working, give it a new try the next day."
+msgstr ""
+
+#: autotag.php:42
+msgid "AutoTag"
+msgstr ""
