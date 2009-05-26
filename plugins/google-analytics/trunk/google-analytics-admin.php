@@ -193,7 +193,7 @@ EOS;
 			. '<p>'
 			. __('To <a href="http://code.google.com/apis/analytics/docs/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSampleRate">set the sampling rate</a> at 50% on a high traffic site (this can speed up GA reports quite a bit):', 'google-analytics')
 			. '</p>' . "\n"
-			. '<textarea cols="58" rows="5" class="code widefat" onfocus="var this_val=eval(this); this_val.select();">'
+			. '<textarea cols="58" rows="5" class="code widefat" readonly="readonly" onfocus="var this_val=eval(this); this_val.select();">'
 			. format_to_edit($adv_js)
 			. '</textarea>' . "\n"
 			. '</td>' . "\n"
@@ -216,7 +216,7 @@ EOS;
 			. '<p>'
 			. __('To <a href="http://code.google.com/apis/analytics/docs/gaTracking.html#Multiple">share your stats</a> with your sales team\'s Google Analytics account:', 'google-analytics')
 			. '</p>' . "\n"
-			. '<textarea cols="58" rows="5" class="code widefat" onfocus="var this_val=eval(this); this_val.select();">'
+			. '<textarea cols="58" rows="5" class="code widefat" readonly="readonly" onfocus="var this_val=eval(this); this_val.select();">'
 			. format_to_edit($adv_js)
 			. '</textarea>' . "\n"
 			. '</td>' . "\n"
@@ -237,7 +237,7 @@ EOS;
 			. '<p>'
 			. __('To <a href="http://code.google.com/apis/analytics/docs/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setVar">segment visitors</a> who visit your &quot;Thank you for subscribing&quot; page:', 'google-analytics')
 			. '</p>' . "\n"
-			. '<textarea cols="58" rows="5" class="code widefat" onfocus="var this_val=eval(this); this_val.select();">'
+			. '<textarea cols="58" rows="5" class="code widefat" readonly="readonly" onfocus="var this_val=eval(this); this_val.select();">'
 			. format_to_edit($adv_js)
 			. '</textarea>' . "\n"
 			. '</td>' . "\n"
@@ -258,7 +258,7 @@ EOS;
 			. '<p>'
 			. __('To <a href="http://code.google.com/apis/analytics/docs/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSessionTimeout">increase the session duration</a> on a very long sales copy that visitors actually read:', 'google-analytics')
 			. '</p>' . "\n"
-			. '<textarea cols="58" rows="5" class="code widefat" onfocus="var this_val=eval(this); this_val.select();">'
+			. '<textarea cols="58" rows="5" class="code widefat" readonly="readonly" onfocus="var this_val=eval(this); this_val.select();">'
 			. format_to_edit($adv_js)
 			. '</textarea>' . "\n"
 			. '</td>' . "\n"
