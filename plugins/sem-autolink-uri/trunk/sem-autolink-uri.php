@@ -19,216 +19,200 @@ This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is di
 http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
+
+/**
+ * autolink_uri
+ *
+ * @package Autolink URI
+ **/
+
+// after shortcodes
+add_filter('the_content', array('autolink_uri', 'filter'), 12);
+add_filter('the_excerpt', array('autolink_uri', 'filter'), 12);
+
+class autolink_uri {
+	/**
+	 * filter()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function filter($text) {
+		global $escape_autolink_uri;
 		
-if ( @ini_get('pcre.backtrack_limit') < 250000 )
-	@ini_set('pcre.backtrack_limit', 250000);
-
-
-#
-# sem_autolink_uri()
-#
-
-function sem_autolink_uri($buffer)
-{
-	global $escaped_anchors;
-
-	$escaped_anchors = array();
-
-	# escape scripts
-	$buffer = preg_replace_callback(
-		"/
-		<\s*script				# script tag
-			(?:\s[^>]*)?		# optional attributes
-			>
-		.*						# script code
-		<\s*\/\s*script\s*>		# end of script tag
-		/isUx",
-		'sem_autolink_uri_escape_anchors',
-		$buffer
-		);
-
-	# escape objects
-	$buffer = preg_replace_callback(
-		"/
-		<\s*object				# object tag
-			(?:\s[^>]*)?		# optional attributes
-			>
-		.*						# object code
-		<\s*\/\s*object\s*>		# end of object tag
-		/isUx",
-		'sem_autolink_uri_escape_anchors',
-		$buffer
-		);
-
-	# escape existing anchors
-	$buffer = preg_replace_callback(
-		"/
-		<\s*a					# ancher tag
-			(?:\s[^>]*)?		# optional attributes
-			\s*href\s*=\s*		# href=...
-			(?:
-				\"[^\"]*\"		# double quoted link
+		$escape_autolink_uri = array();
+		
+		$text = autolink_uri::escape($text);
+		
+		$text = preg_replace_callback("/
+			\b
+			(						# protocol or www.
+				[a-z]{3,}:\/\/
 			|
-				'[^']*'			# single quoted link
-			|
-				[^'\"]\S*		# none-quoted link
+				www\.
 			)
-			(?:\s[^>]*)?		# optional attributes
-			\s*>
-		.*						# link text
-		<\s*\/\s*a\s*>			# end of anchor tag
-		/isUx",
-		'sem_autolink_uri_escape_anchors',
-		$buffer
-		);
-
-	# escape uri within tags
-	$buffer = preg_replace_callback(
-		"/
-		<[^>]*
-			(?:
-				(?:			# link starting with a scheme
-					http(?:s)?
-				|
-					ftp
-				)
-				:\/\/
-			|
-				www\.		# link starting with no scheme
-			)
-			[^>]*>
-		/isUx",
-		'sem_autolink_uri_escape_anchors',
-		$buffer
-		);
-
-	if ( class_exists('sem_smart_link') || function_exists('sem_smart_link') )
-	{
-		$buffer = preg_replace_callback(
-			"/
-			\[
-				(?:.+)
-				-(?:>|&gt;)
-				(?:.*)
-			\]
-			/isUx",
-			'sem_autolink_uri_escape_anchors',
-			$buffer
-			);
-	}
-
-	# add anchors to unanchored links
-	$buffer = preg_replace_callback(
-		"/
-		\b									# word boundary
-		(
-			(?:								# link starting with a scheme
-				http(?:s)?
-			|
-				ftp
-			)
-			:\/\/
-		|
-			www\.							# link starting with no scheme
-		)
-		(
-			(								# domain
+			(?:						# domain
 				localhost
 			|
-				[0-9a-zA-Z_\-]+
-				(?:\.[0-9a-zA-Z_\-]+)+
+				[a-z0-9%_|~-]+
+				(?:\.[a-z0-9%_|~-]+)+
 			)
-			(?:								# maybe a subdirectory
-				\/
-				[0-9a-zA-Z~_\-+\.\/,&;]*
+			(?:						# path
+				\/[a-z0-9%_|~.-]*
+				(?:\/[a-z0-9%_|~.-]*)+
 			)?
-			(?:								# maybe some parameters
-				\?[0-9a-zA-Z~_\-+\.\/,&;=]+
+			(?:						# attributes
+				\?[a-z0-9%_|~.-]*
+				(?:&[a-z0-9%_|~.=&#;-]*)+
 			)?
-			(?:								# maybe an id
-				\#[0-9a-zA-Z~_\-+\.\/,&;]+
+			(?:						# anchor
+				\#[a-z0-9%_|~.=&#;-]*
 			)?
-		)
-		/imsx",
-		'sem_autolink_uri_add_links',
-		$buffer
-		);
+			/ix", array('autolink_uri', 'url_callback'), $text);
+		
+		$text = preg_replace_callback("/
+			\b
+			(?:mailto:)?
+			(
+				[a-z0-9%_|~-]+
+				(?:\.[a-z0-9%_|~-]+)*
+				@
+				[a-z0-9%_|~-]+
+				(?:\.[a-z0-9%_|~-]+)+
+			)
+			/ix", array('autolink_uri', 'email_callback'), $text);
+		
+		$text = autolink_uri::unescape($text);
+		
+		return $text;
+	} # filter()
+	
+	
+	/**
+	 * url_callback()
+	 *
+	 * @param array $match
+	 * @return string $text
+	 **/
 
-	# unescape anchors
-	$buffer = sem_autolink_uri_unescape_anchors($buffer);
+	function url_callback($match) {
+		$url = $match[0];
+		$href = $url;
+		
+		if ( strtolower($match[1]) === 'www.' )
+			$href = 'http://' . $href;
+		
+		$href = esc_url($href);
+		
+		return '<a href="' . $href . '">' . $url . '</a>';
+	} # url_callback()
+	
+	
+	/**
+	 * email_callback()
+	 *
+	 * @param array $match
+	 * @return string $text
+	 **/
 
-	return $buffer;
-} # end sem_autolink_uri()
+	function email_callback($match) {
+		$email = antispambot(end($match));
+		return '<a href="' . esc_url('mailto:' . $email) . '">' . $email . '</a>';
+	} # email_callback()
+	
+	
+	/**
+	 * escape()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
 
-add_action('the_content', 'sem_autolink_uri', 20);
-add_action('the_excerpt', 'sem_autolink_uri', 20);
+	function escape($text) {
+		global $escape_autolink_uri;
+		
+		if ( !isset($escape_autolink_uri) )
+			$escape_autolink_uri = array();
+		
+		foreach ( array(
+			'head' => "/
+				.*?
+				<\s*\/\s*head\s*>
+				/isx",
+			'blocks' => "/
+				<\s*(script|object|textarea)(?:\s.*?)?>
+				.*?
+				<\s*\/\s*\\1\s*>
+				/isx",
+			'smart_links' => "/
+				\[.+?\]
+				/x",
+			'anchors' => "/
+				<\s*a\s.+?>.+?<\s*\/\s*a\s*>
+				/isx",
+			'tags' => "/
+				<[^<>]+?(?:src|href|codebase|archive|usemap|data|value)=[^<>]+?>
+				/ix",
+			) as $regex ) {
+			$text = preg_replace_callback($regex, array('autolink_uri', 'escape_callback'), $text);
+		}
+		
+		return $text;
+	} # escape()
+	
+	
+	/**
+	 * escape_callback()
+	 *
+	 * @param array $match
+	 * @return string $tag_id
+	 **/
 
+	function escape_callback($match) {
+		global $escape_autolink_uri;
+		
+		$tag_id = "----escape_autolink_uri:" . strtolower(md5($match[0])) . "----";
+		$escape_autolink_uri[$tag_id] = $match[0];
+		
+		return $tag_id;
+	} # escape_callback()
+	
+	
+	/**
+	 * unescape()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
 
-#
-# sem_autolink_uri_escape_anchors()
-#
+	function unescape($text) {
+		global $escape_autolink_uri;
+		
+		if ( !$escape_autolink_uri )
+			return $text;
+		
+		$text = preg_replace_callback("/
+			----escape_autolink_uri:[a-f0-9]{32}----
+			/x", array('autolink_uri', 'unescape_callback'), $text);
+		
+		return $text;
+	} # unescape()
+	
+	
+	/**
+	 * unescape_callback()
+	 *
+	 * @param array $match
+	 * @return string $text
+	 **/
 
-function sem_autolink_uri_escape_anchors($input)
-{
-	global $escaped_anchors;
-
-#	echo '<pre>';
-#	var_dump($input);
-#	echo '</pre>';
-
-	$anchor_id = '--escaped_anchor:' . md5($input[0]) . '--';
-	$escaped_anchors[$anchor_id] = $input[0];
-
-	return $anchor_id;
-} # end sem_autolink_uri_escape_anchors()
-
-
-#
-# sem_autolink_uri_unescape_anchors()
-#
-
-function sem_autolink_uri_unescape_anchors($input)
-{
-	global $escaped_anchors;
-
-	$find = array();
-	$replace = array();
-
-	foreach ( $escaped_anchors as $key => $val )
-	{
-		$find[] = $key;
-		$replace[] = $val;
-	}
-
-	return str_replace($find, $replace, $input);
-} # end sem_autolink_uri_unescape_anchors()
-
-
-#
-# sem_autolink_uri_add_links()
-#
-
-function sem_autolink_uri_add_links($input)
-{
-	#echo '<pre>';
-	#var_dump($input);
-	#echo '</pre>';
-
-	if ( strtolower($input[1]) == 'www.' )
-	{
-		return '<a'
-			. ' href="http://' . $input[0] . '"'
-			. '>'
-			. $input[0]
-			. '</a>';
-	}
-	else
-	{
-		return '<a'
-			. ' href="' . $input[0] . '"'
-			. '>'
-			. $input[0]
-			. '</a>';
-	}
-} # end sem_autolink_uri_add_links()
+	function unescape_callback($match) {
+		global $escape_autolink_uri;
+		
+		return $escape_autolink_uri[$match[0]];
+		
+		return $match[0];
+	} # unescape_callback()
+} # autolink_uri
 ?>
