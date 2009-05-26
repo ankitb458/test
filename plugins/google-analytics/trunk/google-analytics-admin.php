@@ -52,7 +52,7 @@ class google_analytics_admin {
 		extract($options, EXTR_SKIP);
 		
 		if ( !$uacct )
-			$uacct = addslashes(esc_html(__('Your Account ID', 'sem-google-analytics')));
+			$uacct = __('Your Account ID', 'sem-google-analytics');
 		
 		$ga_script = <<<EOF
 <script type="text/javascript">
