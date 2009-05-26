@@ -140,6 +140,9 @@ class autotag_admin {
 			$terms = yterms::get($post, true);
 
 			if ( $terms ) {
+				foreach ( $terms as $key => $term )
+					$terms[$key] = $term->name;
+				
 				if ( isset($_POST['autotag_strip']) ) {
 					foreach ( $terms as $key => $term ) {
 						if ( !is_term($term, 'post_tag') )
