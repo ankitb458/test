@@ -120,8 +120,6 @@ class article_uploader_admin {
 		
 		if ( isset($_POST['kill_formatting']) )
 			update_post_meta($post_ID, '_kill_formatting', '1');
-		else
-			update_post_meta($post_ID, '_kill_formatting', '0');
 		
 		if ( empty($_FILES['upload_article']['name']) )
 			return;

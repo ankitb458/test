@@ -67,16 +67,10 @@ class article_uploader {
 	 **/
 	
 	function the_post(&$post) {
-		$kill_formatting = get_post_meta($post->ID, '_kill_formatting', true);
-		
-		if ( $kill_formatting === '1' ) {
+		if ( get_post_meta($post->ID, '_kill_formatting', true) === '1' )
 			article_uploader::strip_filters();
-		} else {
+		else
 			article_uploader::restore_filters();
-			
-			if ( $kill_formatting === '' )
-				update_post_meta($post->ID, '_kill_formatting', '0');
-		}
 	} # the_post()
 	
 	
