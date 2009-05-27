@@ -117,9 +117,9 @@ class article_uploader {
 	function restore_filters() {
 		global $article_uploader_filter_backup;
 		
-		foreach ( $article_uploader_filter_backup as $filter => $filters )
-			foreach ( $filters as $priority => $callbacks )
-				foreach ( $callbacks as $callback )
+		foreach ( (array) $article_uploader_filter_backup as $filter => $filters )
+			foreach ( (array) $filters as $priority => $callbacks )
+				foreach ( (array) $callbacks as $callback )
 					add_filter($filter, $callback, $priority);
 	} # restore_filters()
 } # article_uploader
