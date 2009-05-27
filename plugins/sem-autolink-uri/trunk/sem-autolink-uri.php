@@ -117,7 +117,7 @@ class autolink_uri {
 	 **/
 
 	function email_callback($match) {
-		$email = antispambot(end($match));
+		$email = end($match);
 		return '<a href="' . esc_url('mailto:' . $email) . '">' . $email . '</a>';
 	} # email_callback()
 	
