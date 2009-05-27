@@ -90,7 +90,7 @@ li.nav_url {
 .entry_date span,
 .comment_date span,
 .pings_date span,
-.post_list h3 {
+h3.post_list_date {
 	background: url(../icons/calendar.gif) center left no-repeat;
 	padding-left: 18px;
 	padding-right: 0px;
