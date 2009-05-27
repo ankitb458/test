@@ -511,6 +511,10 @@ h2 a {
 	margin: 0px auto;
 }
 
+.post_list h3 {
+	margin-top: 1.2em;
+}
+
 .widget_calendar td.pad {
 	padding: 0px !important;
 	margin: 0px !important;
