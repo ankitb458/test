@@ -84,7 +84,7 @@ class article_uploader {
 		global $article_uploader_filter_backup;
 		
 		if ( !isset($article_uploader_filter_backup) )
-			$article_uploader_filter_backup = array();
+			$article_uploader_filter_backup = array('the_content' => array(), 'the_excerpt' => array());
 		
 		foreach ( array(
 			'wptexturize',
@@ -93,11 +93,17 @@ class article_uploader {
 			) as $callback ) {
 			$priority = has_filter('the_content', $callback);
 			
-			if ( $priority === false )
-				continue;
+			if ( $priority !== false ) {
+				$article_uploader_filter_backup['the_content'][$priority][] = $callback;
+				remove_filter('the_content', $callback, $priority);
+			}
 			
-			$article_uploader_filter_backup[$priority][] = $callback;
-			remove_filter('the_content', $callback, $priority);
+			$priority = has_filter('the_excerpt', $callback);
+			
+			if ( $priority !== false ) {
+				$article_uploader_filter_backup['the_excerpt'][$priority][] = $callback;
+				remove_filter('the_excerpt', $callback, $priority);
+			}
 		}
 	} # strip_filters()
 	
@@ -111,12 +117,10 @@ class article_uploader {
 	function restore_filters() {
 		global $article_uploader_filter_backup;
 		
-		if ( empty($article_uploader_filter_backup) )
-			return;
-		
-		foreach ( $article_uploader_filter_backup as $priority => $callbacks )
-			foreach ( $callbacks as $callback )
-				add_filter('the_content', $callback, $priority);
+		foreach ( $article_uploader_filter_backup as $filter => $filters )
+			foreach ( $filters as $priority => $callbacks )
+				foreach ( $callbacks as $callback )
+					add_filter($filter, $callback, $priority);
 	} # restore_filters()
 } # article_uploader
 
