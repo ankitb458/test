@@ -69,7 +69,7 @@ class sem_opt_in_front {
 		$main_cat = get_term_by('slug', 'blog', 'category');
 		
 		if ( $main_cat && !is_wp_error($main_cat) && $main_cat->count > 0 )
-			$main_cat_id = (int) $main_cat->term_taxonomy_id;
+			$main_cat_id = (int) $main_cat->term_id;
 		else
 			$main_cat_id = 0;
 		
@@ -97,10 +97,12 @@ class sem_opt_in_front {
 		
 		global $wpdb;
 		
+		$main_cat = get_term(main_cat_id, 'category');
+		
 		$extra = str_replace(array("\t", "\r", "\n"), ' ', "
 			INNER JOIN $wpdb->term_relationships AS sem_relationships
 			ON sem_relationships.object_id = $wpdb->posts.ID
-			AND sem_relationships.term_taxonomy_id = " . intval(main_cat_id) . "
+			AND sem_relationships.term_taxonomy_id = " . intval($main_cat->term_taxonomy_id) . "
 			");
 		
 		$posts_join .= $extra;
@@ -120,12 +122,7 @@ class sem_opt_in_front {
 	 **/
 
 	function category_link($link = '', $id = '') {
-		if ( !$id || !main_cat_id )
-			return $link;
-		
-		$cat = get_term($id, 'category');
-		
-		if ( $cat->term_taxonomy_id != main_cat_id ) 
+		if ( !$id || !main_cat_id || $id != main_cat_id )
 			return $link;
 		
 		if ( get_option('show_on_front') == 'page' && get_option('page_on_front') ) {
