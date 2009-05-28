@@ -228,7 +228,6 @@ echo '</div><!-- wrapper -->' . "\n";
 
 do_action('after_the_canvas');
 
-
 do_action('wp_footer');
 ?>
 </body>
