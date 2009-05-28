@@ -132,7 +132,7 @@ class sem_admin_menu {
 			
 			if ( current_user_can('edit_pages') ) {
 				if ( is_page() && !is_front_page() )
-					$parent_id = $GLOBALS['wp_query']->get_queried_object_id();
+					$parent_id = $GLOBALS['wp_the_query']->get_queried_object_id();
 				elseif ( !is_page() && is_home() && get_option('show_on_front') == 'page' )
 					$parent_id = (int) get_option('page_for_posts');
 				else

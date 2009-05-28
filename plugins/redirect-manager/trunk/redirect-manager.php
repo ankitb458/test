@@ -84,8 +84,8 @@ class redirect_manager {
 		if ( is_feed() || !is_singular() )
 			return $content;
 		
-		global $wp_query;
-		$post_id = $wp_query->get_queried_object_id();
+		global $wp_the_query;
+		$post_id = $wp_the_query->get_queried_object_id();
 		$location = get_post_meta($post_id, '_redirect_url', true);
 		
 		if ( $location ) {
