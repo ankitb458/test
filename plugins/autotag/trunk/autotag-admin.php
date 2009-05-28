@@ -111,6 +111,8 @@ class autotag_admin {
 		$fetch_terms = false;
 		$user_pref = false;
 		
+		delete_post_meta($post_ID, '_yterms');
+		
 		$post = get_post($post_ID);
 		
 		switch ( isset($_POST['autotag']) ) {
@@ -137,7 +139,7 @@ class autotag_admin {
 		
 		if ( $fetch_terms ) {
 			load_yterms();
-			$terms = yterms::get($post, true);
+			$terms = yterms::get($post);
 
 			if ( $terms ) {
 				foreach ( $terms as $key => $term )
