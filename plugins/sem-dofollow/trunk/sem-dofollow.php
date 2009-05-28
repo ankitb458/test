@@ -27,10 +27,12 @@ Hat tips
 **/
 
 
+add_filter('get_comment_author_link', 'strip_nofollow', 15);
+
 if ( !is_admin() ) {
-	remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
-	add_filter('get_comment_author_link', 'strip_nofollow', 15);
 	add_filter('comment_text', 'strip_nofollow', 15);
+} else {
+	remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
 }
 
 
@@ -42,7 +44,7 @@ if ( !is_admin() ) {
  **/
 
 function strip_nofollow($text = '') {
-	return preg_replace_callback("/<a\s+(.+?)>/is", 'strip_nofollow_callback', $text);
+	return preg_replace_callback("/<\s*a\s+(.+?)>/is", 'strip_nofollow_callback', $text);
 } # strip_nofollow()
 
 
@@ -54,6 +56,21 @@ function strip_nofollow($text = '') {
  **/
 
 function strip_nofollow_callback($match) {
-	return '<a ' . str_replace(array(' rel="nofollow"', " rel='nofollow'"), '', $match[1]) . '>';
+	$attr = $match[1];
+	$attr = " $attr ";
+	$attr = preg_replace("/
+		\s
+		rel\s*=\s*(['\"])
+		([^\\1]*?\s+)?
+		nofollow
+		(\s+[^\\1]*?)?
+		\\1
+		/ix", " rel=$1$2$3$1", $attr);
+	$attr = preg_replace("/
+		\s
+		rel\s*=\s*(['\"])\s*\\1
+		/ix", '', $attr);
+	$attr = trim($attr);
+	return '<a ' . $attr . '>';
 } # strip_nofollow_callback()
 ?>
