@@ -121,7 +121,7 @@ function _cat_row( $category, $level, $name_override = false ) {
 	$category = get_category( $category, OBJECT, 'display' );
 
 	$default_cat_id = (int) get_option( 'default_category' );
-	$pad = str_repeat( '&#8212; ', $level );
+	$pad = str_repeat( '&#8212; ', max(0, $level) );
 	$name = ( $name_override ? $name_override : $pad . ' ' . $category->name );
 	$edit_link = "categories.php?action=edit&amp;cat_ID=$category->term_id";
 	if ( current_user_can( 'manage_categories' ) ) {
@@ -635,7 +635,8 @@ function wp_link_category_checklist( $link_id = 0 ) {
  */
 function _tag_row( $tag, $class = '', $taxonomy = 'post_tag' ) {
 		$count = number_format_i18n( $tag->count );
-		$count = ( $count > 0 ) ? "<a href='edit.php?tag=$tag->slug'>$count</a>" : $count;
+		$tagsel = ($taxonomy == 'post_tag' ? 'tag' : $taxonomy);
+		$count = ( $count > 0 ) ? "<a href='edit.php?$tagsel=$tag->slug'>$count</a>" : $count;
 
 		$name = apply_filters( 'term_name', $tag->name );
 		$qe_data = get_term($tag->term_id, $taxonomy, object, 'edit');
