@@ -85,21 +85,11 @@ function dump_stops($in = null) {
 			
 			$duration = number_format($data[1] * 1000, 3) . 'ms';
 			
-			if ( preg_match("/^SELECT/i", $query) ) {
-				$explain = mysql_query("EXPLAIN $query", $wpdb->dbh);
-				$explain = mysql_fetch_array($explain, MYSQL_ASSOC);
-			} else {
-				$explain = false;
-			}
-			
 			$loc = trim($data[2]);
 			$loc = preg_replace("/(require|include)(_once)?,\s*/ix", '', $loc);
 			$loc = "\n" . preg_replace("/,\s*/", ",\n", $loc) . "\n";
 			
-			if ( $explain )
-				dump($query, $duration, $explain, $loc);
-			else
-				dump($query, $duration, $loc);
+			dump($query, $duration, $loc);
 		}
 	}
 	
