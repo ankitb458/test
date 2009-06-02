@@ -113,7 +113,7 @@ class widget_utils {
 			. __('The following fields let you configure options shared by:', widget_utils_textdomain)
 			. '</p>' . "\n";
 
-		echo '<ul>';
+		echo '<ul class="ul-disc">';
 		do_action($type . '_widget_config_affected');
 		echo '</ul>' . "\n";
 		
