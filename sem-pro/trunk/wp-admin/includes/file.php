@@ -583,21 +583,23 @@ function copy_dir($from, $to) {
  * @param unknown_type $args
  * @return unknown
  */
-function WP_Filesystem( $args = false ) {
+function WP_Filesystem( $args = false, $context = false ) {
 	global $wp_filesystem;
 
 	require_once(ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php');
 
-	$method = get_filesystem_method($args);
+	$method = get_filesystem_method($args, $context);
 
 	if ( ! $method )
 		return false;
 
-	$abstraction_file = apply_filters('filesystem_method_file', ABSPATH . 'wp-admin/includes/class-wp-filesystem-' . $method . '.php', $method);
-	if( ! file_exists($abstraction_file) )
-		return;
-
-	require_once($abstraction_file);
+	if ( ! class_exists("WP_Filesystem_$method") ) {
+		$abstraction_file = apply_filters('filesystem_method_file', ABSPATH . 'wp-admin/includes/class-wp-filesystem-' . $method . '.php', $method);
+		if( ! file_exists($abstraction_file) )
+			return;
+	
+		require_once($abstraction_file);
+	}
 	$method = "WP_Filesystem_$method";
 
 	$wp_filesystem = new $method($args);
@@ -623,13 +625,17 @@ function WP_Filesystem( $args = false ) {
  * @since unknown
  *
  * @param unknown_type $args
+ * @param string $context Full path to the directory that is tested for being writable.
  * @return unknown
  */
-function get_filesystem_method($args = array()) {
+function get_filesystem_method($args = array(), $context = false) {
 	$method = defined('FS_METHOD') ? FS_METHOD : false; //Please ensure that this is either 'direct', 'ssh', 'ftpext' or 'ftpsockets'
 
 	if( ! $method && function_exists('getmyuid') && function_exists('fileowner') ){
-		$temp_file_name = ABSPATH . '.' . time();
+		if ( !$context )
+			$context = WP_CONTENT_DIR;
+		$context = trailingslashit($context);
+		$temp_file_name = $context . '.write-test-' . time();
 		$temp_handle = @fopen($temp_file_name, 'w');
 		if ( $temp_handle ) {
 			if ( getmyuid() == fileowner($temp_file_name) )
@@ -655,13 +661,13 @@ function get_filesystem_method($args = array()) {
  * @param unknown_type $error
  * @return unknown
  */
-function request_filesystem_credentials($form_post, $type = '', $error = false) {
-	$req_cred = apply_filters('request_filesystem_credentials', '', $form_post, $type, $error);
+function request_filesystem_credentials($form_post, $type = '', $error = false, $context = false) {
+	$req_cred = apply_filters('request_filesystem_credentials', '', $form_post, $type, $error, $context);
 	if ( '' !== $req_cred )
 		return $req_cred;
 
 	if ( empty($type) )
-		$type = get_filesystem_method();
+		$type = get_filesystem_method(array(), $context);
 
 	if ( 'direct' == $type )
 		return true;
@@ -685,11 +691,13 @@ function request_filesystem_credentials($form_post, $type = '', $error = false) 
 	else
 		unset($credentials['port']);
 
-	if ( defined('FTP_SSH') || (isset($_POST['connection_type']) && 'ssh' == $_POST['connection_type']) )
+	if ( defined('FTP_SSH') || (defined('FS_METHOD') && 'ssh' == FS_METHOD) )
 		$credentials['connection_type'] = 'ssh';
-	else if ( defined('FTP_SSL') || (isset($_POST['connection_type']) && 'ftps' == $_POST['connection_type']) )
+	else if ( defined('FTP_SSL') && 'ftpext' == $type ) //Only the FTP Extension understands SSL
 		$credentials['connection_type'] = 'ftps';
-	else if ( !isset($credentials['connection_type']) || (isset($_POST['connection_type']) && 'ftp' == $_POST['connection_type']) )
+	else if ( !empty($_POST['connection_type']) )
+		$credentials['connection_type'] = $_POST['connection_type'];
+	else if ( !isset($credentials['connection_type']) ) //All else fails (And its not defaulted to something else saved), Default to FTP
 		$credentials['connection_type'] = 'ftp';
 
 	if ( ! $error &&
@@ -750,9 +758,10 @@ jQuery(function($){
 
 <tr valign="top">
 <th scope="row"><label for="password"><?php _e('Password') ?></label></th>
-<td><input name="password" type="password" id="password" value=""<?php if( defined('FTP_PASS') ) echo ' disabled="disabled"' ?> size="40" /><?php if( defined('FTP_PASS') && !empty($password) ) echo '<em>'.__('(Password not shown)').'</em>'; ?></td>
+<td><input name="password" type="password" id="password" value="<?php if ( defined('FTP_PASS') ) echo '*****'; ?>"<?php if ( defined('FTP_PASS') ) echo ' disabled="disabled"' ?> size="40" /></td>
 </tr>
 
+<?php if ( extension_loaded('ssh2') ) : ?>
 <tr id="ssh_keys" valign="top" style="<?php if ( 'ssh' != $connection_type ) echo 'display:none' ?>">
 <th scope="row"><?php _e('Authentication Keys') ?>
 <div class="key-labels textright">
@@ -762,14 +771,19 @@ jQuery(function($){
 <td><br /><input name="public_key" type="text" id="public_key" value="<?php echo esc_attr($public_key) ?>"<?php if( defined('FTP_PUBKEY') ) echo ' disabled="disabled"' ?> size="40" /><br /><input name="private_key" type="text" id="private_key" value="<?php echo esc_attr($private_key) ?>"<?php if( defined('FTP_PRIKEY') ) echo ' disabled="disabled"' ?> size="40" />
 <div><?php _e('Enter the location on the server where the keys are located. If a passphrase is needed, enter that in the password field above.') ?></div></td>
 </tr>
+<?php endif; ?>
 
 <tr valign="top">
 <th scope="row"><?php _e('Connection Type') ?></th>
 <td>
 <fieldset><legend class="screen-reader-text"><span><?php _e('Connection Type') ?></span></legend>
-<label><input id="ftp" name="connection_type"  type="radio" value="ftp" <?php checked('ftp', $connection_type); if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('FTP') ?></label><br />
-<label><input id="ftps" name="connection_type" type="radio" value="ftps" <?php checked('ftps', $connection_type); if ( defined('FTP_SSH') || defined('FTP_SSH') ) echo ' disabled="disabled"';  ?>/> <?php _e('FTPS (SSL)') ?></label><br />
-<?php if ( extension_loaded('ssh2') ) { ?><label><input id="ssh" name="connection_type" type="radio" value="ssh" <?php checked('ssh', $connection_type);  if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('SSH') ?></label><?php } ?>
+<label><input id="ftp" name="connection_type"  type="radio" value="ftp" <?php checked('ftp', $connection_type); if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('FTP') ?></label>
+<?php if ( 'ftpext' == $type ) : ?>
+<br /><label><input id="ftps" name="connection_type" type="radio" value="ftps" <?php checked('ftps', $connection_type); if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"';  ?>/> <?php _e('FTPS (SSL)') ?></label>
+<?php endif; ?>
+<?php if ( extension_loaded('ssh2') ) : ?>
+<br /><label><input id="ssh" name="connection_type" type="radio" value="ssh" <?php checked('ssh', $connection_type);  if ( defined('FTP_SSL') || defined('FTP_SSH') ) echo ' disabled="disabled"'; ?>/> <?php _e('SSH') ?></label>
+<?php endif; ?>
 </fieldset>
 </td>
 </tr>
