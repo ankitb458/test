@@ -63,25 +63,7 @@ function dump_stops($in = null) {
 	if ( defined('SAVEQUERIES') && $_GET['debug'] == 'sql' && current_user_can('manage_options') ) {
 		global $wpdb;
 		foreach ( $wpdb->queries as $key => $data ) {
-			$query = trim($data[0]);
-			$query = preg_replace("/
-				\s*
-				(
-					^INSERT |
-					^UPDATE |
-					^REPLACE |
-					SELECT |
-					(?:^DELETE\s+)?FROM |
-					(?:(?:INNER|LEFT|RIGHT|CROSS|NATURAL)\s*)?JOIN |
-					WHERE |
-					AND |
-					GROUP\s+BY |
-					HAVING |
-					ORDER\s+BY |
-					LIMIT
-				)
-				/isx", "\n$1", $query) . "\n";
-			$query = trim($query);
+			$query = rtrim($data[0]);
 			
 			$duration = number_format($data[1] * 1000, 3) . 'ms';
 			
