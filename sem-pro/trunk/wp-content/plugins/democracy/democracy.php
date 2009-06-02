@@ -820,8 +820,12 @@ function widget_democracy( $args )
 
 	$before_widget = str_replace('id="democracy"', 'id="widget_democracy"', $before_widget);
 
-	echo $before_widget . $before_title . $title . $after_title;
-	if ( !is_admin() ) jal_democracy();
+	if ( is_admin() )
+		return;
+	
+	echo $before_widget
+		. $before_title . $title . $after_title;
+	jal_democracy();
 	echo $after_widget;
 }
 

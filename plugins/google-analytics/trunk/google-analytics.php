@@ -20,7 +20,7 @@ http://www.mesoconcepts.com/license/
 **/
 
 
-load_plugin_textdomain('google-analytics');
+load_plugin_textdomain('google-analytics', null, dirname(__FILE__) . '/lang');
 
 
 /**

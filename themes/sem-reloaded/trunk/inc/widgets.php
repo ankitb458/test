@@ -1446,7 +1446,7 @@ class header extends WP_Widget {
 		$widget_name = __('Header: Site Header', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'header',
-			'description' => __('The site\'s header. Only works in the header area.', 'sem-reloaded'),
+			'description' => __('The site\'s header. Must be placed in the header area.', 'sem-reloaded'),
 			);
 		$control_ops = array(
 			'width' => 330,
@@ -2665,7 +2665,7 @@ class navbar extends sem_nav_menu {
 		$widget_name = __('Header: Nav Menu', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'navbar',
-			'description' => __('The header\'s navigation menu, with an optional search form. Only works in the header area.', 'sem-reloaded'),
+			'description' => __('The header\'s navigation menu, with an optional search form. Must be placed in the header area.', 'sem-reloaded'),
 			);
 		$control_ops = array(
 			'width' => 330,
@@ -2857,7 +2857,7 @@ class footer extends sem_nav_menu {
 		$widget_name = __('Footer: Nav Menu', 'sem-reloaded');
 		$widget_ops = array(
 			'classname' => 'footer',
-			'description' => __('The footer\'s navigation menu, with an optional copyright notice. Only works in the footer area.', 'sem-reloaded'),
+			'description' => __('The footer\'s navigation menu, with an optional copyright notice. Must be placed in the footer area.', 'sem-reloaded'),
 			);
 		$control_ops = array(
 			'width' => 330,
