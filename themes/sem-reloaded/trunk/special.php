@@ -6,7 +6,7 @@
 #
 
 /*
-Template Name: Special
+Template Name: Special Page
 */
 
 include sem_path . '/index.php';

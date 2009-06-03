@@ -302,6 +302,7 @@ class sem_panels {
 				'blog_footer',
 				),
 			'the_footer' => array(
+				'footer_boxes',
 				'footer',
 				),
 			'sidebar-1' => array(

@@ -30,7 +30,7 @@ foreach ( array(
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
 add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
-add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), null, 3);
+add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), 10, 3);
 
 class sem_widgets {
 	/**
@@ -103,6 +103,9 @@ class sem_widgets {
 	 **/
 
 	function widget_display_callback($instance, $widget, $args) {
+		if ( $instance === false )
+			return $instance;
+		
 		switch ( get_class($widget) ) {
 		case 'WP_Widget_Calendar':
 			return sem_widgets::calendar_widget($instance, $args);
@@ -148,7 +151,7 @@ class sem_widgets {
 	
 	
 	/**
-	 * undocumented function
+	 * search_widget()
 	 *
 	 * @param array $instance widget args
 	 * @param array $args sidebar args
