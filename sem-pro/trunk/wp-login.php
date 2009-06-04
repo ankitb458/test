@@ -39,7 +39,11 @@ if ( force_ssl_admin() && !is_ssl() ) {
  * @param WP_Error $wp_error Optional. WordPress Error Object
  */
 function login_header($title = 'Log In', $message = '', $wp_error = '') {
-	global $error;
+	global $error, $is_iphone;
+
+	// Don't index any of these forms
+	add_filter( 'pre_option_blog_public', create_function( '$a', 'return 0;' ) );
+	add_action( 'login_head', 'noindex' );
 
 	if ( empty($wp_error) )
 		$wp_error = new WP_Error();
@@ -52,6 +56,17 @@ function login_header($title = 'Log In', $message = '', $wp_error = '') {
 	<?php
 	wp_admin_css( 'login', true );
 	wp_admin_css( 'colors-fresh', true );
+
+	if ( $is_iphone ) {
+	?>
+	<meta name="viewport" content="width=320; initial-scale=0.9; maximum-scale=1.0; user-scalable=0;" /> 
+	<style type="text/css" media="screen"> 
+	form { margin-left: 0px; }
+	#login { margin-top: 20px; }
+	</style>
+	<?php
+	}
+
 	do_action('login_head'); ?>
 </head>
 <body class="login">
