@@ -2,8 +2,8 @@
 /*
 Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/bookmark-me/
-Description: Widgets that let your visitors share your webpages on social media sites such as Buzzup, del.icio.us and Digg.
-Version: 5.0 alpha
+Description: Widgets that let your visitors share your webpages on social media sites such as Buzzup, Delicious and Digg.
+Version: 5.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: bookmark-me-info
@@ -35,11 +35,11 @@ load_plugin_textdomain('bookmark-me', null, dirname(__FILE__) . '/lang');
  * @package Bookmark Me
  **/
 
-add_action('widgets_init', array('bookmark_me', 'widgetize'));
+add_action('widgets_init', array('bookmark_me', 'widgets_init'));
 
 if ( !is_admin() ) {
-	add_action('wp_print_scripts', array('bookmark_me', 'js'));
-	add_action('wp_print_styles', array('bookmark_me', 'css'));
+	add_action('wp_print_scripts', array('bookmark_me', 'scripts'));
+	add_action('wp_print_styles', array('bookmark_me', 'styles'), 0);
 }
 
 add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
@@ -49,15 +49,17 @@ foreach ( array(
 		'switch_theme',
 		'update_option_active_plugins',
 		'update_option_sidebars_widgets',
-		) as $hook)
-{
-	add_action($hook, array('bookmark_me', 'clear_cache'));
+		) as $hook) {
+	add_action($hook, array('bookmark_me', 'flush_cache'));
 }
 
-register_activation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
-register_deactivation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
+register_activation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
+register_deactivation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
 
-class bookmark_me {
+class bookmark_me extends WP_Widget {
+	var $option_name = 'bookmark_me';
+	
+	
 	/**
 	 * template_redirect
 	 *
@@ -66,8 +68,10 @@ class bookmark_me {
 
 	function template_redirect() {
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
-			if ( file_exists(TEMPLATEPATH . '/print.php') ) {
-				include sem_path . '/print.php';
+			if ( file_exists(STYLESHEETPATH . '/print.php') ) {
+				include STYLESHEETPATH . '/print.php';
+			} elseif ( TEMPLATEPATH != STYLESHEETPATH && file_exists(TEMPLATEPATH . '/print.php') ) {
+				include TEMPLATEPATH . '/print.php';
 			} else {
 				include dirname(__FILE__) . '/print.php';
 			}	
@@ -77,86 +81,73 @@ class bookmark_me {
 	
 	
 	/**
-	 * js()
+	 * scripts()
 	 *
 	 * @return void
 	 **/
 
-	function js() {
+	function scripts() {
 		$folder = plugin_dir_url(__FILE__);
 		wp_enqueue_script('bookmark_me', $folder . 'js/scripts.js', array('jquery'), '5.0');
-	} # js()
+	} # scripts()
 	
 	
 	/**
-	 * css()
+	 * styles()
 	 *
 	 * @return void
 	 **/
 
-	function css() {
+	function styles() {
 		$folder = plugin_dir_url(__FILE__);
 		wp_enqueue_style('bookmark_me', $folder . 'css/styles.css', null, '5.0');
-	} # css()
+	} # styles()
 	
 	
 	/**
-	 * widgetize()
+	 * widgets_init()
 	 *
 	 * @return void
 	 **/
 
-	function widgetize() {
-		$options = bookmark_me::get_options();
+	function widgets_init() {
+		register_widget('bookmark_me');
+	} # widgets_init()
+	
+	
+	/**
+	 * bookmark_me()
+	 *
+	 * @return void
+	 **/
+
+	function bookmark_me() {
+		$widget_ops = array(
+			'classname' => 'bookmark_me',
+			'description' => __("Bookmark links to social media sites such as Buzzup, Delicious and Digg", 'bookmark-me'),
+			);
 		
-		$widget_options = array('classname' => 'bookmark_me', 'description' => __( "Social bookmarking links", 'bookmark-me') );
-		$control_options = array('id_base' => 'bookmark_me');
-		
-		$id = false;
-		
-		# registered widgets
-		foreach ( array_keys($options) as $o ) {
-			if ( !is_numeric($o) ) continue;
-			$id = "bookmark_me-$o";
-			wp_register_sidebar_widget($id, __('Bookmark Me', 'bookmark-me'), array('bookmark_me', 'widget'), $widget_options, array( 'number' => $o ));
-			wp_register_widget_control($id, __('Bookmark Me', 'bookmark-me'), array('bookmark_me_admin', 'widget_control'), $control_options, array( 'number' => $o ) );
-		}
-		
-		# default widget if none were registered
-		if ( !$id ) {
-			$id = "bookmark_me-1";
-			wp_register_sidebar_widget($id, __('Bookmark Me', 'bookmark-me'), array('bookmark_me', 'widget'), $widget_options, array( 'number' => -1 ));
-			wp_register_widget_control($id, __('Bookmark Me', 'bookmark-me'), array('bookmark_me_admin', 'widget_control'), $control_options, array( 'number' => -1 ) );
-		}
-	} # widgetize()
+		$this->WP_Widget('bookmark_me', __('Bookmark Me', 'bookmark-me'), $widget_ops);
+	} # bookmark_me()
 	
 	
 	/**
 	 * widget()
 	 *
-	 * @param array $args
-	 * @param array $widget_args
+	 * @param array $args widget args
+	 * @param array $instance widget options
 	 * @return void
 	 **/
 
-	function widget($args, $widget_args = 1) {
-		if ( is_feed() || isset($_GET['action']) && $_GET['action'] == 'print' )
+	function widget($args, $instance) {
+		if ( is_admin() || is_feed() || isset($_GET['action']) && $_GET['action'] == 'print' )
 			return;
-		
-		$options = bookmark_me::get_options();
-		
-		if ( is_numeric($widget_args) )
-			$widget_args = array( 'number' => $widget_args );
-		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
-		extract($widget_args, EXTR_SKIP);
-		
-		$args = array_merge((array) $options[$number], (array) $args);
 		
 		extract($args, EXTR_SKIP);
+		$instance = wp_parse_args($instance, bookmark_me::defaults());
+		extract($instance, EXTR_SKIP);
 		
-		if ( is_admin() ) {
-			return;
-		} elseif ( in_the_loop() ) {
+		if ( in_the_loop() ) {
 			$page_title = get_the_title();
 			$page_url = get_permalink();
 		} elseif ( is_singular() ) {
@@ -169,7 +160,7 @@ class bookmark_me {
 			$page_url = user_trailingslashit(get_option('home'));
 		}
 		
-		$page_title = html_entity_decode($page_title);
+		$page_title = @html_entity_decode($page_title, ENT_COMPAT, get_option('blog_charset'));
 		
 		if ( !in_the_loop() ) {
 			$print_action = false;
@@ -207,8 +198,8 @@ class bookmark_me {
 			echo '<div class="bookmark_me_services' . ( !$print_action ? ' bookmark_me_sidebar' : '' ) . '">' . "\n";
 
 			foreach ( bookmark_me::get_main_services() as $service_id =>  $service ) {
-				echo '<a href="' . htmlspecialchars($service['url'])  . '" class="' . $service_id . ' no_icon"'
-					. ' title="' . htmlspecialchars($service['name']) . '"'
+				echo '<a href="' . esc_url($service['url'])  . '" class="' . $service_id . ' no_icon"'
+					. ' title="' . esc_attr($service['name']) . '"'
 					. ' rel="nofollow">'
 					. $service['name']
 					. '</a>' . "\n";
@@ -220,12 +211,12 @@ class bookmark_me {
 				echo '<div class="bookmark_me_actions">' . "\n";
 
 				echo '<a href="mailto:?subject=%email_title%&amp;body=%email_url%"'
-					. ' title="' . htmlspecialchars(__('Email', 'bookmark-me')) .  '" class="email_entry no_icon">'
+					. ' title="' . esc_attr(__('Email', 'bookmark-me')) .  '" class="email_entry no_icon">'
 					. __('Email', 'bookmark-me')
 					. '</a>' . "\n";
 
 				echo '<a href="%print_url%"'
-					. ' title="' . htmlspecialchars(__('Print', 'bookmark-me')) .  '" class="print_entry no_icon">'
+					. ' title="' . esc_attr(__('Print', 'bookmark-me')) .  '" class="print_entry no_icon">'
 					. __('Print', 'bookmark-me')
 					. '</a>' . "\n";
 
@@ -237,8 +228,8 @@ class bookmark_me {
 			echo '<div class="bookmark_me_extra" style="display: none;">' . "\n";
 
 			foreach ( bookmark_me::get_extra_services() as $service_id =>  $service ) {
-				echo '<a href="' . htmlspecialchars($service['url'])  . '" class="' . $service_id . ' no_icon"'
-					. ' title="' . htmlspecialchars($service['name']) . '"'
+				echo '<a href="' . esc_url($service['url'])  . '" class="' . $service_id . ' no_icon"'
+					. ' title="' . esc_attr($service['name']) . '"'
 					. ( $service_id == 'help' && ( strpos(get_option('home'), 'semiologic.com') !== false )
 						? ''
 						: ' rel="nofollow"'
@@ -268,7 +259,7 @@ class bookmark_me {
 			array(
 				urlencode($page_url), urlencode($page_title),
 				rawurlencode($page_url), rawurlencode($page_title),
-				htmlspecialchars($page_url . $print_action),
+				esc_url($page_url . $print_action),
 				),
 			$o);
 	} # widget()
@@ -387,150 +378,98 @@ class bookmark_me {
 	
 	
 	/**
-	 * get_options()
+	 * update()
 	 *
-	 * @return array $options
+	 * @param array $new_instance
+	 * @param array $old_instance
+	 * @return array $instance
 	 **/
-	
-	function get_options() {
-		static $o;
+
+	function update($new_instance, $old_instance) {
+		$instance['title'] = strip_tags($new_instance['title']);
 		
-		if ( isset($o) && !is_admin() )
-			return $o;
+		bookmark_me::flush_cache();
 		
-		$o = get_option('bookmark_me');
-		
-		if ( $o === false ) {
-			$o = bookmark_me::init_options();
-		}
-		
-		return $o;
-	} # get_options()
+		return $instance;
+	} # update()
 	
 	
 	/**
-	 * init_options()
+	 * form()
 	 *
-	 * @return array $options
+	 * @param array $instance
+	 * @return void
 	 **/
 
-	function init_options() {
-		if ( ( $o = get_option('bookmark_me_widgets') ) !== false ) {
-			foreach ( $o as $k => $opt ) {
-				if ( is_numeric($k) ) {
-					$o[$k] = array('title' => $opt['title']);
-				}
-			}
-		} elseif ( ( $o = get_option('sem_bookmark_me_params') ) !== false ) {
-			unset($o['before_widget']);
-			unset($o['after_widget']);
-			unset($o['before_title']);
-			unset($o['after_title']);
-			
-			$o = array( 1 => $o );
-		} else {
-			$o = array();
-		}
+	function form($instance) {
+		extract($instance, EXTR_SKIP);
 		
-		delete_option('sem_bookmark_me_services');
-		delete_option('sem_bookmark_me_params');
-		delete_option('bookmark_me_widgets');
-		
-		update_option('bookmark_me', $o);
-		
-		return $o;
-	} # init_options()
+		echo '<p>'
+			. '<label>'
+			. __('Title:', 'bookmark-me')
+			. '<br />'
+			. '<input type="text" class="widefat"'
+				. ' name="' . $this->get_field_name('title') . '"'
+				. ' value="' . esc_attr($title) . '" />'
+			. '</label>'
+			. '</p>' . "\n";
+	} # form()
 	
 	
 	/**
-	 * default_options()
+	 * defaults()
 	 *
-	 * @return array $widget_options
+	 * @return array $instance
 	 **/
 
-	function default_options() {
+	function defaults() {
 		return array(
 			'title' => '',
 			);
-	} # default_options()
+	} # defaults()
 	
 	
 	/**
-	 * new_widget()
-	 *
-	 * @param int $k arbitrary widget number
-	 * @return string $widget_id
-	 **/
-
-	function new_widget($k = null) {
-		$o = bookmark_me::get_options();
-		
-		if ( !( isset($k) && isset($o[$k]) ) ) {
-			$k = time();
-			while ( isset($o[$k]) ) $k++;
-			$o[$k] = bookmark_me::default_options();
-			
-			update_option('bookmark_me', $o);
-		}
-		
-		return 'bookmark_me-' . $k;
-	} # new_widget()
-	
-	
-	/**
-	 * clear_cache()
+	 * flush_cache()
 	 *
 	 * @return void
 	 **/
 
-	function clear_cache($in = null) {
-		$o = bookmark_me::get_options();
+	function flush_cache($in = null) {
+		$o = get_option('bookmark_me');
+		unset($o['_multiwidget']);
 		
-		if ( !$o ) return $in;
+		if ( !$o )
+			return $in;
 		
-		foreach ( array_keys($o) as $widget_id ) {
-			wp_cache_delete($widget_id, 'widget');
+		foreach ( array_keys($o) as $id ) {
+			wp_cache_delete("bookmark_me-$id", 'widget');
 		}
 		
 		return $in;
-	} # clear_cache()
+	} # flush_cache()
 } # bookmark_me
 
 
 /**
  * the_bookmark_links()
  *
+ * @param mixed $instance widget args (string title or array widget args)
+ * @param array $args sidebar args
  * @return void
  **/
 
-function the_bookmark_links($args = null) {
-	if ( is_string($args) ) {
-		$args = array('title' => $args);
-	}
+function the_bookmark_links($instance = null, $args = null) {
+	if ( is_string($instance) )
+		$instance = array('title' => $instance);
 	
-	$defaults = array(
+	$args = wp_parse_args($args, array(
 		'before_widget' => '<div class="bookmark_me">' . "\n",
 		'after_widget' => '</div>' . "\n",
 		'before_title' => '<h2>',
 		'after_title' => '</h2>' . "\n",
-		'title' => '',
-		);
+		));
 	
-	$args = array_merge($args, $defaults);
-	
-	bookmark_me::widget($args);
+	the_widget('bookmark_me', $instance, $args);
 } # the_bookmark_links()
-
-
-/**
- * bookmark_me_admin()
- *
- * @return void
- **/
-
-function bookmark_me_admin() {
-	include dirname(__FILE__) . '/sem-bookmark-me-admin.php';
-} # bookmark_me_admin()
-
-add_action('load-widgets.php', 'bookmark_me_admin');
 ?>

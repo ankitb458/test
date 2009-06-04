@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 5.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-04-12 17:20+0200\n"
+"POT-Creation-Date: 2009-06-04 18:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,120 +16,115 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: print.php:20
-msgid "RSS feed"
-msgstr ""
-
-#: print.php:48
+#: print.php:45
 #, php-format
 msgid "Filed under %s"
 msgstr ""
 
-#: sem-bookmark-me-admin.php:71
-msgid "Title:"
+#: sem-bookmark-me.php:127
+msgid "Bookmark links to social media sites such as Buzzup, Delicious and Digg"
 msgstr ""
 
-#: sem-bookmark-me.php:107
-msgid "Social bookmarking links"
-msgstr ""
-
-#: sem-bookmark-me.php:116 sem-bookmark-me.php:117 sem-bookmark-me.php:123
-#: sem-bookmark-me.php:124
+#: sem-bookmark-me.php:130
 msgid "Bookmark Me"
 msgstr ""
 
-#: sem-bookmark-me.php:221 sem-bookmark-me.php:222
+#: sem-bookmark-me.php:214 sem-bookmark-me.php:215
 msgid "Email"
 msgstr ""
 
-#: sem-bookmark-me.php:226 sem-bookmark-me.php:227
+#: sem-bookmark-me.php:219 sem-bookmark-me.php:220
 msgid "Print"
 msgstr ""
 
-#: sem-bookmark-me.php:284
+#: sem-bookmark-me.php:277
 msgid "Buzz Up"
 msgstr ""
 
-#: sem-bookmark-me.php:288
+#: sem-bookmark-me.php:281
 msgid "Digg"
 msgstr ""
 
-#: sem-bookmark-me.php:292
+#: sem-bookmark-me.php:285
 msgid "Mixx"
 msgstr ""
 
-#: sem-bookmark-me.php:296
+#: sem-bookmark-me.php:289
 msgid "Twitter"
 msgstr ""
 
-#: sem-bookmark-me.php:312
+#: sem-bookmark-me.php:305
 msgid "Current"
 msgstr ""
 
-#: sem-bookmark-me.php:316
+#: sem-bookmark-me.php:309
 msgid "Delicious"
 msgstr ""
 
-#: sem-bookmark-me.php:320
+#: sem-bookmark-me.php:313
 msgid "Diigo"
 msgstr ""
 
-#: sem-bookmark-me.php:324
+#: sem-bookmark-me.php:317
 msgid "Facebook"
 msgstr ""
 
-#: sem-bookmark-me.php:328
+#: sem-bookmark-me.php:321
 msgid "Fark"
 msgstr ""
 
-#: sem-bookmark-me.php:332
+#: sem-bookmark-me.php:325
 msgid "Google"
 msgstr ""
 
-#: sem-bookmark-me.php:336
+#: sem-bookmark-me.php:329
 msgid "LinkedIn"
 msgstr ""
 
-#: sem-bookmark-me.php:340
+#: sem-bookmark-me.php:333
 msgid "Live"
 msgstr ""
 
-#: sem-bookmark-me.php:344
+#: sem-bookmark-me.php:337
 msgid "MySpace"
 msgstr ""
 
-#: sem-bookmark-me.php:348
+#: sem-bookmark-me.php:341
 msgid "Newsvine"
 msgstr ""
 
-#: sem-bookmark-me.php:352
+#: sem-bookmark-me.php:345
 msgid "Propeller"
 msgstr ""
 
-#: sem-bookmark-me.php:356
+#: sem-bookmark-me.php:349
 msgid "Reddit"
 msgstr ""
 
-#: sem-bookmark-me.php:360
+#: sem-bookmark-me.php:353
 msgid "Slashdot"
 msgstr ""
 
-#: sem-bookmark-me.php:364
+#: sem-bookmark-me.php:357
 msgid "Sphinn"
 msgstr ""
 
-#: sem-bookmark-me.php:368
+#: sem-bookmark-me.php:361
 msgid "StumbleUpon"
 msgstr ""
 
-#: sem-bookmark-me.php:372
+#: sem-bookmark-me.php:365
 msgid "Tip'd"
 msgstr ""
 
-#: sem-bookmark-me.php:376
+#: sem-bookmark-me.php:369
 msgid "Yahoo!"
 msgstr ""
 
-#: sem-bookmark-me.php:380
+#: sem-bookmark-me.php:373
 msgid "What's This?"
+msgstr ""
+
+#: sem-bookmark-me.php:409
+msgid "Title:"
 msgstr ""
