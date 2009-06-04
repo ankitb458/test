@@ -1282,8 +1282,8 @@ class blog_footer extends WP_Widget {
 		
 		posts_nav_link(
 			' &bull; ',
-			'&larr;&nbsp;' . $previous_page,
-			$next_page . '&nbsp;&rarr;'
+			'&laquo;&nbsp;' . $previous_page,
+			$next_page . '&nbsp;&raquo;'
 			);
 		
 		echo $after_widget;
