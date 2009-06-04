@@ -2,7 +2,7 @@
 Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: uploads, uploads-folder, uploads folder, cms, semiologic
-Requires at least: 2.5
+Requires at least: 2.6
 Tested up to: 2.8
 Stable tag: trunk
 

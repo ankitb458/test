@@ -91,7 +91,7 @@ function export_ad_spaces()
 	
 	foreach ( $posts as $post )
 	{
-		#dump(htmlspecialchars($post->post_content));
+		#dump(esc_html($post->post_content));
 
 		$post->post_content = preg_replace("/
 			<!--
@@ -137,7 +137,7 @@ function export_ad_spaces()
 			$post->post_content
 			);
 
-		#dump(htmlspecialchars($post->post_content));
+		#dump(esc_html($post->post_content));
 		#dump(get_option('sidebars_widgets'));
 
 		$wpdb->query("

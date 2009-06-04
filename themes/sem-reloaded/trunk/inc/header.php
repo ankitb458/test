@@ -217,6 +217,10 @@ class sem_header {
 					. '</p>' . "\n";
 			}
 			
+			echo '<p>'
+				. sprintf(__('Maximum file size is %s based on your server\'s configuration.', 'sem-reloaded'), wp_convert_bytes_to_hr(apply_filters('import_upload_size_limit', wp_max_upload_size())))
+				. '</p>' . "\n";
+			
 			echo '<div class="submit">'
 				. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
 				. '</div>' . "\n";
@@ -322,6 +326,10 @@ class sem_header {
 					. __('Your wp-content/header folder is not writeable by the server', 'sem-reloaded')
 					. '</p>' . "\n";
 			}
+			
+			echo '<p>'
+				. sprintf(__('Maximum file size is %s based on your server\'s configuration.', 'sem-reloaded'), wp_convert_bytes_to_hr(apply_filters('import_upload_size_limit', wp_max_upload_size())))
+				. '</p>' . "\n";
 		}
 	} # edit_entry_header()
 	
