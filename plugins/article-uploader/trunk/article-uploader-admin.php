@@ -70,6 +70,10 @@ class article_uploader_admin {
 		echo '<ul class="ul-square">' . "\n";
 		
 		echo '<li>'
+			. sprintf(__('Maximum file size is %s based on your server\'s configuration.', 'article-uploader'), wp_convert_bytes_to_hr(apply_filters('import_upload_size_limit', wp_max_upload_size())))
+			. '</li>' . "\n";
+		
+		echo '<li>'
 			. __('Everything within the &lt;body&gt; and &lt;/body&gt; tags of your uploaded file will <strong>replace</strong> the entry\'s contents.', 'article-uploader')
 			. '</li>' . "\n";
 		

@@ -20,7 +20,7 @@
 }
 
 .bookmark_me_extra a {
-	width: 139px;
+	width: 136px;
 	overflow: hidden;
 	color: #22e !important;
 	background-image: url(../icons/icons.gif) !important;
@@ -44,8 +44,8 @@
 	color: #000;
 	border: solid 1px #999;
 	padding: 5px 5px;
-	margin-left: -6px;
-	width: 490px;
+	margin-left: -1px;
+	width: 480px;
 	-moz-border-radius: 10px;
 	-khtml-border-radius: 10px;
 	-webkit-border-radius: 10px;
