@@ -389,12 +389,12 @@ class entry_content extends WP_Widget {
 			
 			$content = get_the_content($more_link, 0, '');
 			
-			if ( is_attachment() ) {
+			if ( is_attachment() && $post->post_parent && preg_match("/^image\//i", $post->post_mime_type) ) {
 				# strip wpautop junk
 				$content = preg_replace("/<br\s*\/>\s+$/", '', $content);
 				
 				# add gallery links
-				$attachments = (array) get_children(array(
+				$attachments = get_children(array(
 						'post_parent' => $post->post_parent,
 						'post_type' => 'attachment',
 						'post_mime_type' => 'image',
