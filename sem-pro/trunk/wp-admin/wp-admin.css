@@ -76,6 +76,12 @@ select option {
 	border-bottom: 0 none;
 }
 
+#install-plugins .plugins td,
+#install-plugins .plugins th {
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+}
+
 .plugins .inactive td,
 .plugins .inactive th,
 .plugins .active td,
@@ -83,6 +89,10 @@ select option {
 	border-top-style: solid;
 	border-top-width: 1px;
 	padding: 5px 7px 0;
+}
+
+#wpbody-content .plugins .plugin-title {
+	padding-right: 12px;
 }
 
 .plugins .second td,
@@ -805,11 +815,6 @@ td.media-icon img {
 	font-weight: bold;
 }
 
-#update-nag a,
-.plugin-update a {
-	font-size: 1.1em;
-}
-
 #pass-strength-result {
 	border-style: solid;
 	border-width: 1px;
@@ -1332,7 +1337,7 @@ strong .post-com-count {
 .form-table table.color-palette {
 	vertical-align: bottom;
 	float: left;
-	margin: -8px 3px 8px;
+	margin: -12px 3px 11px;
 }
 
 .form-table .color-palette td {
@@ -3271,6 +3276,7 @@ p.popular-tags a {
 	margin: 0 5px;
 }
 
-label {
+label,
+#your-profile label + a {
 	vertical-align: middle;
 }
