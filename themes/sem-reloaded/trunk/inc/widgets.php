@@ -394,14 +394,12 @@ class entry_content extends WP_Widget {
 				$content = preg_replace("/<br\s*\/>\s+$/", '', $content);
 				
 				# add gallery links
-				$attachments = array_values(
-					(array) get_children(array(
+				$attachments = (array) get_children(array(
 						'post_parent' => $post->post_parent,
 						'post_type' => 'attachment',
 						'post_mime_type' => 'image',
-						'order_by' => 'menu_order ASC, ID ASC',
-						))
-					);
+						'order_by' => 'menu_order',
+						));
 				
 				foreach ( $attachments as $k => $attachment )
 					if ( $attachment->ID == $post->ID )
