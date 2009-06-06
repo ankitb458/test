@@ -395,7 +395,7 @@ class entry_content extends WP_Widget {
 				
 				# add gallery links
 				$attachments = array_values(
-					get_children(array(
+					(array) get_children(array(
 						'post_parent' => $post->post_parent,
 						'post_type' => 'attachment',
 						'post_mime_type' => 'image',
