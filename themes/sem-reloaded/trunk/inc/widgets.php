@@ -398,7 +398,7 @@ class entry_content extends WP_Widget {
 						'post_parent' => $post->post_parent,
 						'post_type' => 'attachment',
 						'post_mime_type' => 'image',
-						'order_by' => 'menu_order',
+						'order_by' => 'menu_order ID',
 						));
 				
 				foreach ( $attachments as $k => $attachment )
