@@ -48,8 +48,8 @@ function add_stop($in = null, $where = null) {
  **/
 
 function dump_stops($in = null) {
-	if ( $_POST )
-		return;
+	if ( $_POST || !current_user_can('manage_options') )
+		return $in;
 	
 	global $sem_stops;
 	global $wp_object_cache;
@@ -60,7 +60,7 @@ function dump_stops($in = null) {
 	dump($stops);
 	
 	# only show queries to admin users
-	if ( defined('SAVEQUERIES') && $_GET['debug'] == 'sql' && current_user_can('manage_options') ) {
+	if ( defined('SAVEQUERIES') && $_GET['debug'] == 'sql' ) {
 		global $wpdb;
 		foreach ( $wpdb->queries as $key => $data ) {
 			$query = rtrim($data[0]);
@@ -75,8 +75,26 @@ function dump_stops($in = null) {
 		}
 	}
 	
-	if ( sem_widget_cache_debug && $_GET['debug'] == 'cache' ) {
+	if ( $_GET['debug'] == 'cache' )
 		dump($wp_object_cache->cache);
+
+	if ( $_GET['debug'] == 'cron' ) {
+		$crons = get_option('cron');
+		
+		foreach ( $crons as $time => $_crons ) {
+			if ( !is_array($_crons) )
+				continue;
+			foreach ( $_crons as $event => $_cron ) {
+				foreach ( $_cron as $details ) {
+					$date = date('Y-m-d H:m:i', $time);
+					$schedule = isset($details['schedule']) ? "({$details['schedule']})" : '';
+					if ( $details['args'] )
+						dump("$date: $event $schedule", $details['args']);
+					else
+						dump("$date: $event $schedule");
+				}
+			}
+		}
 	}
 
 	return $in;
