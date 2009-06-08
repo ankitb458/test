@@ -2005,7 +2005,7 @@ class sem_nav_menu extends WP_Widget {
 
 	function display_home($item) {
 		extract($item, EXTR_SKIP);
-		if ( $label === '' )
+		if ( (string) $label === '' )
 			$label = __('Home', 'sem-reloaded');
 		$url = esc_url(user_trailingslashit(get_option('home')));
 		
@@ -2044,7 +2044,7 @@ class sem_nav_menu extends WP_Widget {
 
 	function display_url($item) {
 		extract($item, EXTR_SKIP);
-		if ( $label === '' )
+		if ( (string) $label === '' )
 			$label = __('Untitled', 'sem-reloaded');
 		$url = esc_url($ref);
 		if ( !$url || $url == 'http://' )
@@ -2091,9 +2091,9 @@ class sem_nav_menu extends WP_Widget {
 		}
 		
 		$label = get_post_meta($page->ID, '_widgets_label', true);
-		if ( $label === '' )
+		if ( (string) $label === '' )
 			$label = $page->post_title;
-		if ( $label === '' )
+		if ( (string) $label === '' )
 			$label = __('Untitled', 'sem-reloaded');
 		
 		$url = esc_url(get_permalink($page->ID));
@@ -2624,9 +2624,9 @@ class sem_nav_menu extends WP_Widget {
 			foreach ( $roots as $root_id ) {
 				$page = get_page($root_id);
 				$label = get_post_meta('_widgets_label', $page->ID, true);
-				if ( $label === '' )
+				if ( (string) $label === '' )
 					$label = $page->post_title;
-				if ( $label === '' )
+				if ( (string) $label === '' )
 					$label = __('Untitled', 'sem-reloaded');
 					
 				$items[] = array(
