@@ -44,7 +44,7 @@ function dtr_management_page()
 		<tr valign="top">
 		<td>
 		<p>This is your current list of events. You can add new events manually, or you can use the form underneath.</p>
-		<textarea style="width:95%; height:200px;" name="dates" id="dates" class="code"><?php echo format_to_edit($datefile); ?></textarea>
+		<textarea style="width:95%; height:200px;" name="dates" id="dates" class="code"><?php echo esc_html($datefile); ?></textarea>
 		</td>
 		</table>
 		<p class="submit"><input type="submit" value="Save Events" /></p>

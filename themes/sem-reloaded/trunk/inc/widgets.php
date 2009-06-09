@@ -1194,7 +1194,7 @@ class blog_header extends WP_Widget {
 						. ' id="' . $this->get_field_id($field) . '"'
 						. ' name="' . $this->get_field_name($field) . '"'
 						. ' >'
-						. format_to_edit($$field)
+						. esc_html($$field)
 						. '</textarea>'
 					. '</p>' . "\n";
 				break;
@@ -3038,7 +3038,7 @@ class footer extends sem_nav_menu {
 						: ''
 						)
 					. ' >'
-				. format_to_edit($$field)
+				. esc_html($$field)
 				. '</textarea>'
 				. '</p>' . "\n";
 		}

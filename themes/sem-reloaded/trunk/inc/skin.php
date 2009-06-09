@@ -361,7 +361,7 @@ EOS;
 			. '</label>'
 			. '<br />' . "\n"
 			. '<textarea id="sem_credits" name="credits" class="widefat" cols="50" rows="3">'
-			. format_to_edit($sem_options['credits'])
+			. esc_html($sem_options['credits'])
 			. '</textarea>'
 			. '</p>' . "\n";
 		

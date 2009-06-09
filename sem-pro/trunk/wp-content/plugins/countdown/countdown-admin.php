@@ -63,7 +63,7 @@ function dtr_options_page()
 		<th scope="row">Event List</th>
 		<td>
 		<textarea name="listformat" cols="58" rows="4"><?php
-		echo format_to_edit($options['listformat']);
+		echo esc_html($options['listformat']);
 		?></textarea>
 
 		<p>Use HTML and the following special tags to format the way events get displayed in widgets:</p>

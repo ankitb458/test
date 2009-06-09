@@ -141,7 +141,7 @@ class widget_utils {
 			. '</th>' . "\n"
 			. '<td>'
 			. '<textarea size="58" class="widefat" tabindex="5" name="widgets_desc" />'
-			. format_to_edit(get_post_meta($post_ID, '_widgets_desc', true))
+			. esc_html(get_post_meta($post_ID, '_widgets_desc', true))
 			. '</textarea>'
 			. '</td>' . "\n"
 			. '</tr>' . "\n";
