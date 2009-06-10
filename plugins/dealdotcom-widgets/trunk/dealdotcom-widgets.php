@@ -56,7 +56,7 @@ class dealdotcom extends WP_Widget {
 	function dealdotcom() {
 		$widget_ops = array(
 			'classname' => 'dealdotcom',
-			'description' => __("Dealdotcom\'s deal of the day", 'dealdotcome'),
+			'description' => __('Dealdotcom\'s deal of the day', 'dealdotcome'),
 			);
 		$control_ops = array(
 			'width' => 330,
