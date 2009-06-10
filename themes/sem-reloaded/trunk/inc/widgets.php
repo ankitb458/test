@@ -737,6 +737,7 @@ class entry_categories extends WP_Widget {
 			. __('Title:', 'sem-reloaded')
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
+				. ' id="' . $this->get_field_id('title') . '"'
 				. ' name="' . $this->get_field_name('title') . '"'
 				. ' value="' . esc_attr($title) . '"'
 				. ' />'
@@ -901,6 +902,7 @@ class entry_tags extends WP_Widget {
 			. __('Title:', 'sem-reloaded')
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
+				. ' id="' . $this->get_field_id('title') . '"'
 				. ' name="' . $this->get_field_name('title') . '"'
 				. ' value="' . esc_attr($title) . '"'
 				. ' />'

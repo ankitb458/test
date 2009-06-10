@@ -409,6 +409,7 @@ class bookmark_me extends WP_Widget {
 			. __('Title:', 'bookmark-me')
 			. '<br />'
 			. '<input type="text" class="widefat"'
+				. ' id="' . $this->get_field_id('title') . '"'
 				. ' name="' . $this->get_field_name('title') . '"'
 				. ' value="' . esc_attr($title) . '" />'
 			. '</label>'
