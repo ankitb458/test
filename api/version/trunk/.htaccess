@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteBase /version/trunk/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ /version/trunk/index.php [L]
