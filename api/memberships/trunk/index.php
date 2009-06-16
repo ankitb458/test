@@ -10,7 +10,7 @@ if ( !isset($_REQUEST['user_key']) || !preg_match("/^[0-9a-f]{32}$/", $_REQUEST[
 
 $user_key = $_REQUEST['user_key'];
 
-include dirname(dirname(__FILE__)) . '/config.php';
+include dirname(__FILE__) . '/config.php';
 
 # connect
 try {
