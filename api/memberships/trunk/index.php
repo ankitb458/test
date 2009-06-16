@@ -1,7 +1,39 @@
 <?php
-header('Content-Type: text/xml; Charset: UTF-8');
+define('path', dirname(__FILE__));
 
-echo '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
+include path . '/config.php';
+include path . '/inc/utils.php';
+include path . '/inc/db.php';
+
+# parse request
+$request = str_replace(base_uri, '', $_SERVER['REQUEST_URI']);
+
+if ( !$request ) {
+	status_header(400);
+	die;
+}
+
+$request = preg_replace("/\?.*/", '', $request);
+$request = rtrim($request, '/');
+$request = explode('/', $request);
+
+$vars = array('api_key');
+
+switch ( sizeof($request) ) {
+case 1:
+	$api_key = array_pop($request);
+	
+	if ( preg_match("/^[0-9a-f]{32}$/i", $api_key) ) )
+		break;
+	
+default:
+	status_header(400);
+	die;
+}
+
+
+
+header('Content-Type: text/plain; Charset: UTF-8');
 
 # check user_key
 if ( !isset($_REQUEST['user_key']) || !preg_match("/^[0-9a-f]{32}$/", $_REQUEST['user_key']) ) {

@@ -1,4 +1,3 @@
 RewriteEngine On
 RewriteBase /memberships/trunk/
 RewriteRule ^([0-9a-f]{32})/?$ /memberships/trunk/index.php?user_key=$1 [L]
-RewriteRule ^([^/]+)/([0-9a-f]{32})/?$ /memberships/trunk/index.php?profile_key=$1&user_key=$2 [L]

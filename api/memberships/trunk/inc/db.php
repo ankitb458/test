@@ -19,15 +19,21 @@ abstract class db {
 	/**
 	 * connect()
 	 *
+	 * @param string $db_type
 	 * @return void
 	 **/
 
-	static public function connect() {
+	static public function connect($db_type) {
+		$db_host = constant($db_type . '_host');
+		$db_name = constant($db_type . '_name');
+		$db_user = constant($db_type . '_user');
+		$db_pass = constant($db_type . '_pass');
+		
 		try {
 			self::$dbh = new PDO(
-				db_type . ':host=' . db_host . ';dbname=' . db_name,
-				db_user,
-				db_pass
+				$db_type . ':host=' . $db_host . ';dbname=' . $db_name,
+				$db_user,
+				$db_pass
 				);
 			
 			self::$dbh->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('dbs'));
