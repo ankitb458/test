@@ -1,7 +1,3 @@
---DROP TABLE api_versions;
---DROP TABLE api_logs;
-
--- logs/stats
 CREATE TABLE IF NOT EXISTS api_logs (
 	log_id			bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 	log_date		datetime NOT NULL,
