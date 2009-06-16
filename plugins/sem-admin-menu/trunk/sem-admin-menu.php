@@ -30,7 +30,7 @@ load_plugin_textdomain('sem-admin-menu', null, dirname(__FILE__) . '/lang');
  **/
 
 if ( !is_admin() ) {
-	add_action('wp_print_styles', array('sem_admin_menu', 'add_css'));
+	add_action('wp_print_styles', array('sem_admin_menu', 'styles'));
 	add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
 
 	add_filter('body_class', array('sem_admin_menu', 'body_class'));
@@ -40,17 +40,17 @@ if ( !is_admin() ) {
 
 class sem_admin_menu {
 	/**
-	 * add_css
+	 * styles()
 	 *
 	 * @return void
 	 **/
 
-	function add_css() {
+	function styles() {
 		$folder = plugin_dir_url(__FILE__);
 		$css = $folder . 'css/sem-admin-menu.css';
 		
 		wp_enqueue_style('sem_admin_menu', $css, null, '5.2');
-	} # add_css()
+	} # styles()
 	
 	
 	/**
