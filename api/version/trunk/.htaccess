@@ -1,4 +1,4 @@
 RewriteEngine On
-RewriteBase /version/trunk/
+RewriteBase /~denis/api/version/
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^ /version/trunk/index.php [L]
+RewriteRule ^ /~denis/api/version/index.php [L]

@@ -1,20 +1,5 @@
 <?php
 /**
- * dump()
- *
- * @return void
- **/
-
-function dump() {
-	foreach ( func_get_args() as $var ) 	{
-		echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
-		var_dump($var);
-		echo '</pre>';
-	}
-} # dump()
-
-
-/**
  * get_status_header_desc()
  *
  * @param int $header
@@ -107,6 +92,5 @@ function status_header($header) {
 	$status_header = "$protocol $header $text";
 
 	return @header($status_header, true, $header);
-}
-
+} # status_header()
 ?>
