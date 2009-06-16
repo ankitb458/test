@@ -50,10 +50,8 @@ if ( is_array($check) ) {
 	foreach ( $check as $file => $version ) {
 		$slug = explode('/', $file);
 		
-		if ( count($slug) != 2 ) {
-			status_header(400);
-			die;
-		}
+		if ( count($slug) != 2 )
+			continue;
 		
 		$to_check[$slug[0]] = $file;
 	}
@@ -61,9 +59,9 @@ if ( is_array($check) ) {
 
 $site_ip = $_SERVER['REMOTE_ADDR'];
 
-if ( isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/^WordPress(.*);(.*)$/", $_SERVER['HTTP_USER_AGENT'], $match) ) {
+if ( isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/^WordPress\/(.*); (.*)$/", $_SERVER['HTTP_USER_AGENT'], $match) ) {
 	$wp_version = $match[1];
-	$site_url = $match[2];
+	$site_url = trim($match[2]);
 } else {
 	$wp_version = '';
 	$site_url = '';
@@ -158,7 +156,7 @@ EOS;
 	$response = array();
 	while ( $row = $dbs->get_row() ) {
 		if ( version_compare($row->version, $to_check[$row->slug], '>') ) {
-			$response[$to_check[$row->slug]] = array(
+			$response[$to_check[$row->slug]] = (object) array(
 				'slug' => $row->slug,
 				'new_version' => $row->version,
 				'url' => $row->url,
