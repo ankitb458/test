@@ -23,7 +23,7 @@ switch ( sizeof($request) ) {
 case 1:
 	$api_key = array_pop($request);
 	
-	if ( preg_match("/^[0-9a-f]{32}$/i", $api_key) ) )
+	if ( preg_match("/^[0-9a-f]{32}$/i", $api_key) )
 		break;
 	
 default:
