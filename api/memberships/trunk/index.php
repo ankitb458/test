@@ -105,7 +105,7 @@ $user_id = db::get_var("
 	SELECT	user_id
 	FROM	users
 	WHERE	user_key = :user_key
-	", array('user_key' => $sem_api_key));
+	", array('user_key' => $api_key));
 
 if ( !$user_id ) {
 	db::disconnect();
@@ -121,7 +121,7 @@ $dbs = db::query("
 	JOIN	users
 	ON		users.user_id = memberships.user_id
 	WHERE	user_key = :user_key
-	", array('user_key' => $sem_api_key));
+	", array('user_key' => $api_key));
 
 $memberships = array();
 
