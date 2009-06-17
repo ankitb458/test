@@ -39,11 +39,6 @@ foreach ( $vars as $var ) {
 		$$var = isset($_POST[$var]) ? $_POST[$var] : '';
 }
 
-$check = array(
-	'ad-manager/ad-manager.php' => '2.0 RC',
-	'version-checker/version-checker.php' => '2.0 RC',
-	);
-
 $to_check = array();
 
 if ( is_array($check) ) {
@@ -87,6 +82,7 @@ if ( $site_ip != 'localhost' ) {
 		}
 	}
 }
+
 
 header('Content-Type: text/plain; Charset: UTF-8');
 
