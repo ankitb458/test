@@ -17,7 +17,7 @@ $request = preg_replace("/\?.*/", '', $request);
 $request = rtrim($request, '/');
 $request = explode('/', $request);
 
-$vars = array('api_key');
+$vars = array('api_key', 'site_url', 'site_ip', 'php_version', 'mysql_version');
 
 switch ( sizeof($request) ) {
 case 1:
@@ -31,116 +31,119 @@ default:
 	die;
 }
 
+foreach ( $vars as $var ) {
+	if ( !isset($$var) )
+		$$var = isset($_POST[$var]) ? $_POST[$var] : '';
+}
+
+$site_ip = $_SERVER['REMOTE_ADDR'];
+
+if ( isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/^WordPress\/(.*); (.*)$/", $_SERVER['HTTP_USER_AGENT'], $match) ) {
+	$wp_version = $match[1];
+	$site_url = trim($match[2]);
+} else {
+	$wp_version = '';
+	$site_url = '';
+}
+
+$site_ip = filter_var($site_ip, FILTER_VALIDATE_IP);
+$site_url = filter_var($site_url, FILTER_VALIDATE_URL);
+
+foreach ( array('wp_version', 'php_version', 'mysql_version') as $var ) {
+	if ( !preg_match("/^\d*\.\d+(?:\.\d+)(?: [a-z0-9]+)?$/i", $$var) ) {
+		$$var = '';
+	}
+}
+
+// foreach ( $vars as $var ) {
+// 	if ( !$$var ) {
+// 		status_header(400);
+// 		die;
+// 	}
+// }
 
 
 header('Content-Type: text/plain; Charset: UTF-8');
 
-# check user_key
-if ( !isset($_REQUEST['user_key']) || !preg_match("/^[0-9a-f]{32}$/", $_REQUEST['user_key']) ) {
-	die('<error>Invalid Request</error>');
-}
+db::connect('mysql');
 
-$user_key = $_REQUEST['user_key'];
+db::query("
+INSERT INTO api_logs (
+	log_date,
+	api_key,
+	site_ip,
+	site_url,
+	wp_version,
+	php_version,
+	mysql_version
+	)
+VALUES (
+	NOW(),
+	:api_key,
+	:site_ip,
+	:site_url,
+	:wp_version,
+	:php_version,
+	:mysql_version
+	);
+", compact(
+	'api_date',
+	'api_key',
+	'site_ip',
+	'site_url',
+	'wp_version',
+	'php_version',
+	'mysql_version'
+));
 
-include dirname(__FILE__) . '/config.php';
+db::disconnect();
 
-# connect
-try {
-	$dbh = new PDO('pgsql:dbname=' . pg_db . ';host=' . pg_host, pg_user, pg_pass);
-} catch ( PDOException $e ) {
-	die('<error>Failed to connect</error>');
-}
 
-$dbs = $dbh->prepare("
+db::connect('pgsql');
+
+$user_id = db::get_var("
 	SELECT	user_id
 	FROM	users
 	WHERE	user_key = :user_key
-	", array(PDO::ATTR_EMULATE_PREPARES => true));
+	", array('user_key' => $sem_api_key));
 
-$dbs->execute(array('user_key' => $user_key));
-
-$row = $dbs->fetch(PDO::FETCH_ASSOC);
-
-if ( !$row ) {
-	$dbh = null;
-	die('<error>Invalid User</error>');
-}
-else {
-	$user_id = $row['user_id'];
+if ( !$user_id ) {
+	db::disconnect();
+	status_header(400);
+	die;
 }
 
-$profile_key = isset($_REQUEST['profile_key']) ? $_REQUEST['profile_key'] : null;
-
-if ( $profile_key ) :
-
-$dbs = $dbh->prepare("
-SELECT  membership_expires
-FROM    memberships
-WHERE   user_id = :user_id
-AND	profile_key = :profile_key 
-", array(PDO::ATTR_EMULATE_PREPARES => true));
-
-$dbs->execute(array('user_id' => $user_id, 'profile_key' => $profile_key));
-
-$row = $dbs->fetch(PDO::FETCH_ASSOC);
-
-if ( !$row ) {
-        $dbh = null;
-	die('<error>Invalid Membership</error>');
-}
-else {
-	$expires = $row['membership_expires'];
-	if ( $expires ) {
-		$expires = date('Y-m-d', strtotime($expires));
-	}
-        $dbh = null;
-	die('<expires>' . $expires . '</expires>');
-}
-
-else :
-
-$dbs = $dbh->prepare("
+$dbs = db::query("
 	SELECT	profile_name,
-		profile_key,
-		membership_expires
+			profile_key,
+			membership_expires
 	FROM	memberships
-	WHERE	user_id = :user_id
-	", array(PDO::ATTR_EMULATE_PREPARES => true));
+	JOIN	users
+	ON		users.user_id = memberships.user_id
+	WHERE	user_key = :user_key
+	", array('user_key' => $sem_api_key));
 
-$dbs->execute(array('user_id' => $user_id));
+$memberships = array();
 
-echo '<memberships>' . "\n";
-
-while ( $row = $dbs->fetch(PDO::FETCH_ASSOC) ) {
-	$name = $row['profile_name'];
-	$key = $row['profile_key'];
-	$expires = $row['membership_expires'];
+while ( $row = $dbs->get_row() ) {
+	$name = $row->profile_name;
+	$key = $row->profile_key;
+	$expires = $row->membership_expires;
 
 	$name = htmlentities($name, ENT_COMPAT, 'UTF-8');
 	$key = htmlentities($key, ENT_COMPAT, 'UTF-8');
 
 	if ( !$expires ) {
-		$expires = '';
-	}
-	else {
+		$expires = false;
+	} else {
 		$expires = date('Y-m-d', strtotime($expires));
 	}
-
-	echo '<membership>' . "\n";
-
-	echo '<name>' . $name . '</name>' . "\n";
-
-	echo '<key>' . $key . '</key>' . "\n";
-
-	echo '<expires>' . $expires . '</expires>' . "\n";
-
-	echo '</membership>' . "\n";
+	
+	$memberships[$key] = array(
+		'name' => $name,
+		'expired' => $expires,
+		);
 }
 
-echo '</memberships>' . "\n";
-
-$dbh = null;
-die;
-
-endif;
+db::disconnect();
 ?>
