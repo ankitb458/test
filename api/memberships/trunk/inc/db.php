@@ -12,8 +12,6 @@
 
 abstract class db {
 	static protected $dbh;
-	static public $num_queries = 0;
-	static public $queries = array();
 	
 	
 	/**
@@ -120,8 +118,6 @@ abstract class db {
 	 **/
 
 	static public function query($sql, $args = null) {
-		self::$num_queries++;
-		
 		$dbs = self::prepare($sql);
 
 		if ( $dbs->execute($args) === false ) {
