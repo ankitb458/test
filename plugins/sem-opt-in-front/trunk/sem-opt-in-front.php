@@ -27,10 +27,6 @@ http://www.opensource.org/licenses/gpl-2.0.php
  **/
 
 add_action('init', array('sem_opt_in_front', 'init'));
-add_filter('category_link', array('sem_opt_in_front', 'category_link'), 10, 2);
-
-if ( !is_admin() )
-	add_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
 
 foreach ( array('create_term', 'edit_term', 'delete_term') as $hook )
 	add_action($hook, array('sem_opt_in_front', 'flush_cache'));
@@ -47,9 +43,11 @@ class sem_opt_in_front {
 		
 		define('main_cat_id', $main_cat_id ? intval($main_cat_id) : false);
 		
-		if ( !main_cat_id ) {
-			remove_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
-			remove_filter('category_link', array('sem_opt_in_front', 'category_link'), 10);
+		if ( main_cat_id ) {
+			add_filter('category_link', array('sem_opt_in_front', 'category_link'), 10, 2);
+
+			if ( !is_admin() )
+				add_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
 		}
 	} # init()
 	
@@ -97,6 +95,11 @@ class sem_opt_in_front {
 		
 		global $wpdb;
 		
+		static $done = false;
+		
+		if ( $done )
+			return $posts_join;
+		
 		$main_cat = get_term(main_cat_id, 'category');
 		
 		$extra = str_replace(array("\t", "\r", "\n"), ' ', "
@@ -107,7 +110,7 @@ class sem_opt_in_front {
 		
 		$posts_join .= $extra;
 		
-		remove_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
+		$done = true;
 		
 		return $posts_join;
 	} # posts_join()
