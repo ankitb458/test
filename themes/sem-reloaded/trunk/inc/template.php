@@ -214,6 +214,11 @@ class sem_template {
 	 **/
 
 	function wp(&$wp) {
+		static $done = false;
+		
+		if ( $done )
+			return;
+		
 		if ( is_attachment() ) {
 			add_filter('option_blog_public', 'false');
 			add_filter('comments_open', 'false');
@@ -229,7 +234,7 @@ class sem_template {
 			setup_postdata($post);
 		}
 		
-		remove_action('wp', array('sem_template', 'wp'));
+		$done = true;
 	} # wp()
 	
 	
