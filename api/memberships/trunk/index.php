@@ -130,9 +130,6 @@ while ( $row = $dbs->get_row() ) {
 	$key = $row->profile_key;
 	$expires = $row->membership_expires;
 
-	$name = htmlentities($name, ENT_COMPAT, 'UTF-8');
-	$key = htmlentities($key, ENT_COMPAT, 'UTF-8');
-
 	if ( !$expires ) {
 		$expires = false;
 	} else {
@@ -146,4 +143,7 @@ while ( $row = $dbs->get_row() ) {
 }
 
 db::disconnect();
+
+echo serialize($memberships);
+die;
 ?>
