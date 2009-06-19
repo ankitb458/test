@@ -53,6 +53,21 @@ if ( is_array($check) ) {
 
 header('Content-Type: text/plain; Charset: UTF-8');
 
+db::connect('pgsql');
+
+$expired = db::get_row("
+	SELECT	membership_expires
+	FROM	memberships
+	JOIN	users
+	ON		users.user_id = memberships.user_id
+	WHERE	user_key = :user_key
+	AND		profile_key = 'sem_pro'
+	", array('user_key' => $api_key));
+
+db::disconnect();
+
+var_dump($expired);
+
 db::connect('mysql');
 
 if ( !$to_check ) {
