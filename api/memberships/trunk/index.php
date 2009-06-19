@@ -101,18 +101,6 @@ db::disconnect();
 
 db::connect('pgsql');
 
-$user_id = db::get_var("
-	SELECT	user_id
-	FROM	users
-	WHERE	user_key = :user_key
-	", array('user_key' => $api_key));
-
-if ( !$user_id ) {
-	db::disconnect();
-	status_header(400);
-	die;
-}
-
 $dbs = db::query("
 	SELECT	profile_name,
 			profile_key,
