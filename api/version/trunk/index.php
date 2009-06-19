@@ -17,14 +17,14 @@ $request = preg_replace("/\?.*/", '', $request);
 $request = rtrim($request, '/');
 $request = explode('/', $request);
 
-$vars = array('type', 'check', 'api_key');
+$vars = array('api_key', 'type', 'check', 'packages');
 
 switch ( sizeof($request) ) {
 case 2:
 	$api_key = array_pop($request);
 	$type = array_pop($request);
 	
-	if ( preg_match("/^[0-9a-f]{32}$/i", $api_key) && in_array($type, $types) )
+	if ( preg_match("/^[0-9a-f]{32}$/i", $api_key) && in_array($type, array('core', 'plugins', 'themes', 'skins')) )
 		break;
 	
 default:
@@ -37,21 +37,41 @@ foreach ( $vars as $var ) {
 		$$var = isset($_POST[$var]) ? $_POST[$var] : '';
 }
 
+if ( !isset($packages) || !in_array($packages, array('stable', 'bleeding')) )
+	$packages = 'stable';
+
 $to_check = array();
 
 if ( is_array($check) ) {
-	foreach ( $check as $file => $version ) {
-		$slug = explode('/', $file);
-		
-		if ( count($slug) != 2 )
+	foreach ( $check as $key => $version ) {
+		if ( $type == 'core' ) {
+			$slug = $key;
+			if ( !in_array($slug, array('sem-pro')) )
+				continue;
+		} elseif ( $type == 'themes' ) {
+			$slug = $key;
+		} elseif ( $type == 'plugins' ) {
+			$slug = explode('/', trim($key, '/'));
+			if ( count($slug) != 2 )
+				continue;
+			$slug = current($slug);
+		} else {
 			continue;
+		}
 		
-		$to_check[$slug[0]] = $file;
+		$to_check[$slug] = (object) array(
+			'key' => $key,
+			'version' => $version,
+			);
 	}
 }
 
-
 header('Content-Type: text/plain; Charset: UTF-8');
+
+if ( !$to_check ) {
+	echo serialize(array());
+	die;
+}
 
 db::connect('pgsql');
 
@@ -79,8 +99,8 @@ db::connect('mysql');
 
 if ( !$to_check ) {
 	$dbs = db::query("
-	SELECT	slug, version, url, package
-	FROM	versions
+	SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
+	FROM	packages
 	WHERE	type = :type
 	ORDER BY slug
 	", array(
@@ -91,15 +111,15 @@ if ( !$to_check ) {
 	while ( $row = $dbs->get_row() ) {
 		if ( !$expired ) {
 		$response .= <<<EOS
-$row->slug: $row->version
+$row->slug: $row->stable_version
 url: $row->url
-package: $row->package
+package: $row->stable_package
 
 
 EOS;
 		} else {
 			$response .= <<<EOS
-$row->slug: $row->version
+$row->slug: $row->stable_version
 url: $row->url
 
 
@@ -108,8 +128,8 @@ EOS;
 	}
 } else {
 	$dbs = db::query("
-	SELECT	slug, version, url, package
-	FROM	versions
+	SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
+	FROM	packages
 	WHERE	type = :type
 	AND		slug IN (" . ( implode(',', array_map(array('db', 'escape'), array_keys($to_check))) ) . ")
 	ORDER BY slug
@@ -119,18 +139,18 @@ EOS;
 
 	$response = array();
 	while ( $row = $dbs->get_row() ) {
-		if ( version_compare($row->version, $to_check[$row->slug], '>') ) {
+		if ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<=') ) {
 			if ( !$expired ) {
-				$response[$to_check[$row->slug]] = (object) array(
+				$response[$to_check[$row->slug]->key] = (object) array(
 					'slug' => $row->slug,
-					'new_version' => $row->version,
+					'new_version' => $row->{$packages . '_version'},
 					'url' => $row->url,
-					'package' => $row->package,
+					'package' => $row->{$packages . '_package'},
 					);
 			} else {
-				$response[$to_check[$row->slug]] = (object) array(
+				$response[$to_check[$row->slug]->key] = (object) array(
 					'slug' => $row->slug,
-					'new_version' => $row->version,
+					'new_version' => $row->{$packages . '_version'},
 					'url' => $row->url,
 					);
 			}
