@@ -55,7 +55,7 @@ header('Content-Type: text/plain; Charset: UTF-8');
 
 db::connect('pgsql');
 
-$expired = db::get_row("
+$expires = db::get_var("
 	SELECT	membership_expires
 	FROM	memberships
 	JOIN	users
@@ -66,7 +66,14 @@ $expired = db::get_row("
 
 db::disconnect();
 
-var_dump($expired);
+$expired = false;
+if ( $expires === false ) {
+	$expired = true;
+} elseif ( is_null($expired) ) {
+	$expired = false;
+} else {
+	$expired = time() > strtotime($expires);
+}
 
 db::connect('mysql');
 
@@ -82,6 +89,7 @@ if ( !$to_check ) {
 	
 	$response = '';
 	while ( $row = $dbs->get_row() ) {
+		if ( !$expired ) {
 		$response .= <<<EOS
 $row->slug: $row->version
 url: $row->url
@@ -89,6 +97,14 @@ package: $row->package
 
 
 EOS;
+		} else {
+			$response .= <<<EOS
+$row->slug: $row->version
+url: $row->url
+
+
+EOS;
+		}
 	}
 } else {
 	$dbs = db::query("
@@ -104,12 +120,20 @@ EOS;
 	$response = array();
 	while ( $row = $dbs->get_row() ) {
 		if ( version_compare($row->version, $to_check[$row->slug], '>') ) {
-			$response[$to_check[$row->slug]] = (object) array(
-				'slug' => $row->slug,
-				'new_version' => $row->version,
-				'url' => $row->url,
-				'package' => $row->package,
-				);
+			if ( !$expired ) {
+				$response[$to_check[$row->slug]] = (object) array(
+					'slug' => $row->slug,
+					'new_version' => $row->version,
+					'url' => $row->url,
+					'package' => $row->package,
+					);
+			} else {
+				$response[$to_check[$row->slug]] = (object) array(
+					'slug' => $row->slug,
+					'new_version' => $row->version,
+					'url' => $row->url,
+					);
+			}
 		}
 	}
 	
