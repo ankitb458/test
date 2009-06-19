@@ -69,7 +69,7 @@ db::disconnect();
 $expired = false;
 if ( $expires === false ) {
 	$expired = true;
-} elseif ( is_null($expired) ) {
+} elseif ( is_null($expires) ) {
 	$expired = false;
 } else {
 	$expired = time() > strtotime($expires);
