@@ -53,7 +53,7 @@ if ( is_array($check) ) {
 
 header('Content-Type: text/plain; Charset: UTF-8');
 
-db::connect();
+db::connect('mysql');
 
 if ( !$to_check ) {
 	$dbs = db::query("
