@@ -126,7 +126,7 @@ while ( $row = $dbs->get_row() ) {
 	
 	$memberships[$key] = array(
 		'name' => $name,
-		'expired' => $expires,
+		'expires' => $expires,
 		);
 }
 
