@@ -17,16 +17,14 @@ $request = preg_replace("/\?.*/", '', $request);
 $request = rtrim($request, '/');
 $request = explode('/', $request);
 
-$vars = array('type', 'check', 'api_key', 'site_url', 'site_ip', 'php_version', 'mysql_version');
+$vars = array('type', 'check', 'api_key');
 
 switch ( sizeof($request) ) {
 case 2:
 	$api_key = array_pop($request);
-case 1:
 	$type = array_pop($request);
 	
-	if ( ( !isset($api_key) || isset($api_key) && preg_match("/^[0-9a-f]{32}$/i", $api_key) )
-		&& in_array($type, $types) )
+	if ( preg_match("/^[0-9a-f]{32}$/i", $api_key) && in_array($type, $types) )
 		break;
 	
 default:
@@ -52,72 +50,11 @@ if ( is_array($check) ) {
 	}
 }
 
-$site_ip = $_SERVER['REMOTE_ADDR'];
-
-if ( isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/^WordPress\/(.*); (.*)$/", $_SERVER['HTTP_USER_AGENT'], $match) ) {
-	$wp_version = $match[1];
-	$site_url = trim($match[2]);
-} else {
-	$wp_version = '';
-	$site_url = '';
-}
-
-if ( in_array($site_ip, array('::1', '127.0.0.1')) )
-	$site_ip = 'localhost';
-
-if ( $site_ip != 'localhost' ) {
-	$site_ip = filter_var($site_ip, FILTER_VALIDATE_IP);
-	$site_url = filter_var($site_url, FILTER_VALIDATE_URL);
-	
-	foreach ( array('wp_version', 'php_version', 'mysql_version') as $var ) {
-		if ( !preg_match("/^\d*\.\d+(?:\.\d+)(?: [a-z0-9]+)?$/i", $$var) ) {
-			$$var = '';
-		}
-	}
-	
-	foreach ( $vars as $var ) {
-		if ( !$$var ) {
-			status_header(400);
-			die;
-		}
-	}
-}
-
 
 header('Content-Type: text/plain; Charset: UTF-8');
 
 db::connect();
 
-db::query("
-INSERT INTO api_logs (
-	log_date,
-	api_key,
-	site_ip,
-	site_url,
-	wp_version,
-	php_version,
-	mysql_version
-	)
-VALUES (
-	NOW(),
-	:api_key,
-	:site_ip,
-	:site_url,
-	:wp_version,
-	:php_version,
-	:mysql_version
-	);
-", compact(
-	'api_date',
-	'api_key',
-	'site_ip',
-	'site_url',
-	'wp_version',
-	'php_version',
-	'mysql_version'
-));
-
-#var_dump($to_check);
 if ( !$to_check ) {
 	$dbs = db::query("
 	SELECT	slug, version, url, package
