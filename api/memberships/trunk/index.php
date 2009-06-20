@@ -31,9 +31,11 @@ default:
 	die;
 }
 
+$_REQUEST = array_merge($_GET, $_POST);
+
 foreach ( $vars as $var ) {
 	if ( !isset($$var) )
-		$$var = isset($_POST[$var]) ? $_POST[$var] : '';
+		$$var = isset($_REQUEST[$var]) ? $_REQUEST[$var] : '';
 }
 
 $site_ip = $_SERVER['REMOTE_ADDR'];
@@ -54,13 +56,6 @@ foreach ( array('wp_version', 'php_version', 'mysql_version') as $var ) {
 		$$var = '';
 	}
 }
-
-// foreach ( $vars as $var ) {
-// 	if ( !$$var ) {
-// 		status_header(400);
-// 		die;
-// 	}
-// }
 
 
 header('Content-Type: text/plain; Charset: UTF-8');
@@ -132,6 +127,13 @@ while ( $row = $dbs->get_row() ) {
 
 db::disconnect();
 
-echo serialize($memberships);
+if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+	echo serialize($memberships);
+} else {
+	foreach ( $memberships as $key => $membership ) {
+		echo $key . ':' . $membership['expires'] . "\n";
+	}
+}
+
 die;
 ?>
