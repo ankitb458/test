@@ -68,11 +68,6 @@ if ( is_array($check) ) {
 
 header('Content-Type: text/plain; Charset: UTF-8');
 
-if ( !$to_check ) {
-	echo serialize(array());
-	die;
-}
-
 db::connect('pgsql');
 
 $expires = db::get_var("
@@ -99,69 +94,65 @@ db::connect('mysql');
 
 if ( !$to_check ) {
 	$dbs = db::query("
-	SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
-	FROM	packages
-	WHERE	type = :type
-	ORDER BY slug
-	", array(
-		'type' => $type,
-	));
-	
-	$response = '';
-	while ( $row = $dbs->get_row() ) {
-		if ( !$expired ) {
-		$response .= <<<EOS
-$row->slug: $row->stable_version
-url: $row->url
-package: $row->stable_package
-
-
-EOS;
-		} else {
-			$response .= <<<EOS
-$row->slug: $row->stable_version
-url: $row->url
-
-
-EOS;
-		}
-	}
+		SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
+		FROM	packages
+		WHERE	type = :type
+		ORDER BY slug
+		", array(
+			'type' => $type,
+		));
 } else {
 	$dbs = db::query("
-	SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
-	FROM	packages
-	WHERE	type = :type
-	AND		slug IN (" . ( implode(',', array_map(array('db', 'escape'), array_keys($to_check))) ) . ")
-	ORDER BY slug
-	", array(
-		'type' => $type,
-	));
-
-	$response = array();
-	while ( $row = $dbs->get_row() ) {
-		if ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<=') ) {
-			if ( !$expired ) {
-				$response[$to_check[$row->slug]->key] = (object) array(
-					'slug' => $row->slug,
-					'new_version' => $row->{$packages . '_version'},
-					'url' => $row->url,
-					'package' => $row->{$packages . '_package'},
-					);
-			} else {
-				$response[$to_check[$row->slug]->key] = (object) array(
-					'slug' => $row->slug,
-					'new_version' => $row->{$packages . '_version'},
-					'url' => $row->url,
-					);
-			}
-		}
-	}
-	
-	$response = serialize($response);
+		SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
+		FROM	packages
+		WHERE	type = :type
+		AND		slug IN (" . ( implode(',', array_map(array('db', 'escape'), array_keys($to_check))) ) . ")
+		ORDER BY slug
+		", array(
+			'type' => $type,
+		));
 }
 
 db::disconnect();
-echo $response;
+
+$response = array();
+while ( $row = $dbs->get_row() ) {
+	if ( !$to_check ) {
+		$response[$row->slug] = (object) array(
+			'slug' => $row->slug,
+			'new_version' => $row->{$packages . '_version'},
+			'url' => $row->url,
+			'package' => $row->{$packages . '_package'},
+			);
+	} elseif ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<=') ) {
+		if ( !$expired ) {
+			$response[$to_check[$row->slug]->key] = (object) array(
+				'slug' => $row->slug,
+				'new_version' => $row->{$packages . '_version'},
+				'url' => $row->url,
+				'package' => $row->{$packages . '_package'},
+				);
+		} else {
+			$response[$to_check[$row->slug]->key] = (object) array(
+				'slug' => $row->slug,
+				'new_version' => $row->{$packages . '_version'},
+				'url' => $row->url,
+				);
+		}
+	}
+}
+
+if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+	echo serialize($response);
+} elseif ( !$expired) {
+	foreach ( $response as $key => $package ) {
+		echo $key . ':' . $package->package . "\n";
+	}
+} else {
+	foreach ( $response as $key => $package ) {
+		echo $key . ':' . "\n";
+	}
+}
 
 die;
 ?>

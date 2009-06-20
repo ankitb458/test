@@ -1,15 +1,22 @@
 CREATE TABLE IF NOT EXISTS packages (
+	id					int auto_increment,
 	type				varchar(64),
 	slug				varchar(64),
 	url					varchar(255),
+	readme				text NOT NULL DEFAULT '',
 	stable_version		varchar(32) NOT NULL DEFAULT '',
+	stable_requires		varchar(32) NOT NULL DEFAULT '',
+	stable_compat		varchar(32) NOT NULL DEFAULT '',
 	stable_package		varchar(255),
 	bleeding_version	varchar(32) NOT NULL DEFAULT '',
 	bleeding_package	varchar(255),
-	PRIMARY KEY ( type, slug )
+	bleeding_requires	varchar(32) NOT NULL DEFAULT '',
+	bleeding_compat		varchar(32) NOT NULL DEFAULT '',
+	PRIMARY KEY ( id ),
+	UNIQUE KEY ( type, slug )
 ) DEFAULT CHARSET=UTF8;
 
-INSERT INTO packages
+INSERT INTO packages ( type, slug, url, stable_version, stable_package, bleeding_version, bleeding_package )
 VALUES
 	( 'core', 'sem-pro', 'http://www.getsemiologic.com',
 		'5.7.1', 'http://www.semiologic.com/members/sem-pro/download/sem-pro.zip',
