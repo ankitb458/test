@@ -20,7 +20,7 @@ class session
 		self::$captions =& new captions;
 		
 		if ( $_SERVER['HTTP_HOST'] != 'localhost' )
-			ini_set('session.cookie_domain', 'semiologic.com');
+			ini_set('session.cookie_domain', '.semiologic.com');
 		else
 			ini_set('session.cookie_domain', 'localhost');
 		ini_set('session.cookie_path', '/');
