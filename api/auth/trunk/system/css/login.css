@@ -1,0 +1,22 @@
+/* login form skin */
+
+.login #body
+{
+	width: 420px !important;
+	margin-top: 40px !important;
+}
+
+.login div.text div.field
+{
+	width: 250px;
+}
+
+.login div.text div.label
+{
+	width: 120px;
+}
+
+.login div.text input
+{
+	width: 240px;
+}
