@@ -1628,56 +1628,14 @@ class header extends WP_Widget {
 		$i++;
 		$id = 'header_img_' . md5($i . $header);
 		
-		$get_flash = __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash 9.0</a> to see this player.', 'sem-reloaded');
-		
-		$script = <<<EOS
+		return <<<EOS
+
+<div style="width: {$width}px; height: {$height}px;"><object id="$id" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$width" height="$height"><param name="movie" value="$player" /><param name="allowfullscreen" value="false" /><param name="allowscriptaccess" value="true" /><embed src="$player" pluginspage="http://www.macromedia.com/go/getflashplayer" width="$width" height="$height" allowfullscreen="false" allowscriptaccess="true" /></object></div>
+
 <script type="text/javascript">
 swfobject.embedSWF("$player", "$id", "$width", "$height", "9.0.0");
 </script>
-EOS;
-		
-		return <<<EOS
 
-<object id="$id" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$width" height="$height">
-<param name="movie" value="$player" />
-<param name="autostart" value="$autostart" />
-<param name="autoscroll" value="$autoscroll" />
-<param name="overstretch" value="$overstretch" />
-<param name="thumbsinplaylist" value="$thumbsinplaylist" />
-<param name="allowfullscreen" value="$allowfullscreen" />
-<param name="flashvars" value="$flashvars" />
-<!--[if !IE]>-->
-<object type="application/x-shockwave-flash" data="$player" width="$width" height="$height">
-<param name="autostart" value="$autostart" />
-<param name="autoscroll" value="$autoscroll" />
-<param name="overstretch" value="$overstretch" />
-<param name="thumbsinplaylist" value="$thumbsinplaylist" />
-<param name="allowfullscreen" value="$allowfullscreen" />
-<param name="flashvars" value="$flashvars" />
-<!--<![endif]-->
-<p>$get_flash</p>
-<!--[if !IE]>-->
-</object>
-<!--<![endif]-->
-</object>
-$script
-
-EOS;
-
-		return <<<EOS
-<object id="$id" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$width" height="$height">
-<param name="movie" value="$header" />
-<!--[if !IE]>-->
-<object type="application/x-shockwave-flash" data="$header" width="$width" height="$height">
-<!--<![endif]-->
-<p>$get_flash</p>
-<!--[if !IE]>-->
-</object>
-<!--<![endif]-->
-</object>
-<script type="text/javascript">
-swfobject.registerObject("$id", "9.0.0");
-</script>
 EOS;
 	} # display_flash()
 	
