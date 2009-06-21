@@ -30,7 +30,6 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
  **/
 
 add_action('init', array('inline_widgets', 'init'), 0);
-#add_filter('the_content', array('inline_widgets', 'display'));
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
 class inline_widgets {
