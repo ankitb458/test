@@ -23,7 +23,7 @@
 						onselect : function(v) {
 							if ( v ) {
 								if ( v != 'inline_widget_help' ) {
-									v = '[widget id="' + v + '"/]';
+									v = '[widget id="' + v + '"]' + v + '[/widget]';
 
 									window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, v);
 									window.tinyMCE.execCommand("mceCleanup");

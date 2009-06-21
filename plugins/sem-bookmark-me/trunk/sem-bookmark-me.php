@@ -140,14 +140,22 @@ class bookmark_me extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		if ( is_admin() || is_feed() || isset($_GET['action']) && $_GET['action'] == 'print' )
+		if ( is_feed() || isset($_GET['action']) && $_GET['action'] == 'print' )
 			return;
 		
 		extract($args, EXTR_SKIP);
 		$instance = wp_parse_args($instance, bookmark_me::defaults());
 		extract($instance, EXTR_SKIP);
 		
-		if ( in_the_loop() ) {
+		if ( is_admin() ) {
+			echo $before_widget
+				. ( $title
+					? ( $before_title . $title . $after_title )
+					: ''
+					)
+				. $after_widget;
+			return;
+		} elseif ( in_the_loop() ) {
 			$page_title = get_the_title();
 			$page_url = get_permalink();
 		} elseif ( is_singular() ) {

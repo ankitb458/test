@@ -99,7 +99,7 @@ document.inlineWidgetItems = inlineWidgetItems;
 if ( document.getElementById('quicktags') ) {
 	function inlineWidgetsAddWidget(elt) {
 		if ( elt.value != '' ) {
-			edInsertContent(edCanvas, '[widget id="' + elt.value + '"/]');
+			edInsertContent(edCanvas, '[widget id="' + elt.value + '"]' + elt.options[elt.selectedIndex].innerHTML + '[/widget]');
 		}
 
 		elt.selectedIndex = 0;
