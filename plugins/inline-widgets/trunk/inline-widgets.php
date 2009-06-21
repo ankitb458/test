@@ -3,7 +3,7 @@
 Plugin Name: Inline Widgets
 Plugin URI: http://www.semiologic.com/software/inline-widgets/
 Description: Creates a special sidebar that lets you insert arbitrary widgets in posts' and pages' content. Configure these inline widgets under <a href="widgets.php">Appearance / Widgets</a>.
-Version: 1.1 RC
+Version: 2.0 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: inline-widgets-info
@@ -30,7 +30,8 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
  **/
 
 add_action('init', array('inline_widgets', 'init'), 0);
-add_filter('the_content', array('inline_widgets', 'display'));
+#add_filter('the_content', array('inline_widgets', 'display'));
+add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
 class inline_widgets {
 	/**
@@ -146,58 +147,38 @@ class inline_widgets {
 	
 	
 	/**
-	 * display()
+	 * shortcode()
 	 *
-	 * @param string $text
-	 * @return string $text
+	 * @param array $args
+	 * @return string $out
 	 **/
-
-	function display($text) {
-		$text = preg_replace_callback("/
-			(?:<p>\s*)?				# maybe a paragraph tag
-			\[
-			\s*widget\s*:
-			(.*?)
-			\]
-			(?:\*<\/p>\s*)?			# and a close paragraph tag
-			/ix", array('inline_widgets', 'display_callback'), $text);
-		
-		return $text;
-	} # display()
 	
-	
-	/**
-	 * display_callback()
-	 *
-	 * @param array $in regex match
-	 * @return string
-	 **/
-
-	function display_callback($in) {
+	function shortcode($args) {
 		global $wp_registered_widgets;
-		
 		$wp_registered_widgets = (array) $wp_registered_widgets;
+		extract($args, EXTR_SKIP);
 		
-		if ( !isset($wp_registered_widgets[$in[1]]) || !is_callable($wp_registered_widgets[$in[1]]['callback']) )
+		if ( !isset($id) || !isset($wp_registered_widgets[$id])
+			|| !is_callable($wp_registered_widgets[$id]['callback']) )
 			return '';
 		
 		$args = array(
-			'before_widget' => '<div class="' . esc_attr($wp_registered_widgets[$in[1]]['classname']) . '">' . "\n",
+			'before_widget' => '<div class="' . esc_attr($wp_registered_widgets[$id]['classname']) . '">' . "\n",
 			'after_widget' => '</div>' . "\n",
 			'before_title' => '%BEG_OF_TITLE%',
 			'after_title' => '%END_OF_TITLE%'
 			);
 		
-		$params = array($args, (array) $wp_registered_widgets[$in[1]]['params'][0]);
+		$params = array($args, (array) $wp_registered_widgets[$id]['params'][0]);
 
 		ob_start();
-		call_user_func_array($wp_registered_widgets[$in[1]]['callback'], $params);
+		call_user_func_array($wp_registered_widgets[$id]['callback'], $params);
 		$widget = ob_get_clean();
 		
 		$widget = preg_replace("/%BEG_OF_TITLE%(.*?)%END_OF_TITLE%/", '', $widget);
 		
 		return $widget;
-	} # display_callback()
+	} # shortcode()
 } # inline_widgets
 
 function inline_widgets_admin() {
