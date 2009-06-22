@@ -46,7 +46,7 @@ if ( is_array($check) ) {
 	foreach ( $check as $key => $version ) {
 		if ( $type == 'core' ) {
 			$slug = $key;
-			if ( !in_array($slug, array('sem-pro')) )
+			if ( $slug != 'sem-pro' )
 				continue;
 		} elseif ( $type == 'themes' ) {
 			$slug = $key;
@@ -115,44 +115,79 @@ if ( !$to_check ) {
 
 db::disconnect();
 
-$response = array();
-while ( $row = $dbs->get_row() ) {
-	if ( !$to_check ) {
-		$response[$row->slug] = (object) array(
-			'slug' => $row->slug,
-			'new_version' => $row->{$packages . '_version'},
-			'url' => $row->url,
-			'package' => $row->{$packages . '_package'},
-			);
-	} elseif ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<=') ) {
-		if ( !$expired ) {
-			$response[$to_check[$row->slug]->key] = (object) array(
+if ( $type != 'core' ) {
+	$response = array();
+	while ( $row = $dbs->get_row() ) {
+		if ( !$to_check ) {
+			$response[$row->slug] = (object) array(
 				'slug' => $row->slug,
 				'new_version' => $row->{$packages . '_version'},
 				'url' => $row->url,
 				'package' => $row->{$packages . '_package'},
 				);
-		} else {
-			$response[$to_check[$row->slug]->key] = (object) array(
-				'slug' => $row->slug,
-				'new_version' => $row->{$packages . '_version'},
-				'url' => $row->url,
-				);
+		} elseif ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
+			if ( !$expired ) {
+				$response[$to_check[$row->slug]->key] = (object) array(
+					'slug' => $row->slug,
+					'new_version' => $row->{$packages . '_version'},
+					'url' => $row->url,
+					'package' => $row->{$packages . '_package'},
+					);
+			} else {
+				$response[$to_check[$row->slug]->key] = (object) array(
+					'slug' => $row->slug,
+					'new_version' => $row->{$packages . '_version'},
+					'url' => $row->url,
+					);
+			}
 		}
+	}
+} else {
+	$row = $dbs->get_row();
+	$response = new stdClass;
+	
+	if ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
+		$response->response = 'upgrade';
+		$response->url = $row->url;
+		if ( !$expired )
+			$response->package = $row->{$packages . '_package'};
+		$response->current = $row->{$packages . '_version'};
+		$response->locale = 'en_US';
+	} elseif ( version_compare($to_check[$row->slug]->version, $row->stable_version, '>') ) {
+		$response->response = 'development';
+		$response->url = $row->url;
+		if ( !$expired )
+			$response->package = $row->{$packages . '_package'};
+		$response->current = $row->bleeding_version;
+		$response->locale = 'en_US';
+	} else {
+		$response->response = 'latest';
+		$response->url = $row->url;
+		if ( !$expired )
+			$response->package = $row->{$packages . '_package'};
+		$response->current = $row->{$packages . '_version'};
+		$response->locale = 'en_US';
 	}
 }
 
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
 	echo serialize($response);
-} elseif ( !$expired) {
-	foreach ( $response as $key => $package ) {
-		echo $key . ':' . $package->package . "\n";
+} elseif ( $type != 'core' ) {
+	if ( !$expired) {
+		foreach ( $response as $key => $package ) {
+			echo $key . ':' . $package->package . "\n";
+		}
+	} else {
+		foreach ( $response as $key => $package ) {
+			echo $key . ':' . "\n";
+		}
 	}
 } else {
-	foreach ( $response as $key => $package ) {
-		echo $key . ':' . "\n";
+	if ( !$expired ) {
+		echo 'sem-pro:' . $response->package . "\n";
+	} else {
+		echo 'sem-pro:' . "\n";
 	}
 }
-
 die;
 ?>
