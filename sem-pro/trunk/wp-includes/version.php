@@ -30,3 +30,10 @@ $tinymce_version = '3241-1141';
  * @global string $manifest_version
  */
 $manifest_version = '20090616';
+
+/**
+ * Holds the current Semiologic Pro version
+ *
+ * @global string $sem_pro_version
+ **/
+$sem_pro_version = '6.0-beta';
