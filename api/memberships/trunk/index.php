@@ -110,7 +110,7 @@ $memberships = array();
 
 while ( $row = $dbs->get_row() ) {
 	$name = $row->profile_name;
-	$key = $row->profile_key;
+	$key = str_replace('_', '-', $row->profile_key);
 	$expires = $row->membership_expires;
 
 	if ( !$expires ) {
