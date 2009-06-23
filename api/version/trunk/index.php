@@ -157,7 +157,7 @@ if ( $type != 'core' ) {
 		$response->response = 'development';
 		$response->url = $row->url;
 		if ( !$expired )
-			$response->package = $row->{$packages . '_package'};
+			$response->package = $row->bleeding_package;
 		$response->current = $row->bleeding_version;
 		$response->locale = 'en_US';
 	} else {
