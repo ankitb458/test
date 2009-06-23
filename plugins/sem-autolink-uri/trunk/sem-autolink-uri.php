@@ -172,7 +172,7 @@ class autolink_uri {
 	function escape_callback($match) {
 		global $escape_autolink_uri;
 		
-		$tag_id = "----escape_autolink_uri:" . strtolower(md5($match[0])) . "----";
+		$tag_id = "----escape_autolink_uri:" . md5($match[0]) . "----";
 		$escape_autolink_uri[$tag_id] = $match[0];
 		
 		return $tag_id;
