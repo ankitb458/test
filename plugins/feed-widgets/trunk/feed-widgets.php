@@ -6,7 +6,7 @@ Description: Creates a special sidebar that lets you insert widgets at the end o
 Version: 1.1 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: feed-widgets-info
+Text Domain: feed-widgets
 Domain Path: /lang
 */
 

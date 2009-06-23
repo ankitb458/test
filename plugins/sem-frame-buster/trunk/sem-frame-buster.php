@@ -6,7 +6,7 @@ Description: Prevents your blog from being loaded into a frame.
 Version: 4.1
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-frame-buster-info
+Text Domain: sem-frame-buster
 Domain Path: /lang
 */
 

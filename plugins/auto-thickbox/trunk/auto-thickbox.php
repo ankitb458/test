@@ -6,7 +6,7 @@ Description: Automatically enables thickbox on thumbnail images (i.e. opens the 
 Author: Denis de Bernardy
 Version: 2.0 RC
 Author URI: http://www.getsemiologic.com
-Text Domain: auto-thickbox-info
+Text Domain: auto-thickbox
 Domain Path: /lang
 */
 

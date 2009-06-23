@@ -6,7 +6,7 @@ Description: Widgets to display <a href="http://go.semiologic.com/dealdotcom">de
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: deadotcom-widgets-info
+Text Domain: deadotcom-widgets
 Domain Path: /lang
 */
 

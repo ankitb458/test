@@ -6,7 +6,7 @@ Description: Lets you upload files in place of using the WP editor when writing 
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: article-uploader-info
+Text Domain: article-uploader
 Domain Path: /lang
 */
 

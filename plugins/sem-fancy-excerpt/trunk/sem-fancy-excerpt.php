@@ -6,7 +6,7 @@ Description: Enhances WordPress' default excerpt generator by generating paragra
 Version: 3.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-fancy-excerpt-info
+Text Domain: sem-fancy-excerpt
 Domain Path: /lang
 */
 
@@ -18,6 +18,9 @@ This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is di
 
 http://www.opensource.org/licenses/gpl-2.0.php
 **/
+
+
+load_plugin_textdomain('sem-fancy-excerpt', null, dirname(__FILE__) . '/lang');
 
 
 remove_filter('get_the_excerpt', 'wp_trim_excerpt');
@@ -38,7 +41,7 @@ function fancy_excerpt($text) {
 	
 	global $allowedposttags;
 	
-	$more = __('More...');
+	$more = __('More...', 'fancy-excerpt');
 	
 	$text = get_the_content($more);
 	$text = strip_shortcodes($text);

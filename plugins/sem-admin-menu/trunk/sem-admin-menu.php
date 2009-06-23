@@ -6,7 +6,7 @@ Description: Adds a convenient admin menu to your blog. Configure its visibility
 Version: 5.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-admin-menu-info
+Text Domain: sem-admin-menu
 Domain Path: /lang
 */
 

@@ -6,7 +6,7 @@ Description: Adds <a href="http://analytics.google.com">Google analytics</a> to 
 Version: 3.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: google-analytics-info
+Text Domain: google-analytics
 Domain Path: /lang
 */
 

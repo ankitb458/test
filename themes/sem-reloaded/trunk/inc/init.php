@@ -4,7 +4,7 @@
 #
 
 if ( !defined('sem_version') )
-	define('sem_version', '5.7.2');
+	define('sem_version', '5.8');
 
 if ( !defined('sem_debug') )
 	define('sem_debug', isset($_GET['debug']) );
@@ -77,7 +77,7 @@ function dump($in = null) {
 	echo '<pre style="margin-left: 0px; margin-right: 0px; padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
 	foreach ( func_get_args() as $var ) {
 		echo "\n";
-		if ( is_string($var) || is_numeric($var) ) {
+		if ( is_string($var) ) {
 			echo "$var\n";
 		} else {
 			var_dump($var);
@@ -98,7 +98,6 @@ if ( sem_debug )
 #
 
 $sem_options = get_option('sem6_options');
-$sem_captions = get_option('sem6_captions');
 
 # autoinstall test
 #$sem_options = false;
@@ -109,14 +108,27 @@ $sem_captions = get_option('sem6_captions');
 #
 
 if ( !isset($sem_options['version']) ) {
-	# try sem5_options
-	$sem_options = get_option('sem5_options');
-	$sem_captions = get_option('sem5_captions');
-	
-	if ( $sem_options )
-		include sem_path . '/inc/upgrade.php';
-	else
+	switch ( true ) {
+	default:
+		# try sem5_options
+		$old_options = get_option('sem5_options');
+		
+		if ( $old_options ) {
+			include sem_path . '/inc/upgrade.php';
+			break;
+		}
+		
+		# try sem4_options
+		$old_options = get_option('semiologic');
+		
+		if ( $old_options ) {
+			include sem_path . '/inc/upgrade/4.x.php';
+			break;
+		}
+		
 		include sem_path . '/inc/install.php';
+		
+	}
 } elseif ( $sem_options['version'] != sem_version ) {
 	include sem_path . '/inc/upgrade.php';
 }

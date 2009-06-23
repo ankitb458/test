@@ -6,7 +6,7 @@ Description: Widgets that let your visitors share your webpages on social media 
 Version: 5.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: bookmark-me-info
+Text Domain: bookmark-me
 Domain Path: /lang
 */
 

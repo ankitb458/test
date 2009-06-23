@@ -6,7 +6,7 @@ Description: Leverages Yahoo!'s term extraction web service to automatically tag
 Version: 3.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: autotag-info
+Text Domain: autotag
 Domain Path: /lang
 */
 

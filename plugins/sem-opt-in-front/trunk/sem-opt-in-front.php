@@ -6,7 +6,7 @@ Description: Restricts the access to your front page on an opt-in basis: Only po
 Version: 3.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-opt-in-front-info
+Text Domain: sem-opt-in-front
 Domain Path: /lang
 */
 

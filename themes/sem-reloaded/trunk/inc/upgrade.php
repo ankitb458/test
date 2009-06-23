@@ -24,6 +24,12 @@ include sem_path . '/inc/upgrade/5.7.php';
 
 endif;
 
+if ( version_compare($sem_options['version'], '5.8', '<') ) :
+
+include sem_path . '/inc/upgrade/5.8.php';
+
+endif;
+
 include sem_path . '/inc/upgrade/reloaded.php';
 
 include sem_path . '/inc/upgrade/options.php';

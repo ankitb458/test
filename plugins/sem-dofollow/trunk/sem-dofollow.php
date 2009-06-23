@@ -6,7 +6,7 @@ Description: Removes the <a href="http://www.semiologic.com/2005/02/05/prepare-f
 Version: 3.3
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-dofollow-info
+Text Domain: sem-dofollow
 Domain Path: /lang
 */
 

@@ -6,7 +6,7 @@ Description: Creates a special sidebar that lets you insert arbitrary widgets in
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: inline-widgets-info
+Text Domain: inline-widgets
 Domain Path: /lang
 */
 

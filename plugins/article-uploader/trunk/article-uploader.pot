@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-05-27 21:20+0200\n"
+"POT-Creation-Date: 2009-06-23 17:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,18 +38,23 @@ msgid "A few points to keep in mind when uploading an article:"
 msgstr ""
 
 #: article-uploader-admin.php:73
+#, php-format
+msgid "Maximum file size is %s based on your server's configuration."
+msgstr ""
+
+#: article-uploader-admin.php:77
 msgid ""
 "Everything within the &lt;body&gt; and &lt;/body&gt; tags of your uploaded "
 "file will <strong>replace</strong> the entry's contents."
 msgstr ""
 
-#: article-uploader-admin.php:77
+#: article-uploader-admin.php:81
 msgid ""
 "It will <strong><em>really</em></strong> replace the entry's contents. No "
 "kidding!"
 msgstr ""
 
-#: article-uploader-admin.php:81
+#: article-uploader-admin.php:85
 msgid ""
 "Your html is inserted <em>as is</em>, complete with any html error you may "
 "have left behind. If your site looks like a train wreck after you use the "
@@ -57,7 +62,7 @@ msgid ""
 "you're on your own to fix it."
 msgstr ""
 
-#: article-uploader-admin.php:85
+#: article-uploader-admin.php:89
 msgid ""
 "Expanding on this, and as a tip... Prefer Dreamweaver to FrontPage if you're "
 "using the latter, consider checking your html document's syntax with an <a "
@@ -65,17 +70,17 @@ msgid ""
 "have someone from a site like eLance fix the html code."
 msgstr ""
 
-#: article-uploader-admin.php:89
+#: article-uploader-admin.php:93
 msgid "The article uploader also works with plain text files."
 msgstr ""
 
-#: article-uploader-admin.php:93
+#: article-uploader-admin.php:97
 msgid ""
 "Uploading an html file using the above form will force off WordPress' rich "
 "text editor and content reformatting features on this entry."
 msgstr ""
 
-#: article-uploader-admin.php:97
+#: article-uploader-admin.php:101
 msgid ""
 "If you're not writing in English, make sure your document's character "
 "encoding matches that of your site (find it under <a href=\"options-general."
@@ -83,7 +88,7 @@ msgid ""
 "odd looking characters all over the place."
 msgstr ""
 
-#: article-uploader-admin.php:103
+#: article-uploader-admin.php:107
 msgid ""
 "The article uploader also works with plain text files. In this case, the "
 "rich text editor will remain turned on."

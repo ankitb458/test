@@ -6,7 +6,7 @@ Description: Automatically wraps unhyperlinked uri with html anchors.
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-autolink-uri-info
+Text Domain: sem-autolink-uri
 Domain Path: /lang
 */
 

@@ -6,7 +6,7 @@ Description: Marks outbound links as such, with various effects that are configu
 Version: 4.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-external-links-info
+Text Domain: sem-external-links
 Domain Path: /lang
 */
 

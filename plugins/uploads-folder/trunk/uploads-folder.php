@@ -6,7 +6,7 @@ Description: Changes your uploads' subfolders to a more natural yyyy/mm/post-slu
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: uploads-folder-info
+Text Domain: uploads-folder
 Domain Path: /lang
 */
 

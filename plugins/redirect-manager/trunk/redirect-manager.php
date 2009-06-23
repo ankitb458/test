@@ -6,7 +6,7 @@ Description: Lets you manage redirects on your site without messing around with 
 Version: 1.1 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: redirect-manager-info
+Text Domain: redirect-manager
 Domain Path: /lang
 */
 
