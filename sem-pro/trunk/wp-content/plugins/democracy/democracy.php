@@ -822,7 +822,7 @@ function widget_democracy( $args )
 		return;
 	
 	echo $before_widget
-		. $before_title . $title . $after_title;
+		. $before_title . apply_filters('widget_title', $title) . $after_title;
 	jal_democracy();
 	echo $after_widget;
 }

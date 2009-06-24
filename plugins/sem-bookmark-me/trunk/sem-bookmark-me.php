@@ -150,7 +150,7 @@ class bookmark_me extends WP_Widget {
 		if ( is_admin() ) {
 			echo $before_widget
 				. ( $title
-					? ( $before_title . $title . $after_title )
+					? ( $before_title . apply_filters('widget_title', $title) . $after_title )
 					: ''
 					)
 				. $after_widget;
@@ -201,7 +201,7 @@ class bookmark_me extends WP_Widget {
 			echo $before_widget;
 
 			if ( $title )
-				echo $before_title . $title . $after_title;
+				echo $before_title . apply_filters('widget_title', $title) . $after_title;
 
 			echo '<div class="bookmark_me_services' . ( !$print_action ? ' bookmark_me_sidebar' : '' ) . '">' . "\n";
 
