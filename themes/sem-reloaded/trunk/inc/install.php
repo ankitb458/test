@@ -52,7 +52,7 @@ if ( $max_id == 2 ) {
 }
 
 
-if ( $do_reset ) :
+if ( $do_reset) :
 #
 # Step 3
 # ------
@@ -60,12 +60,12 @@ if ( $do_reset ) :
 #
 
 # Delete default posts, links and comments
-$wpdb->query("DELETE FROM $wpdb->posts;");
-$wpdb->query("DELETE FROM $wpdb->postmeta;");
-$wpdb->query("DELETE FROM $wpdb->comments;");
-$wpdb->query("DELETE FROM $wpdb->links;");
-$wpdb->query("DELETE FROM $wpdb->term_relationships;");
-$wpdb->query("UPDATE $wpdb->term_taxonomy SET count = 0;");
+// $wpdb->query("DELETE FROM $wpdb->posts;");
+// $wpdb->query("DELETE FROM $wpdb->postmeta;");
+// $wpdb->query("DELETE FROM $wpdb->comments;");
+// $wpdb->query("DELETE FROM $wpdb->links;");
+// $wpdb->query("DELETE FROM $wpdb->term_relationships;");
+// $wpdb->query("UPDATE $wpdb->term_taxonomy SET count = 0;");
 
 # Rename Uncategorized category as Blog
 $wpdb->query("
@@ -94,6 +94,7 @@ if ( got_mod_rewrite() && is_file(ABSPATH . '.htaccess') && is_writable(ABSPATH 
 	update_option('permalink_structure', $permalink_structure);
 }
 
+$wp_rewrite =& new WP_Rewrite;
 $wp_rewrite->flush_rules();
 
 

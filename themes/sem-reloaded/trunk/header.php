@@ -21,7 +21,6 @@ if ( $title = trim(wp_title('&#8211;', false)) ) {
 <?php do_action('wp_head'); ?>
 </head>
 <body class="<?php echo implode(' ', get_body_class(array('skin', 'custom'))); ?>">
-
 <?php
 # canvas
 

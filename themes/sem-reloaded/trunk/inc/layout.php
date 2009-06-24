@@ -123,7 +123,7 @@ EOS;
 		wp_nonce_field('sem_layout');
 		
 		global $sem_options;
-		$layouts = apply_filters('sem_layouts', sem_layout::get_layouts());
+		$layouts = sem_layout::get_layouts();
 		
 		screen_icon();
 		

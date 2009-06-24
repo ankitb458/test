@@ -228,7 +228,7 @@ EOS;
 		}
 		
 		echo '<p>'
-			. sprintf(__('Font Used: %s.', 'sem-reloaded'), $font)
+			. sprintf(__('Font Family: %s.', 'sem-reloaded'), $font)
 			. '</p>' . "\n";
 		
 		echo '<div style="clear: both;"></div>' . "\n";
@@ -361,7 +361,7 @@ EOS;
 			. '</label>'
 			. '<br />' . "\n"
 			. '<textarea id="sem_credits" name="credits" class="widefat" cols="50" rows="3">'
-			. esc_html($sem_options['credits'])
+			. htmlspecialchars($sem_options['credits'], ENT_COMPAT, get_option('blog_charset'))
 			. '</textarea>'
 			. '</p>' . "\n";
 		
