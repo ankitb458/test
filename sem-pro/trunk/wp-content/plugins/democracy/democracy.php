@@ -14,9 +14,7 @@ if ( isset($_GET['jal_add_user_answer']) || isset($_GET['jal_no_js']) )
 	{
 		preg_match("/(.*)(\?|&)(jal_add_user_answer|jal_no_js)(.*)/i", $_SERVER['REQUEST_URI'], $match);
 
-        header('HTTP/1.1 301 Moved Permanently');
-        header('Status: 301 Moved Permanently');
-		wp_redirect($match[1]);
+		wp_redirect($match[1], 301);
 		die;
 	}
 	add_action('init', 'jal_redirect');
