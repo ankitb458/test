@@ -103,8 +103,8 @@ class auto_thickbox {
 		$js = <<<EOS
 
 <script type="text/javascript">
-var tb_pathToImage = "$includes_url/js/thickbox/loadingAnimation.gif";
-var tb_closeImage = "$includes_url/js/thickbox/tb-close.png";
+var tb_pathToImage = "{$includes_url}js/thickbox/loadingAnimation.gif";
+var tb_closeImage = "{$includes_url}js/thickbox/tb-close.png";
 </script>
 
 EOS;
