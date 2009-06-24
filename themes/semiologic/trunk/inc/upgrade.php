@@ -1,7 +1,4 @@
 <?php
-global $wpdb;
-
-
 #
 # Upgrade
 #
@@ -24,6 +21,12 @@ include sem_path . '/inc/upgrade/5.7.php';
 
 endif;
 
+if ( version_compare($sem_options['version'], '5.8', '<') ) :
+
+include sem_path . '/inc/upgrade/5.8.php';
+
+endif;
+
 include_once sem_path . '/inc/upgrade/options.php';
 
 
@@ -34,25 +37,6 @@ include_once sem_path . '/inc/upgrade/options.php';
 $sem_options['version'] = sem_version;
 
 if ( !defined('sem_install_test') )
-{
 	update_option('sem5_options', $sem_options);
-	update_option('sem5_captions', $sem_captions);
-	update_option('sem_nav_menus', $sem_nav_menus);
-}
-
-
-#
-# Fetch docs
-#
-function sem_update_docs()
-{
-	if ( class_exists('sem_docs') )
-	{
-		sem_docs::update(true);
-		remove_action('init', 'sem_update_docs');
-	}
-} # sem_update_docs()
-
-add_action('init', 'sem_update_docs');
 
 ?>

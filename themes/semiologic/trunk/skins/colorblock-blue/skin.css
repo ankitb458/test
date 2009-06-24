@@ -1,6 +1,6 @@
 /*
 Skin name: Colorblock-blue
-Version: 1.0.1
+Version: 1.0.2
 Author: Techie Coach
 Author uri: http://www.techiecoachtutorials.com
 Description: Color block squares in blue
@@ -10,6 +10,10 @@ Description: Color block squares in blue
 	Background, font and link colors for the entire site
 	----------------------------------------------------
 */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

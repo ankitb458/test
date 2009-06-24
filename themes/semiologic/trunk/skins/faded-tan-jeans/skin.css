@@ -1,6 +1,6 @@
 /*
 Skin name: Faded Tan Jeans
-Version: 1.0
+Version: 1.0.1
 Author: Techie Coach
 Author uri: http://www.techiecoach.com
 Description: Be brave! Be beige!
@@ -11,6 +11,10 @@ Description: Be brave! Be beige!
 	Background, font and link colors for the entire site
 	----------------------------------------------------
 */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

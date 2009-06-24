@@ -11,9 +11,9 @@
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><title><?php
-if ( $title = trim(wp_title('&rarr;', false)) ) {
-	if ( strpos($title, '&rarr;') === 0 )
-		$title = trim(substr($title, strlen('&rarr;'), strlen($title)));
+if ( $title = trim(wp_title('&#8211;', false)) ) {
+	if ( strpos($title, '&#8211;') === 0 )
+		$title = trim(substr($title, strlen('&#8211;')));
 	echo $title;
 } else {
 	bloginfo('description');
@@ -24,13 +24,9 @@ if ( $title = trim(wp_title('&rarr;', false)) ) {
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 <?php do_action('wp_head'); ?>
 </head>
-<body class="<?php do_action('display_page_class'); ?>">
-<?php
-do_action('before_the_wrapper');
-?>
+<body class="<?php echo implode(' ', get_body_class(array('skin', 'custom'))); ?>">
+<?php do_action('before_the_wrapper'); ?>
 <div id="ext_wrapper">
-<div id="shadow_top"><div class="hidden"></div></div>
-<div id="shadow">
 <div id="wrapper">
 
 <?php

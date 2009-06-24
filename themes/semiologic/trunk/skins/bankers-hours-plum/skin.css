@@ -1,6 +1,6 @@
 /*
 Skin name: Bankers Hours Plum
-Version: 1.0.1
+Version: 1.0.2
 Author: TC for Myrna
 Author uri: http://www.healthybodynyc.com
 Description: Plum-Grey Flannel Suit
@@ -10,6 +10,10 @@ Description: Plum-Grey Flannel Suit
 	Background, font and link colors for the entire site
 	----------------------------------------------------
 */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

@@ -1,6 +1,6 @@
 /*
 Skin name: Light Gold
-Version: 1.1.1
+Version: 1.1.2
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: Light Gold skin
@@ -25,6 +25,10 @@ Description: Light Gold skin
 
 
 /* body */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

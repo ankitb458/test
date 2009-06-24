@@ -22,7 +22,7 @@ do_action('before_the_entry');
 
 			<?php while( have_books("author={$GLOBALS['nr_author']}") ) : the_book(); ?>
 				<li>
-					<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+					<p><a href="<?php book_permalink() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
 					<p><?php book_title() ?></p>
 				</li>
 

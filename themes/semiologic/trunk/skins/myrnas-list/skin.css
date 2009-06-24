@@ -1,6 +1,6 @@
 /*
 Skin name: Myrna's List
-Version: 1.4.1
+Version: 1.4.2
 Author: Myrna Weinreich
 Author uri: http://myrnaslist.com
 Description: Myrna's List skin
@@ -22,6 +22,10 @@ Description: Myrna's List skin
 # 2. Edit this new custom.css to override the skin defaults
 #
 */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

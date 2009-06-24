@@ -130,14 +130,6 @@ class/tag                     notes
     .entry_tags
     .entry_author
     .entry_date               used in article template only
-  .entry_actions              permalink...
-    .action                   applied to each element
-    .link_entry
-    .print_entry
-    .email_entry
-    .entry_comments
-    .comment_entry
-    .admin_link
   .entry_trackback_uri
   .comments
     h1                        number of comments

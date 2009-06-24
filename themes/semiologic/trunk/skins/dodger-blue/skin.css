@@ -1,6 +1,6 @@
 /*
 Skin name: Dodger Blue
-Version: 1.3.1
+Version: 1.3.2
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: Dodger Blue Skin
@@ -23,6 +23,10 @@ Description: Dodger Blue Skin
 #
 */
 
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

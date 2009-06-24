@@ -19,7 +19,7 @@ do_action('before_the_entry');
 			<p>By <a href="<?php book_author_permalink() ?>"><?php book_author() ?></a></p>
 
 			<p>
-				<a href="<?php book_url() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a>
+				<a href="<?php book_url() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a>
 			</p>
 
 			<?php if( !is_custom_book() ): ?>				<p>You can view this book's Amazon detail page <a href="<?php book_url() ?>">here</a>.</p>

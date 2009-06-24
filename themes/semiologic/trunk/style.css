@@ -2,7 +2,7 @@
 Theme Name: Semiologic
 Theme URI: http://www.semiologic.com/software/sem-theme/
 Description: The Semiologic theme &bull; <a href="http://www.mesoconcepts.com/license/">Terms of use</a>
-Version: 5.7.2 beta
+Version: 5.8 alpha
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 */
@@ -35,6 +35,7 @@ body
 {
 	background-color: white;
 	color: black;
+	font-family: 'Trebuchet MS', Tahoma, Helvetica, Sans-Serif;
 }
 
 
@@ -317,6 +318,12 @@ dl
 
 /* admin links */
 
+.entry_admin a {
+	float: right;
+	margin-left: .5em;
+	margin-bottom: .2em;
+}
+
 .admin_link
 {
 	font-weight: normal;
@@ -352,28 +359,10 @@ h2 a
 	color: black;
 }
 
-h1 a.external,
-h2 a.external
-{
-	background: none;
-	padding-right: 0px;
-}
-
 a:hover,
 .admin_link a:hover
 {
 	color: firebrick;
-}
-
-
-/* override external links */
-
-.header .external,
-.sidebar .external,
-.footer .external
-{
-	background-image: none;
-	padding-right: 0px;
 }
 
 
@@ -889,3 +878,4 @@ div.media
 .hidden {
 	display: none;
 }
+

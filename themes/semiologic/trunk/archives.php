@@ -15,19 +15,16 @@ Template Name: Archives
 
 if ( isset($_GET['mon']) )
 {
-	header('HTTP/1.1 301 Moved Permanently');
-	header('Status: 301 Moved Permanently');
-	
 	$mon = explode('-', $_GET['mon']);
 
 	if ( count($mon) == 2 )
 	{
-		wp_redirect(get_month_link($mon[0], $mon[1]));
+		wp_redirect(get_month_link($mon[0], $mon[1]), 301);
 	}
 	else
 	{
-		global $wp_query;
-		wp_redirect(get_permalink($wp_query->get_queried_object_id()));
+		global $wp_the_query;
+		wp_redirect(get_permalink($wp_the_query->get_queried_object_id()), 301);
 	}
 	die;
 }

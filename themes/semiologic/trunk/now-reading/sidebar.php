@@ -7,7 +7,7 @@
 
 		<?php while( have_books('status=unread') ) : the_book(); ?>
 			<li>
-				<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+				<p><a href="<?php book_permalink() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
 				<p><strong><?php book_title() ?></strong> by <?php book_author() ?></p>
 			</li>
 		<?php endwhile; ?>
@@ -24,7 +24,7 @@
 
 		<?php while( have_books('status=reading') ) : the_book(); ?>
 			<li>
-				<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+				<p><a href="<?php book_permalink() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
 				<p><strong><?php book_title() ?></strong> by <?php book_author() ?></p>
 			</li>
 
@@ -42,7 +42,7 @@
 
 		<?php while( have_books('status=read&orderby=finished&order=desc') ) : the_book(); ?>
 			<li>
-				<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+				<p><a href="<?php book_permalink() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
 				<p><strong><?php book_title() ?></strong> by <?php book_author() ?></p>
 			</li>
 		<?php endwhile; ?>

@@ -1,6 +1,6 @@
 /*
 Skin name: Faded Blue Jeans
-Version: 1.0
+Version: 1.0.1
 Author: Techie Coach
 Author uri: http://www.techiecoach.com
 Description: Web 2.0ish clean blue fade 
@@ -11,6 +11,10 @@ Description: Web 2.0ish clean blue fade
 	Background, font and link colors for the entire site
 	----------------------------------------------------
 */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

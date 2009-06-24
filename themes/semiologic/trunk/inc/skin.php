@@ -1,172 +1,491 @@
 <?php
+/**
+ * sem_skin
+ *
+ * @package Semiologic Theme
+ **/
 
-#
-# get_skin_data()
-#
+add_action('appearance_page_skin', array('sem_skin', 'save_options'), 0);
+add_action('admin_head', array('sem_skin', 'admin_head'));
+wp_enqueue_script('jquery');
 
-function get_skin_data($skin_id)
-{
-	$skin_data = @file_get_contents(dirname(dirname(__FILE__)) . '/skins/' . $skin_id . '/skin.css');
-
-	if ( !$skin_data ) return array();
+class sem_skin {
+	/**
+	 * admin_head()
+	 *
+	 * @return void
+	 **/
 	
-	$skin_data = str_replace("\r", "\n", $skin_data);
+	function admin_head() {
+		echo <<<EOS
 
-	preg_match('/Skin(?:\s+name)?\s*:(.*)/i', $skin_data, $name);
-	preg_match('/Version\s*:(.*)/i', $skin_data, $version);
-	preg_match('/Author\s*:(.*)/i', $skin_data, $author);
-	preg_match('/Author\s+ur[il]\s*:(.*)/i', $skin_data, $author_uri);
-	preg_match('/Description\s*:(.*)/i', $skin_data, $description);
+<style type="text/css">
+#current_option img {
+	border: solid 1px #999;
+	float: left;
+	clear: right;
+	margin-right: 10px;
+}
 
-#	echo '<pre>';
-#	var_dump($name, $version, $author, $author_uri, $description);
-#	echo '</pre>';
+.current_option_details th {
+	text-align: left;
+	padding-right: 5px;
+}
 
-	return array(
-		'skin' => $skin_id,
-		'name' => trim(end($name)),
-		'version' => trim(end($version)),
-		'author' => trim(end($author)),
-		'author_uri' => trim(end($author_uri)),
-		'description' => trim(end($description))
-		);
-} # end get_skin_data()
+.available_option {
+	text-align: center;
+	width: 275px;
+}
 
-#
-# get_active_skin()
-#
+.available_option img {
+	border: solid 1px #ccc;
+}
 
-function get_active_skin()
-{
-	global $sem_options;
+.available_option label {
+	cursor: pointer !important;
+}
 
-	return apply_filters('active_skin', $sem_options['active_skin']);
-} # end get_active_skin()
+#available_options {
+	border-collapse: collapse;
+}
 
+#available_options td {
+	padding: 10px;
+	border: solid 1px #ccc;
+}
 
-#
-# get_active_font()
-#
+#available_options td.top {
+	border-top: none;
+}
 
-function get_active_font()
-{
-	global $sem_options;
+#available_options td.bottom {
+	border-bottom: none;
+}
 
-	return apply_filters('active_font', $sem_options['active_font']);
-} # end get_active_font()
+#available_options td.left {
+	border-left: none;
+}
 
+#available_options td.right {
+	border-right: none;
+}
+</style>
 
-#
-# get_active_font()
-#
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery('#available_options label').click(function() {
+		jQuery(this).closest('td').find('input').attr('checked', 'checked');
+		jQuery('#option_picker').trigger('submit');
+	});
+});
+</script>
 
-function get_active_font_size()
-{
-	global $sem_options;
+<style type="text/css">
+.skin {
+	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
+}
 
-	$active_font_size = apply_filters('active_font_size', $sem_options['active_font_size']);
+.antica {
+	font-family: "Book Antica", Times, Serif;
+}
 
-	return $active_font_size ? $active_font_size : 'small';
-} # end get_active_font()
+.arial {
+	font-family: Arial, Helvetica, Sans-Serif;
+}
 
-#
-# get_skin_credits()
-#
+.bookman {
+	font-family: "Bookman Old Style", Times, Serif;
+}
 
-function get_skin_credits()
-{
-	$skin_data = get_skin_data(get_active_skin() );
+.comic {
+	font-family: "Comic Sans MS", Helvetica, Sans-Serif;
+}
 
-	return str_replace(
-		array('%name%', '%author%', '%author_uri%'),
-		array($skin_data['name'], $skin_data['author'], $skin_data['author_uri']),
-		__('%name% skin by <a href="%author_uri%">%author%</a>')
-		);
-} # end get_skin_credits()
+.corsiva {
+	font-family: "Monotype Corsiva", Courier, Monospace;
+}
 
-#
-# display_theme_css
-#
+.courier {
+	font-family: "Courier New", Courier, Monospace;
+}
 
-function display_theme_css()
-{
-	foreach ( array(
-		'/style.css',
-		'/font.css',
-		'/css/layout.css',
-		) as $file )
-	{
-		echo '<link rel="stylesheet" type="text/css" href="' . sem_url . $file . '?ver=' . rawurlencode(sem_version) . '" />' . "\n";
-	}
-} # end display_theme_css()
+.garamond {
+	font-family: Garamond, Times, Serif;
+}
 
-add_action('wp_head', 'display_theme_css', 20);
+.georgia {
+	font-family: Georgia, Times, Serif;
+}
 
+.tahoma {
+	font-family: Tahoma, Helvetica, Sans-Serif;
+}
 
-#
-# display_skin_css()
-#
+.times {
+	font-family: "Times New Roman", Times, Serif;
+}
 
-function display_skin_css()
-{
-	if ( $_GET['action'] == 'print' )
-	{
-		$file = '/css/print.css';
-	}
-	elseif ( get_active_width() == 'letter' )
-	{
-		$file = '/css/letter.css';
-	}
-	else
-	{
-		$file = '/skins/' . get_active_skin() . '/skin.css';
-	}
+.trebuchet {
+	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
+}
 
-	echo '<link rel="stylesheet" type="text/css" href="' . sem_url . $file . '?ver=' . rawurlencode(sem_version) . '" />' . "\n";
-} # end display_skin_css()
+.verdana {
+	font-family: Verdana, Helvetica, Sans-Serif;
+}
 
-add_action('wp_head', 'display_skin_css', 25);
+.small {
+	font-size: small;
+}
 
+.medium {
+	font-size: medium;
+}
 
-#
-# display_custom_css
-#
+.large {
+	font-size: large;
+}
+</style>
 
-function display_custom_css()
-{
-	$active_skin = get_active_skin();
-
-	if ( $active_skin
-		&& !( isset($_GET['action']) && $_GET['action'] == 'print' )
-		&& $active_width != 'sell'
-		)
-	{
-		if ( file_exists(sem_path . '/custom.css') )
-		{
-?>
-<link rel="stylesheet" type="text/css" href="<?php echo sem_url . '/custom.css'; ?>" />
-<?php
+EOS;
+	} # admin_head()
+	
+	
+	/**
+	 * save_options()
+	 *
+	 * @return void
+	 **/
+	
+	function save_options() {
+		if ( !$_POST )
+			return;
+		
+		check_admin_referer('sem_skin');
+		
+		global $sem_options;
+		
+		$sem_options['active_skin'] = preg_replace("/[^a-z0-9_-]/i", "", $_POST['skin']);
+		$sem_options['skin_data'] = sem_template::get_skin_data($sem_options['active_skin']);
+		$sem_options['active_font'] = preg_replace("/[^a-z0-9_-]/i", "", $_POST['font']);
+		$sem_options['active_font_size'] = in_array($_POST['font_size'], array('small', 'medium', 'large'))
+			? $_POST['font_size']
+			: 'medium';
+		
+		if ( current_user_can('unfiltered_html') )
+			$sem_options['credits'] = $_POST['credits'];
+		
+		update_option('sem5_options', $sem_options);
+		delete_transient('sem_header');
+		
+		echo '<div class="updated fade">'
+			. '<p><strong>'
+			. __('Settings saved.', 'sem-theme')
+			. '</strong></p>'
+			. '</div>' . "\n";
+	} # save_options()
+	
+	
+	/**
+	 * edit_options()
+	 *
+	 * @return void
+	 **/
+	
+	function edit_options() {
+		echo '<div class="wrap">' . "\n";
+		echo '<form method="post" action="" id="option_picker">' . "\n";
+		
+		wp_nonce_field('sem_skin');
+		
+		global $sem_options;
+		$skins = sem_skin::get_skins();
+		$fonts = sem_skin::get_fonts();
+		$font_sizes = sem_skin::get_font_sizes();
+		
+		screen_icon();
+		
+		echo '<h2>' . __('Manage Skin &amp; Font', 'sem-theme') . '</h2>' . "\n";
+		
+		echo '<h3>' . __('Current Skin &amp; Font', 'sem-theme') . '</h3>' . "\n";
+		
+		$details = $skins[$sem_options['active_skin']];
+		$screenshot = sem_url . '/skins/' . $sem_options['active_skin'] . '/screenshot.png';
+		$title = __('%1$s v.%2$s, by %3$s', 'sem-theme');
+		$name = $details['uri']
+			? ( '<a href="' . esc_url($details['uri']) . '"'
+				. ' title="' . esc_attr(__('Visit the skin\' page', 'sem-theme')) . '">'
+				. $details['name']
+				. '</a>' )
+			: $details['name'];
+		$author = $details['author_uri']
+			? ( '<a href="' . esc_url($details['author_uri']) . '"'
+				. ' title="' . esc_attr(__('Visit the skin authors\' site', 'sem-theme')) . '">'
+				. $details['author_name']
+				. '</a>' )
+			: $details['author_name'];
+		
+		echo '<div id="current_option">' . "\n";
+		
+		echo '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr(sprintf($title, $details['name'], $details['version'], $details['author'])) . '" />' . "\n";
+		
+		echo '<h4>' . sprintf($title, $name, $details['version'], $author) . '</h4>';
+		
+		$font = '<span class="' . $sem_options['active_font'] . '">'
+			. $fonts[$sem_options['active_font']]
+			. '</span>';
+		
+		$font_size = '<span class="' . $sem_options['active_font_size'] . '">'
+			. $font_sizes[$sem_options['active_font_size']]
+			. '</span>';
+		
+		if ( $details['description'] ) {
+			echo wpautop($details['description']);
 		}
-		if ( file_exists(sem_path . '/skins/' . $active_skin . '/custom.css') )
-		{
-?>
-<link rel="stylesheet" type="text/css" href="<?php echo sem_url . '/skins/' . $active_skin . '/custom.css'; ?>" />
-<?php
+		
+		if ( $details['tags'] ) {
+			echo '<p>'
+				. sprintf(__('Tags: %s', 'sem-theme'), implode(',', $details['tags']))
+				. '</p>' . "\n";
 		}
-	}
-} # end display_custom_css()
+		
+		echo '<p>'
+			. sprintf(__('Font Family: %s.', 'sem-theme'), $font)
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. sprintf(__('Font Size: %s.', 'sem-theme'), $font_size)
+			. '</p>' . "\n";
+		
+		echo '<div style="clear: both;"></div>' . "\n";
+		
+		echo '</div>' . "\n";
+		
+		echo '<h3>' . __('Available Skins', 'sem-theme') . '</h3>' . "\n";
+		
+		echo '<p class="hide-if-no-js">'
+			. __('Click on a skin below to activate it.', 'sem-theme')
+			. '</p>' . "\n";
+		
+		echo '<table id="available_options" cellspacing="0" cellpadding="0">' . "\n";
+		
+		$row_size = 2;
+		$num_rows = ceil(count($skins) / $row_size);
+		
+		$i = 0;
+		
+		foreach ( $skins as $skin => $details ) {
+			if ( $i && !( $i % $row_size ) )
+				echo '</tr>' . "\n";
+			
+			if ( !( $i % $row_size ) )
+				echo '<tr>' . "\n";
+			
+			$classes = array('available_option');
+			if ( ceil(( $i + 1 ) / $row_size) == 1 )
+				$classes[] = 'top';
+			if ( ceil(( $i + 1 ) / $row_size) == $num_rows )
+				$classes[] = 'bottom';
+			if ( !( $i % $row_size ) )
+				$classes[] = 'left';
+			elseif ( !( ( $i + 1 ) % $row_size ) )
+				$classes[] = 'right';
+			
+			$i++;
+			
+			echo '<td class="' . implode(' ', $classes) . '">' . "\n";
+			
+			$screenshot = sem_url . '/skins/' . $skin . '/screenshot.png';
+			$title = __('%1$s v.%2$s', 'sem-theme');
+			$name = $details['uri']
+				? ( '<a href="' . esc_url($details['uri']) . '"'
+					. ' title="' . esc_attr(__('Visit the skin\'s page', 'sem-theme')) . '">'
+					. $details['name']
+					. '</a>' )
+				: $details['name'];
+			$author = $details['author_uri']
+				? ( '<a href="' . esc_url($details['author_uri']) . '"'
+					. ' title="' . esc_attr(__('Visit the skin author\'s site', 'sem-theme')) . '">'
+					. $details['author_name']
+					. '</a>' )
+				: $details['author_name'];
+			
+			echo '<p>'
+				. '<label for="skin-' . $skin . '">'
+				. '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($details['name']) . '"/>'
+				. '</label>'
+				. '</p>' . "\n"
+				. '<h4>'
+				. '<span class="hide-if-js">'
+				. '<input type="radio" name="skin" value="' . $skin . '" id="skin-' . $skin . '"'
+					. checked($sem_options['active_skin'], $skin, false)
+					. ' />' . '&nbsp;' . "\n"
+				. '</span>'
+				. sprintf($title, $name, $details['version']) . '<br />'
+				. sprintf(__('By %s', 'sem-theme'), $author)
+				. '</h4>' . "\n";
+			
+			echo '</td>' . "\n";
+		}
+		
+		while ( $i % $row_size ) {
+			$classes = array('available_option');
+			if ( ceil(( $i + 1 ) / $row_size) == 1 )
+				$classes[] = 'top';
+			if ( ceil(( $i + 1 ) / $row_size) == $num_rows )
+				$classes[] = 'bottom';
+			if ( !( $i % $row_size ) )
+				$classes[] = 'left';
+			elseif ( !( ( $i + 1 ) % $row_size ) )
+				$classes[] = 'right';
+			
+			$i++;
+			
+			echo '<td class="' . implode(' ', $classes) . '">&nbsp;</td>' . "\n";
+		}
+		
+		echo '</tr>' . "\n";
+			
+		
+		echo '</table>' . "\n";
+		
+		echo '<p class="submit hide-if-js">'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-theme')) . '" />'
+			. '</p>' . "\n";
+		
+		echo '<h3>' . __('Font Settings', 'sem-theme') . '</h3>' . "\n";
+		
+		echo '<p>' . __('This will let you set the default font on your site.', 'sem-theme') . '</p>' . "\n";
+		
+		echo '<ul>' . "\n";
+		
+		foreach ( $fonts as $k => $v ) {
+			echo '<li class="' . ( $k ? $k : 'skin' ) . '">'
+				. '<label>'
+				. '<input type="radio" name="font" value="' . $k . '"'
+					. checked($sem_options['active_font'], $k, false)
+					. '/>'
+				. '&nbsp;'
+				. $v
+				. '</label>'
+				. '</li>' . "\n";
+		}
+		
+		echo '</ul>' . "\n";
+		
+		echo '<div class="submit">'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-theme')) . '" />'
+			. '</div>' . "\n";
+		
+		echo '<h3>' . __('Font Size Settings', 'sem-theme') . '</h3>' . "\n";
+		
+		echo '<ul>' . "\n";
+		
+		foreach ( $font_sizes as $k => $v ) {
+			echo '<li class="' . $k . '">'
+				. '<label>'
+				. '<input type="radio" name="font_size" value="' . $k . '"'
+					. checked($sem_options['active_font_size'], $k, false)
+					. '/>'
+				. '&nbsp;'
+				. $v
+				. '</label>'
+				. '</li>' . "\n";
+		}
+		
+		echo '</ul>' . "\n";
+		
+		echo '<div class="submit">'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-theme')) . '" />'
+			. '</div>' . "\n";
+		
+		echo '<h3>' . __('Designer Credits', 'sem-theme') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label for="sem_credits">'
+			. '<code>'
+			. htmlspecialchars(__('Made with %semiologic% &bull; %skin_name% skin by %skin_author%', 'sem-theme'), ENT_COMPAT, get_option('blog_charset'))
+			. '</code>'
+			. '</label>'
+			. '<br />' . "\n"
+			. '<textarea id="sem_credits" name="credits" class="widefat" cols="50" rows="3">'
+			. htmlspecialchars($sem_options['credits'], ENT_COMPAT, get_option('blog_charset'))
+			. '</textarea>'
+			. '</p>' . "\n";
+		
+		echo '<div class="submit">'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-theme')) . '" />'
+			. '</div>' . "\n";
+		
+		echo '</form>' . "\n";
+		echo '</div>' . "\n";
+	} # edit_options()
+	
+	
+	/**
+	 * get_skins()
+	 *
+	 * @return array $skins
+	 **/
 
-add_action('wp_head', 'display_custom_css', 10000);
+	function get_skins() {
+		$skins = array();
+		$handle = @opendir(sem_path . '/skins');
 
+		if ( !$handle )
+			return array();
 
-#
-# display_theme_icon_css()
-#
+		while ( ($skin = readdir($handle) ) !== false ) {
+			if ( in_array($skin, array('.', '..')) )
+				continue;
+			
+			$file = sem_path . "/skins/$skin/skin.css";
+			if ( !is_file($file) || !is_readable($file) )
+				continue;
+			
+			$skins[$skin] = sem_template::get_skin_data($skin);
+		}
 
-function display_theme_icon_css()
-{
-	echo '<link rel="stylesheet" type="text/css" href="' . sem_url . '/icons/icons.css?ver=' . rawurlencode(sem_version) . '" />' . "\n";
-} # display_theme_icon_css()
+		return $skins;		
+	} # get_skins()
+	
+	
+	/**
+	 * get_fonts()
+	 *
+	 * @return array $fonts
+	 **/
 
-add_action('wp_head', 'display_theme_icon_css', 20);
+	function get_fonts() {
+		return array(
+			'' =>  __('The skin\'s default', 'sem-theme'),
+			'arial' => __('Arial, Helvetica, Sans-Serif', 'sem-theme'),
+			'antica' => __('Book Antica, Times, Serif', 'sem-theme'),
+			'bookman' => __('Bookman Old Style, Times, Serif', 'sem-theme'),
+			'comic' => __('Comic Sans MS, Helvetica, Sans-Serif', 'sem-theme'),
+			'courier' => __('Courier New, Courier, Monospace', 'sem-theme'),
+			'garamond' => __('Garamond, Times, Serif', 'sem-theme'),
+			'georgia' => __('Georgia, Times, Serif', 'sem-theme'),
+			'corsiva' => __('Monotype Corsiva, Courier, Monospace', 'sem-theme'),
+			'tahoma' => __('Tahoma, Helvetica, Sans-Serif', 'sem-theme'),
+			'times' => __('Times New Roman, Times, Serif', 'sem-theme'),
+			'trebuchet' => __('Trebuchet MS, Tahoma, Helvetica, Sans-Serif', 'sem-theme'),
+			'verdana' => __('Verdana, Helvetica, Sans-Serif', 'sem-theme'),
+			);
+	} # get_fonts()
+	
+	
+	/**
+	 * get_font_sizes()
+	 *
+	 * @return array $font_sizes
+	 **/
+
+	function get_font_sizes() {
+		return array(
+			'small' => __('Small Font', 'sem-theme'),
+			'medium' => __('Medium Font', 'sem-theme'),
+			'large' => __('Large Font', 'sem-theme'),
+			);
+	} # get_font_sizes()
+} # sem_skin
 ?>

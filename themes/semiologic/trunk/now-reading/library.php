@@ -22,7 +22,7 @@ do_action('before_the_entry');
 
 			<?php while( have_books('status=unread&num=-1') ) : the_book(); ?>
 				<li>
-					<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+					<p><a href="<?php book_permalink() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
 					<p><a href="<?php book_permalink() ?>"><?php book_title() ?></a> by <a href="<?php book_author_permalink() ?>"><?php book_author() ?></a></p>
 				</li>
 
@@ -40,7 +40,7 @@ do_action('before_the_entry');
 
 			<?php while( have_books('status=reading&num=-1') ) : the_book(); ?>
 				<li>
-					<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+					<p><a href="<?php book_permalink() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
 					<p><a href="<?php book_permalink() ?>"><?php book_title() ?></a> by <a href="<?php book_author_permalink() ?>"><?php book_author() ?></a></p>
 				</li>
 
@@ -58,7 +58,7 @@ do_action('before_the_entry');
 
 			<?php while( have_books('status=read&orderby=finished&order=desc&num=-1') ) : the_book(); ?>
 				<li>
-					<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+					<p><a href="<?php book_permalink() ?>" class="no_icon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
 					<p><a href="<?php book_permalink() ?>"><?php book_title() ?></a> by <a href="<?php book_author_permalink() ?>"><?php book_author() ?></a></p>
 				</li>
 

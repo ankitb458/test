@@ -16,11 +16,8 @@ Template Name: Links
 
 if ( isset($_GET['cat_id']) )
 {
-	header('HTTP/1.1 301 Moved Permanently');
-	header('Status: 301 Moved Permanently');
-
-	global $wp_query;
-	wp_redirect(get_permalink($wp_query->get_queried_object_id()));
+	global $wp_the_query;
+	wp_redirect(get_permalink($wp_the_query->get_queried_object_id()), 301);
 	die;
 }
 

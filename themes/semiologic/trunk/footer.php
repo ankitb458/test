@@ -14,15 +14,15 @@
 
 <?php
 do_action('display_sidebar');
-do_action('display_body_spacer');
 ?>
+<div class="spacer"></div>
 </div><!-- #ext_main -->
 
 <?php
 do_action('display_sidebar2');
-do_action('display_body_spacer');
 ?>
 
+<div class="spacer"></div>
 </div><!-- #body -->
 
 <?php
@@ -34,14 +34,11 @@ do_action('the_footer');
 
 <?php
 do_action('display_ext_sidebar');
-do_action('display_canvas_spacer');
 ?>
 
-</div><!-- #shadow -->
-<div id="shadow_bottom"><div class="hidden"></div></div>
+<div class="spacer"></div>
 </div><!-- #ext_wrapper -->
 <?php
-do_action('display_canvas_spacer');
 do_action('after_the_wrapper');
 do_action('wp_footer');
 ?>

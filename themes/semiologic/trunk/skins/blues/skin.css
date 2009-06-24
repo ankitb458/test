@@ -1,6 +1,6 @@
 /*
 Skin name: Blues
-Version: 1.0.1
+Version: 1.0.2
 Author: TechieCoach
 Author uri: http://www.TechieCoachTutorials.com
 Description: Ocean, blues calm
@@ -18,6 +18,10 @@ Description: Ocean, blues calm
 #
 */
 
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 
 body

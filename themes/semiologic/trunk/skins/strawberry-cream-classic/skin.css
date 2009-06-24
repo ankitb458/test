@@ -1,6 +1,6 @@
 /*
 Skin name: Strawberry Cream, Classic
-Version: 1.1.1
+Version: 1.1.2
 Author: Antonella Pavese
 Author uri: http://www.antonellapavese.com
 Description: Strawberry Cream skin, classic version
@@ -25,6 +25,10 @@ Description: Strawberry Cream skin, classic version
 
 
 /* body */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

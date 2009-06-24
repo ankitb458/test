@@ -1,6 +1,6 @@
 /*
 Skin name: Digital Moon
-Version: 1.1.1
+Version: 1.1.2
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: Digital Moon skin
@@ -22,6 +22,10 @@ Description: Digital Moon skin
 # 2. Edit this new custom.css to override the skin defaults
 #
 */
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
 
 body
 {

@@ -9,7 +9,7 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
-global $sem_captions;
+global $comments_captions;
 global $sem_options;
 
 
@@ -18,7 +18,7 @@ if ( $post->post_password !== ''
 	)
 {
 	echo '<p>'
-		. __('Password Protected')
+		. __('Password Protected', 'sem-theme')
 		. '</p>';
 
 	return;
@@ -43,14 +43,14 @@ if ( $comments )
 
 	$title = the_title('', '', false);
 
-	$caption = $sem_captions['comments_on'];
+	$caption = $comments_captions['comments_on'];
 	$caption = str_replace('%title%', $title, $caption);
 
 	if ( comments_open() )
 	{
 
 		$comment_form_link = ' <span class="comment_entry">'
-			. '<a href="#postcomment" title="' . htmlspecialchars($sem_captions['leave_comment']) . '">'
+			. '<a href="#postcomment" title="' . esc_attr($comments_captions['leave_comment']) . '">'
 			. '&raquo;'
 			. '</a>'
 			. '</span>';
@@ -92,7 +92,7 @@ if ( $comments )
 			. '<span class="comment_time">'
 			. get_comment_date('g:i a')
 			. '</span>'
-			. comment_type('', ' (' . __('Trackback') . ')', ' (' . __('Pingback') . ')')
+			. comment_type('', ' (' . __('Trackback', 'sem-theme') . ')', ' (' . __('Pingback', 'sem-theme') . ')')
 			. '</h3>' . "\n";
 
 		echo '</div>' . "\n";
@@ -112,7 +112,7 @@ if ( $comments )
 		{
 			echo '<span class="comment_action link_comment">'
 				. '<a href="#comment-'. get_comment_ID() . '">'
-				. $sem_captions['comment_permalink']
+				. $comments_captions['comment_permalink']
 				. '</a>'
 				. '</span>' . "\n";
 		}
@@ -121,12 +121,12 @@ if ( $comments )
 		{
 			echo '<span class="comment_action reply_comment">'
 			. '<a href="#postcomment">'
-			. $sem_captions['reply_link']
+			. $comments_captions['reply_link']
 			. '</a>'
 			. '</span>' . "\n";
 		}
 
-		edit_comment_link(__('Edit'), '<span class="comment_action admin_link edit_comment">', '</span>' . "\n");
+		edit_comment_link(__('Edit', 'sem-theme'), '<span class="comment_action admin_link edit_comment">', '</span>' . "\n");
 
 		echo '</div>' . "\n";
 
@@ -146,18 +146,20 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 {
 	echo '<div id="comment_form" class="comment_form">' . "\n"
 		. '<h2 id="postcomment">'
-		. $sem_captions['leave_comment']
+		. $comments_captions['leave_comment']
 		. '</h2>' . "\n";
 
 
 	if ( get_option('comment_registration') && !$user_ID )
 	{
-		$login_url = trailingslashit(site_url())
-			. 'wp-login.php?redirect_to='
-			. urlencode(get_permalink());
+		$login_url = '<span class="logout">'
+			. apply_filters('loginout',
+				'<a href="' . wp_login_url(get_permalink()) . '">' . __('Login', 'sem-theme') . '</a>'
+				)
+			. '</span>';
 
 		echo '<p>'
-			. str_replace('%login_url%', $login_url, $sem_captions['login_required'])
+			. str_replace('%login_url%', $login_url, $comments_captions['login_required'])
 			. '</p>' . "\n";
 	}
 	else
@@ -168,6 +170,12 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 		if ( $user_ID )
 		{
+			$logout_url = '<span class="logout">'
+				. apply_filters('loginout',
+					'<a href="' . wp_logout_url(get_permalink()) . '">' . __('Logout', 'sem-theme') . '</a>'
+					)
+				. '</span>';
+			
 			$identity = '<span class="comment_author">'
 				. '<a href="' . trailingslashit(site_url()) . 'wp-admin/profile.php">'
 				. $user_identity
@@ -175,44 +183,44 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '</span>';
 
 			echo '<p>'
-				. str_replace('%identity%', $identity, $sem_captions['logged_in_as'])
+				. str_replace(array('%identity%', '%logout_url%'), array($identity, $logout_url), $comments_captions['logged_in_as'])
 				. '</p>' . "\n";
 		}
 		else
 		{
 			echo '<p>'
 				. '<label for="author">'
-				. $sem_captions['name_field']
+				. $comments_captions['name_field']
 				. ( $req
-					? ( ' ' . $sem_captions['required_field'] )
+					? ( ' ' . $comments_captions['required_field'] )
 					: ''
 					)
-				. ':<br />'
+				. '<br />'
 				. '<input type="text" name="author" id="author"'
-					. ' value="' . htmlspecialchars($comment_author) . '" />'
+					. ' value="' . esc_attr($comment_author) . '" />'
 				. '</label>'
 				. '</p>' . "\n";
 
 			echo '<p>'
 				. '<label for="email">'
-				. $sem_captions['email_field']
+				. $comments_captions['email_field']
 				. ( $req
-					? ( ' ' . $sem_captions['required_field'] )
+					? ( ' ' . $comments_captions['required_field'] )
 					: ''
 					)
-				. ':<br />'
+				. '<br />'
 				. '<input type="text" name="email" id="email"'
-					. ' value="' . htmlspecialchars($comment_author_email) . '" />'
+					. ' value="' . esc_attr($comment_author_email) . '" />'
 				. '</label>'
 				. '</p>' . "\n";
 
 
 			echo '<p>'
 				. '<label for="url">'
-				. $sem_captions['url_field']
-				. ':<br />'
+				. $comments_captions['url_field']
+				. '<br />'
 				. '<input type="text" name="url" id="url"'
-					. ' value="' . htmlspecialchars($comment_author_url) . '" />'
+					. ' value="' . esc_attr($comment_author_url) . '" />'
 				. '</label>'
 				. '</p>' . "\n";
 		} # if ( $user_ID )
@@ -222,7 +230,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 		echo '<p>'
 			. '<input name="submit" type="submit" id="submit"'
-				. ' value="' . htmlspecialchars($sem_captions['submit_field']) . '"'
+				. ' value="' . esc_attr($comments_captions['submit_field']) . '"'
 				. ' />'
 			. '</p>' . "\n";
 
