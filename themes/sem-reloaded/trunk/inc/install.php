@@ -60,12 +60,12 @@ if ( $do_reset) :
 #
 
 # Delete default posts, links and comments
-// $wpdb->query("DELETE FROM $wpdb->posts;");
-// $wpdb->query("DELETE FROM $wpdb->postmeta;");
-// $wpdb->query("DELETE FROM $wpdb->comments;");
-// $wpdb->query("DELETE FROM $wpdb->links;");
-// $wpdb->query("DELETE FROM $wpdb->term_relationships;");
-// $wpdb->query("UPDATE $wpdb->term_taxonomy SET count = 0;");
+$wpdb->query("DELETE FROM $wpdb->posts;");
+$wpdb->query("DELETE FROM $wpdb->postmeta;");
+$wpdb->query("DELETE FROM $wpdb->comments;");
+$wpdb->query("DELETE FROM $wpdb->links;");
+$wpdb->query("DELETE FROM $wpdb->term_relationships;");
+$wpdb->query("UPDATE $wpdb->term_taxonomy SET count = 0;");
 
 # Rename Uncategorized category as Blog
 $wpdb->query("
