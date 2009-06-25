@@ -57,9 +57,6 @@ register_activation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
 register_deactivation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
 
 class bookmark_me extends WP_Widget {
-	var $option_name = 'bookmark_me';
-	
-	
 	/**
 	 * template_redirect
 	 *
@@ -126,6 +123,20 @@ class bookmark_me extends WP_Widget {
 			'classname' => 'bookmark_me',
 			'description' => __("Bookmark links to social media sites such as Buzzup, Delicious and Digg", 'bookmark-me'),
 			);
+		
+		if ( get_option('widget_bookmark_me') === false ) {
+			foreach ( array(
+				'bookmark_me' => 'upgrade',
+				'bookmark_me_widgets' => 'upgrade',
+				'sem_bookmark_me_params' => 'upgrade_2_x',
+				) as $ops => $method ) {
+				if ( get_option($ops) !== false ) {
+					$this->alt_option_name = $ops;
+					add_filter('option_' . $ops, array('bookmark_me', $method));
+					break;
+				}
+			}
+		}
 		
 		$this->WP_Widget('bookmark_me', __('Bookmark Me', 'bookmark-me'), $widget_ops);
 	} # bookmark_me()
@@ -434,6 +445,9 @@ class bookmark_me extends WP_Widget {
 	function defaults() {
 		return array(
 			'title' => '',
+			'widget_contexts' => array(
+				'template_special.php' => false,
+				)
 			);
 	} # defaults()
 	
@@ -457,6 +471,49 @@ class bookmark_me extends WP_Widget {
 		
 		return $in;
 	} # flush_cache()
+	
+	
+	/**
+	 * upgrade()
+	 *
+	 * @param array $ops
+	 * @return array $ops
+	 **/
+
+	function upgrade($ops) {
+		$widget_contexts = class_exists('widget_contexts')
+			? get_option('widget_contexts')
+			: false;
+
+		foreach ( $ops as $k => $o ) {
+			$ops[$k] = array(
+				'title' => $o['title'],
+				);
+			if ( isset($widget_contexts['bookmark_me-' . $k]) ) {
+				$ops[$k]['widget_contexts'] = $widget_contexts['bookmark_me-' . $k];
+				unset($widget_contexts['bookmark_me-' . $k]);
+			}
+		}
+		
+		if ( !defined('sem_install_test') )
+			update_option('widget_bookmark_me', $ops);
+		
+		return $ops;
+	} # upgrade()
+	
+	
+	/**
+	 * upgrade_2_x()
+	 *
+	 * @param array $ops
+	 * @return array $ops
+	 **/
+
+	function upgrade_2_x($ops) {
+		$ops = bookmark_me::upgrade($ops);
+		dump($ops);
+		return $ops;
+	} # upgrade_2_x()
 } # bookmark_me
 
 
