@@ -7,16 +7,13 @@
 
 # Skin, layout, font
 $sem_options['active_skin'] = 'sky-gold';
-$sem_options['active_layout'] = 'mse';
+$sem_options['active_layout'] = 'ms';
 $sem_options['active_width'] = 'wide';
 $sem_options['active_font'] = '';
 $sem_options['active_font_size'] = 'small';
 
-# Header
-$sem_options['header_mode'] = 'header';
-
 # Credits
-$sem_options['credits'] = __('Made with %semiologic% &bull; %skin_name% skin by %skin_author%', 'semiologic');
+$sem_options['credits'] = __('Made with %1$s &bull; %2$s skin by %3$s', 'sem-theme');
 
 # Version
 $sem_options['version'] = sem_version;

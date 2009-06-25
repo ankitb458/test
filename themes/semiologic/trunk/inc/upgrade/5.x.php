@@ -1,0 +1,283 @@
+<?php
+
+$wpdb->show_errors();
+
+$sem_captions = get_option('sem5_captions');
+$sem_nav_menus = get_option('sem_nav_menus');
+
+if ( version_compare($sem_options['version'], '5.5', '<') )
+	upgrade_sem_5_5();
+
+if ( version_compare($sem_options['version'], '5.6', '<') )
+	upgrade_sem_5_6();
+
+if ( version_compare($sem_options['version'], '5.7', '<') )
+	upgrade_sem_5_7();
+
+if ( version_compare($sem_options['version'], '5.8', '<') )
+	upgrade_sem_5_8();
+
+upgrade_sem_5_x();
+
+$sem_options['version'] = sem_version;
+
+#dump($sem_options);die;
+
+if ( !defined('sem_install_test') )
+	update_option('sem5_options', $sem_options);
+
+
+/**
+ * upgrade_sem_5_5()
+ *
+ * @return void
+ **/
+
+function upgrade_sem_5_5() {
+} # upgrade_sem_5_5()
+
+
+/**
+ * upgrade_sem_5_6()
+ *
+ * @return void
+ **/
+
+function upgrade_sem_5_6() {
+} # upgrade_sem_5_6()
+
+
+/**
+ * upgrade_sem_5_7()
+ *
+ * @return void
+ **/
+
+function upgrade_sem_5_7() {
+} # upgrade_sem_5_7()
+
+
+/**
+ * upgrade_sem_5_8()
+ *
+ * @return void
+ **/
+
+function upgrade_sem_5_8() {
+	global $sem_options, $sem_captions, $sem_nav_menus, $wpdb;
+	
+	$widget_contexts = class_exists('widget_contexts')
+		? get_option('widget_contexts')
+		: false;
+	
+	// fix bug we introduced around 5.7.2
+	if ( $sem_options['version'] == '5.7.2' ) {
+		$post_ids = $wpdb->get_col("
+			SELECT	ID
+			FROM	$wpdb->posts
+			JOIN	$wpdb->postmeta as scripts
+			ON		scripts.post_id = ID
+			AND		scripts.meta_key = '_scripts_override'
+			LEFT JOIN $wpdb->postmeta as exceptions
+			ON		exceptions.post_id = ID
+			AND		exceptions.meta_key = '_wp_page_template'
+			AND		exceptions.meta_value = 'letter.php'
+			WHERE	post_modified >= '2009-01-01'
+			AND		exceptions.post_id IS NULL
+			");
+		
+		foreach ( $post_ids as $post_id )
+			delete_post_meta($post_id, '_scripts_override');
+	}
+	
+	# entry_header
+	$instance = array();
+	$instance['show_post_date'] = $sem_options['show_post_date'];
+	unset($sem_options['show_post_date']);
+	if ( isset($widget_contexts['entry_header']) ) {
+		$instance['widget_contexts'] = $widget_contexts['entry_header'];
+		unset($widget_contexts['entry_header']);
+	}
+	update_option('widget_entry_header', $instance);
+	
+	# entry_content
+	$instance = array();
+	$instance['show_excerpts'] = $sem_options['show_excerpts'];
+	$instance['one_comment'] = $sem_captions['1_comment_link'];
+	$instance['n_comments'] = str_replace('%num%', '%d', $sem_captions['n_comments_link']);
+	$instance['more_link'] = str_replace('%title%', '%s', $sem_captions['more_link']);
+	$instance['paginate'] = $sem_captions['paginate'];
+	unset($sem_options['show_excerpts']);
+	unset($sem_captions['1_comment_link']);
+	unset($sem_captions['n_comments_link']);
+	unset($sem_captions['more_link']);
+	unset($sem_captions['paginate']);
+	if ( isset($widget_contexts['entry_content']) ) {
+		$instance['widget_contexts'] = $widget_contexts['entry_content'];
+		unset($widget_contexts['entry_content']);
+	}
+	update_option('widget_entry_content', $instance);
+	
+	# entry_categories
+	$instance = array();
+	$instance['title'] = $sem_captions['cats_title'];
+	$instance['filed_under_by'] = str_replace(array('%categories%', '%category%', '%author%'), array('%1$s', '%1$s', '%2$s'), $sem_captions['filed_under']);
+	unset($sem_captions['cats_title']);
+	unset($sem_captions['filed_under']);
+	if ( isset($widget_contexts['entry_categories']) ) {
+		$instance['widget_contexts'] = $widget_contexts['entry_categories'];
+		unset($widget_contexts['entry_categories']);
+	}
+	update_option('widget_entry_categories', $instance);
+	
+	# entry_tags
+	$instance = array();
+	$instance['title'] = $sem_captions['tags_title'];
+	$instance['tags'] = str_replace('%tags%', '%s', $sem_captions['tags']);
+	unset($sem_captions['tags_title']);
+	unset($sem_captions['tags']);
+	if ( isset($widget_contexts['entry_tags']) ) {
+		$instance['widget_contexts'] = $widget_contexts['entry_tags'];
+		unset($widget_contexts['entry_tags']);
+	}
+	update_option('widget_entry_tags', $instance);
+	
+	# entry_comments
+	$instance = array();
+	$instance['comments_on'] = str_replace('%title%', '%s', $sem_captions['comments_on']);
+	#$instance['pings_on'] = str_replace('%title%', '%s', $sem_captions['pings_on']);
+	$instance['leave_comment'] = $sem_captions['leave_comment'];
+	$instance['reply_link'] = $sem_captions['reply_link'];
+	$instance['login_required'] = str_replace('%login_url%', '%s', $sem_captions['login_required']);
+	$instance['logged_in_as'] = str_replace(array('%identity%', '%logout_url%'), array('%1$s', '%2$s'), $sem_captions['logged_in_as']);
+	$instance['name_field'] = $sem_captions['name_field'];
+	$instance['email_field'] = $sem_captions['email_field'];
+	$instance['url_field'] = $sem_captions['url_field'];
+	$instance['submit_field'] = $sem_captions['submit_field'];
+	unset($sem_captions['comments_on']);
+	unset($sem_captions['pings_on']);
+	unset($sem_captions['leave_comment']);
+	unset($sem_captions['reply_link']);
+	unset($sem_captions['login_required']);
+	unset($sem_captions['logged_in_as']);
+	unset($sem_captions['name_field']);
+	unset($sem_captions['email_field']);
+	unset($sem_captions['url_field']);
+	unset($sem_captions['submit_field']);
+	if ( isset($widget_contexts['entry_comments']) ) {
+		$instance['widget_contexts'] = $widget_contexts['entry_comments'];
+		unset($widget_contexts['entry_comments']);
+	}
+	update_option('widget_entry_comments', $instance);
+	
+	# blog_header
+	$instance = array();
+	#$instance['title_404'] = $sem_captions['title_404'];
+	#$instance['desc_404'] = $sem_captions['desc_404'];
+	#$instance['archives_title'] = $sem_captions['archives_title'];
+	#$instance['search_title'] = str_replace('%query%', '%s', $sem_captions['search_title']);
+	unset($sem_captions['title_404']);
+	unset($sem_captions['desc_404']);
+	unset($sem_captions['archives_title']);
+	unset($sem_captions['search_title']);
+	update_option('widget_blog_header', $instance);
+	
+	# blog_footer
+	$instance = array();
+	$instance['next_page'] = $sem_captions['next_page'];
+	$instance['previous_page'] = $sem_captions['prev_page'];
+	unset($sem_captions['next_page']);
+	unset($sem_captions['prev_page']);
+	update_option('widget_blog_footer', $instance);
+	
+	# header
+	$instance = array();
+	$instance['sep'] = $sem_options['invert_header'];
+	unset($sem_options['invert_header']);
+	if ( isset($widget_contexts['header']) ) {
+		$instance['widget_contexts'] = $widget_contexts['header'];
+		unset($widget_contexts['header']);
+	}
+	update_option('widget_header', $instance);
+	
+	# navbar
+	$instance = array();
+	$instance['items'] = $sem_nav_menus['header']['items'];
+	$instance['sep'] = $sem_nav_menus['header']['display_sep'];
+	$instance['show_search_form'] = $sem_options['show_search_form'];
+	$instance['search_field'] = $sem_captions['search_field'];
+	$instance['search_button'] = $sem_captions['search_button'];
+	unset($sem_nav_menus['header']);
+	unset($sem_options['show_search_form']);
+	unset($sem_captions['search_field']);
+	unset($sem_captions['search_button']);
+	if ( isset($widget_contexts['navbar']) ) {
+		$instance['widget_contexts'] = $widget_contexts['navbar'];
+		unset($widget_contexts['navbar']);
+	}
+	update_option('widget_navbar', $instance);
+	
+	# footer
+	$instance = array();
+	$instance['items'] = $sem_nav_menus['footer']['items'];
+	$instance['sep'] = $sem_nav_menus['footer']['display_sep'];
+	$instance['float_footer'] = $sem_options['float_footer'];
+	if ( !isset($sem_options['show_copyright']) || isset($sem_options['show_copyright']) ) {
+		$instance['copyright'] = $sem_captions['copyright'];
+	} else {
+		$instance['copyright'] = '';
+	}
+	unset($sem_nav_menus['footer']);
+	unset($sem_options['float_footer']);
+	unset($sem_options['show_copyright']);
+	unset($sem_captions['copyright']);
+	update_option('widget_footer', $instance);
+	
+	# credits
+	if ( isset($sem_options['show_credits']) && !$sem_options['show_credits'] )
+		$sem_options['credits'] = '';
+	else
+		$sem_options['credits'] = __('Made with %1$s &bull; %2$s skin by %3$s', 'sem-theme');
+	
+	# obsolete stuff
+	unset($sem_options['header']);
+	unset($sem_options['show_permalink']);
+	unset($sem_options['show_print_link']);
+	unset($sem_options['show_email_link']);
+	unset($sem_options['show_comment_link']);
+	unset($sem_options['show_comment_permalink']);
+	unset($sem_options['show_trackback_uri']);
+	unset($sem_options['show_credits']);
+	unset($sem_captions['permalink']);
+	unset($sem_captions['email_link']);
+	unset($sem_captions['print_link']);
+	unset($sem_captions['comment_link']);
+	unset($sem_captions['comment_permalink']);
+	unset($sem_captions['comment_trackback']);
+	unset($sem_captions['sidebar_nav_title']);
+	if ( isset($widget_contexts['entry_actions']) )
+		unset($widget_contexts['entry_actions']);
+} # upgrade_sem_5_8()
+
+
+/**
+ * upgrade_sem_5_x()
+ *
+ * @return void
+ **/
+
+function upgrade_sem_5_x() {
+	global $sem_options;
+	extract($sem_options, EXTR_SKIP);
+	
+	$sem_options = compact(
+		'active_skin',
+		'active_layout',
+		'active_width',
+		'active_font',
+		'active_font_size',
+		'credits',
+		'version'
+		);
+} # upgrade_sem_5_x()
+?>

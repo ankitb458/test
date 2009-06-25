@@ -173,18 +173,18 @@ class sem_template {
 	 **/
 
 	function strip_sidebars($layout) {
-		return str_replace(array('s', 't'), 'm', $layout);
+		return str_replace(array('s', 'e'), $layout);
 	} # strip_sidebars()
 	
 	
 	/**
 	 * force_letter()
 	 *
-	 * @param string $layout
-	 * @return string $layout
+	 * @param string $width
+	 * @return string $width
 	 **/
 
-	function force_letter($layout) {
+	function force_letter($width) {
 		return 'letter';
 	} # force_letter()
 	
@@ -286,19 +286,7 @@ class sem_template {
 			$theme_credits = sem_template::get_theme_credits();
 			$skin_credits = sem_template::get_skin_credits();
 			
-			$credits = str_replace(
-				array(
-					'%semiologic%',
-					'%skin_name%',
-					'%skin_author%',
-					),
-				array(
-					$theme_credits,
-					$skin_credits['skin_name'],
-					$skin_credits['skin_author'],
-					),
-				$sem_options['credits']
-				);
+			$credits = sprintf($sem_options['credits'], $theme_credits, $skin_credits['skin_name'], $skin_credits['skin_author']);
 			
 			echo '<div class="pad">'
 				. $credits
@@ -348,11 +336,12 @@ class sem_template {
 		if ( !isset($sem_options['skin_data']) || !is_array($sem_options['skin_data']) ) {
 			$details = sem_template::get_skin_data($sem_options['active_skin']);
 			$sem_options['skin_data'] = $details;
-			update_option('sem5_options', $sem_options);
+			if ( !defined('sem_install_test') )
+				update_option('sem5_options', $sem_options);
 		} else {
 			$details = $sem_options['skin_data'];
 		}
-		;
+		
 		$name = $details['uri']
 			? ( '<a href="' . esc_url($details['uri']) . '">'
 				. $details['name']

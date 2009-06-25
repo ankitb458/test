@@ -9,9 +9,7 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
-add_filter('option_blog_public', create_function('$in', 'return "0";'));
-add_filter('active_layout', 'force_m');
-add_filter('active_width', 'force_narrow');
+add_filter('option_blog_public', 'false');
 
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -29,7 +27,7 @@ if ( $title = trim(wp_title('&#8211;', false)) ) {
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 <?php do_action('wp_head'); ?>
 </head>
-<body class="<?php do_action('display_page_class'); ?>">
+<body class="<?php echo implode(' ', get_body_class(array('skin', 'custom'))); ?>">
 <?php
 do_action('before_the_entries');
 

@@ -44,7 +44,7 @@ if ( $comments )
 	$title = the_title('', '', false);
 
 	$caption = $comments_captions['comments_on'];
-	$caption = str_replace('%title%', $title, $caption);
+	$caption = sprintf($caption, $title);
 
 	if ( comments_open() )
 	{
@@ -159,7 +159,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. '</span>';
 
 		echo '<p>'
-			. str_replace('%login_url%', $login_url, $comments_captions['login_required'])
+			. sprintf($comments_captions['login_required'], $login_url)
 			. '</p>' . "\n";
 	}
 	else
@@ -183,7 +183,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '</span>';
 
 			echo '<p>'
-				. str_replace(array('%identity%', '%logout_url%'), array($identity, $logout_url), $comments_captions['logged_in_as'])
+				. sprintf($comments_captions['logged_in_as'], $identity, $logout_url)
 				. '</p>' . "\n";
 		}
 		else

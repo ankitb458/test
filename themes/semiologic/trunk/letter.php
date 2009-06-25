@@ -14,8 +14,8 @@
 Template Name: Sales Letter
 */
 
-add_filter('active_layout', 'force_m');
-add_filter('active_width', 'force_letter');
+add_filter('active_layout', array('sem_template', 'strip_sidebars'));
+add_filter('active_width', array('sem_template', 'force_letter'));
 
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -33,10 +33,7 @@ if ( $title = trim(wp_title('&#8211;', false)) ) {
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 <?php do_action('wp_head'); ?>
 </head>
-<body class="<?php do_action('display_page_class'); ?>">
-<div id="ext_wrapper">
-<div id="shadow_top"><div class="hidden"></div></div>
-<div id="shadow">
+<body class="<?php echo implode(' ', get_body_class(array('skin', 'custom'))); ?>"><div id="ext_wrapper">
 <div id="wrapper">
 <div id="body" class="body">
 <div id="ext_main">
@@ -60,8 +57,6 @@ the_post();
 </div><!-- #ext_main -->
 </div><!-- #body -->
 </div><!-- #wrapper -->
-</div><!-- #shadow -->
-<div id="shadow_bottom"><div class="hidden"></div></div>
 </div><!-- #ext_wrapper -->
 <?php
 do_action('display_canvas_spacer');

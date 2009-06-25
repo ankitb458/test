@@ -68,7 +68,10 @@ class sem_panels {
 			'the_footer' => __('Footer Area', 'sem-theme'),
 			'the_404' => __('Not Found Error (404)', 'sem-theme'),
 		) as $panel_id => $panel_label ) {
-			add_action($panel_id, array('sem_panels', $panel_id));
+			if ( $panel_id != 'the_404' )
+				add_action($panel_id, array('sem_panels', $panel_id));
+			else
+				add_action('404_error', array('sem_panels', $panel_id));
 			
 			switch ( $panel_id )
 			{
