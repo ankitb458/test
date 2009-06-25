@@ -71,9 +71,10 @@ function fancy_excerpt($text) {
 		
 		$text .= "\n\n"
 			. '<p>'
-			. ' <a href="'. esc_url(get_permalink()) . '" class="more-link">'
+			. apply_filters('the_content_more_link',
+				'<a href="'. esc_url(get_permalink()) . '" class="more-link">'
 				. $more
-				. '</a>'
+				. '</a>')
 			. '</p>' . "\n";
 		
 		$text = apply_filters('the_content', $text);
