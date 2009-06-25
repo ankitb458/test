@@ -21,7 +21,7 @@ if ( isset($_GET['jal_add_user_answer']) || isset($_GET['jal_no_js']) )
 }
 
 // With hat tips from Denis de Bernhardy
-// http://semiologic.com
+// http://www.semiologic.com
 
 // Released under the CC GPL 2.0:
 // http://creativecommons.org/licenses/GPL/2.0/
