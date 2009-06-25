@@ -41,7 +41,7 @@ function fancy_excerpt($text) {
 	
 	global $allowedposttags;
 	
-	$more = __('More...', 'fancy-excerpt');
+	$more = sprintf(__('More on %s...', 'fancy-excerpt'), get_the_title());
 	
 	$text = get_the_content($more);
 	$text = str_replace(array("\r\n", "\r"), "\n", $text);
