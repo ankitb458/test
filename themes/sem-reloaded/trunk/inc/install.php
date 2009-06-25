@@ -10,11 +10,8 @@ $sem_options['active_skin'] = 'copywriter-gold';
 $sem_options['active_layout'] = 'mts';
 $sem_options['active_font'] = '';
 
-# Header
-$sem_options['header_mode'] = 'header';
-
 # Credits
-$sem_options['credits'] = __('Made with %semiologic% &bull; %skin_name% skin by %skin_author%', 'sem-reloaded');
+$sem_options['credits'] = __('Made with %1$s &bull; %2$s skin by %3$s', 'sem-reloaded');
 
 # Version
 $sem_options['version'] = sem_version;

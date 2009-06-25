@@ -32,7 +32,7 @@ if ( $pings ) {
 	$title = the_title('', '', false);
 
 	$caption = $comments_captions['pings_on'];
-	$caption = str_replace('%title%', $title, $caption);
+	$caption = sprintf($caption, $title);
 	
 	echo '<div class="pings_header">' . "\n"
 		. '<div class="pings_header_top"><div class="hidden"></div></div>' . "\n"
@@ -94,7 +94,7 @@ if ( $comments ) {
 	$title = the_title('', '', false);
 
 	$caption = $comments_captions['comments_on'];
-	$caption = str_replace('%title%', $title, $caption);
+	$caption = sprintf($caption, $title);
 
 	if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 
@@ -264,7 +264,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		echo '<div class="comments_login">' . "\n"
 			. '<div class="pad">' . "\n"
 			. '<p>'
-			. str_replace('%login_url%', $login_url, $comments_captions['login_required'])
+			. sprintf($comments_captions['login_required'], $login_url)
 			. '</p>' . "\n"
 			. '</div>' . "\n"
 			. '</div>' . "\n";
@@ -288,11 +288,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '</span>';
 
 			echo '<p>'
-				. str_replace(
-					array('%identity%', '%logout_url%'),
-					array($identity, $logout_url),
-					$comments_captions['logged_in_as']
-					)
+				. sprintf($comments_captions['logged_in_as'], $identity, $logout_url)
 				. '</p>' . "\n";
 		} else {
 			echo '<p class="comment_label name_label">'

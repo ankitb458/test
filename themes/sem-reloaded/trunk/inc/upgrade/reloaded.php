@@ -184,14 +184,6 @@ if ( strpos($sem_captions['logged_in_as'], '%logout_url%') === false ) {
 		. '%logout_url%.';
 }
 
-if ( !isset($sem_options['header_mode']) ) {
-	if ( is_array($sem_options['header']) )
-		$sem_options['header_mode'] = $sem_options['header']['mode'];
-	else {
-		$sem_options['header_mode'] = 'header';
-	}
-}
-
 if ( isset($sem_options['show_copyright']) && !$sem_options['show_copyright'] ) {
 	$sem_captions['copyright'] = '';
 }

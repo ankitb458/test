@@ -108,28 +108,15 @@ $sem_options = get_option('sem6_options');
 #
 
 if ( !isset($sem_options['version']) ) {
-	switch ( true ) {
-	default:
-		# try sem5_options
-		$old_options = get_option('sem5_options');
-		
-		if ( $old_options ) {
-			include sem_path . '/inc/upgrade.php';
-			break;
-		}
-		
-		# try sem4_options
-		$old_options = get_option('semiologic');
-		
-		if ( $old_options ) {
-			include sem_path . '/inc/upgrade/4.x.php';
-			break;
-		}
-		
+	# try sem4_options
+	$old_options = get_option('semiologic');
+	
+	if ( $old_options ) {
+		include sem_path . '/inc/upgrade/4.x.php';
+	} else {
 		include sem_path . '/inc/install.php';
-		
 	}
 } elseif ( $sem_options['version'] != sem_version ) {
-	include sem_path . '/inc/upgrade.php';
+	include sem_path . '/inc/upgrade/5.x.php';
 }
 ?>

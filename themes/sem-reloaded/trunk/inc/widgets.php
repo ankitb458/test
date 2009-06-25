@@ -382,10 +382,10 @@ class entry_content extends WP_Widget {
 		
 		$title = the_title('', '', false);
 		
-		if ( $show_excerpt && !is_singular() ) {
+		if ( $show_excerpts && !is_singular() ) {
 			$content = apply_filters('the_excerpt', get_the_excerpt());
 		} else {
-			$more_link = str_replace('%title%', $title, $more_link);
+			$more_link = sprintf($title, $more_link);
 			
 			$content = get_the_content($more_link, 0, '');
 			
@@ -463,7 +463,7 @@ class entry_content extends WP_Widget {
 				$comments_link .= $num_comments ? '#comments' : '#respond';
 				
 				$caption = _n($one_comment, $n_comments, $num_comments);
-				$caption = preg_replace("/\s*(?:1|%num%)\s*/", '', $caption);
+				$caption = preg_replace("/\s*(?:1|%d)\s*/", '', $caption);
 				
 				$actions .= '<span class="comment_box">'
 					. '<a href="' . esc_url($comments_link) . '">'
@@ -503,7 +503,7 @@ class entry_content extends WP_Widget {
 
 	function update($new_instance, $old_instance) {
 		$instance['show_comment_box'] = isset($new_instance['show_comment_box']);
-		$instance['show_excerpt'] = isset($new_instance['show_excerpt']);
+		$instance['show_excerpts'] = isset($new_instance['show_excerpts']);
 		$instance['one_comment'] = trim(strip_tags($new_instance['one_comment']));
 		$instance['n_comments'] = trim(strip_tags($new_instance['n_comments']));
 		$instance['more_link'] = trim(strip_tags($new_instance['more_link']));
@@ -540,8 +540,8 @@ class entry_content extends WP_Widget {
 		echo '<p>'
 			. '<label>'
 			. '<input type="checkbox"'
-			. ' name="' . $this->get_field_name('show_excerpt') . '"'
-			. checked($show_excerpt, true, false)
+			. ' name="' . $this->get_field_name('show_excerpts') . '"'
+			. checked($show_excerpts, true, false)
 			. ' />'
 			. '&nbsp;'
 			. __('Use the post\'s excerpt on blog and archive pages.', 'sem-reloaded')
@@ -563,7 +563,7 @@ class entry_content extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('%num% Comments', 'sem-reloaded') . '</code>'
+			. '<code>' . __('%d Comments', 'sem-reloaded') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 			. ' name="' . $this->get_field_name('n_comments') . '"'
@@ -574,7 +574,7 @@ class entry_content extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('More on %title%...', 'sem-reloaded') . '</code>'
+			. '<code>' . __('More on %s...', 'sem-reloaded') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 			. ' name="' . $this->get_field_name('more_link') . '"'
@@ -605,10 +605,10 @@ class entry_content extends WP_Widget {
 	function defaults() {
 		return array(
 			'show_comment_box' => true,
-			'show_excerpt' => false,
+			'show_excerpts' => false,
 			'one_comment' => __('1 Comment', 'sem-reloaded'),
-			'n_comments' => __('%num% Comments', 'sem-reloaded'),
-			'more_link' => __('More on %title%...', 'sem-reloaded'),
+			'n_comments' => __('%d Comments', 'sem-reloaded'),
+			'more_link' => __('More on %s...', 'sem-reloaded'),
 			'paginate' => __('Pages:', 'sem-reloaded'),
 			);
 	} # defaults()
@@ -692,11 +692,7 @@ class entry_categories extends WP_Widget {
 					: ''
 					)
 				. '<p>'
-				. str_replace(
-					array('%categories%', '%author%'),
-					array($categories, $author),
-					$filed_under_by
-					)
+				. sprintf($filed_under_by, $categories, $author)
 				. '</p>' . "\n"
 				. $after_widget;
 		}
@@ -750,7 +746,7 @@ class entry_categories extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('Filed under %category% by %author%.', 'sem-reloaded') . '</code>'
+			. '<code>' . __('Filed under %1$s by %2$s.', 'sem-reloaded') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 				. ' name="' . $this->get_field_name('filed_under_by') . '"'
@@ -770,7 +766,7 @@ class entry_categories extends WP_Widget {
 	function defaults() {
 		return array(
 			'title' => __('Categories', 'sem-reloaded'),
-			'filed_under_by' => __('Filed under %categories% by %author%.', 'sem-reloaded'),
+			'filed_under_by' => __('Filed under %1$s by %2$s.', 'sem-reloaded'),
 			);
 	} # defaults()
 } # entry_categories
@@ -857,11 +853,7 @@ class entry_tags extends WP_Widget {
 					: ''
 					)
 				. '<p>'
-				. str_replace(
-					'%tags%',
-					$_tags,
-					$tags
-					)
+				. sprintf($tags, $_tags)
 				. '</p>' . "\n"
 				. $after_widget;
 		}
@@ -915,7 +907,7 @@ class entry_tags extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('Tags: %tags%.', 'sem-reloaded') . '</code>'
+			. '<code>' . __('Tags: %s.', 'sem-reloaded') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 				. ' name="' . $this->get_field_name('tags') . '"'
@@ -935,7 +927,7 @@ class entry_tags extends WP_Widget {
 	function defaults() {
 		return array(
 			'title' => __('Tags', 'sem-reloaded'),
-			'tags' => __('Tags: %tags%.', 'sem-reloaded'),
+			'tags' => __('Tags: %s.', 'sem-reloaded'),
 			);
 	} # defaults()
 } # entry_tags
@@ -1048,12 +1040,12 @@ class entry_comments extends WP_Widget {
 	
 	function defaults() {
 		return array(
-			'pings_on' => __('Pings on %title%', 'sem-reloaded'),
-			'comments_on' => __('Comments on %title%', 'sem-reloaded'),
+			'pings_on' => __('Pings on %s', 'sem-reloaded'),
+			'comments_on' => __('Comments on %s', 'sem-reloaded'),
 			'leave_comment' => __('Leave a Comment', 'sem-reloaded'),
 			'reply_link' => __('Reply', 'sem-reloaded'),
-			'login_required' => __('You must be logged in to post a comment. %login_url%.', 'sem-reloaded'),
-			'logged_in_as' => __('You are logged in as %identity%. %logout_url%.', 'sem-reloaded'),
+			'login_required' => __('You must be logged in to post a comment. %s.', 'sem-reloaded'),
+			'logged_in_as' => __('You are logged in as %1$s. %2$s.', 'sem-reloaded'),
 			'name_field' => __('Name:', 'sem-reloaded'),
 			'email_field' => __('Email:', 'sem-reloaded'),
 			'url_field' => __('Url:', 'sem-reloaded'),
@@ -1127,7 +1119,7 @@ class blog_header extends WP_Widget {
 			echo $user->display_name;
 			$desc = trim($user->description);
 		} elseif ( is_search() ) {
-			echo str_replace('%query%',apply_filters('the_search_query', get_search_query()), $search_title);
+			echo sprintf($search_title, apply_filters('the_search_query', get_search_query()));
 		} elseif ( is_404() ) {
 			echo $title_404;
 			$desc = $desc_404;
@@ -1227,7 +1219,7 @@ class blog_header extends WP_Widget {
 			'title_404' => __('404: Not Found', 'sem-reloaded'),
 			'desc_404' => __('The page you\'ve requested was not found.', 'sem-reloaded'),
 			'archives_title' => __('Archives', 'sem-reloaded'),
-			'search_title' => __('Search: %query%', 'sem-reloaded'),
+			'search_title' => __('Search: %s', 'sem-reloaded'),
 			);
 	} # defaults()
 } # blog_header
@@ -2901,40 +2893,14 @@ class footer extends sem_nav_menu {
 		
 		echo '</div><!-- footer_nav -->' . "\n";
 		
-		if ( $copyright_notice = $copyright ) {
-			if ( strpos($copyright_notice, '%admin_name%') !== false ) {
-				global $wpdb;
-
-				$admin_email = get_option('admin_email');
-				$admin_login = $wpdb->get_var("
-					SELECT	user_login
-					FROM	wp_users
-					WHERE	user_email = '" . $wpdb->escape($admin_email) . "'
-					ORDER BY user_registered ASC
-					LIMIT 1
-					");
-				
-				if ( ( $admin_user = get_userdatabylogin($admin_login) ) && $admin_user->display_name ) {
-					$admin_name = $admin_user->display_name;
-				} else {
-					$admin_name = preg_replace("/@.*$/", '', $admin_email);
-					$admin_name = preg_replace("/[_.-]/", ' ', $admin_name);
-					$admin_name = ucwords($admin_name);
-				}
-				
-				$copyright_notice = str_replace('%admin_name%', $admin_name, $copyright_notice);
-			}
-			
-			$year = date('Y');
-			$site_name = get_option('blogname');
-			
-			$copyright_notice = str_replace(
-				array('%year%', '%site_name%'),
-				array($year, $site_name),
-				$copyright_notice);
-			
+		$year = date('Y');
+		$site_name = strip_tags(get_option('blogname'));
+		
+		$copyright = sprintf($copyright, $site_name, $year);
+		
+		if ( $copyright ) {
 			echo '<div id="copyright_notice">';
-			echo $copyright_notice;
+			echo $copyright;
 			echo '</div><!-- #copyright_notice -->' . "\n";
 		}
 		
@@ -3028,7 +2994,7 @@ class footer extends sem_nav_menu {
 	
 	function defaults() {
 		return array_merge(array(
-			'copyright' => __('Copyright %site_name%, %year%', 'sem-reloaded'),
+			'copyright' => __('Copyright %1$s, %2$s', 'sem-reloaded'),
 			'float_footer' => false,
 			), parent::defaults());
 	} # defaults()
