@@ -46,7 +46,7 @@ function fancy_excerpt($text) {
 	$text = get_the_content($more);
 	$text = str_replace(array("\r\n", "\r"), "\n", $text);
 	$text = preg_replace("/
-		<\s*(script|style|object|textarea)(?:\s.*?)?>
+		<\s*(script|style|textarea)(?:\s.*?)?>
 		.*?
 		<\s*\/\s*\\1\s*>
 		/isx", '', $text);
