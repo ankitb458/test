@@ -44,7 +44,6 @@ function fancy_excerpt($text) {
 	$more = __('More...', 'fancy-excerpt');
 	
 	$text = get_the_content($more);
-	$text = strip_shortcodes($text);
 	$text = str_replace(array("\r\n", "\r"), "\n", $text);
 	$text = preg_replace("/
 		<\s*(script|style|object|textarea)(?:\s.*?)?>
