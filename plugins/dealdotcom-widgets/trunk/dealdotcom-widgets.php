@@ -240,6 +240,8 @@ class dealdotcom extends WP_Widget {
 		}
 		
 		update_option('widget_dealdotcom', $ops);
+		if ( $widget_contexts !== false )
+			update_option('widget_contexts', $widget_contexts);
 		
 		return $ops;
 	} # upgrade()
