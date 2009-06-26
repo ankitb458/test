@@ -119,7 +119,7 @@ class dealdotcom extends WP_Widget {
 		
 		echo $before_widget
 			. '<div style="width: 148px; margin: 0px auto; border: solid 2px orange; text-align: center;">'
-			. '<a href="' . esc_url('http://dealdotcom.com/invite/' . intval($aff_id) . '"'
+			. '<a href="' . esc_url('http://dealdotcom.com/invite/' . intval($aff_id)) . '"'
 				. ' title="' . esc_attr($deal['name'] . ' @ $' . $deal['price']) . '"'
 				. ' rel="nofollow"'
 				. '>'
