@@ -32,6 +32,9 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
 add_action('init', array('inline_widgets', 'init'), 0);
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
+if ( get_option('inline_widgets_version') === false )
+	add_action('init', array('inline_widgets', 'upgrade'), 1000);
+
 class inline_widgets {
 	/**
 	 * init()
@@ -178,6 +181,32 @@ class inline_widgets {
 		
 		return $widget;
 	} # shortcode()
+	
+	
+	/**
+	 * upgrade()
+	 *
+	 * @return void
+	 **/
+
+	function upgrade() {
+		global $wpdb;
+		
+		$posts = $wpdb->get_results("
+			SELECT	*
+			FROM	$wpdb->posts
+			WHERE	post_content REGEXP '\\\\[widget:'
+			");
+		
+		foreach ( $posts as $post ) {
+			$post->post_content = preg_replace("/
+				\[widget:\s*(.+?)\s*\]
+				/ix", "[widget id=\"$1\"/]", $post->post_content);
+			wp_update_post($post);
+		}
+		
+		update_option('inline_widget_version', '2.0');
+	} # upgrade()
 } # inline_widgets
 
 function inline_widgets_admin() {
