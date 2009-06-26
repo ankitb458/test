@@ -297,6 +297,11 @@ function upgrade_sem_5_8() {
 				'%s',
 				$sem_captions['search_title']);
 	}
+	if ( isset($sidebars_widgets['before_the_entries']) ) {
+		$key = array_search('archives_header', $sidebars_widgets['before_the_entries']);
+		if ( $key !== false )
+			$sidebars_widgets['before_the_entries'][$key] = 'blog_header';
+	}
 	update_option('widget_blog_header', $instance);
 	
 	# blog_footer
@@ -332,6 +337,11 @@ function upgrade_sem_5_8() {
 			$instance['widget_contexts'] = $widget_contexts['header'];
 			unset($widget_contexts['header']);
 		}
+	}
+	if ( isset($sidebars_widgets['after_the_entries']) ) {
+		$key = array_search('next_prev_posts', $sidebars_widgets['after_the_entries']);
+		if ( $key !== false )
+			$sidebars_widgets['after_the_entries'][$key] = 'next_prev_posts';
 	}
 	update_option('widget_header', $instance);
 	
