@@ -62,6 +62,18 @@ class dealdotcom extends WP_Widget {
 			'width' => 330,
 			);
 		
+		if ( get_option('widget_dealdotcom') === false ) {
+			foreach ( array(
+				'dealdotcom_widgets' => 'upgrade',
+				) as $ops => $method ) {
+				if ( get_option($ops) !== false ) {
+					$this->alt_option_name = $ops;
+					add_filter('option_' . $ops, array('dealdotcom', $method));
+					break;
+				}
+			}
+		}
+		
 		$this->WP_Widget('dealdotcom', __('Dealdotcom Widget', 'dealdotcom'), $widget_ops, $control_ops);
 	} # dealdotcom()
 	
@@ -203,5 +215,31 @@ class dealdotcom extends WP_Widget {
 			'aff_id' => '',
 			);
 	} # defaults()
+	
+	
+	/**
+	 * upgrade()
+	 *
+	 * @param array $ops
+	 * @return array $ops
+	 **/
+
+	function upgrade($ops) {
+		$widget_contexts = class_exists('widget_contexts')
+			? get_option('widget_contexts')
+			: false;
+
+		foreach ( $ops as $k => $o ) {
+			if ( isset($widget_contexts['dealdotcom-' . $k]) ) {
+				$ops[$k]['widget_contexts'] = $widget_contexts['dealdotcom-' . $k];
+				unset($widget_contexts['dealdotcom-' . $k]);
+			}
+		}
+		
+		if ( !defined('sem_install_test') )
+			update_option('widget_dealdotcom', $ops);
+		
+		return $ops;
+	} # upgrade()
 } # dealdotcom
 ?>
