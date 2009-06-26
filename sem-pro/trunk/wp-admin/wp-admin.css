@@ -437,6 +437,10 @@ a.button-secondary {
 	padding: 2px;
 }
 
+#timezone_string option {
+	margin-left: 1em;
+}
+
 .approve {
 	display: none;
 }
@@ -2090,12 +2094,6 @@ p.search-box {
 
 #posts-filter fieldset legend {
 	padding: 0 0 .2em 1px;
-}
-
-.bordertitle {
-	padding-bottom: 5px;
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
 }
 
 /* Edit posts */
