@@ -17,8 +17,6 @@ if ( version_compare($sem_options['version'], '5.7', '<') )
 if ( version_compare($sem_options['version'], '5.8', '<') )
 	upgrade_sem_5_8();
 
-upgrade_sem_5_x();
-
 $sem_options['version'] = sem_version;
 
 #dump($sem_options);die;
@@ -416,40 +414,9 @@ function upgrade_sem_5_8() {
 			$sem_options['credits']);
 	}
 	
-	if ( !defined('sem_install_test') ) {
-		update_option('widget_contexts', $widget_contexts);
-		update_option('sidebars_widgets', $sidebars_widgets);
-	}
-	
-	# obsolete stuff
-	unset($sem_options['header']);
-	unset($sem_options['show_permalink']);
-	unset($sem_options['show_print_link']);
-	unset($sem_options['show_email_link']);
-	unset($sem_options['show_comment_link']);
-	unset($sem_options['show_comment_permalink']);
-	unset($sem_options['show_trackback_uri']);
-	unset($sem_options['show_credits']);
-	unset($sem_captions['permalink']);
-	unset($sem_captions['email_link']);
-	unset($sem_captions['print_link']);
-	unset($sem_captions['comment_link']);
-	unset($sem_captions['comment_permalink']);
-	unset($sem_captions['comment_trackback']);
-	unset($sem_captions['sidebar_nav_title']);
 	if ( isset($widget_contexts['entry_actions']) )
 		unset($widget_contexts['entry_actions']);
-} # upgrade_sem_5_8()
-
-
-/**
- * upgrade_sem_5_x()
- *
- * @return void
- **/
-
-function upgrade_sem_5_x() {
-	global $sem_options;
+	
 	extract($sem_options, EXTR_SKIP);
 	
 	$sem_options = compact(
@@ -461,5 +428,13 @@ function upgrade_sem_5_x() {
 		'credits',
 		'version'
 		);
-} # upgrade_sem_5_x()
+	
+	if ( !defined('sem_install_test') ) {
+		update_option('widget_contexts', $widget_contexts);
+		update_option('sidebars_widgets', $sidebars_widgets);
+		update_option('sem5_options', $sem_options);
+		delete_option('sem5_captions');
+		delete_option('sem_nav_menus');
+	}
+} # upgrade_sem_5_8()
 ?>

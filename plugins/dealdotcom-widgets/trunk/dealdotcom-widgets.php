@@ -228,7 +228,7 @@ class dealdotcom extends WP_Widget {
 		$widget_contexts = class_exists('widget_contexts')
 			? get_option('widget_contexts')
 			: false;
-
+		
 		foreach ( $ops as $k => $o ) {
 			if ( isset($widget_contexts['dealdotcom-' . $k]) ) {
 				$ops[$k]['widget_contexts'] = $widget_contexts['dealdotcom-' . $k];
@@ -236,8 +236,7 @@ class dealdotcom extends WP_Widget {
 			}
 		}
 		
-		if ( !defined('sem_install_test') )
-			update_option('widget_dealdotcom', $ops);
+		update_option('widget_dealdotcom', $ops);
 		
 		return $ops;
 	} # upgrade()

@@ -495,8 +495,7 @@ class bookmark_me extends WP_Widget {
 			}
 		}
 		
-		if ( !defined('sem_install_test') )
-			update_option('widget_bookmark_me', $ops);
+		update_option('widget_bookmark_me', $ops);
 		
 		return $ops;
 	} # upgrade()
