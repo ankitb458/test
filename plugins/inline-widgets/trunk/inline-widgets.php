@@ -29,7 +29,7 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
  * @package Inline Widgets
  **/
 
-add_action('init', array('inline_widgets', 'init'), -100);
+add_action('init', array('inline_widgets', 'init'), 1000);
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
 if ( get_option('inline_widgets_version') === false )
@@ -199,14 +199,36 @@ class inline_widgets {
 			");
 		
 		foreach ( $posts as $post ) {
-			$post->post_content = preg_replace("/
+			$post->post_content = preg_replace_callback("/
 				\[widget:\s*(.+?)\s*\]
-				/ix", "[widget id=\"$1\"/]", $post->post_content);
+				/ix", array('inline_widgets', 'upgrade_callback'), $post->post_content);
 			wp_update_post($post);
 		}
 		
 		update_option('inline_widget_version', '2.0');
 	} # upgrade()
+	
+	
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 **/
+
+	function upgrade_callback($match) {
+		$widget_id = trim(array_pop($match));
+		if ( in_array($widget_id, array('democracy', 'countdown', 'silo_stub', 'silo_map')) ) {
+			$widget_id = "$widget_id-2";
+		} elseif ( preg_match("/^link_widget-(\d+)$/", $widget_id, $match) ) {
+			$widget_id = 'links-' . array_pop($match);
+		} elseif ( preg_match("/^(related|random|fuzzy)-widget-(\d+)$/", $widget_id, $match) ) {
+			$num = array_pop($match);
+			$id_base = array_pop($match);
+			$widget_id =  $id_base . '_widget-' . $num;
+		}
+		
+		return "[widget id=\"$widget_id\"/]";
+	} # upgrade_callback()
 } # inline_widgets
 
 function inline_widgets_admin() {
