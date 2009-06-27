@@ -231,7 +231,7 @@ class dealdotcom extends WP_Widget {
 		
 		foreach ( $ops as $k => $o ) {
 			$ops[$k] = array(
-				'' => $o['aff_id']
+				'aff_id' => $o['aff_id']
 				);
 			if ( isset($widget_contexts['dealdotcom-' . $k]) ) {
 				$ops[$k]['widget_contexts'] = $widget_contexts['dealdotcom-' . $k];
