@@ -72,7 +72,7 @@ class inline_widgets {
 		
 		$default_widgets = array(
 			'inline_widgets' => array(
-				'ad_manager',
+				'ad_unit',
 				'silo_stub',
 				'silo_map',
 				'contact_form',
@@ -172,7 +172,7 @@ class inline_widgets {
 			);
 		
 		$params = array($args, (array) $wp_registered_widgets[$id]['params'][0]);
-
+		
 		ob_start();
 		call_user_func_array($wp_registered_widgets[$id]['callback'], $params);
 		$widget = ob_get_clean();
