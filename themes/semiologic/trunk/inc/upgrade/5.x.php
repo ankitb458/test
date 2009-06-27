@@ -429,12 +429,10 @@ function upgrade_sem_5_8() {
 		'version'
 		);
 	
-	if ( !defined('sem_install_test') ) {
-		update_option('widget_contexts', $widget_contexts);
-		update_option('sidebars_widgets', $sidebars_widgets);
-		update_option('sem5_options', $sem_options);
-		delete_option('sem5_captions');
-		delete_option('sem_nav_menus');
-	}
+	update_option('widget_contexts', $widget_contexts);
+	update_option('sidebars_widgets', $sidebars_widgets);
+	update_option('sem5_options', $sem_options);
+	delete_option('sem5_captions');
+	delete_option('sem_nav_menus');
 } # upgrade_sem_5_8()
 ?>
