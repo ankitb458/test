@@ -780,81 +780,118 @@ if (function_exists('add_action')) {
     if (isset($_POST['jal_dem_edit']))
         add_action('init', 'jal_edit_poll');
 
-	add_action( 'widgets_init', 'widget_democracy_init' );
+	/**
+	 * democracy_widget
+	 *
+	 * @package Democracy
+	 **/
+
+	add_action('widgets_init', array('democracy_widget', 'widgets_init'));
+
+	class democracy_widget extends WP_Widget {
+		/**
+		 * widgets_init()
+		 *
+		 * @return void
+		 **/
+
+		function widgets_init() {
+			register_widget('democracy_widget');
+		} # widgets_init()
+
+
+		/**
+		 * democracy_widget()
+		 *
+		 * @return void
+		 **/
+
+		function democracy_widget() {
+			$widget_ops = array(
+				'classname' => 'democracy',
+				'description' => __('Displays polls, which you configure under Settings / Events.', 'democracy'),
+				);
+
+			$this->WP_Widget('democracy', __('Poll Widget', 'democracy'), $widget_ops);
+		} # democracy_widget()
+
+
+		/**
+		 * widget()
+		 *
+		 * @param array $args
+		 * @param array $instance
+		 * @return void
+		 **/
+
+		function widget($args, $instance) {
+			extract($args, EXTR_SKIP);
+			$instance = wp_parse_args($instance, democracy_widget::defaults());
+			extract($instance, EXTR_SKIP);
+
+			$title = apply_filters('widget_title', $title);
+
+			echo $before_widget;
+			if ( $title )
+				echo $before_title . $title . $after_title;
+
+			jal_democracy();
+
+			echo $after_widget;
+		} # widget()
+
+
+		/**
+		 * update()
+		 *
+		 * @param array $new_instance
+		 * @param array $old_instance
+		 * @return array $instance
+		 **/
+
+		function update($new_instance, $old_instance) {
+			$instance = array();
+			$instance['title'] = strip_tags($new_instance['title']);
+
+			return $instance;
+		} # update()
+
+
+		/**
+		 * form()
+		 *
+		 * @param array $instance
+		 * @return void
+		 **/
+
+		function form($instance) {
+			$instance = wp_parse_args($instance, democracy_widget::defaults());
+			extract($instance, EXTR_SKIP);
+
+			echo '<p>'
+				. '<label>'
+				. __('Poll Widget', 'democracy') . '<br />'
+				. '<input type="text" class="widefat"'
+					. ' id="' . $this->get_field_id('title') . '"'
+					. ' name="' . $this->get_field_name('title') . '"'
+					. ' value="' . esc_attr($title) . '"'
+					. ' />'
+				. '</label>'
+				. '</p>' . "\n";
+		} # form()
+
+
+		/**
+		 * defaults()
+		 *
+		 * @return array $instance
+		 **/
+
+		function defaults() {
+			return array(
+				'title' => __('Your Opinion', 'countdown'),
+				);
+		} # defaults()
+	} # democracy_widget
 }
-
-
-
-/*  Copyright 2006  Alkar  (email : alkarin@gmail.com)
-
-		  This code is based on Wayback_Widget, by Sven Weidauer (web:dergraf.net email:dergraf@dergraf.net)
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
-function widget_democracy( $args )
-{
-	extract( $args );
-	$options = get_option( 'widget_democracy' );
-
-	$title = htmlspecialchars($options['title'], ENT_QUOTES);
-
-	if ( !$title )
-	{
-		$title = __('Democracy');
-	}
-
-	$before_widget = str_replace('id="democracy"', 'id="widget_democracy"', $before_widget);
-
-	if ( is_admin() )
-		return;
-	
-	echo $before_widget
-		. $before_title . apply_filters('widget_title', $title) . $after_title;
-	jal_democracy();
-	echo $after_widget;
-}
-
-function widget_democracy_control()
-{
-	$options = get_option( 'widget_democracy' );
-	if (!is_array( $options )) {
-		$options = array( 'title' => 'Democracy' );
-	}
-
-	if ($_POST['democracy-submit']) {
-		$options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST['democracy-title'])));
-
-		update_option( 'widget_democracy', $options );
-	}
-
-	$title = htmlspecialchars($options['title'], ENT_QUOTES);
-
-	?>Title: <input type="text" id="democracy-title" name="democracy-title" value="<?php echo $title ?>" />
-	<input type="hidden" id="democracy-submit" name="democracy-submit" value="1" />
-	<?php
-}
-
-
-function widget_democracy_init()
-{
-	if (!function_exists('register_sidebar_widget')) return;
-	if (!function_exists('jal_democracy')) return;
-
-	wp_register_sidebar_widget( 'democracy', 'Poll Widget', 'widget_democracy', array('description' => 'The poll you\'ve configured under Manage / Polls') );
-	wp_register_widget_control( 'democracy', 'Poll Widget', 'widget_democracy_control', array('width' => 300 ) );
-}
-
 ?>

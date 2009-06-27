@@ -341,94 +341,177 @@ function countdown_days($event, $date, $startswith = '', $endswith = '', $pastst
 }
 
 
-function countdown_widget($args)
-{
-	extract($args);
-	$options = get_option('countdown_widget');
+/**
+ * countdown_widget
+ *
+ * @package Countdown
+ **/
 
+add_action('widgets_init', array('countdown_widget', 'widgets_init'));
 
-	$options['number'] = $options['number'] ? $options['number'] : 5;
+class countdown_widget extends WP_Widget {
+	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
 
-	echo $before_widget
-		. $before_title
-		. ( ( isset($options['title']) )
-			? $options['title']
-			: __('Upcoming Events')
-			)
-		. $after_title
-		. '<ul>';
-
-		dates_to_remember($options['number']);
-	echo '</ul>'
-		. $after_widget;
-}
-
-function countdown_widget_control()
-{
-	$options = get_option('countdown_widget');
+	function init() {
+		if ( get_option('widget_countdown') === false ) {
+			foreach ( array(
+				'countdown_widget' => 'upgrade',
+				) as $ops => $method ) {
+				if ( get_option($ops) !== false ) {
+					$this->alt_option_name = $ops;
+					add_filter('option_' . $ops, array(get_class($this), $method));
+					break;
+				}
+			}
+		}
+	} # init()
 	
-	if ( $options === false )
-	{
-		$options = array(
-			'title' => 'Upcoming Events',
-			'number' => 5
+	
+	/**
+	 * widgets_init()
+	 *
+	 * @return void
+	 **/
+
+	function widgets_init() {
+		register_widget('countdown_widget');
+	} # widgets_init()
+	
+	
+	/**
+	 * countdown_widget()
+	 *
+	 * @return void
+	 **/
+
+	function countdown_widget() {
+		$widget_ops = array(
+			'classname' => 'countdown',
+			'description' => __('Displays upcoming events, which you configure under Settings / Events.', 'countdown'),
 			);
 		
-		update_option('countdown_widget', $options);
-	}
+		$this->init();
+		$this->WP_Widget('countdown', __('Events Widget', 'countdown'), $widget_ops);
+	} # countdown_widget()
+	
+	
+	/**
+	 * widget()
+	 *
+	 * @param array $args
+	 * @param array $instance
+	 * @return void
+	 **/
 
-	if ( $_POST["countdown_widget_update"] )
-	{
-		$new_options = $options;
+	function widget($args, $instance) {
+		extract($args, EXTR_SKIP);
+		$instance = wp_parse_args($instance, countdown_widget::defaults());
+		extract($instance, EXTR_SKIP);
+		
+		$title = apply_filters('widget_title', $title);
+		
+		echo $before_widget;
+		if ( $title )
+			echo $before_title . $title . $after_title;
+		
+		echo '<ul>' . "\n";
+		
+		dates_to_remember($number);
+		
+		echo '</ul>' . "\n";
+		
+		echo $after_widget;
+	} # widget()
+	
+	
+	/**
+	 * update()
+	 *
+	 * @param array $new_instance
+	 * @param array $old_instance
+	 * @return array $instance
+	 **/
 
-		$new_options['title'] = strip_tags(stripslashes($_POST["countdown_widget_title"]));
-		$new_options['number'] = intval($_POST["countdown_widget_number"]);
+	function update($new_instance, $old_instance) {
+		$instance = array();
+		$instance['title'] = strip_tags($new_instance['title']);
+		$instance['number'] = intval($new_instance['number']);
+		
+		return $instance;
+	} # update()
+	
+	
+	/**
+	 * form()
+	 *
+	 * @param array $instance
+	 * @return void
+	 **/
 
-		if ( $options != $new_options )
-		{
-			$options = $new_options;
+	function form($instance) {
+		$instance = wp_parse_args($instance, countdown_widget::defaults());
+		extract($instance, EXTR_SKIP);
 
-			update_option('countdown_widget', $options);
+		echo '<p>'
+			. '<label>'
+			. __('Title', 'countdown') . '<br />'
+			. '<input type="text" class="widefat"'
+				. ' id="' . $this->get_field_id('title') . '"'
+				. ' name="' . $this->get_field_name('title') . '"'
+				. ' value="' . esc_attr($title) . '"'
+				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. sprintf(__('Display %s upcoming events', 'countdown'),
+				'<input type="text" size="3" name="' . $this->get_field_name('number') . '"'
+					. ' value="' . intval($number) . '"'
+					. ' />'
+				)
+			. '</label>'
+			. '</p>' . "\n";
+	} # form()
+	
+	
+	/**
+	 * defaults()
+	 *
+	 * @return array $instance
+	 **/
+
+	function defaults() {
+		return array(
+			'title' => __('Upcoming Events', 'countdown'),
+			'number' => 5,
+			);
+	} # defaults()
+	
+	
+	/**
+	 * upgrade()
+	 *
+	 * @param array $ops
+	 * @return array $ops
+	 **/
+
+	function upgrade($ops) {
+		$widget_contexts = class_exists('widget_contexts')
+			? get_option('widget_contexts')
+			: false;
+		
+		if ( isset($widget_contexts['countdown']) ) {
+			$ops['widget_contexts'] = $widget_contexts['countdown'];
 		}
-	}
-
-	$title = esc_attr($options['title']);
-	$number = $options['number'] ? $options['number'] : '';
-
-	echo '<input type="hidden" name="countdown_widget_update" value="1" />';
-
-	echo '<div style="margin-bottom: 6px;">'
-		. '<label>'
-		. 'Title' . '<br />'
-		. '<input type="text" size="45"'
-		. ' name="countdown_widget_title"'
-		. ' value="' . $title . '"'
-		. ' />'
-		. '</label>'
-		. '</div>';
-	
-	echo '<div style="margin-bottom: 6px;">'
-		. '<label>'
-		. 'Number of events' . '<br />'
-		. '<input type="text" size="45"'
-		. ' name="countdown_widget_number"'
-		. ' value="' . $number . '"'
-		. ' />'
-		. '</label>'
-		. '</div>';
-}
-
-
-function countdown_widget_init()
-{
-	$widget_options = array('classname' => 'countdown', 'description' => __( "Displays upcoming events") );
-	$control_options = array('width' => 460);
-	
-	wp_register_sidebar_widget('countdown', 'Events Widget', 'countdown_widget', $widget_options );
-	wp_register_widget_control('countdown', 'Events Widget', 'countdown_widget_control', $control_options );
-}
-
-add_action('widgets_init', 'countdown_widget_init');
+		
+		return $ops;
+	} # upgrade()
+} # countdown_widget
 
 
 if ( is_admin() )
