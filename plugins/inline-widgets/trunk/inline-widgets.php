@@ -29,7 +29,7 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
  * @package Inline Widgets
  **/
 
-add_action('init', array('inline_widgets', 'init'), 0);
+add_action('init', array('inline_widgets', 'init'), -100);
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
 if ( get_option('inline_widgets_version') === false )

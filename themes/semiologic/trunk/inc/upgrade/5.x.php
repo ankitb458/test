@@ -68,7 +68,7 @@ function upgrade_sem_5_8() {
 		? get_option('widget_contexts')
 		: false;
 	
-	$sidebars_widgets = get_option('sidebars_widgets');
+	$sidebars_widgets = wp_get_sidebars_widgets(false);
 	
 	// fix bug we introduced around 5.7.2
 	if ( $sem_options['version'] == '5.7.2' ) {
@@ -428,9 +428,12 @@ function upgrade_sem_5_8() {
 		'credits',
 		'version'
 		);
-	
+	#dump($sidebars_widgets);die;
 	update_option('widget_contexts', $widget_contexts);
-	update_option('sidebars_widgets', $sidebars_widgets);
+	#wp_set_sidebars_widgets($sidebars_widgets);
+	#global $_wp_sidebars_widgets;
+	#$_wp_sidebars_widgets = array();
+	
 	update_option('sem5_options', $sem_options);
 	delete_option('sem5_captions');
 	delete_option('sem_nav_menus');

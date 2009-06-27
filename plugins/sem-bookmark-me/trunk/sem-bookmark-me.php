@@ -58,6 +58,29 @@ register_deactivation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
 
 class bookmark_me extends WP_Widget {
 	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
+
+	function init() {
+		if ( get_option('widget_bookmark_me') === false ) {
+			foreach ( array(
+				'bookmark_me' => 'upgrade',
+				'bookmark_me_widgets' => 'upgrade',
+				'sem_bookmark_me_params' => 'upgrade_2_x',
+				) as $ops => $method ) {
+				if ( get_option($ops) !== false ) {
+					$this->alt_option_name = $ops;
+					add_filter('option_' . $ops, array(get_class($this), $method));
+					break;
+				}
+			}
+		}
+	} # init()
+	
+	
+	/**
 	 * template_redirect
 	 *
 	 * @return void
@@ -124,20 +147,7 @@ class bookmark_me extends WP_Widget {
 			'description' => __("Bookmark links to social media sites such as Buzzup, Delicious and Digg", 'bookmark-me'),
 			);
 		
-		if ( get_option('widget_bookmark_me') === false ) {
-			foreach ( array(
-				'bookmark_me' => 'upgrade',
-				'bookmark_me_widgets' => 'upgrade',
-				'sem_bookmark_me_params' => 'upgrade_2_x',
-				) as $ops => $method ) {
-				if ( get_option($ops) !== false ) {
-					$this->alt_option_name = $ops;
-					add_filter('option_' . $ops, array('bookmark_me', $method));
-					break;
-				}
-			}
-		}
-		
+		$this->init();
 		$this->WP_Widget('bookmark_me', __('Bookmark Me', 'bookmark-me'), $widget_ops);
 	} # bookmark_me()
 	
@@ -495,10 +505,6 @@ class bookmark_me extends WP_Widget {
 			}
 		}
 		
-		update_option('widget_bookmark_me', $ops);
-		if ( $widget_contexts !== false )
-			update_option('widget_contexts', $widget_contexts);
-		
 		return $ops;
 	} # upgrade()
 	
@@ -507,13 +513,11 @@ class bookmark_me extends WP_Widget {
 	 * upgrade_2_x()
 	 *
 	 * @param array $ops
-	 * @return array $ops
+	 * @return void
 	 **/
 
 	function upgrade_2_x($ops) {
-		$ops = bookmark_me::upgrade($ops);
-		dump($ops);
-		return $ops;
+		#$ops = bookmark_me::upgrade($ops);
 	} # upgrade_2_x()
 } # bookmark_me
 

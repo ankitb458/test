@@ -33,7 +33,25 @@ add_action('widgets_init', array('dealdotcom', 'widgets_init'));
 add_action('dealdotcom_update', array('dealdotcom', 'update_deal'));
 
 class dealdotcom extends WP_Widget {
-	var $option_name = 'dealdotcom_widgets';
+	/**
+	 * init()
+	 *
+	 * @return void
+	 **/
+
+	function init() {
+		if ( get_option('widget_dealdotcom') === false ) {
+			foreach ( array(
+				'dealdotcom_widgets' => 'upgrade',
+				) as $ops => $method ) {
+				if ( get_option($ops) !== false ) {
+					$this->alt_option_name = $ops;
+					add_filter('option_' . $ops, array(get_class($this), $method));
+					break;
+				}
+			}
+		}
+	} # init()
 	
 	
 	/**
@@ -62,18 +80,7 @@ class dealdotcom extends WP_Widget {
 			'width' => 330,
 			);
 		
-		if ( get_option('widget_dealdotcom') === false ) {
-			foreach ( array(
-				'dealdotcom_widgets' => 'upgrade',
-				) as $ops => $method ) {
-				if ( get_option($ops) !== false ) {
-					$this->alt_option_name = $ops;
-					add_filter('option_' . $ops, array('dealdotcom', $method));
-					break;
-				}
-			}
-		}
-		
+		$this->init();
 		$this->WP_Widget('dealdotcom', __('Dealdotcom Widget', 'dealdotcom'), $widget_ops, $control_ops);
 	} # dealdotcom()
 	
@@ -238,10 +245,6 @@ class dealdotcom extends WP_Widget {
 				unset($widget_contexts['dealdotcom-' . $k]);
 			}
 		}
-		
-		update_option('widget_dealdotcom', $ops);
-		if ( $widget_contexts !== false )
-			update_option('widget_contexts', $widget_contexts);
 		
 		return $ops;
 	} # upgrade()

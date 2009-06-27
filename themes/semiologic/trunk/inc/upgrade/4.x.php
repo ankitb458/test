@@ -401,7 +401,7 @@ update_option('sidebars_widgets', $sidebars_widgets);
 # Autofill panels
 #
 
-add_action('init', array('sem_panels', 'autofill'));
+#add_action('init', array('sem_panels', 'autofill'));
 
 
 #

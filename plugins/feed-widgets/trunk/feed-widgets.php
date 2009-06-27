@@ -29,7 +29,7 @@ load_plugin_textdomain('feed-widgets', null, dirname(__FILE__) . '/lang');
  * @package Feed Widgets
  **/
 
-add_action('init', array('feed_widgets', 'panels'), 0);
+add_action('init', array('feed_widgets', 'panels'), -100);
 add_filter('the_content', array('feed_widgets', 'display'), 100);
 add_filter('the_content_rss', array('feed_widgets', 'display'), 100);
 
