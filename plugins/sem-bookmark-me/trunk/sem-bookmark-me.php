@@ -501,7 +501,6 @@ class bookmark_me extends WP_Widget {
 				);
 			if ( isset($widget_contexts['bookmark_me-' . $k]) ) {
 				$ops[$k]['widget_contexts'] = $widget_contexts['bookmark_me-' . $k];
-				unset($widget_contexts['bookmark_me-' . $k]);
 			}
 		}
 		

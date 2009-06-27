@@ -242,7 +242,6 @@ class dealdotcom extends WP_Widget {
 				);
 			if ( isset($widget_contexts['dealdotcom-' . $k]) ) {
 				$ops[$k]['widget_contexts'] = $widget_contexts['dealdotcom-' . $k];
-				unset($widget_contexts['dealdotcom-' . $k]);
 			}
 		}
 		
