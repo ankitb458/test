@@ -428,11 +428,11 @@ function upgrade_sem_5_8() {
 		'credits',
 		'version'
 		);
-	#dump($sidebars_widgets);die;
+	
 	update_option('widget_contexts', $widget_contexts);
-	#wp_set_sidebars_widgets($sidebars_widgets);
-	#global $_wp_sidebars_widgets;
-	#$_wp_sidebars_widgets = array();
+	wp_set_sidebars_widgets($sidebars_widgets);
+	global $_wp_sidebars_widgets;
+	$_wp_sidebars_widgets = array();
 	
 	update_option('sem5_options', $sem_options);
 	delete_option('sem5_captions');
