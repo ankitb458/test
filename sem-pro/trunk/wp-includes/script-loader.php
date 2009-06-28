@@ -240,7 +240,7 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->add( 'user-profile', "/wp-admin/js/user-profile$suffix.js", array('jquery'), '20090514' );
 		$scripts->add_data( 'user-profile', 'group', 1 );
 
-		$scripts->add( 'admin-comments', "/wp-admin/js/edit-comments$suffix.js", array('wp-lists', 'jquery-ui-resizable', 'quicktags'), '20090209' );
+		$scripts->add( 'admin-comments', "/wp-admin/js/edit-comments$suffix.js", array('wp-lists', 'jquery-ui-resizable', 'quicktags'), '20090627' );
 		$scripts->add_data( 'admin-comments', 'group', 1 );
 		$scripts->localize( 'admin-comments', 'adminCommentsL10n', array(
 			'hotkeys_highlight_first' => isset($_GET['hotkeys_highlight_first']),
@@ -438,7 +438,7 @@ function wp_default_styles( &$styles ) {
 	$styles->add( 'colors-classic', '/wp-admin/css/colors-classic.css', array(), $colors_version);
 	$styles->add_data( 'colors-classic', 'rtl', true );
 
-	$styles->add( 'global', '/wp-admin/css/global.css', array(), '20090514' );
+	$styles->add( 'global', '/wp-admin/css/global.css', array(), '20090627' );
 	$styles->add( 'media', '/wp-admin/css/media.css', array(), '20090516' );
 	$styles->add( 'widgets', '/wp-admin/css/widgets.css', array(), '20090603' );
 	$styles->add( 'dashboard', '/wp-admin/css/dashboard.css', array(), '20090514' );
