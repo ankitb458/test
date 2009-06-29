@@ -4,7 +4,7 @@
 #
 
 if ( !defined('sem_version') )
-	define('sem_version', '5.8');
+	define('sem_version', '6.0-beta1');
 
 if ( !defined('sem_debug') )
 	define('sem_debug', isset($_GET['debug']) );
@@ -112,11 +112,12 @@ if ( !isset($sem_options['version']) ) {
 	$old_options = get_option('semiologic');
 	
 	if ( $old_options ) {
-		include sem_path . '/inc/upgrade/4.x.php';
+		$sem_options = array('version' => '4.0');
+		include sem_path . '/inc/upgrade.php';
 	} else {
 		include sem_path . '/inc/install.php';
 	}
 } elseif ( $sem_options['version'] != sem_version ) {
-	include sem_path . '/inc/upgrade/5.x.php';
+	include sem_path . '/inc/upgrade.php';
 }
 ?>

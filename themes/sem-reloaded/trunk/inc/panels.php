@@ -8,6 +8,7 @@
 sem_panels::register();
 
 add_action('init', array('sem_panels', 'autofill'), 0);
+add_action('sidebars_widgets', array('sem_panels', 'ext_sidebar'));
 
 class sem_panels {
 	/**
@@ -213,6 +214,9 @@ class sem_panels {
 		if ( $panel_id != 'the_entry' && !class_exists('widget_contexts') && is_letter() )
 			return;
 		
+		global $_wp_sidebars_widgets;
+		$_wp_sidebars_widgets = array();
+		
 		switch ( $panel_id ) {
 		case 'left_sidebar':
 			dynamic_sidebar('sidebar-1');
@@ -224,9 +228,9 @@ class sem_panels {
 		case 'bottom_sidebar':
 		case 'the_header':
 		case 'before_the_entries':
-		case 'the_404':
 		case 'after_the_entries':
 		case 'the_footer':
+		case 'the_404':
 		case 'the_entry':
 			dynamic_sidebar($panel_id);
 			break;
@@ -260,10 +264,8 @@ class sem_panels {
 	 **/
 
 	function autofill() {
-		if ( is_active_sidebar('the_entry') )
-			return;
-		
-		add_filter('sidebars_widgets', array('sem_panels', 'sidebars_widgets'));
+		if ( !is_active_sidebar('the_entry') )
+			add_filter('sidebars_widgets', array('sem_panels', 'sidebars_widgets'));
 	} # autofill()
 	
 	
@@ -279,6 +281,8 @@ class sem_panels {
 		
 		global $wp_widget_factory;
 		global $wp_registered_sidebars;
+		global $_wp_sidebars_widgets;
+		$_wp_sidebars_widgets = array();
 		
 		$default_widgets = array(
 			'the_header' => array(
@@ -418,5 +422,25 @@ class sem_panels {
 		
 		return $sidebars_widgets;
 	} # sidebars_widgets()
+	
+	
+	/**
+	 * ext_sidebar()
+	 *
+	 * @param array $sidebars_widgets
+	 * @return array $sidebars_widgets
+	 **/
+
+	function ext_sidebar($sidebars_widgets) {
+		if ( empty($sidebars_widgets['ext_sidebar']) )
+			return $sidebars_widgets;
+		
+		if ( empty($sidebars_widgets['sidebar-2']) ) {
+			$sidebars_widgets['sidebar-2'] = $sidebars_widgets['ext_sidebar'];
+			unset($sidebars_widgets['ext_sidebar']);
+		}
+		
+		return $sidebars_widgets;
+	} # ext_sidebar()
 } # sem_panels
 ?>
