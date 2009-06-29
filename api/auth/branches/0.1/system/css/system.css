@@ -1,0 +1,264 @@
+/* system colors */
+
+body
+{
+	background-color: gainsboro;
+	color: black;
+	font-family: Trebuchet MS, Tahoma, Helvetica, Sans-Serif;
+}
+
+#body
+{
+	background-color: white;
+}
+
+a
+{
+	color: blue;
+	text-decoration: underline;
+}
+
+a:hover
+{
+	color: firebrick;
+}
+
+
+/* system messages */
+
+div.messages
+{
+	padding: .5em !important;
+	margin: .5em 0px !important;
+	list-style-type: square !important;
+}
+
+div.message
+{
+	display: list-item !important;
+	margin: .2em 0px .2em 1.5em !important;
+}
+
+div.error
+{
+	border: solid 1px firebrick !important;
+	background-color: #ffeeee !important;
+}
+
+div.success
+{
+	border: solid 1px forestgreen !important;
+	background-color: #eeffee !important;
+}
+
+div.notice
+{
+	border: solid 1px steelblue !important;
+	background-color: #eeeeff !important;
+}
+
+
+/* forms */
+
+form
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+div.fieldset
+{
+	margin: .5em 0px;
+}
+
+.fieldset table
+{
+	width: 320px;
+	border-collapse: collapse;
+	margin: 0px;
+	margin-left: auto;
+	padding: 0px;
+	border: 0px;
+}
+
+.fieldset th
+{
+	text-align: center;
+}
+
+div.text
+{
+	padding: .1em 0px;
+}
+
+div.text div.field
+{
+	width: 330px;
+	float: right;
+}
+
+div.text div.label
+{
+	width: 170px;
+	float: left;
+	text-align: right;
+	padding: 2px 0px;
+}
+
+.text input
+{
+	width: 320px;
+}
+
+td.text
+{
+	width: 140px;
+}
+
+td.text input
+{
+	width: 130px;
+}
+
+textarea
+{
+	width: 500px;
+}
+
+div.dropdown
+{
+	padding: .1em 0px;
+}
+
+div.dropdown div.field
+{
+	width: 330px;
+	float: right;
+}
+
+div.dropdown div.label
+{
+	width: 170px;
+	float: left;
+	text-align: right;
+	padding: 2px 0px;
+}
+
+.dropdown select
+{
+	width: 320px;
+}
+
+.checkbox
+{
+	padding: .1em 0px;
+}
+
+div.checkbox
+{
+	width: 320px;
+	margin-left: auto;
+}
+
+.checkbox div.field
+{
+	float: left;
+}
+
+.checkbox div.label
+{
+	margin-left: 1.5em;
+}
+
+div.button
+{
+	text-align: right;
+}
+
+div.delete
+{
+	float: right;
+	margin-left: .5em;
+}
+
+
+/* dataset */
+
+div.dataset table
+{
+	width: 100%;
+	border-collapse: collapse;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+
+div.dataset th,
+div.dataset td
+{
+	padding: 1px 2px;
+}
+
+div.dataset th
+{
+	text-align: center;
+	background-color: #ffff99;
+}
+
+div.dataset thead td
+{
+	text-align: center;
+	background-color: #ffff99;
+}
+
+div.dataset tfoot td
+{
+	background-color: #ffff99;
+}
+
+div.dataset tr.alt
+{
+	background-color: #ffffbb;
+}
+
+
+/* admin menu */
+
+#admin_menu
+{
+	position: fixed;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	text-align: left;
+	background-color: ghostwhite;
+	display: table;
+}
+
+#admin_menu span
+{
+	padding: 5px 10px;
+}
+
+#admin_menu div
+{
+	display: table-row;
+}
+
+#admin_menu div span
+{
+	display: table-cell;
+}
+
+#admin_menu div div
+{
+	position: absolute;
+	display: none;
+	background-color: ghostwhite;
+}
+
+#admin_menu div div span
+{
+	display: block;
+	float: left;
+}
