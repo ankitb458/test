@@ -808,7 +808,7 @@ if (function_exists('add_action')) {
 
 		function democracy_widget() {
 			$widget_ops = array(
-				'classname' => 'democracy',
+				'classname' => 'widget_democracy',
 				'description' => __('Displays polls, which you configure under Settings / Events.', 'democracy'),
 				);
 
@@ -828,7 +828,7 @@ if (function_exists('add_action')) {
 			extract($args, EXTR_SKIP);
 			$instance = wp_parse_args($instance, democracy_widget::defaults());
 			extract($instance, EXTR_SKIP);
-
+			
 			$title = apply_filters('widget_title', $title);
 
 			echo $before_widget;

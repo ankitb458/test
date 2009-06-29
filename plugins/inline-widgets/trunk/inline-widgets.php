@@ -29,7 +29,7 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
  * @package Inline Widgets
  **/
 
-add_action('init', array('inline_widgets', 'init'), 1000);
+add_action('init', array('inline_widgets', 'panels'), -100);
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
 if ( get_option('inline_widgets_version') === false )
@@ -37,12 +37,12 @@ if ( get_option('inline_widgets_version') === false )
 
 class inline_widgets {
 	/**
-	 * init()
+	 * panels()
 	 *
 	 * @return void
 	 **/
 
-	function init() {
+	function panels() {
 		register_sidebar(
 			array(
 				'id' => 'inline_widgets',
@@ -56,7 +56,7 @@ class inline_widgets {
 		
 		if ( !is_active_sidebar('inline_widgets') )
 			add_filter('sidebars_widgets', array('inline_widgets', 'sidebars_widgets'));
-	} # init()
+	} # panels()
 	
 	
 	/**
@@ -69,6 +69,8 @@ class inline_widgets {
 	function sidebars_widgets($sidebars_widgets) {
 		global $wp_widget_factory;
 		global $wp_registered_sidebars;
+		global $_wp_sidebars_widgets;
+		$_wp_sidebars_widgets = array();
 		
 		$default_widgets = array(
 			'inline_widgets' => array(
@@ -198,14 +200,19 @@ class inline_widgets {
 			WHERE	post_content REGEXP '\\\\[widget:'
 			");
 		
+		$current_user = wp_get_current_user();
+		
 		foreach ( $posts as $post ) {
 			$post->post_content = preg_replace_callback("/
 				\[widget:\s*(.+?)\s*\]
 				/ix", array('inline_widgets', 'upgrade_callback'), $post->post_content);
+			
+			wp_set_current_user($post->post_author);
 			wp_update_post($post);
 		}
 		
-		update_option('inline_widget_version', '2.0');
+		wp_set_current_user($current_user->ID);
+		update_option('inline_widgets_version', '2.0');
 	} # upgrade()
 	
 	

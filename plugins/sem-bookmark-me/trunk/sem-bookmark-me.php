@@ -217,12 +217,14 @@ class bookmark_me extends WP_Widget {
 				}
 			}
 			
+			$title = apply_filters('widget_title', $title);
+			
 			ob_start();
 			
 			echo $before_widget;
 
 			if ( $title )
-				echo $before_title . apply_filters('widget_title', $title) . $after_title;
+				echo $before_title . $title . $after_title;
 
 			echo '<div class="bookmark_me_services' . ( !$print_action ? ' bookmark_me_sidebar' : '' ) . '">' . "\n";
 

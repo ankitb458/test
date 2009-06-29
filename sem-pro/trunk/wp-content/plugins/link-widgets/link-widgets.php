@@ -33,7 +33,12 @@ if ( $sem_opt = get_option('link_widgets') ) {
 	}
 	update_option('widget_links', $sem_opt);
 	
+	global $wp_filter;
+	$filter_backup = isset($wp_filter['sidebars_widgets']) ? $wp_filter['sidebars_widgets'] : array();
+	unset($wp_filter['sidebars_widgets']);
 	$sidebars_widgets = wp_get_sidebars_widgets(false);
+	$wp_filter['sidebars_widgets'] = $filter_backup;
+	
 	foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 		if ( !is_array($widgets) ) continue;
 		foreach ( $widgets as $k => $widget ) {

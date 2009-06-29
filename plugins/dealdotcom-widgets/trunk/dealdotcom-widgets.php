@@ -134,7 +134,7 @@ class dealdotcom extends WP_Widget {
 			. '<br />'
 			. '<img src="' . esc_url($deal['image']) . '" border="0"'
 				. ' alt="' . esc_attr($deal['name'] . ' @ $' . $deal['price']) . '"'
-				. ' style="width: 148px; margin: 3px auto;"'
+				. ' style="width: 148px; margin: 0px auto;"'
 				. '/>'
 			. '<br />'
 			. '<img src="' . esc_url($plugin_path . 'dealdotcom-bottom.gif') . '" alt="" />'
@@ -164,9 +164,13 @@ class dealdotcom extends WP_Widget {
 		}
 
 		set_transient('dealdotcom_deal', $deal);
-
-		if ( !wp_next_scheduled('dealdotcom_update') )
+		
+		if ( !wp_next_scheduled('dealdotcom_update') ) {
 			wp_schedule_event(time(), 'hourly', 'dealdotcom_update');
+			
+			# clear corrup cron job
+			wp_clear_scheduled_hook('dealdotcom');
+		}
 
 		return $deal;
 	} # update_deal()
