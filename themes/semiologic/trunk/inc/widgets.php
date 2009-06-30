@@ -2292,17 +2292,18 @@ class sem_nav_menu extends WP_Widget {
 			global $wpdb;
 			$pages = $wpdb->get_results("
 				SELECT	posts.*,
-						COALESCE(post_label.meta_value, post_title) as post_label
+						post_title
 				FROM	$wpdb->posts as posts
-				LEFT JOIN $wpdb->postmeta as post_label
-				ON		post_label.post_id = posts.ID
-				AND		post_label.meta_key = '_widgets_label'
 				WHERE	posts.post_type = 'page'
 				AND		posts.post_status = 'publish'
 				AND		posts.post_parent = 0
 				ORDER BY posts.menu_order, posts.post_title
 				");
 			update_post_cache($pages);
+			$to_cache = array();
+			foreach ( $pages as $page )
+				$to_cache[] = $page->ID;
+			update_postmeta_cache($to_cache);
 		}
 		
 		extract($instance, EXTR_SKIP);
@@ -2349,8 +2350,13 @@ class sem_nav_menu extends WP_Widget {
 			;
 		
 		foreach ( $pages as $page ) {
+			$label = get_post_meta($page->ID, '_widgets_label', true);
+			if ( $label === '' )
+				$label = $page->post_title;
+			if ( $label === '' )
+				$label = __('Untitled', 'nav-menus');
 			echo '<option value="page-' . $page->ID . '">'
-				. esc_attr($page->post_label)
+				. esc_attr($label)
 				. '</option>' . "\n";
 		}
 		
@@ -2383,10 +2389,16 @@ class sem_nav_menu extends WP_Widget {
 			);
 		
 		foreach ( $pages as $page ) {
+			$label = get_post_meta($page->ID, '_widgets_label', true);
+			if ( $label === '' )
+				$label = $page->post_title;
+			if ( $label === '' )
+				$label = __('Untitled', 'sem-theme');
+			$label = strip_tags($label);
 			$default_items[] = array(
 				'type' => 'page',
 				'ref' => $page->ID,
-				'label' => $page->post_label,
+				'label' => $label,
 				);
 		}
 		
@@ -2409,7 +2421,12 @@ class sem_nav_menu extends WP_Widget {
 				$url = get_permalink($ref);
 				$handle = 'page-' . $ref;
 				$page = get_post($ref);
-				$label = $page->post_label;
+				$label = get_post_meta($page->ID, '_widgets_label', true);
+				if ( $label === '' )
+					$label = $page->post_title;
+				if ( $label === '' )
+					$label = __('Untitled', 'sem-theme');
+				$label = strip_tags($label);
 				break;
 			}
 			
@@ -2436,7 +2453,7 @@ class sem_nav_menu extends WP_Widget {
 				. '<div class="nav_menu_item_preview">' . "\n"
 				. '&rarr;&nbsp;<a href="' . esc_url($url) . '"'
 					. ' onclick="window.open(this.href); return false;">'
-					. $label
+					. strip_tags($label)
 					. '</a>'
 				. '</div>' . "\n" # preview
 				. '</div>' . "\n"; # item
@@ -2465,7 +2482,12 @@ class sem_nav_menu extends WP_Widget {
 				$url = get_permalink($ref);
 				$handle = 'page-' . $ref;
 				$page = get_post($ref);
-				$label = $page->post_label;
+				$label = get_post_meta($page->ID, '_widgets_label', true);
+				if ( $label === '' )
+					$label = $page->post_title;
+				if ( $label === '' )
+					$label = __('Untitled', 'sem-theme');
+				$label = strip_tags($label);
 				break;
 			}
 			
