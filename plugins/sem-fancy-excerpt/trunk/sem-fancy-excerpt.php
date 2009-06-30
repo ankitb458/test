@@ -23,63 +23,147 @@ http://www.opensource.org/licenses/gpl-2.0.php
 load_plugin_textdomain('sem-fancy-excerpt', null, dirname(__FILE__) . '/lang');
 
 
-remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-add_filter('get_the_excerpt', 'fancy_excerpt', 0);
-
 /**
- * fancy_excerpt()
+ * fancy_excerpt
  *
- * @param string $content
- * @return string $content
+ * @package Fancy Excerpt
  **/
 
-function fancy_excerpt($text) {
-	$text = trim($text);
-	
-	if ( $text || !in_the_loop() )
-		return wp_trim_excerpt($text);
-	
-	global $allowedposttags;
-	
-	$more = sprintf(__('More on %s...', 'fancy-excerpt'), get_the_title());
-	
-	$text = get_the_content($more);
-	$text = str_replace(array("\r\n", "\r"), "\n", $text);
-	$text = preg_replace("/
-		<\s*(script|style|textarea)(?:\s.*?)?>
-		.*?
-		<\s*\/\s*\\1\s*>
-		/isx", '', $text);
-	$text = wp_kses($text, $allowedposttags);
-	
-	if ( !preg_match("|$more</a>$|", $text)
-		&& count(preg_split("~\s+~", trim(strip_tags($text)))) > 30
-	) {
-		$bits = preg_split("/(<(?:h[1-6]|p|ul|ol|li|dl|dd|table|tr|pre|blockquote)\b[^>]*>|\n{2,})/i", $text, null, PREG_SPLIT_DELIM_CAPTURE);
-		$text = '';
-		$length = 0;
-		
-		foreach ( $bits as $bit ) {
-			$text .= $bit;
-			$count += count(preg_split("~\s+~", trim(strip_tags($bit))));
+remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+add_filter('get_the_excerpt', array('fancy_excerpt', 'trim_excerpt'), 0);
+
+class fancy_excerpt {
+	/**
+	 * trim_excerpt()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function trim_excerpt($text) {
+		$text = trim($text);
+
+		if ( $text || !in_the_loop() )
+			return wp_trim_excerpt($text);
+
+		$more = sprintf(__('More on %s...', 'fancy-excerpt'), get_the_title());
+
+		$text = get_the_content($more);
+		$text = str_replace(array("\r\n", "\r"), "\n", $text);
+		#dump(esc_html($text));
+
+		if ( !preg_match("|$more</a>$|", $text)
+			&& count(preg_split("~\s+~", trim(strip_tags($text)))) > 30
+		) {
+			$text = fancy_excerpt::escape($text);
 			
-			if ( $count > 30 )
-				break;
+			$bits = preg_split("/(<(?:h[1-6]|p|ul|ol|li|dl|dd|table|tr|pre|blockquote)\b[^>]*>|\n{2,})/i", $text, null, PREG_SPLIT_DELIM_CAPTURE);
+			$text = '';
+			$length = 0;
+
+			foreach ( $bits as $bit ) {
+				$text .= $bit;
+				$count += count(preg_split("~\s+~", trim(strip_tags($bit))));
+				
+				if ( $count > 30 )
+					break;
+			}
+			
+			$text = fancy_excerpt::unescape($text);
+			
+			$text = force_balance_tags($text);
+			
+			$text .= "\n\n"
+				. '<p>'
+				. apply_filters('the_content_more_link',
+					'<a href="'. esc_url(get_permalink()) . '" class="more-link">'
+					. $more
+					. '</a>')
+				. '</p>' . "\n";
+		}
+
+		$text = apply_filters('the_content', $text);
+
+		return apply_filters('wp_trim_excerpt', $text, '');
+	} # trim_excerpt()
+	
+	
+	/**
+	 * escape()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function escape($text) {
+		global $escape_fancy_excerpt;
+		
+		if ( !isset($escape_fancy_excerpt) )
+			$escape_fancy_excerpt = array();
+		
+		foreach ( array(
+			'blocks' => "/
+				<\s*(script|style|object|textarea)(?:\s.*?)?>
+				.*?
+				<\s*\/\s*\\1\s*>
+				/isx",
+			) as $regex ) {
+			$text = preg_replace_callback($regex, array('fancy_excerpt', 'escape_callback'), $text);
 		}
 		
-		$text = force_balance_tags($text);
+		return $text;
+	} # escape()
+	
+	
+	/**
+	 * escape_callback()
+	 *
+	 * @param array $match
+	 * @return string $text
+	 **/
+
+	function escape_callback($match) {
+		global $escape_fancy_excerpt;
 		
-		$text .= "\n\n"
-			. '<p>'
-			. apply_filters('the_content_more_link',
-				'<a href="'. esc_url(get_permalink()) . '" class="more-link">'
-				. $more
-				. '</a>')
-			. '</p>' . "\n";
-	}
+		$tag_id = "----escape_fancy_excerpt:" . md5($match[0]) . "----";
+		$escape_fancy_excerpt[$tag_id] = $match[0];
+		
+		return $tag_id;
+	} # escape_callback()
 	
-	$text = apply_filters('the_content', $text);
 	
-	return apply_filters('wp_trim_excerpt', $text, '');
-} # fancy_excerpt()
+	/**
+	 * unescape()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function unescape($text) {
+		global $escape_fancy_excerpt;
+		
+		if ( !$escape_fancy_excerpt )
+			return $text;
+		
+		$text = preg_replace_callback("/
+			----escape_fancy_excerpt:[a-f0-9]{32}----
+			/x", array('fancy_excerpt', 'unescape_callback'), $text);
+		
+		return $text;
+	} # unescape()
+	
+	
+	/**
+	 * unescape_callback()
+	 *
+	 * @param array $match
+	 * @return string $text
+	 **/
+
+	function unescape_callback($match) {
+		global $escape_fancy_excerpt;
+		
+		return $escape_fancy_excerpt[$match[0]];
+	} # unescape_callback()
+} # fancy_excerpt
 ?>
