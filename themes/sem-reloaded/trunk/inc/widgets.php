@@ -2050,7 +2050,7 @@ class sem_nav_menu extends WP_Widget {
 		
 		$url = esc_url(get_permalink($page->ID));
 		
-		$ancestors = wp_cache_get($page_id, 'page_ancestors');
+		$ancestors = $page_id ? wp_cache_get($page_id, 'page_ancestors') : array();
 		$children = wp_cache_get($page->ID, 'page_children');
 		
 		$classes = array();
@@ -2114,7 +2114,7 @@ class sem_nav_menu extends WP_Widget {
 			$page = null;
 		}
 		
-		$ancestors = wp_cache_get($page_id, 'page_ancestors');
+		$ancestors = $page_id ? wp_cache_get($page_id, 'page_ancestors') : array();
 		if ( $ancestors === false ) {
 			$ancestors = array();
 			while ( $page && $page->post_parent != 0 ) {
