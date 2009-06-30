@@ -92,7 +92,7 @@ try {
 var pageTracker = _gat._getTracker("$uacct");
 
 EOS;
-		if ( current_user_can('publish_posts') ) {
+		if ( current_user_can('publish_posts') || current_user_can('publish_pages') ) {
 			echo "\n" . '<!-- '
 				. __('You are a site author, editor or admin, and aren\'t tracked as a result')
 				. '  -->' . "\n";
@@ -108,7 +108,7 @@ EOS;
 
 		echo $ga_script;
 		
-		if ( !sem_google_analytics_debug && current_user_can('publish_posts') )
+		if ( !sem_google_analytics_debug && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
 		 	return;
 		
 		$evt_script = <<<EOS
