@@ -33,21 +33,43 @@ if ( !defined('sem_google_analytics_debug') )
 	define('sem_google_analytics_debug', false);
 
 if ( !is_admin() ) {
-	add_action('wp_footer', array('google_analytics', 'scripts'));
+	add_action('wp_head', array('google_analytics', 'header_scripts'), 0);
+	add_action('wp_footer', array('google_analytics', 'footer_scripts'));
 } else {
 	add_action('admin_menu', array('google_analytics', 'admin_menu'));
 }
 
 class google_analytics {
 	/**
-	 * scripts()
+	 * header_scripts()
 	 *
 	 * @return void
 	 **/
 
-	function scripts() {
-		$options = google_analytics::get_options();
-		extract($options, EXTR_SKIP);
+	function header_scripts() {
+		extract(google_analytics::get_options(), EXTR_SKIP);
+		
+		if ( !$uacct )
+			return;
+		
+		echo <<<EOS
+
+<script type="text/javascript">
+window.google_analytics_uacct = "$uacct";
+</script>
+
+EOS;
+	} # header_scripts()
+	
+	
+	/**
+	 * footer_scripts()
+	 *
+	 * @return void
+	 **/
+
+	function footer_scripts() {
+		extract(google_analytics::get_options(), EXTR_SKIP);
 
 		if ( !$uacct ) {
 			echo "\n" . '<!-- '
@@ -146,7 +168,7 @@ for ( i = 0; i &lt; document.getElementsByTagName("a").length; i++ ) {
 EOS;
 		
 		echo $evt_script;
-	} # scripts()
+	} # footer_scripts()
 	
 	
 	/**

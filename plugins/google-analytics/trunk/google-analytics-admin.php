@@ -22,8 +22,7 @@ class google_analytics_admin {
 		
 		$ga_script = stripslashes($_POST['ga_script']);
 		
-		if ( preg_match("/_gat\._getTracker\(\"(UA-\d+-\d+)\"\);/ix", $ga_script, $match)
-			) {
+		if ( preg_match("/_gat\._getTracker\(\"(UA-[a-z0-9-]+)\"\);/ix", $ga_script, $match) ) {
 			$uacct = $match[1];
 		} else {
 			$uacct = false;
@@ -48,8 +47,7 @@ class google_analytics_admin {
 	 **/
 
 	function edit_options() {
-		$options = google_analytics::get_options();
-		extract($options, EXTR_SKIP);
+		extract(google_analytics::get_options(), EXTR_SKIP);
 		
 		if ( !$uacct )
 			$uacct = __('Your Account ID', 'sem-google-analytics');
