@@ -76,9 +76,9 @@ function fancy_excerpt($text) {
 				. $more
 				. '</a>')
 			. '</p>' . "\n";
-		
-		$text = apply_filters('the_content', $text);
 	}
+	
+	$text = apply_filters('the_content', $text);
 	
 	return apply_filters('wp_trim_excerpt', $text, '');
 } # fancy_excerpt()
