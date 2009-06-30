@@ -72,7 +72,7 @@ function upgrade_sem_5_7() {
  **/
 
 function upgrade_sem_6_0() {
-	global $sem_options, $sem_captions, $sem_nav_menus, $wpdb;
+	global $sem_options, $sem_captions, $sem_nav_menus, $wpdb, $sem_pro_version;
 	
 	$widget_contexts = class_exists('widget_contexts')
 		? get_option('widget_contexts')
@@ -85,7 +85,7 @@ function upgrade_sem_6_0() {
 	$wp_filter['sidebars_widgets'] = $filter_backup;
 	
 	// fix a bug that was introduced in 5.7.2
-	if ( $sem_options['version'] == '5.7.2' ) {
+	if ( $sem_options['version'] == '5.7.2' && !empty($sem_pro_version) ) {
 		$post_ids = $wpdb->get_col("
 			SELECT	ID
 			FROM	$wpdb->posts
