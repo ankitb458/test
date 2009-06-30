@@ -33,7 +33,7 @@ if ( !defined('sem_google_analytics_debug') )
 	define('sem_google_analytics_debug', false);
 
 if ( !is_admin() ) {
-	add_action('wp_head', array('google_analytics', 'header_scripts'), 0);
+	add_action('wp_head', array('google_analytics', 'header_scripts'));
 	add_action('wp_footer', array('google_analytics', 'footer_scripts'));
 } else {
 	add_action('admin_menu', array('google_analytics', 'admin_menu'));
