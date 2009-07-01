@@ -78,11 +78,13 @@ function upgrade_sem_6_0() {
 		? get_option('widget_contexts')
 		: false;
 	
-	global $wp_filter;
+	global $wp_filter, $_wp_sidebars_widgets;
 	$filter_backup = isset($wp_filter['sidebars_widgets']) ? $wp_filter['sidebars_widgets'] : array();
 	unset($wp_filter['sidebars_widgets']);
+	$_wp_sidebars_widgets = array();
 	$sidebars_widgets = wp_get_sidebars_widgets(false);
 	$wp_filter['sidebars_widgets'] = $filter_backup;
+	$_wp_sidebars_widgets = array();
 	
 	// fix a bug that was introduced in 5.7.2
 	if ( $sem_options['version'] == '5.7.2' && !empty($sem_pro_version) ) {
@@ -450,8 +452,6 @@ function upgrade_sem_6_0() {
 	
 	update_option('widget_contexts', $widget_contexts);
 	wp_set_sidebars_widgets($sidebars_widgets);
-	global $_wp_sidebars_widgets;
-	$_wp_sidebars_widgets = array();
 	
 	if ( !defined('sem_install_test') ) {
 		delete_option('sem6_captions');

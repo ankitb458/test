@@ -33,11 +33,13 @@ if ( $sem_opt = get_option('link_widgets') ) {
 	}
 	update_option('widget_links', $sem_opt);
 	
-	global $wp_filter;
+	global $wp_filter, $_wp_sidebars_widgets;
 	$filter_backup = isset($wp_filter['sidebars_widgets']) ? $wp_filter['sidebars_widgets'] : array();
 	unset($wp_filter['sidebars_widgets']);
+	$_wp_sidebars_widgets = array();
 	$sidebars_widgets = wp_get_sidebars_widgets(false);
 	$wp_filter['sidebars_widgets'] = $filter_backup;
+	$_wp_sidebars_widgets = array();
 	
 	foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 		if ( !is_array($widgets) ) continue;
@@ -57,8 +59,6 @@ if ( $sem_opt = get_option('link_widgets') ) {
 	}
 	
 	wp_set_sidebars_widgets($sidebars_widgets);
-	global $_wp_sidebars_widgets;
-	$_wp_sidebars_widgets = array();
 	
 	delete_option('link_widgets');
 }
