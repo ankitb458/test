@@ -1,0 +1,12 @@
+FCKLang.VideoBtn		= 'Insert Movies';
+FCKLang.VideoDlgTitle	= 'Video Properties';
+FCKLang.VideoDlgName	= 'Insert Movies';
+FCKLang.VideoTooltip	= 'Insert Video';
+FCKLang.VideoInfoTab	= 'Info';
+FCKLang.VideoUploadTab  = 'Upload';
+FCKLang.VideoURL        = 'URL';
+FCKLang.VideoTabTitle   = 'Video';
+FCKLang.VideoAlertUrl   = 'You forgot to enter the Video ID';
+FCKLang.VideoPreview   	= 'Preview of your video';
+FCKLang.VideoSource   	= 'Video Source';
+FCKLang.VideoID			= 'Video ID';
