@@ -4,7 +4,7 @@ Plugin Name: Mediacaster
 Plugin URI: http://www.semiologic.com/software/publishing/mediacaster/
 Description: Podcasting and Videocasting plugin
 Author: Denis de Bernardy
-Version: 1.0.2
+Version: 1.1
 Author URI: http://www.semiologic.com
 */
 
@@ -209,12 +209,8 @@ class mediacaster
 		case 'mov':
 		case 'm4v':
 		case 'mp4':
-			$height = intval($width * 240 / 320 );
-			return mediacaster::display_quicktime($file, $width, $height);
-			break;
-
 		case 'm4a':
-			$height = 20;
+			$height = intval($width * 240 / 320 );
 			return mediacaster::display_quicktime($file, $width, $height);
 			break;
 

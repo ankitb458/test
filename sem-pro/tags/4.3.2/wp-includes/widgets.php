@@ -330,8 +330,21 @@ function wp_widget_pages( $args ) {
 	extract( $args );
 	$options = get_option( 'widget_pages' );
 
+	if ( is_array($options['exclude']) )
+	{
+		$exclude = '';
+
+		foreach ( $options['exclude'] as $id )
+		{
+			$exclude .= ( $exclude ? ',' : '' ) . $id;
+		}
+
+		$options['exclude'] = $exclude;
+		update_option('widget_pages', $options);
+	}
+
 	$title = empty( $options['title'] ) ? __( 'Pages' ) : $options['title'];
-	$sortby = empty( $options['sortby'] ) ? 'menu_order' : $options['sortby'];
+	$sortby = 'menu_order';
 	$exclude = empty( $options['exclude'] ) ? '' : '&exclude=' . $options['exclude'];
 
 	if ( $sortby == 'menu_order' ) {
@@ -357,13 +370,7 @@ function wp_widget_pages_control() {
 	if ( $_POST['pages-submit'] ) {
 		$newoptions['title'] = strip_tags(stripslashes($_POST['pages-title']));
 
-		$sortby = stripslashes( $_POST['pages-sortby'] );
-
-		if ( in_array( $sortby, array( 'post_title', 'menu_order', 'ID' ) ) ) {
-			$newoptions['sortby'] = $sortby;
-		} else {
-			$newoptions['sortby'] = 'menu_order';
-		}
+		$newoptions['sortby'] = 'menu_order';
 
 		$newoptions['exclude'] = strip_tags( stripslashes( $_POST['pages-exclude'] ) );
 	}
@@ -371,16 +378,24 @@ function wp_widget_pages_control() {
 		$options = $newoptions;
 		update_option('widget_pages', $options);
 	}
+
+	if ( is_array($options['exclude']) )
+	{
+		$exclude = '';
+
+		foreach ( $options['exclude'] as $id )
+		{
+			$exclude .= ( $exclude ? ',' : '' ) . $id;
+		}
+
+		$options['exclude'] = $exclude;
+		update_option('widget_pages', $options);
+	}
+
 	$title = attribute_escape($options['title']);
 	$exclude = attribute_escape( $options['exclude'] );
 ?>
 			<p><label for="pages-title"><?php _e('Title:'); ?> <input style="width: 250px;" id="pages-title" name="pages-title" type="text" value="<?php echo $title; ?>" /></label></p>
-			<p><label for="pages-sortby"><?php _e( 'Sort by:' ); ?>
-				<select name="pages-sortby" id="pages-sortby">
-					<option value="post_title"<?php selected( $options['sortby'], 'post_title' ); ?>><?php _e('Page title'); ?></option>
-					<option value="menu_order"<?php selected( $options['sortby'], 'menu_order' ); ?>><?php _e('Page order'); ?></option>
-					<option value="ID"<?php selected( $options['sortby'], 'ID' ); ?>><?php _e( 'Page ID' ); ?></option>
-				</select></label></p>
 			<p><label for="pages-exclude"><?php _e( 'Exclude:' ); ?> <input type="text" value="<?php echo $exclude; ?>" name="pages-exclude" id="pages-exclude" style="width: 180px;" /></label><br />
 			<small><?php _e( 'Page IDs, separated by commas.' ); ?></small></p>
 			<input type="hidden" id="pages-submit" name="pages-submit" value="1" />

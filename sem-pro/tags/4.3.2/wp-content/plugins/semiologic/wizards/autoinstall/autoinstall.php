@@ -164,7 +164,13 @@ http://blogsearch.google.com/ping/RPC2
 		$query = mysql_query("SHOW COLUMNS FROM $wpdb->categories LIKE 'cat_order'") or die(mysql_error());
 
 		if (mysql_num_rows($query) == 0) {
-			$wpdb->query("ALTER TABLE $wpdb->categories ADD `cat_order` INT( 4 ) NOT NULL DEFAULT '0'");
+			$wpdb->query("ALTER TABLE $wpdb->categories ADD `cat_order` INT( 4 ) NULL DEFAULT '0'");
+		}
+
+		$query2 = mysql_query("SHOW COLUMNS FROM $wpdb->links LIKE 'link_order'") or die(mysql_error());
+
+		if (mysql_num_rows($query2) == 0) {
+			$wpdb->query("ALTER TABLE $wpdb->links ADD `link_order` INT( 4 ) NULL DEFAULT '0'");
 		}
 
 		$wpdb->show_errors();
