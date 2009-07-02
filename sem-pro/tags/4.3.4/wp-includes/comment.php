@@ -810,8 +810,29 @@ function weblog_ping($server = '', $path = '') {
 	// when set to true, this outputs debug messages by itself
 	$client->debug = false;
 	$home = trailingslashit( get_option('home') );
-	if ( !$client->query('weblogUpdates.extendedPing', get_option('blogname'), $home, get_bloginfo('rss2_url') ) ) // then try a normal ping
-		$client->query('weblogUpdates.ping', get_option('blogname'), $home);
+	if ( $client->query('weblogUpdates.extendedPing', get_option('blogname'), $home, get_bloginfo('rss2_url') ) ) // then try a normal ping
+	{
+		log_ping("- ".$server." was successfully pinged (extended format)");
+	}
+	else
+	{
+		if ($client->query('weblogUpdates.ping', get_option('blogname'), $home))
+		{
+			log_ping("- ".$server." was successfully pinged");
+		}
+		else
+		{
+			log_ping("- ".$server." could not be pinged. Error message: '".$client->error->message."'");
+		}
+	}		
 }
 
+function log_ping($line)
+{
+	$logfile = ABSPATH . "wp-content/ping.log";
+	
+	$fh = @fopen($logfile, "a");
+	@fwrite($fh, strftime("%D %T")."\t$line\n");
+	@fclose($fh);
+}
 ?>

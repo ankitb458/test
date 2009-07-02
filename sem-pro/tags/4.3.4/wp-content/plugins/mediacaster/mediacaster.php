@@ -4,7 +4,7 @@ Plugin Name: Mediacaster
 Plugin URI: http://www.semiologic.com/software/publishing/mediacaster/
 Description: Podcasting and Videocasting plugin
 Author: Denis de Bernardy
-Version: 1.2
+Version: 1.2.1
 Author URI: http://www.semiologic.com
 */
 
@@ -438,7 +438,7 @@ class mediacaster
 			$image = $file;
 			$image = str_replace($site_url, '', $image);
 			$image = str_replace('.' . $ext, '', $image);
-			$image = glob(ABSPATH . $image . '.{jpg,png}', GLOB_BRACE);
+			$image = glob(ABSPATH . $image . '.{jpg,jpeg,png}', GLOB_BRACE);
 
 			if ( $image )
 			{
@@ -467,7 +467,7 @@ class mediacaster
 			. 'so.addParam("overstretch","false");' . "\n"
 			. 'so.addParam("thumbsinplaylist","false");' . "\n"
 			. ( $image
-				? 'so.addParam("image","' . $image . '");' . "\n"
+				? 'so.addVariable("image","' . $image . '");' . "\n"
 				: ''
 				)
 			. 'so.addVariable("file","'. $file . '");' . "\n"
@@ -849,11 +849,11 @@ class mediacaster
 			}
 		}
 
-		if ( $file = glob(ABSPATH . $path . 'cover.{jpg,png}', GLOB_BRACE) )
+		if ( $file = glob(ABSPATH . $path . 'cover.{jpg,jpeg,png}', GLOB_BRACE) )
 		{
 			$cover = $path . basename(current($file));
 		}
-		elseif ( $file = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
+		elseif ( $file = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 		{
 			$cover = 'media/' . basename(current($file));
 		}

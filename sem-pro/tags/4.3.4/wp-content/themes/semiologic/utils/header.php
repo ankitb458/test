@@ -37,11 +37,11 @@ class header
 		}
 
 		if ( $post_ID
-			&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) ) )
+			&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) ) )
 		{
 			$header = current($header);
 		}
-		elseif ( $header = glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		elseif ( $header = glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = current($header);
 
@@ -78,7 +78,7 @@ class header
 				break;
 			}
 		}
-		elseif ( $header = glob(ABSPATH . 'wp-content/header/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		elseif ( $header = glob(ABSPATH . 'wp-content/header/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = current($header);
 		}
@@ -130,15 +130,15 @@ class header
 
 		$skin = get_active_skin();
 
-		if ( $header = glob(TEMPLATEPATH . '/skins/' . $skin . '/header{,-background,-bg}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		if ( $header = glob(TEMPLATEPATH . '/skins/' . $skin . '/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = end($header);
 		}
-		elseif ( $header = glob(TEMPLATEPATH . '/header{,-background,-bg}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		elseif ( $header = glob(TEMPLATEPATH . '/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = end($header);
 		}
-		elseif ( $header = glob(TEMPLATEPATH . '/headers/header{,-background,-bg}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		elseif ( $header = glob(TEMPLATEPATH . '/headers/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = end($header);
 		}

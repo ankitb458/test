@@ -21,6 +21,7 @@ function wiz_autoinstall_pro()
 	#
 
 	$default_plugins = array(
+				'around-this-date/aroundthisdate_wdgt.php',
 				'countdown/countdown.php',
 				'democracy/democracy.php',
 				'mediacaster/mediacaster.php',

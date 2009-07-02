@@ -8,8 +8,8 @@ class sem_author_image_admin
 
 	function init()
 	{
-		add_action('show_user_profile', array('sem_author_image_admin', 'display_image'));
-		add_action('personal_options_update', array('sem_author_image_admin', 'save_image'));
+		add_action('edit_user_profile', array('sem_author_image_admin', 'display_image'));
+		add_action('profile_update', array('sem_author_image_admin', 'save_image'));
 	} # init()
 
 
@@ -23,7 +23,7 @@ class sem_author_image_admin
 
 		$site_url = trailingslashit(get_option('siteurl'));
 
-		if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,png}', GLOB_BRACE) )
+		if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 		{
 			$image = end($image);
 		}
@@ -103,15 +103,14 @@ class sem_author_image_admin
 	# save_image()
 	#
 
-	function save_image()
+	function save_image($user_ID)
 	{
 		if ( @ $_FILES['author_image']['name'] )
 		{
-			$user_ID = $_POST['checkuser_id'];
 			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
-			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,png}', GLOB_BRACE) )
+			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 			{
 				foreach ( $image as $img )
 				{
@@ -124,7 +123,7 @@ class sem_author_image_admin
 			preg_match("/\.([^\.]+)$/", $_FILES['author_image']['name'], $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'png')) )
+			if ( !in_array($ext, array('jpg', 'jpeg', 'png')) )
 			{
 				echo '<div class="error">'
 					. "<p>"
@@ -165,13 +164,13 @@ class sem_author_image_admin
 					// Resample
 					$image_p = imagecreatetruecolor($width, $height);
 
-					if ( $ext == 'jpg' )
+					if ( $ext == 'png' )
 					{
-						$image = imagecreatefromjpeg($tmp_name);
+						$image = imagecreatefrompng($tmp_name);
 					}
 					else
 					{
-						$image = imagecreatefrompng($tmp_name);
+						$image = imagecreatefromjpeg($tmp_name);
 					}
 
 					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
@@ -192,7 +191,7 @@ class sem_author_image_admin
 			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
-			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,png}', GLOB_BRACE) )
+			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 			{
 				$image = end($image);
 			}
@@ -202,6 +201,8 @@ class sem_author_image_admin
 				@unlink($image);
 			}
 		}
+
+		return $user_ID;
 	} # save_image()
 } # sem_author_image_admin
 

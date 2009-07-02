@@ -72,7 +72,7 @@ class mediacaster_admin
 				{
 					$image = basename($key, '.' . $ext);
 
-					if ( $image = glob(ABSPATH . $path . $image . '.{jpg,png}', GLOB_BRACE) )
+					if ( $image = glob(ABSPATH . $path . $image . '.{jpg,jpeg,png}', GLOB_BRACE) )
 					{
 						$image = current($image);
 						@unlink($image);
@@ -96,7 +96,7 @@ class mediacaster_admin
 						$old_name = basename($old, '.' . $ext);
 						$new_name = basename($new, '.' . $ext);
 
-						if ( $image = glob(ABSPATH . $path . $old_name . '.{jpg,png}', GLOB_BRACE) )
+						if ( $image = glob(ABSPATH . $path . $old_name . '.{jpg,jpeg,png}', GLOB_BRACE) )
 						{
 							$image = current($image);
 
@@ -119,7 +119,7 @@ class mediacaster_admin
 				preg_match("/\.([^\.]+)$/", $new_name, $ext);
 				$ext = end($ext);
 
-				if ( in_array($ext, array('jpg', 'png', 'mp3', 'mp4', 'm4a', 'm4v', 'mov', 'flv', 'swf')) )
+				if ( in_array($ext, array('jpg', 'jpeg', 'png', 'mp3', 'mp4', 'm4a', 'm4v', 'mov', 'flv', 'swf')) )
 				{
 					@move_uploaded_file($tmp_name, $new_name);
 					@chmod($new_name, 0666);
@@ -358,7 +358,7 @@ class mediacaster_admin
 
 		if ( isset($_POST['delete_cover']) )
 		{
-			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
+			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 			{
 				$cover = current($cover);
 				@unlink($cover);
@@ -386,7 +386,7 @@ class mediacaster_admin
 			preg_match("/\.([^\.]+)$/", $name, $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'png')) )
+			if ( !in_array($ext, array('jpg', 'jpeg', 'png')) )
 			{
 				echo '<div class="error">'
 					. "<p>"
@@ -419,7 +419,7 @@ class mediacaster_admin
 			preg_match("/\.([^\.]+)$/", $name, $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'png')) )
+			if ( !in_array($ext, array('jpg', 'jpeg', 'png')) )
 			{
 				echo '<div class="error">'
 					. "<p>"
@@ -431,7 +431,7 @@ class mediacaster_admin
 			}
 			else
 			{
-				if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
+				if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 				{
 					$cover = current($cover);
 					@unlink($cover);
@@ -560,7 +560,7 @@ class mediacaster_admin
 			. '</p>' . "\n";
 
 
-			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
+			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 			{
 				$cover = current($cover);
 			}

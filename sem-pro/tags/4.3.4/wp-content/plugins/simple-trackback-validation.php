@@ -3,7 +3,7 @@
 Plugin Name: Simple Trackback Validation
 Plugin URI: http://sw-guide.de/wordpress/plugins/simple-trackback-validation/
 Description: Eliminates spam trackbacks by (1) checking if the IP address of the trackback sender is equal to the IP address of the webserver the trackback URL is referring to and (2) by retrieving the web page located at the URL used in the trackback and checking if the page contains a link to your blog.
-Version: 2.0
+Version: 2.1
 Author: Michael Woehrer
 Author URI: http://sw-guide.de
  	    ____________________________________________________
@@ -358,7 +358,7 @@ function stbv_adminOptions() {
 		<table id="outer"><tr><td class="left">
 		<!-- *********************** BEGIN: Main Content ******************* -->
 
-		<? if (stbv_isOldWordpress()) echo '<p style="color: red; font-weight: bold">You are using an outdated Wordpress version which is not supported by this plugin. Get the latest version at <a href="http://wordpress.org/download/">wordpress.org</a>.</p>'; ?>
+		<?php if (stbv_isOldWordpress()) echo '<p style="color: red; font-weight: bold">You are using an outdated Wordpress version which is not supported by this plugin. Get the latest version at <a href="http://wordpress.org/download/">wordpress.org</a>.</p>'; ?>
 		<form name="form1" method="post" action="<?php echo $_SERVER['PHP_SELF'] . '?page=' . basename(__FILE__); ?>&updated=true">
 		<fieldset class="options">
 			<h3>How to deal with spam trackbacks?</h3>
@@ -389,7 +389,7 @@ function stbv_adminOptions() {
 				<label for="stbv_validateIP"><strong>Validate IP Address</strong></label>
 				<br /><span style="margin-left: 20px; color: grey; font-size: 90%;">
 				Checks if the IP address of the trackback sender is equal to the IP address of the webserver the trackback URL is referring to.
-				This should reveal many spam trackbacks.</span>
+				This will reveal almost all spam trackbacks.</span>
 
 			<h3>Validation Phase 2: URL</h3>
 

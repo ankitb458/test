@@ -122,6 +122,9 @@ function theme_feature_is_active($feature_id)
 
 	case 'akismet':
 		return plugin_is_active('akismet/akismet.php');
+		
+	case 'around_this_date':
+		return plugin_is_active('around-this-date/aroundthisdate_wdgt.php');		
 
 	case 'authenticate_subscribers':
 		return plugin_is_active('impostercide.php');
@@ -426,6 +429,10 @@ function theme_feature_activate($feature_id)
 		plugin_activate('akismet/akismet.php');
 		break;
 
+	case 'around_this_date':
+		plugin_activate('around-this-date/aroundthisdate_wdgt.php');
+		break;
+		
 	case 'authenticate_subscribers':
 		plugin_activate('impostercide.php');
 		break;
@@ -841,6 +848,10 @@ function theme_feature_deactivate($feature_id)
 		plugin_deactivate('akismet/akismet.php');
 		break;
 
+	case 'around_this_date':
+		plugin_deactivate('around-this-date/aroundthisdate_wdgt.php');
+		break;
+		
 	case 'authenticate_subscribers':
 		plugin_deactivate('impostercide.php');
 		break;

@@ -46,7 +46,7 @@ class header_admin
 			}
 
 			if ( $post_ID > 0
-				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) )
+				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 				)
 			{
 				$header = current($header);
@@ -154,7 +154,7 @@ class header_admin
 
 	function add_admin_page()
 	{
-		if ( !glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		if ( !glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			add_submenu_page(
 				'themes.php',
@@ -382,7 +382,7 @@ class header_admin
 			preg_match("/\.([^\.]+)$/", $_FILES['header_file']['name'], $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'png', 'gif', 'swf')) )
+			if ( !in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'swf')) )
 			{
 				echo '<div class="error">'
 					. "<p>"

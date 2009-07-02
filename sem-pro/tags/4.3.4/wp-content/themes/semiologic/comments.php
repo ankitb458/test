@@ -72,6 +72,9 @@ if ( $comments )
 <div id="comment-<?php comment_ID() ?>" class="comment">
 <div class="comment_header">
 <?php
+
+do_action('display_comment');
+
 $cur_date = get_comment_date();
 if ( !isset($prev_date) || $cur_date != $prev_date )
 {

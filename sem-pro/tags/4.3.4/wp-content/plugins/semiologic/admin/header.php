@@ -19,7 +19,7 @@ class pro_header_admin
 	{
 		if ( @ $_FILES['header_file']['name'] )
 		{
-			if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) )
+			if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 			{
 				$header = current($header);
 				@unlink($header);
@@ -30,7 +30,7 @@ class pro_header_admin
 			preg_match("/\.([^\.]+)$/", $_FILES['header_file']['name'], $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'png', 'gif', 'swf')) )
+			if ( !in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'swf')) )
 			{
 				echo '<div class="error">'
 					. "<p>"
@@ -57,7 +57,7 @@ class pro_header_admin
 		}
 		elseif ( isset($_POST['delete_header']) )
 		{
-			if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) )
+			if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 			{
 				$header = current($header);
 				@unlink($header);

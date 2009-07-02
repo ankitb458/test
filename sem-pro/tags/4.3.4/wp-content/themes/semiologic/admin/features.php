@@ -111,7 +111,7 @@ function get_theme_features()
 			'absolute_urls' => array(
 					'Absolute URLs',
 					'Convert all relative URLs in posts to absolute URLs in RSS feeds.'
-					),					
+					),
 			);
 
 	$features['WordPress Features']
@@ -148,6 +148,10 @@ function get_theme_features()
 
 	$features['Extra Sidebar Widgets']
 		= array(
+			'around_this_date' => array(
+					'Around This Date',
+					'A sidebar widget to display old posts from the same week in the past.'
+					),
 			'automatic_translation' => array(
 					'Automatic Translations',
 					'This is keyword spam. Use only if it sounds like a recommendable practice to you. This feature requires fancy urls (Options / Permalinks) and an Apache server (it won\'t work on Windows).',
@@ -216,7 +220,7 @@ function get_theme_features()
 		= array(
 			'author_image' => array(
 					'Author Images',
-					'Add author images to posts and articles. Do use, drop .jpg images named after the login of authors (<i>e.g.</i> admin.jpg) into the wp-content/authors folder.',
+					'Add author images to posts and articles. To use, add your author image under Users / Your Profile.',
 					function_exists('get_site_option') ? is_site_admin() : null
 					),
 			'blogpulse_link' => array(
