@@ -1,33 +1,30 @@
 <?php
 /*
-Plugin Name: Role Manager
+Plugin Name: Role Manager (fork)
 Plugin URI: http://www.im-web-gefunden.de/wordpress-plugins/role-manager/
 Description: Role Management for WordPress 2.0, 2.1 and 2.2.
-Version: 2.0.8
+Version: 2.2
 Author: Thomas Schneider
 Author URI: http://www.im-web-gefunden.de/
 Update Server:  http://www.im-web-gefunden.de/
-Min WP Version: 2.0
-Max WP Version: 2.1
 License: MIT License - http://www.opensource.org/licenses/mit-license.php
 
 Original coding by David House and Owen Winkler
 Icons were provided by http://www.famfamfam.com/lab/icons/silk/ under
 a Creative Commons Attribution 2.5 license.
- 
+
 */
 
-load_plugin_textdomain('role-manager',$path = 'wp-content/plugins/role-manager/languages');
 
-class RoleManager
-{
-  var $path_file;
-  var $image_dir;
-  var $style_dir;
+class RoleManager {
+	var $path_file;
+	var $image_dir;
+	var $style_dir;
 
-	function RoleManager()
-	{
+	function RoleManager() {
     global $wp_db_version;
+
+		add_action('init', array(&$this, 'role_manager_init'));
 
     $wp_db_version < 4772 ? $this->path_file='profile.php' : $this->path_file='users.php';
     $this->image_dir = $this->dirname() . '/images/';
@@ -39,11 +36,15 @@ class RoleManager
 			add_action('init', array(&$this, 'handle_user_caps_edit'));
 			add_action('admin_head', array(&$this, 'admin_head'));
 		}
-		if (strstr($_SERVER['REQUEST_URI'], $this->path_file) !== false) {
+		if (strstr($_SERVER['REQUEST_URI'], 'role-manager.php') !== false) {
 			add_action('init', array(&$this, 'handle_role_caps_edit'));
 			add_action('init', array(&$this, 'process_role_changes'));
 			add_action('admin_head', array(&$this, 'admin_head'));
 		}
+	}
+
+	function role_manager_init() {
+		load_plugin_textdomain('role-manager',$path = 'wp-content/plugins/role-manager/languages');
 	}
 
 	function admin_menu() {
@@ -68,12 +69,12 @@ class RoleManager
 			var ajax = new sack();
 			ajax.requestFile = "' . $this->manage_roles_uri() . '";
 			ajax.setVar("action", "makedefault");
-			ajax.setVar("role", rolename);			
+			ajax.setVar("role", rolename);
 			ajax.setVar("ajax", "1");
 			ajax.execute = true;
 			//ajax.element = "toast";  // Debug ajax returned script
 			ajax.runAJAX();
-			return true;		
+			return true;
 		}
 		function setlevel(level,rolename) {
 			var ajax = new sack();
@@ -85,7 +86,7 @@ class RoleManager
 			ajax.execute = true;
 			//ajax.element = "toast";  // Debug ajax returned script
 			ajax.runAJAX();
-			return true;			
+			return true;
 		}
 		function fadeuserlevel(rolename) {
 			Fat.fade_element(rolename + "___user_level");
@@ -139,21 +140,23 @@ class RoleManager
 		}
 		</script>';
 	}
-	
+
 	function handle_role_changes() {
 		global $wp_roles;
+
+		check_admin_referer('role_manager');
 		// Handle changes
 		if ($_POST['grant'] == 1) {
 			$wp_roles->add_cap($_POST['role'], $_POST['cap'], true);
-		} 
+		}
 		else {
 			$wp_roles->remove_cap($_POST['role'], $_POST['cap']);
 		}
 		$wp_roles->WP_Roles();
 		$role = $wp_roles->get_role($_POST['role']);
-		
+
 		update_option('caplist', $this->get_cap_list());
-				
+
 		//Redirect them away
 		if (isset($_POST['ajax'])) {
 			$changed = addslashes($_POST['grant'] ? __('Capability granted', 'role-manager') : __('Capability denied', 'role-manager'));
@@ -167,9 +170,18 @@ class RoleManager
 			header('Location: ' . $this->manage_roles_uri() . '&' . $changed);
 		}
 	}
-	
+
 	function handle_new_role_creation() {
 		global $wp_roles;
+
+		check_admin_referer('role_manager');
+
+		// experimental for wp-mu
+		// s. http://www.im-web-gefunden.de/wordpress-plugins/role-manager/#comment-6722
+		if ( ! isset($wp_roles) ) {
+			$wp_roles = new WP_Roles();
+		}
+		// end of experimental for wp-mu
 		if (empty($_POST['role-name'])) {
 			$this->error(__('You must enter a role name.'));
 		}
@@ -179,42 +191,45 @@ class RoleManager
 			foreach ($caps as $k => $cap) {
 				$caps[$k] = 1;
 			}
-		}
-		else {
+		} else {
 			$caps = array();
 		}
-		
+
 		$role = $wp_roles->add_role(sanitize_title($_POST['role-name']), stripslashes($_POST['role-name']), $caps);
 		header('Location: ' . $this->manage_roles_uri() . '&new-role=true');
 	}
-	
+
 	function handle_new_cap_creation() {
+		check_admin_referer('role_manager');
+
 		if (empty($_POST['cap-name'])) {
 			$this->error('You must enter a capability name.');
 		}
 		$cap = strtolower($_POST['cap-name']);
 		$cap = preg_replace('#[^a-z]#', '_', $cap);
-		
+
 		$caps = $this->get_cap_list();
 		if(!in_array($cap, $caps)) $caps[] = $cap;
 		update_option('caplist', $caps);
 		header('Location: ' . $this->manage_roles_uri() . '&new-cap=true');
 	}
-	
+
 	function handle_cap_purge() {
+		check_admin_referer('role_manager');
 		$caps = array();
 		update_option('caplist', $caps);
 		$caps = $this->get_cap_list();
-		update_option('caplist', $caps);		
+		update_option('caplist', $caps);
 		header('Location: ' . $this->manage_roles_uri() . '&purge-caps=true');
 	}
-	
+
 	function rename_role($role) {
 		global $wp_roles, $wpdb;
-    
+
 		if ($_POST['role-name']) {
+			check_admin_referer('role_manager');
 			$roletitle = sanitize_title($_POST['role-name']);
-      
+
       if ( $roletitle != $role ) {
         if ( $wp_roles->is_role($roletitle) ) {
           $this->error(__('Can\'t rename. A Role with the name ' . $roletitle . ' already exist.', 'role-manager'));
@@ -222,7 +237,7 @@ class RoleManager
         $oldrole = $wp_roles->get_role($role);
 			  $wp_roles->add_role($roletitle, stripslashes($_POST['role-name']), $oldrole->capabilities);
         //$this->debug('before', $wp_roles);
-			
+
 			  if($userids = $wpdb->get_col("SELECT ID FROM {$wpdb->users}")) {
 
 				  foreach($userids as $userid) {
@@ -240,12 +255,12 @@ class RoleManager
 				  }
 			  }
 			  $wp_roles->remove_role($role);
-      }   
+      }
 			header('Location: ' . $this->manage_roles_uri() . '&role-renamed=true');
 		}
 	}
-	
-	function rename_role_form($role) { 
+
+	function rename_role_form($role) {
 		global $wp_roles;?>
 		<div class="wrap">
 			<h2><?php _e('Rename Role', 'role-manager'); ?> '<?php echo $wp_roles->role_names[$role]; ?>'</h2>
@@ -253,15 +268,16 @@ class RoleManager
 				<input type="hidden" name="action" value="rename" />
 				<input type="hidden" name="role" value="<?php echo $role; ?>" />
 				<label for="role-name"><?php _e('New Name:', 'role-manager'); ?>
-					<input type="text" name="role-name" id="role-name" 
+					<input type="text" name="role-name" id="role-name"
 					value="<?php echo $wp_roles->role_names[$role]; ?>" />
 				</label>
 				<input type="submit" value="<?php _e('Rename Role', 'role-manager'); ?>" />
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('role_manager'); ?>
 			</form>
 		</div>
-	<?php 
+	<?php
 	}
-	
+
 	function get_all_user_ids() {
 		if ($ids = wp_cache_get('all_user_ids', 'users')) {
 			return $ids;
@@ -272,38 +288,40 @@ class RoleManager
 			return $ids;
 		}
 	}
-	
-	function delete_role($role) 
+
+	function delete_role($role)
 	{
 		global $wp_roles;
 		if ($_POST['confirm']) {
-			$defaultrole = get_settings('default_role');
+			check_admin_referer('role_manager');
+
+			$defaultrole = get_option('default_role');
 			if ($role == $defaultrole) {
 				//LAZY CODE ALERT! we should give the option of changing the default role
 				$this->error(__('You cannot delete the default role.', 'role-manager'));
 			}
-			
+
 			//remove the role from all the users
 			foreach ($this->get_all_user_ids() as $id) { //we need a global get_all_user_ids() func
 				$user = new WP_User($id);
-        $user->roles = $this->fill_array_keys_with_true( $user->roles );
-        if ( in_array($role, array_keys($user->roles))) {
+				$user->roles = $this->fill_array_keys_with_true( $user->roles );
+				if ( in_array($role, array_keys($user->roles))) {
 				  //if this role removal would end them up with no roles, assign the default role instead of removing
 				  if (count($user->roles) <= 1) {
 					  $user->add_role($defaultrole);
-            $user->roles = $this->fill_array_keys_with_true( $user->roles );
-          }
+					$user->roles = $this->fill_array_keys_with_true( $user->roles );
+				  }
 					$user->remove_role($role);
-        }    
+				}
 			}
-      $wp_roles->remove_role($role);
+			$wp_roles->remove_role($role);
 			header('Location: ' . $this->manage_roles_uri() . '&role-deleted=true');
 		}
 	}
 
 	function make_default($role) {
 		global $wp_roles;
-		
+
 		if ($wp_roles->is_role($role)) {
 			update_option('default_role', $role);
 		} else {
@@ -314,16 +332,16 @@ class RoleManager
 			die('
 				showdefaultrole("' . $role .'");
 				setMessage("' . $changed . '");
-			');		
+			');
 		}
 		header('Location: ' . $this->manage_roles_uri() . '&made-default=true');
 	}
-	
+
 	function set_user_level($role)
 	{
 		global $wp_roles;
 		$level = isset($_POST['level']) ? $_POST['level'] : $_GET['level'];
-		
+
 		for($z=0;$z<=10;$z++) {
 			if ($z > $level) {
 				$wp_roles->remove_cap($role, "level_{$z}");
@@ -337,43 +355,44 @@ class RoleManager
 			die('
 				fadeuserlevel("' . $role .'");
 				setMessage("' . $changed . '");
-			');		
+			');
 		}
 		header('Location: ' . $this->manage_roles_uri() . '&set-userlevel=true');
 	}
-	
-	function delete_role_form($role) 
-	{ 
+
+	function delete_role_form($role)
+	{
 		global $wp_roles; ?>
 		<div class="wrap">
 			<h2><?php _e('Delete Role', 'role-manager'); ?> '<?php echo $wp_roles->role_names[$role]; ?>'</h2>
-			<p><?php echo __('All users with this role will have it removed, and they will lose all capabilities from this role (unless other roles provide it). If a user has only this role, they will be assigned the default role, ', 'role-manager') . get_settings('default_role'); ?></p>
+			<p><?php echo __('All users with this role will have it removed, and they will lose all capabilities from this role (unless other roles provide it). If a user has only this role, they will be assigned the default role, ', 'role-manager') . get_option('default_role'); ?></p>
 			<form method="post" class="role-manager" action="<?php echo $this->manage_roles_uri(); ?>">
 				<input type="hidden" name="action" value="delete" />
 				<input type="hidden" name="role" value="<?php echo $role; ?>" />
 				<input type="submit" name="confirm" value="<?php _e('Confirm Delete Role', 'role-manager'); ?>" />
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('role_manager'); ?>
 			</form>
 		</div>
-	<?php 
+	<?php
 	}
-		
+
 	function manage_roles_page()
 	{
 		global $wp_roles, $current_user;
-		
+
 		if(!current_user_can('edit_users')) {
 			echo "<p>Sneaky.</p>";  //If accessed properly, this message doesn't appear.
 			return;
 		}
-		
+
 		$action = $_POST['action'] ? $_POST['action'] : $_GET['action'];
 		$role = $_POST['role'] ? $_POST['role'] : $_GET['role'];
-	
+
 		switch ($action) {
 			case 'rename': $this->rename_role_form($role); break;
 			case 'delete': $this->delete_role_form($role); break;
-			default: 
-		
+			default:
+
 		// Display a message if we've made changes
 		if ($_GET['granted']) {
 			echo '<div class="updated fade" id="message"><p>' . __('Capability granted', 'role-manager') . '</p></div>';
@@ -394,28 +413,28 @@ class RoleManager
 		} elseif ($_GET['set-userlevel']) {
 			echo '<div class="updated fade" id="message"><p>' . __('Set user level of role', 'role-manager') . '</p></div>';
 		}
-		
+
 		// Output an admin page
 		echo '<div class="wrap" id="main_page"><h2>' . __('Manage Roles', 'role-manager') . '</h2>';
 		echo '<p>' . __('This page is for editing what capabilities are associated with each role. To change the capabilities of a specific user, click on Authors &amp; Users, then click Edit next to the user you want to change. You can <a href="#new-role">add new roles</a> as well.', 'role-manager') . '</p>';
 
 		$capnames = $this->get_cap_list();
-		
-		$defaultrole = get_settings('default_role');
+
+		$defaultrole = get_option('default_role');
 		foreach($wp_roles->role_names as $roledex => $rolename) {
 			if ($roledex == $defaultrole) {
 				$lovelylittlestar = '<img src="' . $this->image_dir . 'star.png" alt="Default Role" class="defrole" id="defrole_' . $roledex . '" onclick="return !setdefaultrole(\'' . $roledex . '\');" />';
 			} else {
 				$lovelylittlestar = '<img src="' . $this->image_dir . 'star_disabled.png" class="nondefrole" id="defrole_' . $roledex . '" alt="Click to make this the default role" onclick="return !setdefaultrole(\'' . $roledex . '\');" />';
 			}
-			
+
 			$lovelylittlestar = '<a href="' . $this->manage_roles_uri() . '&amp;action=makedefault&amp;role=' . $roledex . '" class="roledefaulter">'
 				. $lovelylittlestar . '</a>';
-			
-			echo "<h3 class=\"roles_name\">$lovelylittlestar {$rolename} 
+
+			echo "<h3 class=\"roles_name\">$lovelylittlestar {$rolename}
 				(<a href='" . $this->manage_roles_uri() . "&amp;action=rename&amp;role={$roledex}'>" . __('rename', 'role-manager') . "</a>";
 			$role = $wp_roles->get_role($roledex);
-						
+
 			if(!($role->has_cap('edit_users') && in_array($roledex, $current_user->roles))) {
 				echo ",<a href='" . $this->manage_roles_uri() . "&amp;action=delete&amp;role={$roledex}'>" . __('delete', 'role-manager') . "</a>";
 			}
@@ -460,7 +479,7 @@ class RoleManager
 		//Echo the new role form
 		?>
 		<h2 id="new-role"><?php _e('Create a new Role', 'role-manager'); ?></h2>
-		<form method="post" class="role-manager">
+		<form method="post" class="role-manager" action="">
 			<label for="role-name"><?php _e('Role Name:', 'role-manager'); ?> <input type="text" name="role-name" id="role-name" /></label>
 			<label><?php _e('Capabilities to be included:', 'role-manager'); ?></label>
 			<fieldset>
@@ -469,19 +488,23 @@ class RoleManager
 					<input type="checkbox" name="caps[<?php echo $cap; ?>]" id="cap-<?php echo $cap; ?>" />
 					<?php echo $this->get_cap_name($cap); ?></label>
 				<?php } ?>
-			</fieldest>
+			</fieldset>
 			<input type="submit" name="new-role" value="<?php _e('Create Role', 'role-manager'); ?>" />
+			<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('role_manager'); ?>
 		</form>
-		
+
 		<h2 id="new-cap"><?php _e('Custom Capabilities', 'role-manager'); ?></h2>
-		<form method="post" class="role-manager">
+		<form method="post" class="role-manager" action="">
 			<label for="cap-name"><?php _e('New Capability Name:', 'role-manager'); ?> <input type="text" name="cap-name" id="cap-name" /></label>
 			<input type="submit" name="new-cap" value="<?php _e('Create Capability', 'role-manager'); ?>" />
+			<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('role_manager'); ?>
 		</form>
-		<form method="post" class="role-manager">
+		<form method="post" class="role-manager" action="">
 			<input type="submit" name="purge-caps" value="<?php _e('Purge Unused Capabilities', 'role-manager'); ?>" onclick="return confirm('<?php _e('If core capabilities are not currently assigned to any Role, then you must manually re-add them after this action if you want to use them.  Are you sure you want to do this?', 'role-manager'); ?>');"/>
-		</form>		<?php
-		
+			<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('role_manager'); ?>
+		</form>
+		<?php
+		echo '</div>';
 		} //switch ($action)
 	}
 
@@ -506,13 +529,13 @@ class RoleManager
 			}
 			else
 				$inherited = '';
-			echo '<label for="cap-' . $cap . '" class="cap-label" ' . $inherited . '>' . 
+			echo '<label for="cap-' . $cap . '" class="cap-label" ' . $inherited . '>' .
 				'<input type="checkbox" style="width: auto;margin-right: 5px;" name="caps[' . $cap . ']" id="cap-' . $cap . '" ' . $checked . '/>'
 				. $capname . '</label>';
 		}
 		echo '</fieldset><br style="clear:both;" />';
 	}
-	
+
 	function handle_role_caps_edit() {
 		if (isset ($_POST['grant'])) {
 			$this->handle_role_changes();
@@ -527,11 +550,11 @@ class RoleManager
 			$this->handle_cap_purge();
 		}
 	}
-		
+
   function process_role_changes() {
 		$action = $_POST['action'] ? $_POST['action'] : $_GET['action'];
 		$role = $_POST['role'] ? $_POST['role'] : $_GET['role'];
-	
+
 		switch ($action) {
 			case 'rename': $this->rename_role($role); break;
 			case 'delete': $this->delete_role($role); break;
@@ -540,7 +563,7 @@ class RoleManager
 		}
 	}
 
-	
+
 	//handle changes for specific user caps
 	function handle_user_caps_edit() {
 		global $user_ID;
@@ -575,23 +598,23 @@ class RoleManager
 			}
 		}
 	}
-		
+
 	/* Utility Functions */
 	function get_cap_list($roles = true, $kill_levels = true) {
 		global $wp_roles;
-		
+
 		// Get Role List
 		foreach($wp_roles->role_objects as $key => $role) {
 			foreach($role->capabilities as $cap => $grant) {
 				$capnames[$cap] = $cap;
         //$this->debug('grant', ($role->capabilities));
 			}
-		}	
-		
-		if ($caplist = get_settings('caplist')) {
+		}
+
+		if ($caplist = get_option('caplist')) {
 			$capnames = array_unique(array_merge($caplist, $capnames));
 		}
-		
+
 		$capnames = apply_filters('capabilities_list', $capnames);
 		if(!is_array($capnames)) $capnames = array();
 		$capnames = array_unique($capnames);
@@ -602,7 +625,7 @@ class RoleManager
 			$capnames = array_diff($capnames, array('level_0', 'level_1', 'level_2', 'level_3', 'level_4', 'level_5',
 				'level_6', 'level_7', 'level_8', 'level_9', 'level_10'));
 		}
-		
+
 		//Filter out roles if required
 		if (!$roles) {
 			foreach ($wp_roles->get_names() as $role) {
@@ -612,15 +635,15 @@ class RoleManager
 				}
 			}
 		}
-		
+
 		return $capnames;
 	}
-	
+
 	//this is crap
 	function get_cap_name($cap) {
 		return ucwords(str_replace('_', ' ', $cap));
 	}
-	
+
 	function debug($foo)
 	{
 		$args = func_get_args();
@@ -631,33 +654,33 @@ class RoleManager
 		}
 		echo "</pre>";
 	}
-	
+
 	function error($error) {
 		//TODO: better errors
 		die($error);
 	}
-	
-	function basename() 
+
+	function basename()
 	{
 		$name = preg_replace('/^.*wp-content[\\\\\/]plugins[\\\\\/]/', '', __FILE__);
 		return str_replace('\\', '/', $name);
 	}
-	
+
 	function dirname()
 	{
-		return dirname($this->plugin_uri()); 
+		return dirname($this->plugin_uri());
 	}
-	
+
 	function plugin_uri()
 	{
-		return get_settings('siteurl') . '/wp-content/plugins/' . $this->basename(); 
+		return get_option('siteurl') . '/wp-content/plugins/' . $this->basename();
 	}
-	
+
 	function manage_roles_uri() {
-		//return get_settings('siteurl') . '/wp-admin/profile.php?page=' . $this->basename();
-		return get_settings('siteurl') . '/wp-admin/'.$this->path_file.'?page=' . $this->basename();
+		//return get_option('siteurl') . '/wp-admin/profile.php?page=' . $this->basename();
+		return get_option('siteurl') . '/wp-admin/'.$this->path_file.'?page=' . $this->basename();
 	}
-		
+
 	function reset_vars($wpvarstoreset) {
 		for ($i=0; $i<count($wpvarstoreset); $i += 1) {
 			$wpvar = $wpvarstoreset[$i];
@@ -680,7 +703,7 @@ class RoleManager
     foreach ($arr as $key=>$val) { $arr[$key] = true ; };
     return ($arr);
   }
-  
+
 }
 
 $rolemanager = new RoleManager();

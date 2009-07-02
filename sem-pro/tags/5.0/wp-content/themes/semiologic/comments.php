@@ -9,18 +9,16 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
+global $sem_captions;
+global $sem_options;
 
-
-if ( apply_filters('show_entry_comments', true) ) :
-
-$login_url = trailingslashit(get_option('siteurl')) . 'wp-login.php?redirect_to=' . urlencode(get_permalink());
 
 if ( $post->post_password !== ''
 	&& $_COOKIE['wp-postpass_' . COOKIEHASH] != $post->post_password
 	)
 {
 	echo '<p>'
-		. get_caption('password_protected')
+		. __('Password Protected')
 		. '</p>';
 
 	return;
@@ -33,88 +31,98 @@ if ( $post->post_password !== ''
 
 if ( $comments )
 {
-?>
-<div id="comments" class="comments">
-<h1><?php comments_number(get_caption('no_comments'), get_caption('1_comment'), get_caption('n_comments')); ?>
-<?php
-	echo ' ' . get_caption('on') . ' ';
-	the_title();
-?>
-<?php
+	echo '<div id="comments" class="comments">' . "\n";
+
+	$title = the_title('', '', false);
+
+	$caption = $sem_captions['comments_on'];
+	$caption = str_replace('%title%', $title, $caption);
+
 	if ( comments_open() )
 	{
-?>
-	<span class="comment_entry"><a href="#postcomment" title="<?php echo get_caption('leave_comment'); ?> ">&raquo;</a></span>
-<?php
+
+		$comment_form_link = ' <span class="comment_entry">'
+			. '<a href="#postcomment" title="' . htmlspecialchars($sem_captions['leave_comment']) . '">'
+			. '&raquo;'
+			. '</a>'
+			. '</span>';
 	}
-?>
-</h1>
-<?php
-
-	foreach ( $comments as $comment )
+	else
 	{
-		if ( function_exists('wp_gravatar') )
-		{
-			if ( in_array(get_comment_type(), array("pingback", "trackback")) )
-			{
-				$gravatar_url = wp_gravatar($comment->comment_author_url);
-			}
-			else
-			{
-				$gravatar_url = wp_gravatar($comment->comment_author_email);
-			}
-		}
-		else
-		{
-			$gravatar_url = false;
-		}
-?>
-<div id="comment-<?php comment_ID() ?>" class="comment">
-<div class="comment_header">
-<?php
-
-do_action('display_comment');
-
-$cur_date = get_comment_date();
-if ( !isset($prev_date) || $cur_date != $prev_date )
-{
-	$prev_date = $cur_date;
-?>
-	<h2><?php echo $cur_date; ?></h2>
-<?php
-}
-?>
-	<h3><?php
-			echo ( $gravatar_url
-				? '<img src="' . $gravatar_url . '" class="gravatar" alt="" />'
-				: ''
-				);
-		?>
-		<span class="comment_author"><?php comment_author_link(); ?></span>
-		@ <span class="comment_time"><?php comment_date('g:i a'); ?></span><?php comment_type(__(':'), __(' (Trackback)'), __(' (Pingback)')); ?></h3>
-</div>
-<div class="comment_body">
-<?php comment_text() ?>
-</div>
-<div class="spacer"></div>
-<div class="comment_actions">
-	<span class="action link_comment"><a href="#comment-<?php comment_ID() ?>"><?php echo get_caption('permalink') ?></a></span>
-	<?php
-	if ( comments_open() )
-	{
-	?>
-	<span class="action reply_comment">&bull;&nbsp;<a href="#postcomment"><?php echo get_caption('reply'); ?></a></span>
-	<?php
+		$comment_form_link = false;
 	}
 
-	edit_comment_link(get_caption('edit'), ' <span class="action admin_link edit_comment">&bull;&nbsp;', '</span>'); ?>
-</div>
-</div> <!-- #comment -->
-<?php
+	echo '<h2>' . $caption . $comment_form_link . '</h2>' . "\n";
+
+	foreach ( (array) $comments as $comment )
+	{
+		echo '<div id="comment-' . get_comment_ID() . '" class="comment">' . "\n";
+
+
+		do_action('display_comment');
+
+
+		echo '<div class="comment_header">' . "\n";
+
+		$cur_date = get_comment_date();
+
+		if ( !isset($prev_date) || $cur_date != $prev_date )
+		{
+			$prev_date = $cur_date;
+			echo '<div class="comment_date">' . $cur_date . '</div>' . "\n";
+		}
+
+		echo '<h3>'
+			. '<span class="comment_author">'
+				. get_comment_author_link()
+				. '</span>'
+			. ' @ '
+			. '<span class="comment_time">'
+			. get_comment_date('g:i a')
+			. '</span>'
+			. comment_type('', ' (' . __('Trackback') . ')', ' (' . __('Pingback') . ')')
+			. '</h3>' . "\n";
+
+		echo '</div>' . "\n";
+
+
+		echo '<div class="comment_body">' . "\n"
+			. apply_filters('comment_text', get_comment_text())
+			. '</div>' . "\n";
+
+
+		echo '<div class="spacer"></div>';
+
+
+		echo '<div class="comment_actions">' . "\n";
+
+		if ( $sem_options['show_comment_permalink'] )
+		{
+			echo '<span class="comment_action link_comment">'
+				. '<a href="#comment-'. get_comment_ID() . '">'
+				. $sem_captions['comment_permalink']
+				. '</a>'
+				. '</span>' . "\n";
+		}
+
+		if ( comments_open() )
+		{
+			echo '<span class="comment_action reply_comment">'
+			. '<a href="#postcomment">'
+			. $sem_captions['reply_link']
+			. '</a>'
+			. '</span>' . "\n";
+		}
+
+		edit_comment_link(__('Edit'), '<span class="comment_action admin_link edit_comment">', '</span>' . "\n");
+
+		echo '</div>' . "\n";
+
+
+		echo '</div> <!-- #comment -->' . "\n";
 	} # foreach $comments as $comment
-?>
-</div><!-- #comments -->
-<?php
+
+	echo '</div><!-- #comments -->' . "\n";
 } # if $comments
 
 
@@ -124,60 +132,99 @@ if ( !isset($prev_date) || $cur_date != $prev_date )
 
 if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' ) )
 {
-?>
-<div id="comment_form" class="comment_form">
-<h1 id="postcomment"><?php echo get_caption('leave_comment'); ?></h1>
+	echo '<div id="comment_form" class="comment_form">' . "\n"
+		. '<h2 id="postcomment">'
+		. $sem_captions['leave_comment']
+		. '</h2>' . "\n";
 
-<?php if ( get_option('comment_registration') && !$user_ID )
-{
-?>
-<p><?php echo str_replace('%login_url%', $login_url, get_caption('login_required')); ?></p>
-<?php
-}
-else
-{
-?>
-<form action="<?php echo get_option('siteurl'); ?>/wp-comments-post.php" method="post" id="commentform">
-<?php
-if ( $user_ID )
-{
-	$identity = '<span class="comment_author"><a href="' . trailingslashit(get_option('siteurl')) . 'wp-admin/profile.php">' . $user_identity . '</a></span>';
-?>
-<p><?php echo str_replace('%identity%', $identity, get_caption('logged_in_as')); ?>. <span class="loginout"><a href="<?php echo trailingslashit(get_option('siteurl')); ?>wp-login.php?action=logout"><?php echo get_caption('logout'); ?> &raquo;</a></span>.</p>
-<?php
-}
-else
-{
-?>
-<p><label for="author"><?php echo get_caption('name_field'); if ($req) echo ' ' . get_caption('required_field'); ?>:</label><br />
-<input type="text" name="author" id="author" tabindex="1" value="<?php echo $comment_author; ?>" /></p>
 
-<p><label for="email"><?php echo get_caption('email_field');  if ($req) echo ' ' . get_caption('required_field'); ?>:</label><br />
-<input type="text" name="email" id="email" tabindex="2" value="<?php echo $comment_author_email; ?>" /></p>
+	if ( get_option('comment_registration') && !$user_ID )
+	{
+		$login_url = trailingslashit(get_option('siteurl'))
+			. 'wp-login.php?redirect_to='
+			. urlencode(get_permalink());
 
-<p><label for="url"><?php echo get_caption('website_field'); ?>:</label><br />
-<input type="text" name="url" id="url" tabindex="3" value="<?php echo $comment_author_url; ?>" /></p>
+		echo '<p>'
+			. str_replace('%login_url%', $login_url, $sem_captions['login_required'])
+			. '</p>' . "\n";
+	}
+	else
+	{
+		echo '<form method="post" id="commentform"'
+			. ' action="' . trailingslashit(get_option('siteurl')) . 'wp-comments-post.php"'
+			. '>' . "\n";
 
-<?php
-} # if ( $user_ID )
+		if ( $user_ID )
+		{
+			$identity = '<span class="comment_author">'
+				. '<a href="' . trailingslashit(get_option('siteurl')) . 'wp-admin/profile.php">'
+				. $user_identity
+				. '</a>'
+				. '</span>';
 
-?>
+			echo '<p>'
+				. str_replace('%identity%', $identity, $sem_captions['logged_in_as'])
+				. '</p>' . "\n";
+		}
+		else
+		{
+			echo '<p>'
+				. '<label for="author">'
+				. $sem_captions['name_field']
+				. ( $req
+					? ( ' ' . $sem_captions['required_field'] )
+					: ''
+					)
+				. ':<br />'
+				. '<input type="text" name="author" id="author"'
+					. ' value="' . htmlspecialchars($comment_author) . '" />'
+				. '</label>'
+				. '</p>' . "\n";
 
-<p><textarea name="comment" id="comment" cols="48" rows="10" tabindex="4"></textarea></p>
+			echo '<p>'
+				. '<label for="email">'
+				. $sem_captions['email_field']
+				. ( $req
+					? ( ' ' . $sem_captions['required_field'] )
+					: ''
+					)
+				. ':<br />'
+				. '<input type="text" name="email" id="email"'
+					. ' value="' . htmlspecialchars($comment_author_email) . '" />'
+				. '</label>'
+				. '</p>' . "\n";
 
-<p><input name="submit" type="submit" id="submit" tabindex="5" value="<?php echo get_caption('submit_comment'); ?>" />
-<input type="hidden" name="comment_post_ID" value="<?php echo $id; ?>" />
-</p>
-<?php
-do_action('comment_form', $post->ID);
-?>
-</form>
-<?php
-} # get_option('comment_registration') && !$user_ID
-?>
-</div><!-- #commentform -->
-<?php
+
+			echo '<p>'
+				. '<label for="email">'
+				. $sem_captions['url_field']
+				. ':<br />'
+				. '<input type="text" name="url" id="url"'
+					. ' value="' . htmlspecialchars($comment_author_url) . '" />'
+				. '</label>'
+				. '</p>' . "\n";
+		} # if ( $user_ID )
+
+
+		echo '<textarea name="comment" id="comment" cols="48" rows="10"></textarea>' . "\n";
+
+		echo '<p>'
+			. '<input name="submit" type="submit" id="submit"'
+				. ' value="' . htmlspecialchars($sem_captions['submit_field']) . '"'
+				. ' />'
+			. '</p>' . "\n";
+
+		do_action('comment_form', $post->ID);
+
+		echo '<input type="hidden" name="comment_post_ID" value="' . $post->ID . '" />' . "\n"
+			. '</form>' . "\n";
+
+		if ( function_exists('show_manual_subscription_form') )
+		{
+			show_manual_subscription_form();
+		}
+	} # get_option('comment_registration') && !$user_ID
+
+	echo '</div><!-- #commentform -->' . "\n";
 } # comments_open()
-
-endif;
 ?>

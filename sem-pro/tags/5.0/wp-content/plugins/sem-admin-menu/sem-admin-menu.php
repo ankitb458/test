@@ -4,8 +4,10 @@ Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/publishing/admin-menu/
 Description: Adds a convenient admin menu to your blog.
 Author: Denis de Bernardy
-Version: 4.1
+Version: 4.2
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: admin_menu
 */
 
 /*
@@ -26,31 +28,6 @@ Hat Tips
 **/
 
 load_plugin_textdomain('sem-admin-menu','wp-content/plugins/sem-admin-menu');
-
-
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
-
-if ( !defined('use_post_type_fixed') )
-{
-	define(
-		'use_post_type_fixed',
-			version_compare(
-				'2.1',
-				$GLOBALS['wp_version'], '<='
-				)
-			||
-			function_exists('get_site_option')
-		);
-}
 
 
 class sem_admin_menu
@@ -115,7 +92,7 @@ class sem_admin_menu
 
 	function display_css()
 	{
-		$site_url = trailingslashit(get_settings('siteurl'));
+		$site_url = trailingslashit(get_option('siteurl'));
 
 		$path = 'wp-content/'
 			. ( function_exists('get_site_option')
@@ -143,7 +120,7 @@ class sem_admin_menu
 	{
 		global $user_ID;
 
-		$site_url = trailingslashit(get_settings('siteurl'));
+		$site_url = trailingslashit(get_option('siteurl'));
 
 		if ( function_exists('get_site_option') )
 		{
@@ -161,7 +138,7 @@ class sem_admin_menu
 
 		$o = '';
 
-		if ( $user_ID || get_settings('users_can_register') || $options['always_on'] )
+		if ( $user_ID || get_option('users_can_register') || $options['always_on'] )
 		{
 			$o .= '<div id="sem_admin_menu">' . "\n"
 				. '<ul>' . "\n";
@@ -175,10 +152,7 @@ class sem_admin_menu
 						. ' '
 						. '<a href="'
 								. $site_url . 'wp-admin/'
-								. ( use_post_type_fixed
-									? 'post-new.php'
-									: 'post.php'
-									)
+								. 'post-new.php'
 								. '"'
 							. '>'
 							. __('Post', 'sem-admin-menu')
@@ -236,13 +210,38 @@ class sem_admin_menu
 				{
 					$o .= '<li class="options">'
 						. '<a href="'
-								. $site_url . 'wp-admin/themes.php'
+								. $site_url
+								. 'wp-admin/themes.php'
 								. '"'
 							. '>'
 							. __('Presentation', 'sem-admin-menu')
 							. '</a>'
 							. '</li>' . "\n"
 						. '<li>|</li>' . "\n";
+
+					if ( defined('sem_pro') )
+					{
+							$o .= '<li class="options">'
+								. '<a href="'
+										. $site_url
+										. 'wp-admin/themes.php?page=skin.php'
+										. '"'
+									. '>'
+									. __('Skin', 'sem-admin-menu')
+									. '</a>'
+									. '</li>' . "\n"
+								. '<li>|</li>' . "\n";
+							$o .= '<li class="options">'
+								. '<a href="'
+										. $site_url
+										. 'wp-admin/widgets.php'
+										. '"'
+									. '>'
+									. __('Widgets', 'sem-admin-menu')
+									. '</a>'
+									. '</li>' . "\n"
+								. '<li>|</li>' . "\n";
+					}
 				}
 
 				if ( current_user_can('activate_plugins') )

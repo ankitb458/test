@@ -5,11 +5,11 @@ Plugin URI: http://www.ilfilosofo.com/blog/wp-db-backup
 Description: On-demand backup of your WordPress database. Navigate to <a href="edit.php?page=wp-db-backup">Manage &rarr; Backup</a> to get started.
 Author: Austin Matzko 
 Author URI: http://www.ilfilosofo.com/blog/
-Version: 2.1.2
+Version: 2.1.5
 
 Development continued from that done by Skippy (http://www.skippy.net/)
 
-Much of this was modified from Mark Ghosh's One Click Backup, which
+Originally modified from Mark Ghosh's One Click Backup, which 
 in turn was derived from phpMyAdmin.
 
 Many thanks to Owen (http://asymptomatic.net/wp/) for his patch
@@ -29,7 +29,7 @@ Copyright 2007  Austin Matzko  (email : if.website at gmail.com)
 
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA
 */
 
 /**
@@ -56,11 +56,12 @@ class wpdbBackup {
 	var $backup_file = '';
 	var $backup_filename;
 	var $backup_dir = WP_BACKUP_DIR;
+	var $core_table_names;
 	var $errors = array();
 	var $basename;
 	var $page_url;
 	var $referer_check_key;
-	var $useMailer = false;
+	var $version = '2.1.5-alpha';
 
 	function gzip() {
 		return function_exists('gzopen');
@@ -80,7 +81,6 @@ class wpdbBackup {
 	function wpdbBackup() {
 		global $table_prefix, $wpdb;
 		add_action('init', array(&$this, 'init_textdomain'));
-		add_action('phpmailer_init', array(&$this, 'setup_phpmailer'));
 		add_action('wp_db_backup_cron', array(&$this, 'cron_backup'));
 		add_action('wp_cron_daily', array(&$this, 'wp_cron_daily'));
 		add_filter('cron_schedules', array(&$this, 'add_sched_options'));
@@ -91,10 +91,22 @@ class wpdbBackup {
 		$this->backup_filename = DB_NAME . "_$table_prefix$datum.sql";
 		if ($this->gzip()) $this->backup_filename .= '.gz';
 
-		if ( isset( $wpdb->link2cat ) )
-			$this->core_table_names = explode(',',"$wpdb->categories,$wpdb->comments,$wpdb->link2cat,$wpdb->links,$wpdb->options,$wpdb->post2cat,$wpdb->postmeta,$wpdb->posts,$wpdb->users,$wpdb->usermeta");
-		else 
-			$this->core_table_names = explode(',',"$wpdb->categories,$wpdb->comments,$wpdb->linkcategories,$wpdb->links,$wpdb->options,$wpdb->post2cat,$wpdb->postmeta,$wpdb->posts,$wpdb->users,$wpdb->usermeta");
+		$this->core_table_names = array(
+			$wpdb->categories,
+			$wpdb->comments,
+			$wpdb->link2cat,
+			$wpdb->linkcategories,
+			$wpdb->links,
+			$wpdb->options,
+			$wpdb->post2cat,
+			$wpdb->postmeta,
+			$wpdb->posts,
+			$wpdb->terms,
+			$wpdb->term_taxonomy,
+			$wpdb->term_relationships,
+			$wpdb->users,
+			$wpdb->usermeta,
+		);
 		
 		$this->backup_dir = trailingslashit(apply_filters('wp_db_b_backup_dir',$this->backup_dir));
 		$this->basename = 'wp-db-backup';
@@ -542,6 +554,7 @@ class wpdbBackup {
 		}
 		
 		if(($segment == 'none') || ($segment >= 0)) {
+			$defs = array();
 			$ints = array();
 			foreach ($table_structure as $struct) {
 				if ( (0 === strpos($struct->Type, 'tinyint')) ||
@@ -550,6 +563,7 @@ class wpdbBackup {
 					(0 === strpos(strtolower($struct->Type), 'int')) ||
 					(0 === strpos(strtolower($struct->Type), 'bigint')) ||
 					(0 === strpos(strtolower($struct->Type), 'timestamp')) ) {
+						$defs[strtolower($struct->Field)] = $struct->Default;
 						$ints[strtolower($struct->Field)] = "1";
 				}
 			}
@@ -569,14 +583,6 @@ class wpdbBackup {
 				if ( !ini_get('safe_mode')) @set_time_limit(15*60);
 				$table_data = $wpdb->get_results("SELECT * FROM $table LIMIT {$row_start}, {$row_inc}", ARRAY_A);
 
-				/*
-				if (FALSE === $table_data) {
-					$err_msg = sprintf(__('Error getting table contents from %s','wp-db-backup'),$table);
-					$this->error($err_msg);
-					fwrite($fp, "#\n# $err_msg\n#\n");
-				}
-				*/
-					
 				$entries = 'INSERT INTO ' . $this->backquote($table) . ' VALUES (';	
 				//    \x08\\x09, not required
 				$search = array("\x00", "\x0a", "\x0d", "\x1a");
@@ -586,7 +592,10 @@ class wpdbBackup {
 						$values = array();
 						foreach ($row as $key => $value) {
 							if ($ints[strtolower($key)]) {
-								$values[] = $value;
+								// make sure there are no blank spots in the insert syntax,
+								// yet try to avoid quotation marks around integers
+								$value = ( '' === $value) ? $defs[strtolower($key)] : $value;
+								$values[] = ( '' === $value ) ? "''" : $value;
 							} else {
 								$values[] = "'" . str_replace($search, $replace, $this->sql_addslashes($value)) . "'";
 							}
@@ -656,52 +665,77 @@ class wpdbBackup {
 	} //wp_db_backup
 
 	/**
-	 * Sets up the attachment to work with phpmailer, which appears in WP 2.2+
+	 * Sends the backed-up file via email
+	 * @param string $to
+	 * @param string $subject
+	 * @param string $message
 	 * @return bool
 	 */
-	function setup_phpmailer(&$phpmailer) {
-		if ( $this->useMailer ) :
-			$phpmailer->AddAttachment($this->diskfile, $this->filename);
-			$phpmailer->Body = $this->message;
-		endif;
-		return true;
-	}
+	function send_mail( $to, $subject, $message, $diskfile ) {
+		global $phpmailer;
 
-	function deliver_backup($filename = '', $delivery = 'http', $recipient = '') {
-		if ('' == $filename) { return false; }
-		
-		$this->diskfile = ABSPATH . $this->backup_dir . $filename;
-		$this->filename = $filename;
-		if ('http' == $delivery) {
-			if (! file_exists($this->diskfile)) 
-				$this->error(array('kind' => 'fatal', 'msg' => sprintf(__('File not found:%s','wp-db-backup'), "&nbsp;<strong>$filename</strong><br />") . '<br /><a href="' . $this->page_url . '">' . __('Return to Backup','wp-db-backup') . '</a>'));
-			header('Content-Description: File Transfer');
-			header('Content-Type: application/octet-stream');
-			header('Content-Length: ' . filesize($this->diskfile));
-			header("Content-Disposition: attachment; filename=$filename");
-			$success = readfile($this->diskfile);
-			unlink($this->diskfile);
-		} elseif ('smtp' == $delivery) {
-			if (! file_exists($this->diskfile)) return false;
+		$filename = basename($diskfile);
 
-			if (! is_email ($recipient)) {
-				$recipient = get_option('admin_email');
+		extract( apply_filters( 'wp_mail', compact( 'to', 'subject', 'message' ) ) );
+
+		if ( !is_object( $phpmailer ) || ( strtolower(get_class( $phpmailer )) != 'phpmailer' ) ) {
+			if ( file_exists( ABSPATH . WPINC . '/class-phpmailer.php' ) )
+				require_once ABSPATH . WPINC . '/class-phpmailer.php';
+			if ( file_exists( ABSPATH . WPINC . '/class-smtp.php' ) )
+				require_once ABSPATH . WPINC . '/class-smtp.php';
+			if ( class_exists( 'PHPMailer') )
+				$phpmailer = new PHPMailer();
+		}
+
+		// try to use phpmailer directly (WP 2.2+)
+		if ( is_object( $phpmailer ) && ( strtolower(get_class( $phpmailer )) == 'phpmailer' ) ) {
+			
+			// Get the site domain and get rid of www.
+			$sitename = strtolower( $_SERVER['SERVER_NAME'] );
+			if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+				$sitename = substr( $sitename, 4 );
 			}
+			$from_email = 'wordpress@' . $sitename;
+			$from_name = 'WordPress';
+
+			// Empty out the values that may be set
+			$phpmailer->ClearAddresses();
+			$phpmailer->ClearAllRecipients();
+			$phpmailer->ClearAttachments();
+			$phpmailer->ClearBCCs();
+			$phpmailer->ClearCCs();
+			$phpmailer->ClearCustomHeaders();
+			$phpmailer->ClearReplyTos();
+
+			$phpmailer->AddAddress( $to );
+			$phpmailer->AddAttachment($diskfile, $filename);
+			$phpmailer->Body = $message;
+			$phpmailer->CharSet = apply_filters( 'wp_mail_charset', get_bloginfo('charset') );
+			$phpmailer->From = apply_filters( 'wp_mail_from', $from_email );
+			$phpmailer->FromName = apply_filters( 'wp_mail_from_name', $from_name );
+			$phpmailer->IsMail();
+			$phpmailer->Subject = $subject;
+			
+			$result = @$phpmailer->Send();
+
+		// old-style: build the headers directly
+		} else {
 			$randomish = md5(time());
-			$boundary = "==WPBACKUP-BY-SKIPPY-$randomish";
-			$fp = fopen($this->diskfile,"rb");
-			$file = fread($fp,filesize($this->diskfile)); 
+			$boundary = "==WPBACKUP-$randomish";
+			$fp = fopen($diskfile,"rb");
+			$file = fread($fp,filesize($diskfile)); 
 			$this->close($fp);
+			
 			$data = chunk_split(base64_encode($file));
-			$headers = "MIME-Version: 1.0\n";
+			
+			$headers .= "MIME-Version: 1.0\n";
+			$headers = 'From: wordpress@' . preg_replace('#^www\.#', '', strtolower($_SERVER['SERVER_NAME'])) . "\n";
 			$headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\n";
-			$headers .= 'From: ' . get_option('admin_email') . "\n";
 		
-			$this->message = $message = sprintf(__("Attached to this email is\n   %1s\n   Size:%2s kilobytes\n",'wp-db-backup'), $filename, round(filesize($this->diskfile)/1024));
 			// Add a multipart boundary above the plain message
-			$message .= "This is a multi-part message in MIME format.\n\n" .
+			$message = "This is a multi-part message in MIME format.\n\n" .
 		        	"--{$boundary}\n" .
-				"Content-Type: text/plain; charset=\"utf-8\"\n" .
+				"Content-Type: text/plain; charset=\"" . get_bloginfo('charset') . "\"\n" .
 				"Content-Transfer-Encoding: 7bit\n\n" .
 				$message . "\n\n";
 
@@ -715,21 +749,44 @@ class wpdbBackup {
 				$data . "\n\n" .
 				"--{$boundary}--\n";
 			
-			if (function_exists('wp_mail')) {
-				$this->useMailer = true;
-				$success = @wp_mail($recipient, get_bloginfo('name') . ' ' . __('Database Backup','wp-db-backup'), $message, $headers);
-				$this->useMailer = false;
-			} else {
-				$success = @mail($recipient, get_bloginfo('name') . ' ' . __('Database Backup','wp-db-backup'), $message, $headers);
+			$result = @wp_mail($to, $subject, $message, $headers);
+		}
+		return $result;
+
+	}
+
+	function deliver_backup($filename = '', $delivery = 'http', $recipient = '') {
+		if ('' == $filename) { return false; }
+		
+		$diskfile = ABSPATH . $this->backup_dir . $filename;
+		if ('http' == $delivery) {
+			if (! file_exists($diskfile)) 
+				$this->error(array('kind' => 'fatal', 'msg' => sprintf(__('File not found:%s','wp-db-backup'), "&nbsp;<strong>$filename</strong><br />") . '<br /><a href="' . $this->page_url . '">' . __('Return to Backup','wp-db-backup') . '</a>'));
+			header('Content-Description: File Transfer');
+			header('Content-Type: application/octet-stream');
+			header('Content-Length: ' . filesize($diskfile));
+			header("Content-Disposition: attachment; filename=$filename");
+			$success = readfile($diskfile);
+			unlink($diskfile);
+		} elseif ('smtp' == $delivery) {
+			if (! file_exists($diskfile)) {
+				$msg = sprintf(__('File %s does not exist!','wp-db-backup'), $diskfile);
+				$this->error($msg);
+				return false;
 			}
+			if (! is_email($recipient)) {
+				$recipient = get_option('admin_email');
+			}
+			$message = sprintf(__("Attached to this email is\n   %1s\n   Size:%2s kilobytes\n",'wp-db-backup'), $filename, round(filesize($diskfile)/1024));
+			$success = $this->send_mail($recipient, get_bloginfo('name') . ' ' . __('Database Backup','wp-db-backup'), $message, $diskfile);
 
 			if ( false == $success ) {
 				$msg = __('The following errors were reported:','wp-db-backup') . "\n ";
 				$msg = ( function_exists('error_get_last') ) ? error_get_last('message') : __('ERROR: The mail application has failed to deliver the backup.','wp-db-backup'); 
 				$this->error($msg);
+			} else {
+				unlink($diskfile);
 			}
-			
-			unlink($this->diskfile);
 		}
 		return $success;
 	}
@@ -838,13 +895,30 @@ class wpdbBackup {
 		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field($this->referer_check_key); ?>
 		<fieldset class="options"><legend><?php _e('Tables','wp-db-backup') ?></legend>
 		<table align="center" cellspacing="5" cellpadding="5"><tr><td width="50%" align="left" class="alternate" valign="top">
-		<?php _e('These core WordPress tables will always be backed up:','wp-db-backup') ?><br /><ul><?php
+		<p><?php _e('These core WordPress tables will always be backed up:','wp-db-backup') ?></p><ul><?php
 		foreach ($wp_backup_default_tables as $table) {
 			echo "<li><input type='hidden' name='core_tables[]' value='$table' />$table</li>";
 		}
 		?></ul></td><td width="50%" align="left" valign="top"><?php 
 		if (count($other_tables) > 0) {
-			echo __('You may choose to include any of the following tables:','wp-db-backup') . ' <br />';
+			echo '<p>' . __('You may choose to include any of the following tables:','wp-db-backup') . '</p>';
+			?><script type="text/javascript">
+			//<![CDATA[
+				var wpdbBackup = function() {};
+				(function(b){
+					var n = function(c) {
+						var p = document.getElementsByTagName("input");
+						for(var i=0;i<p.length;i++)
+							if('other_tables[]' == p[i].getAttribute('name'))
+								p[i].checked = c;
+					}
+					b.a = function() { n(true) }
+					b.n = function() { n(false) }
+
+					document.write('<p><a href="javascript:void(0)" onclick="wpdbBackup.a()"><?php _e('Select all','wp-db-backup') ?></a> / <a href="javascript:void(0)" onclick="wpdbBackup.n()"><?php _e('Select none','wp-db-backup') ?></a></p>');
+				})(wpdbBackup)
+			//]]>
+			</script><?php
 			foreach ($other_tables as $table) {
 				echo "<label style=\"display:block;\"><input type='checkbox' name='other_tables[]' value='{$table}' /> {$table}</label>";
 			}
@@ -871,9 +945,10 @@ class wpdbBackup {
 			echo '<fieldset class="options"><legend>' . __('Scheduled Backup','wp-db-backup') . '</legend>';
 			$datetime = get_option('date_format') . ' @ ' . get_option('time_format');
 			if ( $cron ) :
-				if ( ! ( 'never' == $this->get_sched() ) ) :
+				$next_cron = wp_next_scheduled('wp_db_backup_cron');
+				if ( ! empty( $next_cron ) ) :
 					echo '<p>' .  __('Next Backup','wp-db-backup') . ': ';
-					echo gmdate($datetime, wp_next_scheduled('wp_db_backup_cron') + (get_option('gmt_offset') * 3600)) . '</p>';
+					echo gmdate($datetime, $next_cron + (get_option('gmt_offset') * 3600)) . '</p>';
 				endif;
 			elseif ( $cron_old ) :
 				echo '<p>' . __('Last WP-Cron Daily Execution','wp-db-backup') . ': ' . gmdate($datetime, get_option('wp_cron_daily_lastrun') + (get_option('gmt_offset') * 3600)) . '<br />';
@@ -914,7 +989,7 @@ class wpdbBackup {
 				foreach ($other_tables as $table) {
 					echo '<input type="checkbox" ';
 					if (in_array($table, $cron_tables)) {
-						echo 'checked=checked ';
+						echo 'checked="checked" ';
 					}
 					echo "name='wp_cron_backup_tables[]' value='{$table}' /> {$table}<br />";
 				}
@@ -937,6 +1012,8 @@ class wpdbBackup {
 
 	function schedule_choices($schedule) { // create the cron menu based on the schedule
 		$wp_cron_backup_schedule = $this->get_sched();
+		$next_cron = wp_next_scheduled('wp_db_backup_cron');
+		$wp_cron_backup_schedule = ( empty( $next_cron ) ) ? 'never' : $wp_cron_backup_schedule;
 		$sort = array();
 		foreach ( (array) $schedule as $key => $value ) $sort[$key] = $value['interval'];
 		asort( $sort );
@@ -949,9 +1026,9 @@ class wpdbBackup {
 			$interval = (int) $settings['interval'];
 			if ( 0 == $interval && ! 'never' == $name ) continue;
 			$display = ( ! '' == $settings['display'] ) ? $settings['display'] : sprintf(__('%s seconds','wp-db-backup'),$interval);
-			$menu .= "<li><input type='radio' name='wp_cron_schedule' style='border:none;'";
+			$menu .= "<li><input type='radio' name='wp_cron_schedule' style='border:none;' ";
 			if ($wp_cron_backup_schedule == $name) {
-				$menu .= ' checked="checked" ';
+				$menu .= " checked='checked' ";
 			}
 			$menu .= "value='$name' /> $display</li>";
 		}

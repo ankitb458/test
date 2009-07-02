@@ -1,16 +1,17 @@
 <?php
 /*
-Plugin Name: WordPress Hashcash
+Plugin Name: WordPress Hashcash (fork)
 Plugin URI: http://elliottback.com/wp/archives/2005/10/23/wordpress-hashcash-30-beta/
 Description: Client-side javascript blocks all spam bots.  XHTML 1.1 compliant.
 Author: Elliott Back
 Author URI: http://elliottback.com
-Version: 3.5.2 (fork)
+Version: 3.7 fork
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: hashcash
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
-require_once(dirname(__FILE__) . '/wp-hashcash.lib');
-
-$wpdb->wp_hashcash = $table_prefix . "WP_HASHCASH";
+$GLOBALS['wpdb']->wp_hashcash = $GLOBALS['table_prefix'] . "WP_HASHCASH";
 
 function hashcash_init()
 {
@@ -39,11 +40,13 @@ if ( !get_option('hashcash_installed') )
 }
 
 
+require_once(dirname(__FILE__) . '/wp-hashcash.lib');
+
 // UPDATE RANDOM SECRET
 #$curr = @file_get_contents(HASHCASH_SECRET_FILE);
-$curr = get_settings('hashcash_secret_key');
+$curr = get_option('hashcash_secret_key');
 #if(empty($curr) || (time() - @filemtime(HASHCASH_SECRET_FILE)) > HASHCASH_REFRESH){
-if(empty($curr) || (time() - intval(get_settings('hashcash_secret_key_time'))) > HASHCASH_REFRESH){
+if(empty($curr) || (time() - intval(get_option('hashcash_secret_key_time'))) > HASHCASH_REFRESH){
 	global $table_prefix, $wpdb;
 
 	// update our secret
@@ -76,7 +79,7 @@ if(empty($curr) || (time() - intval(get_settings('hashcash_secret_key_time'))) >
 
 function hashcash_add_hidden_tag() {
 	global $post;
-	if ( ( is_single() || is_page() )
+	if ( is_singular()
 		&& $post->comment_status == 'open'
 		&& !( get_option('comment_registration') && !$GLOBALS['user_ID'] )
 		){

@@ -1,12 +1,15 @@
 <?php
 
 /* <WP plugin data>
- * Plugin Name:   Custom Query String
- * Version:       2.9 (fork)
+ * Plugin Name:   Custom Query String (fork)
+ * Version:       2.13 fork
  * Plugin URI:    http://mattread.com/projects/wp-plugins/custom-query-string-plugin/
  * Description:   Change the number of posts displayed when viewing different archive pages.
  * Author:        Matt Read
  * Author URI:    http://www.mattread.com/
+ * Update Service: http://version.mesoconcepts.com/wordpress
+ * Update Tag: custom_query
+ * Update URI: http://www.semiologic.com/members/sem-pro/download/
  *
  * License:       GNU General Public License
  *
@@ -35,20 +38,8 @@
  */
 
 
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
-
-
 # define the current verion
-define('k_CQS_VER', '2.9');
+define('k_CQS_VER', '2.11');
 
 class cqs
 {
@@ -62,7 +53,7 @@ class cqs
 	var $option = array();
 
 //	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_date', 'is_year', 'is_month', 'is_day', 'is_time', 'is_search', 'is_home', 'is_paged', 'is_feed');
-	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_feed', 'is_home', 'is_paged', 'is_search');
+	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_feed', 'is_home', 'is_paged', 'is_search', 'is_tag');
 	var $orderbys = array('date', 'category', 'title', 'author', 'modified');
 	var $orders = array('DESC', 'ASC');
 
@@ -207,6 +198,9 @@ class cqs
 			elseif ($wp_query->is_category AND $this->options['is_category'])
 				$this->query = 'is_category';
 
+			elseif ($wp_query->is_tag AND $this->options['is_tag'])
+				$this->query = 'is_tag';
+
 /*			elseif ($wp_query->is_date)
 			{
 				if ($wp_query->is_time AND $this->options['is_time'])
@@ -261,7 +255,11 @@ class cqs
 	 */
 	function get_category_id($category_nicename) {
 		global $wpdb;
-		return (int) $wpdb->get_var("SELECT cat_ID FROM $wpdb->categories WHERE category_nicename = '". $wpdb->escape($category_nicename) ."'");
+		return (int) $wpdb->get_var("
+			SELECT term_id
+			FROM $wpdb->terms
+			WHERE slug = '". $wpdb->escape($category_nicename) ."'
+			");
 	}
 
 
@@ -274,7 +272,11 @@ class cqs
 	 */
 	function get_category_nicename($category_ID) {
 		global $wpdb;
-		return $wpdb->get_var("SELECT category_nicename FROM $wpdb->categories WHERE cat_ID = '". $wpdb->escape((int) $category_ID) ."'");
+		return $wpdb->get_var("
+			SELECT slug
+			FROM $wpdb->terms
+			WHERE term_id = '". $wpdb->escape((int) $category_ID) ."'
+			");
 	}
 
 
@@ -314,6 +316,7 @@ class cqs
 	 * @since version 2.0
 	 */
 	function add_options() {
+		check_admin_referer('custom_query_string');
 		if ($this->request['addCategory']) {
 			$cqs_new_options = array(
 				'cat_'. $_REQUEST['cat'] => array(
@@ -341,6 +344,7 @@ class cqs
 	 * @since version 2.0
 	 */
 	function delete_options() {
+		check_admin_referer('custom_query_string');
 		if ($this->request['delete']) {
 			foreach($this->request['delete'] as $delete)
 				unset($this->options[$delete]);
@@ -538,6 +542,8 @@ class cqs
 
 			<?php $this->footer(); ?>
 	</div>
+
+	<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('custom_query_string'); ?>
 
 	</form>
 

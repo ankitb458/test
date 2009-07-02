@@ -1,6 +1,6 @@
 <?php
 
-class header
+class sem_header
 {
 	#
 	# init()
@@ -8,8 +8,71 @@ class header
 
 	function init()
 	{
-		add_action('wp_head', array('header', 'wire_header'));
+		add_action('widgets_init', array('sem_header', 'widgetize'));
+		add_action('wp_head', array('sem_header', 'wire_header'));
+
+		add_action('the_header', array('sem_header', 'panel'));
 	} # init
+
+
+	#
+	# widgetize()
+	#
+
+	function widgetize()
+	{
+		register_sidebar_widget(
+			'Header',
+			array('sem_header', 'widget'),
+			'sem_header_widget'
+			);
+		register_widget_control(
+			'Header',
+			array('sem_header_admin', 'widget_control'),
+			450,
+			220
+			);
+	} # widgetize()
+
+
+	#
+	# panel()
+	#
+
+	function panel()
+	{
+		$sidebars_widgets = wp_get_sidebars_widgets();
+
+		if ( empty($sidebars_widgets['the_header']) )
+		{
+			echo '<div style="color: firebrick; padding: 20px; font-weight: bold;">'
+				. 'Your "Header" Panel is empty. Browse Presentation / Widgets and add a few widgets to it. In particular, those called "Header" and "Header: Nav Menu".'
+				. '</div>';
+		}
+
+		$GLOBALS['the_header'] = true;
+		dynamic_sidebar('the_header');
+		$GLOBALS['the_header'] = false;
+	} # panel()
+
+
+	#
+	# widget()
+	#
+
+	function widget($args)
+	{
+		if ( $GLOBALS['the_header'] )
+		{
+			do_action('display_header');
+		}
+		else
+		{
+			echo $args['before_widget']
+				. __('The Header widget will only work in the Header area.')
+				. $args['after_widget'];
+		}
+	} # widget()
 
 
 	#
@@ -23,68 +86,86 @@ class header
 			return sem_theme_header;
 		}
 
-		global $semiologic;
+		global $sem_options;
 
-		if ( !isset($semiologic['header']['mode']) )
+		if ( !isset($sem_options['header']['mode']) )
 		{
-			header::upgrade();
+			sem_header::upgrade();
 		}
 
-		if ( is_single() || is_page()
-		|| class_exists('sem_static_front') && sem_static_front::is_home() )
+		if ( is_singular() )
 		{
-			$post_ID = $GLOBALS['posts'][0]->ID;
+			$post_ID = intval($GLOBALS['wp_query']->get_queried_object_id());
 		}
 
-		if ( $post_ID
-			&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) ) )
+		if ( defined('GLOB_BRACE') )
 		{
-			$header = current($header);
-		}
-		elseif ( $header = glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
-		{
-			$header = current($header);
-
-			$header_name = basename($header);
-
-			preg_match("/(.+)\.[^\.]+/", $header_name, $header_type);
-			$header_type = end($header_type);
-
-			switch ( $header_type )
+			if ( $post_ID
+				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) ) )
 			{
-			case 'header':
-			case 'header-background':
-				if ( $GLOBALS['semiologic']['header']['mode'] != 'header' )
-				{
-					$GLOBALS['semiologic']['header']['mode'] = 'header';
-					update_option('semiologic', $GLOBALS['semiologic']);
-				}
-				break;
-
-			case 'header-bg':
-				if ( $GLOBALS['semiologic']['header']['mode'] != 'background' )
-				{
-					$GLOBALS['semiologic']['header']['mode'] = 'background';
-					update_option('semiologic', $GLOBALS['semiologic']);
-				}
-				break;
-
-			case 'logo':
-				if ( $GLOBALS['semiologic']['header']['mode'] != 'logo' )
-				{
-					$GLOBALS['semiologic']['header']['mode'] = 'logo';
-					update_option('semiologic', $GLOBALS['semiologic']);
-				}
-				break;
+				$header = current($header);
 			}
-		}
-		elseif ( $header = glob(ABSPATH . 'wp-content/header/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
-		{
-			$header = current($header);
+			elseif ( $header = glob(sem_path . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+			{
+				$header = current($header);
+
+				$header_name = basename($header);
+
+				preg_match("/(.+)\.[^\.]+/", $header_name, $header_type);
+				$header_type = end($header_type);
+
+				switch ( $header_type )
+				{
+				case 'header':
+				case 'header-background':
+					if ( $sem_options['header']['mode'] != 'header' )
+					{
+						$sem_options['header']['mode'] = 'header';
+						update_option('sem5_options', $sem_options);
+					}
+					break;
+
+				case 'header-bg':
+					if ( $sem_options['header']['mode'] != 'background' )
+					{
+						$sem_options['header']['mode'] = 'background';
+						update_option('sem5_options', $sem_options);
+					}
+					break;
+
+				case 'logo':
+					if ( $sem_options['header']['mode'] != 'logo' )
+					{
+						$sem_options['header']['mode'] = 'logo';
+						update_option('sem5_options', $sem_options);
+					}
+					break;
+				}
+			}
+			elseif ( $header = glob(ABSPATH . 'wp-content/header/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+			{
+				$header = current($header);
+			}
+			else
+			{
+				$header = false;
+			}
 		}
 		else
 		{
-			$header = false;
+			if ( $post_ID
+				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') ) )
+			{
+				$header = current($header);
+			}
+			elseif ( $header = glob(ABSPATH . 'wp-content/header/header-*.jpg') )
+			{
+				$header = current($header);
+			}
+			else
+			{
+				$header = false;
+			}
 		}
 
 		define('sem_theme_header', $header);
@@ -99,11 +180,13 @@ class header
 
 	function get_class()
 	{
+		global $sem_options;
+
 		$class = '';
 
-		if ( header::get_header() )
+		if ( sem_header::get_header() )
 		{
-			switch ( $GLOBALS['semiologic']['header']['mode'] )
+			switch ( $sem_options['header']['mode'] )
 			{
 			case 'header':
 			case 'background':
@@ -126,25 +209,32 @@ class header
 
 	function upgrade()
 	{
-		global $semiologic;
+		global $sem_options;
+
+		if ( !defined('GLOB_BRACE') )
+		{
+			$sem_options['header']['mode'] = 'header';
+			update_option('sem5_options', $sem_options);
+			return;
+		}
 
 		$skin = get_active_skin();
 
-		if ( $header = glob(TEMPLATEPATH . '/skins/' . $skin . '/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+		if ( $header = glob(sem_path . '/skins/' . $skin . '/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = end($header);
 		}
-		elseif ( $header = glob(TEMPLATEPATH . '/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+		elseif ( $header = glob(sem_path . '/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = end($header);
 		}
-		elseif ( $header = glob(TEMPLATEPATH . '/headers/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+		elseif ( $header = glob(sem_path . '/headers/header{,-background,-bg}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
 		{
 			$header = end($header);
 		}
-		elseif ( $header = $semiologic['active_header'] )
+		elseif ( $header = $sem_options['active_header'] )
 		{
-			$header = TEMPLATEPATH . '/headers/' . $semiologic['active_header'];
+			$header = sem_path . '/headers/' . $sem_options['active_header'];
 		}
 
 		if ( $header )
@@ -160,41 +250,42 @@ class header
 			@chmod(ABSPATH . 'wp-content/header', 0777);
 
 			@rename($header, ABSPATH . 'wp-content/headers/header.' . $ext);
+			@chmod(ABSPATH . 'wp-content/headers/header.' . $ext, 0666);
 
 			switch ( $name )
 			{
 			case 'header-background':
-				$semiologic['header']['mode'] = 'header';
+				$sem_options['header']['mode'] = 'header';
 				break;
 
 			case 'header-bg':
-				$semiologic['header']['mode'] = 'background';
+				$sem_options['header']['mode'] = 'background';
 				break;
 
 			case 'header':
 				switch ( $ext )
 				{
 				case 'swf':
-					$semiologic['header']['mode'] = 'background';
+					$sem_options['header']['mode'] = 'background';
 					break;
 
 				default:
-					$semiologic['header']['mode'] = 'logo';
+					$sem_options['header']['mode'] = 'logo';
 					break;
 				}
 				break;
 
 			default:
-				$semiologic['header']['mode'] = 'background';
+				$sem_options['header']['mode'] = 'background';
 				break;
 			}
 		}
 		else
 		{
-			$semiologic['header']['mode'] = 'header';
+			$sem_options['header']['mode'] = 'header';
 		}
 
-		update_option('semiologic', $semiologic);
+		update_option('sem5_options', $sem_options);
 	} # upgrade()
 
 
@@ -223,7 +314,7 @@ class header
 	{
 		if ( !$header )
 		{
-			$header = header::get_header();
+			$header = sem_header::get_header();
 		}
 
 		if ( $header )
@@ -250,7 +341,7 @@ class header
 	{
 		if ( !$header )
 		{
-			$header = header::get_header();
+			$header = sem_header::get_header();
 		}
 
 		if ( $header )
@@ -277,26 +368,48 @@ class header
 
 	function wire_header()
 	{
-		$header = header::get_header();
+		global $sem_options;
+
+		$header = sem_header::get_header();
 
 		if ( $header )
 		{
 			preg_match("/\.([^\.]+)$/", $header, $ext);
 			$ext = end($ext);
 
-			switch ( $GLOBALS['semiologic']['header']['mode'] )
+			switch ( $sem_options['header']['mode'] )
 			{
 			case 'logo':
-				remove_action('display_sitename', 'display_sitename');
-
-				if ( $ext == 'swf' )
+				if ( $sem_options['invert_header'] )
 				{
-					add_action('display_sitename', array('header', 'display_flash'));
-					remove_action('enhance_header_div', 'enhance_header_div');
+					remove_action('display_sitename', 'display_sitename');
+					remove_action('display_tagline', 'display_tagline');
+					add_action('display_sitename', 'display_tagline');
+					add_action('display_tagline', 'display_sitename');
+
+					if ( $ext == 'swf' )
+					{
+						add_action('display_tagline', array('sem_header', 'display_flash'));
+						remove_action('enhance_header_div', 'enhance_header_div');
+					}
+					else
+					{
+						add_action('display_tagline', array('sem_header', 'display_logo'));
+					}
 				}
 				else
 				{
-					add_action('display_sitename', array('header', 'display_logo'));
+					remove_action('display_sitename', 'display_sitename');
+
+					if ( $ext == 'swf' )
+					{
+						add_action('display_sitename', array('sem_header', 'display_flash'));
+						remove_action('enhance_header_div', 'enhance_header_div');
+					}
+					else
+					{
+						add_action('display_sitename', array('sem_header', 'display_logo'));
+					}
 				}
 				break;
 
@@ -308,7 +421,7 @@ class header
 				if ( $ext == 'swf' )
 				{
 					remove_action('enhance_header_div', 'enhance_header_div');
-					add_action('display_sitename', array('header', 'display_flash'));
+					add_action('display_sitename', array('sem_header', 'display_flash'));
 				}
 				else
 				{
@@ -318,13 +431,28 @@ class header
 
 			case 'background':
 					display_header_background_css($header);
+
+					if ( $sem_options['invert_header'] )
+					{
+						remove_action('display_sitename', 'display_sitename');
+						remove_action('display_tagline', 'display_tagline');
+						add_action('display_sitename', 'display_tagline');
+						add_action('display_tagline', 'display_sitename');
+					}
 				break;
 			}
 		}
+		elseif ( $sem_options['invert_header'] )
+		{
+			remove_action('display_sitename', 'display_sitename');
+			remove_action('display_tagline', 'display_tagline');
+			add_action('display_sitename', 'display_tagline');
+			add_action('display_tagline', 'display_sitename');
+		}
 	} # wire_header()
-} # header
+} # sem_header
 
-header::init();
+sem_header::init();
 
 
 #
@@ -333,16 +461,27 @@ header::init();
 
 function display_header()
 {
-?><div id="header" class="header"
-	<?php do_action('enhance_header_div'); ?>	>
-<div class="pad">
-<?php
-do_action('display_tagline');
-do_action('display_sitename');
-do_action('display_header_spacer');
-?></div>
-</div><!-- #header -->
-<?php
+	global $sem_options;
+
+	echo '<div id="header" class="header'
+		. ( $sem_options['invert_header']
+			? ' invert_header'
+			: ''
+			)
+		. '" ';
+
+	do_action('enhance_header_div');
+
+	echo '>' . "\n";
+
+	echo '<div class="pad">' . "\n";
+
+	do_action('display_tagline');
+	do_action('display_sitename');
+	do_action('display_header_spacer');
+
+	echo '</div>' . "\n";
+	echo '</div><!-- #header -->' . "\n";
 } # end display_header()
 
 add_action('display_header', 'display_header');
@@ -385,7 +524,7 @@ add_action('display_tagline', 'display_tagline');
 function enhance_header_div()
 {
 ?>	style="cursor: pointer;"
-	onclick="top.location.href = '<?php echo trailingslashit(get_settings('home')); ?>'"
+	onclick="top.location.href = '<?php echo trailingslashit(get_option('home')); ?>'"
 <?php
 } # end enhance_header_div()
 
@@ -415,15 +554,22 @@ add_action('enhance_header_div', 'header_title_tag');
 
 function display_navbar()
 {
-?><div id="navbar" class="navbar">
-<div class="pad">
-<?php
-do_action('display_header_nav');
-do_action('display_search_form');
-do_action('display_navbar_spacer');
-?></div>
-</div><!-- #navbar -->
-<?php
+	global $sem_options;
+
+	echo '<div id="navbar" class="navbar'
+		. ( $sem_options['show_search_form']
+			? ' float_nav'
+			: ''
+			)
+		. '">' . "\n"
+		. '<div class="pad">' . "\n";
+
+		do_action('display_header_nav');
+		do_action('display_search_form');
+		do_action('display_navbar_spacer');
+
+	echo '</div>' . "\n"
+		. '</div><!-- #navbar -->' . "\n";
 } # end display_navbar()
 
 add_action('display_navbar', 'display_navbar');
@@ -435,9 +581,11 @@ add_action('display_navbar', 'display_navbar');
 
 function display_header_nav()
 {
-?><div id="header_nav" class="header_nav inline_menu">
-<?php display_nav_menu('header_nav', '|'); ?></div><!-- #header_nav -->
-<?php
+	echo '<div id="header_nav" class="header_nav inline_menu">';
+
+	display_nav_menu('header_nav', '|');
+
+	echo '</div><!-- #header_nav -->' . "\n";
 } # end display_header_nav()
 
 add_action('display_header_nav', 'display_header_nav');
@@ -450,20 +598,34 @@ add_action('display_header_nav', 'display_header_nav');
 function display_search_form()
 {
 ?><div id="search_form" class="search_form">
-<form method="get" action="<?php bloginfo('url'); ?>"
-	id="searchform" name="searchform">
-<input type="text"
-	id="s" class="s" name="s"
-	value="<?php echo htmlspecialchars(get_caption('search'), ENT_QUOTES); ?>"
-	onfocus="if ( this.value == '<?php echo addslashes(htmlspecialchars(get_caption('search'), ENT_QUOTES)); ?>' ) this.value = '';"
-	onblur="if ( this.value == '' ) this.value = '<?php echo addslashes(htmlspecialchars(get_caption('search'), ENT_QUOTES)); ?>';"
-	/><input type="submit" id="go" class="go" value="<?php echo htmlspecialchars(get_caption('go'), ENT_QUOTES); ?>" />
-</form>
+<?php sem_search_form(); ?>
 </div><!-- #search_form -->
 <?php
 } # end display_search_form()
 
-add_action('display_search_form', 'display_search_form');
+
+#
+# sem_search_form()
+#
+
+function sem_search_form()
+{
+	global $sem_captions;
+
+	$search = $sem_captions['search_field'];
+	$go = $sem_captions['search_button'];
+
+?>
+<form method="get" action="<?php bloginfo('url'); ?>" id="searchform" name="searchform">
+<input type="text"
+	id="s" class="s" name="s"
+	value="<?php echo htmlspecialchars($search); ?>"
+	onfocus="if ( this.value == '<?php echo addslashes(htmlspecialchars($search)); ?>' ) this.value = '';"
+	onblur="if ( this.value == '' ) this.value = '<?php echo addslashes(htmlspecialchars($search)); ?>';"
+	/><input type="submit" id="go" class="go" value="<?php echo htmlspecialchars($go); ?>" />
+</form>
+<?php
+} # sem_search_form()
 
 
 #
@@ -473,7 +635,7 @@ add_action('display_search_form', 'display_search_form');
 function display_image_header()
 {
 ?><div id="sitename" class="sitename">
-<h1><img src="<?php echo get_template_directory_uri() . '/' . image_header; ?>"
+<h1><img src="<?php echo trailingslashit(get_template_directory_uri()) . image_header; ?>"
 	width="<?php echo image_header_width; ?>" height="<?php echo image_header_height; ?>"
 	alt="<?php bloginfo('sitename'); ?>"
 	/></h1>
@@ -544,9 +706,7 @@ function auto_remove_search_form()
 
 	foreach ( (array) $sidebars as $sidebar )
 	{
-		if ( in_array('Search', (array) $sidebar)
-			|| in_array('Google Search', (array) $sidebar)
-			|| in_array('search', (array) $sidebar)
+		if ( in_array('search', (array) $sidebar)
 			|| in_array('google-search', (array) $sidebar)
 			)
 		{

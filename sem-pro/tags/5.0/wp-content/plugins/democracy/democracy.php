@@ -1,11 +1,14 @@
 <?php
 /*
-Plugin Name: Democracy
+Plugin Name: Democracy (fork)
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.13 ( fork)
+Version: 1.14 fork
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: democracy
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 if ( isset($_GET['jal_add_user_answer']) || isset($_GET['jal_no_js']) )
@@ -304,7 +307,7 @@ function jal_dem_admin_page() {
 	       <td style="text-align: center"><?php echo $r->id; ?></td>
 	       <td style="text-align: center"><?php echo $r->question; ?></td>
 	       <td style="text-align: center"><?php if ($current == $r->id) { echo "So far, "; } echo $total_vote[$r->id]; ?></td>
-	       <td style="text-align: center"><?php echo $winners[$r->id]; ?>	       <td style="text-align: center"><?php echo date(get_settings('date_format'), $r->timestamp); ?></td>
+	       <td style="text-align: center"><?php echo $winners[$r->id]; ?>	       <td style="text-align: center"><?php echo date(get_option('date_format'), $r->timestamp); ?></td>
 	       <td style="text-align: center">
 	           <form action="" method="get">
 		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
@@ -634,7 +637,7 @@ function jal_democracy_archives ($show_active = FALSE, $before_title = '<h3>',$a
                 $winner = max($poll_votes[$question['id']]);
 
                 echo $before_title.$question['question'].$after_title;
-                echo "<br /><strong>Started:</strong> ".date(get_settings('date_format'), $question['timestamp']);
+                echo "<br /><strong>Started:</strong> ".date(get_option('date_format'), $question['timestamp']);
                 echo "<br /><strong>Total Votes:</strong> {$total_votes}";
 
                 echo "<ul>";
@@ -774,7 +777,7 @@ if (function_exists('add_action')) {
     if (isset($_POST['jal_dem_edit']))
         add_action('init', 'jal_edit_poll');
 
-	add_action( 'plugins_loaded', 'widget_democracy_init' );
+	add_action( 'widgets_init', 'widget_democracy_init' );
 }
 
 

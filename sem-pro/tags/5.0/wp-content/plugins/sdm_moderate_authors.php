@@ -1,12 +1,35 @@
 <?php
 /*
-Plugin Name: Moderate Authors
+Plugin Name: Moderate Subscribers (fork)
 Plugin URI: http://www.skippy.net/blog/plugins/
-Description: Forces all non-admin comments on a post into moderation
+Description: Process comments by subscribers and contributors into the normal moderation queue, just like anonymous comments. This can become useful when registrations are open on your blog.
 Author: Scott Merrill
-Version: 1.0 (edited)
+Version: 1.2 fork
 Author URI: http://www.skippy.net/blog/
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: moderate_subscribers
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
+
+function moderate_authors_init()
+{
+	if ( !get_option('moderate_authors_init') )
+	{
+		foreach ( array('administrator', 'editor', 'author') as $profile )
+		{
+			if ( !( $role = get_role($profile) ) )
+			{
+				return ;
+			}
+			$role->add_cap('auto_approve_comment', true);
+		}
+
+		update_option('moderate_authors_init', 1);
+	}
+} # moderate_authors_init()
+
+add_action('init', 'moderate_authors_init');
+
 
 add_action('preprocess_comment', 'sdm_moderate_author', 1);
 add_filter('pre_comment_approved', 'sdm_moderate_author_approved');
@@ -24,7 +47,8 @@ function sdm_moderate_author($comment) {
 
 	if ( $post->post_author == $comment['user_ID'] ) {
 		// if they're not an admin, they need to go through moderation
-		if (! current_user_can('administrator')) {
+		if ( !current_user_can('auto_approve_comment')
+			) {
 			$sdm_moderate_author_check = 1;
 		}
 	}
@@ -34,7 +58,7 @@ function sdm_moderate_author($comment) {
 function sdm_moderate_author_approved($approved) {
 	global $sdm_moderate_author_check;
 	if ($sdm_moderate_author_check) {
-		return get_settings('comment_moderation');
+		return get_option('comment_moderation');
 	} else {
 		return $approved;
 	}

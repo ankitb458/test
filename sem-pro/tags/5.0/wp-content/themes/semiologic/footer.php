@@ -27,7 +27,7 @@ do_action('display_body_spacer');
 
 <?php
 do_action('before_the_footer');
-do_action('display_footer');
+do_action('the_footer');
 do_action('after_the_footer');
 ?>
 

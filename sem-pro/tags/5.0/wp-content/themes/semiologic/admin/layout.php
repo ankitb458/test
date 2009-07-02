@@ -10,7 +10,7 @@ function add_theme_layout_options_admin()
 		__('Layout'),
 		__('Layout'),
 		'switch_themes',
-		str_replace("\\", "/", basename(__FILE__)),
+		basename(__FILE__),
 		'display_theme_layout_options_admin'
 		);
 } # end add_theme_layout_options_admin()
@@ -26,12 +26,12 @@ function update_theme_layout_options()
 {
 	check_admin_referer('sem_layout');
 
-	$options = get_option('semiologic');
+	global $sem_options;
 
-	$options['active_width'] = $_POST['active_width'];
-	$options['active_layout'] = $_POST['active_layout'];
+	$sem_options['active_width'] = preg_replace("/[^a-z_]/", "", $_POST['active_width']);
+	$sem_options['active_layout'] = preg_replace("/[^a-z_]/", "", $_POST['active_layout']);
 
-	update_option('semiologic', $options);
+	update_option('sem5_options', $sem_options);
 } # end update_theme_layout_options
 
 add_action('update_theme_layout_options', 'update_theme_layout_options');
@@ -88,9 +88,9 @@ function display_theme_layout_options_admin()
 
 function display_theme_width_options()
 {
-	$options = get_option('semiologic');
+	global $sem_options;
 
-	$active_width = $options['active_width'];
+	$active_width = $sem_options['active_width'];
 
 	$widths = array(
 		'narrow' => array(
@@ -159,9 +159,9 @@ add_action('display_theme_width_options', 'display_theme_width_options');
 
 function display_theme_layout_options()
 {
-	$options = get_option('semiologic');
+	global $sem_options;
 
-	$active_layout = $options['active_layout'];
+	$active_layout = $sem_options['active_layout'];
 
 	$layouts = array(
 		'essm' => array(

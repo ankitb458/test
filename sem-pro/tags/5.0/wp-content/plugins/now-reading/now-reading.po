@@ -508,4 +508,3 @@ msgstr ""
 # C:\apache\xampp\htdocs\blog\wp-content\plugins\now-reading/template-functions.php:266
 msgid "Search Library"
 msgstr ""
-

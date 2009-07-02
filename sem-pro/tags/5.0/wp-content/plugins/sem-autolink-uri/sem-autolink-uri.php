@@ -1,11 +1,13 @@
 <?php
 /*
-Plugin Name: Autolink uri
+Plugin Name: Autolink URI
 Plugin URI: http://www.semiologic.com/software/publishing/autolink-uri/
-Description: Automatically wrap unhyperlinked uri with html anchors
+Description: Automatically wrap unhyperlinked uri with html anchors.
 Author: Denis de Bernardy
-Version: 1.4
+Version: 1.5
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: autolink_uri
 */
 
 /*

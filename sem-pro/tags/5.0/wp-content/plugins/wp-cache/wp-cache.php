@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: wp-cache
+Plugin Name: wp-cache (fork)
 Plugin URI: http://mnm.uib.es/gallir/wp-cache-2/
 Description: Very fast cache module. It's composed of several modules, this plugin can configure and manage the whole system. Once enabled, go to "Options" and select "WP-Cache".
-Version: 2.1.3 (fork)
+Version: 2.1.4 fork
 Author: Ricardo Galli Granada
 Author URI: http://mnm.uib.es/gallir/
 */
@@ -25,6 +25,17 @@ Author URI: http://mnm.uib.es/gallir/
 */
 
 /* Changelog
+	2007-10-07
+		- Version 2.1.4 / Sem Pro:
+			- Administrator privs required for admin page
+			- Silently fail opendir() calls
+			- 4h default cache
+
+	2007-09-21
+		- Version 2.1.2:
+			- Add "Content-type" to "known header" because WP uses both (?).
+			- Removed quotes from charset http headers, some clients get confused.
+
 	2007-03-23
 		- Version 2.1.1: Patch from Alex Concha: add control in admin pages to avoid
 		                possible XSS derived from CSRF attacks, if the users store
@@ -171,6 +182,7 @@ $wp_cache_file = ABSPATH . 'wp-content/plugins/wp-cache/wp-cache-phase1.php';
 if( !@include($wp_cache_config_file) ) {
 	@include($wp_cache_config_file_sample);
 }
+include(ABSPATH . 'wp-content/plugins/wp-cache/wp-cache-base.php');
 
 function wp_cache_add_pages() {
 	add_options_page('WP-Cache Manager', 'WP-Cache', 'administrator', __FILE__, 'wp_cache_manager');
@@ -357,7 +369,7 @@ function wp_cache_edit_accepted() {
 function wp_cache_enable() {
 	global $wp_cache_config_file, $cache_enabled;
 
-	if(get_settings('gzipcompression')) {
+	if(get_option('gzipcompression')) {
 		echo "<b>Error: GZIP compression is enabled, disable it if you want to enable wp-cache.</b><br /><br />";
 		return false;
 	}
@@ -378,7 +390,7 @@ function wp_cache_disable() {
 function wp_cache_is_enabled() {
 	global $wp_cache_config_file;
 
-	if(get_settings('gzipcompression')) {
+	if(get_option('gzipcompression')) {
 		echo "<b>Warning</b>: GZIP compression is enabled in Wordpress, wp-cache will be bypassed until you disable gzip compression.<br />";
 		return false;
 	}
@@ -440,7 +452,7 @@ function wp_cache_verify_cache_dir() {
 
 	$dir = dirname($cache_path);
 	if ( !file_exists($cache_path) ) {
-		if ( !is_writable( $dir ) || !($dir = mkdir( $cache_path, 0777) ) ) {
+		if ( !is_writable($dir) || !@mkdir($cache_path) || !@chmod($cache_path, 0777) ) {
 				echo "<b>Error:</b> Your cache directory (<b>$cache_path</b>) did not exist and couldn't be created by the web server. <br /> Check  $dir permissions.";
 				return false;
 		}
@@ -548,7 +560,7 @@ function wp_cache_files() {
 	$count = 0;
 	$expired = 0;
 	$now = time();
-	if ( ($handle = opendir( $cache_path )) ) {
+	if ( ($handle = @opendir( $cache_path )) ) {
 		if ($list_files) echo "<table cellspacing=\"0\" cellpadding=\"5\">";
 		while ( false !== ($file = readdir($handle))) {
 			if ( preg_match("/^$file_prefix.*\.meta/", $file) ) {

@@ -17,12 +17,15 @@
 
  Info for WordPress:
  ==============================================================================
- Plugin Name: Google Sitemaps
+ Plugin Name: Google Sitemaps (fork)
  Plugin URI: http://www.arnebrachhold.de/2005/06/05/google-sitemaps-generator-v2-final
  Description: This generator will create a Google compliant sitemap of your WordPress blog.
- Version: 2.13 (fork)
+ Version: 2.16 fork
  Author: Arne Brachhold
  Author URI: http://www.arnebrachhold.de/
+ Update Service: http://version.mesoconcepts.com/wordpress
+ Update Tag: sitemap
+ Update URI: http://www.semiologic.com/members/sem-pro/download/
 
 
  Contributors:
@@ -140,20 +143,6 @@
  may be used by your editor.  #region gives the ability to create custom code
  folding areas, #type are type definitions for auto-complete.
 */
-
-if ( !defined('use_post_type_fixed') )
-{
-	define(
-		'use_post_type_fixed',
-			version_compare(
-				'2.1',
-				$GLOBALS['wp_version'], '<='
-				)
-			||
-			function_exists('get_site_option')
-		);
-}
-
 
 //Enable for dev
 //error_reporting(E_ALL);
@@ -632,6 +621,8 @@ if(!function_exists("sm_options_page")) {
 
 			//Pressed Button: Rebuild Sitemap
 			if(!empty($_POST["doRebuild"])) {
+				check_admin_referer('google_sitemap');
+
 				$msg = sm_buildSitemap();
 
 				if($msg && is_array($msg)) {
@@ -642,6 +633,8 @@ if(!function_exists("sm_options_page")) {
 			}
 			//Pressed Button: Update Config
     		else if (!empty($_POST['info_update'])) {
+				check_admin_referer('google_sitemap');
+
 				foreach($sm_options as $k=>$v) {
 					//Check vor values and convert them into their types, based on the category they are in
 					if(!isset($_POST[$k])) $_POST[$k]=""; // Empty string will get false on 2bool and 0 on 2float
@@ -672,6 +665,7 @@ if(!function_exists("sm_options_page")) {
 
 			//Pressed Button: New Page
 			} else if(!empty($_POST["sm_pages_new"])) {
+				check_admin_referer('google_sitemap');
 
 				//Apply page changes from POST
 				$sm_pages=sm_apply_pages();
@@ -683,6 +677,7 @@ if(!function_exists("sm_options_page")) {
 
 			//Pressed Button: Save pages
 			} else if(!empty($_POST["sm_pages_save"])) {
+				check_admin_referer('google_sitemap');
 
 				//Apply page changes from POST
 				$sm_pages=sm_apply_pages();
@@ -693,6 +688,7 @@ if(!function_exists("sm_options_page")) {
 
 			//Pressed Button: Delete page
 			} else if(!empty($_POST["sm_pages_del"])) {
+				check_admin_referer('google_sitemap');
 
 				//Apply page changes from POST
 				$sm_pages=sm_apply_pages();
@@ -706,6 +702,7 @@ if(!function_exists("sm_options_page")) {
 
 			//Pressed Button: Clear page Changes
 			} else if(!empty($_POST["sm_pages_undo"])) {
+				check_admin_referer('google_sitemap');
 
 				//In all other page changes, we do the sm_apply_pages functions. Here we don't, so we got the original settings from the db
 
@@ -794,6 +791,7 @@ if(!function_exists("sm_options_page")) {
 						</div>
 					</div>
 				</fieldset>
+				<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('google_sitemap'); ?>
 			</form>
 		</div> <?php
 	}
@@ -940,19 +938,9 @@ if(!function_exists("sm_buildSitemap")) {
 				WHERE
 				(
 				post_status = 'publish'
-				" . ( use_post_type_fixed
-					? " AND post_type = 'post' "
-					: ''
-					)
-				. "
 				" . ( sm_go("sm_in_pages")
-					? ( " OR post_status='static' "
-						. ( use_post_type_fixed
-							? " OR post_status = 'publish' AND post_type = 'page' "
-							: ''
-							)
-						)
-					: ""
+					? "AND post_type IN ('post', 'page')"
+					: "AND post_type IN ('post')"
 					)
 				. "
 				)
@@ -1011,13 +999,30 @@ if(!function_exists("sm_buildSitemap")) {
 			if($debug) $s.="<!-- Debug: Start Cats -->\n";
 
 			//Add Categories... Big thanx to Rodney Shupe (http://www.shupe.ca) for the SQL
-			//$catsRes=$wpdb->get_results("SELECT cat_ID AS ID FROM $wpdb->categories");
-			$catsRes=$wpdb->get_results("SELECT cat_ID AS ID, MAX(post_modified) AS last_mod FROM `" . $wpdb->posts . "` p LEFT JOIN `" . $wpdb->post2cat . "` pc ON p.ID = pc.post_id LEFT JOIN `" . $wpdb->categories . "` c ON pc.category_id = c.cat_ID WHERE post_status = 'publish' " . ( use_post_type_fixed ? " AND post_type = 'post' " : '' ) . " GROUP BY cat_ID");
+			$catsRes=$wpdb->get_results("
+				SELECT	term_id AS ID,
+						MAX(post_modified) AS last_mod
+				FROM `" . $wpdb->posts . "` p
+				INNER JOIN `" . $wpdb->term_relationships . "` pc
+				ON p.ID = pc.object_id
+				INNER JOIN `" . $wpdb->term_taxonomy . "` c
+				ON pc.term_taxonomy_id = c.term_taxonomy_id
+				AND		c.taxonomy = 'category'
+				WHERE	post_status = 'publish'
+				AND		post_type = 'post'
+				GROUP BY term_id
+				");
 			if($catsRes) {
 				foreach($catsRes as $cat) {
 					$s.=sm_addUrl(get_category_link($cat->ID),mysql2date('Y-m-d\TH:i:s+00:00', $cat->last_mod, false),sm_go("sm_cf_cats"),sm_go("sm_pr_cats"));
 				}
 			}
+
+//
+// todo: add tags
+//
+
+
 			if($debug) $s.="<!-- Debug: End Cats -->\n";
 		}
 		//Add the archives
@@ -1025,7 +1030,19 @@ if(!function_exists("sm_buildSitemap")) {
 			if($debug) $s.="<!-- Debug: Start Archive -->\n";
 			$now = current_time('mysql');
 			//Add archives...  Big thanx to Rodney Shupe (http://www.shupe.ca) for the SQL
-			$arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, MAX(post_date) as last_mod, count(ID) as posts FROM $wpdb->posts WHERE post_date < '$now' AND post_status = 'publish' " . ( use_post_type_fixed ? " AND post_type = 'post' " : '' ) . " GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date DESC");
+			$arcresults = $wpdb->get_results("
+			SELECT DISTINCT
+					YEAR(post_date) AS `year`,
+					MONTH(post_date) AS `month`,
+					MAX(post_date) as last_mod,
+					count(ID) as posts
+			FROM	$wpdb->posts
+			WHERE	post_date < '$now'
+			AND		post_status = 'publish'
+			AND		post_type = 'post'
+			GROUP BY YEAR(post_date), MONTH(post_date)
+			ORDER BY post_date DESC
+			");
 			//$arcresults = $wpdb->get_results("SELECT DISTINCT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, count(ID) as posts FROM $wpdb->posts WHERE post_date < '$now' AND post_status = 'publish' GROUP BY YEAR(post_date), MONTH(post_date) ORDER BY post_date DESC");
 			if ($arcresults) {
 				foreach ($arcresults as $arcresult) {
@@ -1068,9 +1085,13 @@ if(!function_exists("sm_buildSitemap")) {
 
 		if ( !file_exists(sm_getHomePath() . 'wp-content/sitemaps') )
 		{
-			if ( !@mkdir(sm_getHomePath() . 'wp-content/sitemaps', 0777) )
+			if ( !@mkdir(sm_getHomePath() . 'wp-content/sitemaps') )
 			{
 				$messages[count($messages)] = __('Could not create cache directory');
+			}
+			else
+			{
+				@chmod(sm_getHomePath() . 'wp-content/sitemaps', 0777);
 			}
 		}
 
@@ -1133,9 +1154,9 @@ function sm_update_sitemap($post_ID)
 	return ($post_ID);
 }
 
-function sitemap_admin_hook() 
+function sitemap_admin_hook()
 {
-	echo '<input type="hidden" name="sitemap" id="sitemap" value="' . wp_create_nonce('sitemap') . '" />';		
+	echo '<input type="hidden" name="sitemap" id="sitemap" value="' . wp_create_nonce('sitemap') . '" />';
 }
 
 add_action('edit_form_advanced', 'sitemap_admin_hook');

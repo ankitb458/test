@@ -31,7 +31,7 @@ function html2wp_kill_formatting()
 	#reset_plugin_hook('the_content');
 } # html2wp_kill_formatting()
 
-add_action('before_the_entry', 'html2wp_kill_formatting');
+add_action('the_entry', 'html2wp_kill_formatting', -100000);
 
 
 #

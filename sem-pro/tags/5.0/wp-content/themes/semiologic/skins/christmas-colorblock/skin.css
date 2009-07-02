@@ -1,0 +1,280 @@
+/*
+Skin name: Christmas Colorblock
+Version: 1.0
+Author: Techie Coach
+Author uri: http://www.techiecoachtutorials.com
+Description: Red and Green color block squares
+*/
+
+/*
+	Background, font and link colors for the entire site
+	----------------------------------------------------
+*/
+
+body
+{
+	background-color: #CC0001;
+	color: black;
+}
+
+a:link, a:visited
+{
+	color: #339900;
+}
+
+a:active, a:hover
+{
+	color: #42CA00;
+}
+
+/*
+	Border, background, font and link colors for the site canvas
+	------------------------------------------------------------
+*/
+
+#wrapper
+{
+	border: solid 1px #c1c1c1;
+	background-color: #fff;
+	color: black;
+}
+
+/*
+	Border, background, font and link colors for the header
+	-------------------------------------------------------
+*/
+
+#header div.pad
+{
+	background-color: white;
+	background: url(headerbg.png) no-repeat top left;
+	color: black;
+	text-align: center;
+}
+
+#header h1 a
+{
+	color: #339900;
+	font-size:48px;
+}
+
+#header h1 a:hover
+{
+	color: #42CA00;
+}
+
+#header h2
+{
+	color: #42CA00;
+}
+
+/*
+	Offsets for the header
+	----------------------
+*/
+
+#header div.pad
+{
+	margin: 10px;
+	padding: 0px;
+}
+
+
+/*
+	Aligns for the header
+	---------------------
+*/
+
+#header h1
+{
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+
+#header h2
+{
+	text-align: center;
+}
+
+
+
+/*
+	Border, background, font and link colors for the navbar
+	-------------------------------------------------------
+*/
+
+#navbar
+{
+	background-color: #339900;
+	color: white;
+	font-weight:bold;
+}
+
+#navbar a
+{
+	color: white;
+	text-decoration: none
+}
+
+#navbar a:hover
+{
+	text-decoration: underline
+}
+
+/*
+	Offset for the navbar
+	---------------------
+*/
+
+#navbar
+{
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-top: 6px;
+	padding-bottom: 3px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+/**/
+
+/*
+	Float Left Icons for each sidebar widget
+	-----------------------------------------
+*/
+
+#ext_sidebar
+{
+	background-color: #f0f0f0;
+	color: black;
+}
+
+#sidebar h2,
+#sidebar2 h2,
+#ext_sidebar h2
+{
+	background:transparent url(sideicon.gif) no-repeat scroll left center;
+	padding-left:30px;
+}
+
+#sidebar .widget li,
+#sidebar2 .widget li,
+#ext_sidebar .widget li
+{
+	list-style-image: url(li-icon.gif);
+}
+/*
+	Calendar style
+	--------------
+*/
+
+#wp-calendar
+{
+	border: solid 1px #c1c1c1;
+	background-color: white;
+}
+
+#wp-calendar thead th
+{
+	border-bottom: solid 1px #c1c1c1;
+}
+
+#wp-calendar tfoot td
+{
+	background-color: white;
+}
+
+/*
+	Border, background, font and link colors for the footer
+	-------------------------------------------------------
+*/
+
+#footer
+{
+	border-top: solid 1px #c1c1c1;
+	background-color: #339900;
+	color: #FFFFFF;
+}
+
+#footer a
+{
+	color: #FFFFFF;
+	font-weight:bold;
+	text-decoration: none;
+}
+
+#footer a:hover
+{
+	color: #FFFFFF;
+	font-weight:bold;
+	text-decoration: underline;
+}
+
+
+/*
+	Offset for the footer
+	---------------------
+*/
+#footer
+{
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding-top: 6px;
+	padding-bottom: 3px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+/*
+	Margins for the main area
+	-------------------------
+*/
+#main div.pad
+{
+	margin: 10px 10px;
+	padding: 0px 0px;
+}
+
+/*
+	Border, background, font and link colors for each entry
+	-------------------------------------------------------
+*/
+div.entry
+{
+	border-bottom: solid 1px #c1c1c1;
+	color: black;
+	padding: 0px 20px 20px 20px;
+}
+
+
+/*
+Blockquote new graphic
+-------------------------
+*/
+
+blockquote
+{
+	margin: 0 20px;
+	padding: 2px 20px;
+    background-color: #F4F4F4;
+    background-image: none;
+}
+
+div.credits
+{
+	color: white;
+}
+
+div.credits a
+{
+	color: white;
+	font-weight: bold;
+	text-decoration:none;
+}
+
+div.credits a:hover
+{
+	text-decoration:underline;
+}

@@ -2,10 +2,12 @@
 /*
 Plugin Name: Silo Web Design
 Plugin URI: http://www.semiologic.com/software/widgets/silo/
-Description: <a href="http://www.seo2020.com/promo.html">Silo web design</a> tools for sites built using static pages.
+Description: Silo web design tools for sites built using static pages.
 Author: Denis de Bernardy
-Version: 1.4
+Version: 1.6
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: silo
 */
 
 /*
@@ -28,15 +30,21 @@ class silo
 	{
 		global $wpdb;
 
-		add_action('plugins_loaded', array('silo', 'widgetize'));
+		add_action('widgets_init', array('silo', 'widgetize'));
+
+		add_action('save_post', array('silo', 'flush_cache'));
+		add_action('delete_post', array('silo', 'flush_cache'));
+		add_action('generate_rewrite_rules', array('silo', 'flush_cache'));
+
+		add_action('update_option_sidebars_widgets', array('silo', 'flush_cache'));
 	} # init()
 
 
 	#
-	# display_widget()
+	# display_pages_widget()
 	#
 
-	function display_widget($args = null)
+	function display_pages_widget($args = null)
 	{
 		global $wpdb;
 
@@ -159,14 +167,14 @@ class silo
 			$post = object;
 		}
 
-		if ( $children )
+		$o = '';
+
+		if ( $children[0] )
 		{
 			foreach ( $children as $post_ID => $childs )
 			{
 				update_page_cache($childs);
 			}
-
-			$o = '';
 
 			$o .= $args['before_widget'];
 
@@ -182,21 +190,25 @@ class silo
 
 			$o .= $args['after_widget'];
 
-			if ( is_writable(ABSPATH . 'wp-content') )
-			{
-				@mkdir(ABSPATH . 'wp-content/cache', 0777);
-				@mkdir(ABSPATH . 'wp-content/cache/silo-pages', 0777);
-
-				$fp = @fopen(ABSPATH . 'wp-content/cache/silo-pages/' . $cache_file, "w+");
-				@fwrite($fp, $o);
-				@fclose($fp);
-
-				@chmod(ABSPATH . 'wp-content/cache/silo-pages/' . $cache_file, 0666);
-			}
-
-			echo $o;
 		}
-	} # display_widget()
+
+		if ( is_writable(ABSPATH . 'wp-content') )
+		{
+			@mkdir(ABSPATH . 'wp-content/cache');
+			@mkdir(ABSPATH . 'wp-content/cache/silo-pages');
+
+			@chmod(ABSPATH . 'wp-content/cache', 0777);
+			@chmod(ABSPATH . 'wp-content/cache/silo-pages', 0777);
+
+			$fp = @fopen(ABSPATH . 'wp-content/cache/silo-pages/' . $cache_file, "w+");
+			@fwrite($fp, $o);
+			@fclose($fp);
+
+			@chmod(ABSPATH . 'wp-content/cache/silo-pages/' . $cache_file, 0666);
+		}
+
+		echo $o;
+	} # display_pages_widget()
 
 
 	#
@@ -223,7 +235,7 @@ class silo
 					. '</a>';
 			}
 
-			if ( isset($children[$child->ID]) )
+			if ( $children[$child->ID] )
 			{
 				$o .= "\n"
 					. '<ul>' . "\n";
@@ -248,9 +260,27 @@ class silo
 	{
 		if ( function_exists('register_sidebar_widget') )
 		{
-			register_sidebar_widget('Silo Pages', array('silo', 'display_widget'));
+			register_sidebar_widget('Silo Pages', array('silo', 'display_pages_widget'));
 		}
 	} # widgetize()
+
+
+	#
+	# flush_cache()
+	#
+
+	function flush_cache($id = null)
+	{
+		if ( $files = glob(ABSPATH . 'wp-content/cache/silo-pages/*') )
+		{
+			foreach ( $files as $file )
+			{
+				@unlink($file);
+			}
+		}
+
+		return $id;
+	} # flush_cache()
 } # silo
 
 silo::init();

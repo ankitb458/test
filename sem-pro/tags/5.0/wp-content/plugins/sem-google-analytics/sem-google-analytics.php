@@ -2,10 +2,12 @@
 /*
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/marketing/google-analytics/
-Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with all sorts of advanced tracking toys enabled.
+Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
 Author: Denis de Bernardy
-Version: 2.4
+Version: 2.5
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: google_analytics
 */
 
 /*
@@ -23,18 +25,6 @@ if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
 {
 	include_once dirname(__FILE__) . '/sem-google-analytics-admin.php';
 }
-
-
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
 
 
 load_plugin_textdomain('sem-google-analytics');
@@ -90,8 +80,6 @@ class sem_google_analytics
 			return ;
 		}
 
-		global $user_ID;
-
 		$options = sem_google_analytics::get_options();
 
 		if ( !$options['script'] )
@@ -113,7 +101,7 @@ class sem_google_analytics
 				$data = preg_replace("/(?:\?|&)subscribed/", "", $_SERVER['REQUEST_URI']);
 				$ref = '';
 			}
-			elseif ( is_404() || ( ( is_single() || is_page() ) && !have_posts() ) )
+			elseif ( is_404() || ( is_singular() && !have_posts() ) )
 			{
 				$track = "404";
 				$data = $_SERVER['REQUEST_URI'];
@@ -125,13 +113,6 @@ class sem_google_analytics
 				$data = $_REQUEST['s'];
 				$ref = $_SERVER['HTTP_REFERER'];
 			}
-/*
-			else
-			{
-				$data = $_SERVER['REQUEST_URI'];
-				$ref = $_SERVER['HTTP_REFERER'];
-			}
-*/
 
 			if ( $track )
 			{
@@ -186,6 +167,50 @@ class sem_google_analytics
 
 	function track_links($buffer)
 	{
+		if ( is_feed() )
+		{
+			return $buffer;
+		}
+
+		# escape head
+		$buffer = preg_replace_callback(
+			"/
+			<\s*head				# head tag
+				(?:\s[^>]*)?		# optional attributes
+				>
+			.*						# head code
+			<\s*\/\s*head\s*>		# end of head tag
+			/isUx",
+			array('sem_google_analytics', 'escape'),
+			$buffer
+			);
+
+		# escape scripts
+		$buffer = preg_replace_callback(
+			"/
+			<\s*script				# script tag
+				(?:\s[^>]*)?		# optional attributes
+				>
+			.*						# script code
+			<\s*\/\s*script\s*>		# end of script tag
+			/isUx",
+			array('sem_google_analytics', 'escape'),
+			$buffer
+			);
+
+		# escape objects
+		$buffer = preg_replace_callback(
+			"/
+			<\s*object				# object tag
+				(?:\s[^>]*)?		# optional attributes
+				>
+			.*						# object code
+			<\s*\/\s*object\s*>		# end of object tag
+			/isUx",
+			array('sem_google_analytics', 'escape'),
+			$buffer
+			);
+
 		$buffer = preg_replace_callback("/
 			<\s*a					# ancher tag
 				(?:\s[^>]*)?		# optional attributes
@@ -204,8 +229,47 @@ class sem_google_analytics
 			$buffer
 			);
 
+		# unescape
+		$buffer = sem_google_analytics::unescape($buffer);
+
 		return $buffer;
 	} # track_links()
+
+
+	#
+	# escape()
+	#
+
+	function escape($input)
+	{
+		global $sem_google_analytics_escape;
+
+		$tag_id = '--google_analytics_escape:' . md5($input[0]) . '--';
+		$sem_google_analytics_escape[$tag_id] = $input[0];
+
+		return $tag_id;
+	} # escape()
+
+
+	#
+	# unescape()
+	#
+
+	function unescape($input)
+	{
+		global $sem_google_analytics_escape;
+
+		$find = array();
+		$replace = array();
+
+		foreach ( (array) $sem_google_analytics_escape as $key => $val )
+		{
+			$find[] = $key;
+			$replace[] = $val;
+		}
+
+		return str_replace($find, $replace, $input);
+	} # unescape()
 
 
 	#

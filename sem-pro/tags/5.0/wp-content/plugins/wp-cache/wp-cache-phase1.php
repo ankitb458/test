@@ -2,14 +2,15 @@
 if( !@include(ABSPATH . 'wp-content/wp-cache-config.php') ) {
 	return;
 }
+include(ABSPATH . 'wp-content/plugins/wp-cache/wp-cache-base.php');
 
 $mutex_filename = 'wp_cache_mutex.lock';
 $new_cache = false;
-	
+
 
 // Don't change variables behind this point
 
-if (!$cache_enabled || $_SERVER["REQUEST_METHOD"] == 'POST') 
+if (!$cache_enabled || $_SERVER["REQUEST_METHOD"] == 'POST')
 	return;
 
 $file_expired = false;
@@ -30,7 +31,7 @@ $wp_start_time = microtime();
 if( ($mtime = @filemtime($meta_pathname)) ) {
 	if ($mtime + $cache_max_time > time() ) {
 		$meta = new CacheMeta;
-		if (! ($meta = unserialize(@file_get_contents($meta_pathname))) ) 
+		if (! ($meta = unserialize(@file_get_contents($meta_pathname))) )
 			return;
 		foreach ($meta->headers as $header) {
 			header($header);
@@ -45,7 +46,7 @@ if( ($mtime = @filemtime($meta_pathname)) ) {
 			$content_size += strlen($log);
 			header("Content-Length: $content_size");
 			*/
-			if(!@readfile ($cache_file)) 
+			if(!@readfile ($cache_file))
 				return;
 		}
 		echo $log;
@@ -57,7 +58,7 @@ if( ($mtime = @filemtime($meta_pathname)) ) {
 function wp_cache_postload() {
 	global $cache_enabled;
 
-	if (!$cache_enabled) 
+	if (!$cache_enabled)
 		return;
 	require(ABSPATH . 'wp-content/plugins/wp-cache/wp-cache-phase2.php');
 	wp_cache_phase2();

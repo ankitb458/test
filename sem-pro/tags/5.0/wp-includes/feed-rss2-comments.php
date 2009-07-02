@@ -1,5 +1,5 @@
 <?php
-header('Content-type: text/xml;charset=' . get_option('blog_charset'), true);
+header('Content-Type: text/xml;charset=' . get_option('blog_charset'), true);
 
 echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>';
 ?>
@@ -17,11 +17,11 @@ echo '<?xml version="1.0" encoding="'.get_option('blog_charset').'"?'.'>';
 		else
 			printf(__('Comments for %s'), get_bloginfo_rss( 'name' ) . get_wp_title_rss());
 	?></title>
-	<link><?php (is_single()) ? permalink_single_rss() : bloginfo_rss("url") ?></link>
+	<link><?php (is_single()) ? the_permalink_rss() : bloginfo_rss("url") ?></link>
 	<description><?php bloginfo_rss("description") ?></description>
 	<pubDate><?php echo gmdate('r'); ?></pubDate>
 	<generator>http://wordpress.org/?v=<?php echo $wp_version ?></generator>
-
+	<?php do_action('commentsrss2_head'); ?>
 <?php
 if ( have_comments() ) : while ( have_comments() ) : the_comment();
 	$comment_post = get_post($comment->comment_post_ID);
@@ -31,7 +31,6 @@ if ( have_comments() ) : while ( have_comments() ) : the_comment();
 		<title><?php
 			if ( !is_singular() ) {
 				$title = get_the_title($comment_post->ID);
-				$title = apply_filters('the_title', $title);
 				$title = apply_filters('the_title_rss', $title);
 				printf(__('Comment on %1$s by %2$s'), $title, get_comment_author_rss());
 			} else {

@@ -1,6 +1,5 @@
 
 
-
 tinyMCE.importPluginLanguagePack('mediacaster', '');
 
 
@@ -28,6 +27,8 @@ function TinyMCE_mediacaster_getControlHTML(control_name)
 		case "mediacaster":
 			var html = '<select id="{$editor_id}_media_select" name="{$editor_id}_media_select" onchange="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mce_media_select\',false,this.options[this.selectedIndex].value);this.selectedIndex=0;" class="mceSelectList" style="font-size:8pt;">';
 			html += '<option value="">Media</option>';
+
+			html += '<option value="media#url">Enter A Url</option>';
 
 			// Build format select
 			if( document.all_media )
@@ -131,6 +132,12 @@ function TinyMCE_mediacaster_execCommand(editor_id, element, command, user_inter
 					action = "update";
 				}
 
+				if ( value == 'media#url' )
+				{
+					value = prompt('Enter A Url', 'http://');
+					value = 'media#' + value;
+				}
+
 				html = TinyMCE_mediacaster_make_imgtag(value);
 				tinyMCE.execCommand("mceInsertContent",true,html);
 				tinyMCE.selectedInstance.repaint();
@@ -149,13 +156,6 @@ function TinyMCE_mediacaster_make_imgtag(media_file){
 
 	switch ( media_ext )
 	{
-	case 'mp3':
-	case 'm4a':
-		var html = ''
-				+ '<img src="' + (tinyMCE.baseURL + "/plugins/mediacaster/images/audio.gif") + '" '
-				+ ' width="320" height="20" '
-				+ 'alt="' + media_file + '" title="'+ media_file +'" class="mce_plugin_mediacaster" name="mce_plugin_mediacaster" />';
-		break;
 	case 'flv':
 	case 'swf':
 	case 'mp4':
@@ -166,6 +166,14 @@ function TinyMCE_mediacaster_make_imgtag(media_file){
 				+ ' width="320" height="260" '
 				+ 'alt="' + media_file + '" title="'+ media_file +'" class="mce_plugin_mediacaster" name="mce_plugin_mediacaster" />';
 		break;
+
+	case 'mp3':
+	case 'm4a':
+	default:
+		var html = ''
+				+ '<img src="' + (tinyMCE.baseURL + "/plugins/mediacaster/images/audio.gif") + '" '
+				+ ' width="320" height="20" '
+				+ 'alt="' + media_file + '" title="'+ media_file +'" class="mce_plugin_mediacaster" name="mce_plugin_mediacaster" />';
 		break;
 	}
 	return html;
@@ -179,6 +187,7 @@ function TinyMCE_mediacaster_cleanup(type, content) {
 			var startPos = 0;
 			var altMore = tinyMCE.getLang('lang_mediacaster_alt');
 			var media_files = new Array();
+
 			if( document.all_media != null ){
 				for(var i=0; i<document.all_media.length; i++){
 					media_files.push('media#' + document.all_media[i]);
@@ -202,7 +211,7 @@ function TinyMCE_mediacaster_cleanup(type, content) {
 			}
 
 			// If any units weren't replaced, do it with this statement
-			content = content.replace(new RegExp('<!--media#([^-]+)-->', 'g'), '<strong style="color:red">[Undefined Media ($1)]</strong>');
+			content = content.replace(new RegExp('<!--media#([^>]+)-->', 'g'), TinyMCE_mediacaster_make_imgtag('media#$1'));
 
 			break;
 

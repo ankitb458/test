@@ -2,7 +2,7 @@
 Theme Name: Semiologic
 Theme URI: http://www.semiologic.com/software/wp-themes/sem-theme/
 Description: The Semiologic theme &bull; <a href="http://www.semiologic.com/legal/license/">Terms of use</a>
-Version: 4.3.8
+Version: 5.0
 Author: Denis de Bernardy
 Author URI: http://www.mesoconcepts.com
 */
@@ -131,6 +131,12 @@ div.pad
 	margin-bottom: .5em;
 }
 
+.newsletter_fields input
+{
+	margin-top: .1em;
+	margin-bottom: .1em;
+}
+
 .newsletter_submit
 {
 	margin-top: .5em;
@@ -145,7 +151,8 @@ div.entry_body,
 div.entry_meta,
 div.entry_actions
 div.comment,
-div.comment_body
+div.comment_body,
+div.bookmark_me_display_widget
 {
 	margin-top: .5em;
 	margin-bottom: .5em;
@@ -195,16 +202,26 @@ h3
 	padding-bottom: 0px;
 }
 
-#header h1
+.header h1
 {
 	padding: 10px 8px 40px 8px;
 	margin: 0px;
 }
 
-#header h2
+.header h2
 {
 	padding: 30px 8px 30px 8px;
 	margin: 0px;
+}
+
+.invert_header h1
+{
+	padding: 63px 8px 2px 8px;
+}
+
+.invert_header h2
+{
+	padding: 2px 8px 43px 8px;
 }
 
 .header_img #header h1
@@ -282,6 +299,13 @@ dl
 	list-style-type: square;
 }
 
+.entry_actions span,
+.comment_actions span
+{
+	margin-left: .1em;
+	margin-right: .1em;
+}
+
 
 /* admin links */
 
@@ -347,6 +371,7 @@ a:hover,
 
 /* credits, extra_footer */
 
+#entry_footer,
 #extra_footer,
 #credits
 {
@@ -482,7 +507,8 @@ img.gravatar
 
 /* ad */
 
-div.ad
+div.ad,
+div.announcement
 {
 	border: solid 1px lavender;
 	background-color: ghostwhite;
@@ -491,7 +517,8 @@ div.ad
 	clear: both;
 }
 
-.main div.ad
+.main div.ad,
+.main div.announcement
 {
 	margin: .5em 0px;
 }
@@ -511,6 +538,11 @@ div.ad
 #google-search h2
 {
 	display: none;
+}
+
+.widget_search
+{
+	text-align: center;
 }
 
 

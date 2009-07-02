@@ -1755,6 +1755,4 @@ class MiniXMLElementEntity extends MiniXMLElement {
 
 
 }
-
-
 ?>

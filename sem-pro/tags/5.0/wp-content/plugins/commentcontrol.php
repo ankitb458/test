@@ -4,16 +4,16 @@
 Plugin Name: Extended Comment Options
 Plugin URI: http://beingmrkenny.co.uk/wordpress/plugins/extended-comment-options/
 Description: This plugin allows you to switch comments and/or pings on or off for batches of existing posts.
-Version: 1.1 (edited)
+Version: 1.2
 Author: Mark Kenny
 Author URI: http://beingmrkenny.co.uk/
 */
 
-define ('DEBUGGING', FALSE); // Change to TRUE if you want to display information about the query.
+define ('DEBUGGING', false); // Change to TRUE if you want to display information about the query.
 
 function eco_extended_comments_options() {
 	if (function_exists('add_options_page') )
-		add_options_page('Extended Comment Options', 'Comments Status', 'manage_options', basename(__FILE__), 'comment_conf');
+		add_submenu_page('edit-comments.php', 'Extended Comment Options', 'Comments Status', 8, basename(__FILE__), 'comment_conf');
 		// The first argument does into the <title>, the second goes on the tab in options
 }
 
@@ -33,8 +33,10 @@ $eco_html['db_excluded_posts'] = wp_specialchars($eco_clean['db_excluded_posts']
 function comment_conf() {
 global $wpdb, $eco_clean, $eco_message;
 
-if ( $eco_clean['submitted'] === true) { ?><div id="message" class="updated fade"><p><strong>Comment options received.</strong></p></div>
+if ( $eco_clean['submitted'] === true) { ?>
+<div id="message" class="updated fade"><p><strong>Comment options received.</strong></p></div>
 <?php } ?>
+
 <div class="wrap">
 
 <?php if ( empty($eco_clean['submitted']) ) :
@@ -47,6 +49,7 @@ if ( $eco_clean['submitted'] === true) { ?><div id="message" class="updated fade
  *
  */
 global $eco_html;?>
+
 <h2>Simple Settings</h2>
 
 <!-- fieldsets are used here so that the admin page retains good layout when Tiger Admin is used -->
@@ -389,7 +392,8 @@ foreach ($eco_clean as $key => $value) {
  */
 
 if (DEBUGGING === TRUE) {
-	function eco_debugging() { ?>		<h3>Debugging Information</h3>
+	function eco_debugging() { ?>
+		<h3>Debugging Information</h3>
 		<pre style="border: 1px solid black; background: #fafafa; padding: 5px;"><?php
 			global $eco_clean, $eco_message;
 			$eco_POST_html = array();
@@ -458,7 +462,8 @@ if ( $eco_clean['posts'] == 'error' ) {
  *
  */
 
- if ( $eco_clean['posts'] != get_option('eco_excluded_posts') ) {
+// If excluded posts have changed since they were last entered AND if the one-click options haven't been used
+ if ( $eco_clean['posts'] != get_option('eco_excluded_posts') && !in_array($eco_clean['for'], array('oneclick-all', 'oneclick-last')) ) {
 	update_option('eco_excluded_posts', $eco_clean['posts']);
 }
 
@@ -499,7 +504,7 @@ function eco_query($which, $status, $horizon='', $criterion='', $excluded='') {
 			$sql .= " SET `comment_status` = '$status', `ping_status` = '$status' ";
 	}
 
-	$sql .= " WHERE `post_status` = 'publish' ";
+	$sql .= " WHERE `post_status` = 'publish' AND `post_type` = 'post' ";
 
 	if ( $excluded != '' ) {
 		$sql .= " AND `ID` NOT IN ($excluded) ";
@@ -581,10 +586,13 @@ case 'oneclick-last' :
 		eco_query('both', 'open', 'after', $eco_clean['date'], $eco_clean['db_excluded_posts']);
 		eco_query('both', 'closed', 'before', $eco_clean['date'], $eco_clean['db_excluded_posts']);
 	}
-	$eco_message =
-		'<strong>Comments and pings</strong> for the '
-		. "<strong>last {$eco_html['last']} {$eco_html['units']}</strong> "
-		. 'are now <strong>open</strong>. The rest have been <strong>closed</strong>.';
+	$eco_message = ('years' == $eco_clean['units'])
+		?	"<strong>Comments and pings</strong> for posts made "
+			. "<strong>before " . date('jS F, Y', strtotime($eco_clean['date'])) . "</strong>"
+			. " are now <strong>closed</strong>."
+		:	'<strong>Comments and pings</strong> for the '
+			. "<strong>last {$eco_html['last']} {$eco_html['units']}</strong> "
+			. 'are now <strong>open</strong>. The rest have been <strong>closed</strong>.';
 	break;
 
 
@@ -653,7 +661,8 @@ case 'for-last' :
 } //end switch
 
 // SHOW THE RESULTS OF THE QUERY TO THE USER
-?><h2>Results</h2>
+?>
+<h2>Results</h2>
 
 <ul>
 
@@ -667,10 +676,17 @@ if ( $eco_clean['future'] === true ) {
 }
 
 if ( !empty($eco_clean['posts']) && $eco_clean['for'] != 'for-new' ) {
-	echo "\t<li>The following posts were not changed: <strong>{$eco_html['posts']}</strong>.</li>\n";
+	echo "\t<li>The following posts were not changed: <ul>\n";
+	$eco_unchanged = explode(',', $eco_html['posts']);
+	foreach ($eco_unchanged as $unch_id) {
+		$unch_id = trim($unch_id);
+		echo '<li><a href="'.get_permalink($unch_id).'">'.get_the_title($unch_id).'</a>'." [<a href='post.php?action=edit&amp;post=$unch_id'>Edit</a>]</li>\n";
+	}
+	echo '</ul>';
 }
 
 ?>
+
 </ul>
 
 <?php
@@ -678,6 +694,7 @@ if ( !empty($eco_clean['posts']) && $eco_clean['for'] != 'for-new' ) {
 if (DEBUGGING === TRUE) { eco_debugging($eco_html); }
 
 endif; // end if form submitted ?>
+
 </div>
 
 <?php } // close function

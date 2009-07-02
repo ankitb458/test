@@ -2,10 +2,12 @@
 /*
 Plugin Name: Mediacaster
 Plugin URI: http://www.semiologic.com/software/publishing/mediacaster/
-Description: Podcasting and Videocasting plugin
+Description: Lets you add podcasts and videos to your site's posts and pages.
 Author: Denis de Bernardy
-Version: 1.2.1
+Version: 1.3
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: mediacaster
 */
 
 /*
@@ -16,18 +18,6 @@ This software is copyright Mesoconcepts Ltd, and is distributed under the terms 
 
 http://www.semiologic.com/legal/license/
 */
-
-
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
 
 
 class mediacaster
@@ -205,7 +195,7 @@ class mediacaster
 		$width = $options['player']['width'] ? $options['player']['width'] : 320;
 		$height = $options['player']['height'] ? $options['player']['height'] : intval($width * 240 / 320 );
 
-		switch ( $ext )
+		switch ( strtolower($ext) )
 		{
 		case 'mov':
 		case 'm4v':
@@ -346,8 +336,8 @@ class mediacaster
 			{
 				$enc .= '<div class="enclosures">'
 					. '<h2>'
-						. ( function_exists('get_caption')
-							? get_caption('enclosures')
+						. ( $options['captions']['enclosures']
+							? $options['captions']['enclosures']
 							: __('Enclosures')
 							)
 						. '</h2>'
@@ -355,11 +345,11 @@ class mediacaster
 
 				foreach ( $files as $key => $file )
 				{
-					preg_match("/\.([^\.]+)$/", $key, $details);
+					preg_match("/\.([^\.]+)$/", $key, $ext);
 
-					$ext = $details[1];
+					$ext = end($ext);
 
-					switch ( $ext )
+					switch ( strtolower($ext) )
 					{
 						case 'swf':
 						case 'flv':
@@ -375,6 +365,7 @@ class mediacaster
 
 						case 'mp3':
 						case 'm4a':
+						default:
 							$enc .= '<li class="audio">'
 								. '<a href="' . $file . '" target="_blank">'
 								. $key
@@ -429,7 +420,7 @@ class mediacaster
 		preg_match( "/\.([^\.]+)$/", basename($file), $ext );
 		$ext = end($ext);
 
-		switch ( $ext )
+		switch ( strtolower($ext) )
 		{
 		case 'flv':
 		case 'swf':
@@ -438,7 +429,15 @@ class mediacaster
 			$image = $file;
 			$image = str_replace($site_url, '', $image);
 			$image = str_replace('.' . $ext, '', $image);
-			$image = glob(ABSPATH . $image . '.{jpg,jpeg,png}', GLOB_BRACE);
+
+			if ( defined('GLOB_BRACE') )
+			{
+				$image = glob(ABSPATH . $image . '.{jpg,jpeg,png}', GLOB_BRACE);
+			}
+			else
+			{
+				$image = glob(ABSPATH . $image . '.jpg');
+			}
 
 			if ( $image )
 			{
@@ -554,6 +553,14 @@ class mediacaster
 			die;
 		}
 
+		$GLOBALS['wp_filter'] = array();
+
+		while ( @ob_end_clean() );
+
+		ob_start();
+
+		header( 'Content-Type:text/xml; charset=utf-8' ) ;
+
 		echo '<?xml version="1.0" encoding="' . get_option('blog_charset') . '"?>' . "\n"
 			. '<playlist version="1" xmlns="http://xspf.org/ns/0/">' . "\n";
 
@@ -578,9 +585,32 @@ class mediacaster
 
 				case 'video':
 					$title = preg_replace("/\.(flv|swf)$/i", "", $key);
-					$cover = file_exists(ABSPATH . $path . $title . '.jpg')
-						? ( $site_url . $path . $title . '.jpg' )
-						: false;
+
+					preg_match( "/\.([^\.]+)$/", $key, $ext );
+					$ext = end($ext);
+
+					$image = $file;
+					$image = str_replace($site_url, '', $image);
+					$image = str_replace('.' . $ext, '', $image);
+
+					if ( defined('GLOB_BRACE') )
+					{
+						$image = glob(ABSPATH . $image . '.{jpg,jpeg,png}', GLOB_BRACE);
+					}
+					else
+					{
+						$image = glob(ABSPATH . $image . '.jpg');
+					}
+
+					if ( $image )
+					{
+						$image = current($image);
+						$cover = str_replace(ABSPATH, $site_url, $image);
+					}
+					else
+					{
+						$cover = false;
+					}
 					break;
 				}
 
@@ -694,7 +724,22 @@ class mediacaster
 
 		$site_url = trailingslashit(get_option('siteurl'));
 
-		$files = glob(ABSPATH . $path . '*.{mp3,flv,swf,m4a,mp4,m4v,mov}', GLOB_BRACE);
+		if ( defined('GLOB_BRACE') )
+		{
+			$files = glob(ABSPATH . $path . '*.{mp3,flv,swf,m4a,mp4,m4v,mov}', GLOB_BRACE);
+		}
+		else
+		{
+			$files = array_merge(
+				glob(ABSPATH . $path . '*.mp3'),
+				glob(ABSPATH . $path . '*.flv'),
+				glob(ABSPATH . $path . '*.swf'),
+				glob(ABSPATH . $path . '*.m4a'),
+				glob(ABSPATH . $path . '*.mp4'),
+				glob(ABSPATH . $path . '*.m4v'),
+				glob(ABSPATH . $path . '*.mov')
+				);
+		}
 
 		foreach ( (array) $files as $key => $file )
 		{
@@ -849,13 +894,27 @@ class mediacaster
 			}
 		}
 
-		if ( $file = glob(ABSPATH . $path . 'cover.{jpg,jpeg,png}', GLOB_BRACE) )
+		if ( defined('GLOB_BRACE') )
 		{
-			$cover = $path . basename(current($file));
+			if ( $file = glob(ABSPATH . $path . 'cover.{jpg,jpeg,png}', GLOB_BRACE) )
+			{
+				$cover = $path . basename(current($file));
+			}
+			elseif ( $file = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+			{
+				$cover = 'media/' . basename(current($file));
+			}
 		}
-		elseif ( $file = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+		else
 		{
-			$cover = 'media/' . basename(current($file));
+			if ( $file = glob(ABSPATH . $path . 'cover.jpg') )
+			{
+				$cover = $path . basename(current($file));
+			}
+			elseif ( $file = glob(ABSPATH . 'media/cover-*.jpg') )
+			{
+				$cover = 'media/' . basename(current($file));
+			}
 		}
 
 		if ( !is_admin() )
@@ -915,10 +974,6 @@ class mediacaster
 			if ( file_exists(ABSPATH . $image) )
 			{
 				echo '<itunes:image href="' . $site_url . 'wp-content/itunes/' . $options['itunes']['image']['name'] . '" />' . "\n\t\t"
-					. '<image>' . "\n\t\t"
-						. "\t" . '<url>' . $site_url . 'wp-content/itunes/' . $options['itunes']['image']['name'] . '</url>' . "\n\t\t"
-						. "\t" . '<name>' . htmlspecialchars(get_option('blogname'), ENT_QUOTES) . '</name>' . "\n\t\t"
-					. '</image>' . "\n\t\t"
 					;
 			}
 
@@ -996,7 +1051,8 @@ class mediacaster
 					$mime = 'video/quicktime';
 					break;
 				default:
-					continue;
+					$mime = 'audio/mpeg';
+					break;
 			}
 
 			$size = @filesize(ABSPATH . $path . $key);
@@ -1026,7 +1082,31 @@ class mediacaster
 			$keywords = get_post_meta(get_the_ID(), '_keywords', true);
 			if ( !$keywords )
 			{
-				$keywords = get_the_category_list(', ');
+				$keywords = array();
+
+				if ( $cats = get_the_category($GLOBALS['post']->ID) )
+				{
+					foreach ( $cats as $cat )
+					{
+						$keywords[] = $cat->name;
+					}
+				}
+
+				if ( $tags = get_the_tags($GLOBALS['post']->ID) )
+				{
+					foreach ( $tags as $tag )
+					{
+						$keywords[] = $tag->name;
+					}
+				}
+
+				$all_keywords = array_unique($keywords);
+				$keywords = '';
+
+				foreach ( $all_keywords as $keyword )
+				{
+					$keywords .= ( $keywords ? ', ' : '' ) . htmlspecialchars($keyword);
+				}
 			}
 
 			foreach ( array(

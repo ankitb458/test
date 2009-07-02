@@ -7,7 +7,8 @@
 # place the file in the domain's root folder.
 #
 
-Sitemap: /sitemap.xml
+# Please replace mydomain.com with your site name and uncomment the line below
+#Sitemap: http://www.mydomain.com/sitemap.xml
 
 User-agent: *
 Disallow: /wp-content/cache/

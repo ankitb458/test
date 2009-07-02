@@ -10,10 +10,10 @@
 #
 
 /*
-Template Name: Raw Text Template
+Template Name: Special Page Template
 */
 
 do_action('setup_template', 'raw');
 
-require_once TEMPLATEPATH . '/index.php';
+require_once sem_path . '/index.php';
 ?>

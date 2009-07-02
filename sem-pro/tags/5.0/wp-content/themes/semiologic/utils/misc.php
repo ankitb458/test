@@ -126,15 +126,53 @@ add_action('template_redirect', 'start_fix_br', -10000);
 
 function prev_next_page_link()
 {
-	if ( !is_single() && !is_page() && !( class_exists('sem_static_front') && sem_static_front::is_home() ) && !is_404() )
-	{
-		echo '<div class="prev_next_page">';
-		posts_nav_link(' &bull; ', '&laquo;&nbsp;' . get_caption('previous_page'), get_caption('next_page') . '&nbsp;&raquo;');
-		echo '</div>';
-	}
+	global $sem_captions;
+
+	echo '<div class="prev_next_page">';
+	posts_nav_link(
+		' &bull; ',
+		'&laquo;&nbsp;' . $sem_captions['prev_page'],
+		$sem_captions['next_page'] . '&nbsp;&raquo;'
+		);
+	echo '</div>';
 } # prev_next_page_link()
 
-add_action('after_the_entries', 'prev_next_page_link', 0);
+
+#
+# sem_postnav_widget()
+#
+
+function sem_postnav_widget($args)
+{
+	if ( !is_single() && !is_page() && !is_404() && !$GLOBALS['disable_next_prev_page_link'] )
+	{
+		echo $args['before_widget'];
+		prev_next_page_link();
+		echo $args['after_widget'];
+	}
+} # sem_postnav_widget()
+
+
+#
+# sem_postnav_widgetize()
+#
+
+function sem_postnav_widgetize()
+{
+	register_sidebar_widget(
+		'Next/Prev Posts',
+		'sem_postnav_widget',
+		'sem_postnav_widget'
+		);
+	register_widget_control(
+		'Next/Prev Posts',
+		'sem_postnav_widget_control',
+		450,
+		300
+		);
+} # sem_postnav_widgetize()
+
+add_action('widgets_init', 'sem_postnav_widgetize');
 
 
 #
@@ -143,41 +181,13 @@ add_action('after_the_entries', 'prev_next_page_link', 0);
 
 function disable_next_prev_page_link($data)
 {
-	remove_action('after_the_entries', 'prev_next_page_link', 0);
+	$GLOBALS['disable_next_prev_page_link'] = true;
 
 	return $data;
 } # disable_next_prev_page_link()
 
 add_action('get_books', 'disable_next_prev_page_link');
 add_action('get_single_book', 'disable_next_prev_page_link');
-
-
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
-
-
-# backward compat
-
-if ( !defined('use_post_type_fixed') )
-{
-	define(
-		'use_post_type_fixed',
-			version_compare(
-				'2.1',
-				$GLOBALS['wp_version'], '<='
-				)
-			||
-			function_exists('get_site_option')
-		);
-}
 
 
 remove_filter('pre_category_description', 'wp_filter_kses');
@@ -199,4 +209,18 @@ function enable_easy_auctionads()
 } # enable_easy_auctionads()
 
 add_action('init', 'enable_easy_auctionads');
+
+
+if ( function_exists('wp_cache_force_update') )
+{
+	foreach ( array(
+				'sem5_options',
+				'sem5_captions',
+				'sem5_nav'
+				) as $o )
+	{
+		add_action('update_option_' . $o, 'wp_cache_force_update');
+	}
+}
+
 ?>

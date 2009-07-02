@@ -1,11 +1,14 @@
 <?php
 /*
-Plugin Name: Flickr Widget
+Plugin Name: Flickr Widget (fork)
 Plugin URI: http://donncha.wordpress.com/flickr-widget/
 Description: A widget which will display your latest Flickr photos.
 Author: Donncha O Caoimh
-Version: 0.3.1 (fork)
+Version: 0.3.2 fork
 Author URI: http://inphotos.org/
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: flickr_widget
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 
 Installing
 1. Make sure you have the Widget plugin available at http://automattic.com/code/widgets/
@@ -102,7 +105,7 @@ function widget_flickr_control() {
 
 	?>
 	<p><label for="flickr-title"><?php _e('Title:'); ?> <input style="width: 250px;" id="flickr-title" name="flickr-title" type="text" value="<?php echo $title; ?>" /></label></p>
-	<p><label for="flickr-rss-url"><?php _e('Flickr RSS URL:'); ?> <input style="width: 250px;" id="flickr-title" name="flickr-rss-url" type="text" value="<?php echo $flickr_rss_url; ?>" /></label></p>
+	<p><label for="flickr-rss-url"><?php _e('Flickr RSS URL:'); ?> <input style="width: 250px;" id="flickr-rss-url" name="flickr-rss-url" type="text" value="<?php echo $flickr_rss_url; ?>" /></label></p>
 	<p style="text-align:center; line-height: 30px;"><?php _e('How many photos  would you like to display?'); ?> <select id="rss-items" name="rss-items"><?php for ( $i = 1; $i <= 10; ++$i ) echo "<option value='$i' ".($items==$i ? "selected='selected'" : '').">$i</option>"; ?></select></p>
 	<p align='left'>
 	* Your RSS feed can be found on your Flickr homepage. Scroll down to the bottom of the page until you see the <em>Feed</em> link and copy that into the box above.<br />
@@ -120,6 +123,6 @@ function flickr_widgets_init() {
 		register_sidebar_widget('Flickr', 'widget_flickr');
 	}
 }
-add_action( "init", "flickr_widgets_init" );
+add_action( "widgets_init", "flickr_widgets_init" );
 
 ?>

@@ -1,4 +1,52 @@
 <?php
+class sem_footer
+{
+	#
+	# init()
+	#
+
+	function init()
+	{
+		add_action('the_footer', array('sem_footer', 'panel'));
+	} # init()
+
+
+	#
+	# panel()
+	#
+
+	function panel()
+	{
+		global $sem_options;
+		$sidebars = get_option('sidebars_widgets');
+
+		if ( $sidebars['the_footer'] )
+		{
+			$GLOBALS['the_footer'] = true;
+
+			echo '<div id="footer" class="footer'
+				. ( $sem_options['float_footer'] && $sem_options['show_copyright']
+					? ' float_nav'
+					: ''
+					)
+				. '">' . "\n"
+				. '<div class="pad">' . "\n";
+
+			dynamic_sidebar('the_footer');
+			do_action('display_footer_spacer');
+
+			echo '</div>' . "\n"
+				. '</div><!-- #footer -->' . "\n";
+
+			$GLOBALS['the_footer'] = false;
+		}
+	} # panel()
+} # sem_footer
+
+sem_footer::init();
+
+
+
 #
 # display_footer()
 #
@@ -28,14 +76,15 @@ add_action('display_footer', 'display_footer');
 function display_copyright_notice()
 {
 	global $wpdb;
+	global $sem_captions;
 
-	$copyright_notice = get_caption('copyright');
+	$copyright_notice = $sem_captions['copyright'];
 
 	$year = date('Y');
 
 	if ( strpos($copyright_notice, '%admin_name%') !== false )
 	{
-		$admin_login = $wpdb->get_var("select user_login from wp_users where user_email = '" . mysql_real_escape_string(get_option('admin_email')) . "' ORDER BY user_registered ASC limit 1");
+		$admin_login = $wpdb->get_var("select user_login from wp_users where user_email = '" . $wpdb->escape(get_option('admin_email')) . "' ORDER BY user_registered ASC limit 1");
 		$admin_user = get_userdatabylogin($admin_login);
 
 		if ( $admin_user->display_name )
@@ -60,8 +109,6 @@ function display_copyright_notice()
 <?php echo $copyright_notice; ?></div><!-- #copyright_notice -->
 <?php
 } # end display_copyright_notice()
-
-add_action('display_copyright_notice', 'display_copyright_notice');
 
 
 #
@@ -169,4 +216,27 @@ function display_extra_footer()
 } # end display_extra_footer()
 
 add_action('wp_footer', 'display_extra_footer', 100);
+
+
+#
+# display_entry_footer()
+#
+
+function display_entry_footer()
+{
+	if ( is_singular() )
+	{
+		$post_ID = intval($GLOBALS['wp_query']->get_queried_object_id());
+		$extra_footer = get_post_meta($post_ID, '_footer', true);
+	}
+
+	if ( $extra_footer )
+	{
+		echo '<div id="entry_footer" class="extra_footer">';
+		echo $extra_footer;
+		echo '</div>';
+	}
+} # end display_entry_footer()
+
+add_action('wp_footer', 'display_entry_footer', 50);
 ?>

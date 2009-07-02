@@ -66,7 +66,7 @@ function nr_options() {
 			<tr valign="top">
 				<th width="33%" scope="row">' . __('Date format string', NRTD) . ':</th>
 				<td>
-					<input type="text" name="format_date" value="' . htmlentities($options['formatDate'], ENT_COMPAT, "UTF-8") . '" />
+					<input type="text" name="format_date" value="' . htmlentities($options['formatDate'], ENT_QUOTES, "UTF-8") . '" />
 					<p>
 					' . sprintf(__("How to format the book's <code>added</code>, <code>started</code> and <code>finished</code> dates. Acceptable variables can be found <a href='%s'>here</a>.", NRTD), "http://php.net/date") . '
 					</p>
@@ -75,7 +75,7 @@ function nr_options() {
 			<tr valign="top">
 				<th width="33%" scope="row">' . __('Your Amazon Associates ID', NRTD) . ':</th>
 				<td>
-					<input type="text" name="associate" value="' . htmlentities($options['associate'], ENT_COMPAT, "UTF-8") . '" />
+					<input type="text" name="associate" value="' . htmlentities($options['associate'], ENT_QUOTES, "UTF-8") . '" />
 					<p>
 					' . __("If you choose to link to your book's product page on Amazon.com using the <code>book_url()</code> template tag - as the default template does - then you can earn commission if your visitors then purchase products.", NRTD) . '
 					</p>
@@ -137,6 +137,12 @@ function nr_options() {
 					<p>
 					' . __("When set to 'Multiple', Now Reading will insert those menus under 'Write', 'Manage' and 'Options' respectively.", NRTD) . '
 					</p>
+				</td>
+			</tr>
+			<tr valign="top">
+				<th width="33%" scope="row"><label for="books_per_page">' . __("Books per page", NRTD) . ':</label></th>
+				<td>
+					<input type="text" name="books_per_page" id="books_per_page" style="width:4em;" value="' . ( intval($options['booksPerPage']) ) . '" />
 				</td>
 			</tr>
 			<tr valign="top">

@@ -4,8 +4,10 @@ Plugin Name: Semiologic Affiliate
 Plugin URI: http://www.semiologic.com/software/marketing/sem-affiliate/
 Description: Automatically adds your affiliate ID to all links to Semiologic.
 Author: Denis de Bernardy
-Version: 1.5
+Version: 1.6
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: semiologic_affiliate
 */
 
 /*
@@ -18,27 +20,13 @@ http://www.semiologic.com/legal/license/
 **/
 
 
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
-
-
 #
 # sem_semiologic_affiliate_process_links()
 #
 
 function sem_semiologic_affiliate_process_links($buffer = '')
 {
-	$options = function_exists('get_site_option')
-		? get_site_option('sem_semiologic_affiliate_params')
-		: get_settings('sem_semiologic_affiliate_params');
+	$options = get_option('sem_semiologic_affiliate_params');
 
 	#echo '<pre>';
 	#var_dump($options['aff_id']);
@@ -109,9 +97,7 @@ function sem_semiologic_affiliate_add_id($input)
 	#foreach ($input as $bit) var_dump(htmlspecialchars($bit));
 	#echo '</pre>';
 
-	$options = function_exists('get_site_option')
-		? get_site_option('sem_semiologic_affiliate_params')
-		: get_settings('sem_semiologic_affiliate_params');
+	$options = get_option('sem_semiologic_affiliate_params');
 
 	$a_params = trim(
 				$input[1] . ' '

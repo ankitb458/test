@@ -80,7 +80,7 @@ function sem_external_links_admin()
 			. ( $options['global'] ? ' checked="checked"' : '' )
 			. ' />'
 		. '&nbsp;'
-		. __('Process all outgoing links, rather than only those within your entries\' content.')
+		. __('Process all outbound links as configured below. This means links in the sidebars, header, footer and so on in addition to those in posts\' and pages\' content.')
 		. '</label>'
 		. '</p>';
 
@@ -90,7 +90,7 @@ function sem_external_links_admin()
 			. ( $options['add_css'] ? ' checked="checked"' : '' )
 			. ' />'
 		. '&nbsp;'
-		. __('Add an external link icon to outgoing links. You can use a class="noicon" attribute on links to override this.')
+		. __('Add an external link icon to outbound links. You can use a class="noicon" attribute on individual links to override this.')
 		. '</label>'
 		. '</p>';
 
@@ -100,7 +100,7 @@ function sem_external_links_admin()
 			. ( $options['add_target'] ? ' checked="checked"' : '' )
 			. ' />'
 		. '&nbsp;'
-		. __('Open outgoing links in new windows. <a href="http://www.useit.com/alertbox/9605.html">This can damage your visitor\'s trust towards your site</a>.')
+		. __('Open outbound links in new windows. Some usability experts suggest <a href="http://www.useit.com/alertbox/9605.html">this can damage your visitor\'s trust</a> towards your site. Others highlight that some users (mainly elderly) do not know how to use the back button and encourage the practice.')
 		. '</label>'
 		. '</p>';
 
@@ -110,7 +110,7 @@ function sem_external_links_admin()
 			. ( $options['add_nofollow'] ? ' checked="checked"' : '' )
 			. ' />'
 		. '&nbsp;'
-		. __('Add rel=nofollow to the links. This is not very nice for those you\'re linking to.')
+		. __('Add rel=nofollow to outbound links. This is not very nice for those you\'re linking to.')
 		. '</label>'
 		. '</p>';
 

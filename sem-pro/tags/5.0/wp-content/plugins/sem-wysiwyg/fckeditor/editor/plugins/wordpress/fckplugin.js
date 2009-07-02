@@ -119,10 +119,6 @@ function CreateFakeAdUnitElement(adunit)
 	{
 		return '<img class="wordpress_adunit" _fckwordpress="adunit#'+adunit+'" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/ad-unit.gif" style="padding: 10px; border: solid 1px lightsteelblue; background-color: ghostwhite;" _fckfake _moz_resizing="true" />';
 	}
-	else
-	{
-		return '<img class="wordpress_adunit" _fckwordpress="adunit" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/ad-unit.gif" style="padding: 10px; border: solid 1px lightsteelblue; background-color: ghostwhite;" _fckfake _moz_resizing="true" />';
-	}
 }
 
 // We must process the DIV tags to replace then with the real tag
@@ -174,9 +170,26 @@ FCKXHtml.TagProcessors['img'] = function( node, htmlNode )
                     node = comment;
 
                 break;
+            case 'adunit':
+            	var tag = _fckwordpress;
+
+            	if ( attribute )
+            	{
+	            	tag = 'wsa:' + attribute;
+            	}
+				var comment = FCKXHtml.XML.createComment( tag );
+
+                var para = FCKTools.GetElementAscensor(htmlNode.parentNode, 'p,div');
+                if(wrapinp && !para)
+                {
+                    node = FCKXHtml.XML.createElement( 'p' );
+                    node.appendChild(comment);
+                } else
+                    node = comment;
+
+                break;
             case 'podcast':
             case 'videocast':
-            case 'adunit':
             case 'media':
             	var tag = _fckwordpress;
 
@@ -220,12 +233,11 @@ FCKWordPress.Redraw = function()
 //         FCK.EditorDocument.body.innerText =
 // 		var oRange = FCK.EditorDocument.body.createTextRange() ;
 	    xhtml = xhtml.replace(/(?:<p>\s*)?<\!\-\-\s*(more|nextpage|contactform|newsletter)\s*\-\->(?:<\/p>)?/g, CreateFakeElement('$1'));
-	    xhtml = xhtml.replace(/<\!\-\-\s*media\s*#([^>]*\.(?:mp3|m4a))\-\->/ig, CreateFakeAudioElement('$1'));
 	    xhtml = xhtml.replace(/<\!\-\-\s*media\s*#([^>]*(?:flv|swf|mov|mp4|m4v))\-\->/ig, CreateFakeVideoElement('$1'));
+	    xhtml = xhtml.replace(/<\!\-\-\s*media\s*#([^>]*)\-\->/ig, CreateFakeAudioElement('$1'));
 	    xhtml = xhtml.replace(/<\!\-\-\s*podcast\s*#([^>]*)\-\->/ig, CreateFakePodcastElement('$1'));
 	    xhtml = xhtml.replace(/<\!\-\-\s*videocast\s*#([^>]*)\-\->/ig, CreateFakeVideocastElement('$1'));
-    	xhtml = xhtml.replace(/<\!\-\-\s*(?:ad(?:_)?(?:unit|block|space|sense))\s*\-\->/ig, CreateFakeAdUnitElement(''));
-	    xhtml = xhtml.replace(/<\!\-\-\s*(?:ad(?:_)?(?:unit|block|space|sense))\s*#+([^>]*)?\-\->/ig, CreateFakeAdUnitElement('$1'));
+	    xhtml = xhtml.replace(/<\!\-\-\s*wsa\s*:([^>]*)\-\->/ig, CreateFakeAdUnitElement('$1'));
 	    FCK.EditorDocument.body.innerHTML = FCKConfig.ProtectedSource.Protect(xhtml);
 	}
 }
@@ -316,10 +328,8 @@ FCKToolbarAdUnitCombo.prototype.CreateItems = function( targetSpecialCombo )
 {
 	targetSpecialCombo.FieldWidth = 70 ;
 
-	var ad_units = window.parent.document.all_ad_blocks;
+	var ad_units = window.parent.document.all_ads;
 
-	this._Combo.AddItem( '', 'Default Inline', 'Default Inline' ) ;
-	
 	if (ad_units)
 	{
 		for ( var i = 0 ; i < ad_units.length ; i++ )
@@ -355,16 +365,18 @@ FCKMediaComboCommand.prototype.Execute = function(itemid, item)
 
     switch ( media_ext )
     {
-    case 'mp3':
-    case 'm4a':
-    	FCK.InsertHtml(CreateFakeAudioElement(itemid));
-    	break;
     case 'flv':
     case 'swf':
     case 'mov':
     case 'mp4':
     case 'm4v':
     	FCK.InsertHtml(CreateFakeVideoElement(itemid));
+    	break;
+
+    case 'mp3':
+    case 'm4a':
+    default:
+    	FCK.InsertHtml(CreateFakeAudioElement(itemid));
     	break;
     }
 }

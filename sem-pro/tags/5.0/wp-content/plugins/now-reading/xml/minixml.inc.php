@@ -161,11 +161,4 @@ function _MiniXML_NumKeyArray (&$v)
 		return 0;
 	}
 }
-
-
-
-
-
-
-
 ?>

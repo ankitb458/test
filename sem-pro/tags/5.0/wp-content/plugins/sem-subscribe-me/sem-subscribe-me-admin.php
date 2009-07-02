@@ -3,6 +3,16 @@
 class subscribe_me_admin
 {
 	#
+	# init()
+	#
+
+	function init()
+	{
+		add_action('widgets_init', array('subscribe_me_admin', 'widgetize'));
+	} # init()
+
+
+	#
 	# widgetize()
 	#
 
@@ -21,7 +31,18 @@ class subscribe_me_admin
 
 	function widget_control()
 	{
-		$options = get_settings('sem_subscribe_me_params');
+		$options = get_option('sem_subscribe_me_params');
+
+		if ( !$options )
+		{
+			$options = array(
+				'title' => __('Syndicate'),
+				'before_widget' => '',
+				'after_widget' => '',
+				'before_title' => '<h2>',
+				'after_title' => '</h2>'
+				);
+		}
 
 		if ( $_POST["sem_subscribe_me_widget_update"] )
 		{
@@ -46,7 +67,7 @@ class subscribe_me_admin
 			update_option('sem_subscribe_me_services', $services);
 		}
 
-		$title = htmlspecialchars($options['title'], ENT_QUOTES);
+		$title = htmlspecialchars($options['title']);
 
 		$services = get_option('sem_subscribe_me_services');
 
@@ -55,7 +76,7 @@ class subscribe_me_admin
 				. ' name="sem_subscribe_me_widget_update"'
 				. ' value="1"'
 				. ' />'
-			. '<p>'
+			. '<div style="margin-bottom: .2em;">'
 			. '<label for="sem_subscribe_me_widget_title">'
 				. __('Title:')
 				. '&nbsp;'
@@ -64,8 +85,8 @@ class subscribe_me_admin
 					. ' name="sem_subscribe_me_widget_title"'
 					. ' type="text" value="' . $title . '" />'
 				. '</label>'
-				. '</p>'
-			. '<p>'
+				. '</div>'
+			. '<div style="margin-bottom: .2em;">'
 			. '<label for="sem_subscribe_me_dropdown">'
 				. '<input'
 					. ' id="sem_subscribe_me_dropdown"'
@@ -78,8 +99,8 @@ class subscribe_me_admin
 				. '&nbsp;'
 				. __('Show as a drop down button')
 				. '</label>'
-				. '</p>'
-			. '<p>'
+				. '</div>'
+			. '<div style="margin-bottom: .2em;">'
 			. '<label for="sem_subscribe_me_add_nofollow">'
 				. '<input'
 					. ' id="sem_subscribe_me_add_nofollow"'
@@ -92,12 +113,12 @@ class subscribe_me_admin
 				. '&nbsp;'
 				. __('Add nofollow')
 				. '</label>'
-				. '</p>'
+				. '</div>'
 			;
 
 
-		$args['site_path'] = trailingslashit(get_settings('siteurl'));
-		$args['img_path'] = trailingslashit(get_settings('siteurl')) . 'wp-content/plugins/sem-subscribe-me/img/';
+		$args['site_path'] = trailingslashit(get_option('siteurl'));
+		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-subscribe-me/img/';
 
 		$o .= '<div style="width: 280px;">';
 
@@ -117,9 +138,9 @@ class subscribe_me_admin
 							. ' width: 130px; height: 20px;'
 							. '"'
 						. '>'
-						. '<label for="subscribe_me_services[' . $service . ']">'
+						. '<label for="subscribe_me_services__' . $service . '">'
 						. '<input type="checkbox"'
-							. ' name="subscribe_me_services[]" id="subscribe_me_services[' . $service . ']"'
+							. ' name="subscribe_me_services[]" id="subscribe_me_services__' . $service . '"'
 							. ' value="' . $service . '"'
 							. ( in_array($service, (array) $services)
 								? ' checked="checked"'
@@ -149,9 +170,9 @@ class subscribe_me_admin
 							. ' width: 130px; height: 20px;'
 							. '"'
 						. '>'
-						. '<label for="subscribe_me_services[' . $service . ']">'
+						. '<label for="subscribe_me_services__' . $service . '">'
 						. '<input type="checkbox"'
-							. ' name="subscribe_me_services[]" id="subscribe_me_services[' . $service . ']"'
+							. ' name="subscribe_me_services[]" id="subscribe_me_services__' . $service . '"'
 							. ' value="' . $service . '"'
 							. ( in_array($service, (array) $services)
 								? ' checked="checked"'
@@ -162,7 +183,7 @@ class subscribe_me_admin
 						. '<img'
 							. ' src="' . $args['img_path'] . $details['button'] . '"'
 							. ' alt="' . str_replace('%feed%', $details['name'], __('Subscribe to %feed%')) . '"'
-							. ' align="absmiddle"'
+							. ' align="middle"'
 							. ' />'
 						. '</label>'
 						. '</div>' . "\n";
@@ -176,63 +197,7 @@ class subscribe_me_admin
 
 		echo $o;
 	} # end widget_control()
-
-
-	#
-	# add2menu()
-	#
-
-	function add2menu()
-	{
-		if ( ( version_compare($GLOBALS['wp_version'], '2.2', '<') )
-			&& !in_array('widgets/widgets.php', (array) get_option('active_plugins'))
-			)
-		{
-			add_options_page(
-					__('Subscribe&nbsp;Me', 'sem-subscribe-me'),
-					__('Subscribe&nbsp;Me', 'sem-subscribe-me'),
-					'manage_options',
-					str_replace("\\", "/", __FILE__),
-					array('subscribe_me_admin', 'display')
-					);
-		}
-	} # add2menu()
-
-
-	#
-	# display()
-	#
-
-	function display()
-	{
-		if ( !empty($_POST) )
-		{
-			echo '<div class="updated">' . "\n"
-				. '<p>'
-					. '<strong>'
-					. __('Options saved.', 'sem-subscribe-me')
-					. '</strong>'
-				. '</p>' . "\n"
-				. '</div>' . "\n";
-		}
-
-		echo '<div class="wrap">' . "\n"
-			. '<h2>' . __('Syndication Options', 'sem-subscribe-me') . '</h2>' . "\n"
-			. '<form method="post" action="">' . "\n";
-
-		subscribe_me_admin::widget_control();
-
-		echo "<p class=\"submit\">"
-			. "<input type=\"submit\""
-				. " value=\"" . __('Update Options', 'sem-recent-posts') . "\""
-				. " />"
-			. "</p>\n";
-
-		echo '</form>'
-			. '</div>';
-	} # display()
 } # subscribe_me_admin
 
-add_action('plugins_loaded', array('subscribe_me_admin', 'widgetize'));
-add_action('admin_menu', array('subscribe_me_admin', 'add2menu'));
+subscribe_me_admin::init();
 ?>

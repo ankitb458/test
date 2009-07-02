@@ -1,17 +1,39 @@
 <?php
-#update_option('semiologic', '');
+#delete_option('semiologic');
 
-if ( file_exists(ABSPATH . 'wp-content/themes/semiologic')
-	&& ( !get_option('semiologic') || function_exists('get_site_option') )
-	)
+if ( !get_option('sem5_options') )
 {
 	update_option('template', 'semiologic');
 	update_option('stylesheet', 'semiologic');
 
-	$sem_path = dirname(dirname(__FILE__)) . '/semiologic';
+	include_once ABSPATH . 'wp-content/themes/semiologic/inc/init.php';
+}
+else
+{
+	#
+	# dump()
+	#
 
-	include_once $sem_path . '/wizards/autoinstall/autoinstall.php';
+	function dump()
+	{
+		foreach ( func_get_args() as $var )
+		{
+			echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
+			var_dump($var);
+			echo '</pre>';
+		}
+	} # dump()
 
-	install_semiologic();
+
+	#
+	# dump_time()
+	#
+
+	function dump_time($where = '')
+	{
+		echo '<div style="margin: 10px auto; text-align: center;">';
+		echo ( $where ? ( $where . ': ' ) : '' ) . get_num_queries() . " - " . timer_stop();
+		echo '</div>';
+	} # dump_time()
 }
 ?>

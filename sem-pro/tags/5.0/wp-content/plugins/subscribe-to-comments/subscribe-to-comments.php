@@ -1,11 +1,14 @@
 <?php
 /*
-Plugin Name: Subscribe To Comments
-Version: 2.3 (fork)
+Plugin Name: Subscribe To Comments (fork)
+Version: 2.4 fork
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to receive notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
 Author URI: http://txfx.net/
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: subscribe2comments
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 /* This is the code that is inserted into the comment form */
@@ -25,7 +28,7 @@ function show_subscription_checkbox ($id='0') {
 
 	<p <?php if ($sg_subscribe->clear_both) echo 'style="clear: both;" '; ?>class="subscribe-to-comments">
 	<input type="checkbox" name="subscribe" id="subscribe-<?php the_ID(); ?>" value="subscribe" style="width: auto;" <?php if ( (isset($checked_status) && $checked_status ) || ( !isset($checked_status) && $sg_subscribe->default_subscribed ) ) echo 'checked="checked" '; ?>/>
-	<label for="subscribe"><?php echo $sg_subscribe->not_subscribed_text; ?></label>
+	<label for="subscribe-<?php the_ID(); ?>"><?php echo $sg_subscribe->not_subscribed_text; ?></label>
 	</p>
 
 <?php /* ------------------------------------------------------------------- */ ?>
@@ -185,19 +188,19 @@ class sg_subscribe_settings {
 	}
 
 	function checkflag($optname) {
-		$options = get_settings('sg_subscribe_settings');
+		$options = get_option('sg_subscribe_settings');
 		if ( $options[$optname] != $optname )
 			return;
 		return ' checked="checked"';
 	}
 
 	function form_setting($optname) {
-		$options = get_settings('sg_subscribe_settings');
+		$options = get_option('sg_subscribe_settings');
 		return htmlspecialchars(stripslashes($options[$optname]), ENT_QUOTES);
 	}
 
 	function textarea_setting($optname) {
-		$options = get_settings('sg_subscribe_settings');
+		$options = get_option('sg_subscribe_settings');
 		return htmlspecialchars(stripslashes($options[$optname]));
 	}
 
@@ -264,7 +267,7 @@ class sg_subscribe {
 		global $wpdb;
 		$this->db_upgrade_check();
 
-		$this->settings = get_settings('sg_subscribe_settings');
+		$this->settings = get_option('sg_subscribe_settings');
 
 		$changed = false;
 
@@ -430,7 +433,7 @@ class sg_subscribe {
 				$this->add_error(__('Please provide a valid e-mail address.', 'subscribe-to-comments'),'solo_subscribe');
 		}
 
-		if ( ( $email == $this->site_email && is_email($this->site_email) ) || ( $email == get_settings('admin_email') && is_email(get_settings('admin_email')) ) )
+		if ( ( $email == $this->site_email && is_email($this->site_email) ) || ( $email == get_option('admin_email') && is_email(get_option('admin_email')) ) )
 			$this->add_error(__('This e-mail address may not be subscribed', 'subscribe-to-comments'),'solo_subscribe');
 
 		if ( is_array($this->subscriptions_from_email($email)) )
@@ -491,7 +494,7 @@ class sg_subscribe {
 		$email = strtolower($email);
 		// add the option if it doesn't exist
 		add_option('do_not_mail', '');
-		$blocked = (array) explode (' ', get_settings('do_not_mail'));
+		$blocked = (array) explode (' ', get_option('do_not_mail'));
 		if ( in_array($email, $blocked) )
 			return true;
 		return false;
@@ -510,7 +513,7 @@ class sg_subscribe {
 		// check to make sure this email isn't already in there
 		if ( !$this->is_blocked($email) ) {
 			// email hasn't already been added - so add it
-			$blocked = get_settings('do_not_mail') . ' ' . $email;
+			$blocked = get_option('do_not_mail') . ' ' . $email;
 			update_option('do_not_mail', $blocked);
 			return true;
 			}
@@ -526,7 +529,7 @@ class sg_subscribe {
 
 		if ( $this->is_blocked($email) ) {
 			// e-mail is in the list - so remove it
-			$blocked = str_replace (' ' . $email, '', explode (' ', get_settings('do_not_mail')));
+			$blocked = str_replace (' ' . $email, '', explode (' ', get_option('do_not_mail')));
 			update_option('do_not_mail', $blocked);
 			return true;
 			}
@@ -654,7 +657,7 @@ class sg_subscribe {
 			$message .= get_permalink($comment->comment_post_ID) . "#comments\n\n";
 			//add link to manage comment notifications
 			$message .= __("To manage your subscriptions or to block all notifications from this site, click the link below:\n", 'subscribe-to-comments');
-			$message .= get_settings('home') . '/?wp-subscription-manager=1&email=[email]&key=[key]';
+			$message .= get_option('home') . '/?wp-subscription-manager=1&email=[email]&key=[key]';
 
 			$subject = sprintf(__('New Comment On: %s', 'subscribe-to-comments'), stripslashes($post->post_title));
 
@@ -702,7 +705,7 @@ class sg_subscribe {
 		// strip out some chars that might cause issues, and assemble vars
 		$site_name = str_replace('"', "'", $this->site_name);
 		$site_email = str_replace(array('<', '>'), array('', ''), $this->site_email);
-		$charset = get_settings('blog_charset');
+		$charset = get_option('blog_charset');
 
 		$headers  = "From: \"{$site_name}\" <{$site_email}>\n";
 		$headers .= "MIME-Version: 1.0\n";
@@ -830,9 +833,9 @@ class sg_subscribe {
 
 
 	function add_admin_menu() {
-		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 8, __FILE__, 'sg_subscribe_admin');
+		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 'administrator', str_replace("\\", "/", __FILE__), 'sg_subscribe_admin');
 
-		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 5, basename(__FILE__), array('sg_subscribe_settings', 'options_page'));
+		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 'administrator', str_replace("\\", "/", __FILE__), array('sg_subscribe_settings', 'options_page'));
 	}
 
 
@@ -979,13 +982,13 @@ function sg_subscribe_admin($standalone = false) {
 	} else { ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html>
 	<head>
-	<title><?php printf(__('%s Comment Subscription Manager', 'subscribe-to-comments'), bloginfo('name')); ?></title>
+	<title><?php __('Comment Subscription Manager', 'subscribe-to-comments'); ?></title>
 
 		<style type="text/css" media="screen">
-			@import url( <?php echo get_settings('siteurl'); ?>/wp-admin/wp-admin.css );
+			@import url( <?php echo get_option('siteurl'); ?>/wp-admin/wp-admin.css );
 		</style>
 
-		<link rel="stylesheet" type="text/css" media="print" href="<?php echo get_settings('siteurl'); ?>/print.css" />
+		<link rel="stylesheet" type="text/css" media="print" href="<?php echo get_option('siteurl'); ?>/print.css" />
 
 		<meta http-equiv="Content-Type" content="text/html;
 	charset=<?php bloginfo('charset'); ?>" />
@@ -1004,7 +1007,7 @@ function sg_subscribe_admin($standalone = false) {
 
 
 	<div class="wrap">
-	<h2><?php printf(__('%s Comment Subscription Manager', 'subscribe-to-comments'), bloginfo('name')); ?></h2>
+	<h2><?php __('Comment Subscription Manager', 'subscribe-to-comments'); ?></h2>
 
 	<?php if (!empty($sg_subscribe->ref)) : ?>
 	<?php $sg_subscribe->add_message(sprintf(__('Return to the page you were viewing: %s', 'subscribe-to-comments'), $sg_subscribe->entry_link(url_to_postid($sg_subscribe->ref), $sg_subscribe->ref))); ?>
@@ -1088,78 +1091,6 @@ function sg_subscribe_admin($standalone = false) {
 			</p>
 			</form>
 		</fieldset>
-
-<?php if ( !$_REQUEST['email'] ) : ?>
-		<fieldset class="options">
-			<?php if ( !$_REQUEST['showallsubscribers'] ) : ?>
-				<legend><?php _e('Top Subscriber List', 'subscribe-to-comments'); ?></legend>
-			<?php else : ?>
-				<legend><?php _e('Subscriber List', 'subscribe-to-comments'); ?></legend>
-			<?php endif; ?>
-
-<?php
-			$stc_limit = ( !$_REQUEST['showallsubscribers'] ) ? 'LIMIT 25' : '';
-			$all_ct_subscriptions = $wpdb->get_results("SELECT distinct LCASE(comment_author_email) as email, count(distinct comment_post_ID) as ccount FROM $wpdb->comments WHERE comment_subscribe='Y' AND comment_approved = '1' GROUP BY email ORDER BY ccount DESC $stc_limit");
-			$all_pm_subscriptions = $wpdb->get_results("SELECT distinct LCASE(meta_value) as email, count(post_id) as ccount FROM $wpdb->postmeta WHERE meta_key = '_sg_subscribe-to-comments' GROUP BY email ORDER BY ccount DESC $stc_limit");
-			$all_subscriptions = array();
-
-			foreach ( array('all_ct_subscriptions', 'all_pm_subscriptions') as $each ) {
-				foreach ( (array) $$each as $sub ) {
-					if ( !isset($all_subscriptions[$sub->email]) )
-						$all_subscriptions[$sub->email] = (int) $sub->ccount;
-					else
-						$all_subscriptions[$sub->email] += (int) $sub->ccount;
-				}
-			}
-
-if ( !$_REQUEST['showallsubscribers'] ) : ?>
-	<p><a href="<?php echo attribute_escape(add_query_arg('showallsubscribers', '1', $sg_subscribe->form_action)); ?>"><?php _e('Show all subscribers', 'subscribe-to-comments'); ?></a></p>
-<?php elseif ( !$_REQUEST['showccfield'] ) : ?>
-	<p><a href="<?php echo add_query_arg('showccfield', '1'); ?>"><?php _e('Show list of subscribers in <code>CC:</code>-field format (for bulk e-mailing)', 'subscribe-to-comments'); ?></a></p>
-<?php else : ?>
-	<p><a href="<?php echo attribute_escape($sg_subscribe->form_action); ?>"><?php _e('&laquo; Back to regular view'); ?></a></p>
-	<p><textarea cols="60" rows="10"><?php echo implode(', ', array_keys($all_subscriptions) ); ?></textarea></p>
-<?php endif;
-
-
-			if ( $all_subscriptions ) {
-				if ( !$_REQUEST['showccfield'] ) {
-					echo "<ul>\n";
-					foreach ( (array) $all_subscriptions as $email => $ccount ) {
-						$enc_email = urlencode($email);
-						echo "<li>($ccount) <a href='" . attribute_escape($sg_subscribe->form_action . "&email=$enc_email") . "'>" . wp_specialchars($email) . "</a></li>\n";
-					}
-					echo "</ul>\n";
-				}
-?>
-				<legend><?php _e('Top Subscribed Posts', 'subscribe-to-comments'); ?></legend>
-				<?php
-				$top_subscribed_posts1 = $wpdb->get_results("SELECT distinct comment_post_ID as post_id, count(distinct comment_author_email) as ccount FROM $wpdb->comments WHERE comment_subscribe='Y' AND comment_approved = '1' GROUP BY post_id ORDER BY ccount DESC LIMIT 25");
-				$top_subscribed_posts2 = $wpdb->get_results("SELECT distinct post_id, count(distinct meta_value) as ccount FROM $wpdb->postmeta WHERE meta_key = '_sg_subscribe-to-comments' GROUP BY post_id ORDER BY ccount DESC LIMIT 25");
-				$all_top_posts = array();
-
-				foreach ( array('top_subscribed_posts1', 'top_subscribed_posts2') as $each ) {
-					foreach ( (array) $$each as $pid ) {
-						if ( !isset($all_top_posts[$pid->post_id]) )
-							$all_top_posts[$pid->post_id] = (int) $pid->ccount;
-						else
-							$all_top_posts[$pid->post_id] += (int) $pid->ccount;
-					}
-				}
-				arsort($all_top_posts);
-
-				echo "<ul>\n";
-				foreach ( $all_top_posts as $pid => $ccount ) {
-					echo "<li>($ccount) <a href='" . get_permalink($pid) . "'>" . get_the_title($pid) . "</a></li>\n";
-				}
-				echo "</ul>";
-				?>
-
-	<?php } ?>
-
-		</fieldset>
-
-<?php endif; ?>
 
 	<?php } ?>
 
@@ -1272,4 +1203,10 @@ function checkAll(form) {
 
 
 <?php die(); // stop WP from loading ?>
-<?php } ?>
+<?php }
+
+if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
+{
+	include_once dirname(dirname(__FILE__)) . '/wp-subscribed.php';
+}
+?>

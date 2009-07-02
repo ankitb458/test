@@ -15,5 +15,5 @@ Template Name: Article Template
 
 do_action('setup_template', 'article');
 
-require_once TEMPLATEPATH . '/index.php';
+require_once sem_path . '/index.php';
 ?>

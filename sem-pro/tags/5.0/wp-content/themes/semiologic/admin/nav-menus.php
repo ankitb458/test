@@ -1,4 +1,179 @@
 <?php
+class sem_nav_admin
+{
+	#
+	# widget_control()
+	#
+
+	function widget_control($area)
+	{
+		global $sem_options;
+		global $sem_captions;
+		global $sem_nav;
+
+		switch ( $area )
+		{
+		case 'header':
+			if ( $_POST['update_sem_header']['nav_menu'] )
+			{
+				$new_options = $sem_options;
+				$new_captions = $sem_captions;
+
+				$new_options['show_search_form'] = isset($_POST['sem_header']['show_search_form']);
+
+				$new_captions['search_field'] = strip_tags(stripslashes($_POST['sem_header']['label_search_field']));
+				$new_captions['search_button'] = strip_tags(stripslashes($_POST['sem_header']['label_search_button']));
+
+				if ( $new_options != $sem_options )
+				{
+					$sem_options = $new_options;
+
+					update_option('sem5_options', $sem_options);
+				}
+				if ( $new_captions != $sem_captions )
+				{
+					$sem_captions = $new_captions;
+
+					update_option('sem5_captions', $sem_captions);
+				}
+			}
+
+			echo '<input type="hidden" name="update_sem_header[nav_menu]" value="1" />';
+
+			echo '<h3>'
+				. __('Config')
+				. '</h3>';
+
+			echo '<div style="margin-bottom: .2em;">'
+				. '<label>'
+				. '<input type="checkbox"'
+					. ' name="sem_header[show_search_form]"'
+					. ( $sem_options['show_search_form']
+						? ' checked="checked"'
+						: ''
+						)
+					. ' />'
+				. ' '
+				. __('Insert Search Form')
+				. '</label>'
+				. '</div>';
+
+			echo '<h3>'
+				. __('Captions')
+				. '</h3>';
+
+			echo '<div style="margin-bottom: .2em;">'
+				. '<label>'
+				. __('Search Field, e.g. Search')
+				. '<br />'
+				. '<input type="text" style="width: 95%"'
+					. ' name="sem_header[label_search_field]"'
+					. ' value="' . htmlspecialchars($sem_captions['search_field']) . '"'
+					. ' />'
+				. '</label>'
+				. '</div>';
+
+			echo '<div style="margin-bottom: .2em;">'
+				. '<label>'
+				. __('Search Button, e.g. Go')
+				. '<br />'
+				. '<input type="text" style="width: 95%"'
+					. ' name="sem_header[label_search_button]"'
+					. ' value="' . htmlspecialchars($sem_captions['search_button']) . '"'
+					. ' />'
+				. '</label>'
+				. '</div>';
+
+			echo '<div>'
+				. '<br />'
+				. __('You can configure this navigation menu under Presentation / Nav Menus')
+				. '</div>';
+			break;
+
+		case 'footer':
+			if ( $_POST['update_sem_footer']['nav_menu'] )
+			{
+				$new_options = $sem_options;
+				$new_captions = $sem_captions;
+
+				$new_options['show_copyright'] = isset($_POST['sem_footer']['show_copyright']);
+				$new_options['float_footer'] = isset($_POST['sem_footer']['float_footer']);
+
+				$new_captions['copyright'] = strip_tags(stripslashes($_POST['sem_footer']['label_copyright']));
+
+				if ( $new_options != $sem_options )
+				{
+					$sem_options = $new_options;
+
+					update_option('sem5_options', $sem_options);
+				}
+				if ( $new_captions != $sem_captions )
+				{
+					$sem_captions = $new_captions;
+
+					update_option('sem5_captions', $sem_captions);
+				}
+			}
+
+			echo '<input type="hidden" name="update_sem_footer[nav_menu]" value="1" />';
+
+			echo '<h3>'
+				. __('Config')
+				. '</h3>';
+
+			echo '<div style="margin-bottom: .2em;">'
+				. '<label>'
+				. '<input type="checkbox"'
+					. ' name="sem_footer[show_copyright]"'
+					. ( $sem_options['show_copyright']
+						? ' checked="checked"'
+						: ''
+						)
+					. ' />'
+				. ' '
+				. __('Show Copyright Notice')
+				. '</label>'
+				. '</div>';
+
+			echo '<div style="margin-bottom: .2em;">'
+				. '<label>'
+				. '<input type="checkbox"'
+					. ' name="sem_footer[float_footer]"'
+					. ( $sem_options['float_footer']
+						? ' checked="checked"'
+						: ''
+						)
+					. ' />'
+				. ' '
+				. __('Show copyright and menu as a single line')
+				. '</label>'
+				. '</div>';
+
+			echo '<h3>'
+				. __('Captions')
+				. '</h3>';
+
+			echo '<div style="margin-bottom: .2em;">'
+				. '<label>'
+				. __('Copyright Notice, e.g. Copyright %year%')
+				. '<br />'
+				. '<input type="text" style="width: 95%"'
+					. ' name="sem_footer[label_copyright]"'
+					. ' value="' . htmlspecialchars($sem_captions['copyright']) . '"'
+					. ' />'
+				. '</label>'
+				. '</div>';
+
+			echo '<div>'
+				. '<br />'
+				. __('You can configure this navigation menu under Presentation / Nav Menus')
+				. '</div>';
+			break;
+		}
+	} # widget_control()
+} # sem_nav_admin
+
+
 
 #
 # add_theme_nav_menu_options_admin()
@@ -11,7 +186,7 @@ function add_theme_nav_menu_options_admin()
 		__('Nav&nbsp;Menus'),
 		__('Nav&nbsp;Menus'),
 		'switch_themes',
-		str_replace("\\", "/", basename(__FILE__)),
+		basename(__FILE__),
 		'display_theme_nav_menu_options_admin'
 		);
 } # end add_theme_nav_menu_options_admin()
@@ -27,13 +202,13 @@ function update_theme_nav_menu_options()
 {
 	check_admin_referer('sem_nav_menus');
 
-	$options = get_option('semiologic');
+	global $sem_nav;
 
-	$options['nav_menus'] = array();
+	$sem_nav = array();
 
 	foreach ( array('header_nav', 'sidebar_nav', 'footer_nav') as $menu_id )
 	{
-		$options['nav_menus'][$menu_id] = array();
+		$sem_nav[$menu_id] = array();
 
 		foreach ( $_POST[$menu_id . '_item'] as $key => $value )
 		{
@@ -79,12 +254,12 @@ function update_theme_nav_menu_options()
 					$_POST[$menu_id . '_ref'][$key] = sanitize_title($_POST[$menu_id . '_ref'][$key]);
 				}
 
-				$options['nav_menus'][$menu_id][$value] = $_POST[$menu_id . '_ref'][$key];
+				$sem_nav[$menu_id][$value] = $_POST[$menu_id . '_ref'][$key];
 			}
 		}
 	}
 
-	update_option('semiologic', $options);
+	update_option('sem5_nav', $sem_nav);
 
 	regen_theme_nav_menu_cache();
 } # end update_theme_nav_menu_options()
@@ -97,21 +272,22 @@ function update_theme_nav_menu_options()
 function regen_theme_nav_menu_cache()
 {
 	global $wpdb;
-	global $cache_categories;
 
-	$options = get_option('semiologic');
+	global $sem_nav;
+	global $sem_nav_cache;
 
-	$options['nav_menu_cache'] = array();
+	$old_nav_cache = $sem_nav_cache;
+	$sem_nav_cache = array();
 
 	foreach ( array('header_nav', 'sidebar_nav', 'footer_nav') as $menu_id )
 	{
-		$options['nav_menu_cache'][$menu_id] = array();
+		$sem_nav_cache[$menu_id] = array();
 
 		$found = array();
 		$seek = array();
 		$refs = "";
 
-		foreach ( (array) $options['nav_menus'][$menu_id] as $item => $ref )
+		foreach ( (array) $sem_nav[$menu_id] as $item => $ref )
 		{
 #			echo '<pre>';
 #			var_dump($item, $ref);
@@ -176,7 +352,7 @@ function regen_theme_nav_menu_cache()
 
 		foreach ( $seek as $ref )
 		{
-			$refs .= ( $refs ? ", " : "" ) . "'" . mysql_real_escape_string(sanitize_title($ref)) . "'";
+			$refs .= ( $refs ? ", " : "" ) . "'" . $wpdb->escape(sanitize_title($ref)) . "'";
 		}
 
 		if ( $refs )
@@ -189,12 +365,8 @@ function regen_theme_nav_menu_cache()
 				FROM
 					$wpdb->posts as posts
 				WHERE
-					"
-					. ( use_post_type_fixed
-						? "( posts.post_status = 'publish' AND posts.post_type = 'page' )"
-						: "posts.post_status = 'static'"
-						)
-					. "
+					posts.post_status = 'publish'
+					AND posts.post_type = 'page'
 					AND posts.post_name IN ( $refs )
 					AND posts.post_parent = 0
 					AND posts.post_date_gmt <= '" . $now . "'
@@ -202,50 +374,12 @@ function regen_theme_nav_menu_cache()
 
 			if ( isset($pages) )
 			{
-				if ( function_exists('update_post_cache') )
-				{
-					update_post_cache($pages);
-				}
-				if ( function_exists('update_page_cache') )
-				{
-					update_page_cache($pages);
-				}
-			}
+				update_post_cache($pages);
+				update_page_cache($pages);
 
-			$cats = $wpdb->get_results("
-				SELECT
-					categories.*
-				FROM
-					$wpdb->categories as categories
-				INNER JOIN
-					$wpdb->post2cat as post2cat
-						ON post2cat.category_id = categories.cat_ID
-				INNER JOIN
-					$wpdb->posts as posts
-						ON posts.ID = post2cat.post_id
-				WHERE
-					categories.category_nicename IN ( $refs )
-					AND categories.category_parent = 0
-					AND posts.post_status = 'publish'
-					AND posts.post_date_gmt <= '" . $now . "'
-				");
-
-			if ( isset($pages) )
-			{
 				foreach ( $pages as $page )
 				{
 					$found[$page->post_name] = apply_filters('the_permalink', get_permalink($page->ID));
-				}
-			}
-
-			if ( isset($cats) )
-			{
-				foreach ( $cats as $cat )
-				{
-					if ( !isset($found[$cat->category_nicename]) )
-					{
-						$found[$cat->category_nicename] = get_category_link($cat->cat_ID);
-					}
 				}
 			}
 		}
@@ -254,7 +388,7 @@ function regen_theme_nav_menu_cache()
 #		var_dump($found);
 #		echo '</pre>';
 
-		foreach ( (array) $options['nav_menus'][$menu_id] as $item => $ref )
+		foreach ( (array) $sem_nav[$menu_id] as $item => $ref )
 		{
 			if ( !$ref )
 			{
@@ -263,26 +397,23 @@ function regen_theme_nav_menu_cache()
 
 			if ( isset($found[$ref]) )
 			{
-				$options['nav_menu_cache'][$menu_id][$item] = $found[$ref];
+				$sem_nav_cache[$menu_id][$item] = $found[$ref];
 			}
 		}
 	}
 
-	update_option('semiologic', $options);
-
-	$GLOBALS['semiologic'] = $options;
+	if ( $old_nav_cache != $sem_nav_cache )
+	{
+		update_option('sem5_nav_cache', $sem_nav_cache);
+	}
 } # end regen_theme_nav_menu_cache()
 
 add_action('save_post', 'regen_theme_nav_menu_cache', 0);
 add_action('delete_post', 'regen_theme_nav_menu_cache', 0);
 add_action('publish_phone', 'regen_theme_nav_menu_cache', 0);
-add_action('add_category', 'regen_theme_nav_menu_cache', 0);
-add_action('delete_category', 'regen_theme_nav_menu_cache', 0);
 
-if ( !isset($GLOBALS['semiologic']['nav_menu_cache'])
-	|| ( ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
-		&& ( $_SERVER['REQUEST_METHOD'] == 'POST' )
-		)
+if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false
+		&& $_SERVER['REQUEST_METHOD'] == 'POST'
 	)
 {
 	add_action('init', 'regen_theme_nav_menu_cache');
@@ -312,7 +443,8 @@ function display_theme_nav_menu_options_admin()
 
 	regen_theme_nav_menu_cache();
 
-	$options = get_option('semiologic');
+	global $sem_nav;
+	global $sem_nav_cache;
 
 	# Display admin page
 
@@ -341,7 +473,7 @@ function display_theme_nav_menu_options_admin()
 
 		$i = 0;
 
-		foreach ( (array) $options['nav_menus'][$menu_id] as $item => $ref )
+		foreach ( (array) $sem_nav[$menu_id] as $item => $ref )
 		{
 			$i++;
 
@@ -358,16 +490,16 @@ function display_theme_nav_menu_options_admin()
 						. ( ( $ref != sanitize_title($item)
 								|| strlen($ref) != strlen($item)
 								)
-							? htmlspecialchars($ref, ENT_QUOTES)
+							? htmlspecialchars($ref)
 							: ""
 							)
 						. "\""
 					. " />"
 					. "</td>\n"
 				. "<td>"
-					. ( isset($options['nav_menu_cache'][$menu_id][$item])
+					. ( isset($sem_nav_cache[$menu_id][$item])
 						? ( "<a href=\""
-								. $options['nav_menu_cache'][$menu_id][$item]
+								. $sem_nav_cache[$menu_id][$item]
 								. "\">"
 								. str_replace(" ", "&nbsp;", $item)
 								. "</a>"
@@ -415,23 +547,23 @@ function display_theme_nav_menu_options_admin()
 
 function sidebar_nav_widget_control()
 {
-	$options = get_settings('sidebar_nav_widget_params');
+	global $sem_captions;
 
 	if ( $_POST["sidebar_nav_widget_update"] )
 	{
-		$new_options = $options;
+		$new_captions = $sem_captions;
 
-		$new_options['title'] = strip_tags(stripslashes($_POST["sidebar_nav_widget_title"]));
+		$new_captions['sidebar_nav_title'] = strip_tags(stripslashes($_POST["sidebar_nav_widget_title"]));
 
-		if ( $options != $new_options )
+		if ( $captions != $new_captions )
 		{
-			$options = $new_options;
+			$captions = $new_captions;
 
-			update_option('sidebar_nav_widget_params', $options);
+			update_option('sem5_captions', $captions);
 		}
 	}
 
-	$title = htmlspecialchars($options['title'], ENT_QUOTES);
+	$title = htmlspecialchars($captions['sidebar_nav_title']);
 
 	echo '<input type="hidden"'
 			. ' id="sidebar_nav_widget_update"'

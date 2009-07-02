@@ -131,6 +131,10 @@ EOF;
 
 		echo "</fieldset>\n";
 
+		echo '<p>'
+			. __('<strong>Important</strong>: Use the legacy urchin.js script, not the ga.js.')
+			. '</p>';
+
 		echo '<p class="submit">'
 			. '<input type="submit"'
 				. ' value="' . __('Update Options', 'sem-google-analytics') . '"'

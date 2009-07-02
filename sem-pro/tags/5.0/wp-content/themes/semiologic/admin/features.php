@@ -1,603 +1,613 @@
 <?php
-#
-# add_theme_skin_options_admin()
-#
 
-function add_theme_features_admin()
+
+class sem_features
 {
-	if ( !function_exists('get_site_option') )
+	#
+	# init()
+	#
+
+	function init()
 	{
-		add_submenu_page(
-			'themes.php',
-			__('Features'),
-			__('Features'),
-			'switch_themes',
-			str_replace("\\", "/", basename(__FILE__)),
-			'display_theme_features_admin'
-			);
-	}
-} # end add_theme_features_admin()
+		$GLOBALS['sem_features'] = array();
+		$GLOBALS['sem_feature_sets'] = array();
 
-add_action('admin_menu', 'add_theme_features_admin');
+		add_action('admin_menu', array('sem_features', 'admin_menu'));
+		add_action('admin_head', array('sem_features', 'display_scripts'));
+	} # init
 
 
-#
-# display_theme_features_admin()
-#
+	#
+	# add_set()
+	#
 
-function display_theme_features_admin()
-{
-	if ( !empty($_POST)
-		&& isset($_POST['action'])
-		&& $_POST['action'] == 'update_theme_features'
-		)
+	function add_set($tag)
 	{
-		do_action('update_theme_features');
+		global $sem_feature_sets;
 
-		echo "<div class=\"updated\">\n"
-			. "<p>"
-				. "<strong>"
-				. __('Options saved.')
-				. "</strong>"
-			. "</p>\n"
-			. "</div>\n";
-	}
-
-	echo '<form method="post" action="">';
-
-	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_features');
-
-	echo '<input type="hidden"'
-		. ' name="action"'
-		. ' value="update_theme_features"'
-		. ' />';
-
-	echo '<div class="wrap">';
-	echo '<h2>' . __('Features') . '</h2>';
-	do_action('display_theme_features');
-	echo '</div>';
-
-	echo '</form>';
-} # end display_theme_features_admin()
-
-
-#
-# get_theme_features()
-#
-
-function get_theme_features()
-{
-	$features = array();
-
-	$features['WordPress Tweaks and Fixes']
-		= array(
-			'autolink_uri' => array(
-					'Autolink uri',
-					'Automatically find and link unanchored uri.'
-					),
-			'easy_order' => array(
-					'Easy Category, Link and Page order management.',
-					'Interfaces to easily manage the category, link and page order using drag/drop.'
-					),
-			'exernal_links' => array(
-					'External Links',
-					'Identify external links. You can highlight them with an icon, and open them in new windows. Configure via Options / External Links.'
-					),
-			'fancy_excerpt' => array(
-					'Sentence Aware Excerpts',
-					'Generate fancy, sentence aware excerpts automatically when no excerpt is entered.'
-					),
-			'favicon' => array(
-					'Favicon',
-					'Notify browsers that your site has an favicon that displays alongside your site\'s name when bookmarked. Configure via Options / Favicon Head.'
-					),
-			'improved_search' => array(
-					'Improved Search Engine',
-					'An improved search tool for WordPress, that uses MySQL\'s full text indexing functionalities.',
-					function_exists('get_site_option') ? false : null
-					),
-			'kill_frames' => array(
-					'Kill Frames',
-					'Kill attempts to open the site in frames.'
-					),
-			'more_in_feeds' => array(
-					'More link in feeds',
-					'Make the \'More\' link work in feeds.'
-					),
-			'remove_fancy_quotes' => array(
-					'Kill Fancy Quotes',
-					'Convert fancy quotes to normal quotes, so as to not break copy and paste of source code.'
-					),
-			'absolute_urls' => array(
-					'Absolute URLs',
-					'Convert all relative URLs in posts to absolute URLs in RSS feeds.'
-					),
+		$feature_set = array(
+			'features' => array()
 			);
 
-	$features['WordPress Features']
-		= array(
-			'advanced_cache' => array(
-					'Advanced Cache',
-					'An advanced cache for sites with lots of traffic. It comes in handy when you get slashdotted, among other things. Configure and activate via Options / WP-Cache. Note that the cache script is loaded before WordPress; It will remain active even when the WP-Cache plugin is deactivated.'
-					),
-			);
+		$sem_feature_sets[$tag] =& $feature_set;
+	} # add_set()
 
-	$features['Theme Features']
-		= array(
-			'contact_form' => array(
-					'Contact Form',
-					'Easily add a contact form on a static page.'
-					),
-			/*
-			'flickr_album' => array(
-					'Flickr Album',
-					'Display your flickr gallery from your site.',
-					function_exists('get_site_option') ? false : null
-					),
-			*/
-			'sidebar_widgets' => array(
-					'Sidebar Widgets',
-					'Drag and drop widgets into your sidebars.',
-					true
-					),
-			'theme_archives' => array(
-					'Archives as Title Lists',
-					'Display archives (date archives and categories) as title lists.'
-					),
-			);
 
-	$features['Extra Sidebar Widgets']
-		= array(
-			'automatic_translation' => array(
-					'Automatic Translations',
-					'This is keyword spam. Use only if it sounds like a recommendable practice to you. This feature requires fancy urls (Options / Permalinks) and an Apache server (it won\'t work on Windows).',
-					function_exists('get_site_option') ? false : null
-					),
-			'delicious' => array(
-					'Del.icio.us Links',
-					'Display your del.icio.us links in your sidebar.'
-					),
-			'event_manager' => array(
-					'Event Manager',
-					'Configure via Options / Countdown.',
-					function_exists('get_site_option') ? false : null
-					),
-			'flickr_widget' => array(
-					'Flickr Widget',
-					'A sidebar widget to display your flickr RSS feed.'
-					),
-			'google_search' => array(
-					'Google Search',
-					'Search your site via Google.'
-					),
-			'newsletter_manager' => array(
-					'Newsletter Subscription Form',
-					'It will work with <a href="http://www.semiologic.com/go/aweber">aWeber</a> and with any list manager that can answer a list-subscribe@domain.com query.',
-					function_exists('get_site_option') ? false : null
-					),
-			'paypal_donate' => array(
-					'Paypal Donate',
-					'Readily accept donations via Paypal.'
-					),
-			'poll_manager' => array(
-					'Poll Manager',
-					'Configure via Manage / Democracy.',
-					function_exists('get_site_option') ? false : null
-					),
-			'recent_posts' => array(
-					'Recent Posts',
-					'Configure the Fuzzy Post Widget via Options / Recent Posts.'
-					),
-			'recent_updates' => array(
-					'Recent Updates',
-					'Configure the Fuzzy Updates Widget via Options / Recent Updates.'
-					),
-			'recent_comments' => array(
-					'Recent Comments',
-					'Configure the Fuzzy Comments Widget via Options / Recent Comments.'
-					),
-			'recent_links' => array(
-					'Recent Links',
-					'Configure the Fuzzy Comments Widget via Options / Recent Links.'
-					),
-			'subscribe_me' => array(
-					'Feed Subscription Buttons',
-					'Add feed subscription buttons'
-					),
-/*
-			'tag_cloud' => array(
-					'Tag Cloud',
-					'Create a tag cloud in your sidebar using WordPress\' categories'
-					),
-*/
-			);
+	#
+	# add()
+	#
 
-	$features['Entry Features']
-		= array(
-			'author_image' => array(
-					'Author Images',
-					'Add author images to posts and articles. To use, add your author image under Users / Your Profile.',
-					function_exists('get_site_option') ? is_site_admin() : null
-					),
-			'blogpulse_link' => array(
-					'Follow-Ups via BlogPulse',
-					'Track your post follow-ups via <a href="http://www.blogpulse.com">BlogPulse</a>.'
-					),
-			'cosmos_link' => array(
-					'Follow-Ups via Technorati',
-					'Track your post follow-ups via <a href="http://www.technorati.com">Technorati</a>.'
-					),
-			'related_entries' => array(
-					'Related Entries',
-					'Automatically generated related entries after posts and articles.',
-					function_exists('get_site_option') ? false : null
-					),
-			'related_entries4feeds' => array(
-					'Related Entries for Feeds',
-					'Automatically generated related entries in RSS feeds.',
-					function_exists('get_site_option') ? false : null
-					),
-			'related_searches' => array(
-					'Related Searches',
-					'Automatically generated related search queries. NB: If your site has too few posts, this can be considered duplicate content.',
-					function_exists('get_site_option') ? false : null
-					),
-			'related_tags' => array(
-					'Related Tags',
-					'Automatically generated links to related technorati tags. NB: While fun, this merely contributes outgoing links with no SEO benefit.',
-					function_exists('get_site_option') ? false : null
-					),
-			'bookmark_me' => array(
-					'Social Bookmarking',
-					'Add social bookmarking buttons after each posts.'
-					),
-			);
-
-	$features['Entry Editing']
-		= array(
-			'php_markdown' => array(
-					'php Markdown Extra Syntax',
-					'Lets you use php Markdown Extra Syntax in your blog entries. See the <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> and the <a href="http://www.michelf.com/projects/php-markdown/extra/">Markdown Extra</a> for more details.'
-					),
-			'podcasting' => array(
-					'Podcasting and Videocasting',
-					'Adds players and support for .mp3, .m4a, .flv, .swf, .mp4, .m4v and .mov formats for your site. Configure via Options / Mediacaster.',
-					function_exists('get_site_option') ? true : null
-					),
-			'star_rating' => array(
-					'Star Rating',
-					'Add star ratings to your entries via [rating:3.5], [rating:2/10], and compile an overall rating via [rating:overall].',
-					function_exists('get_site_option') ? false : null
-					),
-			'wysiwyg_editor'
-				=> array(
-					'Advanced Wysiwyg Editor',
-					'A feature-full Wysiwyg Editor with image uploads, podcast and videocast buttons, an inline ad unit inserter, and a full screen edit mode. It also allows to paste from Word when using Internet Explorer. Be sure to activate the rich text editor in your user preferences, under Users / Your Profile.',
-					function_exists('get_site_option') ? true : null
-					),
-			);
-
-	$features['Comment Features']
-		= array(
-			'do_follow' => array(
-					'Do Follow Links',
-					'WordPress adds a nofollow attribute to links in comments. Doing so kills the very nature of the web. This plugin will remove the pesky attribute.'
-					),
-			'subscribe2comments' => array(
-					'Comment Subscriptions',
-					'Send email notifications to subscribed users whenever a new comment is added.'
-					),
-			);
-
-	$features['Comment Spam']
-		= array(
-			'akismet' => array(
-					'Akismet',
-					'Akismet puts new comments through a centralized spam detector before validating comments. It requires a wordpress.com API key.'
-					),
-			'hashcash' => array(
-					'Hashcash',
-					'Hashcash is a Turing Machine based anti-spam plugin that is set to remain 100% efficient for a long time (working around it is too computationally costly).'
-					),
-			'tb_validator' => array(
-					'Trackback Validator',
-					'Enforce that sites who send you trackbacks are indeed linking to you.'
-					),
-			);
-
-	if ( !function_exists('get_site_option') )
+	function add($key)
 	{
-	$features['Comment Administration']
-		= array(
-			'enhance_comment_workflow' => array(
-					'Comment Workflow Enhancements',
-					'A collection of fixes and enhancements to the comment workflow, <i>e.g.</i> visitors can no longer post comments using your favorite nickname.'
-					),
-			'enhance_comment_admin' => array(
-					'Comment Admin Enhancements',
-					'A collection of tools to enhance the default comment administration features. See Manage / Comments, and Manage / Comments Status.'
-					),
-			);
-	}
+		global $sem_features;
 
-	$features['Front Page Management']
-		= array(
-			'opt_in_front_page' => array(
-					'Opt-in Front Page',
-					'Control what goes into your front page on an opt-in basis. Create a category (Manage / Categories) called \'Blog\' and only posts within it will appear on your front page and in your main feed.'
-					),
-			'static_front_page' => array(
-					'Static Front Page',
-					'Create a static page (Write / Page) called \'Home\' to use this feature, and another called \'Blog\' for your blog. You can safely rename both pages once they are created.'
-					),
-			'post_count' => array(
-					'Customizable Post Lists',
-					'A tool to easily control the length and the order of your post lists. Configure via Options / CQS.'
-					),
+		$feature = array(
+			'locked' => null
 			);
 
-	$features['Permalink Features']
-		= array(
-			'enforce_permalink' => array(
-					'Enforce Permalink Structure',
-					'Enforce the proper permalink for your entries. Configure under Options / Permalink Redirect.',
-					function_exists('get_site_option') ? true : null
-					),
-			'non_unique_slugs' => array(
-					'Allow Non-Unique Slugs',
-					'Use this only if your permalink structure will not potentially result in slug conflicts.',
-					function_exists('get_site_option') ? true : null
-					),
-			);
+		$sem_features[$key] =& $feature;
+	} # add()
 
-	$features['Search Engine Optimization']
-		= array(
-			'google_sitemap' => array(
-					'Google Sitemap',
-					'Improve the way Googlebot crawls your site.',
-					function_exists('get_site_option') ? false : null
-					),
-			'silo_site' => array(
-					'Silo Web Design',
-					'<a href="http://www.semiologic.com/software/widgets/silo/">Silo functionalities</a> for sites built using static pages.'
-					),
-			'smart_links' => array(
-					'Smart Links',
-					'Preinsert links into your entries. <a href="http://www.semiologic.com/software/smart-link/">More details</a>.'
-					),
-			'social_poster' => array(
-					'Auto Social Poster',
-					'Requires the <a href="http://www.semiologic.com/go/social-poster/">Social Poster plugin</a>. Automatically add content on your site to social bookmarking sites.',
-					!file_exists(ABSPATH . 'wp-content/plugins/social-poster') ? false : null
-					),
-			'theme_meta' => array(
-					'Meta Tags',
-					'Meta keyword and meta description functions.',
-					true
-					),
-			'theme_title' => array(
-					'Optimized Page Title',
-					'Search Engine Optimized Page Title.',
-					true
-					),
-			);
 
-	$features['Site Statistics']
-		= array(
-			'feedburner' => array(
-					'FeedBurner',
-					'Statistics for your RSS feed, via <a href="http://www.feedburner.com">Feedburner</a>. Configure via Options / Permalink Redirect.'
-					),
-			'google_analytics' => array(
-					'Google Analytics',
-					'Statistics for your blog, via <a href="http://analytics.google.com">Google Analytics</a>. Configure via Options / Google Analytics.',
-					function_exists('get_site_option') ? true : null
-					),
-			'hitslink' => array(
-					'HitsLink',
-					'Statistics for your blog, via <a href="http://www.semiologic.com/go/hitslink">HitsLink</a>. Configure via Options / HitsLink.'
-					),
-			/*
-			'performancing_metrics' => array(
-					'Performancing Metrics',
-					'Statistics for your blog, via <a href="http://performancing.com/metrics/">Performancing Metrics</a>. Configured via your WordPress user\'s name and email address.'
-					),
-			*/
-			);
+	#
+	# add2set()
+	#
 
-	if ( !function_exists('get_site_option') )
+	function add2set($key, $tag)
 	{
-	$features['Site Monitization']
-		= array(
-			'ad_spaces' => array(
-					'Ad Spaces',
-					'Ad Spaces allows to manage advertisement real estate on your site. <a href="http://www.semiologic.com/software/ad-space/">More details</a>.'
-					),
-			'book_library' => array(
-					'Book Library',
-					'Adds a book library feature and widget, with an amazon search feature that allows to readily add your affiliate ID. See Now Reading under Write, Manage, and Options.'
-					),
-			/*
-			'shopping_cart' => array(
-					'Shopping Cart',
-					'Adds a shopping car and the relevant widgets. Manage under E-Commerce once active.'
-					),
-			*/
-			);
-	}
+		global $sem_feature_sets;
 
-	if ( !function_exists('get_site_option') || is_site_admin() )
+		$sem_feature_sets[$tag]['features'][] = $key;
+	} # add2set()
+
+
+	#
+	# register()
+	#
+
+	function register($feature_sets)
 	{
-	$features['Promote Semiologic']
-		= array(
-			'sem_affiliate' => array(
-					'Affiliate Links',
-					'Easily add your Semiologic ID to your links. <a href="http://www.semiologic.com/partners/">More details.</a>',
-					function_exists('get_site_option') ? is_site_admin() : null
-					),
-			'theme_credits' => array(
-					'Theme Credits',
-					'Give credits to the theme and the skin authors.'
-					),
-			);
-	}
-
-	if ( !function_exists('get_site_option') )
-	{
-	$features['Site Management']
-		= array(
-			'admin_menu'
-				=> array(
-					'Admin Menu in your site area',
-					'Adds an admin menu to your blog, for convenient access to the most commonly accessed admin areas.'
-					),
-			'db_backup' => array(
-					'Database Backups via WordPress',
-					'If your host doesn\'t provide you with a backup feature (many do), WordPress can do this for you. Configure and use via Manage / Backups.'
-					),
-			'role_manager' => array(
-					'Role Manager',
-					'A tool to create and manage WordPress user roles. Use via Users / Roles. Note that the Role Manager plugin changes WordPress internal variables; Its changes remains active after it is deactivated.'
-					),
-			'site_unavailable' => array(
-					'Site Unavailable',
-					'Mark your site as "Unavailable" while the admin area remains accessible by logged in users.'
-					),
-			);
-	}
-
-	return $features;
-} # end get_theme_features()
-
-
-#
-# display_theme_features()
-#
-
-function display_theme_features()
-{
-	if ( !sem_pro )
-	{
-		pro_feature_notice();
-	}
-?><script type="text/javascript">
-function check_all(id_list)
-{
-	id_list = id_list.split(',');
-
-	for ( i = 0; i < id_list.length; i++ )
-	{
-		if ( !document.getElementById('feature_key[' + id_list[i] + ']').disabled )
+		foreach ( $feature_sets as $tag => $keys )
 		{
-			document.getElementById('feature_key[' + id_list[i] + ']').checked = true;
-		}
-	}
-}
+			sem_features::add_set($tag);
 
-function uncheck_all(id_list)
-{
-	id_list = id_list.split(',');
-
-	for ( i = 0; i < id_list.length; i++ )
-	{
-		if ( !document.getElementById('feature_key[' + id_list[i] + ']').disabled )
-		{
-			document.getElementById('feature_key[' + id_list[i] + ']').checked = false;
-		}
-	}
-}
-</script>
-<?php
-	$all_features = get_theme_features();
-
-	foreach ( $all_features as $feature_set_name => $feature_set )
-	{
-		#asort($feature_set);
-
-		$feature_ids = '';
-
-		foreach ( $feature_set as $feature_id => $feature_description )
-		{
-			if ( !( isset($feature_description[2]) && !$feature_description[2] ) )
+			foreach ( $keys as $key )
 			{
-				$feature_ids .= ( $feature_ids ? ',' : '' )
-					. $feature_id;
+				sem_features::add($key);
+				sem_features::add2set($key, $tag);
+			}
+		}
+	} # register()
+
+
+	#
+	# sort()
+	#
+
+	function sort()
+	{
+		global $sem_feature_sets;
+		global $sem_features;
+		global $sem_docs;
+
+		# check docs
+		foreach ( array_keys($sem_feature_sets) as $tag )
+		{
+			if ( !isset($sem_docs['feature_sets'][$tag]) )
+			{
+				$sem_docs['feature_sets'][$tag]['name'] = $tag;
+			}
+		}
+		foreach ( array_keys($sem_features) as $key )
+		{
+			if ( !isset($sem_docs['features'][$key]) )
+			{
+				$sem_docs['features'][$key]['name'] = $key;
 			}
 		}
 
-		echo '<h3>'
-			. '<label for="all_' . str_replace(',', '_', $feature_ids) . '">'
-			. '<input type="checkbox"'
-				. '  id="all_' . str_replace(',', '_', $feature_ids) . '"'
-				. ( function_exists('theme_feature_is_active')
-					? ( ' onchange="if ( this.checked ) check_all(\'' . $feature_ids . '\'); else uncheck_all(\'' . $feature_ids. '\');"' )
-					: ' disabled="disabled"'
-					)
-				. ' />'
-			. '&nbsp;'
-			. $feature_set_name
-			. '</label>'
-			. '</h3>';
-
-
-		foreach ( $feature_set as $feature_id => $feature_description )
+		foreach ( $sem_feature_sets as $tag => $feature_set )
 		{
-			echo '<p>'
-				. '<label for="feature_key[' . $feature_id . ']">'
-				. '<input type="checkbox"'
-					. ' id="feature_key[' . $feature_id . ']" name="feature_id[]"'
-					. ' value="' . $feature_id . '"'
-					. ( ( !sem_pro
-						|| ( isset($feature_description[2]) )
-						)
+			$features = array();
+
+			foreach ( $feature_set['features'] as $key )
+			{
+				$features[$key] = $sem_docs['features'][$key]['name'];
+			}
+
+			uasort($features, array('sem_features', 'natsort'));
+
+			$sem_feature_sets[$tag]['features'] = array_keys($features);
+		}
+	} # sort()
+
+
+	#
+	# natsort()
+	#
+
+	function natsort($a, $b)
+	{
+		return strnatcmp($a, $b);
+	} # natsort()
+
+
+	#
+	# lock()
+	#
+
+	function lock($key, $locked = null)
+	{
+		global $sem_features;
+
+		$sem_features[$key]['locked'] = $locked;
+	} # lock()
+
+
+	#
+	# admin_menu()
+	#
+
+	function admin_menu()
+	{
+		if ( !function_exists('get_site_option') )
+		{
+			add_submenu_page(
+				'themes.php',
+				__('Features'),
+				__('Features'),
+				'switch_themes',
+				basename(__FILE__),
+				array('sem_features', 'admin_page')
+				);
+		}
+	} # admin_menu()
+
+
+	#
+	# admin_page()
+	#
+
+	function admin_page()
+	{
+		# Process updates, if any
+
+		if ( $_POST['update_theme_features'] )
+		{
+			echo "<div class=\"updated\">\n"
+				. "<p>"
+					. "<strong>"
+					. __('Options saved.')
+					. "</strong>"
+				. "</p>\n"
+				. "</div>\n";
+		}
+
+		sem_features::sort();
+
+		echo '<div class="wrap">' . "\n"
+			. '<h2>' . __('Theme Features') . '</h2>' . "\n"
+			. '<form method="post" action="" id="sem_features">' . "\n";
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_features');
+
+		echo '<input type="hidden" name="update_theme_features" value="1" />' . "\n";
+
+		echo "\n";
+
+		if ( !sem_pro )
+		{
+			pro_feature_notice();
+		}
+
+		global $sem_features;
+		global $sem_feature_sets;
+		global $sem_docs;
+
+		foreach ( $sem_feature_sets as $tag => $feature_set )
+		{
+			if ( $feature_set['features'] )
+			{
+				# merge doc fields
+				if ( !isset($feature_set['name']) )
+				{
+					$feature_set = array_merge($feature_set, (array) $sem_docs['feature_sets'][$tag]);
+					$sem_feature_sets[$tag] =& $feature_set;
+				}
+
+				# feature_key list for mass-activation
+				$feature_ids = '';
+				$all_active = sem_pro;
+
+				foreach ( $feature_set['features'] as $key )
+				{
+					$feature_ids .= ( $feature_ids ? ',' : '' )
+						. $key;
+
+					if ( sem_pro )
+					{
+						$all_active &= sem_pro_features::is_enabled($key);
+					}
+				}
+
+				if ( $feature_set['excerpt'] && $feature_set['content'] && sem_pro )
+				{
+					echo '<div style="float: right;">';
+					echo '<a id="sem_feature_set__' . $tag . '__more" href="javascript:;" onclick="show_feature_info(\'sem_feature_set__' . $tag . '\')">' . __('More Info') . '</a>';
+					echo '<a id="sem_feature_set__' . $tag . '__less" href="javascript:;" onclick="hide_feature_info(\'sem_feature_set__' . $tag . '\')" style="display: none;">' . __('Less Info') . '</a>';
+					echo '</div>';
+				}
+
+				echo '<h3><label for="sem_feature_sets__' . $tag . '">';
+
+				echo '<input type="checkbox"'
+					. ' id="sem_feature_sets__' . $tag . '"';
+
+				if ( !sem_pro )
+				{
+					echo ' disabled="disabled"';
+				}
+				else
+				{
+					echo ( $all_active ? ' checked="checked"' : '' );
+
+					echo ' onchange="'
+						. 'if ( this.checked ) '
+						. 'check_features(\'' . $feature_ids . '\'); '
+						. 'else '
+						. 'uncheck_features(\'' . $feature_ids . '\');'
+						. '"';
+				}
+
+				echo ' />'
+					. '&nbsp;';
+
+				echo $feature_set['name'];
+
+				echo '</label>'
+					. '</h3>' . "\n";
+
+				if ( $feature_set['excerpt'] )
+				{
+					echo '<div id="sem_feature_set__' . $tag . '__excerpt">' . "\n"
+						. $feature_set['excerpt']
+						. '<div style="clear: both;"></div>'
+						. '</div>' . "\n";
+				}
+
+				if ( $feature_set['content'] )
+				{
+					echo '<div id="sem_feature_set__' . $tag. '__content"'
+						. ( $feature_set['excerpt']
+							? ' style="display: none;"'
+							: ''
+							)
+						. '>' . "\n"
+						. $feature_set['content']
+						. '<div style="clear: both;"></div>'
+						. '</div>' . "\n";
+				}
+
+
+				echo '<div style="clear: both; margin-bottom: 1em;"></div>';
+
+				foreach ( $feature_set['features'] as $key )
+				{
+					$feature =& $sem_features[$key];
+
+					# merge doc fields
+					if ( !isset($feature['name']) )
+					{
+						$feature = array_merge($feature, (array) $sem_docs['features'][$key]);
+						$sem_features[$key] =& $feature;
+					}
+
+					$disabled = !sem_pro || !is_null($feature['locked']);
+					$checked = $feature['locked'] || ( sem_pro && sem_pro_features::is_enabled($key) );
+
+					echo '<table cellpadding="0" cellspacing="4" border="0" width="100%">' . "\n"
+						. '<tr valign="top">' . "\n"
+						. '<td width="12">'
+						. '<input type="checkbox"'
+							. ' id="sem_feature__' . $key . '" name="sem_features[' . $key . ']"';
+
+					if ( $disabled )
+					{
+						echo ' disabled="disabled"';
+					}
+
+					if ( $checked )
+					{
+						echo ' checked="checked"';
+					}
+
+					if ( sem_pro )
+					{
+						echo ' onchange="toggle_feature_set(\'sem_feature_sets__' . $tag . '\', \'' . $feature_ids . '\');"';
+					}
+
+					echo ' />'
+						. '</td>' . "\n"
+						. '<th align="left">';
+
+					echo '<label for="sem_feature__' . $key . '">';
+
+					if ( $checked )
+					{
+						echo '<u>' . $feature['name'] . '</u>';
+					}
+					elseif ( $disabled )
+					{
+						echo '<span style="color: dimgray;">' . $feature['name']. '</span>';
+					}
+					else
+					{
+						echo $feature['name'];
+					}
+
+					echo '</label>';
+
+					if ( $feature['excerpt'] && $feature['content'] && sem_pro )
+					{
+						echo '<span style="font-weight: normal;">';
+						echo '&nbsp;&bull;&nbsp;';
+						echo '<a id="sem_feature__' . $key . '__more" href="javascript:;" onclick="show_feature_info(\'sem_feature__' . $key . '\')">' . __('More Info') . '</a>';
+						echo '<a id="sem_feature__' . $key . '__less" href="javascript:;" onclick="hide_feature_info(\'sem_feature__' . $key . '\')" style="display: none;">' . __('Less Info') . '</a>';
+						echo '</span>';
+					}
+
+					echo '</th>' . "\n"
+						. '</tr>' . "\n";
+
+					if ( $feature['excerpt'] )
+					{
+						echo '<tr valign="top" id="sem_feature__' . $key . '__excerpt">' . "\n"
+							. '<td>&nbsp;</td>' . "\n"
+							. '<td>'
+							. $feature['excerpt']
+							. '<div style="clear: both;"></div>'
+							. '</td>' . "\n"
+							. '</tr>' . "\n";
+					}
+
+					if ( $feature['content'] )
+					{
+						echo '<tr valign="top" id="sem_feature__' . $key. '__content"'
+							. ( $feature['excerpt']
+								? ' style="display: none;"'
+								: ''
+								)
+							. '>' . "\n"
+							. '<td>&nbsp;</td>' . "\n"
+							. '<td>'
+							. $feature['content']
+							. '<div style="clear: both;"></div>'
+							. '</td>' . "\n"
+							. '</tr>' . "\n";
+					}
+
+					echo '</table>' . "\n";
+				}
+
+				echo '<div style="clear: both;"></div>';
+
+				echo '<div class="submit">';
+				echo '<input type="submit" value="' . __('Update Options') . ' &raquo;"'
+					. ( !sem_pro
 						? ' disabled="disabled"'
 						: ''
 						)
-					. ( ( ( sem_pro
-							&& theme_feature_is_active($feature_id)
-							)
-						|| ( isset($feature_description[2])
-							&& $feature_description[2]
-							)
-						)
-						? ' checked="checked"'
-						: ''
-						)
-					. ' />'
-					. '&nbsp;'
-					. ( ( ( sem_pro
-						&& theme_feature_is_active($feature_id)
-						)
-						|| ( isset($feature_description[2])
-							&& $feature_description[2]
-							)
-						)
-						? ( '<strong>'
-							. '<u>'
-							. $feature_description[0]
-							. '</u>'
-							. '</strong>'
-							. '<br />'
-							. $feature_description[1]
-							)
-						: ( '<strong>'
-							. $feature_description[0]
-							. '</strong>'
-							. '<br />'
-							. $feature_description[1]
-							)
-						)
-					. '</label>'
-					. '</p>';
-
+					. ' />';
+				echo '</div>';
+			}
 		}
-		echo '<div style="clear: both;"></div>';
 
-		echo '<div class="submit">';
-		echo '<input type="submit" value="' . __('Update Options') . ' &raquo;" />';
-		echo '</div>';
+		echo "</form>"
+			. "</div>\n";
+	} # admin_page()
+
+
+	#
+	# display_scripts()
+	#
+
+	function display_scripts()
+	{
+		?>
+<script type="text/javascript">
+function check_features(id_list)
+{
+	id_list = id_list.split(',');
+
+	for ( i = 0; i < id_list.length; i++ )
+	{
+		if ( !document.getElementById('sem_feature__' + id_list[i]).disabled )
+		{
+			document.getElementById('sem_feature__' + id_list[i]).checked = true;
+		}
 	}
-} # end display_theme_features()
+}
 
-add_action('display_theme_features', 'display_theme_features');
+function uncheck_features(id_list)
+{
+	id_list = id_list.split(',');
+
+	for ( i = 0; i < id_list.length; i++ )
+	{
+		if ( !document.getElementById('sem_feature__' + id_list[i]).disabled )
+		{
+			document.getElementById('sem_feature__' + id_list[i]).checked = false;
+		}
+	}
+}
+
+function toggle_feature_set(elt_id, id_list)
+{
+	id_list = id_list.split(',');
+
+	is_active = true;
+
+	for ( i = 0; i < id_list.length; i++ )
+	{
+		if ( !document.getElementById('sem_feature__' + id_list[i]).checked )
+		{
+			 document.getElementById(elt_id).checked = false;
+
+			 return;
+		}
+	}
+
+	document.getElementById(elt_id).checked = true;
+}
+
+function show_feature_info(elt_id)
+{
+	document.getElementById(elt_id + '__less').style.display = '';
+	document.getElementById(elt_id + '__content').style.display = '';
+
+	document.getElementById(elt_id + '__more').style.display = 'none';
+	document.getElementById(elt_id + '__excerpt').style.display = 'none';
+}
+
+function hide_feature_info(elt_id)
+{
+	document.getElementById(elt_id + '__less').style.display = 'none';
+	document.getElementById(elt_id + '__content').style.display = 'none';
+
+	document.getElementById(elt_id + '__more').style.display = '';
+	document.getElementById(elt_id + '__excerpt').style.display = '';
+}
+</script>
+<style type="text/css">
+#sem_features img
+{
+	border: solid 1px Lavender;
+	padding: 20px;
+}
+</style>
+<?php
+	} # display_scripts()
+} # sem_features
+
+sem_features::init();
+
+
+#sem_features::dump();
+
+# the list below needs to be completed, and reorganized
+sem_features::register(
+	array(
+		'seo' => array(
+			'autotag',
+			'enforce_permalinks',
+			'google_sitemap',
+			'non_unique_slugs',
+			'smart_pings',
+			'seo_title',
+			'seo_meta',
+			'silo_web_design',
+			'smart_links',
+			'social_poster',
+			),
+		'stats' => array(
+			'feedburner',
+			'google_analytics',
+			'hitslink',
+			),
+		'modules' => array(
+			'ad_manager',
+			'book_library',
+			'contact_form',
+			'event_manager',
+			'newsletter_manager',
+			'podcasting',
+			'poll_manager',
+			'semiologic_affiliate',
+			'star_ratings',
+			'tag_manager',
+			),
+		'misc_widgets' => array(
+			'author_image',
+			'dealdotcom',
+			'flickr_widget',
+			'fuzzy_widgets',
+			'mybloglog',
+			'paypal_widget',
+			'random_widgets',
+			'related_widgets',
+			'social_bookmarking',
+			'subscribe_buttons',
+			),
+		'community' => array(
+			'do_follow',
+			'moderate_subscribers',
+			'subscribe2comments',
+			),
+		'spam' => array(
+			'akismet',
+			'hashcash',
+			'tb_validator',
+			),
+		'front_page' => array(
+			'opt_in_front',
+			'static_front',
+			'custom_query',
+			),
+		'wp_tweaks' => array(
+			'absolute_urls',
+			'autolink_uri',
+			'external_links',
+			'fancy_excerpt',
+			'favicon',
+			'frame_buster',
+			'full_text_feed',
+			'improved_search',
+			'no_fancy_quotes',
+			'no_self_pings',
+			'comment_fixes',
+			),
+		'site_admin' => array(
+			'admin_menu',
+			'docs_and_tips',
+			'comment_status_manager',
+			'easy_page_order',
+			'role_manager',
+			'wysiwyg_editor',
+			),
+		'site_maintenance' => array(
+			'advanced_cache',
+			'db_backup',
+			'db_maintenance',
+			'easy_upgrades',
+			'version_checker',
+			),
+		)
+	);
+
+
+# lock built-in features
+
+sem_features::lock('enforce_permalinks', true);
+sem_features::lock('seo_title', sem_pro ? true : false);
+sem_features::lock('seo_meta', sem_pro ? true : false);
+sem_features::lock('smart_pings', true);
+
+sem_features::lock('docs_and_tips', sem_pro ? true : false);
+sem_features::lock('easy_page_order', sem_pro ? true : false);
+sem_features::lock('comment_fixes', sem_pro ? true : false);
+
+sem_features::lock('db_maintenance', sem_pro ? true : false);
+sem_features::lock('easy_upgrades', sem_pro ? true : false);
+
+
+# lock third party features
+
+if ( !file_exists(ABSPATH . 'wp-content/plugins/social-poster/mm_post.php') )
+{
+	sem_features::lock('social_poster', false);
+}
+
+#echo '<pre>';
+#var_dump($sem_feature_sets);
+#echo '</pre>';
 ?>

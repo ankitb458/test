@@ -54,15 +54,17 @@ class sem_seo_pro
 	{
 		check_admin_referer('sem_seo');
 
-		$options = get_option('semiologic');
+		global $sem_options;
 
-		$options['seo']['title'] = trim(stripslashes(strip_tags($_POST['seo_title'])));
-		$options['seo']['keywords'] = trim(stripslashes(strip_tags($_POST['seo_keywords'])));
-		$options['seo']['description'] = trim(stripslashes(strip_tags($_POST['seo_description'])));
+		$sem_options['seo']['title'] = trim(stripslashes(strip_tags($_POST['seo_title'])));
+		$sem_options['seo']['keywords'] = trim(stripslashes(strip_tags($_POST['seo_keywords'])));
+		$sem_options['seo']['description'] = trim(stripslashes(strip_tags($_POST['seo_description'])));
 
-		$options['seo']['add_site_name'] = isset($_POST['seo_add_site_name']);
+		$sem_options['seo']['add_site_name'] = isset($_POST['seo_add_site_name']);
 
-		update_option('semiologic', $options);
+		$sem_options['theme_archives'] = isset($_POST['seo_theme_archives']);
+
+		update_option('sem5_options', $sem_options);
 	} # save_theme_seo()
 } # sem_seo_pro
 

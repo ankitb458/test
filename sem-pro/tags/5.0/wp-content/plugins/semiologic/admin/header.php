@@ -1,5 +1,5 @@
 <?php
-class pro_header_admin
+class sem_pro_header_admin
 {
 	#
 	# init()
@@ -7,7 +7,7 @@ class pro_header_admin
 
 	function init()
 	{
-		add_action('save_post', array('pro_header_admin', 'save_header'), 30);
+		add_action('save_post', array('sem_pro_header_admin', 'save_header'), 30);
 	} # init()
 
 
@@ -19,10 +19,21 @@ class pro_header_admin
 	{
 		if ( @ $_FILES['header_file']['name'] )
 		{
-			if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+			if ( defined('GLOB_BRACE') )
 			{
-				$header = current($header);
-				@unlink($header);
+				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+				{
+					$header = current($header);
+					@unlink($header);
+				}
+			}
+			else
+			{
+				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') )
+				{
+					$header = current($header);
+					@unlink($header);
+				}
 			}
 
 			$tmp_name =& $_FILES['header_file']['tmp_name'];
@@ -50,21 +61,33 @@ class pro_header_admin
 
 				$name = ABSPATH . 'wp-content/header/' . $post_ID . '/header-' . $entropy . '.' . $ext;
 
-				@mkdir(ABSPATH . 'wp-content/header/' . $post_ID, 0777);
+				@mkdir(ABSPATH . 'wp-content/header/' . $post_ID);
+				@chmod(ABSPATH . 'wp-content/header/' . $post_ID, 0777);
 				@move_uploaded_file($tmp_name, $name);
 				@chmod($name, 0666);
 			}
 		}
 		elseif ( isset($_POST['delete_header']) )
 		{
-			if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+			if ( defined('GLOB_BRACE') )
 			{
-				$header = current($header);
-				@unlink($header);
+				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+				{
+					$header = current($header);
+					@unlink($header);
+				}
+			}
+			else
+			{
+				if ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') )
+				{
+					$header = current($header);
+					@unlink($header);
+				}
 			}
 		}
 	} # save_header()
-} # pro_header_admin
+} # sem_pro_header_admin
 
-pro_header_admin::init();
+sem_pro_header_admin::init();
 ?>

@@ -31,14 +31,7 @@ if ( have_posts() && !is_404() )
 ?>
 <div class="entry" id="entry-<?php the_ID(); ?>">
 <?php
-		do_action('before_the_entry');
-		do_action('display_entry_header');
-		do_action('display_entry_body');
-		do_action('display_entry_spacer');
-		do_action('display_entry_meta');
-		do_action('display_entry_actions');
-		do_action('after_the_entry');
-		comments_template();
+		do_action('the_entry');
 ?>
 </div>
 <?php

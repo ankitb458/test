@@ -1,31 +1,19 @@
 <?php
-# fix php 5.2
+ob_start("ob_gzhandler");
 
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
+require_once str_replace(
+			substr(
+				dirname(__FILE__),
+				strpos(dirname(__FILE__), 'wp-content')
+				),
+			'',
+			dirname(__FILE__)
+			) . 'wp-config.php';
 
-register_shutdown_function('ob_end_flush_all');
-endif;
+require_once(dirname(__FILE__) . '/wp-hashcash.lib');
 
-
-	ob_start("ob_gzhandler");
-
-	require_once str_replace(
-				substr(
-					dirname(__FILE__),
-					strpos(dirname(__FILE__), 'wp-content')
-					),
-				'',
-				dirname(__FILE__)
-				) . 'wp-config.php';
-
-	require_once(dirname(__FILE__) . '/wp-hashcash.lib');
-
-	$field_id = hashcash_random_string(rand(6,18));
-	$fn_enable_name = hashcash_random_string(rand(6,18));
+$field_id = hashcash_random_string(rand(6,18));
+$fn_enable_name = hashcash_random_string(rand(6,18));
 ?>
 var wphc_loaded = false;
 //addLoadEvent(<?php echo $fn_enable_name; ?>);

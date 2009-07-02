@@ -4,8 +4,10 @@ Plugin Name: Dofollow
 Plugin URI: http://www.semiologic.com/software/wp-fixes/dofollow/
 Description: Disables the rel=nofollow attribute in comments.
 Author: Denis de Bernardy
-Version: 2.1
+Version: 3.0
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: dofollow
 */
 
 /*
@@ -21,66 +23,46 @@ Hat tips
 --------
 
 	* Sebastian Herp <http://sebbi.de>
+	* Thomas Parisot <http://oncle-tom.net>
 **/
 
+if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false ) :
 
-class sem_dofollow
+function strip_nofollow($text = '')
 {
-	#
-	# init()
-	#
+	# strip nofollow, even as rel="tag nofollow"
+	$text = preg_replace('/
+		(
+			<a
+			\s+
+			.*
+			\s+
+			rel=["\']
+			[a-z0-9\s\-_\|\[\]]*
+		)
+		(
+			\b
+			nofollow
+			\b
+		)
+		(
+			[a-z0-9\s\-_\|\[\]]*
+			["\']
+			.*
+			>
+		)
+		/isUx', "$1$3", $text);
 
-	function init()
-	{
-		if ( !strpos($_SERVER['REQUEST_URI'], 'wp-admin') )
-		{
-			remove_filter('pre_comment_content', 'wp_rel_nofollow');
-			add_filter('get_comment_author_link', array('sem_dofollow', 'strip_nofollow'), 15);
-			add_filter('comment_text', array('sem_dofollow', 'strip_nofollow'), 15);
-		}
-	} # end init()
+	# clean up rel=""
+	$text = str_replace(array(' rel=""', " rel=''"), '', $text);
 
+	return $text;
+} # strip_nofollow()
 
-	#
-	# strip_nofollow()
-	#
+//add filters
+remove_filter('pre_comment_content', 'wp_rel_nofollow');
+add_filter('get_comment_author_link', 'strip_nofollow', 15);
+add_filter('comment_text', 'strip_nofollow', 15);
 
-	function strip_nofollow($text = '')
-	{
-		# strip nofollow, even as rel="tag nofollow"
-
-		$text = preg_replace(
-				"/
-					(<a)
-					(\s[^>]+)?
-					(
-						\s
-						rel=
-						('|\")
-						([^\4]*\s)?
-					)
-						nofollow
-				/isUx",
-				"$1$2$3",
-				$text
-				);
-
-		# clean up rel=""
-
-		$text = preg_replace(
-				"/
-					(<a [^>]*)
-					( |\t|\n)
-					rel=(''|\"\")
-					([^>]*>)
-				/isUx",
-				"$1$4",
-				$text
-				);
-
-		return $text;
-	} # end strip_nofollow()
-} # end sem_dofollow
-
-sem_dofollow::init();
+endif;
 ?>

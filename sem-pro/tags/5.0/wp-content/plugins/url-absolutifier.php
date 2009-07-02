@@ -7,7 +7,6 @@ Description: Fix URL in all links and images to be absolute instead of relative.
 Version: 1.0 $Rev: 19 $
 Author: Scott Yang
 Author URI: http://scott.yang.id.au/
-
 */
 
 class URLAbsolutifier {
@@ -23,10 +22,10 @@ class URLAbsolutifier {
         if (is_feed()) {
             $this->baseurl = null;
             $pattern = "/<(a[^>]* href)=['\"]([\\/\\.].*?)['\"]/";
-            $content = preg_replace_callback($pattern, 
+            $content = preg_replace_callback($pattern,
                 array($this, 'replace_url'), $content);
             $pattern = "/<(img[^>]* src)=['\"]([\\/\\.].*?)['\"]/";
-            $content = preg_replace_callback($pattern, 
+            $content = preg_replace_callback($pattern,
                 array($this, 'replace_url'), $content);
         }
         return $content;
@@ -65,7 +64,7 @@ class URLAbsolutifier {
             while ($i < $n) {
                 if ($segments[$i] == '..' &&
                     $segments[$i - 1] != '' &&
-                    $segments[$i - 1] != '..') 
+                    $segments[$i - 1] != '..')
                 {
                     unset($segments[$i]);
                     unset($segments[$i - 1]);
@@ -107,8 +106,9 @@ if (function_exists('add_filter')) {
     add_filter('the_excerpt_rss', array($_instance, 'the_content'));
 }
 
-/* 
+/*
 
 History:
 
 */
+?>

@@ -10,6 +10,9 @@ class sem_author_image_admin
 	{
 		add_action('edit_user_profile', array('sem_author_image_admin', 'display_image'));
 		add_action('profile_update', array('sem_author_image_admin', 'save_image'));
+
+		add_action('show_user_profile', array('sem_author_image_admin', 'display_image'));
+		add_action('personal_options_update', array('sem_author_image_admin', 'save_image'));
 	} # init()
 
 
@@ -23,9 +26,19 @@ class sem_author_image_admin
 
 		$site_url = trailingslashit(get_option('siteurl'));
 
-		if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+		if ( defined('GLOB_BRACE') )
 		{
-			$image = end($image);
+			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+			{
+				$image = end($image);
+			}
+		}
+		else
+		{
+			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '-*.jpg') )
+			{
+				$image = end($image);
+			}
 		}
 
 		echo '<fieldset>'
@@ -94,6 +107,10 @@ class sem_author_image_admin
 			echo '</p>' . "\n";
 		}
 
+		if ( !defined('GLOB_BRACE') )
+		{
+			echo '<p>' . __('Notice: GLOB_BRACE is an undefined constant on your server. Non .jpg images will be ignored.') . '</p>';
+		}
 
 		echo '</fieldset>';
 	} # display_image()
@@ -110,11 +127,24 @@ class sem_author_image_admin
 			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
-			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+			if ( defined('GLOB_BRACE') )
 			{
-				foreach ( $image as $img )
+				if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 				{
-					@unlink($img);
+					foreach ( $image as $img )
+					{
+						@unlink($img);
+					}
+				}
+			}
+			else
+			{
+				if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '-*.jpg') )
+				{
+					foreach ( $image as $img )
+					{
+						@unlink($img);
+					}
 				}
 			}
 
@@ -191,9 +221,19 @@ class sem_author_image_admin
 			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
-			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+			if ( defined('GLOB_BRACE') )
 			{
-				$image = end($image);
+				if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+				{
+					$image = end($image);
+				}
+			}
+			else
+			{
+				if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '-*.jpg') )
+				{
+					$image = end($image);
+				}
 			}
 
 			if ( $image )

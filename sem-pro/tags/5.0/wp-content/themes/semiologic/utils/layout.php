@@ -7,9 +7,11 @@
 
 function get_active_layout($strip_sidebars = true)
 {
+	global $sem_options;
+
 	if ( $strip_sidebars )
 	{
-		return apply_filters('active_layout', $GLOBALS['semiologic']['active_layout']);
+		return apply_filters('active_layout', $sem_options['active_layout']);
 	}
 	else
 	{
@@ -34,7 +36,7 @@ function get_active_layout($strip_sidebars = true)
 			$GLOBALS['wp_filter']['active_layout_full'] = $filters;
 		}
 
-		return apply_filters('active_layout_full', $GLOBALS['semiologic']['active_layout']);
+		return apply_filters('active_layout_full', $sem_options['active_layout']);
 	}
 } # end get_active_layout()
 
@@ -45,7 +47,9 @@ function get_active_layout($strip_sidebars = true)
 
 function get_active_width()
 {
-	return apply_filters('active_width', $GLOBALS['semiologic']['active_width']);
+	global $sem_options;
+
+	return apply_filters('active_width', $sem_options['active_width']);
 } # end get_active_width()
 
 
@@ -67,6 +71,16 @@ function force_m($in)
 {
 	return 'm';
 } # end force_m()
+
+
+#
+# force_sell()
+#
+
+function force_sell($in)
+{
+	return 'sell';
+} # end force_sell()
 
 
 #
@@ -111,12 +125,12 @@ function display_page_class()
 
 	if ( is_page() )
 	{
-		$template = get_post_meta($GLOBALS['posts'][0]->ID, '_wp_page_template', true);
+		$template = get_post_meta(intval($GLOBALS['wp_query']->get_queried_object_id()), '_wp_page_template', true);
 
 		$template = preg_replace("/\.[^\.]+$/", "", $template);
 	}
 
-	$header_class = header::get_class();
+	$header_class = sem_header::get_class();
 
 	$page_class = $layout
 		. ' ' . $width

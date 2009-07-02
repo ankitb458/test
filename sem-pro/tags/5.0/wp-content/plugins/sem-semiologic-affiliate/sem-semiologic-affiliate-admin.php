@@ -88,9 +88,7 @@ function display_semiologic_affiliate_admin()
 
 ?><input type="hidden" name="update_semiologic_affiliate_options" value="1" />
 <?php
-	$options = function_exists('get_site_option')
-		? get_site_option('sem_semiologic_affiliate_params')
-		: get_settings('sem_semiologic_affiliate_params');
+	$options = get_option('sem_semiologic_affiliate_params');
 
 	if ( !$options )
 	{

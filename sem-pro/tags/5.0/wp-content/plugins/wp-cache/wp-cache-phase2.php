@@ -26,20 +26,50 @@ function wp_cache_phase2() {
 		add_action('wp_set_comment_status', 'wp_cache_get_postid_from_comment', 0);
 		// No post_id is available
 		add_action('delete_comment', 'wp_cache_no_postid', 0);
-		add_action('switch_theme', 'wp_cache_no_postid', 0); 
+		add_action('switch_theme', 'wp_cache_no_postid', 0);
+		add_action('generate_rewrite_rules', 'wp_cache_no_postid', 0);
+
+		# force cache_update on the more visible options to avoid end user confusion
+
+		foreach ( array(
+					'active_plugins',
+					'sidebar_widgets'
+					) as $o )
+		{
+			add_action('update_option_' . $o, 'wp_cache_force_update');
+		}
+
+		# autokill gzip
+		add_filter('option_gzipcompression', 'wp_cache_kill_gzip');
 	}
 	//$script = basename($_SERVER['SCRIPT_NAME']);
-	if( $_SERVER["REQUEST_METHOD"] == 'POST' || get_settings('gzipcompression')) 
+	if( $_SERVER["REQUEST_METHOD"] == 'POST' || get_option('gzipcompression'))
 		return;
 	$script = basename($_SERVER['PHP_SELF']);
-	if (!in_array($script, $cache_acceptable_files) && 
+	if (!in_array($script, $cache_acceptable_files) &&
 			wp_cache_is_rejected($_SERVER["REQUEST_URI"]))
 		return;
 	if (wp_cache_user_agent_is_rejected()) return;
 	$wp_cache_meta_object = new CacheMeta;
-	ob_start('wp_cache_ob_callback'); 
+	ob_start('wp_cache_ob_callback');
 	register_shutdown_function('wp_cache_shutdown_callback');
 }
+
+
+function wp_cache_force_update($in)
+{
+	# send a theme switch with dummy data
+	do_action('switch_theme', '');
+
+	return $in;
+} # wp_cache_force_update()
+
+
+function wp_cache_kill_gzip($bool)
+{
+	return 0;
+} # wp_cache_kill_gzip()
+
 
 function wp_cache_get_response_headers() {
 	if(function_exists('apache_response_headers')) {
@@ -86,13 +116,13 @@ function wp_cache_mutex_init() {
 	global $use_flock, $mutex, $cache_path, $mutex_filename, $sem_id;
 
 	if(!is_bool($use_flock)) {
-		if(function_exists('sem_get')) 
+		if(function_exists('sem_get'))
 			$use_flock = false;
 		else
 			$use_flock = true;
 	}
 
-	if ($use_flock) 
+	if ($use_flock)
 		$mutex = fopen($cache_path . $mutex_filename, 'w');
 	else
 		$mutex = sem_get($sem_id, 1, 0644 | IPC_CREAT, 1);
@@ -121,7 +151,7 @@ function wp_cache_ob_callback($buffer) {
 	global $new_cache, $wp_cache_meta_object, $file_expired, $blog_id;
 
 
-	/* Mode paranoic, check for closing tags 
+	/* Mode paranoic, check for closing tags
 	 * we avoid caching incomplete files */
 	if (is_404() || !preg_match('/(<\/html>|<\/rss>|<\/feed>)/i',$buffer) ) {
 		$new_cache = false;
@@ -145,9 +175,9 @@ function wp_cache_ob_callback($buffer) {
 			$buffer = "Couldn't write to: " . $cache_path . $cache_filename . "\n";
 
 		if (preg_match('/<!--mclude|<!--mfunc/', $buffer)) { //Dynamic content
-			$store = preg_replace('|<!--mclude (.*?)-->(.*?)<!--/mclude-->|is', 
+			$store = preg_replace('|<!--mclude (.*?)-->(.*?)<!--/mclude-->|is',
 					"<!--mclude-->\n<?php include_once('" . ABSPATH . "$1'); ?>\n<!--/mclude-->", $buffer);
-			$store = preg_replace('|<!--mfunc (.*?)-->(.*?)<!--/mfunc-->|is', 
+			$store = preg_replace('|<!--mfunc (.*?)-->(.*?)<!--/mfunc-->|is',
 					"<!--mfunc-->\n<?php $1 ;?>\n<!--/mfunc-->", $store);
 			$wp_cache_meta_object->dynamic = true;
 			/* Clean function calls in tag */
@@ -168,7 +198,7 @@ function wp_cache_phase2_clean_cache($file_prefix) {
 	global $cache_path;
 
 	wp_cache_writers_entry();
-	if ( ($handle = opendir( $cache_path )) ) { 
+	if ( ($handle = opendir( $cache_path )) ) {
 		while ( false !== ($file = readdir($handle))) {
 			if ( preg_match("/^$file_prefix/", $file) ) {
 				unlink($cache_path . $file);
@@ -185,9 +215,9 @@ function wp_cache_phase2_clean_expired($file_prefix) {
 	clearstatcache();
 	wp_cache_writers_entry();
 	$now = time();
-	if ( ($handle = opendir( $cache_path )) ) { 
+	if ( ($handle = opendir( $cache_path )) ) {
 		while ( false !== ($file = readdir($handle))) {
-			if ( preg_match("/^$file_prefix/", $file) && 
+			if ( preg_match("/^$file_prefix/", $file) &&
 				(filemtime($cache_path . $file) + $cache_max_time) <= $now  ) {
 				unlink($cache_path . $file);
 			}
@@ -227,8 +257,8 @@ function wp_cache_shutdown_callback() {
 		/* @header('Last-Modified: ' . $value); */
 		array_push($wp_cache_meta_object->headers, "Last-Modified: $value");
 	}
-	if (!$response{'Content-Type'}) {
-		$value =  "text/html; charset=\"" . get_settings('blog_charset')  . "\"";
+	if (!$response{'Content-Type'} && !$response{'Content-type'}) {
+		$value =  "text/html; charset=" . get_option('blog_charset');
 		@header("Content-Type: $value");
 		array_push($wp_cache_meta_object->headers, "Content-Type: $value");
 	}
@@ -264,11 +294,11 @@ function wp_cache_get_postid_from_comment($comment_id) {
 	if( !preg_match('/wp-admin\//', $_SERVER['REQUEST_URI']) && $comment['comment_approved'] != 1 )
 		return $post_id;
 	// We must check it up again due to WP bugs calling two different actions
-	// for delete, for example both wp_set_comment_status and delete_comment 
+	// for delete, for example both wp_set_comment_status and delete_comment
 	// are called when deleting a comment
-	if ($postid > 0) 
+	if ($postid > 0)
 		return wp_cache_post_change($postid);
-	else 
+	else
 		return wp_cache_post_change(wp_cache_post_id());
 }
 
@@ -285,7 +315,7 @@ function wp_cache_post_change($post_id) {
 	$meta = new CacheMeta;
 	$matches = array();
 	wp_cache_writers_entry();
-	if ( ($handle = opendir( $cache_path )) ) { 
+	if ( ($handle = opendir( $cache_path )) ) {
 		while ( false !== ($file = readdir($handle))) {
 			if ( preg_match("/^($file_prefix.*)\.meta/", $file, $matches) ) {
 				$meta_pathname = $cache_path . $file;

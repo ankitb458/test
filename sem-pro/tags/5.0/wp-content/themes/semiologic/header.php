@@ -14,6 +14,14 @@ if ( ( !is_search() && !is_home() && !have_posts() ) || is_404() )
 {
 	header('HTTP/1.0 404 Not Found');
 }
+elseif ( is_singular() )
+{
+	$GLOBALS['post'] = $GLOBALS['posts'][0];
+	setup_postdata($GLOBALS['post']);
+}
+
+$GLOBALS['sem_captions'] = get_option('sem5_captions');
+$GLOBALS['sem_options'] = get_option('sem5_options');
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html><head><title><?php do_action('display_page_title'); ?></title>
@@ -32,8 +40,7 @@ do_action('before_the_wrapper');
 
 <?php
 do_action('before_the_header');
-do_action('display_header');
-do_action('display_navbar');
+do_action('the_header');
 do_action('after_the_header');
 ?>
 

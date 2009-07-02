@@ -1,11 +1,14 @@
 <?php
 /*
-Plugin Name: Contact Form ][
+Plugin Name: Contact Form ][ (fork)
 Plugin URI: http://chip.cuccio.us/projects/contact-form-II/
 Description: Contact Form ][ is a drop-in form that allows site visitors to contact you. It can be implemented easily (via QuickTags) within any post or page.  This version is *specifically* for WordPress 2.0 only.  Original code derived from Ryan Duff's WP-ContactForm plugin.
 Author: Chip Cuccio
 Author URI: http://chip.cuccio.us
-Version: 2.9 (fork)
+Version: 2.10 fork
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: contact_form
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 load_plugin_textdomain('wpcf'); // NLS
@@ -191,7 +194,7 @@ function wpcf_callback( $content )
 	            if ($_POST['carbon_copy'] ) {
 	                $headers     = "MIME-Version: 1.0\n";
 	                $headers    .= "From: $name <$email>\n";
-	                $headers    .= "Content-Type: text/plain; charset=\"" . get_settings('blog_charset') . "\"\n";
+	                $headers    .= "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 	                $headers    .= "Cc: $email\n";
 	                $fullmsg    .= wordwrap($msg, 76, "\n") . "\n\n";
 	                $fullmsg    .= "Phone: $phone\n\n";
@@ -205,7 +208,7 @@ function wpcf_callback( $content )
 	            } else {
 	                $headers     = "MIME-Version: 1.0\n";
 	                $headers    .= "From: $name <$email>\n";
-	                $headers    .= "Content-Type: text/plain; charset=\"" . get_settings('blog_charset') . "\"\n";
+	                $headers    .= "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 	                $fullmsg    .= wordwrap($msg, 76, "\n") . "\n\n";
 	                $fullmsg    .= "Phone: $phone\n\n";
 	                $fullmsg    .= "Time Zone: $tz\n\n";
@@ -268,7 +271,7 @@ return $ip_addr;
 /*CSS Styling*/
 function wpcf_css()
 	{
-		$css_url = trailingslashit(get_settings('siteurl'))
+		$css_url = trailingslashit(get_option('siteurl'))
 				. 'wp-content/'
 				. 'plugins/'
 				. 'wp-contact-form/'

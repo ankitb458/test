@@ -16,5 +16,5 @@ Template Name: Links Template
 
 do_action('setup_template', 'links');
 
-require_once TEMPLATEPATH . '/index.php';
+require_once sem_path . '/index.php';
 ?>

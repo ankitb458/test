@@ -10,7 +10,7 @@ function add_theme_font_options_admin()
 		__('Font'),
 		__('Font'),
 		'switch_themes',
-		str_replace("\\", "/", basename(__FILE__)),
+		basename(__FILE__),
 		'display_theme_font_options_admin'
 		);
 } # end add_theme_font_options_admin()
@@ -26,12 +26,12 @@ function update_theme_font_options()
 {
 	check_admin_referer('sem_font');
 
-	$options = get_option('semiologic');
+	global $sem_options;
 
-	$options['active_font'] = $_POST['active_font'];
-	$options['active_font_size'] = $_POST['active_font_size'];
+	$sem_options['active_font'] = preg_replace("/[^a-z_]/", '', $_POST['active_font']);
+	$sem_options['active_font_size'] = preg_replace("/[^a-z_]/", '', $_POST['active_font_size']);
 
-	update_option('semiologic', $options);
+	update_option('sem5_options', $sem_options);
 } # end update_theme_font_options
 
 add_action('update_theme_font_options', 'update_theme_font_options');
@@ -88,9 +88,9 @@ function display_theme_font_options_admin()
 
 function display_theme_font_options()
 {
-	$options = get_option('semiologic');
+	global $sem_options;
 
-	$active_font = $options['active_font'];
+	$active_font = $sem_options['active_font'];
 
 	$fonts = array(
 		'arial' => array(
@@ -215,9 +215,9 @@ add_action('display_theme_font_options', 'display_theme_font_options');
 
 function display_theme_font_size_options()
 {
-	$options = get_option('semiologic');
+	global $sem_options;
 
-	$active_font_size = isset($options['active_font_size']) ? $options['active_font_size'] : 'small';
+	$active_font_size = isset($sem_options['active_font_size']) ? $sem_options['active_font_size'] : 'small';
 
 	$font_sizes = array(
 		'small' => array(

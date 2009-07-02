@@ -1,11 +1,14 @@
 <?php
 /*
-Plugin Name: Star Rating for Reviews
+Plugin Name: Star Rating for Reviews (fork)
 Plugin URI: http://www.channel-ai.com/blog/plugins/star-rating/
 Description: Insert inline rating stars within your posts based on the score you assign.
-Version: 0.2 (fork)
+Version: 0.2 fork
 Author: Yaosan Yeo
 Author URI: http://www.channel-ai.com/blog/
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: star_rating
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 /*  Copyright 2006  Yaosan Yeo  (email : eyn@channel-ai.com)

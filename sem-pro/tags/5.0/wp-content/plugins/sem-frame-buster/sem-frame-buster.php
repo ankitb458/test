@@ -4,8 +4,10 @@ Plugin Name: Frame Buster
 Plugin URI: http://www.semiologic.com/software/wp-fixes/frame-buster/
 Description: Prevents your blog from being loaded into a frame.
 Author: Denis de Bernardy
-Version: 3.5
+Version: 3.6
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: frame_buster
 */
 
 /*
@@ -43,18 +45,26 @@ class sem_frame_buster
 	{
 		if ( !is_preview() )
 		{
-			$home_url = strtolower(get_settings('home'));
+			$home_url = strtolower(get_option('home'));
 
 			echo <<<KILL_FRAME_SCRIPT
 <script type="text/javascript">
 <!--
-var parent_location = new String(parent.location);
-var top_location = new String(top.location);
-var cur_location = new String(location);
-parent_location = parent_location.toLowerCase();
-top_location = top_location.toLowerCase();
-cur_location = cur_location.toLowerCase();
-if ( ( top_location != cur_location ) && parent_location.indexOf('{$home_url}') != 0 )
+try
+{
+	var parent_location = new String(parent.location);
+	var top_location = new String(top.location);
+	var cur_location = new String(document.location);
+	parent_location = parent_location.toLowerCase();
+	top_location = top_location.toLowerCase();
+	cur_location = cur_location.toLowerCase();
+
+	if ( ( top_location != cur_location ) && parent_location.indexOf('{$home_url}') != 0 )
+	{
+		top.location.href = document.location.href;
+	}
+}
+catch ( err )
 {
 	top.location.href = document.location.href;
 }

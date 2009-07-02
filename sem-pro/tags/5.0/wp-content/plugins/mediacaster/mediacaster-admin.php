@@ -68,14 +68,25 @@ class mediacaster_admin
 				@unlink(ABSPATH . $path . $key);
 				unset($_POST['update_media'][$key]);
 
-				if ( in_array($ext, array('flv', 'swf')) )
+				if ( in_array(strtolower($ext), array('flv', 'swf')) )
 				{
 					$image = basename($key, '.' . $ext);
 
-					if ( $image = glob(ABSPATH . $path . $image . '.{jpg,jpeg,png}', GLOB_BRACE) )
+					if ( defined('GLOB_BRACE') )
 					{
-						$image = current($image);
-						@unlink($image);
+						if ( $image = glob(ABSPATH . $path . $image . '.{jpg,jpeg,png}', GLOB_BRACE) )
+						{
+							$image = current($image);
+							@unlink($image);
+						}
+					}
+					else
+					{
+						if ( $image = glob(ABSPATH . $path . $image . '.jpg') )
+						{
+							$image = current($image);
+							@unlink($image);
+						}
 					}
 				}
 			}
@@ -91,21 +102,40 @@ class mediacaster_admin
 					preg_match("/\.([^\.]+)$/", $old, $ext);
 					$ext = end($ext);
 
-					if ( in_array($ext, array('flv', 'swf')) )
+					if ( in_array(strtolower($ext), array('flv', 'swf')) )
 					{
 						$old_name = basename($old, '.' . $ext);
 						$new_name = basename($new, '.' . $ext);
 
-						if ( $image = glob(ABSPATH . $path . $old_name . '.{jpg,jpeg,png}', GLOB_BRACE) )
+						if ( defined('GLOB_BRACE') )
 						{
-							$image = current($image);
+							if ( $image = glob(ABSPATH . $path . $old_name . '.{jpg,jpeg,png}', GLOB_BRACE) )
+							{
+								$image = current($image);
 
-							preg_match("/\.([^\.]+)$/", $image, $ext);
-							$ext = end($ext);
+								preg_match("/\.([^\.]+)$/", $image, $ext);
+								$ext = end($ext);
+								$ext = strtolower($ext);
 
-							$old_name = basename($image, '.' . $ext);
+								$old_name = basename($image, '.' . $ext);
 
-							@rename(ABSPATH . $path . $old_name . '.' . $ext, ABSPATH . $path . $new_name . '.' . $ext);
+								@rename(ABSPATH . $path . $old_name . '.' . $ext, ABSPATH . $path . $new_name . '.' . $ext);
+							}
+						}
+						else
+						{
+							if ( $image = glob(ABSPATH . $path . $old_name . '.jpg') )
+							{
+								$image = current($image);
+
+								preg_match("/\.([^\.]+)$/", $image, $ext);
+								$ext = end($ext);
+								$ext = strtolower($ext);
+
+								$old_name = basename($image, '.' . $ext);
+
+								@rename(ABSPATH . $path . $old_name . '.' . $ext, ABSPATH . $path . $new_name . '.' . $ext);
+							}
 						}
 					}
 				}
@@ -118,8 +148,18 @@ class mediacaster_admin
 
 				preg_match("/\.([^\.]+)$/", $new_name, $ext);
 				$ext = end($ext);
+				$new_name = str_replace('.' . $ext, '.' . strtolower($ext), $new_name);
+				$ext = strtolower($ext);
 
-				if ( in_array($ext, array('jpg', 'jpeg', 'png', 'mp3', 'mp4', 'm4a', 'm4v', 'mov', 'flv', 'swf')) )
+				if ( in_array(
+						$ext,
+						array(
+							'jpg', 'jpeg', 'png',
+							'mp3', 'm4a',
+							'mp4', 'm4v', 'mov', 'flv', 'swf'
+							)
+						)
+					)
 				{
 					@move_uploaded_file($tmp_name, $new_name);
 					@chmod($new_name, 0666);
@@ -275,6 +315,11 @@ class mediacaster_admin
 				. __('If you\'re uploading <a href="http://www.semiologic.com/go/camtasia">Camtasia</a> videos, upload <em>only</em> the video file (swf, flv, mov...). The other files created by Camtasia are for use in a standalone web page.')
 				. '</li>'
 				. '</ul>';
+
+			if ( !defined('GLOB_BRACE') )
+			{
+				echo '<p>' . __('Notice: GLOB_BRACE is an undefined constant on your server. Non .jpg images will be ignored.') . '</p>';
+			}
 		}
 
 		echo '</div>';
@@ -358,10 +403,21 @@ class mediacaster_admin
 
 		if ( isset($_POST['delete_cover']) )
 		{
-			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+			if ( defined('GLOB_BRACE') )
 			{
-				$cover = current($cover);
-				@unlink($cover);
+				if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+				{
+					$cover = current($cover);
+					@unlink($cover);
+				}
+			}
+			else
+			{
+				if ( $cover = glob(ABSPATH . 'media/cover-*.jpg') )
+				{
+					$cover = current($cover);
+					@unlink($cover);
+				}
 			}
 		}
 
@@ -386,7 +442,7 @@ class mediacaster_admin
 			preg_match("/\.([^\.]+)$/", $name, $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'jpeg', 'png')) )
+			if ( !in_array(strtolower($ext), array('jpg', 'jpeg', 'png')) )
 			{
 				echo '<div class="error">'
 					. "<p>"
@@ -419,7 +475,7 @@ class mediacaster_admin
 			preg_match("/\.([^\.]+)$/", $name, $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'jpeg', 'png')) )
+			if ( !in_array(strtolower($ext), array('jpg', 'jpeg', 'png')) )
 			{
 				echo '<div class="error">'
 					. "<p>"
@@ -431,10 +487,21 @@ class mediacaster_admin
 			}
 			else
 			{
-				if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+				if ( defined('GLOB_BRACE') )
 				{
-					$cover = current($cover);
-					@unlink($cover);
+					if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+					{
+						$cover = current($cover);
+						@unlink($cover);
+					}
+				}
+				else
+				{
+					if ( $cover = glob(ABSPATH . 'media/cover-*.jpg') )
+					{
+						$cover = current($cover);
+						@unlink($cover);
+					}
 				}
 
 				preg_match("/\.([^\.]+)$/", $name, $ext);
@@ -484,7 +551,7 @@ class mediacaster_admin
 			mediacaster_admin::update_options();
 		}
 
-		$options = get_settings('mediacaster');
+		$options = get_option('mediacaster');
 		#$options = false;
 
 		if ( $options == false )
@@ -560,9 +627,19 @@ class mediacaster_admin
 			. '</p>' . "\n";
 
 
-			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+			if ( defined('GLOB_BRACE') )
 			{
-				$cover = current($cover);
+				if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+				{
+					$cover = current($cover);
+				}
+			}
+			else
+			{
+				if ( $cover = glob(ABSPATH . 'media/cover-*.jpg') )
+				{
+					$cover = current($cover);
+				}
 			}
 
 			echo '<p>'
@@ -606,6 +683,11 @@ class mediacaster_admin
 					. ' />' . "\n"
 				. '</p>' . "\n";
 
+		if ( !defined('GLOB_BRACE') )
+		{
+			echo '<p>' . __('Notice: GLOB_BRACE is an undefined constant on your server. Non .jpg images will be ignored.') . '</p>';
+		}
+
 		echo '<p class="submit">'
 			. '<input type="submit"'
 				. ' value="' . __('Update Options') . '"'
@@ -621,6 +703,10 @@ class mediacaster_admin
 				. '</h3>' . "\n";
 
 		echo '<p>'
+			. __('Media files you include using Mediacaster will get listed in your site\'s RSS feed as enclosures (the term itself is blogging jargon). This lets feed readers and various devices (e.g. an iPod) know media files are attached, and process them accordingly.')
+			. '</p>';
+
+		echo '<p>'
 			. '<input type="radio"'
 				. ' id="mediacaster[enclosures][none]" name="mediacaster[enclosures]"'
 				. ' value=""'
@@ -630,7 +716,7 @@ class mediacaster_admin
 					)
 				. ' />' . "\n"
 				. '<label for="mediacaster[enclosures][none]">'
-				. __('List enclosures in machine readable format for use in RSS readers and iPods.')
+				. __('List enclosures in machine readable format only, for use in RSS readers and iPods.')
 				. '</label>'
 			. '</p>' . "\n";
 
@@ -644,8 +730,24 @@ class mediacaster_admin
 					)
 				. ' />' . "\n"
 				. '<label for="mediacaster[enclosures][all]">'
-				. __('List enclosures in machine readable format and as download links in human readable format.')
+				. __('List enclosures in machine readable format, and as download links in human readable format at the end of each post.')
 				. '</label>'
+			. '</p>' . "\n";
+
+		if ( !$options['captions']['enclosures'] )
+		{
+			$options['captions']['enclosures'] = __('Enclosures');
+		}
+
+		echo '<p>'
+			. '<label for="mediacaster[captions][enclosures]">'
+			. __('Enclosure Caption')
+			. '<br />'
+			. '<input type="text" style="width: 480px;"'
+				. ' id="mediacaster[captions][enclosures]" name="mediacaster[captions][enclosures]"'
+				. ' value="' . htmlspecialchars($options['captions']['enclosures']) . '"'
+				. ' />' . "\n"
+			. '</label>'
 			. '</p>' . "\n";
 
 		echo '<p class="submit">'
@@ -965,10 +1067,8 @@ class mediacaster_admin
 			add_filter('mce_plugins', array('mediacaster_admin', 'add_mce_plugin'));
 			add_filter('mce_buttons', array('mediacaster_admin', 'add_mce_button'));
 		}
-		else
-		{
-			add_filter('admin_footer', array('mediacaster_admin', 'display_quicktag'));
-		}
+
+		add_filter('admin_footer', array('mediacaster_admin', 'display_quicktag'));
 	} # end setup_admin_editor()
 
 
@@ -986,19 +1086,19 @@ class mediacaster_admin
 
 		$js_options = "";
 
-		$js_options .= '<option value=\"-'
+		$js_options .= '<option value="-'
 				. 'media#url'
-			. '-\">'
+			. '-">'
 			. __('Enter a url')
-			. '</option>';
+			. '<\/option>';
 
 		foreach ( array_keys($files) as $file )
 		{
-			$js_options .= '<option value=\"-'
+			$js_options .= '<option value="-'
 					. 'media#' . $file
-				. '-\">'
+				. '-">'
 				. $file
-				. '</option>';
+				. '<\/option>';
 		}
 
 ?><script type="text/javascript">
@@ -1022,10 +1122,10 @@ function add_media(elt)
 } // add_media()
 
 document.getElementById('ed_toolbar').innerHTML
-	+= '<select class=\"ed_button\" style=\"width: 100px;\" onchange=\"return add_media(this);\">'
-	+ '<option value=\"\" selected><?php echo __('Media'); ?></option>'
+	+= '<select class="ed_button" style="width: 100px;" onchange="return add_media(this);">'
+	+ '<option value="" selected><?php echo __('Media'); ?><\/option>'
 	+ '<?php echo $js_options; ?>'
-	+ '</select>';
+	+ '<\/select>';
 } // end if
 </script>
 <?php
@@ -1085,19 +1185,12 @@ document.all_media = all_media;
 
 	function add_mce_button($buttons)
 	{
-		$path = mediacaster::get_path($post);
-
-		$files = mediacaster::get_files($path);
-
-		if ( $files )
+		if ( !empty($buttons) )
 		{
-			if ( !empty($buttons) )
-			{
-				$buttons[] = 'separator';
-			}
-
-			$buttons[] = 'mediacaster';
+			$buttons[] = 'separator';
 		}
+
+		$buttons[] = 'mediacaster';
 
 		return $buttons;
 	} # end add_mce_button()

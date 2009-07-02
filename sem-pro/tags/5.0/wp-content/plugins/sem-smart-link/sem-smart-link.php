@@ -4,8 +4,10 @@ Plugin Name: Smart Link
 Plugin URI: http://www.semiologic.com/software/publishing/smart-link/
 Description: Lets you write links as [link text->link url] (explicit link), or as [link text->] (implicit link).
 Author: Denis de Bernardy
-Version: 3.11
+Version: 3.12
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: smart_link
 */
 
 /*
@@ -19,38 +21,6 @@ http://www.semiologic.com/legal/license/
 
 
 define('sem_smart_link_test', false);
-
-
-if ( !defined('sem_include') )
-{
-	require_once dirname(__FILE__) . '/sem-include.php';
-}
-
-if ( !defined('use_post_type_fixed') )
-{
-	define(
-		'use_post_type_fixed',
-			version_compare(
-				'2.1',
-				$GLOBALS['wp_version'], '<='
-				)
-			||
-			function_exists('get_site_option')
-		);
-}
-
-
-
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
 
 
 #
@@ -437,10 +407,14 @@ function sem_smart_link_cache_links()
 {
 	foreach ( array_keys((array) $GLOBALS['sem_smart_link_cache']) as $engine )
 	{
-		if ( isset($GLOBALS['sem_smart_link_engines'][$engine]) )
+		if ( !isset($GLOBALS['sem_smart_link_engines'][$engine]) )
 		{
-			$GLOBALS['sem_smart_link_cache'][$engine] = $GLOBALS['sem_smart_link_engines'][$engine]($GLOBALS['sem_smart_link_cache'][$engine]);
+			$callback = create_function('$links', 'return sem_smart_link_stub_engine($links, \'' . $engine . '\');');
+
+			sem_smart_link_set_engine($engine, $callback);
 		}
+
+		$GLOBALS['sem_smart_link_cache'][$engine] = $GLOBALS['sem_smart_link_engines'][$engine]($GLOBALS['sem_smart_link_cache'][$engine]);
 	}
 } # end sem_smart_link_cache_links()
 
@@ -612,7 +586,7 @@ function sem_smart_link_wp_links($links)
 		if ( !$found && $look_for )
 		{
 			$like_link_names .= ( $like_link_names ? ' OR ' : '' )
-				. "TRIM(LOWER(links.link_name)) LIKE '" . mysql_real_escape_string($look_for) . "%'";
+				. "TRIM(LOWER(links.link_name)) LIKE '" . $wpdb->escape($look_for) . "%'";
 		}
 	}
 
@@ -683,134 +657,6 @@ sem_smart_link_set_engine('wordpress_links', 'sem_smart_link_wp_links');
 
 
 #
-# sem_smart_link_wp_cats()
-#
-
-function sem_smart_link_wp_cats($links)
-{
-	global $wpdb;
-	global $wp_rewrite;
-
-	if ( !isset($wp_rewrite) )
-	{
-		$wp_rewrite = new WP_Rewrite();
-	}
-
-	$like_cat_names = '';
-	$like_cat_slugs = '';
-	$replace = array();
-
-    foreach ( $links as $look_for => $found )
-	{
-		$look_for = trim(strtolower($look_for));
-
-		if ( !$found && $look_for )
-		{
-			$like_cat_names .= ( $like_cat_names ? ' OR ' : '' )
-				. "TRIM(LOWER(categories.cat_name)) LIKE '" . mysql_real_escape_string($look_for) . "%'";
-			$like_cat_slugs .= ( $like_cat_slugs ? ' OR ' : '' )
-				. "categories.category_nicename LIKE '" . mysql_real_escape_string(sanitize_title($look_for)) . "%'";
-		}
-	}
-
-	#echo '<pre>';
-	#var_dump($like_cat_names, $like_cat_slugs);
-	#echo '</pre>';
-
-	if ( $like_cat_names && $like_cat_slugs )
-	{
-		$sql = "
-			SELECT
-				categories.*
-			FROM
-				$wpdb->categories as categories
-			WHERE
-				categories.category_count > 0
-			AND (
-				$like_cat_names
-			OR
-				$like_cat_slugs
-				)
-			ORDER BY
-				categories.cat_name ASC
-			";
-
-		#echo '<pre>';
-		#var_dump($sql);
-		#echo '</pre>';
-
-		$wp_cats = (array) $wpdb->get_results($sql);
-
-		if ( $wp_cats )
-		{
-			foreach ( $wp_cats as $cat )
-			{
-				$look_for = trim(strtolower($cat->cat_name));
-
-				if ( !isset($replace[$look_for]) )
-				{
-					$replace[$look_for] = array(
-							'link' => get_category_link($cat->cat_ID),
-							'title' => $cat->cat_name
-							);
-				}
-
-				$look_for = $cat->category_nicename;
-
-				if ( !isset($replace[$look_for]) )
-				{
-					$replace[$look_for] = array(
-							'link' => get_category_link($cat->cat_ID),
-							'title' => $cat->cat_name
-							);
-				}
-			}
-
-			#echo '<pre>';
-			#var_dump($replace);
-			#echo '</pre>';
-
-			foreach ( $links as $look_for => $found )
-			{
-				if ( !$found )
-				{
-					$look_for_i = trim(strtolower($look_for));
-
-					if ( isset($replace[$look_for_i]) )
-					{
-						$links[$look_for] = $replace[$look_for_i];
-						continue;
-					}
-
-					$look_for_i = sanitize_title($look_for);
-
-					if ( isset($replace[$look_for_i]) )
-					{
-						$links[$look_for] = $replace[$look_for_i];
-						continue;
-					}
-				}
-			}
-		}
-	}
-
-	return $links;
-} # end sem_smart_link_wp_cats()
-
-sem_smart_link_set_engine('cats', 'sem_smart_link_wp_cats');
-sem_smart_link_set_engine('wp_cats', 'sem_smart_link_wp_cats');
-sem_smart_link_set_engine('wordpress_cats', 'sem_smart_link_wp_cats');
-
-sem_smart_link_set_engine('categories', 'sem_smart_link_wp_cats');
-sem_smart_link_set_engine('wp_categories', 'sem_smart_link_wp_cats');
-sem_smart_link_set_engine('wordpress_categories', 'sem_smart_link_wp_cats');
-
-sem_smart_link_set_engine('tags', 'sem_smart_link_wp_cats');
-sem_smart_link_set_engine('wp_tags', 'sem_smart_link_wp_cats');
-sem_smart_link_set_engine('wordpress_tags', 'sem_smart_link_wp_cats');
-
-
-#
 # sem_smart_link_wp_entries()
 #
 
@@ -835,9 +681,9 @@ function sem_smart_link_wp_entries($links)
 		if ( !$found && $look_for )
 		{
 			$like_entry_titles .= ( $like_entry_titles ? ' OR ' : '' )
-				. "TRIM(LOWER(posts.post_title)) LIKE '" . mysql_real_escape_string($look_for) . "%'";
+				. "TRIM(LOWER(posts.post_title)) LIKE '" . $wpdb->escape($look_for) . "%'";
 			$like_entry_slugs .= ( $like_entry_slugs ? ' OR ' : '' )
-				. "posts.post_name LIKE '" . mysql_real_escape_string(sanitize_title($look_for)) . "%'";
+				. "posts.post_name LIKE '" . $wpdb->escape(sanitize_title($look_for)) . "%'";
 		}
 	}
 
@@ -853,25 +699,14 @@ function sem_smart_link_wp_entries($links)
 			SELECT
 				posts.*,
 				CASE
-				WHEN "
-					. ( use_post_type_fixed
-						? "posts.post_type = 'page'"
-						: "posts.post_status = 'static'"
-						)
-					. "
+				WHEN posts.post_type = 'page'
 				THEN 1
 				ELSE 0
 				END as is_static
 			FROM
 				$wpdb->posts as posts
 			WHERE
-				posts.post_status IN ('publish', 'static')
-				"
-				. ( use_post_type_fixed
-					? "AND posts.post_type IN ('post', 'page')"
-					: ""
-					)
-				. "
+				posts.post_status = 'publish' AND posts.post_type IN ('post', 'page')
 			AND
 				posts.post_date <= '$now'"
 			. ( ( defined('sem_home_page_id') && sem_home_page_id )
@@ -884,9 +719,9 @@ function sem_smart_link_wp_entries($links)
 					AND posts.ID <> " . intval(sem_sidebar_tile_id) )
 						: ""
 						)
-					. ( ( defined('sem_entry_id') && sem_entry_i )
+					. ( ( is_singular() )
 						? ( "
-					AND posts.ID <> " . intval(sem_entry_id) )
+					AND posts.ID <> " . intval($GLOBALS['wp_query']->get_queried_object_id()) )
 						: ""
 						)
 			. "
@@ -909,14 +744,8 @@ function sem_smart_link_wp_entries($links)
 
 		if ( $wp_entries )
 		{
-			if ( function_exists('update_post_cache') )
-			{
-				update_post_cache($wp_entries);
-			}
-			if ( function_exists('update_page_cache') )
-			{
-				update_page_cache($wp_entries);
-			}
+			update_post_cache($wp_entries);
+			update_page_cache($wp_entries);
 
 			foreach ( $wp_entries as $post )
 			{
@@ -1010,7 +839,6 @@ sem_smart_link_set_engine('wordpress_entries', 'sem_smart_link_wp_entries');
 function sem_smart_link_wp($links)
 {
 	$links = sem_smart_link_wp_entries($links);
-	$links = sem_smart_link_wp_cats($links);
 	$links = sem_smart_link_wp_links($links);
 
 	return $links;
@@ -1095,4 +923,185 @@ function sem_smart_link_delayed_ob()
 
 	ob_start('sem_smart_link');
 } # sem_smart_link_delayed_ob()
+
+
+
+#
+# sem_smart_link_stub_engine()
+#
+
+function sem_smart_link_stub_engine($links, $type)
+{
+	global $wpdb;
+	global $wp_rewrite;
+
+	if ( !isset($wp_rewrite) )
+	{
+		$wp_rewrite =& new WP_Rewrite();
+	}
+
+	if ( !defined('sem_' . $type . '_stubs') )
+	{
+		$posts = $wpdb->get_results("
+			SELECT	posts.*
+			FROM	$wpdb->posts as posts
+			WHERE	post_type = 'page'
+			AND		post_status = 'publish'
+			AND		post_name = '$type'
+			");
+
+		$stub = end($posts);
+
+		$posts = $wpdb->get_results("
+			SELECT	posts.*
+			FROM	$wpdb->posts as posts
+			WHERE	post_type = 'page'
+			AND		post_status = 'publish'
+			AND		post_parent = " . $stub->ID
+			);
+
+		$posts[] = $stub;
+
+		update_page_cache($posts);
+
+		$stubs = '';
+
+		foreach ( $posts as $post )
+		{
+			$stubs .= ( $stubs ? ', ' : '' ) . $post->ID;
+		}
+
+		define('sem_' . $type . '_stubs', $stubs);
+	}
+
+	#var_dump(sem_resources_stubs, sem_software_stubs);
+
+	$like_entry_titles = '';
+	$like_entry_slugs = '';
+	$replace = array();
+
+    foreach ( $links as $look_for => $found )
+	{
+		$look_for = trim(strtolower($look_for));
+
+		if ( !$found && $look_for )
+		{
+			$like_entry_titles .= ( $like_entry_titles ? ' OR ' : '' )
+				. "TRIM(LOWER(posts.post_title)) LIKE '" . $wpdb->escape($look_for) . "%'";
+			$like_entry_slugs .= ( $like_entry_slugs ? ' OR ' : '' )
+				. "posts.post_name LIKE '" . $wpdb->escape(sanitize_title($look_for)) . "%'";
+		}
+	}
+
+	#echo '<pre>';
+	#var_dump($like_entry_titles, $like_entry_slugs);
+	#echo '</pre>';
+
+	if ( $like_entry_titles && $like_entry_slugs )
+	{
+		$now = gmdate('Y-m-d H:i:00', strtotime("+1 minute"));
+
+		$sql = "
+			SELECT
+				posts.*
+			FROM
+				$wpdb->posts as posts
+			WHERE
+				posts.post_status = 'publish'
+				AND posts.post_type = 'page'
+			AND
+				posts.post_date <= '$now'
+			AND (
+					$like_entry_titles
+				OR
+					$like_entry_slugs
+				)
+			AND
+				posts.post_parent IN (" . constant('sem_' . $type . '_stubs') . ")
+			ORDER BY
+				posts.post_title ASC,
+				posts.post_date DESC
+			";
+
+		#echo '<pre>';
+		#var_dump($sql);
+		#echo '</pre>';
+
+		$wp_entries = (array) $wpdb->get_results($sql);
+
+		if ( $wp_entries )
+		{
+			update_post_cache($wp_entries);
+
+			foreach ( $wp_entries as $post )
+			{
+				$look_for = trim(strtolower($post->post_title));
+
+				if ( !isset($replace[$look_for]) )
+				{
+					$replace[$look_for] = array(
+							'link' => get_permalink($post->ID),
+							'title' => $post->post_title
+							);
+				}
+
+				$look_for = $post->post_name;
+
+				if ( !isset($replace[$look_for]) )
+				{
+					$replace[$look_for] = array(
+							'link' => get_permalink($post->ID),
+							'title' => $post->post_title
+							);
+				}
+
+				$look_for = preg_replace("/-\d+$/", '', $look_for);
+
+				if ( !isset($replace[$look_for]) )
+				{
+					$replace[$look_for] = array(
+							'link' => get_permalink($post->ID),
+							'title' => $post->post_title
+							);
+				}
+			}
+
+			#echo '<pre>';
+			#var_dump($replace);
+			#echo '</pre>';
+
+			foreach ( $links as $look_for => $found )
+			{
+				if ( !$found )
+				{
+					$look_for_i = trim(strtolower($look_for));
+
+					if ( isset($replace[$look_for_i]) )
+					{
+						$links[$look_for] = $replace[$look_for_i];
+						continue;
+					}
+
+					$look_for_i = sanitize_title($look_for);
+
+					if ( isset($replace[$look_for_i]) )
+					{
+						$links[$look_for] = $replace[$look_for_i];
+						continue;
+					}
+
+					$look_for_i = preg_replace("/-\d+$/", '', $look_for_i);
+
+					if ( isset($replace[$look_for_i]) )
+					{
+						$links[$look_for] = $replace[$look_for_i];
+						continue;
+					}
+				}
+			}
+		}
+	}
+
+	return $links;
+} # end sem_smart_link_stub_engine()
 ?>

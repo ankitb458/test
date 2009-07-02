@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__) . '/semiologic.php';
+include_once dirname(__FILE__) . '/semiologic.php';
 
 if ( function_exists('register_sidebar') )
     register_sidebar(array(

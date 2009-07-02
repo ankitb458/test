@@ -30,11 +30,11 @@ function TinyMCE_adspace_getControlHTML(control_name)
 			html += '<option value="">Ad&nbsp;Unit</option>';
 
 			// Build format select
-			html += '<option value="ad_unit">' + "Default embeddable" + '</option>';
-			if( document.all_ad_units )
+			html += '<option value="ad_unit">' + "Default inline" + '</option>';
+			if( document.all_ad_blocks )
 			{
-				for( var i=0; i < document.all_ad_units.length; i++ ){
-					html += '<option value="ad_unit#' + document.all_ad_units[i] + '">' + document.all_ad_units[i]  + '</option>';
+				for( var i=0; i < document.all_ad_blocks.length; i++ ){
+					html += '<option value="ad_unit#' + document.all_ad_blocks[i] + '">' + document.all_ad_blocks[i]  + '</option>';
 				}
 
 			}
@@ -158,9 +158,9 @@ function TinyMCE_adspace_cleanup(type, content) {
 			var startPos = 0;
 			var altMore = tinyMCE.getLang('lang_adspace_alt');
 			var ad_names = new Array('ad_unit');
-			if( document.all_ad_units != null ){
-				for(var i=0; i<document.all_ad_units.length; i++){
-					ad_names.push('ad_unit#' + document.all_ad_units[i]);
+			if( document.all_ad_blocks != null ){
+				for(var i=0; i<document.all_ad_blocks.length; i++){
+					ad_names.push('ad_unit#' + document.all_ad_blocks[i]);
 				}
 			}
 
@@ -181,7 +181,7 @@ function TinyMCE_adspace_cleanup(type, content) {
 			}
 
 			// If any units weren't replaced, do it with this statement
-			content = content.replace(new RegExp('<!--ad_unit#([^-]+)-->', 'g'), '<strong style="color:red">[Undefined Ad Unit ($1)]</strong>');
+			content = content.replace(new RegExp('<!--ad_unit#([^>]+)-->', 'g'), TinyMCE_mediacaster_make_imgtag('ad_unit#$1'));
 
 			break;
 

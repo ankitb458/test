@@ -4,8 +4,10 @@ Plugin Name: Subscribe me
 Plugin URI: http://www.semiologic.com/software/widgets/subscribe-me/
 Description: Adds a widget with feed subscription buttons.
 Author: Denis de Bernardy
-Version: 3.10
+Version: 4.0
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: subscribe_me
 */
 
 /*
@@ -145,45 +147,26 @@ class subscribe_me
 	{
 		# default args
 
-		if ( !isset($args['before_widget']) )
-		{
-			$args['before_widget'] = '';
-		}
-		if ( !isset($args['after_widget']) )
-		{
-			$args['after_widget'] = '';
-		}
-		if ( !isset($args['before_title']) )
-		{
-			$args['before_title'] = '<h2>';
-		}
-		if ( !isset($args['after_title']) )
-		{
-			$args['after_title'] = '</h2>';
-		}
+		$defaults = array(
+			'title' => __('Syndicate'),
+			'before_widget' => '',
+			'after_widget' => '',
+			'before_title' => '<h2>',
+			'after_title' => '</h2>'
+			);
 
-		if ( !isset($args['title']) )
-		{
-			$options = get_settings('sem_subscribe_me_params');
+		$options = get_option('sem_subscribe_me_params');
 
-			if ( isset($options['title']) )
-			{
-				$args['title'] = $options['title'];
-			}
-			else
-			{
-				$args['title'] = __('Syndicate');
-			}
-		}
+		$args = array_merge($defaults, (array) $options, (array) $args);
 
-		$args['site_path'] = trailingslashit(get_settings('siteurl'));
+		$args['site_path'] = trailingslashit(get_option('siteurl'));
 		$args['feed_url'] = apply_filters('bloginfo', get_feed_link('rss2'), 'rss2_url');
-		$args['services'] = get_settings('sem_subscribe_me_services');
-		$args['img_path'] = trailingslashit(get_settings('siteurl')) . 'wp-content/plugins/sem-subscribe-me/img/';
+		$args['services'] = get_option('sem_subscribe_me_services');
+		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-subscribe-me/img/';
 
 		if ( !$args['services'] )
 		{
-			return;
+			$args['services'] = subscribe_me::default_services();
 		}
 
 		$hash = md5(uniqid(rand()));
@@ -209,16 +192,12 @@ class subscribe_me
 		$o = '';
 
 		$o .= $args['before_widget'] . "\n"
-			. '<div class="tile sem_subscribe_me">' . "\n"
 			. ( $args['title']
-				? ( '<div class="tile_header">' . "\n"
-					. $args['before_title'] . $args['title'] . $args['after_title'] . "\n"
-					. '</div>' . "\n"
-					)
+				? ( $args['before_title'] . $args['title'] . $args['after_title'] . "\n" )
 				: ''
 				);
 
-		$o .= '<div class="tile_body"'
+		$o .= '<div'
 				. ( $as_dropdown
 					? ( ' onmouseover="fade_subscribe_buttons_in(\'subscribe_me_{$hash}\');"'
 						. ' onmouseout="fade_subscribe_buttons_out(\'subscribe_me_{$hash}\');"'
@@ -260,7 +239,7 @@ class subscribe_me
 				case 'help_link':
 					$o .= '<div class="subscribe_service">'
 						. '<a'
-							. ' href="' . str_replace('%feed_url%', $args['feed_url'], $details['url']) . '"'
+							. ' href="' . $details['url'] . '"'
 							. ' style="background: url('
 								. $args['img_path'] . $details['button']
 								. ')'
@@ -278,7 +257,19 @@ class subscribe_me
 				default:
 					$o .= '<div class="subscribe_service">'
 						. '<a'
-							. ' href="' . str_replace('%site_url%', $args['site_path'], str_replace('%feed_url%', $args['feed_url'], $details['url'])) . '"'
+							. ' href="'
+								. str_replace(
+									'%site_url%',
+									urlencode($args['site_path']),
+									str_replace(
+										'%feed_url%',
+										( strpos($details['url'], '?') !== false
+											? urlencode($args['feed_url'])
+											: $args['feed_url']
+											),
+										$details['url']
+										)
+									) . '"'
 							. ( $options['add_nofollow']
 								? ' rel="nofollow"'
 								: ''
@@ -300,7 +291,6 @@ class subscribe_me
 		$o .= '</div>' . "\n";
 
 		$o .= '</div>' . "\n"
-			. '</div>' . "\n"
 			. $args['after_widget'] . "\n";
 
 
@@ -343,7 +333,7 @@ class subscribe_me
 	{
 		echo '<link rel="stylesheet" type="text/css"'
 			. ' href="'
-				. trailingslashit(get_settings('siteurl'))
+				. trailingslashit(get_option('siteurl'))
 				. 'wp-content/plugins/sem-subscribe-me/sem-subscribe-me.css'
 				. '"'
 			. ' />' . "\n";
@@ -358,7 +348,7 @@ class subscribe_me
 	{
 		echo '<script type="text/javascript"'
 			. ' src="'
-				. trailingslashit(get_settings('siteurl'))
+				. trailingslashit(get_option('siteurl'))
 				. 'wp-content/plugins/sem-subscribe-me/sem-subscribe-me.js'
 				. '"'
 			. '></script>' . "\n";
@@ -390,7 +380,7 @@ class subscribe_me
 
 add_action('wp_head', array('subscribe_me', 'css'));
 add_action('wp_head', array('subscribe_me', 'js'));
-add_action('plugins_loaded', array('subscribe_me', 'widgetize'));
+add_action('widgets_init', array('subscribe_me', 'widgetize'));
 
 
 #

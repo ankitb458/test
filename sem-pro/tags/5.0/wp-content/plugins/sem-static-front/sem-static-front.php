@@ -2,10 +2,12 @@
 /*
 Plugin Name: Static Front Page
 Plugin URI: http://www.semiologic.com/software/publishing/static-front/
-Description: Sticks the page with a slug of 'home' to your front page.
+Description: Lets you stick the page with a slug of 'home' to your front page, and display your blog in the page with a slug of 'blog'.
 Author: Denis de Bernardy
-Version: 3.1
+Version: 3.2
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: static_front
 */
 
 /*
@@ -17,19 +19,6 @@ This software is copyright Mesoconcepts Ltd, and is distributed under the terms 
 http://www.semiologic.com/legal/license/
 **/
 
-
-if ( !defined('use_post_type_fixed') )
-{
-	define(
-		'use_post_type_fixed',
-			version_compare(
-				'2.1',
-				$GLOBALS['wp_version'], '<='
-				)
-			||
-			function_exists('get_site_option')
-		);
-}
 
 class sem_static_front
 {
@@ -58,14 +47,8 @@ class sem_static_front
 				FROM
 					$wpdb->posts as posts
 				WHERE
-				" . ( use_post_type_fixed
-					? "posts.post_status = 'publish' AND posts.post_type = 'page'
-				"
-					: "posts.post_status = 'static'
-				"
-					)
-				. "
-					AND posts.post_name = '" . addslashes($params['home_slug']) . "'
+				posts.post_status = 'publish' AND posts.post_type = 'page'
+				AND posts.post_name = '" . addslashes($params['home_slug']) . "'
 				LIMIT 1
 			");
 
@@ -75,14 +58,8 @@ class sem_static_front
 				FROM
 					$wpdb->posts as posts
 				WHERE
-				" . ( use_post_type_fixed
-					? "posts.post_status = 'publish' AND posts.post_type = 'page'
-				"
-					: "posts.post_status = 'static'
-				"
-					)
-				. "
-					AND posts.post_name = '" . addslashes($params['blog_slug']) . "'
+				posts.post_status = 'publish' AND posts.post_type = 'page'
+				AND posts.post_name = '" . addslashes($params['blog_slug']) . "'
 				LIMIT 1
 			");
 
@@ -110,6 +87,8 @@ class sem_static_front
 
 		add_action('the_posts', array('sem_static_front', 'blog_page'));
 		add_action('option_page_for_posts', array('sem_static_front', 'page_for_posts'));
+
+		add_action('load-options-reading.php', array('sem_static_front', 'hide_fp_options'));
 	} # init()
 
 
@@ -184,7 +163,7 @@ class sem_static_front
 		}
 		elseif ( sem_static_front::is_blog() )
 		{
-			#$posts_where = " AND 1 = 0 ";
+			$posts_where = " AND 1 = 0 ";
 		}
 
 		return $posts_where;
@@ -224,7 +203,7 @@ class sem_static_front
 				$template = '';
 			}
 
-			if ( !empty($template) && file_exists(TEMPLATEPATH . '/' . $template) )
+			if ( $template && file_exists(TEMPLATEPATH . '/' . $template) )
 			{
 				$template = TEMPLATEPATH . '/' . $template;
 			}
@@ -284,7 +263,7 @@ class sem_static_front
 					<a
 						\s+
 						(?:[^>]+\s+)?
-						href=\"" . get_settings('home') . "\"
+						href=\"" . get_option('home') . "\"
 						(?:\s+[^>]+)?
 						>[^<]*
 					</a>
@@ -353,15 +332,19 @@ class sem_static_front
 	function blog_page($posts)
 	{
 		global $wp_query;
-		global $wp_rewrite;
 
-		if ( sem_static_front::is_blog() )
+		if ( sem_static_front::is_home() )
+		{
+			$wp_query->is_singular = true;
+			$wp_query->is_home = true;
+			$wp_query->is_page = true;
+		}
+		elseif ( sem_static_front::is_blog() )
 		{
 			sem_static_front::disable();
 
 			remove_action('option_show_on_front', array('sem_static_front', 'show_posts_on_front'));
 			add_action('option_show_on_front', array('sem_static_front', 'show_page_on_front'));
-			add_action('permalink_redirect_skip', array('sem_static_front', 'skip_redirect'));
 
 			$wp_query->is_singular = false;
 			$wp_query->is_page = false;
@@ -376,24 +359,30 @@ class sem_static_front
 
 
 	#
-	# skip_redirect()
+	# hide_fp_options()
 	#
 
-	function skip_redirect($no_redirect)
+	function hide_fp_options()
 	{
-		$skip = array(
-			'/' . str_replace(
-				trailingslashit(get_option('home')),
-				'',
-				get_permalink(sem_blog_page_id)
-				)
-			);
+		ob_start(array('sem_static_front', 'hide_fp_options_callback'));
+	} # hide_fp_options()
 
-		return array_merge(
-			(array) $no_redirect,
-			$skip
-			);
-	} # skip_redirect()
+
+	#
+	# hide_fp_options_callback()
+	#
+
+	function hide_fp_options_callback($buffer)
+	{
+		$buffer = preg_replace("/
+			<fieldset\sclass=\"options\">.*
+			<legend>" . preg_replace("/\s+/s", "\s+", __('Front Page')) . "<\/legend>
+			.*
+			<\/fieldset>
+			/isUx", '', $buffer);
+
+		return $buffer;
+	} # hide_fp_options_callback()
 } # sem_static_front
 
 sem_static_front::init();

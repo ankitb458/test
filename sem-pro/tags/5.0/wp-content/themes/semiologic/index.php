@@ -11,7 +11,7 @@
 
 
 # show header
-include_once TEMPLATEPATH . '/header.php';
+include_once sem_path . '/header.php';
 
 do_action('before_the_entries');
 
@@ -22,30 +22,26 @@ if ( have_posts() && !is_404() )
 	{
 		the_post();
 
-?>
-<div class="entry" id="entry-<?php the_ID(); ?>">
-<?php
-		do_action('before_the_entry');
-		do_action('display_entry_header');
-		do_action('display_entry_body');
-		do_action('display_entry_spacer');
-		do_action('display_entry_meta');
-		do_action('display_entry_actions');
-		do_action('after_the_entry');
-?>
-</div>
-<?php
+		echo '<div class="entry" id="entry-' . get_the_ID() . '">';
+
+		do_action('the_entry');
+
+		echo '</div>';
 	}
 
 }
 # or fallback
 else
 {
+	echo '<div class="entry">';
+
 	do_action('display_404');
+
+	echo '</div>';
 }
 
 do_action('after_the_entries');
 
 # show footer
-include_once TEMPLATEPATH . '/footer.php';
+include_once sem_path . '/footer.php';
 ?>

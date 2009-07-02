@@ -2,10 +2,12 @@
 /*
 Plugin Name: HitsLink
 Plugin URI: http://www.semiologic.com/software/marketing/hitslink/
-Description: Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> to your blog, with all sorts of advanced tracking toys enabled.
+Description: Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> to your blog, with various tracking features enabled.
 Author: Denis de Bernardy
-Version: 1.2
+Version: 1.3
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: hitslink
 */
 
 /*
@@ -23,18 +25,6 @@ if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
 {
 	include_once dirname(__FILE__) . '/hitslink-admin.php';
 }
-
-
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
 
 
 load_plugin_textdomain('hitslink');
@@ -106,7 +96,7 @@ class hitslink
 				$data = preg_replace("/(?:\?|&)subscribed/", "", $_SERVER['REQUEST_URI']);
 				$ref = '';
 			}
-			elseif ( is_404() || ( ( is_single() || is_page() ) && !have_posts() ) )
+			elseif ( is_404() || ( is_singular() && !have_posts() ) )
 			{
 				$track = "404";
 				$data = $_SERVER['REQUEST_URI'];

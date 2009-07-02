@@ -4,8 +4,10 @@ Plugin Name: Unfancy Quote
 Plugin URI: http://www.semiologic.com/software/wp-fixes/unfancy-quote/
 Description: Removes WordPress fancy quotes, which is very useful if you post code snippets to your site.
 Author: Denis de Bernardy
-Version: 2.0
+Version: 2.2
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: unfancy_quote
 */
 
 /*
@@ -40,6 +42,7 @@ class sem_unfancy_quote
 		add_filter('the_content', array(&$this, 'strip_quotes'), 20);
 		add_filter('the_excerpt', array(&$this, 'strip_quotes'), 20);
 		add_filter('bloginfo', array(&$this, 'strip_quotes'), 20);
+		add_filter('widget_text', array(&$this, 'strip_quotes'), 20);
 	} # end sem_unfancy_quote()
 
 

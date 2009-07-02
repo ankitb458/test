@@ -5,7 +5,9 @@
 
 function get_active_skin()
 {
-	return apply_filters('active_skin', $GLOBALS['semiologic']['active_skin']['skin']);
+	global $sem_options;
+
+	return apply_filters('active_skin', $sem_options['active_skin']['skin']);
 } # end get_active_skin()
 
 
@@ -15,9 +17,11 @@ function get_active_skin()
 
 function get_skin_credits()
 {
-	$name = $GLOBALS['semiologic']['active_skin']['name'];
-	$author = $GLOBALS['semiologic']['active_skin']['author'];
-	$author_uri = $GLOBALS['semiologic']['active_skin']['author_uri'];
+	global $sem_options;
+
+	$name = $sem_options['active_skin']['name'];
+	$author = $sem_options['active_skin']['author'];
+	$author_uri = $sem_options['active_skin']['author_uri'];
 
 	return str_replace(
 		array('%name%', '%author%', '%author_uri%'),
@@ -33,7 +37,9 @@ function get_skin_credits()
 
 function get_active_font()
 {
-	return apply_filters('active_font', $GLOBALS['semiologic']['active_font']);
+	global $sem_options;
+
+	return apply_filters('active_font', $sem_options['active_font']);
 } # end get_active_font()
 
 
@@ -43,7 +49,9 @@ function get_active_font()
 
 function get_active_font_size()
 {
-	$active_font_size = apply_filters('active_font_size', $GLOBALS['semiologic']['active_font_size']);
+	global $sem_options;
+
+	$active_font_size = apply_filters('active_font_size', $sem_options['active_font_size']);
 
 	return $active_font_size ? $active_font_size : 'small';
 } # end get_active_font()
@@ -100,13 +108,13 @@ function display_custom_css()
 		&& $active_width != 'sell'
 		)
 	{
-		if ( file_exists(TEMPLATEPATH . '/custom.css') )
+		if ( file_exists(sem_path . '/custom.css') )
 		{
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo get_stylesheet_directory_uri() . '/custom.css'; ?>" />
 <?php
 		}
-		if ( file_exists(TEMPLATEPATH . '/skins/' . $active_skin . '/custom.css') )
+		if ( file_exists(sem_path . '/skins/' . $active_skin . '/custom.css') )
 		{
 ?>
 <link rel="stylesheet" type="text/css" href="<?php echo get_stylesheet_directory_uri() . '/skins/' . $active_skin . '/custom.css'; ?>" />

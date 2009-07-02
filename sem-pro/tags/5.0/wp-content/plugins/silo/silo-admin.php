@@ -17,10 +17,29 @@ class silo_admin
 
 	function init()
 	{
-		add_action('save_post', array('silo_admin', 'flush_cache'));
-		add_action('delete_post', array('silo_admin', 'flush_cache'));		
-		add_action('plugins_loaded', array('silo_admin', 'widgetize'));
+		add_action('widgets_init', array('silo_admin', 'widgetize'));
+
+		add_action('edit_page_form', array('silo_admin', 'page_tags'));
 	} # init()
+
+
+	#
+	# page_tags()
+	#
+
+	function page_tags()
+	{
+		if ( !isset($GLOBALS['simple_tags_admin']) )
+		{
+			global $post_ID;
+?>
+<fieldset id="tagdiv">
+	<legend><?php _e('Tags (separate multiple tags with commas: cats, pet food, dogs).'); ?></legend>
+	<div><input type="text" name="tags_input" class="tags-input" id="tags-input" size="30" tabindex="3" value="<?php echo get_tags_to_edit( $post_ID ); ?>" /></div>
+</fieldset>
+<?php
+		}
+	} # page_tags()
 
 
 	#
@@ -31,26 +50,26 @@ class silo_admin
 	{
 		if ( function_exists('register_widget_control') )
 		{
-			register_widget_control('Silo Pages', array('silo_admin', 'widget_control'));
+			register_widget_control('Silo Pages', array('silo_admin', 'widget_pages_control'));
 		}
 	} # widgetize()
 
 
 	#
-	# widget_control()
+	# widget_pages_control()
 	#
 
-	function widget_control()
+	function widget_pages_control()
 	{
-		$options = get_settings('silo_options');
+		$options = get_option('silo_options');
 
-		if ( $_POST["silo_update"] )
+		if ( $_POST["silo_pages_update"] )
 		{
 			$new_options = $options;
 
-			$new_options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST["silo_title"])));
+			$new_options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST["silo_pages_title"])));
 
-			preg_match_all("/\d+/", $_POST["silo_exclude"], $exclude);
+			preg_match_all("/\d+/", $_POST["silo_pages_exclude"], $exclude);
 			$new_options['exclude'] = end($exclude);
 
 			if ( $options != $new_options )
@@ -58,8 +77,8 @@ class silo_admin
 				$options = $new_options;
 
 				update_option('silo_options', $options);
-				
-				silo_admin::flush_cache(0);
+
+				silo::flush_cache(0);
 			}
 		}
 		elseif ( $options === false )
@@ -77,8 +96,8 @@ class silo_admin
 		}
 
 		echo '<input type="hidden"'
-				. ' id="silo_update"'
-				. ' name="silo_update"'
+				. ' id="silo_pages_update"'
+				. ' name="silo_pages_update"'
 				. ' value="1"'
 				. ' />'
 			. '<p>'
@@ -86,41 +105,23 @@ class silo_admin
 				. __('Title:')
 				. '&nbsp;'
 				. '<input style="width: 250px;"'
-					. ' id="silo_title"'
-					. ' name="silo_title"'
+					. ' id="silo_pages_title"'
+					. ' name="silo_pages_title"'
 					. ' type="text" value="' . $title . '" />'
 				. '</label>'
 				. '</p>'
 			. '<p>'
-			. '<label for="silo_exclude">'
+			. '<label for="silo_pages_exclude">'
 			. __('Exclude (ID list)') . ':'
 			. '<br />'
 			. '<input type="text" style="width: 250px;"'
-				. ' id="silo_exclude" name="silo_exclude"'
+				. ' id="silo_pages_exclude" name="silo_pages_exclude"'
 				. ' value="' . $exclude . '"'
 				. ' />'
 			. '</label>'
-			. '</p>';
-
-	} # widget_control()
-
-
-	#
-	# flush_cache()
-	#
-
-	function flush_cache($id)
-	{
-		if ( $files = glob(ABSPATH . 'wp-content/cache/silo-pages/*') )
-		{
-			foreach ( $files as $file )
-			{
-				@unlink($file);
-			}
-		}
-
-		return $id;
-	} # flush_cache()
+			. '</p>'
+			;
+	} # widget_pages_control()
 } # silo_admin
 
 silo_admin::init();

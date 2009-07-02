@@ -2,10 +2,12 @@
 /*
 Plugin Name: External Links
 Plugin URI: http://www.semiologic.com/software/publishing/external-links/
-Description: Adds a class=&quot;external&quot; to all outbound links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the feature.
+Description: Adds a class=&quot;external&quot; to all outbound links, with various effects that are configurable under Options / External Links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the icon on individual links.
 Author: Denis de Bernardy
-Version: 2.10
+Version: 2.11
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: external_links
 */
 
 /*
@@ -23,18 +25,6 @@ if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
 {
 	include_once dirname(__FILE__) . '/sem-external-links-admin.php';
 }
-
-
-# fix php 5.2
-
-if ( !function_exists('ob_end_flush_all') ) :
-function ob_end_flush_all()
-{
-	while ( @ob_end_flush() );
-}
-
-register_shutdown_function('ob_end_flush_all');
-endif;
 
 
 #
@@ -84,7 +74,7 @@ function sem_external_links_css()
 	{
 		echo '<link rel="stylesheet" type="text/css"'
 			. ' href="'
-				. trailingslashit(get_settings('siteurl'))
+				. trailingslashit(get_option('siteurl'))
 				. 'wp-content/plugins/sem-external-links/sem-external-links.css'
 				. '"'
 			. ' />';
@@ -146,7 +136,7 @@ function sem_external_links($buffer)
 
 	global $site_host;
 
-	$site_host = trailingslashit(get_settings('home'));
+	$site_host = trailingslashit(get_option('home'));
 	$site_host = preg_replace("~^https?://~i", "", $site_host);
 	$site_host = preg_replace("~^www\.~i", "", $site_host);
 	$site_host = preg_replace("~/.*$~", "", $site_host);
@@ -156,7 +146,7 @@ function sem_external_links($buffer)
 		<\s*a					# ancher tag
 			(?:\s[^>]*)?		# optional attributes
 			\s*href\s*=\s*		# href=...
-			(?:
+			(
 				\"[^\"]*\"		# double quoted link
 			|
 				'[^']*'			# single quoted link
@@ -188,9 +178,9 @@ function sem_external_links_escape_anchors($input)
 {
 	global $escaped_external_links;
 
-#	echo '<pre>';
-#	var_dump($input);
-#	echo '</pre>';
+	#echo '<pre>';
+	#var_dump($input);
+	#echo '</pre>';
 
 	$tag_id = '--escaped_external_link:' . md5($input[0]) . '--';
 	$escaped_external_links[$tag_id] = $input[0];
@@ -253,27 +243,33 @@ function sem_external_links_callback($input)
 {
 	global $site_host;
 
-	$link = $input[0];
+	$anchor = $input[0];
+	$link = $input[1];
 
 #	echo '<pre>';
 #	var_dump(
 #		get_option('sem_external_links_params'),
-#		str_replace(array('<', '>'), array('&lt;', '&gt;'), $link)
+#		htmlspecialchars($link),
+#		htmlspecialchars($anchor)
 #		);
 #	echo '</pre>';
 
-	if ( strpos($link, '://') !== false
-		&& !preg_match(
-			"/
-				href\s*=\s*
-				(?:\"|')?
-				https?:\/\/
-				(?:www\.)?
-				" . str_replace('.', '\.', $site_host) . "
-			/ix",
-			$link
+	if ( ( strpos($link, '://') !== false
+			&& !preg_match(
+				"/
+					https?:\/\/
+					" . str_replace('.', '\.', $site_host) . "
+				/ix",
+				$link
+				)
 			)
-		#&& strpos($link, $site_host) === false
+		|| preg_match("/
+				\/
+				(?:go|get)
+				(?:\.|\/)
+				/ix",
+				$link
+				)
 		)
 	{
 		$options = get_option('sem_external_links_params');
@@ -292,7 +288,7 @@ function sem_external_links_callback($input)
 						([^\"'][^\s>]*)
 					)
 				/iUx",
-				$link,
+				$anchor,
 				$match
 				) )
 			{
@@ -313,19 +309,19 @@ function sem_external_links_callback($input)
 					$match[1]
 					) )
 				{
-					$link = str_replace(
+					$anchor = str_replace(
 						$match[0],
 						'class="' . $match[1] . ' external"',
-						$link
+						$anchor
 						);
 				}
 			}
 			else
 			{
-				$link = str_replace(
+				$anchor = str_replace(
 					'>',
 					' class="external">',
-					$link
+					$anchor
 					);
 			}
 		}
@@ -337,13 +333,13 @@ function sem_external_links_callback($input)
 					\b
 					target\s*=
 				/iUx",
-				$link
+				$anchor
 				) )
 			{
-				$link = str_replace(
+				$anchor = str_replace(
 					'>',
 					' target="_blank">',
-					$link
+					$anchor
 					);
 			}
 		}
@@ -362,7 +358,7 @@ function sem_external_links_callback($input)
 						([^\"'][^\s>]*)
 					)
 				/iUx",
-				$link,
+				$anchor,
 				$match
 				) )
 			{
@@ -383,25 +379,25 @@ function sem_external_links_callback($input)
 					$match[1]
 					) )
 				{
-					$link = str_replace(
+					$anchor = str_replace(
 						$match[0],
 						'rel="' . $match[1] . ' nofollow"',
-						$link
+						$anchor
 						);
 				}
 			}
 			else
 			{
-				$link = str_replace(
+				$anchor = str_replace(
 					'>',
 					' rel="nofollow">',
-					$link
+					$anchor
 					);
 			}
 		}
 	}
 
-	return $link;
+	return $anchor;
 } # end sem_external_links_callback()
 
 

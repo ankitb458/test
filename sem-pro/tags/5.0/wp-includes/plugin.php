@@ -19,7 +19,9 @@ function add_filter($tag, $function_to_add, $priority = 10, $accepted_args = 1) 
 	global $wp_filter, $merged_filters;
 
 	// So the format is wp_filter['tag']['array of priorities']['array of functions serialized']['array of ['array (functions, accepted_args)]']
-	$wp_filter[$tag][$priority][serialize($function_to_add)] = array('function' => $function_to_add, 'accepted_args' => $accepted_args);
+	$idx = _wp_filter_build_unique_id($tag, $function_to_add, $priority);
+    $wp_filter[$tag][$priority][$idx] = array('function' => $function_to_add, 'accepted_args' => $accepted_args);
+	//$wp_filter[$tag][$priority][serialize($function_to_add)] = array('function' => $function_to_add, 'accepted_args' => $accepted_args);
 	unset( $merged_filters[ $tag ] );
 	return true;
 }
@@ -50,13 +52,14 @@ function apply_filters($tag, $string) {
 
 	$args = func_get_args();
 
-	foreach ( $wp_filter[$tag] as $filter ) {
-		foreach( (array) $filter as $the_ )
+	do{
+		foreach( (array) current($wp_filter[$tag]) as $the_ )
 			if ( !is_null($the_['function']) ){
 				$args[1] = $string;
 				$string = call_user_func_array($the_['function'], array_slice($args, 1, (int) $the_['accepted_args']));
 			}
-	}
+
+	} while ( next($wp_filter[$tag]) !== false );
 
 	return $string;
 }
@@ -96,12 +99,14 @@ function merge_filters($tag) {
  * @return boolean Whether the function is removed.
  */
 function remove_filter($tag, $function_to_remove, $priority = 10, $accepted_args = 1) {
-	global $wp_filter, $merged_filters;
+	$function_to_remove = _wp_filter_build_unique_id($tag, $function_to_remove, $priority);
 
-	unset($GLOBALS['wp_filter'][$tag][$priority][serialize($function_to_remove)]);
-	unset( $merged_filters[ $tag ] );
+	$r = isset($GLOBALS['wp_filter'][$tag][$priority][$function_to_remove]);
 
-	return true;
+	unset($GLOBALS['wp_filter'][$tag][$priority][$function_to_remove]);
+	unset($GLOBALS['merged_filters'][$tag]);
+
+	return $r;
 }
 
 /**
@@ -202,7 +207,7 @@ function do_action_ref_array($tag, $args) {
 			if ( !is_null($the_['function']) )
 				call_user_func_array($the_['function'], array_slice($args, 0, (int) $the_['accepted_args']));
 
-	} while ( next($wp_filter[$tag]) );
+	} while ( next($wp_filter[$tag]) !== false );
 
 }
 
@@ -219,7 +224,7 @@ function do_action_ref_array($tag, $args) {
  * @return boolean Whether the function is removed.
  */
 function remove_action($tag, $function_to_remove, $priority = 10, $accepted_args = 1) {
-	remove_filter($tag, $function_to_remove, $priority, $accepted_args);
+	return remove_filter($tag, $function_to_remove, $priority, $accepted_args);
 }
 
 //
@@ -234,8 +239,9 @@ function remove_action($tag, $function_to_remove, $priority = 10, $accepted_args
  * @return string The name of a plugin.
  */
 function plugin_basename($file) {
-	$file = preg_replace('|\\\\+|', '\\\\', $file);
-	$file = preg_replace('/^.*wp-content[\\\\\/]plugins[\\\\\/]/', '', $file);
+	$file = str_replace('\\','/',$file); // sanitize for Win32 installs
+	$file = preg_replace('|/+|','/', $file); // remove any duplicate slash
+	$file = preg_replace('|^.*/wp-content/plugins/|','',$file); // get relative path from plugins dir
 	return $file;
 }
 
@@ -275,6 +281,31 @@ function register_activation_hook($file, $function) {
 function register_deactivation_hook($file, $function) {
 	$file = plugin_basename($file);
 	add_action('deactivate_' . $file, $function);
+}
+
+function _wp_filter_build_unique_id($tag, $function, $priority = 10)
+{
+	global $wp_filter;
+
+	// If function then just skip all of the tests and not overwrite the following.
+	// Static Calling
+	if( is_string($function) )
+		return $function;
+	// Object Class Calling
+	else if(is_object($function[0]) )
+	{
+		$obj_idx = get_class($function[0]).$function[1];
+		if( is_null($function[0]->wp_filter_id) ) {
+			$count = count((array)$wp_filter[$tag][$priority]);
+			$function[0]->wp_filter_id = $count;
+			$obj_idx .= $count;
+			unset($count);
+		} else
+			$obj_idx .= $function[0]->wp_filter_id;
+		return $obj_idx;
+	}
+	else if( is_string($function[0]) )
+		return $function[0].$function[1];
 }
 
 ?>

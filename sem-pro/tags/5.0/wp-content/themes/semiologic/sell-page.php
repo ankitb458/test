@@ -11,10 +11,10 @@
 
 
 /*
-Template Name: Sales Page Template
+Template Name: Sales Letter Template
 */
 
 do_action('setup_template', 'sell_page');
 
-require_once TEMPLATEPATH . '/index.php';
+require_once sem_path . '/index.php';
 ?>

@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Simple Trackback Validation
+Plugin Name: Simple Trackback Validation (fork)
 Plugin URI: http://sw-guide.de/wordpress/plugins/simple-trackback-validation/
 Description: Eliminates spam trackbacks by (1) checking if the IP address of the trackback sender is equal to the IP address of the webserver the trackback URL is referring to and (2) by retrieving the web page located at the URL used in the trackback and checking if the page contains a link to your blog.
-Version: 2.1
+Version: 2.3 fork
 Author: Michael Woehrer
 Author URI: http://sw-guide.de
  	    ____________________________________________________
@@ -47,18 +47,18 @@ if ( !is_array($stbv_opt) ) {
 		'stbv_enablelog' => '',
 		'stbv_addblockinfo' => '1',
 		'stbv_moderrors' => '1',
-		
-	);	
+
+	);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Apply the plugin
 ////////////////////////////////////////////////////////////////////////////////
 
-# 'preprocess_comment' filter is applied to the comment data prior to any other 
-# processing, when saving a new comment in the database. Function arguments: 
-# comment data array, with indices "comment_post_ID", "comment_author", 
-# "comment_author_email", "comment_author_url", "comment_content", 
+# 'preprocess_comment' filter is applied to the comment data prior to any other
+# processing, when saving a new comment in the database. Function arguments:
+# comment data array, with indices "comment_post_ID", "comment_author",
+# "comment_author_email", "comment_author_url", "comment_content",
 # "comment_type", and "user_ID".
 add_filter('preprocess_comment', 'stbv_main', 1, 1);
 
@@ -82,7 +82,7 @@ function stbv_main($incomingTB) {
 	####################################
 	if ( $incomingTB['comment_type'] != 'trackback' ) return $incomingTB;
 
-	####################################	
+	####################################
 	# Get trackback information
 	####################################
  	$stbv_val['comment_author'] = $incomingTB['comment_author'];
@@ -101,7 +101,7 @@ function stbv_main($incomingTB) {
 			}
 		}
 	}
-	
+
 	####################################
 	# 'Is Spam' flag is FALSE by default. Below we check several things
 	# and this flag will become true as soon as we have any doubts.
@@ -118,7 +118,7 @@ function stbv_main($incomingTB) {
 	# If Author's URL is not correct, it will be considered as spam.
 	####################################
 	if (!$stbv_val['is_spam'] && substr($stbv_val['comment_author_url'], 0, 4) != 'http') {
-		$stbv_val['log_info'][]['warning'] = 'Author\'s URL was found not to be correct'; 
+		$stbv_val['log_info'][]['warning'] = 'Author\'s URL was found not to be correct';
 		$stbv_val['is_spam'] = true;
 	}
 
@@ -133,11 +133,11 @@ function stbv_main($incomingTB) {
 
 		if ( $tmpSender_IP != $tmpURL_IP) {
 			$stbv_val['log_info'][]['info'] = 'Sender\'s IP address (' . $tmpSender_IP . ') not equal to IP address of host (' . $tmpURL_IP . ').';
-			$stbv_val['is_spam'] = true;	
+			$stbv_val['is_spam'] = true;
 		} else {
 			$stbv_val['log_info'][]['info'] = 'IP address (' . $tmpSender_IP . ') was found to be valid.';
 		}
-		
+
 	} elseif ( $stbv_opt['stbv_validateIP'] != '1' ) {
 		$stbv_val['log_info'][]['info'] = 'IP address validation (Phase 1) skipped since it is not enabled in the plugin\'s options.';
 	}
@@ -153,11 +153,11 @@ function stbv_main($incomingTB) {
 			// Loading snoopy failed
 			$stbv_val['log_info'][]['warning'] = 'Loading PHP Snoopy class failed. Phase 2 skipped.';
 			$stbv_val['snoopy_problem'] = true;
-		} else { 
+		} else {
 			// Create new Snoopy object
 			$stbvSnoopy = new Snoopy;
 		}
-	
+
 		# Fetch all URLs of the author's web page
 		if (!$stbv_val['is_spam'] && !$stbv_val['snoopy_problem'] && ! @$stbvSnoopy->fetchlinks($stbv_val['comment_author_url']) ) {
 				// Snoopy couldn't couldn't reach the target website, Snoopy error occurred, or something else...
@@ -166,29 +166,29 @@ function stbv_main($incomingTB) {
 		} else {
 			$stbvAuthorUrlArray = $stbvSnoopy->results;
 		}
-	
+
 		# Check if URL array contains link to website
 		if (!$stbv_val['is_spam'] && !$stbv_val['snoopy_problem'] && is_array($stbvAuthorUrlArray) ) {
 			$loopSuccess = false;
-			
+
 			foreach ($stbvAuthorUrlArray as $loopUrl) {
-	
+
 				// Remove trailing slash, "/trackback" and "/trackback/"
 				$loopUrl = preg_replace('/(\/|\/trackback|\/trackback\/)$/', '', $loopUrl);
-				
-	
+
+
 				if ( ($stbv_opt['stbv_accuracy'] == 'open') && (is_array($stbv_blogurlsArray)) ) {
 					// We have more than one URL to be checked
 					$loopInnerSuccess = false;
-					
+
 					foreach ($stbv_blogurlsArray as $loopOptionsURL) {
-						// Check if the first chars of the URL of remote page contain URL of the options 		
+						// Check if the first chars of the URL of remote page contain URL of the options
 						if (substr($loopUrl, 0, strlen($loopOptionsURL)) == $loopOptionsURL) {
-							$loopInnerSuccess = true; 
+							$loopInnerSuccess = true;
 							break;
 						}
 					}
-					if ( $loopInnerSuccess ) { 
+					if ( $loopInnerSuccess ) {
 						$loopSuccess = true;
 						break;
 					}
@@ -200,7 +200,7 @@ function stbv_main($incomingTB) {
 					}
 				}
 			}
-			if ( !$loopSuccess ) { 
+			if ( !$loopSuccess ) {
 				$stbv_val['log_info'][]['info'] = 'The target URL was not found on the source website, therefore the trackback is considered to be spam.';
 				$stbv_val['is_spam'] = true;
 			} else {
@@ -213,7 +213,7 @@ function stbv_main($incomingTB) {
 	}
 
 	####################################
-	# Now we know if we have a trackback spam or not. 
+	# Now we know if we have a trackback spam or not.
 	####################################
 	if (($stbv_opt['stbv_moderrors'] == '1') && $stbv_val['snoopy_problem']) {
 		if ($stbv_opt['stbv_enablelog'] == '1') stbv_log_addentry('Trackback placed into comment moderation due to an occurred problem while retrieving URLs from source website.');
@@ -226,9 +226,9 @@ function stbv_main($incomingTB) {
 		return $incomingTB;
 	} else {
 		# **** It is Trackback Spam ***
-		# We put trackback in moderation queue, mark as spam or delete right away	
+		# We put trackback in moderation queue, mark as spam or delete right away
 		switch ($stbv_opt['stbv_action']) {
-			case 'delete':	
+			case 'delete':
 				if ($stbv_opt['stbv_enablelog'] == '1') stbv_log_addentry('Trackback discarded.');
 				die('Your trackback has been rejected.');
 				break;
@@ -242,12 +242,12 @@ function stbv_main($incomingTB) {
 				if ($stbv_opt['stbv_enablelog'] == '1') stbv_log_addentry('Trackback placed into comment moderation.');
 				if ($stbv_opt['stbv_addblockinfo'] == '1')	$incomingTB['comment_author'] = '[BLOCKED BY STBV] ' . $incomingTB['comment_author'];
 				add_filter('pre_comment_approved', create_function('$a', 'return \'0\';'));
-				return $incomingTB;	
+				return $incomingTB;
 		}
-		
+
 	}
-	
-	
+
+
 } // function stbv_main()
 
 
@@ -294,6 +294,8 @@ function stbv_adminOptions() {
 	/* Check form submission and update options if no error occurred */
 	if (isset($_POST['submit']) ) {
 
+		check_admin_referer('simple_trackback_validation');
+
 		// Options array
 		$stbv_opt_update = array (
 			'stbv_blogurls' => stbv_txtLineBreakToWhiteSpace($_POST['stbv_blogurls']),
@@ -312,7 +314,7 @@ function stbv_adminOptions() {
 	/* Get options */
 	$stbv_opt = get_option('plugin_simple_tb_validation2');
 
-	
+
 	?>
 
 	<style type="text/css">
@@ -375,8 +377,8 @@ function stbv_adminOptions() {
 				<div class="additional">
 
 					<p><strong>Additional options:</strong></p>
-	
-					<input name="stbv_addblockinfo" type="checkbox" id="stbv_addblockinfo" value="1" <?php checked('1', $stbv_opt['stbv_addblockinfo']); ?>"  /> 
+
+					<input name="stbv_addblockinfo" type="checkbox" id="stbv_addblockinfo" value="1" <?php checked('1', $stbv_opt['stbv_addblockinfo']); ?>"  />
 					<label for="stbv_addblockinfo">Add prefix [BLOCKED BY STBV] to author's name if trackback is placed into moderation or marked as spam</label>
 					<br /><span style="margin-left: 20px; color: grey; font-size: 90%;">This option is helpful if you want to see in the comment moderation or akismet spam list which trackbacks were blocked by Simple Trackback Validation.</span>
 
@@ -385,7 +387,7 @@ function stbv_adminOptions() {
 
 			<h3>Validation Phase 1: IP Address</h3>
 
-				<input name="stbv_validateIP" type="checkbox" id="stbv_validateIP" value="1" <?php checked('1', $stbv_opt['stbv_validateIP']); ?>"  /> 
+				<input name="stbv_validateIP" type="checkbox" id="stbv_validateIP" value="1" <?php checked('1', $stbv_opt['stbv_validateIP']); ?>"  />
 				<label for="stbv_validateIP"><strong>Validate IP Address</strong></label>
 				<br /><span style="margin-left: 20px; color: grey; font-size: 90%;">
 				Checks if the IP address of the trackback sender is equal to the IP address of the webserver the trackback URL is referring to.
@@ -393,18 +395,18 @@ function stbv_adminOptions() {
 
 			<h3>Validation Phase 2: URL</h3>
 
-				<input name="stbv_validateURL" type="checkbox" id="stbv_validateURL" value="1" <?php checked('1', $stbv_opt['stbv_validateURL']); ?>"  /> 
+				<input name="stbv_validateURL" type="checkbox" id="stbv_validateURL" value="1" <?php checked('1', $stbv_opt['stbv_validateURL']); ?>"  />
 				<label for="stbv_validateURL"><strong>Validate URL</strong></label>
 				<br /><span style="margin-left: 20px; color: grey; font-size: 90%;">Retrieves the web page located at the URL included in the trackback to check if it contains a link to your blog</span>
 
 				<div class="additional">
 
 					<p><strong>Strictness:</strong></p>
-	
+
 					<input id="radiob1" type="radio" name="stbv_accuracy" value="strict" <?php echo ($stbv_opt['stbv_accuracy']!='open'?'checked="checked"':'') ?> />
 					<label for="radiob1">Strict: A permalink needs to be used</label>
-					<p style="margin-left: 35px; color: grey; font-size: 90%;">That means that e.g. a link to your blog's home (<?php bloginfo('url'); ?>) will not be accepted; 
-					If the permalink of your post is not available on the trackback's source page, the trackback is considered as spam.   
+					<p style="margin-left: 35px; color: grey; font-size: 90%;">That means that e.g. a link to your blog's home (<?php bloginfo('url'); ?>) will not be accepted;
+					If the permalink of your post is not available on the trackback's source page, the trackback is considered as spam.
 					</p>
 					<input id="radiob2" type="radio" name="stbv_accuracy" value="open" <?php echo ($stbv_opt['stbv_accuracy']=='open'?'checked="checked"':'') ?> />
 					<label for="radiob2">Any link beginning with the following URLs is allowed:</label>
@@ -412,8 +414,8 @@ function stbv_adminOptions() {
 					<textarea style="margin: 10px 0 0 35px" name="stbv_blogurls" id="stbv_blogurls" cols="100%" rows="2" ><?php echo stbv_txtWhiteSpaceToLineBreak($stbv_opt['stbv_blogurls']); ?></textarea>
 					<p style="margin-left: 35px; color: grey; font-size: 90%;">
 					Separate multiple URLs with new lines.<br />
-					If you enter for example your blog's URL (<span style="color: #073991;"><?php bloginfo('url'); ?></span>), any link that begins with that URL, 
-					e.g. "<em><?php bloginfo('url'); ?>/about-me/</em>, will be accepted, even if it is completely different to the actual permalink of the post.			
+					If you enter for example your blog's URL (<span style="color: #073991;"><?php bloginfo('url'); ?></span>), any link that begins with that URL,
+					e.g. "<em><?php bloginfo('url'); ?>/about-me/</em>, will be accepted, even if it is completely different to the actual permalink of the post.
 					</p>
 
 				</div> <!-- [additional] -->
@@ -421,11 +423,11 @@ function stbv_adminOptions() {
 				<div class="additional">
 
 					<p><strong>Additional options:</strong></p>
-	
-					<input name="stbv_moderrors" type="checkbox" id="stbv_moderrors" value="1" <?php checked('1', $stbv_opt['stbv_moderrors']); ?>"  /> 
+
+					<input name="stbv_moderrors" type="checkbox" id="stbv_moderrors" value="1" <?php checked('1', $stbv_opt['stbv_moderrors']); ?>"  />
 					<label for="stbv_moderrors">Moderate in case of errors</label>
-					<br /><span style="margin-left: 20px; color: grey; font-size: 90%;">If an error occurrs while fetching the links 
-					from the website (e.g. website currently not available), the trackback is considered to be spam. By enabling this option, 
+					<br /><span style="margin-left: 20px; color: grey; font-size: 90%;">If an error occurrs while fetching the links
+					from the website (e.g. website currently not available), the trackback is considered to be spam. By enabling this option,
 					the trackbacks are being placed into moderation in this case.</span>
 
 				</div> <!-- [additional] -->
@@ -435,7 +437,7 @@ function stbv_adminOptions() {
 				<ul style="list-style: none; padding:0; margin:0;">
 
 					<li>
-						<input name="stbv_enablelog" type="checkbox" id="stbv_enablelog" value="1" <?php checked('1', $stbv_opt['stbv_enablelog']); ?>"  /> 
+						<input name="stbv_enablelog" type="checkbox" id="stbv_enablelog" value="1" <?php checked('1', $stbv_opt['stbv_enablelog']); ?>"  />
 						<label for="stbv_enablelog">Enable Log (latest 50 trackbacks will appear below)</label>
 						<br /><span style="margin-left: 20px; color: grey; font-size: 90%;">(Disable this option and click "<?php _e('Update Options &raquo;') ?>" to empty the log)</span>
 					</li>
@@ -443,14 +445,16 @@ function stbv_adminOptions() {
 
 				</ul>
 		</fieldset>
-	
+
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('simple_trackback_validation'); ?>
+
 		<p class="submit"><input type="submit" name="submit" value="<?php _e('Update Options &raquo;') ?>" /></p>
 
 		</form>
 
 		<!-- The log -->
 		<?php stbv_log_display(); ?>
-	
+
 		<!-- *********************** END: Main Content ********************* -->
 		</td><td class="right">
 		<!-- *********************** BEGIN: Sidebar ************************ -->
@@ -461,7 +465,7 @@ function stbv_adminOptions() {
 			<ul>
 				<li><a class="lhome" href="http://sw-guide.de/wordpress/plugins/simple-trackback-validation/">Plugin's Homepage</a></li>
 				<li><a class="lwp" href="http://wordpress.org/support/">WordPress Support</a></li>
-			</ul>			
+			</ul>
 		</dd>
 		</dl>
 
@@ -471,7 +475,7 @@ function stbv_adminOptions() {
 			<ul>
 				<li><a class="lpaypal" href="http://sw-guide.de/donation/paypal/">Donate via PayPal</a></li>
 				<li><a class="lamazon" href="http://sw-guide.de/donation/amazon/">My Amazon Wish List</a></li>
-			</ul>			
+			</ul>
 			<p class="donate">I spend a lot of time on the plugins I've written for WordPress.
 			Any donation would by highly appreciated.</p>
 
@@ -496,7 +500,7 @@ function stbv_adminOptions() {
 
 
 		<p style="margin-top: 30px; text-align: center; font-size: .85em;">&copy; Copyright 2006-2007&nbsp;&nbsp;<a href="http://sw-guide.de">Michael W&ouml;hrer</a></p>
-	
+
 	</div> <!-- [wrap] -->
 	<?php
 
@@ -518,14 +522,14 @@ function stbv_txtLineBreakToWhiteSpace($input) {
 
 	// Replace multiple whitespaces with only one space
 	$input = preg_replace('/\s\s+/', ' ', $input);
-	
+
 	// Replace white space with line break
-	$input = str_replace(' ', "\n", $input);	
-	
+	$input = str_replace(' ', "\n", $input);
+
 	// Replace linebreaks with white space, considering both \n and \r
 	$input = preg_replace("/\r|\n/s", ' ', $input);
 
-	// Create result. We create an array and loop thru it but do not consider empty values. 
+	// Create result. We create an array and loop thru it but do not consider empty values.
 	$sourceArray = explode(' ', $input);
 	$loopcount = 0;
 	$result = '';
@@ -535,15 +539,15 @@ function stbv_txtLineBreakToWhiteSpace($input) {
 
 			// Clean URL (it's a Wordpress function)
 			$loopval = clean_url($loopval);
-			
+
 			// Create separator
-			$sep = ''; 
+			$sep = '';
 			if ($loopcount >= 1) $sep = ' ';
-			
+
 			// result
 			$result .= $sep . $loopval;
-		
-			$loopcount++;				
+
+			$loopcount++;
 		}
 	}
 	return $result;
@@ -552,22 +556,22 @@ function stbv_txtLineBreakToWhiteSpace($input) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Replace white space with new line for displaying in text area 
+// Replace white space with new line for displaying in text area
 ////////////////////////////////////////////////////////////////////////////////
 function stbv_txtWhiteSpaceToLineBreak($input) {
 
 	$output = str_replace(' ', "\n", $input);
-	
+
 	return $output;
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Check if the current Wordpress installation is 1.x. 
+// Check if the current Wordpress installation is 1.x.
 ////////////////////////////////////////////////////////////////////////////////
 function stbv_isOldWordpress() {
 	global $wp_version;
-	if (preg_match("/^1\./", $wp_version)) { 
+	if (preg_match("/^1\./", $wp_version)) {
 		return true;
 	} else {
 		return false;
@@ -576,7 +580,7 @@ function stbv_isOldWordpress() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Add log entry 
+// Add log entry
 ////////////////////////////////////////////////////////////////////////////////
 function stbv_log_addentry($logmsg) {
 
@@ -605,7 +609,7 @@ function stbv_log_addentry($logmsg) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Display log 
+// Display log
 ////////////////////////////////////////////////////////////////////////////////
 function stbv_log_display() {
 
@@ -614,7 +618,7 @@ function stbv_log_display() {
 	if ($stbv_opt['stbv_enablelog'] == '1') {
 
 		wp_cache_delete('plugin_simple_tb_validation2_log', 'options');
-	
+
         $result = '';
 
 		$log = get_option('plugin_simple_tb_validation2_log');
@@ -632,9 +636,9 @@ function stbv_log_display() {
 			$log = array_reverse($log);
 			$count = 0;
 			foreach($log as $logline) {
-			
+
 				// Format input or get values
-				$logline['time'] = date(get_settings('date_format'), floatval($logline['time'])) . ', ' . date(get_settings('time_format'), floatval($logline['time']));
+				$logline['time'] = date(get_option('date_format'), floatval($logline['time'])) . ', ' . date(get_option('time_format'), floatval($logline['time']));
 				$logline['comment_post_title'] = get_the_title($logline['comment_post_ID']);
 
 				// Generate output
@@ -656,17 +660,17 @@ function stbv_log_display() {
 					    }
 					}
 				}
-				
+
 				$result .= $tdstyle . $tmpinf . '<span class="action">Action: </span>' . $logline['msg'] . '</td>
 				  </tr>';
-	
+
 				$count++;
 			}
 			$result .= '</table>';
 		} else {
 			$result .= '<p>No trackbacks have been processed since you\'ve enabled the log.</p>';
 		}
-		
+
 		echo '<h3 class="log">Latest 50 Trackbacks:</h3>' . "\n" . $result;
 
 	} else {
@@ -677,7 +681,7 @@ function stbv_log_display() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Retrieves domain name from URI. 
+// Retrieves domain name from URI.
 // Input:  URI, e.g. http://www.site.com/bla/bla.php
 // Output: domain name, e.g. www.site.com
 ////////////////////////////////////////////////////////////////////////////////
@@ -696,7 +700,7 @@ function stbv_get_domainname_from_uri($uri) {
 // Icons
 ////////////////////////////////////////////////////////////////////////////////
 if(isset($_GET['resource']) && !empty($_GET['resource'])) {
-	# base64 encoding performed by base64img.php from http://php.holtsmark.no 
+	# base64 encoding performed by base64img.php from http://php.holtsmark.no
 	$resources = array(
 		'paypal.png' =>
 			'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAFfKj/FAAAAB3RJTUUH1wYQEhELx'.
@@ -706,7 +710,7 @@ if(isset($_GET['resource']) && !empty($_GET['resource'])) {
 			'qEcB5gyhB+kESwi8cYfgnu2DMEcfFDDNwCakR06T4uq5cK0n9xOQPXByE3JEpYG2h'.
 			'KYgHdnxZgUeglxjCV1vihx4N1BluM6JC+8v//EAp9gC4zRZsZgAAAAASUVORK5CYI'.
 			'I=',
-		'amazon.png' => 
+		'amazon.png' =>
 			'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAFfKj/FAAAAB3RJTUUH1wYQESUI5'.
 			'3q1mgAAAAlwSFlzAAALEgAACxIB0t1+/AAAAARnQU1BAACxjwv8YQUAAABgUExURe'.
 			'rBhcOLOqB1OX1gOE5DNjc1NYKBgfGnPNqZO4hnOEM8NWZSN86SO1pKNnFZN7eDOuW'.
@@ -715,7 +719,7 @@ if(isset($_GET['resource']) && !empty($_GET['resource'])) {
 			'mi5UaUURJtI5wm+KwgSJflVkOFscBUTM1vgrmacThfomGVLO9MhIYFsF8wyx6Jnl8'.
 			'8HUxEay+wYmlM6oNKcNYrIC58iHMcIyQlZRNmf/2LRQUX8bYwh3PCYWmOGrueargd'.
 			'XGO5d6UGm5FSmBqzXEzK2cN9PcXsD9XsKTHawijcAAAAASUVORK5CYII=',
-		'sw-guide.png' => 
+		'sw-guide.png' =>
 			'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAFfKj/FAAAAB3RJTUUH1wYQEhckO'.
 			'pQzUQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAARnQU1BAACxjwv8YQUAAABFUExURZ'.
 			'wMDN7e3tbW1oSEhOfn54yMjDk5OTExMWtra7W1te/v72NjY0pKSs7OzpycnHNzc8b'.
@@ -724,7 +728,7 @@ if(isset($_GET['resource']) && !empty($_GET['resource'])) {
 			'XPpXjTvq2osRUCyAPEEaKvM6LWFKcFGnCI1Hc+WXVRFk07ROGVBoNpvVAJ3Pzjee5'.
 			'7fdh9dfcUItO5UD8T6aVs69jheJlegFyFmPlj/wZZC3ssKSH+wB9/9C8IH45EIdeu'.
 			'A/YIAAAAASUVORK5CYII=',
-		'wp.png' => 
+		'wp.png' =>
 			'iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAFfKj/FAAAAB3RJTUUH1wYQEiwG0'.
 			'0adjQAAAAlwSFlzAAALEgAACxIB0t1+/AAAAARnQU1BAACxjwv8YQUAAABOUExURZ'.
 			'wMDN7n93ut1kKExjFjnHul1tbn75S93jFrnP///1qUxnOl1sbe71KMxjFrpWOUzjl'.
@@ -735,7 +739,7 @@ if(isset($_GET['resource']) && !empty($_GET['resource'])) {
 			'Ww9porieUwZt9yP6tHm5K5L2Uun6xsuf/WoTXwo7yQPwBXo8H/8TEoKYAAAAASUVO'.
 			'RK5CYII=',
 	); // $resources = array
-				
+
 	if(array_key_exists($_GET['resource'],$resources)) {
 
 		$content = base64_decode($resources[ $_GET['resource'] ]);
@@ -754,7 +758,7 @@ if(isset($_GET['resource']) && !empty($_GET['resource'])) {
 			header('Content-Type: image/' . substr(strrchr($_GET['resource'], '.'), 1) );
 			echo $content;
 			exit;
-		}	
+		}
 	}
 }
 

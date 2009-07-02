@@ -1,10 +1,13 @@
 <?php
 /*
-Plugin Name: WP Paypal Donate Widget
+Plugin Name: WP Paypal Donate Widget (fork)
 Description: Adds a sidebar widget to let users make donation.
 Author: Patrick Chia
-Version: 1.2 (fork)
+Version: 1.2.2 fork
 Author URI: http://patrick.blogates.com/
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: pp_donate
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 function widget_wpaypal_init() {
@@ -42,7 +45,7 @@ function widget_wpaypal_init() {
 		<input type="hidden" name="on0" value="Website"/>
 		Amount: <br /><input type="text" name="amount" size="14" title="The amount you wish to donate" value="'.$pp_amount.'"/><br />
 		Website (Optional): <br /><input type="text" size="14" title="Your website (will be displayed)" name="os0" value="" /><br />
-		<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" border="0" name="submit" alt="Make payments with PayPal - fast, free and secure" style="none" />
+		<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but21.gif" name="submit" alt="Make payments with PayPal - fast, free and secure" style="none" />
 		</form></div>';
 		echo $after_widget;
 	}
@@ -66,16 +69,16 @@ function widget_wpaypal_init() {
 		$pp_amount = htmlspecialchars($options['pp_amount'], ENT_QUOTES);
 		$pp_currency = htmlspecialchars($options['pp_currency'], ENT_QUOTES);
 
-		echo '<p style="text-align:left;"><label for="wpaypal-title">Display Paypal Donate form for your user to make donation. By <a href="http://patrick.blogates.com">Patrick Chia</a></label></p>';
+		echo '<p style="text-align:left;">Display Paypal Donate form for your user to make donation. By <a href="http://patrick.blogates.com">Patrick Chia</a></p>';
 		echo '<p style="text-align:left;"><label for="wpaypal-title">Title: <input style="width: 100%;" id="wpaypal-title" name="wpaypal-title" type="text" value="'.$title.'" /></label></p>';
-		echo '<p style="text-align:left;"><label for="wpaypal-pp_email">Paypal Email: <input style="width: 100%;" id="wpaypal-title" name="wpaypal-pp_email" type="text" value="'.$pp_email.'" /></label></p>';
-		echo '<p style="text-align:left;"><label for="wpaypal-pp_amount">Donate Amount: <input style="width: 100%;" id="wpaypal-title" name="wpaypal-pp_amount" type="text" value="'.$pp_amount.'" /></label></p>';
-		echo '<p style="text-align:left;"><label for="wpaypal-pp_currency">Currency: <input style="width: 100%;" id="wpaypal-title" name="wpaypal-pp_currency" type="text" value="'.$pp_currency.'" /></label></p>';
+		echo '<p style="text-align:left;"><label for="wpaypal-pp_email">Paypal Email: <input style="width: 100%;" id="wpaypal-pp_email" name="wpaypal-pp_email" type="text" value="'.$pp_email.'" /></label></p>';
+		echo '<p style="text-align:left;"><label for="wpaypal-pp_amount">Donate Amount: <input style="width: 100%;" id="wpaypal-pp_amount" name="wpaypal-pp_amount" type="text" value="'.$pp_amount.'" /></label></p>';
+		echo '<p style="text-align:left;"><label for="wpaypal-pp_currency">Currency: <input style="width: 100%;" id="wpaypal-pp_currency" name="wpaypal-pp_currency" type="text" value="'.$pp_currency.'" /></label></p>';
 		echo '<input type="hidden" id="wpaypal-submit" name="wpaypal-submit" value="1" />';
 	}
 
 	register_sidebar_widget('Paypal Donate', 'widget_wpaypal');
 	register_widget_control('Paypal Donate', 'widget_wpaypal_control', 300, 280);
 }
-add_action('plugins_loaded', 'widget_wpaypal_init');
+add_action('widgets_init', 'widget_wpaypal_init');
 ?>

@@ -4,8 +4,10 @@ Plugin Name: Search Reloaded
 Plugin URI: http://www.semiologic.com/software/wp-fixes/search-reloaded/
 Description: Enhances WordPress' default search engine functionality.
 Author: Denis de Bernardy
-Version: 2.9
+Version: 2.10
 Author URI: http://www.semiologic.com
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: search_reloaded
 */
 
 /*
@@ -16,20 +18,6 @@ This software is copyright Mesoconcepts Ltd, and is distributed under the terms 
 
 http://www.semiologic.com/legal/license/
 **/
-
-if ( !defined('use_post_type_fixed') )
-{
-	define(
-		'use_post_type_fixed',
-			version_compare(
-				'2.1',
-				$GLOBALS['wp_version'], '<='
-				)
-			||
-			function_exists('get_site_option')
-		);
-}
-
 
 class sem_search_reloaded
 {
@@ -46,7 +34,7 @@ class sem_search_reloaded
 	{
 		global $wpdb;
 
-		if ( !get_settings('posts_have_fulltext_index') )
+		if ( !get_option('posts_have_fulltext_index') )
 		{
 			$wpdb->query("ALTER TABLE `$wpdb->posts` ENGINE = MYISAM");
 			$wpdb->query("ALTER TABLE `$wpdb->posts` ADD FULLTEXT ( `post_title`, `post_content` )");
@@ -55,8 +43,8 @@ class sem_search_reloaded
 
 		if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
 		{
-			add_filter('posts_where', array(&$this, 'bypass_search'));
-			add_filter('the_posts', array(&$this, 'redo_search'));
+			add_filter('posts_where', array('sem_search_reloaded', 'bypass_search'));
+			add_filter('the_posts', array('sem_search_reloaded', 'redo_search'));
 		}
 	} # end sem_search_reloaded()
 
@@ -67,7 +55,7 @@ class sem_search_reloaded
 
 	function bypass_search($where)
 	{
-		if ( is_search() )
+		if ( is_search() && !defined('did_search') )
 		{
 			$where = " AND 1 = 0 ";
 		}
@@ -85,7 +73,7 @@ class sem_search_reloaded
 		global $wpdb;
 		global $wp_query;
 
-		if ( is_search() )
+		if ( is_search() && !defined('did_search') )
 		{
 			$GLOBALS['sem_s'] = get_query_var('s');
 
@@ -114,20 +102,11 @@ class sem_search_reloaded
 			$posts_per_page = $wp_query->get('posts_per_page');
 			if ( !$posts_per_page )
 			{
-				$posts_per_page = get_settings('posts_per_page');
+				$posts_per_page = get_option('posts_per_page');
 			}
 			$offset = ( $paged - 1 ) * $posts_per_page;
 
 			$now = gmdate('Y-m-d H:i:00', strtotime("+1 minute"));
-
-			if ( isset($GLOBALS['sem_static_front']) )
-			{
-				$GLOBALS['sem_static_front']->init();
-			}
-			if ( isset($GLOBALS['sem_sidebar_tile']) )
-			{
-				$GLOBALS['sem_sidebar_tile']->init();
-			}
 
 			$search_query = "
 				SELECT
@@ -148,19 +127,9 @@ class sem_search_reloaded
 					AND posts.ID <> " . intval(sem_home_page_id)
 						: ""
 						)
-					. ( ( defined('sem_sidebar_tile_id') && sem_sidebar_tile_id )
-						? "
-					AND posts.ID <> " . intval(sem_sidebar_tile_id)
-						: ""
-						)
 					. "
-					AND ( posts.post_password = '' )
-					AND ( "
-					. ( use_post_type_fixed
-						? "( post_status = 'publish' )"
-						: "( post_status = 'publish' OR post_status = 'static' )"
-						)
-					. " )
+					AND posts.post_password = ''
+					AND post_status = 'publish'
 					AND ( posts.post_title REGEXP '$reg_one_present' OR posts.post_content REGEXP '$reg_one_present' )
 				GROUP BY
 					posts.ID
@@ -180,19 +149,9 @@ class sem_search_reloaded
 					AND posts.ID <> " . intval(sem_home_page_id)
 						: ""
 						)
-					. ( ( defined('sem_sidebar_tile_id') && sem_sidebar_tile_id )
-						? "
-					AND posts.ID <> " . intval(sem_sidebar_tile_id)
-						: ""
-						)
 					. "
-					AND ( posts.post_password = '' )
-					AND ( "
-					. ( use_post_type_fixed
-						? "( post_status = 'publish' )"
-						: "( post_status = 'publish' OR post_status = 'static' )"
-						)
-					. " )
+					AND posts.post_password = ''
+					AND post_status = 'publish'
 					AND ( posts.post_title REGEXP '$reg_one_present' OR posts.post_content REGEXP '$reg_one_present' )
 				GROUP BY
 					posts.ID
@@ -201,21 +160,15 @@ class sem_search_reloaded
 			$the_posts = $wpdb->get_results($search_query);
 			$GLOBALS['request'] = ' ' . preg_replace("/[\n\r\s]+/", " ", $request_query) . ' ';
 
-			if ( function_exists('update_post_cache') )
-			{
-				update_post_cache($the_posts);
-			}
-			if ( function_exists('update_page_cache') )
-			{
-				update_page_cache($the_posts);
-			}
+			update_post_cache($the_posts);
+			update_page_cache($the_posts);
+
+			define('did_search', true);
 		}
 
 		return $the_posts;
 	} # end redo_search()
 } # end sem_search_reloaded()
-
-$sem_search_reloaded =& new sem_search_reloaded();
 
 
 ########################
@@ -225,30 +178,5 @@ $sem_search_reloaded =& new sem_search_reloaded();
 
 function sem_search_results()
 {
-global $wp_query;
-
-global $sem_s;
-
-$paged = $wp_query->get('paged');
-if (!$paged)
-	$paged = 1;
-$posts_per_page = $wp_query->get('posts_per_page');
-if ( !$posts_per_page )
-	$posts_per_page = get_settings('posts_per_page');
-$start = ( $paged - 1 ) * $posts_per_page + 1;
-?><div class="header">
-<h1>Search results for: <?php echo stripslashes(preg_replace("/\"/", "&quot;", $sem_s )); ?></h1>
-<?php
-if ( function_exists('sem_display_ad_space') )
-	sem_display_ad_space();
-?></div>
-<div class="body">
-<ol start="<?php echo $start; ?>">
-<?php while (have_posts()) : the_post(); ?><li id="post-<?php the_ID(); ?>"><h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-<?php edit_post_link('Edit', '<span class="edit_link"> | ', '</span>'); ?></h2>
-<?php the_excerpt(); ?></li>
-<?php endwhile; ?></ol>
-</div>
-<?php
 } // end sem_search_results()
 ?>

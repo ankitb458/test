@@ -17,7 +17,7 @@ function display_html2wp()
 
 		echo '<fieldset id="semhtml2wp" class="dbx-box">'
 			. '<div class="dbx-h-andle-wrapper">'
-			. '<h3 class="dbx-handle">' . __('Upload File as Content') . '</h3>'
+			. '<h3 class="dbx-handle">' . __('Upload File as Content / Article Uploader') . '</h3>'
 			. '</div>';
 
 		echo '<div class="dbx-c-ontent-wrapper">'
@@ -29,11 +29,18 @@ function display_html2wp()
 		}
 
 		echo '<p>'
-			. __('Semiologic Pro lets you upload an html file (generated using Front Page or, better yet, <a href="http://www.semiologic.com/go/scribejuice">ScribeJuice</a>) in place of entering content in the WordPress editor. Its body area will be used as your entry\'s contents. This feature is convenient if you\'re working offline or writing a complicated sell letter.')
+			. __('Semiologic Pro lets you upload a text or html file (from an article directory, generated using Front Page or, better yet, generated using <a href="http://www.semiologic.com/go/scribejuice">ScribeJuice</a>) in place of entering content in the WordPress editor. Its body area will be used as your entry\'s contents.')
+			. '</p>'
+			. '<p>'
+			. __('This feature is convenient if you\'re working offline, or if you\'re writing a complicated sales letter. In the latter case, it will spare you a variety of bugs related to WordPress\' desire to "clean up" and sanitize your HTML code. (WordPress destroys forms, drops scripts, and reformats HTML.')
 			. '</p>';
 
 		echo '<p>'
-			. __('<strong>Important</strong>: If you\'re writing non-english language documents be sure to make the charset of your html document match that of your blog (' . get_bloginfo('charset') . '). You can usually configure this in your document\'s properties.')
+			. __('<strong>Important Notice #1</strong>: If you\'re writing non-english language documents in HTML, be sure to make the character set of your html document match that of your blog (' . get_bloginfo('charset') . '). In most HTML editors, you can configure this in your document\'s properties (File / Properties).')
+			. '</p>';
+
+		echo '<p>'
+			. __('<strong>Important Notice #2</strong>: Using this feature will <strong>REPLACE</strong> your post\'s content with the contents of the file you\'ve just uploaded. Further, it will disable the wysiwyg editor and WordPress formatting. Text files will be formatted to html automatically. Your content will otherwise be displayed <em>as is</em>.')
 			. '</p>';
 
 		echo '<table width="100%" cellspacing="2" cellpadding="5" class="editform">';
@@ -57,6 +64,27 @@ function display_html2wp()
 			. '</tr>';
 
 		echo '</table>';
+
+		echo '<div>'
+			. '<label for"kill_wysiwyg">'
+			. '<input type="checkbox"'
+				. ' id="kill_wysiwyg" name="kill_wysiwyg"'
+				. ( ( get_post_meta($_GET['post'], '_kill_formatting', true) )
+					? ' checked="checked"'
+					: ''
+					)
+				. ' />'
+				. ' '
+				. __('Disable the Wysiwyg Editor for this post')
+				. '</label>'
+			. '</div>';
+
+		echo '<p class="submit">'
+			. '<input type="button"'
+			. ' value="' . __('Save and Continue Editing') . '"'
+			. ' onclick="return form.save.click();"'
+			. ' />'
+			. '</p>';
 
 		echo '</div>'
 			. '</div>';

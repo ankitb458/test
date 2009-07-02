@@ -167,6 +167,4 @@ class MiniXMLTreeComponent {
 	}
 	
 } /* end class definition */
-
-
 ?>

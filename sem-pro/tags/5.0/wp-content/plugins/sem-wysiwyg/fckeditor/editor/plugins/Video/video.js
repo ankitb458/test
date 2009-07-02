@@ -253,13 +253,6 @@ function PopulateVideoSiteData( e )
 			SetAttribute(e, "width" , '400' ) ;
 			SetAttribute(e, "height", '345' ) ;
 			break
-		case 'selectMicrosoftSoapbox': 
-			e.src = 'http://soapbox.msn.com/flash/soapbox1_1.swf';
-			SetAttribute(e, "width" , '380' ) ;
-			SetAttribute(e, "height", '333' ) ;
-			SetAttribute(e, "name",'msn_soapbox');
-			SetAttribute(e, "flashvars",'c=v&v=' + videoID );
-			break
 		case 'selectRevver':
 			e.src = 'http://flash.revver.com/player/1.0/player.swf';
 			SetAttribute(e, "width" , '480') ;

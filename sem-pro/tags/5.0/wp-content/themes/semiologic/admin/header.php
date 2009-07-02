@@ -1,6 +1,6 @@
 <?php
 
-class header_admin
+class sem_header_admin
 {
 	#
 	# init()
@@ -8,12 +8,63 @@ class header_admin
 
 	function init()
 	{
-		add_action('admin_menu', array('header_admin', 'add_admin_page'));
-		add_action('admin_head', array('header', 'display_script'));
+		add_action('admin_menu', array('sem_header_admin', 'add_admin_page'));
+		add_action('admin_head', array('sem_header', 'display_script'));
 
-		add_action('dbx_post_advanced', array('header_admin', 'display_header'));
-		add_action('dbx_page_advanced', array('header_admin', 'display_header'));
+		add_action('dbx_post_advanced', array('sem_header_admin', 'display_header'));
+		add_action('dbx_page_advanced', array('sem_header_admin', 'display_header'));
 	} # init()
+
+
+	#
+	# widget_control()
+	#
+
+	function widget_control()
+	{
+		global $sem_options;
+
+		if ( $_POST['update_sem_header']['header'] )
+		{
+			$new_options = $sem_options;
+
+			$new_options['invert_header'] = isset($_POST['sem_header']['invert_header']);
+
+			if ( $new_options != $sem_options )
+			{
+				$sem_options = $new_options;
+
+				update_option('sem5_options', $sem_options);
+			}
+		}
+
+		echo '<input type="hidden" name="update_sem_header[header]" value="1" />';
+
+		echo '<h3>'
+			. __('Config')
+			. '</h3>';
+
+		echo '<div style="margin-bottom: .2em;">'
+			. '<label>'
+			. '<input type="checkbox"'
+				. ' name="sem_header[invert_header]"'
+				. ( $sem_options['invert_header']
+					? ' checked="checked"'
+					: ''
+					)
+				. ' />'
+			. ' '
+			. __('Show site name, then tagline')
+				. '<br />'
+				. __('Note: While prettier, this can be slightly less effective from an SEO standpoint')
+			. '</label>'
+			. '</div>';
+
+		echo '<div>'
+			. '<br />'
+			. __('You can configure a header image under Presentation / Header')
+			. '</div>';
+	} # widget_control()
 
 
 	#
@@ -45,11 +96,23 @@ class header_admin
 				pro_feature_notice();
 			}
 
-			if ( $post_ID > 0
-				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
-				)
+			if ( defined('GLOB_BRACE') )
 			{
-				$header = current($header);
+				if ( $post_ID > 0
+					&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+					)
+				{
+					$header = current($header);
+				}
+			}
+			else
+			{
+				if ( $post_ID > 0
+					&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header-*.jpg') )
+					)
+				{
+					$header = current($header);
+				}
 			}
 
 			if ( $header )
@@ -63,14 +126,14 @@ class header_admin
 				{
 					echo '<p>';
 
-					header::display_logo($header);
+					sem_header::display_logo($header);
 
 					echo '</p>' . "\n";
 				}
 
 				else
 				{
-					header::display_flash($header);
+					sem_header::display_flash($header);
 				}
 
 				echo '</div>';
@@ -98,6 +161,11 @@ class header_admin
 				}
 
 				echo '</p>' . "\n";
+			}
+
+			if ( !defined('GLOB_BRACE') )
+			{
+				echo '<p>' . __('Notice: <a href="http://www.php.net/glob">GLOB_BRACE</a> is an undefined constant on your server. Non .jpg files will be ignored.') . '</p>';
 			}
 
 			@mkdir(ABSPATH . 'wp-content/header');
@@ -154,15 +222,17 @@ class header_admin
 
 	function add_admin_page()
 	{
-		if ( !glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) )
+		if ( !defined('GLOB_BRACE')
+			|| !glob(sem_path . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE)
+			)
 		{
 			add_submenu_page(
 				'themes.php',
 				__('Header'),
 				__('Header'),
 				'switch_themes',
-				str_replace("\\", "/", basename(__FILE__)),
-				array('header_admin', 'display_admin_page')
+				basename(__FILE__),
+				array('sem_header_admin', 'display_admin_page')
 				);
 		}
 	} # add_admin_page()
@@ -179,7 +249,7 @@ class header_admin
 			&& $_POST['action'] == 'update_theme_header_options'
 			)
 		{
-			header_admin::save_header();
+			sem_header_admin::save_header();
 
 			echo "<div class=\"updated\">\n"
 				. "<p>"
@@ -194,9 +264,9 @@ class header_admin
 
 		if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_header');
 
-		$options = get_option('semiologic');
+		global $sem_options;
 
-		$header = header::get_header();
+		$header = sem_header::get_header();
 
 		echo '<input type="hidden"'
 			. ' name="action"'
@@ -210,7 +280,12 @@ class header_admin
 
 		if ( sem_pro )
 		{
-			echo '<p>' . __('You can also have a <a href="http://wp-pro.semiologic.com/services/">graphic designer</a> create one for you.') . '</p>';
+			echo '<p>' . __('You can also have a <a href="http://www.semiologic.com/members/sem-pro/services/">graphic designer</a> create one for you.') . '</p>';
+		}
+
+		if ( !defined('GLOB_BRACE') )
+		{
+			echo '<p>' . __('Notice: <a href="http://www.php.net/glob">GLOB_BRACE</a> is an undefined constant on your server. Non .jpg files will be ignored.') . '</p>';
 		}
 
 		echo '<h3>' . __('Header File') . '</h3>';
@@ -224,14 +299,14 @@ class header_admin
 			{
 				echo '<p>';
 
-				header::display_logo($header);
+				sem_header::display_logo($header);
 
 				echo '</p>' . "\n";
 			}
 
 			else
 			{
-				header::display_flash($header);
+				sem_header::display_flash($header);
 			}
 
 			echo '<p>';
@@ -295,9 +370,9 @@ class header_admin
 			. __('Header Options')
 			. '</h3>';
 
-		if ( !isset($options['header']['mode']) )
+		if ( !isset($sem_options['header']['mode']) )
 		{
-			$options['header']['mode'] = 'header';
+			$sem_options['header']['mode'] = 'header';
 		}
 
 		echo '<p>'
@@ -305,13 +380,13 @@ class header_admin
 			. '<input type="radio"'
 				. 'id=header[mode][header] name="header[mode]"'
 				. ' value="header"'
-				. ( ( $options['header']['mode'] == 'header' )
+				. ( ( $sem_options['header']['mode'] == 'header' )
 					? ' checked="checked"'
 					: ''
 					)
 				. ' />'
 			. '&nbsp;'
-			. __('Use this file as the site\'s header.')
+			. __('Use my chosen file as the site\'s header. The default Semiologic theme header will be replaced with whichever file I uploaded (image or flash file...).')
 			. '</label>'
 			. '</p>';
 
@@ -320,13 +395,13 @@ class header_admin
 			. '<input type="radio"'
 				. 'id=header[mode][background] name="header[mode]"'
 				. ' value="background"'
-				. ( ( $options['header']['mode'] == 'background' )
+				. ( ( $sem_options['header']['mode'] == 'background' )
 					? ' checked="checked"'
 					: ''
 					)
 				. ' />'
 			. '&nbsp;'
-			. __('Use this <u>image</u> file as a background for the site\'s header.')
+			. __('Use my <u>image</u> file as a background for the site\'s header. That image will display as a background for Semiologic\'s default, text-only header.')
 			. '</label>'
 			. '</p>';
 
@@ -335,13 +410,13 @@ class header_admin
 			. '<input type="radio"'
 				. 'id=header[mode][logo] name="header[mode]"'
 				. ' value="logo"'
-				. ( ( $options['header']['mode'] == 'logo' )
+				. ( ( $sem_options['header']['mode'] == 'logo' )
 					? ' checked="checked"'
 					: ''
 					)
 				. ' />'
 			. '&nbsp;'
-			. __('Use this file as a logo in place of the site\'s name.')
+			. __('Use my file as a logo in place of the site\'s name. I\'ll be using Semiologic\'s default, text-only header, with one exception: My image (or flash file) will replace the site\'s name.')
 			. '</label>'
 			. '</p>';
 
@@ -368,11 +443,11 @@ class header_admin
 		#var_dump($_FILES);
 		#echo '</pre>';
 
-		$options = get_option('semiologic');
+		global $sem_options;
 
 		if ( @ $_FILES['header_file']['name'] )
 		{
-			if ( $header = header::get_header() )
+			if ( $header = sem_header::get_header() )
 			{
 				@unlink($header);
 			}
@@ -382,7 +457,7 @@ class header_admin
 			preg_match("/\.([^\.]+)$/", $_FILES['header_file']['name'], $ext);
 			$ext = end($ext);
 
-			if ( !in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'swf')) )
+			if ( !in_array(strtolower($ext), array('jpg', 'jpeg', 'png', 'gif', 'swf')) )
 			{
 				echo '<div class="error">'
 					. "<p>"
@@ -408,13 +483,13 @@ class header_admin
 		}
 		elseif ( isset($_POST['delete_header']) )
 		{
-			if ( $header = header::get_header() )
+			if ( $header = sem_header::get_header() )
 			{
 				@unlink($header);
 			}
 		}
 
-		if ( $header = header::get_header() )
+		if ( $header = sem_header::get_header() )
 		{
 			preg_match("/\.([^\.]+)$/",$header, $ext);
 			$ext = end($ext);
@@ -434,11 +509,11 @@ class header_admin
 			$_POST['header']['mode'] = 'header';
 		}
 
-		$options['header'] = $_POST['header'];
+		$sem_options['header'] = $_POST['header'];
 
-		update_option('semiologic', $options);
+		update_option('sem5_options', $sem_options);
 	} # save_header()
-} # header_admin
+} # sem_header_admin
 
-header_admin::init();
+sem_header_admin::init();
 ?>

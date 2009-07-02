@@ -19,8 +19,8 @@ FCKCommands.RegisterCommand(
 		'Video',
 		FCKLang["VideoDlgTitle"],
 		FCKPlugins.Items['Video'].Path + 'video_dialog.html',
-		530,
-		512
+		600,
+		480
 	)
 );
  

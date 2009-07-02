@@ -10,7 +10,7 @@ function add_theme_skin_options_admin()
 		__('Skin'),
 		__('Skin'),
 		'switch_themes',
-		str_replace("\\", "/", basename(__FILE__)),
+		basename(__FILE__),
 		'display_theme_skin_options_admin'
 		);
 } # end add_theme_skin_options_admin()
@@ -26,11 +26,11 @@ function update_theme_skin_options()
 {
 	check_admin_referer('sem_skin');
 
-	$options = get_option('semiologic');
+	global $sem_options;
 
-	$options['active_skin'] = get_skin_data($_POST['active_skin']);
+	$sem_options['active_skin'] = get_skin_data($_POST['active_skin']);
 
-	update_option('semiologic', $options);
+	update_option('sem5_options', $sem_options);
 } # end update_theme_skin_options
 
 add_action('update_theme_skin_options', 'update_theme_skin_options');
@@ -113,12 +113,12 @@ function get_skin_data($skin_id)
 
 function display_theme_skin_options()
 {
-	$skins = (array) glob(TEMPLATEPATH . '/skins/*/skin.css');
+	$skins = (array) glob(sem_path . '/skins/*/skin.css');
 
 	sort($skins);
 
-	$options = get_option('semiologic');
-	$active_skin = $options['active_skin']['skin'];
+	global $sem_options;
+	$active_skin = $sem_options['active_skin']['skin'];
 
 	foreach ( array_keys($skins) as $key )
 	{
@@ -131,9 +131,7 @@ function display_theme_skin_options()
 
 	ksort($skins);
 
-	echo '<p>' . __('You can drop a custom.css file and/or a custom.php file into your skin\'s directory, in order to customize the look and feel of your skin without editing the theme\'s files. This greatly simplifies upgrades.') . ' <a href="' . get_template_directory_uri() . '/custom-samples/">' . __('Sample custom.css and custom.php files') . '</a>' . '</p>';
-
-	echo '<p>' . __('You can also create your own skins. Skins are automatically detected, so copying one of the existing ones is the simplest way to start.') . '</p>';
+	echo '<p>' . __('Note that you can also create your own skins. Skins are automatically detected, so copying one of the existing ones (wp-content/themes/semiologic/skins/ folder) is the simplest way to start.') . '</p>';
 
 	foreach ( $skins as $skin_id => $skin_data )
 	{
@@ -166,7 +164,7 @@ function display_theme_skin_options()
 				. '</a>'
 			. '</h3>';
 
-		if ( file_exists(TEMPLATEPATH . '/skins/' . $skin_id . '/screenshot.png') )
+		if ( file_exists(sem_path . '/skins/' . $skin_id . '/screenshot.png') )
 		{
 			echo '<p>'
 				. '<label for="active_skin[' . $skin_id . ']">'

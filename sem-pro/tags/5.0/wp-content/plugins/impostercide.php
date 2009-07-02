@@ -1,14 +1,8 @@
 <?php
 /*
-Plugin Name: Impostercide
-Plugin URI: http://www.skippy.net/blog/plugins
-Description: Prevents unauthenticated users from "signing" a comment with a registered users email address
-Version: 1.2
-Author: Scott Merrill
-Author URI: http://www.skippy.net/
-
 Copyright (c) 2005 Scott Merrill (skippy@skippy.net)
 many thanks to Mark Jaquith for the name "Impostercide"
+GPL Licensed
 */
 
 add_filter ('preprocess_comment', 'sdm_protect_email');

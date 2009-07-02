@@ -42,7 +42,7 @@ class sem_seo
 		}
 
 		echo '<p>'
-			. __('Semiologic Pro automatically generates a search engine optimized title, meta keywords and a meta description for each post. The following fields allow you to override them for individual entries.')
+			. __('Semiologic Pro automatically generates a search engine optimized title and meta keywords for each post. The following fields allow you to override them for individual entries.')
 			. '</p>';
 
 		echo '<table width="100%" cellspacing="2" cellpadding="5" class="editform">';
@@ -57,7 +57,7 @@ class sem_seo
 			. '<input type="text"'
 				. ' style="width: 420px;"'
 				. ' id="seo_title" name="seo_title"'
-				. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_title', true), ENT_QUOTES) . '"'
+				. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_title', true)) . '"'
 				. ( !sem_pro
 					? ' disabled="disabled"'
 					: ''
@@ -76,7 +76,7 @@ class sem_seo
 			. '<input type="text"'
 				. ' style="width: 420px;"'
 				. ' id="seo_keywords" name="seo_keywords"'
-				. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_keywords', true), ENT_QUOTES) . '"'
+				. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_keywords', true)) . '"'
 				. ( !sem_pro
 					? ' disabled="disabled"'
 					: ''
@@ -107,6 +107,13 @@ class sem_seo
 
 		echo '</table>';
 
+		echo '<p class="submit">'
+			. '<input type="button"'
+			. ' value="' . __('Save and Continue Editing') . '"'
+			. ' onclick="return form.save.click();"'
+			. ' />'
+			. '</p>';
+
 		echo '</div>'
 			. '</div>';
 
@@ -127,7 +134,7 @@ class sem_seo
 			__('SEO'),
 			__('SEO'),
 			'switch_themes',
-			str_replace("\\", "/", basename(__FILE__)),
+			basename(__FILE__),
 			array('sem_seo', 'display_admin_page')
 			);
 	} # add_admin_page()
@@ -155,7 +162,7 @@ class sem_seo
 				. "</div>\n";
 		}
 
-		$options = get_option('semiologic');
+		global $sem_options;
 
 		echo '<form method="post" action="">';
 
@@ -175,7 +182,7 @@ class sem_seo
 			. '<h2>' . __('Page Title and Meta Tags') . '</h2>';
 
 		echo '<p>'
-			. __('Semiologic Pro automatically generates a search engine optimized title, meta keywords and a meta description for your site\'s home page and archives pages, as well as for categories and individual entries. The following fields allow you to override these fields for the home page and archive pages.')
+			. __('Semiologic Pro automatically generates a search engine optimized title and meta keywords for your site\'s home page and archives pages, as well as for categories and individual entries. The following fields allow you to override their values for the home page and for archive pages.')
 			. '</p>';
 
 		echo '<table width="100%" cellspacing="2" cellpadding="5" class="editform">';
@@ -190,7 +197,7 @@ class sem_seo
 			. '<input type="text"'
 				. ' style="width: 420px;"'
 				. ' id="seo_title" name="seo_title"'
-				. ' value="' . htmlspecialchars($options['seo']['title'], ENT_QUOTES) . '"'
+				. ' value="' . htmlspecialchars($sem_options['seo']['title']) . '"'
 				. ( !sem_pro
 					? ' disabled="disabled"'
 					: ''
@@ -204,7 +211,7 @@ class sem_seo
 				. '<label for="seo_add_site_name">'
 				. '<input type="checkbox"'
 					. ' id="seo_add_site_name" name="seo_add_site_name"'
-					. ( $options['seo']['add_site_name']
+					. ( $sem_options['seo']['add_site_name']
 						? ' checked="checked"'
 						: ''
 						)
@@ -226,7 +233,7 @@ class sem_seo
 			. '<input type="text"'
 				. ' style="width: 420px;"'
 				. ' id="seo_keywords" name="seo_keywords"'
-				. ' value="' . htmlspecialchars($options['seo']['keywords'], ENT_QUOTES) . '"'
+				. ' value="' . htmlspecialchars($sem_options['seo']['keywords']) . '"'
 				. ( !sem_pro
 					? ' disabled="disabled"'
 					: ''
@@ -250,11 +257,32 @@ class sem_seo
 					: ''
 					)
 				. '>'
-				. $options['seo']['description']
+				. $sem_options['seo']['description']
 			. '</textarea>'
 			. '</td>'
 			. '</tr>';
 
+		echo '<tr>'
+			. '<th style="text-align: right; width: 160px;">'
+			. '<label for="seo_theme_archives">'
+			. __('Duplicate Content:')
+			. '</label>'
+			. '</th>'
+			. '<td>'
+				. '<label for="seo_theme_archives">'
+				. '<input type="checkbox"'
+					. ' id="seo_theme_archives" name="seo_theme_archives"'
+					. ( $sem_options['theme_archives']
+						? ' checked="checked"'
+						: ''
+						)
+					. ' />'
+				. '&nbsp;'
+				. __('Display archive and category pages as title lists to avoid duplicate content')
+				. '</label>'
+			. '</td>'
+			. '</tr>'
+			;
 		echo '</table>';
 
 		echo '<div style="clear: both;"></div>';

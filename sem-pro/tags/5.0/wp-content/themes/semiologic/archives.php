@@ -15,5 +15,5 @@ Template Name: Archives Template
 
 do_action('setup_template', 'archives');
 
-require_once TEMPLATEPATH . '/index.php';
+require_once sem_path . '/index.php';
 ?>

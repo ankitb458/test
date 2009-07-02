@@ -67,8 +67,6 @@ function print_template()
 		reset_plugin_hook('wp_footer');
 		reset_plugin_hook('after_the_wrapper');
 
-		add_action('before_the_entry', 'html2wp_kill_formatting');
-
 		include_once get_template_directory() . '/print.php';
 		die();
 	}

@@ -1,488 +1,689 @@
 <?php
-#
-# display_entry_header()
-#
 
-function display_entry_header()
+class sem_entry
 {
-?>	<div class="entry_header">
-<?php
-		do_action('display_entry_date');
-		do_action('display_entry_title');
-		do_action('display_entry_title_meta');
-?>	</div>
-<?php
-} # end display_entry_header()
+	#
+	# init()
+	#
 
-add_action('display_entry_header', 'display_entry_header');
-
-
-#
-# display_entry_date()
-#
-
-function display_entry_date()
-{
-	$show_entry_date = !is_page()
-		&& !( class_exists('sem_static_front') && sem_static_front::is_home() );
-
-	$show_entry_date = apply_filters('show_entry_date', $show_entry_date);
-
-	if ( $show_entry_date )
+	function init()
 	{
-		the_date('', '<h2>', '</h2>');
-	}
-} # end display_entry_date()
+		$GLOBALS['sem_entry'] = array();
 
-add_action('display_entry_date', 'display_entry_date');
+		add_action('widgets_init', array('sem_entry', 'widgetize'));
+		add_action('the_entry', array('sem_entry', 'panel'));
 
-
-#
-# display_entry_title()
-#
-
-function display_entry_title()
-{
-	if ( !$GLOBALS['post']->post_title )
-	{
-		return ;
-	}
-
-	$show_entry_title_link = !( is_single() || is_page() )
-		&& !( class_exists('sem_static_front') && sem_static_front::is_home() );
-
-	$show_entry_title_link = apply_filters('show_entry_title_link', $show_entry_title_link);
-
-	echo '<h1>';
-
-	if ( $show_entry_title_link )
-	{
-		echo '<a href="';
-		the_permalink();
-		echo '">';
-		the_title();
-		echo '</a>';
-	}
-	else
-	{
-		the_title();
-	}
-
-	edit_post_link(get_caption('edit'), ' <span class="admin_link">&bull;&nbsp;', '</span>');
-
-	echo '</h1>';
-} # end display_entry_title()
-
-add_action('display_entry_title', 'display_entry_title');
-
-
-#
-# display_entry_by_on()
-#
-
-function display_entry_by_on()
-{
-	if ( apply_filters('show_entry_by_on', false) )
-	{
-		echo '<div class="entry_author">';
-
-			echo get_caption('by') . ' ';
-
-			if ( trim(get_the_author_url()) != 'http://' )
-			{
-				echo '<a href="';
-				the_author_url();
-				echo '">';
-				the_author();
-				echo '</a>';
-			}
-			else
-			{
-				the_author();
-			}
-
-		echo '</div>';
-
-		echo '<div class="entry_date">';
-
-			the_time(get_settings('date_format'));
-
-		echo '</div>';
-	}
-} # end display_entry_by_on()
-
-add_action('display_entry_title_meta', 'display_entry_by_on');
-
-
-#
-# display_entry_body()
-#
-
-function display_entry_body()
-{
-	echo '<div class="entry_body">';
-	the_content(get_caption('more'));
-	echo '</div>';
-} # end display_entry_body()
-
-add_action('display_entry_body', 'display_entry_body');
-
-
-#
-# display_entry_nav()
-#
-
-function display_entry_nav()
-{
-	link_pages('<div class="entry_nav"> ' . get_caption('page') . ': ', '</div>', 'number');
-} # end display_entry_nav()
-
-add_action('display_entry_body', 'display_entry_nav', 100);
-
-
-#
-# display_entry_filed_under_by()
-#
-
-function display_entry_filed_under_by()
-{
-	$show_entry_filed_under_by = !is_page()
-		&& !( class_exists('sem_static_front') && sem_static_front::is_home() );
-
-	$show_entry_filed_under_by = apply_filters('show_entry_filed_under_by', $show_entry_filed_under_by);
-
-	if ( $show_entry_filed_under_by )
-	{
-		if ( get_the_category() )
+		foreach ( array_keys(sem_entry::get_areas()) as $area )
 		{
-			echo '<div class="entry_meta">';
+			add_action('entry_' . $area, array('sem_entry', $area));
+			add_action('entry_' . $area . '_control', array('sem_entry_admin', $area));
+		}
+	} # init()
 
-			echo '<p>';
 
-			echo get_caption('filed_under') . ' '
-				. '<span class="entry_tags">';
+	#
+	# widgetize()
+	#
 
-			the_category(', ');
-
-			echo '</span>'
-				. ' ' . strtolower(get_caption('by')) . ' ';
-
-			echo '<span class="entry_author">';
-
-			$author_url = trim(get_the_author_url());
-
-			if ( $author_url && $author_url != 'http://' )
+	function widgetize()
+	{
+		foreach ( sem_entry::get_areas() as $area => $label )
+		{
+			switch ( $area )
 			{
-				echo '<a href="';
-				the_author_url();
-				echo '">';
-				the_author();
-				echo '</a>';
+			case 'comments':
+				$height = 500;
+				break;
+
+			case 'actions':
+				$height = 410;
+				break;
+
+			default:
+				$height = 220;
+				break;
 			}
-			else
+			register_sidebar_widget(
+				'Entry: ' . $label,
+				create_function('$args', 'sem_entry::widget(\'' . $area . '\', $args);'),
+				'entry_' . $area
+				);
+			register_widget_control(
+				'Entry: ' . $label,
+				create_function('', 'sem_entry_admin::widget_control(\'' . $area . '\');'),
+				450,
+				$height
+				);
+		}
+	} # widgetize()
+
+
+	#
+	# get_areas()
+	#
+
+	function get_areas()
+	{
+		return array(
+			'header' => __('Header'),
+			'content' => __('Content'),
+			'tags' => __('Tags'),
+			'categories' => __('Categories'),
+			'actions' => __('Actions'),
+			'comments' => __('Comments'),
+			);
+	} # get_areas()
+
+
+	#
+	# widget()
+	#
+
+	function widget($area, $args)
+	{
+		if ( apply_filters('show_entry_' . $area, true) )
+		{
+			global $post;
+			global $wp_query;
+			global $force_loop;
+
+			$force_loop = false;
+
+			if ( !in_the_loop() && is_singular() && in_array($area, array('categories', 'tags')) )
 			{
-				the_author();
+				$force_loop = true;
+				$wp_query->in_the_loop = true;
+				$post = $wp_query->next_post();
+				setup_postdata($post);
 			}
 
-			echo '</span>';
+			if ( in_the_loop() )
+			{
+				do_action('entry_' . $area, $args);
+			}
 
-			echo '</p>';
+			if ( $force_loop )
+			{
+				$wp_query->rewind_posts();
+				$wp_query->in_the_loop = false;
+			}
+		}
+	} # widget()
 
-			echo '</div>';
+
+	#
+	# panel()
+	#
+
+	function panel()
+	{
+		$sidebars_widgets = wp_get_sidebars_widgets();
+
+		if ( empty($sidebars_widgets['the_entry']) )
+		{
+			echo '<div style="color: firebrick; padding: 20px; font-weight: bold;">'
+				. 'Your "Each Entry" Panel is empty. Browse Presentation / Widgets and add a few widgets to it. In particular, those called "Entry: <i>Something</i>".'
+				. '</div>';
+		}
+
+		$GLOBALS['sem_entry'] = array();
+
+		dynamic_sidebar('the_entry');
+	} # panel()
+
+
+	#
+	# get()
+	#
+
+	function get($tag)
+	{
+		global $sem_entry;
+		global $sem_options;
+		global $sem_captions;
+
+		if ( !isset($sem_entry[$tag]) )
+		{
+			switch ( $tag )
+			{
+			case 'date':
+				$format = get_option('date_format');
+				$sem_entry['date'] = apply_filters('the_date', get_the_time($format), $format);
+				break;
+
+			case 'optional_date':
+				$sem_entry['optional_date'] = the_date('', '', '', false);
+				break;
+
+			case 'title':
+				$sem_entry['title'] = the_title('', '', false);
+
+				if ( !is_singular() )
+				{
+					$sem_entry['title'] =
+						'<a href="' . sem_entry::get('permalink') . '"'
+							. ' title="' . htmlspecialchars($sem_entry['title']) . '"'
+							. '>'
+						. $sem_entry['title']
+						. '</a>';
+				}
+
+				break;
+
+			case 'excerpt':
+				$sem_entry['excerpt'] = apply_filters('the_excerpt', get_the_excerpt());
+				break;
+
+			case 'content':
+				$more_link = $sem_captions['more_link'];
+				$title = the_title('', '', false);
+				$more_link = str_replace('%title%', $title, $more_link);
+				$content = get_the_content($more_link, 0, '');
+				$content = apply_filters('the_content', $content);
+				$content = str_replace(']]>', ']]&gt;', $content);
+
+				$sem_entry['content'] = $content;
+				break;
+
+			case 'paginate':
+				$sem_entry['paginate'] = wp_link_pages(
+					array(
+						'before' => '<div class="entry_nav"> ' . $sem_captions['paginate'] . ': ',
+						'after' => '</div>',
+						'echo' => 0,
+						)
+					);
+				break;
+
+			case 'categories':
+				$sem_entry['categories'] = get_the_category_list(', ');
+				break;
+
+			case 'author':
+				$author_url = get_the_author_url();
+				$sem_entry['author'] = get_the_author();
+
+				if ( $author_url )
+				{
+					$sem_entry['author'] = '<a href="' . htmlspecialchars($author_url) . '">'
+						. $sem_entry['author']
+						. '</a>';
+				}
+				break;
+
+			case 'tags':
+				$sem_entry['tags'] = get_the_tag_list('', ', ', '');
+				break;
+
+			case 'permalink':
+				$sem_entry['permalink'] = apply_filters('the_permalink', get_permalink());
+				break;
+
+			case 'print_link':
+				$sem_entry['print_link'] = sem_entry::get('permalink');
+				$sem_entry['print_link'] = $sem_entry['print_link']
+					. ( strpos($sem_entry['print_link'], '?') === false
+						? '?'
+						: '&'
+						)
+					. 'action=print';
+				break;
+
+			case 'email_link':
+				$title = the_title('', '', false);
+				$permalink = sem_entry::get('permalink');
+
+				$sem_entry['email_link'] = 'mailto:'
+					. '?subject=' . rawurlencode($title)
+					. '&body=' . urlencode($permalink);
+				break;
+
+			case 'comments_link':
+				if ( sem_entry::get('num_comments') )
+				{
+					$sem_entry['comments_link'] = sem_entry::get('permalink')
+						. '#comments';
+				}
+				else
+				{
+					$sem_entry['comments_link'] = false;
+				}
+				break;
+
+			case 'comment_link':
+				if ( comments_open() && !( is_home() && is_page() ) )
+				{
+					$sem_entry['comment_link'] = sem_entry::get('permalink')
+						. '#postcomment';
+				}
+				else
+				{
+					$sem_entry['comment_link'] = false;
+				}
+				break;
+
+			case 'num_comments':
+				$number = get_comments_number();
+
+				if ( $number > 1 )
+				{
+					$sem_entry['num_comments'] = str_replace('%num%', $number, $sem_captions['n_comments_link']);
+				}
+				elseif ( $number )
+				{
+					$sem_entry['num_comments'] = $sem_captions['1_comment_link'];
+				}
+				else
+				{
+					$sem_entry['num_comments'] = false;
+				}
+				break;
+
+			case 'edit_link':
+				global $post;
+
+				if ( $post->post_type == 'page' )
+				{
+					if ( !current_user_can('edit_page', $post->ID) )
+					{
+						$sem_entry['edit_link'] = false;
+						break;
+					}
+					else
+					{
+						$link = '<a href="' . get_edit_post_link($post->ID) . '" title="' . __('Edit') . '">' . __('Edit') . '</a>';
+						$sem_entry['edit_link'] = apply_filters('edit_post_link', $link, $post->ID);
+						break;
+					}
+				}
+				elseif ( $post->post_type == 'post' )
+				{
+					if ( !current_user_can('edit_post', $post->ID) )
+					{
+						$sem_entry['edit_link'] = false;
+						break;
+					}
+					else
+					{
+						$link = '<a href="' . get_edit_post_link($post->ID) . '" title="' . __('Edit') . '">' . __('Edit') . '</a>';
+						$sem_entry['edit_link'] = apply_filters('edit_post_link', $link, $post->ID);
+						break;
+					}
+				}
+
+				$sem_entry['edit_link'] = false;
+				break;
+
+			default:
+				$sem_entry[$tag] = false;
+				break;
+			}
+		}
+
+		return $sem_entry[$tag];
+	} # get()
+
+
+	#
+	# header()
+	#
+
+	function header($args)
+	{
+		global $sem_options;
+		global $sem_captions;
+
+		$o = '';
+
+		if ( !is_page() )
+		{
+			if ( $sem_options['show_post_date']
+				&& ( $date = sem_entry::get('optional_date') )
+				)
+			{
+				$o .= '<h2>'
+					. $date
+					. '</h2>' . "\n";
+			}
+		}
+
+		if ( $title = sem_entry::get('title') )
+		{
+			$edit_link = sem_entry::get('edit_link');
+
+			if ( $edit_link )
+			{
+				$edit_link = ' <span class="admin_link">' . $edit_link . '</span>';
+			}
+
+			$o .= '<h1>'
+				. $title
+				. $edit_link
+				. '</h1>' . "\n";
+
+			if ( is_article_page() )
+			{
+				if ( $sem_captions['by_author']
+					&& ( $author = sem_entry::get('author') )
+					)
+				{
+					$o .= '<div class="entry_author">'
+						. str_replace('%author%', $author, $sem_captions['by_author'])
+						. '</div>' . "\n";
+				}
+				if ( $sem_options['show_article_date']
+					&& ( $date = sem_entry::get('date') )
+					)
+				{
+					$o .= '<div class="entry_date">'
+						. $date
+						. '</div>' . "\n";
+				}
+			}
+		}
+
+		if ( $o )
+		{
+			echo $args['before_widget'] . "\n" . $o . $args['after_widget'] . "\n";
+		}
+	} # header()
+
+
+	#
+	# content()
+	#
+
+	function content($args)
+	{
+		global $sem_options;
+		$o = '';
+
+		if ( $sem_options['show_excerpts'] && !is_singular() )
+		{
+			$o .= sem_entry::get('excerpt');
+		}
+		elseif ( is_page() )
+		{
+			switch ( get_post_meta(get_the_ID(), '_wp_page_template', true) )
+			{
+			case 'archives.php':
+				echo $args['before_widget'] . "\n";
+				display_archives_template();
+				echo $args['after_widget'] . "\n";
+				return;
+				break;
+
+			case 'links.php':
+				echo $args['before_widget'] . "\n";
+				display_links_template();
+				echo $args['after_widget'] . "\n";
+				return;
+				break;
+
+			case 'sell-page.php':
+				$o .= '<div class="sell">'
+					. sem_entry::get('content')
+					. sem_entry::get('paginate')
+					. '</div>';
+
+				if ( $edit_link = sem_entry::get('edit_link') )
+				{
+					$edit_link = '<p class="admin_link" style="text-align: right;">' . $edit_link . '</p>';
+
+					$o .= $edit_link;
+				}
+				break;
+
+			default:
+				$o .= sem_entry::get('content')
+					. sem_entry::get('paginate');
+				break;
+			}
 		}
 		else
 		{
-			echo '<div class="entry_meta">';
-
-			echo '<p>';
-
-			echo get_caption('by') . ' ';
-
-			echo '<span class="entry_author">';
-
-			$author_url = trim(get_the_author_url());
-
-			if ( $author_url && $author_url != 'http://' )
-			{
-				echo '<a href="';
-				the_author_url();
-				echo '">';
-				the_author();
-				echo '</a>';
-			}
-			else
-			{
-				the_author();
-			}
-
-			echo '</span>';
-
-			echo '</p>';
-
-			echo '</div>';
+			$o .= sem_entry::get('content')
+				. sem_entry::get('paginate');
 		}
-	}
-} # end display_entry_filed_under_by()
 
-add_action('display_entry_meta', 'display_entry_filed_under_by');
+		if ( $o )
+		{
+			echo $args['before_widget'] . "\n" . $o . $args['after_widget'] . "\n";
+		}
+	} # content()
 
 
-#
-# display_entry_filed_under()
-#
+	#
+	# tags()
+	#
 
-function display_entry_filed_under()
-{
-	$show_entry_filed_under_by = !is_page()
-		&& !( class_exists('sem_static_front') && sem_static_front::is_home() );
-
-	$show_entry_filed_under_by = apply_filters('show_entry_filed_under_by', $show_entry_filed_under_by);
-
-	if ( $show_entry_filed_under_by )
+	function tags($args)
 	{
-		echo '<div class="entry_meta">';
+		global $force_loop;
+		global $sem_captions;
+		$o = '';
 
-		echo '<p>';
+		if ( $tags = sem_entry::get('tags') )
+		{
+			$o = $sem_captions['tags'];
 
-		echo get_caption('filed_under') . ' '
-			. '<span class="entry_tags">';
+			$o = str_replace('%tags%', $tags, $o);
+		}
 
-		the_category(', ');
+		if ( $o )
+		{
+			$o = '<p>' . $o . '</p>';
 
-		echo '</span>';
-
-		echo '</p>';
-
-		echo '</div>';
-	}
-} # end display_entry_filed_under()
-
-
-#
-# get_email_link()
-#
-
-function get_email_link($url = null, $subject = null)
-{
-	$url = isset($url) ? $url : apply_filters('the_permalink', get_permalink());
-	$subject = isset($subject) ? $subject : get_the_title();
-
-	return 'mailto:'
-		. '?'
-		. 'subject=' . rawurlencode($subject)
-		. '&amp;'
-		. 'body=' . rawurlencode($url);
-} # end get_email_link()
+			echo $args['before_widget'] . "\n"
+				. ( $force_loop && $sem_captions['tags_title']
+					? ( $args['before_title']
+						. $sem_captions['tags_title']
+						. $args['after_title']
+						. "\n"
+						)
+					: ''
+					)
+				. $o
+				. $args['after_widget'] . "\n";
+		}
+	} # tags()
 
 
-#
-# get_print_link()
-#
+	#
+	# categories()
+	#
 
-function get_print_link($url = null)
-{
-	$url = isset($url) ? $url : apply_filters('the_permalink', get_permalink());
-
-	return $url
-		. ( ( strpos($url, '?') === false )
-			? '?'
-			: '&amp;'
-			)
-		. 'action=print';
-} # end get_print_link()
-
-
-#
-# display_entry_actions()
-#
-
-function display_entry_actions()
-{
-	$show_entry_actions = apply_filters('show_entry_actions', true);
-
-	$num_comments = get_comments_number();
-
-	if ( $show_entry_actions )
+	function categories($args)
 	{
-?><div class="entry_actions">
-	<span class="action link_entry"><a href="<?php the_permalink(); ?>"><?php echo get_caption('permalink'); ?></a></span>
-	<span class="action print_entry">&bull;&nbsp;<a href="<?php echo get_print_link(); ?>"><?php echo get_caption('print'); ?></a></span>
-	<span class="action email_entry">&bull;&nbsp;<a href="<?php echo get_email_link(); ?>"><?php echo get_caption('email'); ?></a></span>
-<?php
-		if ( $num_comments && ( is_single() || is_page() ) && comments_open() )
+		if ( is_page() )
 		{
-?>	<span class="action comment_entry">&bull;&nbsp;<a href="<?php the_permalink(); ?>#postcomment"><?php echo get_caption('comment'); ?></a></span>
-<?php
-		}
-		elseif ( $num_comments && !( is_single() || is_page() ) )
-		{
-?>	<span class="action entry_comments">&bull;&nbsp;<a href="<?php the_permalink(); ?>#comments"><?php comments_number(get_caption('no_comment'), get_caption('1_comment'), get_caption('n_comments')) ?></a></span>
-<?php
-		}
-		elseif ( !$num_comments && comments_open()
-			&& !( class_exists('sem_static_front') && sem_static_front::is_home() )
-			)
-		{
-?>	<span class="action comment_entry">&bull;&nbsp;<a href="<?php the_permalink(); ?>#postcomment"><?php echo get_caption('comment'); ?></a></span>
-<?php
+			return;
 		}
 
-		edit_post_link(get_caption('edit'), ' <span class="action admin_link">&bull;&nbsp;', '</span>');
-?></div>
-<?php
-	}
-} # end display_entry_actions()
+		global $force_loop;
+		global $sem_captions;
+		$o = '';
 
-add_action('display_entry_actions', 'display_entry_actions');
+		$categories = sem_entry::get('categories');
+		$author = sem_entry::get('author');
+
+		$o = $sem_captions['filed_under'];
+
+		$o = str_replace(array('%categories%', '%author%'), array($categories, $author), $o);
+
+		if ( $o )
+		{
+			$o = '<p>' . $o . '</p>';
+
+			echo $args['before_widget'] . "\n"
+				. ( $force_loop && $sem_captions['cats_title']
+					? ( $args['before_title']
+						. $sem_captions['cats_title']
+						. $args['after_title']
+						. "\n"
+						)
+					: ''
+					)
+				. $o
+				. $args['after_widget'] . "\n";
+		}
+	} # categories()
 
 
-#
-# display_entry_actions2()
-#
+	#
+	# actions()
+	#
 
-function display_entry_actions2()
-{
-	$show_entry_actions = apply_filters('show_entry_actions', true);
-
-	$num_comments = get_comments_number();
-
-	if ( $show_entry_actions )
+	function actions($args)
 	{
-?><div class="entry_actions">
-	<span class="action print_entry"><a href="<?php echo get_print_link(); ?>"><?php echo get_caption('print'); ?></a></span>
-	<span class="action email_entry">&bull;&nbsp;<a href="<?php echo get_email_link(); ?>"><?php echo get_caption('email'); ?></a></span>
-<?php
-		if ( $num_comments && ( is_single() || is_page() ) )
+		global $sem_options;
+		global $sem_captions;
+		$o = '';
+
+		if ( is_page() )
 		{
-?>	<span class="action entry_comments">&bull;&nbsp;<a href="<?php the_permalink(); ?>#comments"><?php comments_number(get_caption('no_comment'), get_caption('1_comment'), get_caption('n_comments')) ?></a></span>
-<?php
-			if ( comments_open() )
+			switch ( get_post_meta(get_the_ID(), '_wp_page_template', true) )
 			{
-?>	<span class="action comment_entry">&bull;&nbsp;<a href="<?php the_permalink(); ?>#postcomment"><?php echo get_caption('comment'); ?></a></span>
-<?php
+			case 'archives.php':
+				add_filter('the_permalink', 'add_mon2permalink');
+				break;
+			case 'links.php':
+				add_filter('the_permalink', 'add_cat_id2permalink');
+				break;
 			}
 		}
-		elseif ( $num_comments && !( is_single() || is_page() ) )
+
+
+		if ( $sem_options['show_permalink'] )
 		{
-?>	<span class="action entry_comments">&bull;&nbsp;<a href="<?php the_permalink(); ?>#comments"><?php comments_number(get_caption('no_comment'), get_caption('1_comment'), get_caption('n_comments')) ?></a></span>
-<?php
-		}
-		elseif ( !$num_comments && comments_open()
-			&& !( class_exists('sem_static_front') && sem_static_front::is_home() )
-			)
-		{
-?>	<span class="action comment_entry">&bull;&nbsp;<a href="<?php the_permalink(); ?>#postcomment"><?php echo get_caption('comment'); ?></a></span>
-<?php
+			$o .= '<span class="entry_action link_entry">'
+				. '<a href="' . htmlspecialchars(sem_entry::get('permalink')) . '">'
+				. $sem_captions['permalink']
+				. '</a>'
+				. '</span>' . "\n";
 		}
 
-		edit_post_link(get_caption('edit'), ' <span class="action admin_link">&bull;&nbsp;', '</span>');
-?></div>
-<?php
-	}
-} # end display_entry_actions2()
+		if ( $sem_options['show_print_link'] )
+		{
+			$o .= '<span class="entry_action print_entry">'
+				. '<a href="' . htmlspecialchars(sem_entry::get('print_link')) . '">'
+				. $sem_captions['print_link']
+				. '</a>'
+				. '</span>' . "\n";
+		}
+
+		if ( $sem_options['show_email_link'] )
+		{
+			$o .= '<span class="entry_action email_entry">'
+				. '<a href="' . htmlspecialchars(sem_entry::get('email_link')) . '">'
+				. $sem_captions['email_link']
+				. '</a>'
+				. '</span>' . "\n";
+		}
+
+		if ( $sem_options['show_comment_link'] )
+		{
+			if ( !is_singular()
+				&& ( $comments_link = sem_entry::get('comments_link') )
+				)
+			{
+				$o .= '<span class="entry_action entry_comment">'
+					. '<a href="' . htmlspecialchars($comments_link) . '">'
+					. sem_entry::get('num_comments')
+					. '</a>'
+					. '</span>' . "\n";
+			}
+			elseif ( !( is_home() && is_page() )
+				&& ( $comment_link = sem_entry::get('comment_link') )
+				)
+			{
+				$o .= '<span class="entry_action comment_entry">'
+					. '<a href="' . htmlspecialchars($comment_link) . '">'
+					. $sem_captions['comment_link']
+					. '</a>'
+					. '</span>' . "\n";
+			}
+		}
+
+		if ( $edit_link = sem_entry::get('edit_link') )
+		{
+			$edit_link = '<span class="entry_action admin_link">' . $edit_link . '</span>';
+
+			$o .= $edit_link;
+		}
+
+		if ( is_page() )
+		{
+			remove_filter('the_permalink', 'add_mon2permalink');
+			remove_filter('the_permalink', 'add_cat_id2permalink');
+		}
+
+		if ( $o )
+		{
+			echo $args['before_widget'] . "\n" . $o . $args['after_widget'] . "\n";
+		}
+	} # actions()
 
 
-#
-# display_entry_trackback_uri()
-#
+	#
+	# comments()
+	#
 
-function display_entry_trackback_uri()
-{
-	$show_entry_trackback_uri = pings_open() && is_single();
-
-	$show_entry_trackback_uri = apply_filters('show_entry_trackback_uri', $show_entry_trackback_uri);
-
-	if ( $show_entry_trackback_uri )
+	function comments($args)
 	{
-?><div class="entry_trackback_uri">
-<!--
-<?php trackback_rdf(); ?>-->
-<h2><?php echo get_caption('trackback_uri'); ?></h2>
-<p><a href="<?php trackback_url(); ?>" rel="trackback nofollow"><?php trackback_url(); ?></a></p>
-</div>
-<?php
-	}
-} # end display_entry_trackback_uri()
+		if ( !( is_home() && is_page() ) )
+		{
+			echo $args['before_widget'];
+			comments_template('/comments.php');
+			echo $args['after_widget'];
+		}
+	} # comments()
+} # sem_entry
 
-add_action('after_the_entry', 'display_entry_trackback_uri', 5);
+sem_entry::init();
 
 
 #
-# display_entry_follow_ups()
+# is_article_page()
 #
 
-function display_entry_follow_ups()
+function is_article_page()
 {
-	$show_entry_follow_ups = is_single();
-
-	if ( ( function_exists('the_blogpulse_link') || function_exists('the_cosmos_link') )
-		&& apply_filters('show_entry_follow_ups', $show_entry_follow_ups)
-		)
-	{
-?><div class="entry_follow_ups">
-<h2><?php echo get_caption('track_this_entry'); ?></h2>
-<?php
-
-if ( function_exists('the_blogpulse_link') ) :
-?><p><a href="<?php the_blogpulse_feed(); ?>" style="border: none; background-image: none; padding: 0px;"><img src="<?php echo get_stylesheet_directory_uri() . '/img/rss.png'; ?>" alt="<?php echo __('RSS'); ?>" width="14" height="14" align="absmiddle" /></a>
-	<a href="<?php the_blogpulse_link(); ?>"><?php echo __('BlogPulse'); ?></a></p>
-<?php
-endif;
-
-if ( function_exists('the_cosmos_link') ) :
-?><p><a href="<?php the_cosmos_feed(); ?>" style="border: none; background-image: none; padding: 0px;"><img src="<?php echo get_stylesheet_directory_uri() . '/img/rss.png'; ?>" alt="<?php echo __('RSS'); ?>" width="14" height="14" align="absmiddle" /></a>
-	<a href="<?php the_cosmos_link(); ?>"><?php echo __('Technorati Cosmos'); ?></a></p>
-<?php
-endif;
-
-?></div>
-<?php
-	}
-} # end display_entry_follow_ups()
-
-add_action('after_the_entry', 'display_entry_follow_ups', 6);
+	return is_page() && get_post_meta(get_the_ID(), '_wp_page_template', true) === 'article.php';
+} # is_article_page()
 
 
 #
-# display_404()
+# is_sales_letter()
 #
 
-function display_404()
+function is_sales_letter()
 {
-	do_action('before_the_entry');
-	echo get_caption('no_entries_found');
-	do_action('after_the_entry');
-} # end display_404()
-
-add_action('display_404', 'display_404');
+	return is_page() && get_post_meta(get_the_ID(), '_wp_page_template', true) === 'sell-page.php';
+} # is_sales_letter()
 
 
 #
-# display_entry_author_image
+# is_list_page()
 #
 
-function display_entry_author_image()
+function is_list_page()
 {
-	$show_author_image = !is_page() && !is_search();
-
-	if ( function_exists('the_author_image')
-		&& apply_filters('show_entry_author_image', $show_author_image) )
-	{
-		the_author_image();
-	}
-} # end display_author_image()
-
-add_action('display_entry_title_meta', 'display_entry_author_image', 5);
+	return is_page()
+		&& in_array(
+			get_post_meta(get_the_ID(), '_wp_page_template', true),
+			array('archives.php', 'links.php')
+			);
+} # is_list_page()
 
 
 #
-# comments
+# is_special_page()
 #
 
-function display_entry_comments()
+function is_special_page()
 {
-	comments_template();
-}
-
-add_action('after_the_entry', 'display_entry_comments', 50);
+	return is_page()
+		&& get_post_meta(get_the_ID(), '_wp_page_template', true) === 'raw.php';
+} # is_special_page()
 ?>

@@ -80,7 +80,7 @@ class sem_admin_menu_admin
 
 	?><input type="hidden" name="update_admin_menu_options" value="1" />
 	<?php
-		$options = get_settings('sem_admin_menu_params');
+		$options = get_option('sem_admin_menu_params');
 
 		if ( !$options )
 		{
@@ -101,7 +101,7 @@ class sem_admin_menu_admin
 				)
 				. ' />'
 			. '&nbsp;'
-			. __('Show menu when registrations are turned off', 'sem-admin-menu')
+			. __('Show the admin menu to non-logged in visitors when registrations are turned off (Options / General)', 'sem-admin-menu')
 			. '</label>'
 			. '</p>';
 

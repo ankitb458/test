@@ -13,48 +13,7 @@
 <div id="sidebar2" class="sidebar">
 <div class="pad">
 <ul>
-<?php
-if ( function_exists('dynamic_sidebar') )
-{
-	#echo '<li style="background-color: yellow;">';
-	#var_dump($default_layout, $active_layout);
-	#echo '<li>';
-
-	dynamic_sidebar($sidebar_id);
-}
-else  # no widgets
-{
-
-if ( function_exists('the_recent_links') ) :
-?>
-	<li><?php the_recent_links(); ?></li>
-<?php
-endif;
-
-
-global $wpdb;
-
-
-?>
-	<li><?php get_calendar(); ?></li>
-<?php
-
-
-if ( function_exists('dates_to_remember') ) :
-?>
-	<li>
-		<div class="widget">
-		<h2><?php echo __('Upcoming events'); ?></h2>
-		<ul>
-		<?php dates_to_remember(4); ?>
-		</ul>
-		</div>
-	</li>
-<?php
-endif;
-
-} # end no widgets
-?>
+<?php dynamic_sidebar('sidebar-2'); ?>
 </ul>
 </div>
 </div><!-- #sidebar2 -->

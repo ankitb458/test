@@ -1,12 +1,15 @@
 <?php
 /*
-Plugin Name: Countdown
+Plugin Name: Countdown (fork)
 Plugin URI: http://redalt.com/wiki/Countdown
 Description: Adds template tags to count down to a specified date.  <strong>Important:</strong> Edit your dates and settings on the Options | Countdown admin panel. The Plugin will not work as expected until you do.
-Version: 2.1 (fork)
+Version: 2.2 fork
 Author: Owen Winkler &amp; Denis de Bernardy
 Author URI: http://www.asymptomatic.net
 License: MIT License - http://www.opensource.org/licenses/mit-license.php
+Update Service: http://version.mesoconcepts.com/wordpress
+Update Tag: countdown
+Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 /*
 Countdown - Adds template tags to count down to a specified date
@@ -117,7 +120,7 @@ function dtr_xst_weekday($index, $weekday, $month)
 
 function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>', $endswith = '</li>', $paststartswith = '<li class="pastevent">', $pastendswith = '</li>')
 {
-	$options = get_settings('dtr_options');
+	$options = get_option('dtr_options');
 	if(!is_array($options)) {
 		$options['listformat'] = '<b>%date%</b> (%until%)<br />%event%';
 		$options['dateformat'] = 'M j';
@@ -125,7 +128,7 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 		update_option('dtr_options', $options);
 	}
 
-	$datefile = get_settings('countdown_datefile');
+	$datefile = get_option('countdown_datefile');
 
 	if ( !$datefile )
 	{
@@ -135,7 +138,7 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 	}
 
 	#echo '<pre>';
-	#var_dump($datefile, get_settings('countdown_datefile'));
+	#var_dump($datefile, get_option('countdown_datefile'));
 	#echo '</pre>';
 
 	$dates = explode("\n", $datefile);
@@ -281,7 +284,7 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 }
 
 function countdown_days($event, $date, $startswith = '', $endswith = '', $paststartswith = '', $pastendswith = '', $do_daystil = true) {
-	$options = get_settings('dtr_options');
+	$options = get_option('dtr_options');
 
 	$until = intval((strtotime($date) - strtotime(date('Y-m-d', time() + ($options['timeoffset'] * 3600)))) / 86400);
 	$remaining = '';
@@ -327,7 +330,7 @@ function dtr_admin_menu()
 
 function dtr_management_page()
 {
-	$datefile = get_settings('countdown_datefile');
+	$datefile = get_option('countdown_datefile');
 
 	if ( !$datefile )
 	{
@@ -337,7 +340,7 @@ function dtr_management_page()
 	}
 
 	#echo '<pre>';
-	#var_dump(get_settings('countdown_datefile'), $_POST['dates']);
+	#var_dump(get_option('countdown_datefile'), $_POST['dates']);
 	#echo '</pre>';
 
 	if (isset($_POST['action']) && $_POST['action'] == 'update_countdown') {
@@ -474,7 +477,7 @@ function dtr_options_page()
 		update_option('dtr_options', $options);
 		echo '<div id="message" class="updated fade"><p><strong>Options Updated.</strong></p></div>';
 	}
-	$options = get_settings('dtr_options');
+	$options = get_option('dtr_options');
 	if(!is_array($options)) {
 		$options['listformat'] = '<b>%date%</b> (%until%)<br />%event%';
 		$options['dateformat'] = 'M j';
@@ -505,7 +508,7 @@ function dtr_options_page()
 		<p>Countdown thinks that the current date/time is <?php echo date('Y-m-d h:i:s a', time() + ($options['timeoffset'] * 3600)); ?>.</p>
 		<input type="hidden" name="timeoffset" value="0" />
 
-		<p>If that seems awfully incorrect, you might check out <a href="<?php echo trailingslashit(get_settings('siteurl')); ?>wp-admin/options-general.php">your timezone settings</a> in WordPress, or the system time on your server.</p>
+		<p>If that seems awfully incorrect, you might check out <a href="<?php echo trailingslashit(get_option('siteurl')); ?>wp-admin/options-general.php">your timezone settings</a> in WordPress, or the system time on your server.</p>
 
 		<p class="submit"><input type="submit" name="Submit" value="Submit" /></p>
 	</form>
@@ -524,7 +527,7 @@ function countdown_widget_init()
 	function countdown_widget($args)
 	{
 		extract($args);
-		$options = get_settings('countdown_widget');
+		$options = get_option('countdown_widget');
 
 
 		$options['number'] = $options['number'] ? $options['number'] : 5;
@@ -545,7 +548,7 @@ function countdown_widget_init()
 
 	function countdown_widget_control()
 	{
-		$options = get_settings('countdown_widget');
+		$options = get_option('countdown_widget');
 
 		if ( $_POST["countdown_widget_update"] )
 		{
@@ -577,5 +580,5 @@ function countdown_widget_init()
 	register_widget_control('Countdown', 'countdown_widget_control');
 }
 
-add_action('plugins_loaded', 'countdown_widget_init');
+add_action('widgets_init', 'countdown_widget_init');
 ?>

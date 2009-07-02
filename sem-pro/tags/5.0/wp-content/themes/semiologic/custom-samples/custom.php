@@ -76,10 +76,6 @@ add_action('display_entry_meta', 'display_entry_filed_under_by');
 
 add_action('display_entry_actions', 'display_entry_actions');
 
-add_action('after_the_entry', 'display_entry_trackback_uri', 5);
-add_action('after_the_entry', 'display_entry_follow_ups', 6);
-add_action('after_the_entry', 'display_entry_related_entries', 8);
-
 add_action('display_footer', 'display_footer');
   add_action('display_copyright_notice', 'display_copyright_notice');
   add_action('display_footer_nav', 'display_footer_nav');
@@ -103,13 +99,8 @@ do_action('after_the_header');
 
 do_action('before_the_entries');
 
-do_action('before_the_entry');
-do_action('display_entry_header');
-do_action('display_entry_body');
-do_action('display_entry_spacer');
-do_action('display_entry_meta');
-do_action('display_entry_actions');
-do_action('after_the_entry');
+# loop on:
+do_action('the_entry');
 
 do_action('after_the_entries');
 
@@ -122,61 +113,5 @@ do_action('display_footer');
 do_action('after_the_footer');
 
 do_action('after_the_wrapper');
-
-
-Time for an example... Drop this file into any skin's folder to see it change the way posts are displayed. Don't forget the <?php (start php) and ?> (end php) if you only copy part of this file or create a new one from scratch.
 */
-?><?php
-
-#
-# custom_entry_on_by()
-#
-# Posted on [date/time] by [author]
-# You can set the date format via admin area / options
-# Set the one called 'Default time format' to 'F j, Y'
-#
-
-function custom_entry_on_by()
-{
-?>Posted on <?php the_time(); ?> by <?php the_author(); ?><?php
-} # custom_entry_on_by()
-
-
-#
-# custom_entry_actions()
-#
-# Filed under [tags] | Permalink | Link | Print | Email | Comments | Edit
-#
-
-function custom_entry_actions()
-{
-?><div class="entry_actions" style="border-top: none; margin: .5em 0px;">
-	<span class="entry_tags">Filed under <?php the_category(', '); ?></span>
-	<span class="action link_entry">|&nbsp;<a href="<?php the_permalink(); ?>"><?php echo get_caption('permalink'); ?></a></span>
-	<span class="action print_entry">|&nbsp;<a href="<?php echo get_print_link(); ?>"><?php echo get_caption('print'); ?></a></span>
-	<span class="action email_entry">|&nbsp;<a href="<?php echo get_email_link(); ?>"><?php echo get_caption('email'); ?></a></span>
-<?php
-	if ( get_comments_number() )
-	{
-?>	<span class="action entry_comments">&bull;&nbsp;<a href="<?php the_permalink(); ?>#comments"><?php comments_number(get_caption('no_comment'), get_caption('1_comment'), get_caption('n_comments')) ?></a></span>
-<?php
-	}
-	edit_post_link(get_caption('edit'), ' <span class="action admin_link">|&nbsp;', '</span>');
-?></div>
-<?php
-} # end custom_entry_actions()
-
-
-#
-# Override the default hooks except on pages
-#
-
-if ( !is_page() )
-{
-	remove_action('display_entry_date', 'display_entry_date');
-	add_action('display_entry_title_meta', 'custom_entry_on_by');
-	remove_action('display_entry_meta', 'display_entry_filed_under_by');
-	remove_action('display_entry_actions', 'display_entry_actions');
-	add_action('display_entry_actions', 'custom_entry_actions');
-}
 ?>

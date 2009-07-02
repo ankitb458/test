@@ -16,5 +16,5 @@ Template Name: Monocolumn Template
 
 do_action('setup_template', 'monocolumn');
 
-require_once TEMPLATEPATH . '/index.php';
+require_once sem_path . '/index.php';
 ?>

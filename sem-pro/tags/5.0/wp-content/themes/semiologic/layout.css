@@ -31,20 +31,25 @@ div.spacer
 	clear: both;
 }
 
-#header_nav,
-#copyright_notice
+#copyright_notice,
+#footer_nav
+{
+	text-align: center;
+}
+
+.float_nav #header_nav,
+.float_nav #copyright_notice
 {
 	float: left;
 }
 
-#search_form,
-#footer_nav
+.float_nav #search_form,
+.float_nav #footer_nav
 {
 	float: right;
 }
 
 .main,
-.entry,
 .sem_ad_spaces_display_widget
 {
 	overflow: hidden;
@@ -61,9 +66,15 @@ div.spacer
 
 /* aligns */
 
-#tagline
+.header h2
 {
 	text-align: right;
+}
+
+.invert_header h1,
+.invert_header h2
+{
+	text-align: center;
 }
 
 #search_form

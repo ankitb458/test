@@ -1,22 +1,43 @@
 <?php
 #
-# Wizard Name: Clone Semiologic Pro Blog
-# Version: 1.6.2
+# Wizard Name: Clone
+# Version: 2.0 beta
 # Author: Denis de Bernardy
 # Author uri: http://www.mesoconcepts.com
-# Description: <p>This wizard will let you import an existing site's configuration into this site. This includes</p> <ul><li>WordPress preferences</li><li>Presentation preferences</li><li>Ad Spaces preferences</li><li>User preferences (except permissions and password)</li></ul>
 #
 
+include_once dirname(__FILE__) . '/start.php';
 
-if ( file_exists(ABSPATH . 'wp-content/plugins/semiologic/wizards/clone/wizard.php')
-	&& !function_exists('get_site_option')
-	)
+if ( !sem_pro ) :
+
+sem_wizards::register_step(
+	'start',
+	array('wiz_clone_start', 'show_step'),
+	array('sem_wizards', 'do_done')
+	);
+
+else :
+
+foreach ( array('http') as $file )
 {
-	include_once ABSPATH . 'wp-content/plugins/semiologic/wizards/clone/wizard.php';
+	include_once sem_path . '/inc/' . $file . '.php';
 }
-else
+
+foreach ( array('import', 'done') as $file )
 {
-	register_wizard_step(1, 'pro_feature_notice');
-	register_wizard_check(1, 'fail_wiz_step');
+	include_once sem_pro_path . '/inc/clone/' . $file . '.php';
 }
+
+sem_wizards::register_step(
+	'start',
+	array('wiz_clone_start', 'show_step'),
+	array('wiz_clone_import', 'do_step')
+	);
+
+sem_wizards::register_step(
+	'done',
+	array('wiz_clone_done', 'show_step')
+	);
+
+endif;
 ?>
