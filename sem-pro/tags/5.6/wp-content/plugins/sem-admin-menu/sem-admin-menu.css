@@ -1,0 +1,89 @@
+body
+{
+	padding-top: 0px;
+	padding-left: 0px;
+	padding-bottom: 0px;
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+#am
+{
+	background-color: Gainsboro;
+	border: outset 1px;
+	color: Black;
+	font-family: Trebuchet MS, Tahoma, Helvetica, Sans-Serif;
+	font-size: 8pt;
+	padding: 3px 0px;
+	margin: 0px;
+	text-align: right;
+}
+
+#am ul
+{
+	display: inline;
+	padding: 3px;
+	margin: 3px 0px;
+	text-align: left;
+	list-style-type: none;
+}
+
+#am li
+{
+	display: inline;
+	padding: 6px 0px;
+	margin: 4px 2px;
+	text-align: left;
+	list-style-type: none;
+}
+
+#am .am_new
+{
+	background: url(new_file.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_manage
+{
+	background: url(edit.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_comments
+{
+	background: url(comment.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_options
+{
+	background: url(options.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_dashboard
+{
+	background: url(activity.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_user
+{
+	background: url(user.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am a, #am a:link, #am a:visited
+{
+	color: DimGray;
+	text-decoration: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+#am a:hover
+{
+	color: Black;
+	text-decoration: underline;
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2006 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: video_dialog.html
+ * 	Video Properties dialog window.
+ * 
+ * File Authors:
+ *		Mike Koepke (mike.koepke@gmail.com)
+*		Adapted from code by:
+ * 		Ziyad Saeed (myschizobuddy@gmail.com)
+-->
+<html>
+	<head>
+		<title>Video Properties</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta content="noindex, nofollow" name="robots">
+		<script src="../../dialog/common/fck_dialog_common.js" type="text/javascript"></script>
+		<script src="video.js" type="text/javascript"></script>
+		<link href="video.css" type="text/css" rel="stylesheet">
+	</head>
+	<body style="OVERFLOW: hidden">
+		<div id="flashVideos">
+			<form action="../">
+			<span fckLang="VideoSource">Video Source</span><br />
+			<select id="cmbVideoSource" onchange="SetVideoSource(this);">
+				<option selected="selected">Select your video source</option>
+				<option value="mSvJwUFI_es" id="selectYouTube">YouTube Video</option>
+				<option value="4776181634656145640" id="selectGoogle">Google Video</option>
+				<option value="2521392" id="selectYahoo">Yahoo! Video</option>
+				<option value="2013750284" id="selectMySpace">MySpace Video</option>	
+				<option value="0ac95f49e1af657ba0e8bd0ec8daddd8" id="selectAOLUnCut">AOL UnCut Video</option>
+				<option value="axel_crazy_frog" id="selectatomFilms">atom Films</option>
+				<option value="Make-CreateTeenyTinySolarRobots599.flv" id="selectbliptv">blip.tv</option>	
+				<option value="Mjg4MzQ2" id="selectBreakCom">Break.com</option>
+				<option value="3S8vOaYSsFqNl6Huc" id="selectDailyMotion">DailyMotion</option>
+				<option value="mymusic" id="selectFreeiQ">Free iQ</option>				
+				<option value="30-1108115" id="selectGoFish">GoFish</option>
+				<option value="1834849" id="selectGrouper">Grouper</option>
+				<option value="815" id="selectHeavy">Heavy</option>
+				<option value="2851742" id="selectiFilm">iFilm</option>
+				<option value="41170045E2864644B9FC1AE8BC86AD3C" id="selectLiveVideo">LiveVideo</option>
+				<option value="517499/magic_putty.swf" id="selectmetacafe">metacafe</option>
+				<option value="27335" id="selectRevver">Revver</option>
+				<option value="v376007zzgRZxfC" id="selectveoh">veoh</option>
+				<option value="a257995d/" id="selectViddler">Viddler</option>				
+				<option value="9a03bbf9-7307-54ff-6bee-ff0008c90d2c" id="selectVideoJug">VideoJug</option>
+				<option value="150193" id="selectVimeo">Vimeo</option>
+				<option value="b6a9f72e27cc3f267978131aba49f5bb" id="selectvSocial">vSocial</option>				
+			</select>
+			<br />
+			<br />
+			<span fckLang="VideoID">Video ID</span><br />
+			<input id="videoCode" value="Enter the code here..." style="WIDTH: 80%" type="text">
+			<input value="Preview" onclick="UpdatePreview();" style="WIDTH: 15%" type="button">
+			</form>						
+			<span fckLang="VideoPreview">Preview of your video</span><br />
+			<div id="ePreviewCell" class="FlashPreviewArea">
+				<iframe  id="preview" src="video_preview.html" frameborder="0" marginheight="0" marginwidth="0" scrolling="no"  ></iframe>
+			</div>
+		</div>
+	</body>
+</html>
