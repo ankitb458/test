@@ -33,7 +33,6 @@ if ( $sem_opt = get_option('link_widgets') ) {
 	}
 	update_option('widget_links', $sem_opt);
 	
-	# todo: switch
 	global $wp_filter, $_wp_sidebars_widgets;
 	$filter_backup = isset($wp_filter['sidebars_widgets']) ? $wp_filter['sidebars_widgets'] : array();
 	unset($wp_filter['sidebars_widgets']);
@@ -41,16 +40,6 @@ if ( $sem_opt = get_option('link_widgets') ) {
 	$sidebars_widgets = wp_get_sidebars_widgets(false);
 	$wp_filter['sidebars_widgets'] = $filter_backup;
 	$_wp_sidebars_widgets = array();
-	
-	#global $_wp_sidebars_widgets;
-	#if ( is_admin() ) {
-	#	$sidebars_widgets = get_option('sidebars_widgets', array());
-	#} else {
-	#	if ( !$_wp_sidebars_widgets )
-	#		wp_get_sidebars_widgets(false);
-	#	$sidebars_widgets =& $_wp_sidebars_widgets;
-	#}
-	# /todo
 	
 	foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 		if ( !is_array($widgets) ) continue;
@@ -69,11 +58,7 @@ if ( $sem_opt = get_option('link_widgets') ) {
 		}
 	}
 	
-	# todo: switch
 	wp_set_sidebars_widgets($sidebars_widgets);
-	#if ( is_admin() )
-	#	update_option('sidebars_widgets', $sidebars_widgets);
-	# /todo
 	
 	delete_option('link_widgets');
 }
