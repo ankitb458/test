@@ -1,0 +1,245 @@
+/*
+Skin name: Bankers Hours Blue
+Version: 1.0
+Author: Techie Coach
+Author uri: http://www.techiecoach.com
+Description: Blue-Grey Flannel Suit
+*/
+
+/*
+	Background, font and link colors for the entire site
+	----------------------------------------------------
+*/
+
+body
+{
+	background-color: #DCD9D0;
+	color: #060C24;
+}
+
+
+a:link, a:visited
+{
+	color: #595C86 /*#5E757D*/;
+}
+
+a:active, a:hover
+{
+	color: #5E757D /*#595C86*/;
+}
+
+
+/*
+	Border, background, font and link colors for the site canvas
+	------------------------------------------------------------
+*/
+
+#wrapper
+{
+	border: solid 1px #c1c1c1;
+	background-color: #fff;
+	color: black;
+}
+
+/*
+	Border, background, font and link colors for the header
+	-------------------------------------------------------
+*/
+
+#header div.pad
+{
+	background-color: #DCD9D0;
+	background: url(headerbg.png) repeat-x top left;
+	color: black;
+	text-align: left;
+}
+
+.skin #header h1,
+#header h1 a
+{
+	color: #595C86;
+	font-size:36px;
+}
+
+#header h1 a:hover
+{
+	color: #5E757D;
+}
+
+#header h2
+{
+	color: #595C86;
+}
+
+/*
+	Offsets for the header
+	----------------------
+*/
+
+#header div.pad
+{
+	padding: 0px;
+}
+
+
+/*
+	Aligns for the header
+	---------------------
+*/
+
+#header h1
+{
+	padding-bottom: 20px;
+	text-align: left;
+}
+
+
+#header h2
+{
+	text-align: right;
+}
+
+
+
+/*
+	Border, background, font and link colors for the navbar
+	-------------------------------------------------------
+*/
+
+#navbar
+{
+	background-color: #595C86 /*#5E757D*/;
+	color: white;
+}
+
+#navbar a
+{
+	color: white;
+	text-decoration: none
+}
+
+#navbar a:hover
+{
+	text-decoration: underline
+}
+
+/*
+	Offset for the navbar
+	---------------------
+*/
+
+#navbar
+{
+	padding-top: 6px;
+	padding-bottom: 3px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+/**/
+
+/*
+	Float Left Icons for each sidebar widget
+	-----------------------------------------
+*/
+
+#sidebar .widget li,
+#sidebar2 .widget li,
+#ext_sidebar .widget li
+{
+	list-style-image: url(li-icon.gif);
+}
+/*
+	Calendar style
+	--------------
+*/
+
+#wp-calendar
+{
+	border: solid 1px #c1c1c1;
+	background-color: white;
+}
+
+#wp-calendar thead th
+{
+	border-bottom: solid 1px #c1c1c1;
+	background-color: #DCD9D0;
+}
+
+#wp-calendar tfoot td
+{
+	background-color: white;
+}
+
+/*
+	Border, background, font and link colors for the footer
+	-------------------------------------------------------
+*/
+
+#footer
+{
+	border-top: solid 1px #c1c1c1;
+	background-color: #595C86 /*#5E757D*/;
+	color: #FFFFFF;
+}
+
+#footer a
+{
+	color: #FFFFFF;
+	font-weight:bold;
+	text-decoration: none;
+}
+
+#footer a:hover
+{
+	color: #FFFFFF;
+	font-weight:bold;
+	text-decoration: underline;
+}
+
+
+/*
+	Offset for the footer
+	---------------------
+*/
+#footer
+{
+	padding-top: 6px;
+	padding-bottom: 3px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+/*
+	Margins for the main area
+	-------------------------
+*/
+#main div.pad
+{
+	margin: 10px 10px;
+	padding: 0px 0px;
+}
+
+/*
+	Border, background, font and link colors for each entry
+	-------------------------------------------------------
+*/
+div.entry
+{
+	border-bottom: solid 1px #c1c1c1;
+	color: black;
+	padding: 0px 20px 20px 20px;
+}
+
+
+/*
+Blockquote new graphic
+-------------------------
+*/
+
+blockquote
+{
+	margin: 0 20px;
+	padding: 2px 20px;
+    background-color: #E7E9DC;
+    background-image: none;
+}
