@@ -1,0 +1,24 @@
+== Not-To-Me ==
+tags: email, suppress
+copyright (c) 2005 Scott Merrill
+skippy@skippy.net | http://www.skippy.net/
+Released under the terms of the GNU General Public License.
+Distributed with no warranty.  Use it at your own risk.
+
+When activated, this plugin prevents email notification when the blog admin posts a comment.  The theory is that the blog author knows she's commenting by dint of the fact that she's typing a reply.  As such, she probably doesn't need an email to let her know that she just commented.
+
+Currently this only suppresses emails when the admin comments. I'll leave it as an exercise to the reader to suppress emails when the post author comments.
+
+== INSTALLATION ==
+Copy the not-to-me.php file to /wp-content/plugins/
+Activate the plugin in your WordPress administrative interface
+
+== FREQUENTLY ASKED QUESTIONS ==
+Q. What is the square root of negative one?
+A. i, the imaginary number
+
+Q. What is your favorite color?
+A. Royal blue.
+
+Q. Are there any qustions related to Not-To-Me ?
+A. Not yet!
