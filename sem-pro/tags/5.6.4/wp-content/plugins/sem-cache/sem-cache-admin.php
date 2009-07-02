@@ -45,12 +45,14 @@ function wp_cache_manager()
 		?>
 		<div class="error">
 		<h3>Cache Error</h3>
-		<p>To work, the cache needs to be able to modify a file and a folder:</p>
+		<p>To work, the sem-cache needs to be able to modify a file and a folder:</p>
 		<ul>
 		<li><code>/wp-config.php</code> (chmod 666), to turn the cache on or off</li>
 		<li><code>/wp-content/</code> (chmod 777), to actually use the cache</li>
 		</ul>
-		<p>Please give write access to the server accordingly.</code></p>
+		<p><code>Please give write access on the server accordingly.</code></p>
+		<br />
+		<p>If permissions are set correctly, please delete the cache file <code>/wp-content/advanced-cache.php</code>.</p>
 		</div>
 		<?php
 	}

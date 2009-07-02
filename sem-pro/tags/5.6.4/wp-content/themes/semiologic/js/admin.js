@@ -96,6 +96,10 @@ nav_menus = {
 			{
 				case 'type':
 					type = decodeURIComponent(keyval[1]);
+					if ( type == 'url' )
+					{
+						label = 'Url Caption';
+					}
 					break;
 				case 'ref':
 					ref = decodeURIComponent(keyval[1]);
@@ -130,7 +134,7 @@ nav_menus = {
 		case 'url':
 			str += '<input type="text" class="nav_menu_item_ref"'
 				+ ' name="nav-menu[' + number + '][items][' + item_id + '][ref]"'
-				+ ' value=""'
+				+ ' value="http://"'
 				+ ' />';
 			break;
 

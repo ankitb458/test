@@ -4,7 +4,7 @@ Plugin Name: Nav Menus
 Plugin URI: http://www.semiologic.com/software/widgets/nav-menus/
 Description: WordPress widgets that let you create navigation menus
 Author: Denis de Bernardy
-Version: 1.0
+Version: 1.0.2
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: nav_menus
@@ -458,7 +458,7 @@ class nav_menus
 			. '</a>';
 		
 		# process classes
-		$classes[] = 'nav__' . preg_replace("/^[^0-9a-z]+/i", "_", strtolower($item['label']));
+		$classes[] = 'nav__' . preg_replace("/[^0-9a-z]+/i", "_", strtolower($item['label']));
 		
 		$classes = array_unique($classes);
 		
@@ -489,7 +489,7 @@ class nav_menus
 		}
 		
 		# process classes
-		$classes[] = 'nav__' . preg_replace("/^[^0-9a-z]+/i", "_", strtolower($item['label']));
+		$classes[] = 'nav__' . preg_replace("/[^0-9a-z]+/i", "_", strtolower($item['label']));
 		
 		if ( !is_page() && !is_search() && !is_404() )
 		{

@@ -4,7 +4,7 @@ Plugin Name: Contact Form
 Plugin URI: http://www.semiologic.com/software/publishing/contact-form/
 Description: Contact form widgets for WordPress, with built-in spam protection and akismet integration
 Author: Denis de Bernardy
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: contact_form
@@ -117,12 +117,13 @@ class contact_form
 			$form = '<form method="post" action="">' . "\n"
 				. '<input type="hidden" name="cf_number" value="' . intval($number) . '">' . "\n";
 
+			$errorCode = $GLOBALS['cf_status'][$_POST['cf_number']];
+			
 			if ( $_POST['cf_number'] == $number
-				&& $GLOBALS['cf_status'][$_POST['cf_number']]
-				)
+				&& $errorCode )
 			{
 				$form .= '<div class="cf_error">'
-					. $options['captions'][$GLOBALS['cf_status']][$_POST['cf_number']]
+					. $options['captions'][$errorCode]
 					. '</div>' . "\n";
 			}
 			
@@ -467,13 +468,15 @@ class contact_form
 	{
 		$site_url = trailingslashit(get_option('siteurl'));
 
-		$path = dirname(__FILE__) . '/';
-		
+		$path = 'wp-content/'
+			. 'plugins/'
+			. 'contact-form/';
+			
 		$file = 'contact-form.css';
 
 		echo '<link'
 			. ' rel="stylesheet" type="text/css"'
-				. ' href="' . str_replace(ABSPATH, $site_url, $path) . $file . '?ver=1.0"'
+				. ' href="' . $site_url . $path . $file . '?ver=1.0"'
 				. ' />' . "\n";
 	} # css()
 	

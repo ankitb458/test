@@ -4,7 +4,7 @@ Plugin Name: External Links
 Plugin URI: http://www.semiologic.com/software/publishing/external-links/
 Description: Adds a class=&quot;external&quot; to all outbound links, with various effects that are configurable under Options / External Links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the icon on individual links.
 Author: Denis de Bernardy
-Version: 3.0
+Version: 3.0.1
 Author URI: http://www.semiologic.com
 */
 
@@ -96,7 +96,7 @@ class external_links
 			"/
 			^.*
 			<\s*\/\s*head\s*>		# everything up to where the body starts
-			/isx",
+			/isUx",
 			array('external_links', 'escape'),
 			$buffer
 			);

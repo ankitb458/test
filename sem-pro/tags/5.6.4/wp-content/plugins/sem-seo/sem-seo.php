@@ -4,7 +4,7 @@ Plugin Name: Semiologic SEO
 Plugin URI: http://www.semiologic.com/software/marketing/sem-seo/
 Description: All in one SEO plugin for WordPress
 Author: Denis de Bernardy
-Version: 1.2
+Version: 1.3
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: sem_seo
@@ -39,7 +39,7 @@ class sem_seo
 		
 		# page meta
 		if($options['enforce_www_preference'] == true)
-			add_action('wp_head', array('sem_seo', 'enforce_www'));
+			add_action('init', array('sem_seo', 'enforce_www'));
 		
 		# page title
 		add_filter('wp_title', array('sem_seo', 'title'), 20, 2);
@@ -651,21 +651,18 @@ by Mark Jaquith (http://txfx.net/)
 	{	
 		if ( $_SERVER['REQUEST_URI'] == str_replace('http://' . $_SERVER['HTTP_HOST'], '', get_bloginfo('home')) . '/index.php' ) 
 		{
-			header('HTTP/1.1 301 Moved Permanently');
-			header('Location: ' . get_bloginfo('home') . '/');
+			wp_redirect(get_bloginfo('home') . '/', 301);
 			exit();
 		}
 
 		if ( strpos($_SERVER['HTTP_HOST'], 'www.') === 0  && strpos(get_bloginfo('home'), 'http://www.') === false ) 
 		{
-			header('HTTP/1.1 301 Moved Permanently');
-			header('Location: http://' . substr($_SERVER['HTTP_HOST'], 4) . $_SERVER['REQUEST_URI']);
+			wp_redirect( 'http://' . substr($_SERVER['HTTP_HOST'], 4) . $_SERVER['REQUEST_URI'], 301);
 			exit();
 		} 
 		elseif ( strpos($_SERVER['HTTP_HOST'], 'www.') !== 0 && strpos(get_bloginfo('home'), 'http://www.') === 0 ) 
 		{
-			header('HTTP/1.1 301 Moved Permanently');
-			header('Location: http://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+			wp_redirect('http://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'], 301);
 			exit();
 		}
 	} # enforce_www()

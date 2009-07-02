@@ -4,7 +4,7 @@ Plugin Name: Mediacaster
 Plugin URI: http://www.semiologic.com/software/publishing/mediacaster/
 Description: Lets you add podcasts and videos to your site's posts and pages.
 Author: Denis de Bernardy
-Version: 1.5
+Version: 1.5.2
 Author URI: http://www.semiologic.com
 */
 
@@ -1218,16 +1218,16 @@ class mediacaster
 			$site_url = trailingslashit(get_option('siteurl'));
 
 			echo "\n\t\t"
-				. '<copyright>&#xA9; ' . htmlentities($options['itunes']['copyright']) . '</copyright>' . "\n\t\t"
-				. '<itunes:author>' . htmlentities($options['itunes']['author']) . '</itunes:author>' . "\n\t\t"
-				. '<itunes:summary>' . htmlentities($options['itunes']['summary']) . '</itunes:summary>' . "\n\t\t"
+				. '<copyright>&#xA9; ' . apply_filters('the_excerpt_rss', $options['itunes']['copyright']) . '</copyright>' . "\n\t\t"
+				. '<itunes:author>' . apply_filters('the_excerpt_rss', $options['itunes']['author']) . '</itunes:author>' . "\n\t\t"
+				. '<itunes:summary>' . apply_filters('the_excerpt_rss', $options['itunes']['summary']) . '</itunes:summary>' . "\n\t\t"
 				#. '<itunes:owner>' . "\n\t\t"
 				#	. "\t" . '<itunes:name>' . $owner_name . '</itunes:name>' . "\n\t\t"
 				#	. "\t". '<itunes:email>' . $owner_email . '</itunes:email>' . "\n\t\t"
 				#. '</itunes:owner>' . "\n\t\t"
 				#. '<itunes:image href="' . $image . '" />' . "\n\t\t"
-				. '<itunes:explicit>' . htmlentities($options['itunes']['explicit']) . '</itunes:explicit>' . "\n\t\t"
-				. '<itunes:block>' . htmlentities($options['itunes']['block']) . '</itunes:block>' . "\n\t\t"
+				. '<itunes:explicit>' . apply_filters('the_excerpt_rss', $options['itunes']['explicit']) . '</itunes:explicit>' . "\n\t\t"
+				. '<itunes:block>' . apply_filters('the_excerpt_rss', $options['itunes']['block']) . '</itunes:block>' . "\n\t\t"
 				;
 
 			$image = 'wp-content/itunes/' . $options['itunes']['image']['name'];
@@ -1250,13 +1250,13 @@ class mediacaster
 
 					if ( $cat )
 					{
-						$category = '<itunes:category text="' . htmlentities($cat) . '" />' . "\n\t\t";
+						$category = '<itunes:category text="' . apply_filters('the_excerpt_rss', $cat) . '" />' . "\n\t\t";
 
 						if ( $cat = array_pop($cats) )
 						{
 							$cat = trim($cat);
 
-							$category = '<itunes:category text="' . htmlentities($cat) . '">' . "\n\t\t\t"
+							$category = '<itunes:category text="' . apply_filters('the_excerpt_rss', $cat) . '">' . "\n\t\t\t"
 								. $category
 								. '</itunes:category>' . "\n\t\t";
 						}
@@ -1383,9 +1383,9 @@ class mediacaster
 			}
 
 			echo "\n\t\t"
-				. '<itunes:author>' . htmlentities($author) . '</itunes:author>' . "\n\t\t"
-				. '<itunes:summary>' . htmlentities($summary) . '</itunes:summary>' . "\n\t\t"
-				. '<itunes:keywords>' . htmlentities($keywords) . '</itunes:keywords>' . "\n\t\t"
+				. '<itunes:author>' . apply_filters('the_excerpt_rss', $author) . '</itunes:author>' . "\n\t\t"
+				. '<itunes:summary>' . apply_filters('the_excerpt_rss', $summary) . '</itunes:summary>' . "\n\t\t"
+				. '<itunes:keywords>' . apply_filters('the_excerpt_rss', $keywords) . '</itunes:keywords>' . "\n\t\t"
 				;
 		}
 
@@ -1443,11 +1443,15 @@ class mediacaster
 	{
 		$site_url = trailingslashit(get_option('siteurl'));
 
-		$path = dirname(__FILE__) . '/';
-		
+		$path = 'wp-content/'
+			. 'plugins/'
+			. 'mediacaster/';
+			
+		$file = 'mediacaster.css';
+
 		echo '<link'
 			. ' rel="stylesheet" type="text/css"'
-				. ' href="' . str_replace(ABSPATH, $site_url, $path) . 'mediacaster.css' . '?ver=1.0"'
+				. ' href="' . $site_url . $path . $file . '?ver=1.0"'
 				. ' />' . "\n";
 	} # display_css()
 } # mediacaster

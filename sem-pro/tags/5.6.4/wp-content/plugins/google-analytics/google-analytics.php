@@ -4,7 +4,7 @@ Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/marketing/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
 Author: Denis de Bernardy
-Version: 3.1
+Version: 3.1.1
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: google_analytics
@@ -175,16 +175,22 @@ for ( i = 0; i < document.getElementsByTagName("a").length; i++ )
 {
 	document.getElementsByTagName("a")[i].ga_track = ga_track_anchor;
 	
-	if ( typeof document.getElementsByTagName("a")[i].onclick != 'undefined' )
+	var oldonclick = document.getElementsByTagName("a")[i].onclick;	
+	if ( typeof document.getElementsByTagName("a")[i].onclick == 'function' )
 	{
-		var oldonclick = document.getElementsByTagName("a")[i].onclick;
-		document.getElementsByTagName("a")[i].onclick = function() { oldonclick(); this.ga_track(); }
+		document.getElementsByTagName("a")[i].onclick = function() { 
+			oldonclick(); 
+			this.ga_track(); 
+		}
 	}
 	else
 	{
-		document.getElementsByTagName("a")[i].onclick = function() { this.ga_track(); }
-	}
+		document.getElementsByTagName("a")[i].onclick = function() { 
+			this.ga_track(); 
+		}
+	}	
 }
+
 </script>
 
 EOF;
