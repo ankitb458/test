@@ -341,7 +341,13 @@ var FCKMediaComboCommand = function()
 
 FCKMediaComboCommand.prototype.Execute = function(itemid, item)
 {
+	if ( itemid == 'url' )
+	{
+		itemid = prompt('Enter the url of a Media file', 'http://');
+	}
+
 	var media_ext = itemid;
+
     media_ext = media_ext.replace(/.*\./, '');
 
     switch ( media_ext )
@@ -397,6 +403,10 @@ FCKToolbarMediaCombo.prototype.CreateItems = function( targetSpecialCombo )
 	var media_files = window.parent.document.all_media;
 	var media_file;
 	var media_name;
+
+	media_name = 'Enter a Url';
+
+	this._Combo.AddItem( 'url', media_name, 'url' ) ;
 
 	for ( var i = 0 ; i < media_files.length ; i++ )
 	{

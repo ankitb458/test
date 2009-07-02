@@ -30,15 +30,15 @@ function GetFolders( $resourceType, $currentFolder )
 	// Array that will hold the folders names.
 	$aFolders	= array() ;
 
-	$oCurrentFolder = @opendir( $sServerDir ) ;
+	$oCurrentFolder = opendir( $sServerDir ) ;
 
-	while ( $sFile = @readdir( $oCurrentFolder ) )
+	while ( $sFile = readdir( $oCurrentFolder ) )
 	{
-		if ( $sFile != '.' && $sFile != '..' && @is_dir( $sServerDir . $sFile ) )
+		if ( $sFile != '.' && $sFile != '..' && is_dir( $sServerDir . $sFile ) )
 			$aFolders[] = '<Folder name="' . ConvertToXmlAttribute( $sFile ) . '" />' ;
 	}
 
-	@closedir( $oCurrentFolder ) ;
+	closedir( $oCurrentFolder ) ;
 
 	// Open the "Folders" node.
 	echo "<Folders>" ;
@@ -60,9 +60,9 @@ function GetFoldersAndFiles( $resourceType, $currentFolder )
 	$aFolders	= array() ;
 	$aFiles		= array() ;
 
-	$oCurrentFolder = @opendir( $sServerDir ) ;
+	$oCurrentFolder = opendir( $sServerDir ) ;
 
-	while ( $sFile = @readdir( $oCurrentFolder ) )
+	while ( $sFile = readdir( $oCurrentFolder ) )
 	{
 		if ( $sFile != '.' && $sFile != '..' )
 		{

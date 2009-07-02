@@ -180,13 +180,18 @@ function theme_feature_is_active($feature_id)
 		return plugin_is_active('widgets/delicious.php');
 
 	case 'db_backup':
-		return plugin_is_active('wp-db-backup.php');
+		return plugin_is_active('wp-db-backup/wp-db-backup.php');
 
 	case 'do_follow':
 		return plugin_is_active('sem-dofollow/sem-dofollow.php');
 
 	case 'dont_email_me':
 		return plugin_is_active('not-to-me.php');
+
+	case 'easy_order':
+		return plugin_is_active('mycategoryorder/mycategoryorder.php')
+			|| plugin_is_active('mylinkorder/mylinkorder.php')
+			|| plugin_is_active('mypageorder/mypageorder.php');
 
 	case 'enforce_permalink':
 		return plugin_is_active('ylsy_permalink_redirect.php');
@@ -240,7 +245,7 @@ function theme_feature_is_active($feature_id)
 			|| plugin_is_active('gravatars2-wpcron.php');
 
 	case 'hashcash':
-		return plugin_is_active('wp-hashcash.php');
+		return plugin_is_active('wp-hashcash/wp-hashcash.php');
 
 	case 'highlight_search':
 		return plugin_is_active('google-hilite.php');
@@ -358,7 +363,7 @@ function theme_feature_is_active($feature_id)
 		return plugin_is_active('sem-static-front/sem-static-front.php');
 
 	case 'subscribe2comments':
-		return plugin_is_active('subscribe-to-comments.php');
+		return plugin_is_active('subscribe-to-comments/subscribe-to-comments.php');
 
 	case 'subscribe_me':
 		return plugin_is_active('sem-subscribe-me/sem-subscribe-me.php');
@@ -367,7 +372,7 @@ function theme_feature_is_active($feature_id)
 		return plugin_is_active('category-cloud.php');
 
 	case 'tb_validator':
-		return plugin_is_active('TBValidator/trackback_validator.php');
+		return plugin_is_active('simple-trackback-validation.php');
 
 	case 'theme_archives':
 		return isset($GLOBALS['semiologic']['theme_archives'])
@@ -497,7 +502,7 @@ function theme_feature_activate($feature_id)
 		break;
 
 	case 'db_backup':
-		plugin_activate('wp-db-backup.php');
+		plugin_activate('wp-db-backup/wp-db-backup.php');
 		break;
 
 	case 'do_follow':
@@ -506,6 +511,12 @@ function theme_feature_activate($feature_id)
 
 	case 'dont_email_me':
 		plugin_activate('not-to-me.php');
+		break;
+
+	case 'easy_order':
+		plugin_activate('mycategoryorder/mycategoryorder.php');
+		plugin_activate('mylinkorder/mylinkorder.php');
+		plugin_activate('mypageorder/mypageorder.php');
 		break;
 
 	case 'enforce_permalink':
@@ -578,7 +589,7 @@ function theme_feature_activate($feature_id)
 		break;
 
 	case 'hashcash':
-		plugin_activate('wp-hashcash.php');
+		plugin_activate('wp-hashcash/wp-hashcash.php');
 		break;
 
 	case 'highlight_search':
@@ -743,7 +754,7 @@ function theme_feature_activate($feature_id)
 		break;
 
 	case 'subscribe2comments':
-		plugin_activate('subscribe-to-comments.php');
+		plugin_activate('subscribe-to-comments/subscribe-to-comments.php');
 		break;
 
 	case 'subscribe_me':
@@ -755,7 +766,7 @@ function theme_feature_activate($feature_id)
 		break;
 
 	case 'tb_validator':
-		plugin_activate('TBValidator/trackback_validator.php');
+		plugin_activate('simple-trackback-validation.php');
 		break;
 
 	case 'theme_archives':
@@ -876,7 +887,7 @@ function theme_feature_deactivate($feature_id)
 		break;
 
 	case 'db_backup':
-		plugin_deactivate('wp-db-backup.php');
+		plugin_deactivate('wp-db-backup/wp-db-backup.php');
 		break;
 
 	case 'do_follow':
@@ -885,6 +896,12 @@ function theme_feature_deactivate($feature_id)
 
 	case 'dont_email_me':
 		plugin_deactivate('not-to-me.php');
+		break;
+
+	case 'easy_order':
+		plugin_deactivate('mycategoryorder/mycategoryorder.php');
+		plugin_deactivate('mylinkorder/mylinkorder.php');
+		plugin_deactivate('mypageorder/mypageorder.php');
 		break;
 
 	case 'enforce_permalink':
@@ -957,7 +974,7 @@ function theme_feature_deactivate($feature_id)
 		break;
 
 	case 'hashcash':
-		plugin_deactivate('wp-hashcash.php');
+		plugin_deactivate('wp-hashcash/wp-hashcash.php');
 		break;
 
 	case 'highlight_search':
@@ -1115,7 +1132,7 @@ function theme_feature_deactivate($feature_id)
 		break;
 
 	case 'subscribe2comments':
-		plugin_deactivate('subscribe-to-comments.php');
+		plugin_deactivate('subscribe-to-comments/subscribe-to-comments.php');
 		break;
 
 	case 'subscribe_me':
@@ -1127,7 +1144,7 @@ function theme_feature_deactivate($feature_id)
 		break;
 
 	case 'tb_validator':
-		plugin_deactivate('TBValidator/trackback_validator.php');
+		plugin_deactivate('simple-trackback-validation.php');
 		break;
 
 	case 'theme_archives':

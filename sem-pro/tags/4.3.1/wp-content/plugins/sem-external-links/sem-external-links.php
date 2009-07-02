@@ -4,7 +4,7 @@ Plugin Name: External Links
 Plugin URI: http://www.semiologic.com/software/publishing/external-links/
 Description: Adds a class=&quot;external&quot; to all outbound links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the feature.
 Author: Denis de Bernardy
-Version: 2.8
+Version: 2.9
 Author URI: http://www.semiologic.com
 */
 
@@ -100,6 +100,11 @@ add_action('wp_head', 'sem_external_links_css');
 
 function sem_external_links($buffer)
 {
+	if ( is_feed() )
+	{
+		return $buffer;
+	}
+
 	# escape head
 	$buffer = preg_replace_callback(
 		"/
@@ -205,7 +210,7 @@ function sem_external_links_unescape_anchors($input)
 	$find = array();
 	$replace = array();
 
-	foreach ( $escaped_external_links as $key => $val )
+	foreach ( (array) $escaped_external_links as $key => $val )
 	{
 		$find[] = $key;
 		$replace[] = $val;

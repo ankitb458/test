@@ -3,7 +3,7 @@
 Plugin Name: Global Translator
 Plugin URI: http://www.nothing2hide.net/blog/wp-plugins/wordpress-global-translator-plugin/
 Description: Dynamically translates a blog in foreign languages (English, French, Italian, German, Portuguese, Spanish, Russian, Greek, Dutch) by wrapping the Google Translation Engine. Notice: This plugin will only work on a site that use fancy urls (Options / Permalinks) and that is hosted on an Apache server.
-Version: 0.8 (fork)
+Version: 0.9 (fork)
 Author: Davide Pozza
 Author URI: http://www.nothing2hide.net/
 Disclaimer: Use at your own risk. No warranty expressed or implied is provided.

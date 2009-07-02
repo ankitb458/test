@@ -173,7 +173,7 @@ class mediacaster_admin
 			if ( $files || strpos($cover, $path) !== false )
 			{
 				echo '<p>'
-					. __('Meda files currently include:')
+					. __('Media files currently include:')
 					. '</p>';
 
 				echo '<ul>';
@@ -934,18 +934,22 @@ class mediacaster_admin
 
 		$files = mediacaster::get_files($path);
 
-		if ( $files )
-		{
-			$js_options = "";
+		$js_options = "";
 
-			foreach ( array_keys($files) as $file )
-			{
-				$js_options .= '<option value=\"-'
-						. 'media#' . $file
-					. '-\">'
-					. $file
-					. '</option>';
-			}
+		$js_options .= '<option value=\"-'
+				. 'media#url'
+			. '-\">'
+			. __('Enter a url')
+			. '</option>';
+
+		foreach ( array_keys($files) as $file )
+		{
+			$js_options .= '<option value=\"-'
+					. 'media#' . $file
+				. '-\">'
+				. $file
+				. '</option>';
+		}
 
 ?><script type="text/javascript">
 
@@ -954,10 +958,16 @@ if ( document.getElementById('quicktags') )
 
 function add_media(elt)
 {
-	if ( elt && elt.value != '' )
+	if ( elt && elt.value == '-media#url-' )
+	{
+		var url = prompt('Enter the url of a media file', 'http://');
+		edInsertContent(edCanvas, '<!--media#' + url + '-->');
+	}
+	else if ( elt && elt.value != '' )
 	{
 		edInsertContent(edCanvas, '<!-'+ elt.value +'->');
 	}
+
 	elt.selectedIndex = 0;
 } // add_media()
 
@@ -969,7 +979,6 @@ document.getElementById('ed_toolbar').innerHTML
 } // end if
 </script>
 <?php
-		}
 	} # end display_quicktag()
 
 

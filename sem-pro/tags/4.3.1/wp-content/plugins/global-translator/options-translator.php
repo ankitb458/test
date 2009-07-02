@@ -14,7 +14,7 @@ load_plugin_textdomain('gltr'); // NLS
 add_option('gltr_base_lang', 'en');
 add_option('gltr_col_num', '0');
 add_option('gltr_use_cache', false);
-add_option('gltr_cache_timeout', '3600');
+add_option('gltr_cache_timeout', 3600 * 24 * 7);
 add_option('gltr_html_bar_tag', 'TABLE');
 add_option('gltr_my_translation_engine', 'babelfish');
 add_option('gltr_preferred_languages', array());
@@ -70,10 +70,10 @@ if (isset($_POST['stage'])){
 	    $timeout = $_POST['gltr_cache_timeout'];
 
 	    if(!$iserror) {
-	      if ($timeout == "") $timeout = "3600";
+	      if ($timeout == "") $timeout = 3600 * 24 * 7;
 	      update_option('gltr_base_lang', $_POST['gltr_base_lang']);
 	      update_option('gltr_col_num', $_POST['gltr_col_num']);
-	      update_option('gltr_cache_timeout', $timeout);
+	      update_option('gltr_cache_timeout', gltr_cache_timeout);
 	      update_option('gltr_html_bar_tag', $_POST['gltr_html_bar_tag']);
 	      update_option('gltr_my_translation_engine', $_POST['gltr_my_translation_engine']);
 	      update_option('gltr_preferred_languages', array());
@@ -94,7 +94,7 @@ if (isset($_POST['stage'])){
 	$gltr_base_lang = get_option('gltr_base_lang');
 	$gltr_col_num = get_option('gltr_col_num');
 	$gltr_use_cache = get_option('gltr_use_cache');
-	$gltr_cache_timeout = get_option('gltr_cache_timeout');
+	$gltr_cache_timeout = gltr_cache_timeout;
 	$gltr_html_bar_tag = get_option('gltr_html_bar_tag');
 	$gltr_my_translation_engine = get_option('gltr_my_translation_engine');
 	$gltr_preferred_languages = get_option('gltr_preferred_languages');

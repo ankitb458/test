@@ -2,7 +2,7 @@
 Theme Name: Semiologic
 Theme URI: http://www.semiologic.com/software/wp-themes/sem-theme/
 Description: The Semiologic theme &bull; <a href="http://www.semiologic.com/legal/license/">Terms of use</a>
-Version: 4.3
+Version: 4.3.1
 Author: Denis de Bernardy
 Author URI: http://www.mesoconcepts.com
 */
@@ -613,6 +613,13 @@ div.ad
 #header
 {
 	position: relative;
+}
+
+.sidebar #newsletter,
+.sidebar form,
+.sidebar script
+{
+	overflow: hidden;
 }
 
 

@@ -75,6 +75,10 @@ function get_theme_features()
 					'Autolink uri',
 					'Automatically find and link unanchored uri.'
 					),
+			'easy_order' => array(
+					'Easy Category, Link and Page order management.',
+					'Interfaces to easily manage the category, link and page order using drag/drop.'
+					),
 			'exernal_links' => array(
 					'External Links',
 					'Identify external links. You can highlight them with an icon, and open them in new windows. Configure via Options / External Links.'
@@ -350,8 +354,8 @@ function get_theme_features()
 					function_exists('get_site_option') ? false : null
 					),
 			'silo_site' => array(
-					'Silo Site',
-					'<a href="http://www.seo2020.com/promo.html">Silo functionalities</a> for sites built using static pages.'
+					'Silo Web Design',
+					'<a href="http://www.semiologic.com/software/widgets/silo/">Silo functionalities</a> for sites built using static pages.'
 					),
 			'smart_links' => array(
 					'Smart Links',

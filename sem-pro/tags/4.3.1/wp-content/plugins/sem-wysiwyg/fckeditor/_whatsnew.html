@@ -30,6 +30,135 @@
 </head>
 <body>
 	<h3>
+		Version 2.4.3</h3>
+	<p>
+		New Features and Improvements:</p>
+	<ul>
+		<li>It is now possible to set the default target when creating links, with the new "<strong>DefaultLinkTarget</strong>"
+			setting. </li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/436">#436</a>] The new
+			"<strong>FirefoxSpellChecker</strong>" setting is available, to enable/disable the
+			Firefox built-in spellchecker while typing. Even if word suggestions will not appear
+			in the FCKeditor context menu, this feature is useful to quickly identify misspelled
+			words.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/311">#311</a>] The new
+			"<strong>BrowserContextMenuOnCtrl</strong>" setting is being introduced, to enable/disable
+			the ability of displaying the default browser's context menu when right-clicking
+			with the CTRL key pressed.</li>
+	</ul>
+	<p>
+		Fixed Bugs:</p>
+	<ul>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/300">#300</a>] The fck_internal.css
+			file was not validating with the W3C CSS Validation Service.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/336">#336</a>] Ordered
+			list didn't keep the Type attribute properly (it was converted to lowercase when
+			the properties dialog was opened again).</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/318">#318</a>] Multiple
+			linked images are merged in a single link in IE.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/350">#350</a>] The &lt;marquee&gt;
+			element will no longer append unwanted &lt;p&gt;&amp;nbsp;&lt;/p&gt; to the code.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/351">#351</a>] The content
+			was being lost for images or comments only HTML inserted directly in the editor
+			source or loaded in the editor.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/388">#388</a>] Creating
+			links in lines separated by &lt;br&gt; in IE can lead to a merge of the links.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/325">#325</a>] Calling
+			the GetXHTML can distort visually the rendering in Firefox.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/391">#391</a>] When ToolbarLocation=Out,
+			a "Security Warning" alert was being shown in IE if under https. Thanks to reister.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/360">#360</a>] Form "name"
+			was being set to "[object]" if it contained an element with id="name".</li>
+		<li>Fixed a type that was breaking the ColdFusion SpellerPages integration file when
+			no spelling errors were found.</li>
+		<li>The ColdFusion SpellerPages integration was not working it Aspell was installed
+			in a directory with spaces in the name.</li>
+		<li>Added option to SpellerPages to ignore "alt" attributes.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/451">#451</a>] Classes
+			for images in IE didn't take effect immediately.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/430">#430</a>] Links with
+			a class did generate a span in Firefox when removing them.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/274">#274</a>] The PHP
+			quick upload still tried to use the uppercased types instead of the lowercased ones.
+		</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/416">#416</a>] The PHP
+			quick upload didn't check for the existence of the folder before saving.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/467">#467</a>] If InsertHtml
+			was called in IE with a comment (or any protected source at the beginning) it was
+			lost.</li>
+		<li>[<a target="_blank" href="https://sourceforge.net/tracker/?func=detail&aid=1518766&group_id=75348&atid=543653">SF
+			BUG-1518766</a>] Mozilla 1.7.13 wasn't recognized properly as an old Gecko engine.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/324">#324</a>] Improperly
+			nested tags could lead to a crash in IE.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/455">#455</a>] Files and
+			folders with non-ANSI names were returned with a double UTF-8 encoding in the PHP
+			File Manager.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/273">#273</a>] The extensions
+			"sh", "shtml", "shtm" and "phtm" have been added to the list of denied extensions
+			on upload.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/453">#453</a>] No more
+			errors when hitting del inside an empty table cell.</li>
+		<li>The perl connector cgi file has been changed to Unix line endings.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/202">#202</a>] Regression:
+			The HR tag will not anymore break the contents loaded in the editor. </li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/508">#508</a>] The HR
+			command had a typo.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/505">#505</a>] Regression:
+			IE crashed if a table caption was deleted.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/82">#82</a>] [<a target="_blank"
+			href="http://dev.fckeditor.net/ticket/359">#359</a>] &lt;object&gt; and &lt;embed&gt;
+			tags are not anymore lost in IE.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/493">#493</a>] If the
+			containing form had a button named "submit" the "Save" command didn't work in Firefox.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/414">#414</a>] If tracing
+			was globally enabled in Asp.Net 2.0 then the Asp.Net connector did fail.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/520">#520</a>] The "Select
+			Field" properties dialog was not correctly handling select options with &amp;, &lt;
+			and &gt;.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/258">#258</a>] The Asp
+			integration didn't pass boolean values in English, using instead the locale of the
+			server and failing.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/487">#487</a>] If an image
+			with dimensions set as styles was opened with the image manager and then the dialog
+			was canceled the dimensions in the style were lost.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/220">#220</a>] The creation
+			of links or anchors in a selection that results on more than a single link created
+			will not anymore leave temporary links in the source. All links will be defined
+			as expected.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/220">#182</a>] [<a
+			target="_blank" href="http://dev.fckeditor.net/ticket/220">#261</a>] [<a target="_blank"
+				href="http://dev.fckeditor.net/ticket/220">#511</a>] Special characters, like
+			percent signs or accented chars, and spaces are now correctly returned by the File
+			Browser.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/281">#281</a>] Custom
+			toolbar buttons now render correctly in all skins.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/527">#527</a>] If the
+			configuration for a toolbar isn't fully valid, try to keep on parsing it.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/187">#187</a>] [<a
+			target="_blank" href="http://dev.fckeditor.net/ticket/435">#435</a>] [<a target="_blank"
+				href="https://sourceforge.net/tracker/?func=detail&aid=1612978&group_id=75348&atid=543653">SF
+				BUG-1612978</a>] [<a target="_blank" href="https://sourceforge.net/tracker/?func=detail&aid=1163511&group_id=75348&atid=543653">SF
+					BUG-1163511</a>] Updated the configuration options in the ColdFusion integration
+			files.</li>
+		<li>[<a target="_blank" href="https://sourceforge.net/tracker/?func=detail&aid=1726781&group_id=75348&atid=543655">SF
+			Patch-1726781</a>] Updated the upload class for asp to handle large files and other
+			data in the forms. Thanks to NetRube.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/225">#225</a>] With ColdFusion,
+			the target directory is now being automatically created if needed when "quick uploading".
+			Thanks to sirmeili.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/295">#295</a>] [<a
+			target="_blank" href="http://dev.fckeditor.net/ticket/510">#510</a>] Corrected some
+			path resolution issues with the File Browser connector for ColdFusion.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/239">#239</a>] The &lt;xml&gt;
+			tag will not anymore cause troubles.</li>
+		<li>[<a target="_blank" href="https://sourceforge.net/tracker/?func=detail&aid=1721787&group_id=75348&atid=543653">SF
+			BUG-1721787</a>] If the editor is run from a virtual dir, the PHP connector will
+			detect that and avoid generating a wrong folder.</li>
+		<li>[<a target="_blank" href="http://dev.fckeditor.net/ticket/431">#431</a>] PHP: The
+			File Browser now displays an error message when it is not able to create the configured
+			target directory for files (instead of sending broken XML responses).</li>
+	</ul>
+	<h3>
 		Version 2.4.2</h3>
 	<p>
 		Fixed Bugs:</p>

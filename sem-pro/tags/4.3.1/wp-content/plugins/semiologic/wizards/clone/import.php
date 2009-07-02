@@ -417,6 +417,12 @@ function import_semiologic_config($user, $options, $ads)
 	@include_once ABSPATH . 'wp-content/plugins/now-reading/now-reading.php';
 	@nr_install();
 
+	$query = mysql_query("SHOW COLUMNS FROM $wpdb->categories LIKE 'cat_order'") or die(mysql_error());
+
+	if (mysql_num_rows($query) == 0) {
+		$wpdb->query("ALTER TABLE $wpdb->categories ADD `cat_order` INT( 4 ) NOT NULL DEFAULT '0'");
+	}
+
 	regen_theme_nav_menu_cache();
 
 	$wpdb->show_errors();

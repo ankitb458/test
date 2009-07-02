@@ -4,7 +4,7 @@ Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/widgets/bookmark-me/
 Description: Adds bookmark links to common social bookmarking sites.
 Author: Denis de Bernardy
-Version: 2.0
+Version: 2.1
 Author URI: http://www.semiologic.com
 */
 
@@ -173,7 +173,7 @@ class bookmark_me
 		$permalink = urlencode(apply_filters('the_permalink', get_permalink()));
 		$site_name = urlencode(get_bloginfo('sitename'));
 
-		$options = get_settings('sem_bookmark_me_params');
+		$options = get_option('sem_bookmark_me_params');
 
 		if ( !$options )
 		{
@@ -203,7 +203,7 @@ class bookmark_me
 						. ' style="'
 							. 'padding-left: 20px;'
 							. ' background: url('
-								. trailingslashit(get_bloginfo('siteurl'))
+								. trailingslashit(get_option('siteurl'))
 								. 'wp-content/plugins/sem-bookmark-me/img/'
 								. $site_id . '.gif'
 								. ') center left no-repeat;'
@@ -236,7 +236,7 @@ class bookmark_me
 						. ' title="' . __($site_info['name']) . '"'
 						. '>'
 						. '<img src="'
-								. trailingslashit(get_bloginfo('siteurl'))
+								. trailingslashit(get_option('siteurl'))
 								. 'wp-content/plugins/sem-bookmark-me/img/'
 								. $site_id . '.gif'
 								. '"'

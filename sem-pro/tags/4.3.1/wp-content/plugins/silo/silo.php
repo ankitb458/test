@@ -1,10 +1,10 @@
 <?php
 /*
-Plugin Name: Silo Site
+Plugin Name: Silo Web Design
 Plugin URI: http://www.semiologic.com/software/widgets/silo/
 Description: <a href="http://www.seo2020.com/promo.html">Silo functionalities</a> for sites built using static pages.
 Author: Denis de Bernardy
-Version: 1.0
+Version: 1.2
 Author URI: http://www.semiologic.com
 */
 
@@ -59,6 +59,17 @@ class silo
 
 		$args = array_merge($defaults, $options, $args);
 
+		$cache_file = $args;
+		$cache_file['url'] = $_SERVER['REQUEST_URI'];
+		$cache_file = md5(serialize($_SERVER['REQUEST_URI']));
+
+		if ( $file = glob(ABSPATH . 'wp-content/cache/silo-pages/' . $cache_file) )
+		{
+			$file = current($file);
+			echo file_get_contents($file);
+			return;
+		}
+
 		$exclude = '';
 		foreach ( (array) $args['exclude'] as $val )
 		{
@@ -76,7 +87,7 @@ class silo
 			{
 				$current = $next;
 
-				$post_parent = $current->post_parent;
+				$post_parent = intval($current->post_parent);
 
 				$children[$post_parent] = (array) $wpdb->get_results("
 					SELECT	*
@@ -155,19 +166,35 @@ class silo
 				update_page_cache($childs);
 			}
 
-			echo $args['before_widget'];
+			$o = '';
 
-			echo $args['before_title']
+			$o .= $args['before_widget'];
+
+			$o .= $args['before_title']
 				. $args['title']
 				. $args['after_title'];
 
-			echo '<ul>' . "\n";
+			$o .= '<ul>' . "\n";
 
-			silo::display_children($children, $post, 0);
+			$o .= silo::display_children($children, $post, 0);
 
-			echo '</ul>' . "\n";
+			$o .= '</ul>' . "\n";
 
-			echo $args['after_widget'];
+			$o .= $args['after_widget'];
+
+			if ( is_writable(ABSPATH . 'wp-content') )
+			{
+				@mkdir(ABSPATH . 'wp-content/cache', 0777);
+				@mkdir(ABSPATH . 'wp-content/cache/silo-pages', 0777);
+
+				$fp = @fopen(ABSPATH . 'wp-content/cache/silo-pages/' . $cache_file, "w+");
+				@fwrite($fp, $o);
+				@fclose($fp);
+
+				@chmod(ABSPATH . 'wp-content/cache/silo-pages/' . $cache_file, 0666);
+			}
+
+			echo $o;
 		}
 	} # display_widget()
 
@@ -180,15 +207,15 @@ class silo
 	{
 		foreach ( $children[$parent_ID] as $child )
 		{
-			echo '<li>';
+			$o .= '<li>';
 
 			if ( $child->ID == $post->ID )
 			{
-				echo $child->post_title;
+				$o .= $child->post_title;
 			}
 			else
 			{
-				echo '<a'
+				$o .= '<a'
 						. ' href="' . apply_filters('the_permalink', get_permalink($child->ID)) . '"'
 						. ' title="' . $child->post_title . '"'
 						. '>'
@@ -198,16 +225,18 @@ class silo
 
 			if ( isset($children[$child->ID]) )
 			{
-				echo "\n"
+				$o .= "\n"
 					. '<ul>' . "\n";
 
-				silo::display_children($children, $post, $child->ID);
+				$o .= silo::display_children($children, $post, $child->ID);
 
-				echo '</ul>' . "\n";
+				$o .= '</ul>' . "\n";
 			}
 
-			echo '</li>' . "\n";
+			$o .= '</li>' . "\n";
 		}
+
+		return $o;
 	} # display_children()
 
 

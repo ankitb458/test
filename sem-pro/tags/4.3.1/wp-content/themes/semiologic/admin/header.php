@@ -71,6 +71,13 @@ class header_admin
 		echo '<div class="wrap">';
 		echo '<h2>' . __('Header') . '</h2>';
 
+		echo '<p>' . __('You\'ll find a few <a href="http://www.semiologic.com/software/wp-themes/sem-headers/">generic headers</a> on semiologic.com.') . '</p>';
+
+		if ( sem_pro )
+		{
+			echo '<p>' . __('You can also have a <a href="http://wp-pro.semiologic.com/services/">graphic designer</a> create one for you.') . '</p>';
+		}
+
 		echo '<h3>' . __('Header File') . '</h3>';
 
 		if ( $header )

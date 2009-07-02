@@ -75,9 +75,9 @@ function register_sidebar_widget($name, $output_callback, $classname = '') {
 
 	$id = sanitize_title($name);
 	$options = array();
-	if ( !empty($classname) )
+	if ( !empty($classname) && is_string($classname) )
 		$options['classname'] = $classname;
-	$params = array_slice(func_get_args(), 3);
+	$params = array_slice(func_get_args(), 2);
 	$args = array($id, $name, $output_callback, $options);
 	if ( !empty($params) )
 		$args = array_merge($args, $params);
@@ -331,16 +331,14 @@ function wp_widget_pages( $args ) {
 	$options = get_option( 'widget_pages' );
 
 	$title = empty( $options['title'] ) ? __( 'Pages' ) : $options['title'];
+	$sortby = empty( $options['sortby'] ) ? 'menu_order' : $options['sortby'];
+	$exclude = empty( $options['exclude'] ) ? '' : '&exclude=' . $options['exclude'];
 
-	$sortby = 'menu_order, post_title';
-
-	$exclude = "";
-	foreach ( (array) $options['exclude'] as $val )
-	{
-		$exclude .= ( $exclude ? ', ' : '' ) . $val;
+	if ( $sortby == 'menu_order' ) {
+		$sortby = 'menu_order, post_title';
 	}
 
-	$out = wp_list_pages( 'title_li=&echo=0&sort_column=' . $sortby . ( $exclude ? ('&exclude=' . $exclude ) : '' ) );
+	$out = wp_list_pages( 'title_li=&echo=0&sort_column=' . $sortby . $exclude );
 
 	if ( !empty( $out ) ) {
 ?>
@@ -359,32 +357,39 @@ function wp_widget_pages_control() {
 	if ( $_POST['pages-submit'] ) {
 		$newoptions['title'] = strip_tags(stripslashes($_POST['pages-title']));
 
-		preg_match_all("/\d+/", $_POST["pages-exclude"], $exclude);
-		$newoptions['exclude'] = end($exclude);
-
 		$sortby = stripslashes( $_POST['pages-sortby'] );
+
+		if ( in_array( $sortby, array( 'post_title', 'menu_order', 'ID' ) ) ) {
+			$newoptions['sortby'] = $sortby;
+		} else {
+			$newoptions['sortby'] = 'menu_order';
+		}
+
+		$newoptions['exclude'] = strip_tags( stripslashes( $_POST['pages-exclude'] ) );
 	}
 	if ( $options != $newoptions ) {
 		$options = $newoptions;
 		update_option('widget_pages', $options);
 	}
 	$title = attribute_escape($options['title']);
-
-	$exclude = "";
-	foreach ( (array) $options['exclude'] as $val )
-	{
-		$exclude .= ( $exclude ? ', ' : '' ) . $val;
-	}
+	$exclude = attribute_escape( $options['exclude'] );
 ?>
 			<p><label for="pages-title"><?php _e('Title:'); ?> <input style="width: 250px;" id="pages-title" name="pages-title" type="text" value="<?php echo $title; ?>" /></label></p>
-			<p><label for="pages-exclude"><?php _e('Exclude (Page ID list):'); ?> <input style="width: 250px;" id="pages-exclude" name="pages-exclude" type="text" value="<?php echo $exclude; ?>" /></label></p>
+			<p><label for="pages-sortby"><?php _e( 'Sort by:' ); ?>
+				<select name="pages-sortby" id="pages-sortby">
+					<option value="post_title"<?php selected( $options['sortby'], 'post_title' ); ?>><?php _e('Page title'); ?></option>
+					<option value="menu_order"<?php selected( $options['sortby'], 'menu_order' ); ?>><?php _e('Page order'); ?></option>
+					<option value="ID"<?php selected( $options['sortby'], 'ID' ); ?>><?php _e( 'Page ID' ); ?></option>
+				</select></label></p>
+			<p><label for="pages-exclude"><?php _e( 'Exclude:' ); ?> <input type="text" value="<?php echo $exclude; ?>" name="pages-exclude" id="pages-exclude" style="width: 180px;" /></label><br />
+			<small><?php _e( 'Page IDs, separated by commas.' ); ?></small></p>
 			<input type="hidden" id="pages-submit" name="pages-submit" value="1" />
 <?php
 }
 
 function wp_widget_links($args) {
 	global $wp_db_version;
-	extract($args);
+	extract($args, EXTR_SKIP);
 	if ( $wp_db_version < 3582 ) {
 		// This ONLY works with li/h2 sidebars.
 		get_links_list();
@@ -392,50 +397,25 @@ function wp_widget_links($args) {
 		wp_list_bookmarks(array(
 			'title_before' => $before_title, 'title_after' => $after_title,
 			'category_before' => $before_widget, 'category_after' => $after_widget,
-			'show_images' => true, 'class' => 'linkcat widget'
+			'show_images' => true, 'class' => 'linkcat widget',
+			'show_description' => true, 'between' => '<br />',
+			'orderby' => ( function_exists('mylinkorder') ? 'order' : 'name'),
+			'category_orderby' => ( function_exists('mylinkorder') ? 'order' : 'name')
 		));
 	}
 }
 
 function wp_widget_search($args) {
-        extract($args);
-        $options = get_option('widget_search');
-        $title = ( isset($options['title']) && $options['title'] ) ? $options['title'] : '';
-
-        $cap_search = function_exists('get_caption') ? get_caption('search') : __('Search');
-        $cap_go = function_exists('get_caption') ? get_caption('go') : __('Go');
-
-        echo $before_widget;
-        if ($title) {
-                echo $before_title . $title . $after_title;
-        }
-?><form method="get" action="<?php bloginfo('url'); ?>"
-        id="searchform" name="searchform">
-<input type="text"
-        id="s" name="s"
-        value="<?php echo htmlspecialchars($cap_search, ENT_QUOTES); ?>"
-        onfocus="if ( this.value == '<?php echo addslashes(htmlspecialchars($cap_search)); ?>' ) this.value = '';"
-        onblur="if ( this.value == '' ) this.value = '<?php echo addslashes(htmlspecialchars($cap_search)); ?>';"
-        /><input type="submit" value="<?php echo htmlspecialchars($cap_go); ?>"
-/>
-</form>
-<?php
-        echo $after_widget;
-}
-
-function wp_widget_search_control() {
-        $options = $newoptions = get_option('widget_search');
-        if ( $_POST["search-submit"] ) {
-                $newoptions['title'] = strip_tags(stripslashes($_POST["search-ti
-tle"]));
-        }
-        if ( $options != $newoptions ) {
-                $options = $newoptions;
-                update_option('widget_search', $options);
-        }
-        $title = htmlspecialchars($options['title'], ENT_QUOTES);
-?>                      <p><label for="search-title"><?php _e('Title:'); ?> <input style="width: 250px;" id="search-title" name="search-title" type="text" value="<?php echo $title; ?>" /></label></p>
-                        <input type="hidden" id="search-submit" name="search-submit" value="1" />
+	extract($args);
+?>
+		<?php echo $before_widget; ?>
+			<form id="searchform" method="get" action="<?php bloginfo('home'); ?>">
+			<div>
+			<input type="text" name="s" id="s" size="15" /><br />
+			<input type="submit" value="<?php echo attribute_escape(__('Search')); ?>" />
+			</div>
+			</form>
+		<?php echo $after_widget; ?>
 <?php
 }
 
@@ -552,12 +532,11 @@ function wp_widget_text($args, $number = 1) {
 	extract($args);
 	$options = get_option('widget_text');
 	$title = $options[$number]['title'];
-	$filter = $options[$number]['filter'];
-
-	$text = $filter ? wpautop($options[$number]['text']) : $options[$number]['text'];
+	$text = apply_filters( 'widget_text', $options[$number]['text'] );
+	$text = $options[$number]['filter'] ? wpautop($text) : $text;
 ?>
 		<?php echo $before_widget; ?>
-			<?php !empty( $title ) ? print($before_title . $title . $after_title) : null; ?>
+			<?php if ( !empty( $title ) ) { echo $before_title . $title . $after_title; } ?>
 			<div class="textwidget"><?php echo $text; ?></div>
 		<?php echo $after_widget; ?>
 <?php
@@ -571,7 +550,6 @@ function wp_widget_text_control($number) {
 		$newoptions[$number]['title'] = strip_tags(stripslashes($_POST["text-title-$number"]));
 		$newoptions[$number]['text'] = stripslashes($_POST["text-text-$number"]);
 		$newoptions[$number]['filter'] = isset($_POST["text-filter-$number"]);
-
 		if ( !current_user_can('unfiltered_html') )
 			$newoptions[$number]['text'] = stripslashes(wp_filter_post_kses($newoptions[$number]['text']));
 	}
@@ -594,7 +572,7 @@ function wp_widget_text_setup() {
 	$options = $newoptions = get_option('widget_text');
 	if ( isset($_POST['text-number-submit']) ) {
 		$number = (int) $_POST['text-number'];
-		if ( $number > 9 ) $number = 9;
+		if ( $number > 20 ) $number = 20;
 		if ( $number < 1 ) $number = 1;
 		$newoptions['number'] = $number;
 	}
@@ -613,7 +591,7 @@ function wp_widget_text_page() {
 			<h2><?php _e('Text Widgets'); ?></h2>
 			<p style="line-height: 30px;"><?php _e('How many text widgets would you like?'); ?>
 			<select id="text-number" name="text-number" value="<?php echo $options['number']; ?>">
-<?php for ( $i = 1; $i < 10; ++$i ) echo "<option value='$i' ".($options['number']==$i ? "selected='selected'" : '').">$i</option>"; ?>
+<?php for ( $i = 1; $i <= 20; ++$i ) echo "<option value='$i' ".($options['number']==$i ? "selected='selected'" : '').">$i</option>"; ?>
 			</select>
 			<span class="submit"><input type="submit" name="text-number-submit" id="text-number-submit" value="<?php echo attribute_escape(__('Save')); ?>" /></span></p>
 		</form>
@@ -625,10 +603,10 @@ function wp_widget_text_register() {
 	$options = get_option('widget_text');
 	$number = $options['number'];
 	if ( $number < 1 ) $number = 1;
-	if ( $number > 9 ) $number = 9;
+	if ( $number > 20 ) $number = 20;
 	$dims = array('width' => 460, 'height' => 350);
 	$class = array('classname' => 'widget_text');
-	for ($i = 1; $i <= 9; $i++) {
+	for ($i = 1; $i <= 20; $i++) {
 		$name = sprintf(__('Text %d'), $i);
 		$id = "text-$i"; // Never never never translate an id
 		wp_register_sidebar_widget($id, $name, $i <= $number ? 'wp_widget_text' : /* unregister */ '', $class, $i);
@@ -649,7 +627,16 @@ function wp_widget_categories($args) {
 	echo $before_widget;
 	echo $before_title . $title . $after_title;
 
-	$cat_args = "orderby=name&show_count={$c}&hierarchical={$h}";
+	$cat_args = "show_count={$c}&hierarchical={$h}";
+
+	if ( function_exists('mycategoryorder') )
+	{
+		$cat_args .= '&orderby=order';
+	}
+	else
+	{
+		$cat_args .= '&orderby=name';
+	}
 
 	if($d) {
 		wp_dropdown_categories($cat_args . '&show_option_none= ' . __('Select Category'));
@@ -834,7 +821,7 @@ function wp_widget_recent_comments_register() {
 
 function wp_widget_rss($args, $number = 1) {
 	require_once(ABSPATH . WPINC . '/rss.php');
-	extract($args);
+	extract($args, EXTR_SKIP);
 	$options = get_option('widget_rss');
 	if ( isset($options['error']) && $options['error'] )
 		return;
@@ -889,7 +876,7 @@ function wp_widget_rss($args, $number = 1) {
 			echo "<li><a class='rsswidget' href='$link' title='$desc'>$title</a>$summary</li>";
 		}
 	} else {
-		echo __('<li>An error has occured; the feed is probably down. Try again later.</li>');
+		echo '<li>' . __( 'An error has occurred; the feed is probably down. Try again later.' ) . '</li>';
 	}
 ?>
 			</ul>
@@ -1005,7 +992,6 @@ function wp_widgets_init() {
 	wp_register_widget_control('meta', __('Meta'), 'wp_widget_meta_control', $dims90);
 	$class['classname'] = 'widget_search';
 	wp_register_sidebar_widget('search', __('Search'), 'wp_widget_search', $class);
-	wp_register_widget_control('search', __('Search'), 'wp_widget_search_control', $dims90);
 	$class['classname'] = 'widget_categories';
 	wp_register_sidebar_widget('categories', __('Categories'), 'wp_widget_categories', $class);
 	wp_register_widget_control('categories', __('Categories'), 'wp_widget_categories_control', $dims150);

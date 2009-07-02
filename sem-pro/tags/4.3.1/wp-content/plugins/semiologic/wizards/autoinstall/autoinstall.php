@@ -24,6 +24,9 @@ function wiz_autoinstall_pro()
 				'countdown/countdown.php',
 				'democracy/democracy.php',
 				'mediacaster/mediacaster.php',
+				'mycategoryorder/mycategoryorder.php',
+				'mylinkorder/mylinkorder.php',
+				'mypageorder/mypageorder.php',
 				'sem-ad-space/sem-ad-space.php',
 				'sem-admin-menu/sem-admin-menu.php',
 				'sem-author-image/sem-author-image.php',
@@ -43,17 +46,17 @@ function wiz_autoinstall_pro()
 				'sem-unfancy-quote/sem-unfancy-quote.php',
 				'sem-wysiwyg/sem-wysiwyg.php',
 				'silo/silo.php',
+				'simple-trackback-validator.php',
 				'star-rating/star-rating.php',
-				'TBValidator/trackback_validator.php',
 				'wp-contact-form/wp-contactform.php',
+				'wp-db-backup/wp-db-backup.php',
+				'wp-hashcash/wp-hashcash.php',
 				'commentcontrol.php',
 				'flickr_widget.php',
 				'singular.php',
 				'sitemap.php',
 				'translator.php',
 				'wppaypal.php',
-				'wp-db-backup.php',
-				'wp-hashcash.php',
 				'ylsy_permalink_redirect.php'
 		);
 
@@ -88,6 +91,7 @@ http://ping.myblog.jp
 http://ping.bitacoras.com
 http://ping.bloggers.jp/rpc/
 http://bblog.com/ping.php
+http://blogsearch.google.com/ping/RPC2
 ";
 
 
@@ -156,6 +160,12 @@ http://bblog.com/ping.php
 
 		@include_once ABSPATH . 'wp-content/plugins/now-reading/now-reading.php';
 		@nr_install();
+
+		$query = mysql_query("SHOW COLUMNS FROM $wpdb->categories LIKE 'cat_order'") or die(mysql_error());
+
+		if (mysql_num_rows($query) == 0) {
+			$wpdb->query("ALTER TABLE $wpdb->categories ADD `cat_order` INT( 4 ) NOT NULL DEFAULT '0'");
+		}
 
 		$wpdb->show_errors();
 

@@ -17,6 +17,7 @@ class silo_admin
 
 	function init()
 	{
+		add_action('save_post', array('silo_admin', 'flush_cache'));
 		add_action('plugins_loaded', array('silo_admin', 'widgetize'));
 	} # init()
 
@@ -99,6 +100,24 @@ class silo_admin
 			. '</p>';
 
 	} # widget_control()
+
+
+	#
+	# flush_cache()
+	#
+
+	function flush_cache($id)
+	{
+		if ( $files = glob(ABSPATH . 'wp-content/cache/silo-pages/*') )
+		{
+			foreach ( $files as $file )
+			{
+				@unlink($file);
+			}
+		}
+
+		return $id;
+	} # flush_cache()
 } # silo_admin
 
 silo_admin::init();

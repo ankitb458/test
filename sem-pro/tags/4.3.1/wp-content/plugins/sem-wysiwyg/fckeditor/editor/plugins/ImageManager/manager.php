@@ -69,26 +69,31 @@
 <!-- The JavaScript Source!! http://javascript.internet.com -->
 
 <!-- Begin
-extArray = new Array(".gif", ".jpg", ".png");
+extArray = new Array(".gif", ".jpg", ".jpeg", ".png", ".bmp");
 function LimitAttach(form, file) {
 	allowSubmit = false;
 	if (!file)
 		return;
 	while (file.indexOf("\\") != -1)
 		file = file.slice(file.indexOf("\\") + 1);
-		ext = file.slice(file.indexOf(".")).toLowerCase();
+		ext = file.slice(file.lastIndexOf(".")).toLowerCase();
 		for (var i = 0; i < extArray.length; i++) {
 			if (extArray[i] == ext) {
 				allowSubmit = true;
 				break;
 			}
 		}
-		if (allowSubmit)
-			doUpload();
-		else
-		alert("Please only upload files that end in types:  "
-			+ (extArray.join("  ")) + "\nPlease select a new "
+		
+		if (allowSubmit) {
+			return true;
+//			doUpload();
+		}
+		else {
+			alert("Please only upload image files that end in : "
+			+ (extArray.join(", ")) + "\nPlease select a new "
 			+ "file to upload and submit again.");
+			return false;
+		}
 }
 //  End -->
 </script>
@@ -142,10 +147,10 @@ function LimitAttach(form, file) {
 			<td>
 				<table cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <td>	<input type="hidden" name="userfilename" id="userfilename" />
+                    <td><input type="hidden" name="userfilename" id="userfilename" />
 					<input type="file" name="upload" id="upload"
 						onChange="javascript:userfilename.value= upload.value" /></td>
-                    <td>&nbsp;<button type="submit" name="submit" onclick="LimitAttach(this.form, this.form.upload.value)">Upload</button></td>
+                    <td>&nbsp;<button type="submit" name="submit" onclick="return LimitAttach(this.form, this.form.upload.value)">Upload</button></td>
                   </tr>
                 </table>
 			</td>

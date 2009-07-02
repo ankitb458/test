@@ -100,7 +100,7 @@ function sem_external_links_admin()
 			. ( $options['add_target'] ? ' checked="checked"' : '' )
 			. ' />'
 		. '&nbsp;'
-		. __('Open outgoing links in new windows. This can damage your visitor\'s trust towards your site in that they can think your site used a pop-under.')
+		. __('Open outgoing links in new windows. <a href="http://www.useit.com/alertbox/9605.html">This can damage your visitor\'s trust towards your site</a>.')
 		. '</label>'
 		. '</p>';
 

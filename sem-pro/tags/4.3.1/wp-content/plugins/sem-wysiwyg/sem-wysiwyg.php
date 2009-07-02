@@ -4,7 +4,7 @@ Plugin Name: Wysiwyg Editor
 Plugin URI: http://www.semiologic.com/software/publishing/wysiwyg-editor/
 Description: A Wysiwyg Editor that works. <strong>Be sure to activate the rich text editor in your user preferences, under Users / Your Profile.</strong>
 Author: Denis de Bernardy and Mike Koepke
-Version: 2.2
+Version: 2.3
 Author URI: http://www.mikekoepke.com
 */
 

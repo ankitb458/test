@@ -8,9 +8,9 @@ function mysql2date($dateformatstring, $mysqlstring, $translate = true) {
 	if ( empty($m) ) {
 		return false;
 	}
-	$i = mktime(
-		(int) substr( $m, 11, 2 ), (int) substr( $m, 14, 2 ), (int) substr( $m, 17, 2 ),
-		(int) substr( $m, 5, 2 ), (int) substr( $m, 8, 2 ), (int) substr( $m, 0, 4 )
+	$i = mktime( 
+		(int) substr( $m, 11, 2 ), (int) substr( $m, 14, 2 ), (int) substr( $m, 17, 2 ), 
+		(int) substr( $m, 5, 2 ), (int) substr( $m, 8, 2 ), (int) substr( $m, 0, 4 ) 
 	);
 
 	if( 'U' == $dateformatstring )
@@ -207,9 +207,9 @@ function get_option($setting) {
 	global $wpdb;
 
 	// Allow plugins to short-circuit options.
-	$pre = apply_filters( 'pre_option_' . $setting, false );
-	if ( $pre )
-		return $pre;
+	$pre = apply_filters( 'pre_option_' . $setting, false ); 
+	if ( $pre ) 
+		return $pre; 
 
 	// prevent non-existent options from triggering multiple queries
 	$notoptions = wp_cache_get('notoptions', 'options');
@@ -761,12 +761,12 @@ add_query_arg(associative_array, oldquery_or_uri)
 function add_query_arg() {
 	$ret = '';
 	if ( is_array(func_get_arg(0)) ) {
-		if ( @func_num_args() < 2 || '' == @func_get_arg(1) )
+		if ( @func_num_args() < 2 || false === @func_get_arg(1) )
 			$uri = $_SERVER['REQUEST_URI'];
 		else
 			$uri = @func_get_arg(1);
 	} else {
-		if ( @func_num_args() < 3 || '' == @func_get_arg(2) )
+		if ( @func_num_args() < 3 || false === @func_get_arg(2) )
 			$uri = $_SERVER['REQUEST_URI'];
 		else
 			$uri = @func_get_arg(2);
@@ -801,9 +801,7 @@ function add_query_arg() {
 		$query = $uri;
 	}
 
-	parse_str($query, $qs);
-	if ( get_magic_quotes_gpc() )
-		$qs = stripslashes_deep($qs); // parse_str() adds slashes if magicquotes is on.  See: http://php.net/parse_str
+	wp_parse_str($query, $qs);
 	$qs = urlencode_deep($qs);
 	if ( is_array(func_get_arg(0)) ) {
 		$kayvees = func_get_arg(0);
@@ -824,7 +822,7 @@ function add_query_arg() {
 	}
 	$ret = trim($ret, '?');
 	$ret = $protocol . $base . $ret . $frag;
-	$ret = trim($ret, '?');
+	$ret = rtrim($ret, '?');
 	return $ret;
 }
 
@@ -838,7 +836,7 @@ remove_query_arg(removekey, [oldquery_or_uri]) or
 remove_query_arg(removekeyarray, [oldquery_or_uri])
 */
 
-function remove_query_arg($key, $query='') {
+function remove_query_arg($key, $query=FALSE) {
 	if ( is_array($key) ) { // removing multiple keys
 		foreach ( (array) $key as $k )
 			$query = add_query_arg($k, FALSE, $query);
@@ -1317,7 +1315,7 @@ function wp_nonce_ays($action) {
 function wp_die( $message, $title = '' ) {
 	global $wp_locale;
 
-	if ( is_wp_error( $message ) ) {
+	if ( function_exists( 'is_wp_error' ) && is_wp_error( $message ) ) {
 		if ( empty($title) ) {
 			$error_data = $message->get_error_data();
 			if ( is_array($error_data) && isset($error_data['title']) )
@@ -1359,7 +1357,7 @@ function wp_die( $message, $title = '' ) {
 	<title><?php echo $title ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<link rel="stylesheet" href="<?php echo $admin_dir; ?>install.css" type="text/css" />
-<?php
+<?php 
 if ( ( $wp_locale ) && ('rtl' == $wp_locale->text_direction) ) : ?>
 	<link rel="stylesheet" href="<?php echo $admin_dir; ?>install-rtl.css" type="text/css" />
 <?php endif; ?>
@@ -1376,13 +1374,13 @@ if ( ( $wp_locale ) && ('rtl' == $wp_locale->text_direction) ) : ?>
 }
 
 function _config_wp_home($url = '') {
-	if ( defined( 'WP_HOME' ) )
+	if ( defined( 'WP_HOME' ) ) 
 		return WP_HOME;
 	else return $url;
 }
 
 function _config_wp_siteurl($url = '') {
-	if ( defined( 'WP_SITEURL' ) )
+	if ( defined( 'WP_SITEURL' ) ) 
 		return WP_SITEURL;
 	else return $url;
 }
@@ -1481,21 +1479,15 @@ function smilies_init() {
 }
 
 function wp_parse_args( $args, $defaults = '' ) {
-	if ( is_array($args) ) :
+	if ( is_array( $args ) )
 		$r =& $args;
-	else :
-		parse_str( $args, $r );
-		if ( get_magic_quotes_gpc() )
-			$r = stripslashes_deep( $r );
-	endif;
+	else
+		wp_parse_str( $args, $r );
 
-	if ( is_array($defaults) ) :
-		extract($defaults);
-		extract($r);
-		return compact(array_keys($defaults)); // only those options defined in $defaults
-	else :
+	if ( is_array( $defaults ) )
+		return array_merge( $defaults, $r );
+	else
 		return $r;
-	endif;
 }
 
 function wp_maybe_load_widgets() {

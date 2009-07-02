@@ -1,6 +1,6 @@
 /*
 Skin name: Strawberry Cream, Classic
-Version: 1.0
+Version: 1.1
 Author: Antonella Pavese
 Author uri: http://www.antonellapavese.com
 Description: Strawberry Cream skin, classic version
@@ -14,9 +14,43 @@ Description: Strawberry Cream skin, classic version
 # without editing its css files. That way, you won't need to worry about losing
 # your changes when you upgrade your site.
 #
-# You'll find detailed sample files in the custom-samples folder
+# You'll find detailed sample files in the custom-samples folder.
+#
+# The easiest way to procede is:
+#
+# 1. Make a copy of this file, rename as custom.css
+# 2. Edit this new custom.css to override the skin defaults
 #
 */
+
+
+/* body */
+
+body
+{
+	background-color: white;
+	color: black;
+}
+
+a
+{
+	color: blue;
+	text-decoration: underline;
+}
+
+h1 a,
+h2 a
+{
+	text-decoration: none;
+	color: black;
+}
+
+a:hover
+{
+	color: firebrick;
+}
+
+
 
 #navbar,
 #footer,

@@ -130,7 +130,7 @@ class bookmark_me_admin
 				. ' style="'
 					. 'padding-left: 20px;'
 					. ' background: url('
-						. trailingslashit(get_bloginfo('siteurl'))
+						. trailingslashit(get_option('siteurl'))
 						. 'wp-content/plugins/sem-bookmark-me/img/'
 						. $site_id . '.gif'
 						. ') center left no-repeat;'

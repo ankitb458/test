@@ -20,7 +20,7 @@ $GLOBALS['semiologic'] = get_option('semiologic');
 #var_dump($GLOBALS['semiologic']);
 #echo '</pre>';
 
-if ( !$GLOBALS['semiologic'] )
+if ( @ !$GLOBALS['semiologic'] || !strlen($GLOBALS['semiologic']['active_layout']) )
 {
 	include_once dirname(__FILE__) . '/wizards/autoinstall/autoinstall.php';
 

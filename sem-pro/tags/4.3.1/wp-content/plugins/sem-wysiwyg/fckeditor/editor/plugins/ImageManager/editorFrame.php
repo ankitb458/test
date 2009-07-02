@@ -243,7 +243,7 @@
 <div id="status"></div>
 <div id="ant" class="selection" style="visibility:hidden"><img src="img/spacer.gif" width="0" height="0" border="0" alt="" id="cropContent" /></div>
 <?php if ($editor->isGDEditable() == -1) { ?>
-	<div style="text-align:center; padding:10px;"><span class="error">GIF format is not supported, image editing not supported.</span></div>
+	<div style="text-align:center; padding:10px;"><span class="error">GIF or BMP format is not supported for editing.</span></div>
 <?php } ?>
 <table style="height: 100%; width: 100%">
 	<tr>

@@ -935,7 +935,7 @@ if(!function_exists("sm_buildSitemap")) {
 
 			//Retrieve all posts and static pages (if enabled)
 			$postRes=$wpdb->get_results("
-				SELECT `ID` ,`post_modified`, `post_date`, `post_status`
+				SELECT `ID` ,`post_modified`, `post_date`, `post_status`, `post_type`
 				FROM `" . $wpdb->posts . "`
 				WHERE
 				(
@@ -945,7 +945,6 @@ if(!function_exists("sm_buildSitemap")) {
 					: ''
 					)
 				. "
-				)
 				" . ( sm_go("sm_in_pages")
 					? ( " OR post_status='static' "
 						. ( use_post_type_fixed
@@ -954,6 +953,13 @@ if(!function_exists("sm_buildSitemap")) {
 							)
 						)
 					: ""
+					)
+				. "
+				)
+				" . ( ( defined('sem_home_page_id') && sem_home_page_id )
+					? ( "
+				AND ID <> " . sem_home_page_id )
+					: ''
 					)
 				. "
 				ORDER BY post_modified DESC");

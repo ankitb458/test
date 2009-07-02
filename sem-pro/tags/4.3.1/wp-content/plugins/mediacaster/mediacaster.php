@@ -4,7 +4,7 @@ Plugin Name: Mediacaster
 Plugin URI: http://www.semiologic.com/software/publishing/mediacaster/
 Description: Podcasting and Videocasting plugin
 Author: Denis de Bernardy
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://www.semiologic.com
 */
 
@@ -651,7 +651,7 @@ class mediacaster
 		}
 		else
 		{
-			if ( $post->post_date == '0000-00-00 00:00:00')
+			if ( !$post->post_date || $post->post_date == '0000-00-00 00:00:00')
 			{
 				$path = $head . date('Y/m/d', time()) . '/' . $post->post_name . '/';
 			}

@@ -7,6 +7,8 @@
 # place the file in the domain's root folder.
 #
 
+Sitemap: /sitemap.xml
+
 User-agent: *
 Disallow: /wp-content/cache/
 Disallow: /wp-content/themes/

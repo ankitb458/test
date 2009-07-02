@@ -247,12 +247,16 @@ add_filter('permalink_redirect_skip', 'fix_permalink_redirect');
 
 function add_more_keywords($cats)
 {
-	if (!is_admin())
-		return function_exists('get_the_post_keytags')
-		? get_the_post_keytags(true)
-		: $cats;
-	else
-		return ($cats);
+	$tags = $cats;
+	if (!is_admin()) {
+		// check for Jerome's keywords
+		if (function_exists('get_the_post_keytags'))
+			$tags = get_the_post_keytags(true);
+		// Simple Tagging
+		elseif (function_exists('STP_GetPostTags'))
+			$tags = STP_GetPostTags(null, true);
+	}
+	return ($tags);
 } # end add_more_keywords()
 
 add_filter('the_category', 'add_more_keywords', -1000);
