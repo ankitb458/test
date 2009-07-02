@@ -31,8 +31,8 @@ function display_seo_meta_fields()
 		. '<input type="text"'
 			. ' style="width: 420px;"'
 			. ' id="seo_title" name="seo_title"'
-			. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_title', true))
-			. '"/>'
+			. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_title', true)) . '"'
+			. ' />'
 		. '</td>'
 		. '</tr>';
 
@@ -46,8 +46,8 @@ function display_seo_meta_fields()
 		. '<input type="text"'
 			. ' style="width: 420px;"'
 			. ' id="seo_keywords" name="seo_keywords"'
-			. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_keywords', true))
-			. '"/>'
+			. ' value="' . htmlspecialchars(get_post_meta($post_ID, '_keywords', true)) . '"'
+			. ' />'
 		. '</td>'
 		. '</tr>';
 
@@ -58,10 +58,10 @@ function display_seo_meta_fields()
 		. '</label>'
 		. '</th>'
 		. '<td>'
-		. '<textarea type="text"'
+		. '<textarea'
 			. ' style="width: 420px; height: 80px;"'
 			. ' id="seo_description" name="seo_description"'
-			. '">'
+			. '>'
 			. htmlspecialchars(get_post_meta($post_ID, '_description', true))
 		. '</textarea>'
 		. '</td>'

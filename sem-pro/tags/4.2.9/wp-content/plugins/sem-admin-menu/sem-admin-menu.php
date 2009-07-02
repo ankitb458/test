@@ -4,7 +4,7 @@ Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/admin-menu/
 Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/admin-menu/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Adds a convenient admin menu to your blog. To customize the skin, drop a skin.css file in the plugin's directory. The sample skin is courtesy of <a href="http://www.bureaublumenberg.net">BureauBlumenberg</a>.
 Author: Denis de Bernardy
-Version: 3.4
+Version: 3.5
 Author URI: http://www.semiologic.com
 */
 
@@ -259,6 +259,13 @@ function sem_admin_menu_display_menu()
 						)
 					: ''
 					)
+				. "<li class=\"profile\">"
+					. "<a href=\""
+						. $site_path . "wp-admin/profile.php\">"
+						. __('Profile', 'sem-admin-menu')
+						. "</a>"
+					. "</li>\n"
+				. " &bull;&nbsp;"
 				. "<li class=\"logout\">"
 					. "<a href=\""
 						. $site_path . "wp-login.php?action=logout\">"

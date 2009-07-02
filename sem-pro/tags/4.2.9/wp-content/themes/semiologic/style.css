@@ -2,7 +2,7 @@
 Theme Name: Semiologic
 Theme URI: http://www.semiologic.com/software/sem-theme/
 Description: The Semiologic theme &bull; <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/sem-theme/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a>
-Version: 4.2.8
+Version: 4.2.9
 Author: Denis de Bernardy
 Author URI: http://www.mesoconcepts.com
 */
@@ -60,6 +60,11 @@ div.spacer
 div.pad
 {
 	padding: 4px 8px;
+}
+
+#body div.pad
+{
+    padding-top: 0px;
 }
 
 #header div.pad

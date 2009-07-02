@@ -183,7 +183,8 @@ function get_semiologic_config($errors, $site_uri, $user_login, $user_pass)
 			'action' => 'export',
 			'user_login' => $user_login,
 			'user_pass' => $user_pass,
-			'data' => $data
+			'data' => $data,
+			'random_hash' => md5(time())
 			);
 
 		$params = "";
@@ -213,8 +214,13 @@ function get_semiologic_config($errors, $site_uri, $user_login, $user_pass)
 			curl_setopt ($ch, CURLOPT_URL, $src);
 			curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+			curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Pragma: no-cache"));
+			curl_setopt ($ch, CURLOPT_HTTPHEADER, array("Cache-Control: no-store, no-cache, must-revalidate"));
 			$$data = curl_exec($ch);
 			curl_close($ch);
+
+			#var_dump($src, $$data);
+			#die();
 		}
 		elseif ( !ini_get('allow_url_fopen') )
 		{
@@ -224,7 +230,7 @@ function get_semiologic_config($errors, $site_uri, $user_login, $user_pass)
 		{
 			$$data = file_get_contents($src);
 
-			#var_dump($src);
+			#var_dump($src, $$data);
 			#die();
 		}
 
@@ -233,6 +239,9 @@ function get_semiologic_config($errors, $site_uri, $user_login, $user_pass)
 			$errors[] = 'Failed to open stream. Double checked your cloned site\'s details? ';
 			break;
 		}
+
+		#var_dump($$data);
+		#die();
 
 		if ( preg_match("/^ERROR/", $$data) )
 		{

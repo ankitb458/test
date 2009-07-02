@@ -117,6 +117,16 @@ function CreateFakeAdUnitElement(adunit)
 // We must process the DIV tags to replace then with the real tag
 FCKXHtml.TagProcessors['img'] = function( node, htmlNode )
 {
+		// Tag processors don't chain so we need to duplicate it's functionality here
+		var sSavedUrl = htmlNode.getAttribute( '_fcksavedurl' ) ;
+		if ( sSavedUrl != null )
+			FCKXHtml._AppendAttribute( node, 'src', sSavedUrl ) ;
+
+		// The "ALT" attribute is required in XHTML.. 
+		if ( ! node.attributes.getNamedItem( 'alt' ) )
+			FCKXHtml._AppendAttribute( node, 'alt', '' ) ;
+			
+		// now for the WordPress stuff...
         var _fckwordpress = htmlNode.getAttribute('_fckwordpress');
         if(_fckwordpress == undefined)
             return node;

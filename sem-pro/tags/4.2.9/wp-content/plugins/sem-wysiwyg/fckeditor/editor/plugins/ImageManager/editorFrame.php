@@ -7,9 +7,9 @@
 	 * @package ImageManager
 	 */
 
-	require_once('config.inc.php');
-	require_once('Classes/ImageManager.php');
-	require_once('Classes/ImageEditor.php');
+	require_once(dirname(__FILE__) . '/' . 'config.inc.php');
+	require_once(dirname(__FILE__) . '/' . 'Classes/ImageManager.php');
+	require_once(dirname(__FILE__) . '/' . 'Classes/ImageEditor.php');
 
 	//default path is /
 	$relative = '/';
@@ -115,7 +115,7 @@
 		else
 			return str;
 	};
-	
+
 </script>
 <script type="text/javascript">
 <?php
@@ -124,7 +124,7 @@
 	{
 ?>
 	// Reload the images in the imageframe of the Manager :
-	// Is there a "imgManager" frame. 
+	// Is there a "imgManager" frame.
 	if ((popupWindow = parent.opener.parent) && (imgManager = parent.opener.parent.document.getElementById("imgManager")))
 		// refresh it - so it shows the edited image.
 		imgManager.src = imgManager.src;

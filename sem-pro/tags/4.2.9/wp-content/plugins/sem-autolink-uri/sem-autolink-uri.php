@@ -4,7 +4,7 @@ Plugin Name: Autolink uri
 Plugin URI: http://www.semiologic.com/software/autolink-uri/
 Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/autolink-uri/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Automatically hyperlink uri
 Author: Denis de Bernardy
-Version: 1.2
+Version: 1.3
 Author URI: http://www.semiologic.com
 */
 
@@ -111,7 +111,7 @@ function sem_autolink_uri($buffer)
 				[0-9a-zA-Z~_\-+\.\/,&;]*
 			)?
 			(?:								# maybe some parameters
-				\?[0-9a-zA-Z~_\-+\.\/,&;]+
+				\?[0-9a-zA-Z~_\-+\.\/,&;=]+
 			)?
 			(?:								# maybe an id
 				\#[0-9a-zA-Z~_\-+\.\/,&;]+

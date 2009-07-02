@@ -6,9 +6,9 @@
  * @package ImageManager
  */
 
-	require_once('config.inc.php');
-	require_once('Classes/ImageManager.php');
-	
+	require_once(dirname(__FILE__) . '/' . 'config.inc.php');
+	require_once(dirname(__FILE__) . '/' . 'Classes/ImageManager.php');
+
 	$manager = new ImageManager($IMConfig);
 	$dirs = $manager->getDirs();
 
@@ -19,7 +19,7 @@
 <head>
 <title>Insert Image</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<link href="assets/manager.css" rel="stylesheet" type="text/css" />	
+<link href="assets/manager.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript">
 /*<![CDATA[*/
@@ -78,15 +78,15 @@ function LimitAttach(form, file) {
 		file = file.slice(file.indexOf("\\") + 1);
 		ext = file.slice(file.indexOf(".")).toLowerCase();
 		for (var i = 0; i < extArray.length; i++) {
-			if (extArray[i] == ext) { 
-				allowSubmit = true; 
-				break; 
+			if (extArray[i] == ext) {
+				allowSubmit = true;
+				break;
 			}
 		}
-		if (allowSubmit) 
+		if (allowSubmit)
 			doUpload();
 		else
-		alert("Please only upload files that end in types:  " 
+		alert("Please only upload files that end in types:  "
 			+ (extArray.join("  ")) + "\nPlease select a new "
 			+ "file to upload and submit again.");
 }
@@ -127,7 +127,7 @@ function LimitAttach(form, file) {
 			<td rowspan="3" align="right">&nbsp;</td>
 			<td align="right"><label for="f_vert">V Space</label></td>
 			<td><input type="text" id="f_vert" class="smallWidth" value="" /></td>
-		</tr>		
+		</tr>
 		<tr>
 			<td align="right"><label for="f_alt">Alt</label></td>
 			<td><input type="text" id="f_alt" class="largelWidth" value="" /></td>
@@ -143,7 +143,7 @@ function LimitAttach(form, file) {
 				<table cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td>	<input type="hidden" name="userfilename" id="userfilename" />
-					<input type="file" name="upload" id="upload"  
+					<input type="file" name="upload" id="upload"
 						onChange="javascript:userfilename.value= upload.value" /></td>
                     <td>&nbsp;<button type="submit" name="submit" onclick="LimitAttach(this.form, this.form.upload.value)">Upload</button></td>
                   </tr>
@@ -170,7 +170,7 @@ function LimitAttach(form, file) {
 			<td align="right"><label for="f_border">Border</label></td>
 			<td><input type="text" id="f_border" class="smallWidth" value="" /></td>
 		</tr>
-		<tr> 
+		<tr>
          <td colspan="4" align="right">
 				<input type="hidden" id="orginal_width" />
 				<input type="hidden" id="orginal_height" />
@@ -179,14 +179,14 @@ function LimitAttach(form, file) {
           <td colspan="5"><label for="constrain_prop">Constrain Proportions</label></td>
       </tr>
 	</table>
-<!--// image properties -->	
-	<div style="text-align: right;"> 
+<!--// image properties -->
+	<div style="text-align: right;">
           <hr />
 		  <button type="button" class="buttons" onclick="return refresh();">Refresh</button>
           <button type="button" class="buttons" onclick="return onOK();">OK</button>
           <button type="button" class="buttons" onclick="return onCancel();">Cancel</button>
     </div>
-	<input type="hidden" id="f_file" name="f_file" /> 
+	<input type="hidden" id="f_file" name="f_file" />
 
 </form>
 </body>

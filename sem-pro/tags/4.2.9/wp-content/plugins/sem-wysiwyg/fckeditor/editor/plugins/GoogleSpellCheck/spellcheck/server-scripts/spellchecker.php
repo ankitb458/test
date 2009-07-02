@@ -1,7 +1,7 @@
 <?php
 header('Content-type: text/html; charset=utf-8');
 
-require_once('GoogleSpellCheck.php');
+require_once(dirname(__FILE__) . '/' . 'GoogleSpellCheck.php');
 
 $spellercss = '../spellerStyle.css';			// by FredCK
 $word_win_src = '../wordWindow.js';				// by FredCK
@@ -84,26 +84,26 @@ function print_checker_results() {
 	}
 
 //	debugData("Raw text: $text\n");
-	// strip out all html, javascript, and such. 
+	// strip out all html, javascript, and such.
 	// MAK: Might need to add php and plugin tags (like contact form) as well
 	$text = html2txt($text);
 //		debugData("HTML stripped text: $text\n");
 	// remove punctuation  - MAK: might need to add 's exclusion
 	$text = preg_replace('/[^a-zA-Z0-9 \']/i', ' ', $text);
-	
+
 //		debugData("Non-punct text: $text\n");
-	
-	$gspellret = $spellcheck->checkWords($text);	
+
+	$gspellret = $spellcheck->checkWords($text);
 
 	if (is_array($gspellret)) {
-		$text_input_index = 0;	
+		$text_input_index = 0;
 		$index = 0;
 		# parse each line of gspell return
 		print_textindex_decl( $text_input_index );
 		foreach( $gspellret as $key => $val ) {
 				print_words_elem( $key, $index, $text_input_index );
 				print_suggs_elem( $val, $index, $text_input_index );
-				$index++;	
+				$index++;
 		}
 	}
 	else {
@@ -112,7 +112,7 @@ function print_checker_results() {
 	}
 }
 
-	function debugData($data) 
+	function debugData($data)
 	{
 		$fh = @fopen("debug.log", 'a+');
 		fwrite($fh, $data);

@@ -8,9 +8,9 @@
  * @package ImageManager
  */
 
-require_once('config.inc.php');
-require_once('Classes/ImageManager.php');
-require_once('Classes/Thumbnail.php');
+require_once(dirname(__FILE__) . '/' . 'config.inc.php');
+require_once(dirname(__FILE__) . '/' . 'Classes/ImageManager.php');
+require_once(dirname(__FILE__) . '/' . 'Classes/Thumbnail.php');
 
 //check for img parameter in the url
 if(!isset($_GET['img']))

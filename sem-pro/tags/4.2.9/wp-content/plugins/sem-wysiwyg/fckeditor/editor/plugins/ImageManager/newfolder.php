@@ -1,5 +1,5 @@
 <?php
-require_once('config.inc.php');
+require_once(dirname(__FILE__) . '/' . 'config.inc.php');
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -34,20 +34,20 @@ form .elements{
 		// Read it now - copy in next script block
 		document.write('<script type="text/javascript" src="lang/' + window.opener._editor_lang + '.js"><\/script>');
 	}
-	
-	init = function () 
+
+	init = function ()
 	{
 		__dlg_init();
 		document.getElementById("f_foldername").focus();
 	}
 
-	function onCancel() 
+	function onCancel()
 	{
 		__dlg_close(null);
 		return false;
 	}
 
-	function onOK() 
+	function onOK()
 	{
 		 // pass data back to the calling window
 	  var fields = ["f_foldername"];
@@ -62,12 +62,12 @@ form .elements{
 	}
 
 	function addEvent(obj, evType, fn)
-	{ 
-		if (obj.addEventListener) { obj.addEventListener(evType, fn, true); return true; } 
-		else if (obj.attachEvent) {  var r = obj.attachEvent("on"+evType, fn);  return r;  } 
-		else {  return false; } 
-	} 
-	
+	{
+		if (obj.addEventListener) { obj.addEventListener(evType, fn, true); return true; }
+		else if (obj.attachEvent) {  var r = obj.attachEvent("on"+evType, fn);  return r;  }
+		else {  return false; }
+	}
+
 	addEvent(window, 'load', init);
 </script>
 </head>
@@ -79,7 +79,7 @@ form .elements{
 	<label for="f_foldername">Folder Name:</label>
 	<input type="text" id="f_foldername" size="40"/>
 </div>
-<div style="text-align: right;"> 
+<div style="text-align: right;">
 	  <hr />
 	  <button type="button" class="buttons" onclick="return onOK();">OK</button>
 	  <button type="button" class="buttons" onclick="return onCancel();">Cancel</button>

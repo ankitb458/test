@@ -7,7 +7,7 @@
  * @package ImageManager
  */
 
-require_once('Classes/Files.php');
+require_once(dirname(__FILE__) . '/' . 'Classes/Files.php');
 
 /*
  File system path to the directory you want to manage the images

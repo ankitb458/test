@@ -7,7 +7,7 @@
  * @package ImageManager
  */
 
-require_once('Transform.php');
+require_once(dirname(__FILE__) . '/' . 'Transform.php');
 
 /**
  * Handles the basic image editing capbabilities.
@@ -16,7 +16,7 @@ require_once('Transform.php');
  * @package ImageManager
  * @subpackage Editor
  */
-class ImageEditor 
+class ImageEditor
 {
 	/**
 	 * ImageManager instance.
@@ -36,7 +36,7 @@ class ImageEditor
 	var $filesaved = 0;
 
 	/**
-	 * Create a new ImageEditor instance. Editing requires a 
+	 * Create a new ImageEditor instance. Editing requires a
 	 * tmp file, which is saved in the current directory where the
 	 * image is edited. The tmp file is assigned by md5 hash of the
 	 * user IP address. This hashed is used as an ID for cleaning up
@@ -45,18 +45,18 @@ class ImageEditor
 	 * @param ImageManager $manager the image manager, we need this
 	 * for some file and path handling functions.
 	 */
-	function ImageEditor($manager) 
+	function ImageEditor($manager)
 	{
 		$this->manager = $manager;
 		$this->_uid = md5($_SERVER['REMOTE_ADDR']);
 	}
-	
+
 	/**
 	 * Did we save a file?
-	 * @return int 1 if the file was saved sucessfully, 
+	 * @return int 1 if the file was saved sucessfully,
 	 * 0 no save operation, -1 file save error.
 	 */
-	function isFileSaved() 
+	function isFileSaved()
 	{
 		Return $this->filesaved;
 	}
@@ -121,7 +121,7 @@ class ImageEditor
 	 * <code>array('src'=>'url of the image', 'dimensions'=>'width="xx" height="yy"',
 	 * 'file'=>'image file, relative', 'fullpath'=>'full path to the image');</code>
 	 */
-	function processAction($action, $relative, $fullpath) 
+	function processAction($action, $relative, $fullpath)
 	{
 		$params = '';
 
@@ -132,8 +132,8 @@ class ImageEditor
 		$saveFile = $this->getSaveFileName($values[0]);
 		$img = Image_Transform::factory(IMAGE_CLASS);
 		$img->load($fullpath);
-		
-		switch ($action) 
+
+		switch ($action)
 		{
 			case 'replace':
 
@@ -224,7 +224,7 @@ class ImageEditor
 			case 'flip':
 				if ($values[0] == 'hoz')
 					$img->flip(true);
-				else if($values[0] == 'ver') 
+				else if($values[0] == 'ver')
 					$img->flip(false);
 				break;
 			case 'save':
@@ -254,7 +254,7 @@ class ImageEditor
 						$this->forcedNewName = false;
 						$this->fileSavedName = $saveFile;
 					}
-						
+
 					$newSaveFullpath = $this->manager->getFullPath($newSaveFile);
 					$img->save($newSaveFullpath, $values[0], $quality);
 					if(is_file($newSaveFullpath))
@@ -264,7 +264,7 @@ class ImageEditor
 				}
 				break;
 		}
-		
+
 		//create the tmp image file
 		$filename = $this->createUnique($fullpath);
 		$newRelative = $this->makeRelative($relative, $filename);
@@ -326,7 +326,7 @@ class ImageEditor
 	 * @param string $type image type, 'jpeg', 'png', or 'gif'
 	 * @return string the filename according to save type
 	 */
-	function getSaveFileName($type) 
+	function getSaveFileName($type)
 	{
 		if(!isset($_GET['file']))
 			Return null;
@@ -353,7 +353,7 @@ class ImageEditor
 	 * Get the default save file name, used by editor.php.
 	 * @return string a suggestive filename, this should be unique
 	 */
-	function getDefaultSaveFile() 
+	function getDefaultSaveFile()
 	{
 		if(isset($_GET['img']))
 			$relative = rawurldecode($_GET['img']);
@@ -369,35 +369,35 @@ class ImageEditor
 	 * @param string $relative the relative filename to the base_dir
 	 * @return string a unique filename in the current path
 	 */
-	function getUniqueFilename($relative) 
+	function getUniqueFilename($relative)
 	{
 		$fullpath = $this->manager->getFullPath($relative);
-		
+
 		$pathinfo = pathinfo($fullpath);
 
 		$path = Files::fixPath($pathinfo['dirname']);
 		$file = Files::escape($pathinfo['basename']);
-		
+
 		$filename = $file;
 
 		$dotIndex = strrpos($file, '.');
 		$ext = '';
 
-		if(is_int($dotIndex)) 
+		if(is_int($dotIndex))
 		{
 			$ext = substr($file, $dotIndex);
 			$base = substr($file, 0, $dotIndex);
 		}
 
 		$counter = 0;
-		while(is_file($path.$filename)) 
+		while(is_file($path.$filename))
 		{
 			$counter++;
 			$filename = $base.'_'.$counter.$ext;
 		}
-		
+
 		Return $filename;
-		
+
 	}
 
 	/**
@@ -408,7 +408,7 @@ class ImageEditor
 	 * @param string $file the new filename
 	 * @return string relative path with the new filename
 	 */
-	function makeRelative($pathA, $file) 
+	function makeRelative($pathA, $file)
 	{
 		$index = strrpos($pathA,'/');
 		if(!is_int($index))
@@ -422,7 +422,7 @@ class ImageEditor
 	 * Get the action GET parameter
 	 * @return string action parameter
 	 */
-	function getAction() 
+	function getAction()
 	{
 		$action = null;
 		if(isset($_GET['action']))
@@ -443,7 +443,7 @@ class ImageEditor
 	/**
 	 * Create unique tmp image file name.
 	 * The filename is based on the tmp file prefix
-	 * specified in config.inc.php plus 
+	 * specified in config.inc.php plus
 	 * the UID (basically a md5 of the remote IP)
 	 * and some random 6 character string.
 	 * This function also calls to clean up the tmp files.
@@ -451,7 +451,7 @@ class ImageEditor
 	 * @return string a unique filename for that path
 	 * NOTE: it only returns the filename, path no included.
 	 */
-	function createUnique($file) 
+	function createUnique($file)
 	{
 		$pathinfo = pathinfo($file);
 		$path = Files::fixPath($pathinfo['dirname']);
@@ -472,10 +472,10 @@ class ImageEditor
 
 	/**
 	 * Delete any tmp image files.
-	 * @param string $path the full path 
+	 * @param string $path the full path
 	 * where the clean should take place.
 	 */
-	function cleanUp($path,$file) 
+	function cleanUp($path,$file)
 	{
 		$path = Files::fixPath($path);
 
@@ -483,14 +483,14 @@ class ImageEditor
 			Return false;
 
 		$d = @dir($path);
-		
+
 		$tmp = $this->manager->getTmpPrefix();
 		$tmpLen = strlen($tmp);
 
 		$prefix = $tmp.$this->_uid;
 		$len = strlen($prefix);
 
-		while (false !== ($entry = $d->read())) 
+		while (false !== ($entry = $d->read()))
 		{
 			//echo $entry."<br>";
 			if(is_file($path.$entry) && $this->manager->isTmpFile($entry))
@@ -513,14 +513,14 @@ class ImageEditor
 	 * @return string of either 'gif', 'jpeg', 'png' or 'bmp'
 	 * otherwise it will return null.
 	 */
-	function getImageType($file) 
+	function getImageType($file)
 	{
 		$imageInfo = @getImageSize($file);
 
 		if(!is_array($imageInfo))
 			Return null;
 
-		switch($imageInfo[2]) 
+		switch($imageInfo[2])
 		{
 			case 1:
 				Return 'gif';
@@ -540,7 +540,7 @@ class ImageEditor
 	 * mainly to check that GD can read and save GIFs
 	 * @return int 0 if it is not a GIF file, 1 is GIF is editable, -1 if not editable.
 	 */
-	function isGDEditable() 
+	function isGDEditable()
 	{
 		if(isset($_GET['img']))
 			$relative = rawurldecode($_GET['img']);
@@ -566,7 +566,7 @@ class ImageEditor
 	 * Check if GIF can be edit by GD.
 	 * @return int 0 if it is not using the GD library, 1 is GIF is editable, -1 if not editable.
 	 */
-	function isGDGIFAble() 
+	function isGDGIFAble()
 	{
 		if(IMAGE_CLASS != 'GD')
 			Return 0;

@@ -52,6 +52,7 @@ body
 	padding-left: 13px;
 }
 
+#sem_admin_menu li.profile,
 #sem_admin_menu li.login,
 #sem_admin_menu li.logout,
 #sem_admin_menu li.register

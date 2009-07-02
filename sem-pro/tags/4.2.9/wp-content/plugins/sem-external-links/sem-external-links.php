@@ -116,7 +116,7 @@ function sem_external_links($buffer)
 			|
 				'[^']*'			# single quoted link
 			|
-				[^'\"]\S*		# none-quoted link
+				[^'\"]\S*		# non-quoted link
 			)
 			(?:\s[^>]*)?		# optional attributes
 			\s*>

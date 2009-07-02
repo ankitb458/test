@@ -196,7 +196,7 @@ class sem_google_analytics
 				|
 					'([^']*)'		# single quoted link
 				|
-					([^'\"]\S*)		# none-quoted link
+					([^'\"]\S*)		# non-quoted link
 				)
 				(?:\s[^>]*)?		# optional attributes
 				\s*>
