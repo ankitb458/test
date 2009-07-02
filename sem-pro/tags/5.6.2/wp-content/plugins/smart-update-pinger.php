@@ -3,7 +3,10 @@
 	Ultimate Plugins Smart Update Pinger
 	Description: Replaces the built-in ping/notify functionality. Pings only when publishing new or future posts, not when editing. The new post's url is pinged, not the main url. 
 	Also includes reverse order logfile (http://ultimateplugins.com/wordpress/smart-update-pinger/)
-	 GNU General Public License: This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	Version 3.0.1 (forked)
+	GNU General Public License: This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. 
+	 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. 
+	 You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Log
@@ -68,6 +71,7 @@ function SUP_show_options_page()
 	$uris = get_option("ping_sites");
 	$forcedpings = false; 
 	$SUP_output_log='';
+	$numDisplayEntries = 500;
 
 	$pingservicesnow = "Ping Services Now!";
 	$deletelogfile   = "Delete Log File";
@@ -134,9 +138,9 @@ function SUP_show_options_page()
 		<input type="submit" name="submit" value="Update Options" />
 	</p></form>
 	<h2>Ping log</h2>
-	<p>These are the last 100 actions performed by the plugin. In reverse chronological order for easier reading (latest ping first).</p>
+	<p>These are the last ' . $numDisplayEntries . ' actions performed by the plugin. In reverse chronological order for easier reading (latest ping first).</p>
 	<p><code>';
-	SUP_get_last_log_entries(500);
+	SUP_get_last_log_entries($numDisplayEntries);
 	echo '</code></p></div>';
 }
 
@@ -322,7 +326,6 @@ function SUP_post_title($title)
 function SUP_log($SUP_log_output)
 {
 	global $logfile;
-	$logerror = 0;
 	$fh = @fopen($logfile, "a+");
 	if(false === @fwrite($fh, $SUP_log_output))
 	{

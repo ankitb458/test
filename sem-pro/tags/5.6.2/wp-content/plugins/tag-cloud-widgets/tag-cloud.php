@@ -4,7 +4,7 @@ Plugin Name: Tag Cloud Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/tag_cloud-widgets/
 Description: Replaces WordPress' default tag widgets with advanced configurable tag widgets
 Author: Mike Koepke
-Version: 1.0.1
+Version: 1.0.2
 Author URI: http://www.semiologic.com
 */
 
@@ -52,7 +52,7 @@ class tag_cloud_widgets
 			'generate_rewrite_rules',
 			) as $hook)
 		{
-			add_action($hook, array('related_widgets', 'clear_cache'));
+			add_action($hook, array('tag_cloud_widgets', 'clear_cache'));
 		}	
 		
 		register_activation_hook(__FILE__, array('tag_cloud_widgets', 'clear_cache'));
