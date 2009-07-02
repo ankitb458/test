@@ -6,15 +6,6 @@ if ( $sem_captions === false )
 	$sem_captions = get_option('sem5_captions');
 $sem_nav_menus = get_option('sem_nav_menus');
 
-if ( version_compare($sem_options['version'], '5.5', '<') )
-	upgrade_sem_5_5();
-
-if ( version_compare($sem_options['version'], '5.6', '<') )
-	upgrade_sem_5_6();
-
-if ( version_compare($sem_options['version'], '5.7', '<') )
-	upgrade_sem_5_7();
-
 if ( version_compare($sem_options['version'], '6.0', '<') ) {
 	if ( empty($sem_options['active_width']) ) {
 		upgrade_sem_6_0();
@@ -34,35 +25,7 @@ $sem_options['version'] = sem_version;
 if ( !defined('sem_install_test') )
 	update_option('sem6_options', $sem_options);
 
-
-/**
- * upgrade_sem_5_5()
- *
- * @return void
- **/
-
-function upgrade_sem_5_5() {
-} # upgrade_sem_5_5()
-
-
-/**
- * upgrade_sem_5_6()
- *
- * @return void
- **/
-
-function upgrade_sem_5_6() {
-} # upgrade_sem_5_6()
-
-
-/**
- * upgrade_sem_5_7()
- *
- * @return void
- **/
-
-function upgrade_sem_5_7() {
-} # upgrade_sem_5_7()
+wp_cache_flush();
 
 
 /**
@@ -460,6 +423,28 @@ function upgrade_sem_6_0() {
 	
 	# clear corrupt cron job
 	wp_clear_scheduled_hook('dealdotcom');
+	
+	if ( empty($sem_pro_version) )
+		return;
+	
+	# drop obsolete plugins
+	$active_plugins = get_option('active_plugins', array());
+
+	$obsolete_plugins = array(
+		'extended-comment-options/commentcontrol.php',
+		'ozh-absolute-comments/wp_ozh_absolutecomments.php',	
+		'order-categories/category-order.php',
+		'page-tags/page-tags.php',	
+		'smart-update-pinger.php',
+		'simple-trackback-validation.php',
+		'favicon-head.php',
+		'mycategoryorder/mycategoryorder.php',
+		'mylinkorder/mylinkorder.php',
+		'mypageorder/mypageorder.php',
+		);
+
+	$active_plugins = array_diff($active_plugins, $obsolete_plugins);
+	update_option('active_plugins', $active_plugins);
 } # upgrade_sem_6_0()
 
 
