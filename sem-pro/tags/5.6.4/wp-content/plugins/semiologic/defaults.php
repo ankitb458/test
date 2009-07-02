@@ -1,0 +1,5 @@
+<?php
+#
+# Obsolete file
+#
+?>
