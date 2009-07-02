@@ -1,0 +1,146 @@
+/*
+Skin name: Faded Tan Jeans
+Version: 1.0
+Author: Techie Coach
+Author uri: http://www.techiecoach.com
+Description: Be brave! Be beige!
+*/
+
+
+/*
+	Background, font and link colors for the entire site
+	----------------------------------------------------
+*/
+
+body
+{
+	background-color: white;
+	color: black;
+}
+
+a
+{
+	color: #4844BB;
+}
+
+a:hover
+{
+	color: firebrick;
+}
+
+
+
+
+/*
+	Background image for the entire site
+	---------------------------------------------------
+*/
+
+body
+{
+	background: url(bg.jpg) repeat-x;
+}
+
+
+/*
+	Border, background, font and link colors for the site canvas
+	------------------------------------------------------------
+*/
+
+
+#wrapper
+{
+
+	border: solid 1px #ECEDCF;
+	background: url(bg-wrap.jpg) repeat-x top left;
+	color: black;
+}
+
+
+/*
+	Border, background, font and link colors for the header
+	-------------------------------------------------------
+*/
+
+#header div.pad
+{
+	color: black;
+}
+
+#header h1 a 
+{
+	color: #D2C679;
+    font-size: 150%;
+}
+#header h1 a: hover
+{
+	color: white;
+}
+
+#header h2
+{
+	color: gray;
+    font-size: 120%;
+}
+/**/
+
+
+
+/*
+	Aligns for the header
+	---------------------
+*/
+#header h1
+{
+	text-align: center;
+}
+
+#header h2
+{
+	text-align: center;
+}
+
+
+/*
+	Offset for the body
+	-------------------
+*/
+
+#body
+{
+	margin: 12px 0px 12px 0px;
+}
+
+/*
+	Title style for each entry
+	--------------------------
+*/
+
+.entry_header h2
+{
+	color: black;
+}
+
+.entry_header h1
+{
+	color: black;
+}
+
+.entry_header h1 a
+{
+	color: black;
+}
+
+.entry_header h1 a:hover
+{
+	color: #867A2D;
+}
+
+
+blockquote{
+    background-image: url(blockquote.gif);
+	}
+	
+
+
+

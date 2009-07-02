@@ -1,0 +1,74 @@
+Extending Semiologic Pro Features
+=================================
+
+
+1. Registering features
+-----------------------
+
+add to the skin.php or custom.php file:
+
+	sem_features::register($feature_sets);
+
+where:
+
+	$feature_sets = array(
+		'feature_set_key1' => array (
+			'feature_key1',
+			'feature_key2',
+			),
+		'feature_set_key2' => array
+			(
+			'feature_key3',
+			'feature_key4',
+			)
+		);
+
+
+
+2. Registering feature handlers
+-------------------------------
+
+add to the skin.php or custom.php file:
+
+	sem_pro_features::register(
+		$feature_key,
+		$plugin_file,
+		$activate,
+		$deactivate,
+		$is_enabled,
+		);
+
+where:
+
+- $feature_key is the feature's key
+- $plugin_files is a plugin file, e.g. 'my_plugin.php' (optional, can also be an array of files)
+- $activate is a callback function that gets called when you activate (optional)
+- $deactivate is a callback function that gets called when you deactivate (optional)
+- $is_enabled is a callback function that gets called when you check if the feature is active (optional)
+
+
+3. Extending docs
+-----------------
+
+add to a skin.php or custom.php file:
+
+	function extend_docs($sem_docs)
+	{
+		$sem_docs['feature_sets'][$key] = array(
+			'name' => $name,
+			'excerpt' => $excerpt,
+			'content' => $content,
+			);
+
+		$sem_docs['features'][$key] = array(
+			'name' => $name,
+			'excerpt' => $excerpt,
+			'content' => $content,
+			);
+
+		return $sem_docs;
+	} # extend_docs
+
+	add_filter('options_sem_docs', 'extend_docs');
+
+where the variables are self-explanatory
