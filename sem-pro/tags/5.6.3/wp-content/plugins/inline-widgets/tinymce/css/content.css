@@ -1,0 +1,8 @@
+
+.mceInlineWidget {
+	border: dotted 1px Black;
+	background: Lavender;
+	display: block;
+	width: 100%;
+	height: 60px;
+}
