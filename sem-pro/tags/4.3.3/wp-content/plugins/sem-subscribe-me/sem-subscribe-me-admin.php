@@ -10,7 +10,7 @@ class subscribe_me_admin
 	{
 		if ( function_exists('register_sidebar_widget') )
 		{
-			register_widget_control('Subscribe Me', array('subscribe_me_admin', 'widget_control'), 250, 280);
+			register_widget_control('Subscribe Me', array('subscribe_me_admin', 'widget_control'), 250, 300);
 		}
 	} # widgetize()
 

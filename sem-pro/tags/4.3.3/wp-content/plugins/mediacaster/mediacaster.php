@@ -4,7 +4,7 @@ Plugin Name: Mediacaster
 Plugin URI: http://www.semiologic.com/software/publishing/mediacaster/
 Description: Podcasting and Videocasting plugin
 Author: Denis de Bernardy
-Version: 1.1
+Version: 1.2
 Author URI: http://www.semiologic.com
 */
 
@@ -39,11 +39,11 @@ class mediacaster
 	function init()
 	{
 		# audio:
-		add_filter('the_content', array('mediacaster', 'display_players'));
+		add_filter('the_content', array('mediacaster', 'display_players'), 20);
 		remove_filter('the_content', 'ap_insert_player_widgets');
 
 		# playlists:
-		add_filter('the_content', array('mediacaster', 'display_playlist'));
+		add_filter('the_content', array('mediacaster', 'display_playlist'), 10);
 		add_action('template_redirect', array('mediacaster', 'catch_playlist'));
 
 		add_action('rss2_ns', array('mediacaster', 'display_feed_ns'));
@@ -203,6 +203,7 @@ class mediacaster
 
 		$options = get_option('mediacaster');
 		$width = $options['player']['width'] ? $options['player']['width'] : 320;
+		$height = $options['player']['height'] ? $options['player']['height'] : intval($width * 240 / 320 );
 
 		switch ( $ext )
 		{
@@ -210,17 +211,16 @@ class mediacaster
 		case 'm4v':
 		case 'mp4':
 		case 'm4a':
-			$height = intval($width * 240 / 320 );
 			return mediacaster::display_quicktime($file, $width, $height);
 			break;
 
 		case 'flv':
 		case 'swf':
-			$height = intval($width * 240 / 320 );
 			return mediacaster::display_player($file, $width, $height);
 			break;
 
 		case 'mp3':
+		default:
 			$height = 20;
 			return mediacaster::display_player($file, $width, $height, 0);
 			break;
@@ -237,6 +237,9 @@ class mediacaster
 		global $wpdb;
 		$post_ID = get_the_ID();
 
+		$out = '';
+		$enc = '';
+
 		if ( $post_ID > 0 )
 		{
 			$options = get_option('mediacaster');
@@ -250,8 +253,8 @@ class mediacaster
 				$$var = mediacaster::extract_podcasts($files, $post_ID, $var);
 			}
 
-			$options = get_option('mediacaster');
 			$width = $options['player']['width'] ? $options['player']['width'] : 320;
+			$height = $options['player']['height'] ? $options['player']['height'] : intval($width * 240 / 320 );
 
 			if ( $flash_audios )
 			{
@@ -294,12 +297,12 @@ class mediacaster
 
 				# insert player
 
-				$content .= mediacaster::display_player($file, $mp3_width, $height, $display_height) . "\n";
+				$out .= mediacaster::display_player($file, $mp3_width, $height, $display_height) . "\n";
 			}
 
 			if ( $flash_videos )
 			{
-				$display_height = intval($width * 240 / 320 );
+				$display_height = $options['player']['height'] ? $options['player']['height'] : intval($width * 240 / 320 );;
 				$height = $display_height + 20;
 
 				# playlist height
@@ -315,33 +318,33 @@ class mediacaster
 
 				# insert player
 
-				$content .= mediacaster::display_player($file, $width, $height, $display_height) . "\n";
+				$out .= mediacaster::display_player($file, $width, $height, $display_height) . "\n";
 			}
 
 			if ( $qt_audios )
 			{
-				$height = 20;
+				$height = $options['player']['height'] ? $options['player']['height'] : intval($width * 240 / 320 );
 
 				foreach ( $qt_audios as $file )
 				{
-					$content .= mediacaster::display_quicktime($file, $width, $height);
+					$out .= mediacaster::display_quicktime($file, $width, $height);
 				}
 			}
 
 			if ( $qt_videos )
 			{
-				$height = intval($width * 240 / 320 );
+				$height = $options['player']['height'] ? $options['player']['height'] : intval($width * 240 / 320 );
 
 				foreach ( $qt_videos as $file )
 				{
-					$content .= mediacaster::display_quicktime($file, $width, $height);
+					$out .= mediacaster::display_quicktime($file, $width, $height);
 				}
 			}
 
 
 			if ( $files && $options['enclosures'])
 			{
-				$content .= '<div class="enclosures">'
+				$enc .= '<div class="enclosures">'
 					. '<h2>'
 						. ( function_exists('get_caption')
 							? get_caption('enclosures')
@@ -358,33 +361,42 @@ class mediacaster
 
 					switch ( $ext )
 					{
+						case 'swf':
+						case 'flv':
+						case 'mov':
+						case 'mp4':
+						case 'm4v':
+							$enc .= '<li class="video">'
+								. '<a href="' . $file . '" target="_blank">'
+								. $key
+								. '</a>'
+								. ' (video)'
+								. '</li>' . "\n";
+
 						case 'mp3':
 						case 'm4a':
-							$content .= '<li class="audio">'
+							$enc .= '<li class="audio">'
 								. '<a href="' . $file . '" target="_blank">'
 								. $key
 								. '</a>'
 								. ' (audio)'
 								. '</li>' . "\n";
 							break;
-
-						case 'swf':
-						case 'flv':
-						case 'mov':
-						case 'mp4':
-						case 'm4v':
-							$content .= '<li class="video">'
-								. '<a href="' . $file . '" target="_blank">'
-								. $key
-								. '</a>'
-								. ' (video)'
-								. '</li>' . "\n";
 					}
 				}
 
-				$content .= '</ul>' . "\n"
+				$enc .= '</ul>' . "\n"
 					. '</div>' . "\n";
 			}
+		}
+
+		if ( $options['player']['position'] != 'bottom' )
+		{
+			$content = $out . $content . $enc;
+		}
+		else
+		{
+			$content = $content . $out . $enc;
 		}
 
 		return $content;
@@ -437,7 +449,7 @@ class mediacaster
 			break;
 		}
 
-		$id = md5($file . '_' . $GLOBALS['player_count']++);
+		$id = 'm' . md5($file . '_' . $GLOBALS['player_count']++);
 
 		$player = trailingslashit(get_option('siteurl'))
 			. 'wp-content/plugins/mediacaster/player/player.swf';
@@ -660,7 +672,7 @@ class mediacaster
 		if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin' === false ) )
 		{
 			delete_post_meta($post_ID, '_mediacaster_path');
-			add_post_meta($post_ID, '_mediacaster_path', $new, true);
+			add_post_meta($post_ID, '_mediacaster_path', $path, true);
 		}
 
 		return $path;
@@ -673,6 +685,13 @@ class mediacaster
 
 	function get_files($path, $post_ID = null)
 	{
+		$tag = $path . '_' . intval($post_ID);
+
+		if ( isset($GLOBALS['mediacaster_file_cache'][$tag]) )
+		{
+			return $GLOBALS['mediacaster_file_cache'][$tag];
+		}
+
 		$site_url = trailingslashit(get_option('siteurl'));
 
 		$files = glob(ABSPATH . $path . '*.{mp3,flv,swf,m4a,mp4,m4v,mov}', GLOB_BRACE);
@@ -702,6 +721,8 @@ class mediacaster
 		}
 
 		ksort($files);
+
+		$GLOBALS['mediacaster_file_cache'][$tag] = $files;
 
 		return $files;
 	} # get_files()
@@ -818,13 +839,28 @@ class mediacaster
 	{
 		$cover = false;
 
+		if ( !is_admin() )
+		{
+			$tag = get_the_ID();
+
+			if ( $GLOBALS['mediacaster_cover_cache'][$tag] )
+			{
+				return $GLOBALS['mediacaster_cover_cache'][$tag];
+			}
+		}
+
 		if ( $file = glob(ABSPATH . $path . 'cover.{jpg,png}', GLOB_BRACE) )
 		{
 			$cover = $path . basename(current($file));
 		}
-		elseif ( $file = glob(ABSPATH . 'media/cover.{jpg,png}', GLOB_BRACE) )
+		elseif ( $file = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
 		{
 			$cover = 'media/' . basename(current($file));
+		}
+
+		if ( !is_admin() )
+		{
+			$GLOBALS['mediacaster_cover_cache'][$tag] = $cover;
 		}
 
 		return $cover;
@@ -1047,6 +1083,8 @@ class mediacaster
 		$options['itunes']['copyright'] = $options['itunes']['author'];
 
 		$options['player']['width'] = 320;
+		$options['player']['height'] = 240;
+		$options['player']['position'] = 'top';
 
 		$options['enclosures'] = '';
 

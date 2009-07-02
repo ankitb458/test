@@ -4,7 +4,7 @@ Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/publishing/admin-menu/
 Description: Adds a convenient admin menu to your blog.
 Author: Denis de Bernardy
-Version: 4.0
+Version: 4.1
 Author URI: http://www.semiologic.com
 */
 
@@ -53,7 +53,7 @@ if ( !defined('use_post_type_fixed') )
 }
 
 
-class admin_menu
+class sem_admin_menu
 {
 	#
 	# init()
@@ -61,8 +61,20 @@ class admin_menu
 
 	function init()
 	{
-		add_action('init', array('admin_menu', 'ob_add_menu'));
+		add_action('init', array('sem_admin_menu', 'ob_add_menu'));
+
+		add_filter('option_gzipcompression', array('sem_admin_menu', 'kill_gzip'));
 	} # init()
+
+
+	#
+	# kill_gzip()
+	#
+
+	function kill_gzip($bool)
+	{
+		return 0;
+	} # kill_gzip()
 
 
 	#
@@ -71,7 +83,7 @@ class admin_menu
 
 	function ob_add_menu()
 	{
-		ob_start(array('admin_menu', 'ob_add_menu_callback'));
+		ob_start(array('sem_admin_menu', 'ob_add_menu_callback'));
 	} # ob_add_menu()
 
 
@@ -82,14 +94,15 @@ class admin_menu
 	function ob_add_menu_callback($input)
 	{
 		if ( !is_feed()
+			&& ( strpos($_SERVER['REQUEST_URI'], 'wp-includes') === false )
 			&& ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
 			&& ( strpos($_SERVER['REQUEST_URI'], 'wp-login') === false )
 			&& ( strpos($_SERVER['REQUEST_URI'], 'wp-register') === false )
 			&& !( isset($_GET['action']) && $_GET['action'] == 'print' )
 			)
 		{
-			$input = str_replace ('</title>', '</title>' . "\n" . admin_menu::display_css(), $input);
-			$input = preg_replace("/<body[^>]*>/i", "$0" . "\n" . admin_menu::display_menu(), $input);
+			$input = str_replace ('</title>', '</title>' . "\n" . sem_admin_menu::display_css(), $input);
+			$input = preg_replace("/<body[^>]*>/i", "$0" . "\n" . sem_admin_menu::display_menu(), $input);
 		}
 
 		return $input;
@@ -340,79 +353,9 @@ class admin_menu
 
 		return $o;
 	} # display_menu()
-} # admin_menu
+} # sem_admin_menu
 
-admin_menu::init();
-
-
-#
-# sem_admin_menu_display_menu()
-#
-
-function sem_admin_menu_display_menu()
-{
-	global $user_ID;
-
-	$o = "";
-
-	if ( function_exists('get_site_option') )
-	{
-		$options = array('always_on' => true);
-	}
-	else
-	{
-		$options = get_option('sem_admin_menu_params');
-
-		if ( $options === false )
-		{
-			$options = array('always_on' => true);
-		}
-	}
-
-	if ( $user_ID || get_settings('users_can_register') || $options['always_on'] )
-	{
-		$site_path = trailingslashit(get_settings('siteurl'));
-
-		$o .= "<div id=\"sem_admin_menu\">\n"
-			. "<ul>\n";
-
-		if ( $user_ID )
-		{
-			if ( function_exists('get_site_option') )
-			{
-				$menu_items = get_site_option( "menu_items" );
-				$show_plugins = isset($menu_items['plugins']);
-			}
-			else
-			{
-				$show_plugins = true;
-			}
-		}
-		else
-		{
-
-		}
-
-		$o .= "</ul>\n"
-			. "</div>\n";
-	}
-
-	return $o;
-} # end sem_admin_menu_display_menu()
-
-
-########################
-#
-# Backward compatibility
-#
-
-function the_admin_menu()
-{
-} # end the_admin_menu()
-
-function sem_admin_menu()
-{
-} # end sem_admin_menu()
+sem_admin_menu::init();
 
 
 if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )

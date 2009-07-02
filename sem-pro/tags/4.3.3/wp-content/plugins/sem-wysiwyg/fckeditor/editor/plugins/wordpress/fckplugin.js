@@ -141,7 +141,7 @@ FCKXHtml.TagProcessors['img'] = function( node, htmlNode )
         var _fckwordpress = htmlNode.getAttribute('_fckwordpress');
         if(_fckwordpress == undefined)
             return node;
-        _fckwordpress = _fckwordpress.toLowerCase();
+        //_fckwordpress = _fckwordpress.toLowerCase();
         var wrapinp = false;
         if ( _fckwordpress.match(/#.*/) )
         {
@@ -319,10 +319,13 @@ FCKToolbarAdUnitCombo.prototype.CreateItems = function( targetSpecialCombo )
 	var ad_units = window.parent.document.all_ad_blocks;
 
 	this._Combo.AddItem( '', 'Default Inline', 'Default Inline' ) ;
-
-	for ( var i = 0 ; i < ad_units.length ; i++ )
+	
+	if (ad_units)
 	{
-		this._Combo.AddItem( ad_units[i], ad_units[i], ad_units[i] ) ;
+		for ( var i = 0 ; i < ad_units.length ; i++ )
+		{
+			this._Combo.AddItem( ad_units[i], ad_units[i], ad_units[i] ) ;
+		}
 	}
 }
 
@@ -408,12 +411,15 @@ FCKToolbarMediaCombo.prototype.CreateItems = function( targetSpecialCombo )
 
 	this._Combo.AddItem( 'url', media_name, 'url' ) ;
 
-	for ( var i = 0 ; i < media_files.length ; i++ )
+	if (media_files)
 	{
-		media_name = media_files[i];
-		media_name = media_name.replace(/.*\//, '');
+		for ( var i = 0 ; i < media_files.length ; i++ )
+		{
+			media_name = media_files[i];
+			media_name = media_name.replace(/.*\//, '');
 
-		this._Combo.AddItem( media_name, media_name, media_name ) ;
+			this._Combo.AddItem( media_name, media_name, media_name ) ;
+		}
 	}
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-class author_image_admin
+class sem_author_image_admin
 {
 	#
 	# init()
@@ -8,8 +8,8 @@ class author_image_admin
 
 	function init()
 	{
-		add_action('show_user_profile', array('author_image_admin', 'display_image'));
-		add_action('personal_options_update', array('author_image_admin', 'save_image'));
+		add_action('show_user_profile', array('sem_author_image_admin', 'display_image'));
+		add_action('personal_options_update', array('sem_author_image_admin', 'save_image'));
 	} # init()
 
 
@@ -23,7 +23,7 @@ class author_image_admin
 
 		$site_url = trailingslashit(get_option('siteurl'));
 
-		if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '.{jpg,png}', GLOB_BRACE) )
+		if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,png}', GLOB_BRACE) )
 		{
 			$image = end($image);
 		}
@@ -111,7 +111,7 @@ class author_image_admin
 			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
-			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '.{jpg,png}', GLOB_BRACE) )
+			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,png}', GLOB_BRACE) )
 			{
 				foreach ( $image as $img )
 				{
@@ -136,9 +136,53 @@ class author_image_admin
 			}
 			else
 			{
-				$name = ABSPATH . 'wp-content/authors/' . $author_id . '.' . $ext;
+				$entropy = get_option('sem_entropy');
 
-				@move_uploaded_file($tmp_name, $name);
+				$entropy = intval($entropy) + 1;
+
+				update_option('sem_entropy', $entropy);
+
+				$name = ABSPATH . 'wp-content/authors/' . $author_id . '-' . $entropy . '.' . $ext;
+
+				// Set a maximum height and width
+				$width = 240;
+				$height = 240;
+
+				// Get new dimensions
+				list($width_orig, $height_orig) = getimagesize($tmp_name);
+
+				if ( $width_orig > $width || $height_orig > $height )
+				{
+					if ( $width_orig < $height_orig )
+					{
+						$width = intval(($height / $height_orig) * $width_orig);
+					}
+					else
+					{
+						$height = intval(($width / $width_orig) * $height_orig);
+					}
+
+					// Resample
+					$image_p = imagecreatetruecolor($width, $height);
+
+					if ( $ext == 'jpg' )
+					{
+						$image = imagecreatefromjpeg($tmp_name);
+					}
+					else
+					{
+						$image = imagecreatefrompng($tmp_name);
+					}
+
+					imagecopyresampled($image_p, $image, 0, 0, 0, 0, $width, $height, $width_orig, $height_orig);
+
+					@imagejpeg($image_p, $name, 75);
+				}
+				else
+				{
+					@move_uploaded_file($tmp_name, $name);
+				}
+
 				@chmod($name, 0666);
 			}
 		}
@@ -148,7 +192,7 @@ class author_image_admin
 			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
-			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '.{jpg,png}', GLOB_BRACE) )
+			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,png}', GLOB_BRACE) )
 			{
 				$image = end($image);
 			}
@@ -159,9 +203,9 @@ class author_image_admin
 			}
 		}
 	} # save_image()
-} # author_image_admin
+} # sem_author_image_admin
 
-author_image_admin::init();
+sem_author_image_admin::init();
 
 
 

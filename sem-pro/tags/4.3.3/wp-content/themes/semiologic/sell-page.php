@@ -11,7 +11,7 @@
 
 
 /*
-Template Name: Sell Page Template
+Template Name: Sales Page Template
 */
 
 do_action('setup_template', 'sell_page');

@@ -56,6 +56,7 @@ function wiz_autoinstall_pro()
 				'singular.php',
 				'sitemap.php',
 				'translator.php',
+				'url-absolutifier.php',
 				'wppaypal.php',
 				'ylsy_permalink_redirect.php'
 		);
@@ -179,9 +180,11 @@ http://blogsearch.google.com/ping/RPC2
 
 		$role = get_role('administrator');
 
-		$role->remove_cap('edit_files');
-		$role->remove_cap('edit_themes');
-		$role->remove_cap('edit_plugins');
+		$role->add_cap('edit_files', false);
+		$role->add_cap('edit_themes', false);
+		$role->add_cap('edit_plugins', false);
+
+		update_option('permalink_redirect_hostname', 1);
 	}
 } # end wiz_autoinstall_pro()
 ?>

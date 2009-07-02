@@ -20,7 +20,7 @@
  Plugin Name: Google Sitemaps
  Plugin URI: http://www.arnebrachhold.de/2005/06/05/google-sitemaps-generator-v2-final
  Description: This generator will create a Google compliant sitemap of your WordPress blog.
- Version: 2.12 (fork)
+ Version: 2.13 (fork)
  Author: Arne Brachhold
  Author URI: http://www.arnebrachhold.de/
 
@@ -1124,6 +1124,22 @@ if(!function_exists("sm_buildSitemap")) {
 }
 #endregion
 
+function sm_update_sitemap($post_ID)
+{
+	if (wp_verify_nonce($_REQUEST['sitemap'], 'sitemap'))
+	{
+		sm_buildSitemap();
+	}
+	return ($post_ID);
+}
+
+function sitemap_admin_hook() 
+{
+	echo '<input type="hidden" name="sitemap" id="sitemap" value="' . wp_create_nonce('sitemap') . '" />';		
+}
+
+add_action('edit_form_advanced', 'sitemap_admin_hook');
+
 /******** Other Stuff ********/
 
 #region Register to WordPress API
@@ -1142,13 +1158,13 @@ add_action('admin_menu', 'sm_reg_admin');
 //Only register of the SM_ACTIVE constant is defined!
 if(defined("SM_ACTIVE") && SM_ACTIVE===true) {
 	//If a new post gets published
-	add_action('publish_post', 'sm_buildSitemap');
+	add_action('publish_post', 'sm_update_sitemap');
 
 	//Existing post gets edited (published or not)
-	add_action('edit_post', 'sm_buildSitemap');
+	add_action('edit_post', 'sm_update_sitemap');
 
 	//Existing posts gets deleted (published or not)
-	add_action('delete_post', 'sm_buildSitemap');
+	add_action('delete_post', 'sm_update_sitemap');
 }
 #endregion
 

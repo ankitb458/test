@@ -1,7 +1,7 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1.1 - Thu 28 Dec 2006
+Version 1.1.3b1 - Mon 21 May 2007
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -155,7 +155,7 @@ perform the conversion to HTML. You can update PHP Markdown -- or
 replace it with PHP Markdown Extra -- in many of these programs by 
 swapping the old "markdown.php" file for the new one.
 
-Here is a short non-exaustive list of some programs and where they 
+Here is a short non-exhaustive list of some programs and where they 
 hide the "markdown.php" file.
 
 | Program   | Path to Markdown
@@ -206,6 +206,129 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.1.3 (3 Jul 2007):
+
+*	Fixed a performance problem when parsing some invalid HTML as an HTML 
+	block which was resulting in too much recusion and a segmentation fault 
+	for long documents.
+
+*	The markdown="" attribute now accepts unquoted values.
+
+*	Fixed an issue where underscore-emphasis didn't work when applied on the 
+	first or the last word of an element having the markdown="1" or 
+	markdown="span" attribute set unless there was some surrounding whitespace.
+	This didn't work:
+	
+		<p markdown="1">_Hello_ _world_</p>
+	
+	Now it does produce emphasis as expected.
+
+*	Fixed an issue preventing footnotes from working when the parser's 
+	footnote id prefix variable (fn_id_prefix) is not empty.
+
+*	Fixed a performance problem where the regular expression for strong 
+	emphasis introduced in version 1.1 could sometime be long to process, 
+	give slightly wrong results, and in some circumstances could remove 
+	entirely the content for a whole paragraph.
+
+*	Fixed an issue were abbreviations tags could be incorrectly added 
+	inside URLs and title of links.
+
+*	Placing footnote markers inside a link, resulting in two nested links, is 
+	no longer allowed.
+
+
+1.0.1g (3 Jul 2007):
+
+*	Fix for PHP 5 compiled without the mbstring module. Previous fix to 
+	calculate the length of UTF-8 strings in `detab` when `mb_strlen` is 
+	not available was only working with PHP 4.
+
+*	Fixed a problem with WordPress 2.x where full-content posts in RSS feeds 
+	were not processed correctly by Markdown.
+
+*	Now supports URLs containing literal parentheses for inline links 
+	and images, such as:
+
+		[WIMP](http://en.wikipedia.org/wiki/WIMP_(computing))
+
+	Such parentheses may be arbitrarily nested, but must be
+	balanced. Unbalenced parentheses are allowed however when the URL 
+	when escaped or when the URL is enclosed in angle brakets `<>`.
+
+*	Fixed a performance problem where the regular expression for strong 
+	emphasis introduced in version 1.0.1d could sometime be long to process, 
+	give slightly wrong results, and in some circumstances could remove 
+	entirely the content for a whole paragraph.
+
+*	Some change in version 1.0.1d made possible the incorrect nesting of 
+	anchors within each other. This is now fixed.
+
+*	Fixed a rare issue where certain MD5 hashes in the content could
+	be changed to their corresponding text. For instance, this:
+
+		The MD5 value for "+" is "26b17225b626fb9238849fd60eabdf60".
+	
+	was incorrectly changed to this in previous versions of PHP Markdown:
+
+		<p>The MD5 value for "+" is "+".</p>
+
+*	Now convert escaped characters to their numeric character 
+	references equivalent.
+	
+	This fix an integration issue with SmartyPants and backslash escapes. 
+	Since Markdown and SmartyPants have some escapable characters in common, 
+	it was sometime necessary to escape them twice. Previously, two 
+	backslashes were sometime required to prevent Markdown from "eating" the 
+	backslash before SmartyPants sees it:
+	
+		Here are two hyphens: \\--
+	
+	Now, only one backslash will do:
+	
+		Here are two hyphens: \--
+
+
+Extra 1.1.2 (7 Feb 2007)
+
+*	Fixed an issue where headers preceded too closely by a paragraph 
+	(with no blank line separating them) where put inside the paragraph.
+
+*	Added the missing TextileRestricted method that was added to regular
+	PHP Markdown since 1.0.1d but which I forgot to add to Extra.
+
+
+1.0.1f (7 Feb 2007):
+
+*	Fixed an issue with WordPress where manually-entered excerpts, but 
+	not the auto-generated ones, would contain nested paragraphs.
+
+*	Fixed an issue introduced in 1.0.1d where headers and blockquotes 
+	preceded too closely by a paragraph (not separated by a blank line) 
+	where incorrectly put inside the paragraph.
+
+*	Fixed an issue introduced in 1.0.1d in the tokenizeHTML method where 
+	two consecutive code spans would be merged into one when together they 
+	form a valid tag in a multiline paragraph.
+
+*	Fixed an long-prevailing issue where blank lines in code blocks would 
+	be doubled when the code block is in a list item.
+	
+	This was due to the list processing functions relying on artificially 
+	doubled blank lines to correctly determine when list items should 
+	contain block-level content. The list item processing model was thus 
+	changed to avoid the need for double blank lines.
+
+*	Fixed an issue with `<% asp-style %>` instructions used as inline 
+	content where the opening `<` was encoded as `&lt;`.
+
+*	Fixed a parse error occuring when PHP is configured to accept 
+	ASP-style delimiters as boundaries for PHP scripts.
+
+*	Fixed a bug introduced in 1.0.1d where underscores in automatic links
+	got swapped with emphasis tags.
+
 
 Extra 1.1.1 (28 Dec 2006)
 
@@ -409,7 +532,7 @@ Extra 1.0b2 - 26 July 2005
 
 *   Added the pipe character to the backlash escape character lists.
 
-1.0b1 (25 Jun 2005)
+Extra 1.0b1 (25 Jun 2005)
 
 *   First public release of PHP Markdown Extra.
 

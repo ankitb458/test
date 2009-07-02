@@ -4,7 +4,7 @@ Plugin Name: External Links
 Plugin URI: http://www.semiologic.com/software/publishing/external-links/
 Description: Adds a class=&quot;external&quot; to all outbound links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the feature.
 Author: Denis de Bernardy
-Version: 2.9
+Version: 2.10
 Author URI: http://www.semiologic.com
 */
 
@@ -237,7 +237,9 @@ function sem_external_links_ob()
 	}
 } # end sem_external_links_ob()
 
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
+if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false
+	&& strpos($_SERVER['REQUEST_URI'], 'wp-includes') === false
+	)
 {
 	add_action('init', 'sem_external_links_ob');
 }
@@ -401,4 +403,16 @@ function sem_external_links_callback($input)
 
 	return $link;
 } # end sem_external_links_callback()
+
+
+#
+# sem_external_links_kill_gzip()
+#
+
+function sem_external_links_kill_gzip($bool)
+{
+	return 0;
+} # sem_external_links_kill_gzip()
+
+add_filter('option_gzipcompression', 'sem_external_links_kill_gzip');
 ?>

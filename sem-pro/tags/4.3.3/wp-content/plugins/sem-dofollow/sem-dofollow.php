@@ -4,7 +4,7 @@ Plugin Name: Dofollow
 Plugin URI: http://www.semiologic.com/software/wp-fixes/dofollow/
 Description: Disables the rel=nofollow attribute in comments.
 Author: Denis de Bernardy
-Version: 2.0
+Version: 2.1
 Author URI: http://www.semiologic.com
 */
 
@@ -27,42 +27,60 @@ Hat tips
 class sem_dofollow
 {
 	#
-	# Variables
+	# init()
 	#
 
-
-	#
-	# Constructor
-	#
-
-	function sem_dofollow()
+	function init()
 	{
 		if ( !strpos($_SERVER['REQUEST_URI'], 'wp-admin') )
 		{
 			remove_filter('pre_comment_content', 'wp_rel_nofollow');
-			add_filter('get_comment_author_link', array(&$this, 'strip_nofollow'), 15);
-			add_filter('comment_text', array(&$this, 'strip_nofollow'), 15);
+			add_filter('get_comment_author_link', array('sem_dofollow', 'strip_nofollow'), 15);
+			add_filter('comment_text', array('sem_dofollow', 'strip_nofollow'), 15);
 		}
-	} # end sem_dofollow()
+	} # end init()
 
 
 	#
-	# process
+	# strip_nofollow()
 	#
 
 	function strip_nofollow($text = '')
 	{
 		# strip nofollow, even as rel="tag nofollow"
 
-		$text = preg_replace("/(<a [^>]*( |\t|\n)rel=)('|\")(([^\3]*( [^ \3]*)*) )?nofollow/", "$1$3$5", $text);
+		$text = preg_replace(
+				"/
+					(<a)
+					(\s[^>]+)?
+					(
+						\s
+						rel=
+						('|\")
+						([^\4]*\s)?
+					)
+						nofollow
+				/isUx",
+				"$1$2$3",
+				$text
+				);
 
 		# clean up rel=""
 
-		$text = preg_replace("/(<a [^>]*)( |\t|\n)rel=(''|\"\")([^>]*>)/", "$1$4", $text);
+		$text = preg_replace(
+				"/
+					(<a [^>]*)
+					( |\t|\n)
+					rel=(''|\"\")
+					([^>]*>)
+				/isUx",
+				"$1$4",
+				$text
+				);
 
 		return $text;
-	} # end process()
+	} # end strip_nofollow()
 } # end sem_dofollow
 
-$sem_dofollow =& new sem_dofollow();
+sem_dofollow::init();
 ?>

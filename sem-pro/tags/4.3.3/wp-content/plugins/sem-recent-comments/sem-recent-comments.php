@@ -4,7 +4,7 @@ Plugin Name: Fuzzy Recent Comments
 Plugin URI: http://www.semiologic.com/software/widgets/recent-comments/
 Description: A WordPress widget that lists a fuzzy number of recently commented entries.
 Author: Denis de Bernardy
-Version: 4.14
+Version: 4.15
 Author URI: http://www.semiologic.com
 */
 
@@ -110,9 +110,7 @@ class sem_recent_comments
 
 		add_action('admin_menu', array(&$this, 'add2admin_menu'));
 
-		add_action('publish_post', array(&$this, 'flush_cache'), 0);
 		add_action('save_post', array(&$this, 'flush_cache'), 0);
-		add_action('edit_post', array(&$this, 'flush_cache'), 0);
 		add_action('delete_post', array(&$this, 'flush_cache'), 0);
 		add_action('publish_phone', array(&$this, 'flush_cache'), 0);
 		add_action('comment_post', array(&$this, 'flush_cache'), 0);
@@ -157,17 +155,11 @@ class sem_recent_comments
 	{
 		if ( is_writable(sem_cache_path) )
 		{
-			$cache_files = glob(sem_cache_path . "*");
+			$cache_files = glob(sem_cache_path . "sem-recent-comments*");
 
-			if ( $cache_files )
+			foreach ( (array) $cache_files as $cache_file )
 			{
-				foreach ( $cache_files as $cache_file )
-				{
-					if ( is_file($cache_file) && is_writable($cache_file) )
-					{
-						unlink( $cache_file );
-					}
-				}
+				@unlink( $cache_file );
 			}
 		}
 	} # end flush_cache()

@@ -846,6 +846,7 @@ function wp_widget_rss($args, $number = 1) {
 	$url = $options[$number]['url'];
 	while ( strstr($url, 'http') != $url )
 		$url = substr($url, 1);
+	$url = html_entity_decode($url);
 	if ( empty($url) )
 		return;
 	$rss = fetch_rss($url);

@@ -38,7 +38,8 @@ class bookmark_me_admin
 		$options = array(
 			'services' => $_POST['sites'],
 			'show_names' => isset($_POST['show_names']),
-			'add_nofollow' => isset($_POST['add_nofollow'])
+			'add_nofollow' => isset($_POST['add_nofollow']),
+			'show_title' => isset($_POST['show_title'])
 			);
 
 		update_option('sem_bookmark_me_params', $options);
@@ -85,11 +86,29 @@ class bookmark_me_admin
 		{
 			$options = array(
 				'services' => bookmark_me::default_services(),
-				'show_names' => true
+				'show_names' => true,
+				'add_nofollow' => true,
+				'show_title' => true
 				);
 			update_option('sem_bookmark_me_params', $options);
 		}
 
+
+		if ( sem_pro )
+		{
+			echo '<p><label for="show_title">'
+				. '<input type="checkbox"'
+					. ' id="show_title" name="show_title"'
+					. ( ( !isset($options['show_title']) || $options['show_title'] )
+					? ' checked="checked"'
+					: ''
+					)
+					. ' />'
+				. '&nbsp;'
+				. __('Display Spread the word')
+				. '</label>'
+				. '</p>';
+		}
 
 		echo '<p><label for="show_names">'
 			. '<input type="checkbox"'

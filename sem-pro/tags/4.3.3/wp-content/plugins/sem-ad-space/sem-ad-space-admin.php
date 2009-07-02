@@ -208,9 +208,7 @@ class sem_ad_space
 		}
 		*/
 
-		add_action('publish_post', array(&$this, 'update_post'));
 		add_action('save_post', array(&$this, 'update_post'));
-		add_action('edit_post', array(&$this, 'update_post'));
 
 		add_action('init', array(&$this, 'setup_admin_editor'));
 
@@ -1095,15 +1093,21 @@ function ad_block_defaults()
 
 	function update_post($post_ID)
 	{
-		delete_post_meta($post_ID, '_ad_distribution');
 
-		$value = htmlspecialchars($_POST['sem_ad_distribution'], ENT_QUOTES);
-
-		if ( $value !== '' )
+		if (wp_verify_nonce($_REQUEST['sem-ad-spaces'], 'sem-ad-spaces'))
 		{
-			add_post_meta($post_ID, '_ad_distribution', $value, true);
-		}
+			delete_post_meta($post_ID, '_ad_distribution');
 
+			$value = htmlspecialchars($_POST['sem_ad_distribution'], ENT_QUOTES);
+
+			if ( $value !== '' )
+			{
+				add_post_meta($post_ID, '_ad_distribution', $value, true);
+			}
+
+			#var_dump($post_ID, $value);
+			#die;
+		}
 		return $post_ID;
 	} # end update_post()
 
@@ -2088,7 +2092,7 @@ function ad_block_defaults()
 
 		$sem_ad_distribution = get_post_meta($post_ID, '_ad_distribution', true);
 
-		if ( !isset($sem_ad_distribution) || !$sem_ad_distribution )
+		if ( !isset($sem_ad_distribution) || $sem_ad_distribution === false )
 		{
 			$sem_ad_distribution = '';
 		}
@@ -2162,6 +2166,8 @@ function ad_block_defaults()
 
 		echo '</div>'
 			. '</div>';
+
+		echo '<input type="hidden" name="sem-ad-spaces" id="sem-ad-spaces" value="' . wp_create_nonce('sem-ad-spaces') . '" />';
 
 		echo "</fieldset>\n";
 
@@ -2288,13 +2294,13 @@ document.getElementById('ed_toolbar').innerHTML
 			foreach ( $ad_blocks as $ad_block )
 			{
 				$js_options .= ( $js_options ? ', ' : '' )
-					. "'"
+					. "\""
 					. str_replace(
 						array("<", ">", "\"", "\r"),
 						array("&lt;", "&gt;", "&quot;", ""),
 						stripslashes($ad_block->ad_block_name)
 						)
-					. "'";
+					. "\"";
 			}
 		}
 ?><script type="text/javascript">

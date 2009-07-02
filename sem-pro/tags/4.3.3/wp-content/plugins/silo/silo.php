@@ -2,9 +2,9 @@
 /*
 Plugin Name: Silo Web Design
 Plugin URI: http://www.semiologic.com/software/widgets/silo/
-Description: <a href="http://www.seo2020.com/promo.html">Silo functionalities</a> for sites built using static pages.
+Description: <a href="http://www.seo2020.com/promo.html">Silo web design</a> tools for sites built using static pages.
 Author: Denis de Bernardy
-Version: 1.2
+Version: 1.4
 Author URI: http://www.semiologic.com
 */
 

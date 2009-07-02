@@ -18,6 +18,7 @@ class silo_admin
 	function init()
 	{
 		add_action('save_post', array('silo_admin', 'flush_cache'));
+		add_action('delete_post', array('silo_admin', 'flush_cache'));		
 		add_action('plugins_loaded', array('silo_admin', 'widgetize'));
 	} # init()
 
@@ -57,6 +58,8 @@ class silo_admin
 				$options = $new_options;
 
 				update_option('silo_options', $options);
+				
+				silo_admin::flush_cache(0);
 			}
 		}
 		elseif ( $options === false )

@@ -147,13 +147,13 @@ else
 {
 ?>
 <p><label for="author"><?php echo get_caption('name_field'); if ($req) echo ' ' . get_caption('required_field'); ?>:</label><br />
-<input type="text" name="author" id="author" value="<?php echo $comment_author; ?>" /></p>
+<input type="text" name="author" id="author" tabindex="1" value="<?php echo $comment_author; ?>" /></p>
 
 <p><label for="email"><?php echo get_caption('email_field');  if ($req) echo ' ' . get_caption('required_field'); ?>:</label><br />
-<input type="text" name="email" id="email" value="<?php echo $comment_author_email; ?>" /></p>
+<input type="text" name="email" id="email" tabindex="2" value="<?php echo $comment_author_email; ?>" /></p>
 
 <p><label for="url"><?php echo get_caption('website_field'); ?>:</label><br />
-<input type="text" name="url" id="url" value="<?php echo $comment_author_url; ?>" /></p>
+<input type="text" name="url" id="url" tabindex="3" value="<?php echo $comment_author_url; ?>" /></p>
 
 <?php
 } # if ( $user_ID )

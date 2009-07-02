@@ -445,7 +445,7 @@ function newsletter_widget_control()
 	<input type="radio"
 	id="sem_newsletter_add_subscribe_no" name="sem_newsletter_add_subscribe"
 	value="0"
-	<?php echo ( $options['add_subscribe'] === false ) ? 'checked="checked"' : ''; ?>	/>&nbsp;<?php echo __('list@domain.com'); ?></label><br />
+	<?php echo ( $options['add_subscribe'] === false ) ? 'checked="checked"' : ''; ?>	/>&nbsp;<?php echo __('list@domain.com (<i>e.g.</i> <a href="http://www.semiologic.com/go/1shoppingcart">1ShoppingCart</a>)'); ?></label><br />
 <label for="sem_newsletter_add_subscribe_aweber">
 	<input type="radio"
 	id="sem_newsletter_add_subscribe_aweber" name="sem_newsletter_add_subscribe"

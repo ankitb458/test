@@ -6,15 +6,7 @@
 
 function setup_template($template)
 {
-	switch ( $template )
-	{
-	case 'article':
-	case 'archives':
-	case 'links':
-	case 'sell_page':
-		do_action('setup_default_advanced_template');
-		break;
-	}
+	do_action('setup_default_advanced_template');
 } # end setup_template()
 
 add_action('setup_template', 'setup_template');

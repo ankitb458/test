@@ -18,7 +18,7 @@ class header
 
 	function get_header()
 	{
-		if ( defined('sem_theme_header') )
+		if ( !is_admin() && defined('sem_theme_header') )
 		{
 			return sem_theme_header;
 		}
@@ -30,9 +30,20 @@ class header
 			header::upgrade();
 		}
 
-		if ( $header = glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		if ( is_single() || is_page()
+		|| class_exists('sem_static_front') && sem_static_front::is_home() )
 		{
-			$header = end($header);
+			$post_ID = $GLOBALS['posts'][0]->ID;
+		}
+
+		if ( $post_ID
+			&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) ) )
+		{
+			$header = current($header);
+		}
+		elseif ( $header = glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		{
+			$header = current($header);
 
 			$header_name = basename($header);
 
@@ -43,21 +54,33 @@ class header
 			{
 			case 'header':
 			case 'header-background':
-				add_filter('header_mode', array('header', 'force_header_mode'));
+				if ( $GLOBALS['semiologic']['header']['mode'] != 'header' )
+				{
+					$GLOBALS['semiologic']['header']['mode'] = 'header';
+					update_option('semiologic', $GLOBALS['semiologic']);
+				}
 				break;
 
 			case 'header-bg':
-				add_filter('header_mode', array('header', 'force_background_mode'));
+				if ( $GLOBALS['semiologic']['header']['mode'] != 'background' )
+				{
+					$GLOBALS['semiologic']['header']['mode'] = 'background';
+					update_option('semiologic', $GLOBALS['semiologic']);
+				}
 				break;
 
 			case 'logo':
-				add_filter('header_mode', array('header', 'force_logo_mode'));
+				if ( $GLOBALS['semiologic']['header']['mode'] != 'logo' )
+				{
+					$GLOBALS['semiologic']['header']['mode'] = 'logo';
+					update_option('semiologic', $GLOBALS['semiologic']);
+				}
 				break;
 			}
 		}
-		elseif ( $header = glob(ABSPATH . 'wp-content/header/header.{jpg,png,gif,swf}', GLOB_BRACE) )
+		elseif ( $header = glob(ABSPATH . 'wp-content/header/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) )
 		{
-			$header = end($header);
+			$header = current($header);
 		}
 		else
 		{
@@ -80,7 +103,7 @@ class header
 
 		if ( header::get_header() )
 		{
-			switch ( apply_filters('header_mode', $GLOBALS['semiologic']['header']['mode']) )
+			switch ( $GLOBALS['semiologic']['header']['mode'] )
 			{
 			case 'header':
 			case 'background':
@@ -95,36 +118,6 @@ class header
 
 		return $class;
 	} # get_class()
-
-
-	#
-	# force_header_mode()
-	#
-
-	function force_header_mode($in)
-	{
-		return 'header';
-	} # force_header_mode()
-
-
-	#
-	# force_background_mode()
-	#
-
-	function force_background_mode($in)
-	{
-		return 'background';
-	} # force_background_mode()
-
-
-	#
-	# force_logo_mode()
-	#
-
-	function force_logo_mode($in)
-	{
-		return 'logo';
-	} # force_logo_mode()
 
 
 	#
@@ -262,7 +255,7 @@ class header
 
 		if ( $header )
 		{
-			$id = md5($header);
+			$id = 'h' . md5($header);
 			$site_url = trailingslashit(get_option('siteurl'));
 
 			list($width, $height) = getimagesize($header);
@@ -291,7 +284,7 @@ class header
 			preg_match("/\.([^\.]+)$/", $header, $ext);
 			$ext = end($ext);
 
-			switch ( apply_filters('header_mode', $GLOBALS['semiologic']['header']['mode']) )
+			switch ( $GLOBALS['semiologic']['header']['mode'] )
 			{
 			case 'logo':
 				remove_action('display_sitename', 'display_sitename');
@@ -392,7 +385,7 @@ add_action('display_tagline', 'display_tagline');
 function enhance_header_div()
 {
 ?>	style="cursor: pointer;"
-	onclick="top.location.href = '<?php bloginfo('url'); ?>'"
+	onclick="top.location.href = '<?php echo trailingslashit(get_settings('home')); ?>'"
 <?php
 } # end enhance_header_div()
 
@@ -505,6 +498,9 @@ function display_header_css($header)
 	background-image: url(<?php echo str_replace(ABSPATH, $site_url, $header); ?>);
 	background-repeat: no-repeat;
 	height: <?php echo $height; ?>px;
+	border: 0px;
+	overflow: hidden;
+	position: relative;
 }
 </style>
 <?php
@@ -527,6 +523,9 @@ function display_header_background_css($header)
 	background-image: url(<?php echo str_replace(ABSPATH, $site_url, $header); ?>);
 	background-repeat: repeat-x;
 	height: <?php echo $height; ?>px;
+	border: 0px;
+	overflow: hidden;
+	position: relative;
 }
 </style>
 <?php

@@ -4,7 +4,7 @@ Plugin Name: Opt-in Front Page
 Plugin URI: http://www.semiologic.com/software/publishing/opt-in-front/
 Description: Restricts the access to your front page on an opt-in basis: Only posts within the category with a slug of 'blog' will be displayed on your front page. <a href="?action=autoinstall_opt_in_front">Autoinstall</a> (creates a Blog category and puts every post in it)
 Author: Denis de Bernardy
-Version: 2.9
+Version: 2.10
 Author URI: http://www.semiologic.com
 */
 
@@ -73,9 +73,7 @@ class sem_opt_in_front
 		add_filter('category_link', array(&$this, 'change_permalink'), 10, 2);
 		add_filter('list_cats_exclusions', array(&$this, 'hide_main_cat'));
 
-		add_action('publish_post', array(&$this, 'flush_cache'), 0);
 		add_action('save_post', array(&$this, 'flush_cache'), 0);
-		add_action('edit_post', array(&$this, 'flush_cache'), 0);
 		add_action('delete_post', array(&$this, 'flush_cache'), 0);
 		add_action('publish_phone', array(&$this, 'flush_cache'), 0);
 		add_action('add_category', array(&$this, 'flush_cache'), 0);

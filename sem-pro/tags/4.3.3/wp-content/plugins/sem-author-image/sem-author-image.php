@@ -4,7 +4,7 @@ Plugin Name: Author Image
 Plugin URI: http://www.semiologic.com/software/publishing/author-image/
 Description: Adds the authors images to your site, which individual users can configure in their profile. Your wp-content folder needs to be writable by the server.
 Author: Denis de Bernardy
-Version: 2.0
+Version: 2.1
 Author URI: http://www.semiologic.com
 */
 
@@ -18,7 +18,7 @@ http://www.semiologic.com/legal/license/
 **/
 
 
-class author_image
+class sem_author_image
 {
 	#
 	# get()
@@ -28,25 +28,34 @@ class author_image
 	{
 		$author_id = get_the_author_login();
 
-		if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '.{jpg,png}', GLOB_BRACE) )
+		if ( !isset($GLOBALS['author_image_cache'][$author_id]) )
 		{
-			$image = end($image);
+			if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,png}', GLOB_BRACE) )
+			{
+				$image = current($image);
+			}
+			else
+			{
+				$image = false;
+			}
+
+			$GLOBALS['author_image_cache'][$author_id] = $image;
 		}
 
-		if ( $image )
+		if ( $GLOBALS['author_image_cache'][$author_id] )
 		{
 			$site_url = trailingslashit(get_option('siteurl'));
 
 			return '<div class="entry_author_image">'
 				. '<img src="'
-						. str_replace(ABSPATH, $site_url, $image)
+						. str_replace(ABSPATH, $site_url, $GLOBALS['author_image_cache'][$author_id])
 						. '"'
 					. ' alt=""'
 					. ' />'
 				. '</div>';
 		}
 	} # get()
-} # author_image
+} # sem_author_image
 
 
 #
@@ -55,7 +64,7 @@ class author_image
 
 function the_author_image()
 {
-	echo author_image::get();
+	echo sem_author_image::get();
 } # end the_author_image()
 
 

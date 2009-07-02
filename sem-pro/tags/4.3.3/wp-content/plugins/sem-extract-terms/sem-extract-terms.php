@@ -73,7 +73,7 @@ class sem_extract_terms
 			{
 				if ( ( filemtime($cache_file) + sem_cache_long_timeout ) < time() )
 				{
-					unlink($cache_file);
+					@unlink($cache_file);
 				}
 			}
 

@@ -273,9 +273,7 @@ function regen_theme_nav_menu_cache()
 	$GLOBALS['semiologic'] = $options;
 } # end regen_theme_nav_menu_cache()
 
-add_action('publish_post', 'regen_theme_nav_menu_cache', 0);
 add_action('save_post', 'regen_theme_nav_menu_cache', 0);
-add_action('edit_post', 'regen_theme_nav_menu_cache', 0);
 add_action('delete_post', 'regen_theme_nav_menu_cache', 0);
 add_action('publish_phone', 'regen_theme_nav_menu_cache', 0);
 add_action('add_category', 'regen_theme_nav_menu_cache', 0);

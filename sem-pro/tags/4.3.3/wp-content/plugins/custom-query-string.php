@@ -2,7 +2,7 @@
 
 /* <WP plugin data>
  * Plugin Name:   Custom Query String
- * Version:       2.8 (fork)
+ * Version:       2.9 (fork)
  * Plugin URI:    http://mattread.com/projects/wp-plugins/custom-query-string-plugin/
  * Description:   Change the number of posts displayed when viewing different archive pages.
  * Author:        Matt Read
@@ -48,7 +48,7 @@ endif;
 
 
 # define the current verion
-define('k_CQS_VER', '2.7');
+define('k_CQS_VER', '2.9');
 
 class cqs
 {
@@ -61,9 +61,9 @@ class cqs
 	var $options = array();
 	var $option = array();
 
-	var $what_to_shows = array('posts', 'days');
-	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_date', 'is_year', 'is_month', 'is_day', 'is_time', 'is_search', 'is_home', 'is_paged', 'is_feed');
-	var $orderbys = array('date','category','title','author');
+//	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_date', 'is_year', 'is_month', 'is_day', 'is_time', 'is_search', 'is_home', 'is_paged', 'is_feed');
+	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_feed', 'is_home', 'is_paged', 'is_search');
+	var $orderbys = array('date', 'category', 'title', 'author', 'modified');
 	var $orders = array('DESC', 'ASC');
 
 	var $request = array();
@@ -122,7 +122,6 @@ class cqs
 		if ( $this->option ) {
 			$custom_query_string = array(
 				'posts_per_page' => $this->option['posts_per_page'],
-				'what_to_show'   => $this->option['what_to_show'],
 				'orderby'        => $this->option['orderby'],
 				'order'          => $this->option['order']
 				);
@@ -208,7 +207,7 @@ class cqs
 			elseif ($wp_query->is_category AND $this->options['is_category'])
 				$this->query = 'is_category';
 
-			elseif ($wp_query->is_date)
+/*			elseif ($wp_query->is_date)
 			{
 				if ($wp_query->is_time AND $this->options['is_time'])
 					$this->query = 'is_time';
@@ -225,7 +224,7 @@ class cqs
 				elseif ($this->options['is_date'])
 					$this->query = 'is_date';
 			}
-			elseif ($this->options['is_archive'])
+*/			elseif ($this->options['is_archive'])
 				$this->query = 'is_archive';
 		}
 		elseif ($wp_query->is_search AND $this->options['is_search'])
@@ -319,7 +318,6 @@ class cqs
 			$cqs_new_options = array(
 				'cat_'. $_REQUEST['cat'] => array(
 					'posts_per_page' => intval($this->request['category']['posts_per_page']),
-					'what_to_show'   => ( in_array($this->request['category']['what_to_show'], $this->what_to_shows) ? $this->request['category']['what_to_show'] : $this->what_to_shows[0] ),
 					'orderby'        => ( in_array($this->request['category']['orderby'], $this->orderbys) ? $this->request['category']['orderby'] : $this->orderbys[0] ),
 					'order'          => ( in_array($this->request['category']['order'], $this->orders) ? $this->request['category']['order'] : $this->orders[0] )
 				));
@@ -328,10 +326,10 @@ class cqs
 			$cqs_new_options = array(
 				$this->request['condition'] => array(
 					'posts_per_page' => intval($this->request['posts_per_page']),
-					'what_to_show'   => ( in_array($this->request['category']['what_to_show'], $this->what_to_shows) ? $this->request['category']['what_to_show'] : $this->what_to_shows[0] ),
-					'orderby'        => ( in_array($this->request['category']['orderby'], $this->orderbys) ? $this->request['category']['orderby'] : $this->orderbys[0] ),
-					'order'          => ( in_array($this->request['category']['order'], $this->orders) ? $this->request['category']['order'] : $this->orders[0] )
-				));
+					'orderby'        => $this->request['orderby'],
+					'order'          => $this->request['order']
+				)
+			);
 		}
 		$this->options = array_merge($this->options, $cqs_new_options);
 		update_option('cqs_options', $this->options);
@@ -431,8 +429,8 @@ class cqs
 			<td><strong><?php echo $display_condition; ?></strong></td>
 
 			<td><?php
-			$string = __('Show <strong>%posts_per_page% %what_to_show%</strong> per page, ordered by %orderby% %order%', 'cqs');
-			echo str_replace(array('%posts_per_page%', '%what_to_show%', '%orderby%', '%order%'), array($cqs_option['posts_per_page'], $cqs_option['what_to_show'], $cqs_option['orderby'], $cqs_option['order']), $string);
+			$string = __('Show <strong>%posts_per_page%</strong> posts per page, ordered by <strong>%orderby% %order%</strong>', 'cqs');
+			echo str_replace(array('%posts_per_page%', '%orderby%', '%order%'), array($cqs_option['posts_per_page'], $cqs_option['orderby'], ($cqs_option['order'] == 'DESC' ? 'descending' : 'ascending')), $string);
 			?></td>
 		</tr>
 
@@ -477,12 +475,7 @@ class cqs
 
 				<td>
 				<input type="text" name="cqs[posts_per_page]" size="3" />
-				<select name="cqs[what_to_show]">
-				<?php
-				foreach ($this->what_to_shows as $what_to_show) {
-					echo "<option>$what_to_show</option>";
-				}
-				?>
+				<label> posts</label>
 				</select>
 				</td>
 
@@ -516,12 +509,7 @@ class cqs
 
 				<td>
 				<input type="text" name="cqs[category][posts_per_page]" size="3" />
-				<select name="cqs[category][what_to_show]">
-				<?php
-				foreach ($this->what_to_shows as $what_to_show) {
-					echo "<option>$what_to_show</option>";
-				}
-				?>
+				<label> posts</label>
 				</select>
 				</td>
 

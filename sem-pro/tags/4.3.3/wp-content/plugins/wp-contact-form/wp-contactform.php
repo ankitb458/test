@@ -5,7 +5,7 @@ Plugin URI: http://chip.cuccio.us/projects/contact-form-II/
 Description: Contact Form ][ is a drop-in form that allows site visitors to contact you. It can be implemented easily (via QuickTags) within any post or page.  This version is *specifically* for WordPress 2.0 only.  Original code derived from Ryan Duff's WP-ContactForm plugin.
 Author: Chip Cuccio
 Author URI: http://chip.cuccio.us
-Version: 2.7 (fork)
+Version: 2.9 (fork)
 */
 
 load_plugin_textdomain('wpcf'); // NLS
@@ -14,13 +14,13 @@ add_option('wpcf_require_phone', 0);
 #var_dump(get_option('wpcf_require_phone'));
 /* Declare strings that change depending on input. This also resets them so errors clear on resubmission. */
 $wpcf_strings = array(
-    'name' => '<input class="field" type="text" name="wpcf_your_name" id="wpcf_your_name" size="30" maxlength="50" value="' . $_POST['wpcf_your_name'] . '" />',
-    'email' => '<input class="field" type="text" name="wpcf_email" id="wpcf_email" size="30" maxlength="50" value="' . $_POST['wpcf_email'] . '" />',
-    'phone' => '<input class="field" type="text" name="wpcf_phone" id="wpcf_phone" size="30" maxlength="50" value="' . $_POST['wpcf_phone'] . '" />',
-    'tz' => '<input class="field" type="text" name="wpcf_tz" id="wpcf_tz" size="30" maxlength="50" value="' . $_POST['wpcf_tz'] . '" />',
-    'subject' => '<input class="field" type="text" name="wpcf_subject" id="wpcf_subject" size="30" maxlength="50" value="' .$_POST['wpcf_subject'] . '" />',
-    'msg' => '<textarea class="field" name="wpcf_msg" id="wpcf_msg" cols="'.get_option('wpcf_textarea_cols').'" rows="'.get_option('wpcf_textarea_rows').'" >' . $_POST['wpcf_msg'] . '</textarea>',
-    'carbon_copy' => '<input type="checkbox" name="carbon_copy" value="true" />',
+    'name' => '<input class="field" type="text" name="wpcf_your_name" id="wpcf_your_name" tabindex="1" size="30" maxlength="50" value="' . $_POST['wpcf_your_name'] . '" />',
+    'email' => '<input class="field" type="text" name="wpcf_email" id="wpcf_email" tabindex="2" size="30" maxlength="50" value="' . $_POST['wpcf_email'] . '" />',
+    'phone' => '<input class="field" type="text" name="wpcf_phone" id="wpcf_phone" tabindex="3" size="30" maxlength="50" value="' . $_POST['wpcf_phone'] . '" />',
+    'tz' => '<input class="field" type="text" name="wpcf_tz" id="wpcf_tz" tabindex="4" size="30" maxlength="50" value="' . $_POST['wpcf_tz'] . '" />',
+    'subject' => '<input class="field" type="text" name="wpcf_subject" id="wpcf_subject" tabindex="5" size="30" maxlength="50" value="' .$_POST['wpcf_subject'] . '" />',
+    'msg' => '<textarea class="field" name="wpcf_msg" id="wpcf_msg" tabindex="6" cols="'.get_option('wpcf_textarea_cols').'" rows="'.get_option('wpcf_textarea_rows').'" >' . $_POST['wpcf_msg'] . '</textarea>',
+    'carbon_copy' => '<input type="checkbox" name="carbon_copy" value="true" tabindex="7" />',
     'error' => '');
 
 /*
@@ -239,11 +239,12 @@ function wpcf_callback( $content )
                 <p><label for="wpcf_subject">' . __('Subject:', 'wpcf') . ' ' . __('(required)') . '</label><br />' . $wpcf_strings['subject'] . '</p>
                 <div><label for="wpcf_msg">' . __('Your Message: ', 'wpcf') . '</label><br />' . $wpcf_strings['msg'] . '</div>
                 <p><label for="carbon_copy">'. $wpcf_strings['carbon_copy'] . '&nbsp;' .__('Send a copy to yourself?', 'wpcf') . '</label></p>
-                <p style="text-align: right"><input type="submit" name="Submit" value="Send Message" /><input type="hidden" name="wpcf_stage" value="process" /></p>
+                <p style="text-align: right"><input type="submit" name="Submit" value="Send Message" tabindex="8" /><input type="hidden" name="wpcf_stage" value="process" /></p>
             </form>
         </div>
         <div style="clear:both; height:1px;">&nbsp;</div>'
         . $wpcf_strings['error'];
+
         return str_replace('[CONTACT-FORM]', $form, $content);
     }
 }
@@ -285,12 +286,27 @@ function wpcf_add_options_page()
 		add_options_page('Contact&nbsp;Form', 'Contact&nbsp;Form', 'manage_options', 'wp-contact-form/options-contactform.php');
 	}
 
+
+function wpcf_addjs()
+{
+?>
+	<script type="text/javascript">
+		function focusit() {
+			document.getElementById('wpcf_your_name').focus();
+		}
+		window.onload = focusit;
+	</script>
+<?php
+}
+
 /* Action calls for all functions */
 
 //if(get_option('wpcf_show_quicktag') == true) {add_action('admin_footer', 'wpcf_add_quicktag');}
 
 add_action('admin_head', 'wpcf_add_options_page');
 add_filter('wp_head', 'wpcf_css');
+#add_filter('wp_head', 'wpcf_addjs');
 add_filter('the_content', 'wpcf_callback', 7);
+add_filter('widget_text', 'wpcf_callback', 7);
 
 ?>

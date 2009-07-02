@@ -10,7 +10,142 @@ class header_admin
 	{
 		add_action('admin_menu', array('header_admin', 'add_admin_page'));
 		add_action('admin_head', array('header', 'display_script'));
+
+		add_action('dbx_post_advanced', array('header_admin', 'display_header'));
+		add_action('dbx_page_advanced', array('header_admin', 'display_header'));
 	} # init()
+
+
+	#
+	# display_header()
+	#
+
+	function display_header()
+	{
+		if ( current_user_can('switch_themes') )
+		{
+			$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
+
+			#echo '<pre>';
+			#var_dump($post_ID);
+			#echo '</pre>';
+
+			echo '<div class="dbx-b-ox-wrapper">';
+
+			echo '<fieldset id="semheader" class="dbx-box">'
+				. '<div class="dbx-h-andle-wrapper">'
+				. '<h3 class="dbx-handle">' . __('Header') . '</h3>'
+				. '</div>';
+
+			echo '<div class="dbx-c-ontent-wrapper">'
+				. '<div id="semheaderstuff" class="dbx-content">';
+
+			if ( !sem_pro )
+			{
+				pro_feature_notice();
+			}
+
+			if ( $post_ID > 0
+				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,png,gif,swf}', GLOB_BRACE) )
+				)
+			{
+				$header = current($header);
+			}
+
+			if ( $header )
+			{
+				preg_match("/\.([^\.]+)$/", $header, $ext);
+				$ext = end($ext);
+
+				echo '<div style="overflow: hidden;">';
+
+				if ( $ext != 'swf' )
+				{
+					echo '<p>';
+
+					header::display_logo($header);
+
+					echo '</p>' . "\n";
+				}
+
+				else
+				{
+					header::display_flash($header);
+				}
+
+				echo '</div>';
+
+				echo '<p>';
+
+				if ( is_writable($header) )
+				{
+					echo '<label for="delete_header">'
+						. '<input type="checkbox"'
+							. ' id="delete_header" name="delete_header"'
+							. ' style="text-align: left; width: auto;"'
+							. ( !sem_pro
+								? ' disabled="disabled"'
+								: ''
+								)
+							. ' />'
+						. '&nbsp;'
+						. __('Delete header')
+						. '</label>';
+				}
+				else
+				{
+					echo __('This header is not writable by the server.');
+				}
+
+				echo '</p>' . "\n";
+			}
+
+			@mkdir(ABSPATH . 'wp-content/header');
+			@chmod(ABSPATH . 'wp-content/header', 0777);
+
+			if ( !$header
+				|| is_writable($header)
+				)
+			{
+				echo '<p>'
+					. '<label for="header_file">'
+						. __('New Header (jpg, png, gif, swf)') . ':'
+						. '</label>'
+					. '<br />' . "\n";
+
+				if ( is_writable(ABSPATH . 'wp-content/header') )
+				{
+					echo '<input type="file" style="width: 480px;"'
+						. ' id="header_file" name="header_file"'
+						. ' />' . "\n";
+				}
+				elseif ( !is_writable(ABSPATH . 'wp-content') )
+				{
+					echo __('The wp-content folder is not writeable by the server') . "\n";
+				}
+				else
+				{
+					echo __('The wp-content/headers folder is not writeable by the server') . "\n";
+				}
+
+				echo '</p>' . "\n";
+			}
+
+			echo '<p class="submit">'
+				. '<input type="button"'
+				. ' value="' . __('Save and Continue Editing') . '"'
+				. ' onclick="return form.save.click();"'
+				. ' />'
+				. '</p>';
+
+			echo '</div>';
+			echo '</div>';
+
+			echo '</fieldset>';
+
+			echo '</div>';
+		}
+	} # display_header()
 
 
 	#
@@ -98,6 +233,8 @@ class header_admin
 			{
 				header::display_flash($header);
 			}
+
+			echo '<p>';
 
 			if ( is_writable($header) )
 			{
@@ -257,7 +394,13 @@ class header_admin
 			}
 			else
 			{
-				$name = ABSPATH . 'wp-content/header/header.' . $ext;
+				$entropy = get_option('sem_entropy');
+
+				$entropy = intval($entropy) + 1;
+
+				update_option('sem_entropy', $entropy);
+
+				$name = ABSPATH . 'wp-content/header/header-' . $entropy . '.' . $ext;
 
 				@move_uploaded_file($tmp_name, $name);
 				@chmod($name, 0666);

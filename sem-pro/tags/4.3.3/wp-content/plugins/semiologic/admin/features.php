@@ -108,6 +108,9 @@ function theme_feature_is_active($feature_id)
 {
 	switch ( $feature_id )
 	{
+	case 'absolute_urls':
+		return plugin_is_active('url-absolutifier.php');
+
 	case 'ad_spaces':
 		return plugin_is_active('sem-ad-space/sem-ad-space.php');
 
@@ -399,8 +402,14 @@ function theme_feature_is_active($feature_id)
 
 function theme_feature_activate($feature_id)
 {
+	global $wpdb;
+
 	switch ( $feature_id )
 	{
+	case 'absolute_urls':
+		plugin_activate('url-absolutifier.php');
+		break;
+
 	case 'ad_spaces':
 		plugin_activate('sem-ad-space/sem-ad-space.php');
 		break;
@@ -517,6 +526,18 @@ function theme_feature_activate($feature_id)
 		plugin_activate('mycategoryorder/mycategoryorder.php');
 		plugin_activate('mylinkorder/mylinkorder.php');
 		plugin_activate('mypageorder/mypageorder.php');
+
+		$query = mysql_query("SHOW COLUMNS FROM $wpdb->categories LIKE 'cat_order'") or die(mysql_error());
+
+		if (mysql_num_rows($query) == 0) {
+			$wpdb->query("ALTER TABLE $wpdb->categories ADD `cat_order` INT( 4 ) NULL DEFAULT '0'");
+		}
+
+		$query2 = mysql_query("SHOW COLUMNS FROM $wpdb->links LIKE 'link_order'") or die(mysql_error());
+
+		if (mysql_num_rows($query2) == 0) {
+			$wpdb->query("ALTER TABLE $wpdb->links ADD `link_order` INT( 4 ) NULL DEFAULT '0'");
+		}
 		break;
 
 	case 'enforce_permalink':
@@ -617,7 +638,7 @@ function theme_feature_activate($feature_id)
 		break;
 
 	case 'more_in_feeds':
-		plugin_deactivate('wp_ozh_betterfeed.php');
+		plugin_activate('wp_ozh_betterfeed.php');
 		plugin_deactivate('full_feed.php');
 		break;
 
@@ -642,7 +663,7 @@ function theme_feature_activate($feature_id)
 		break;
 
 	case 'php_markdown':
-		plugin_activate('markdown.php');
+		plugin_activate('markdown/markdown.php');
 		break;
 
 	case 'podcasting':
@@ -800,6 +821,10 @@ function theme_feature_deactivate($feature_id)
 {
 	switch ( $feature_id )
 	{
+	case 'absolute_urls':
+		plugin_deactivate('url-absolutifier.php');
+		break;
+
 	case 'ad_spaces':
 		plugin_deactivate('sem-ad-space/sem-ad-space.php');
 		break;
@@ -1027,7 +1052,7 @@ function theme_feature_deactivate($feature_id)
 		break;
 
 	case 'php_markdown':
-		plugin_deactivate('markdown.php');
+		plugin_deactivate('markdown/markdown.php');
 		break;
 
 	case 'podcasting':

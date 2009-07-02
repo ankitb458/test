@@ -4,7 +4,7 @@ Plugin Name: Fuzzy Recent Links
 Plugin URI: http://www.semiologic.com/software/widgets/recent-links/
 Description: A WordPress widget that lists a fuzzy number of recently bookmarked links.
 Author: Denis de Bernardy
-Version: 1.7
+Version: 1.8
 Author URI: http://www.semiologic.com
 */
 
@@ -165,17 +165,11 @@ class sem_recent_links
 	{
 		if ( is_writable(sem_cache_path) )
 		{
-			$cache_files = glob(sem_cache_path . "*");
+			$cache_files = glob(sem_cache_path . "sem-recent-links*");
 
-			if ( $cache_files )
+			foreach ( (array) $cache_files as $cache_file )
 			{
-				foreach ( $cache_files as $cache_file )
-				{
-					if ( is_file($cache_file) && is_writable($cache_file) )
-					{
-						unlink( $cache_file );
-					}
-				}
+				@unlink( $cache_file );
 			}
 		}
 	} # end flush_cache()

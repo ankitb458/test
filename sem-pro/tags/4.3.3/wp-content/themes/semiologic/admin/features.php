@@ -108,6 +108,10 @@ function get_theme_features()
 					'Kill Fancy Quotes',
 					'Convert fancy quotes to normal quotes, so as to not break copy and paste of source code.'
 					),
+			'absolute_urls' => array(
+					'Absolute URLs',
+					'Convert all relative URLs in posts to absolute URLs in RSS feeds.'
+					),					
 			);
 
 	$features['WordPress Features']
@@ -194,7 +198,7 @@ function get_theme_features()
 					),
 			'recent_links' => array(
 					'Recent Links',
-					'Configure the Fuzzy Comments Widget via Options / Recent Comments.'
+					'Configure the Fuzzy Comments Widget via Options / Recent Links.'
 					),
 			'subscribe_me' => array(
 					'Feed Subscription Buttons',
@@ -363,7 +367,7 @@ function get_theme_features()
 					),
 			'social_poster' => array(
 					'Auto Social Poster',
-					'Requires the <a href="http://www.semiologic.com/go/social-poster/">Social Poster plugin</a>. Automatically add content on your site to social bookmarking sites. See also <a href="http://www.semiologic.com/go/tagandping/">Tag and Ping course</a>, by the same author.',
+					'Requires the <a href="http://www.semiologic.com/go/social-poster/">Social Poster plugin</a>. Automatically add content on your site to social bookmarking sites.',
 					!file_exists(ABSPATH . 'wp-content/plugins/social-poster') ? false : null
 					),
 			'theme_meta' => array(

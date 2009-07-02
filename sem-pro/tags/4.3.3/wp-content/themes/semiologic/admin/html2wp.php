@@ -29,7 +29,7 @@ function display_html2wp()
 		}
 
 		echo '<p>'
-			. __('Semiologic Pro lets you upload an html file (generated using Front Page, for instance) in place of entering content in the WordPress editor. Its body area will be used as your entry\' contents. This feature is convenient if you\'re working offline or writing a complicated sell letter.')
+			. __('Semiologic Pro lets you upload an html file (generated using Front Page or, better yet, <a href="http://www.semiologic.com/go/scribejuice">ScribeJuice</a>) in place of entering content in the WordPress editor. Its body area will be used as your entry\'s contents. This feature is convenient if you\'re working offline or writing a complicated sell letter.')
 			. '</p>';
 
 		echo '<p>'
@@ -110,7 +110,7 @@ add_action('admin_head', 'ob_multipart_entry_form');
 
 function add_file_max_size()
 {
-	echo "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="8000000" />' . "\n";
+	echo "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="32000000" />' . "\n";
 }
 
 add_action('edit_form_advanced', 'add_file_max_size');

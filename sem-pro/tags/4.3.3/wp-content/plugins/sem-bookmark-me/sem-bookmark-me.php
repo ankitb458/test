@@ -4,7 +4,7 @@ Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/widgets/bookmark-me/
 Description: Adds bookmark links to common social bookmarking sites.
 Author: Denis de Bernardy
-Version: 2.1
+Version: 2.3.1
 Author URI: http://www.semiologic.com
 */
 
@@ -71,6 +71,10 @@ class bookmark_me
 				'name' => 'blogmarks',
 				'url' => 'http://blogmarks.net/my/new.php?mini=1&amp;simple=1&amp;title=%title%&amp;url=%permalink%'
 				),
+			'bumpzee' => array(
+				'name' => 'BUMPzee',
+				'url' => 'http://www.bumpzee.com/bump.php?u=%permalink%'
+				),
 			'buzzit' => array(
 				'name' => 'Blogg-Buzz',
 				'url' => 'http://www.blogg-buzz.com/submit.php?url=%permalink%'
@@ -91,6 +95,14 @@ class bookmark_me
 				'name' => 'Netscape',
 				'url' => 'http://www.netscape.com/submit/?T=%title%&amp;U=%permalink%'
 				),
+			'newsvine' => array(
+				'name' => 'Newsvine',
+				'url' => 'http://www.newsvine.com/_tools/seed&amp;save?h=%title%&amp;u=%permalink%'
+				),
+			'plugim' => array(
+				'name' => 'PlugIM',
+				'url' => 'http://www.plugim.com/submit?title=%title%&amp;url=%permalink%'
+				),
 			'ppnow' => array(
 				'name' => 'ppnow',
 				'url' => 'http://www.ppnow.com/submit.php?url=%permalink%'
@@ -107,9 +119,17 @@ class bookmark_me
 				'name' => 'Simpy',
 				'url' => 'http://www.simpy.com/simpy/LinkAdd.do?title=%title%&amp;href=%permalink%'
 				),
+			'slashdot' => array(
+				'name' => 'Slashdot',
+				'url' => 'http://slashdot.org/bookmark.pl?title=%title%&amp;url=%permalink%'
+				),
 			'socializer' => array(
 				'name' => 'Socializer',
 				'url' => 'http://ekstreme.com/socializer/?title=%title%&amp;url=%permalink%'
+				),
+			'sphere' => array(
+				'name' => 'Sphere',
+				'url' => 'http://www.sphere.com/search?q=sphereit:%permalink%'
 				),
 			'spurl' => array(
 				'name' => 'Spurl',
@@ -129,7 +149,7 @@ class bookmark_me
 				),
 			'windows_live' => array(
 				'name' => 'Windows Live',
-				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;title=%title%&amp;url=%permalink%&amp;top=1'
+				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;title=%title%&amp;top=1&amp;url=%permalink%'
 				),
 			'wists' => array(
 				'name' => 'Wists',
@@ -179,7 +199,9 @@ class bookmark_me
 		{
 			$options = array(
 				'services' => bookmark_me::default_services(),
-				'show_names' => true
+				'show_names' => true,
+				'add_nofollow' => true,
+				'show_title' => true
 				);
 
 			update_option('sem_bookmark_me_params', $options);
@@ -300,7 +322,7 @@ function spread_the_word()
 	{
 		$title = function_exists('get_caption') ? get_caption('spread_the_word') : __('Spread the word');
 ?><div class="spread_the_word">
-<h2><?php echo $title; ?></h2>
+<?php if ( !isset($options['show_title']) || $options['show_title'] ) echo '<h2>' . $title . '</h2>'; ?>
 <p><?php the_bookmark_links(); ?></p>
 </div>
 <?php

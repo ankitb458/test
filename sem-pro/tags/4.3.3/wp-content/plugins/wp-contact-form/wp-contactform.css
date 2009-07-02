@@ -1,12 +1,23 @@
-div.contactform
+.main div.contactform
 {
 	width: 360px;
 }
 
-div.contactform input.field,
-div.contactform textarea.field
+.main div.contactform input.field,
+.main div.contactform textarea.field
 {
 	width: 360px;
+}
+
+.sidebar div.contactform
+{
+	width: 170px;
+}
+
+.sidebar div.contactform input.field,
+.sidebar div.contactform textarea.field
+{
+	width: 170px;
 }
 
 .contacterror {

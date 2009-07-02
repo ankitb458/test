@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe To Comments
-Version: 2.2 (fork)
+Version: 2.3 (fork)
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to receive notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
@@ -266,6 +266,8 @@ class sg_subscribe {
 
 		$this->settings = get_settings('sg_subscribe_settings');
 
+		$changed = false;
+
 		$defaults = array(
 				'use_custom_style' => 'use_custom_style',
 				'header' => '[theme_path]/header.php',
@@ -275,11 +277,29 @@ class sg_subscribe {
 				'after_manager' => '</div>',
 				);
 
-		$changed = false;
-
 		foreach ( $defaults as $key => $val )
 		{
 			if ( @ $this->settings[$key] != $val )
+			{
+				$this->settings[$key] = $val;
+				$changed = true;
+			}
+		}
+
+
+		$defaults = array(
+				'site_email' => get_bloginfo('admin_email'),
+				'site_name' => get_bloginfo('name'),
+				'default_subscribed' => false,
+				'not_subscribed_text' => __('Notify me of followup comments via e-mail', 'subscribe-to-comments'),
+				'subscribed_text' => __('You are subscribed to this entry.  <a href="[manager_link]">Manage your subscriptions</a>.', 'subscribe-to-comments'),
+				'author_text' => __('You are the author of this entry.  <a href="[manager_link]">Manage subscriptions</a>.', 'subscribe-to-comments'),
+				'clear_both' => 1
+				);
+
+		foreach ( $defaults as $key => $val )
+		{
+			if ( !isset($this->settings[$key]) )
 			{
 				$this->settings[$key] = $val;
 				$changed = true;

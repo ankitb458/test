@@ -6,7 +6,8 @@ Description: Dynamically translates a blog in thirteen different languages (Engl
 */
 
 
-include_once('header.php');
+include_once(dirname(__FILE__) . '/header.php');
+include_once(dirname(__FILE__) . '/translator.php');
 
 load_plugin_textdomain('gltr'); // NLS
 
@@ -23,7 +24,8 @@ $location = get_option('siteurl') . '/wp-admin/admin.php?page=global-translator/
 
 /*check form submission and update options*/
 
-if (isset($_POST['stage'])){
+if (isset($_POST['stage']))
+{
 	check_admin_referer('translator');
 	//submitting something
 	$gltr_base_lang 						= $_POST['gltr_base_lang'];
@@ -41,55 +43,50 @@ if (isset($_POST['stage'])){
 		$gltr_preferred_languages = $_POST['gltr_preferred_languages'];
 
 
-	if ('change' == $_POST['stage']) {
+	if ('change' == $_POST['stage']) 
+	{
 		//recalculate some things
-	} else if ('process' == $_POST['stage']){
-	  if(!empty($_POST["gltr_erase_cache"])) {
-	  	//Erase cache button pressed
-	    $cachedir =  ABSPATH . 'wp-content/translations';
+	} 
+	else if ('process' == $_POST['stage'])
+	{
+		if(!empty($_POST["gltr_erase_cache"])) 
+		{
+			//Erase cache button pressed
+			if (gltr_empty_cache())
+				$message = "Cache successfully erased";			
+			else
+				$message = "Unable to erase cache or cache dir not existing";
+		} 
+		else 
+		{
+			//update options button pressed
+			$iserror = false;
+			$timeout = $_POST['gltr_cache_timeout'];
 
-	    if (!file_exists($cachedir)) {
-	      @mkdir($cachedir, 0777);
-	    }
+			if(!$iserror) 
+			{
+				if ($timeout == "") $timeout = 3600 * 24 * 7;
+				update_option('gltr_base_lang', $_POST['gltr_base_lang']);
+				update_option('gltr_col_num', $_POST['gltr_col_num']);
+				update_option('gltr_cache_timeout', gltr_cache_timeout);
+				update_option('gltr_html_bar_tag', $_POST['gltr_html_bar_tag']);
+				update_option('gltr_my_translation_engine', $_POST['gltr_my_translation_engine']);
+				update_option('gltr_preferred_languages', array());
+				update_option('gltr_preferred_languages', $_POST['gltr_preferred_languages']);
 
-	    if (file_exists($cachedir) && is_dir($cachedir) && is_readable($cachedir)) {
-	      $handle = opendir($cachedir);
-	      while (FALSE !== ($item = readdir($handle))) {
-	        if($item != '.' && $item != '..') {
-	          $path = $cachedir.'/'.$item;
-	          unlink($path);
-	        }
-	      }
-	      $message = "Cache successfully erased";
-	    } else {
-	      $message = "Unable to erase cache or cache dir not existing";
-	    }
-	  } else {
-	  	//update options button pressed
-	  	$iserror = false;
-	    $timeout = $_POST['gltr_cache_timeout'];
-
-	    if(!$iserror) {
-	      if ($timeout == "") $timeout = 3600 * 24 * 7;
-	      update_option('gltr_base_lang', $_POST['gltr_base_lang']);
-	      update_option('gltr_col_num', $_POST['gltr_col_num']);
-	      update_option('gltr_cache_timeout', gltr_cache_timeout);
-	      update_option('gltr_html_bar_tag', $_POST['gltr_html_bar_tag']);
-	      update_option('gltr_my_translation_engine', $_POST['gltr_my_translation_engine']);
-	      update_option('gltr_preferred_languages', array());
-	      update_option('gltr_preferred_languages', $_POST['gltr_preferred_languages']);
-
-	      if(isset($_POST['gltr_use_cache']))
-	        update_option('gltr_use_cache', true);
-	      else
-	        update_option('gltr_use_cache', false);
+				if(isset($_POST['gltr_use_cache']))
+					update_option('gltr_use_cache', true);
+				else
+					update_option('gltr_use_cache', false);
 
 				$wp_rewrite->flush_rules();
-	      $message = "Options saved.";
-	    }
-	  }
+				$message = "Options saved.";
+			}
+		}
 	}
-} else {
+} 
+else 
+{
 	//page loaded by menu: retrieve stored options
 	$gltr_base_lang = get_option('gltr_base_lang');
 	$gltr_col_num = get_option('gltr_col_num');
@@ -98,109 +95,134 @@ if (isset($_POST['stage'])){
 	$gltr_html_bar_tag = get_option('gltr_html_bar_tag');
 	$gltr_my_translation_engine = get_option('gltr_my_translation_engine');
 	$gltr_preferred_languages = get_option('gltr_preferred_languages');
-
 }
-
-
 
 /*Get options for form fields*/
 $current_engine = $gt_available_engines[$gltr_my_translation_engine];
-if (!$current_engine) $current_engine = $gt_available_engines['google'];
+if (!$current_engine) 
+	$current_engine = $gt_available_engines['google'];
 
 
-function gltr_build_js_function($base_lang, $selected_item) {
+function gltr_build_js_function($base_lang, $selected_item) 
+{
 	global $current_engine;
 ?>
 <script type="text/javascript">
 calculateOptions('<?php echo $base_lang ?>', <?php echo $selected_item ?>);
 
-function languageItem(lang, flags_num){
-  this.lang=lang;
-  this.flags_num=flags_num;
+function languageItem(lang, flags_num)
+{
+	this.lang=lang;
+	this.flags_num=flags_num;
 }
 
-function calculateOptions(lang, selectedItem) {
-  var flags_num = 0;
-  var list = new Array();
+function calculateOptions(lang, selectedItem) 
+{
+	var flags_num = 0;
+	var list = new Array();
 <?php
-  $languages = $current_engine->get_languages_matrix();
-  $j=0;
-  foreach($languages as $key => $value){
-    echo "  list[$j] = new languageItem('$key', " . count($languages[$key]) . ");\n";
-    $j++;
-  }
+	$languages = $current_engine->get_languages_matrix();
+	$j=0;
+	foreach($languages as $key => $value)
+	{
+		echo "  list[$j] = new languageItem('$key', " . count($languages[$key]) . ");\n";
+		$j++;
+	}
 ?>
-  for (z = 0; z < document.forms['form1'].gltr_col_num.options.length; z++) {
-    document.forms['form1'].gltr_col_num.options[z] = null;
-  }
-  document.forms['form1'].gltr_col_num.options.length = 0;
+	for (z = 0; z < document.forms['form1'].gltr_col_num.options.length; z++) 
+	{
+		document.forms['form1'].gltr_col_num.options[z] = null;
+	}
+	document.forms['form1'].gltr_col_num.options.length = 0;
 
-  for (y = 0; y < list.length; y++) {
-    if (list[y].lang == lang){
-      flags_num = list[y].flags_num;
-      break;
-    }
-  }
-  for (i = 0; i <= flags_num; i++) {
-    if (i == 0) {
-      opt_text='all the flags in a single row (default)';
-    } else if (i == 1) {
-      opt_text='1 flag for each row';
-    } else {
-      opt_text= i + ' flags for each row';
-    }
-    document.forms['form1'].gltr_col_num.options[i]=new Option(opt_text, i);
-  }
+	for (y = 0; y < list.length; y++) 
+	{
+		if (list[y].lang == lang)
+		{
+			flags_num = list[y].flags_num;
+			break;
+		}
+	}
+	for (i = 0; i <= flags_num; i++) 
+	{
+		if (i == 0) 
+		{
+			opt_text='all the flags in a single row (default)';
+		} 
+		else if (i == 1) 
+		{
+			opt_text='1 flag for each row';
+		} 
+		else 
+		{
+			opt_text= i + ' flags for each row';
+		}
+		document.forms['form1'].gltr_col_num.options[i]=new Option(opt_text, i);
+	}
 
-  //I need to cycle again on the options list in order to correctly choose the selected item
-  for (i = 0; i <= flags_num; i++) {
-    document.forms['form1'].gltr_col_num.options[i].selected = (selectedItem == i);
-  }
+	//I need to cycle again on the options list in order to correctly choose the selected item
+	for (i = 0; i <= flags_num; i++) 
+	{
+		document.forms['form1'].gltr_col_num.options[i].selected = (selectedItem == i);
+	}
 }
 
-function calculateAvailableTranslations(lang, selectedItem) {
-  var list = new Array();
+function calculateAvailableTranslations(lang, selectedItem) 
+{
+	var list = new Array();
 <?php
-  $languages = $current_engine->get_languages_matrix();
-  $j=0;
-  foreach($languages as $key => $value){
-    echo "  list[$j] = new languageItem('$key', " . count($languages[$key]) . ");\n";
-    $j++;
-  }
+	$languages = $current_engine->get_languages_matrix();
+	$j=0;
+	foreach($languages as $key => $value)
+	{
+		echo "  list[$j] = new languageItem('$key', " . count($languages[$key]) . ");\n";
+		$j++;
+	}
 ?>
-  for (z = 0; z < document.forms['form1'].gltr_col_num.options.length; z++) {
-    document.forms['form1'].gltr_col_num.options[z] = null;
-  }
-  document.forms['form1'].gltr_col_num.options.length = 0;
+	for (z = 0; z < document.forms['form1'].gltr_col_num.options.length; z++) 
+	{
+		document.forms['form1'].gltr_col_num.options[z] = null;
+	}
+	document.forms['form1'].gltr_col_num.options.length = 0;
 
-  for (y = 0; y < list.length; y++) {
-    if (list[y].lang == lang){
-      flags_num = list[y].flags_num;
-      break;
-    }
-  }
-  for (i = 0; i <= flags_num; i++) {
-    if (i == 0) {
-      opt_text='all the flags in a single row (default)';
-    } else if (i == 1) {
-      opt_text='1 flag for each row';
-    } else {
-      opt_text= i + ' flags for each row';
-    }
-    document.forms['form1'].gltr_col_num.options[i]=new Option(opt_text, i);
-  }
+	for (y = 0; y < list.length; y++) 
+	{
+		if (list[y].lang == lang)
+		{
+			flags_num = list[y].flags_num;
+			break;
+		}
+	}
+	for (i = 0; i <= flags_num; i++) 
+	{
+		if (i == 0) 
+		{
+			opt_text='all the flags in a single row (default)';
+		} 
+		else if (i == 1) 
+		{
+			opt_text='1 flag for each row';
+		} 
+		else 
+		{
+			opt_text= i + ' flags for each row';
+		}
+		document.forms['form1'].gltr_col_num.options[i]=new Option(opt_text, i);
+	}
 
-  //I need to cycle again on the options list in order to correctly choose the selected item
-  for (i = 0; i <= flags_num; i++) {
-    document.forms['form1'].gltr_col_num.options[i].selected = (selectedItem == i);
-  }
+	//I need to cycle again on the options list in order to correctly choose the selected item
+	for (i = 0; i <= flags_num; i++) 
+	{
+		document.forms['form1'].gltr_col_num.options[i].selected = (selectedItem == i);
+	}
 }
 </script>
 <?php
 }
 
 //Print out the message to the user, if any
-if($message!="") { ?>
+if($message!="") 
+{ ?>
 
 	<div class="updated"><strong><p>
 <?php	echo $message; ?>

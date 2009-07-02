@@ -223,7 +223,7 @@ function fix_permalink_redirect($no_redirect)
 			'/sitemap.xml.gz'
 			);
 
-	if ( strstr($_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS') !== false )
+	if ( strpos($_SERVER['SERVER_SOFTWARE'], 'IIS') !== false )
 	{
 		$skip[] = $_SERVER['SCRIPT_NAME'];
 		$skip[] = preg_replace("/index\.php\??$/i", "", $_SERVER['SCRIPT_NAME']);

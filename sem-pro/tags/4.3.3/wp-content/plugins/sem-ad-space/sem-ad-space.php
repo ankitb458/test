@@ -4,7 +4,7 @@ Plugin Name: Ad Spaces
 Plugin URI: http://www.semiologic.com/software/marketing/ad-spaces/
 Description: Manage advertisement real estate on your blog
 Author: Denis de Bernardy
-Version: 3.21
+Version: 3.23
 Author URI: http://www.semiologic.com
 */
 
@@ -821,4 +821,15 @@ if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false
 	include_once dirname(__FILE__) . '/sem-ad-space-admin.php';
 }
 
+
+#
+# sem_ad_spaces_kill_gzip()
+#
+
+function sem_ad_spaces_kill_gzip($bool)
+{
+	return 0;
+} # sem_ad_spaces_kill_gzip()
+
+add_filter('option_gzipcompression', 'sem_ad_spaces_kill_gzip');
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-class admin_menu_admin
+class sem_admin_menu_admin
 {
 	#
 	# init()
@@ -8,7 +8,7 @@ class admin_menu_admin
 
 	function init()
 	{
-		add_action('admin_menu', array('admin_menu_admin', 'add_admin_page'));
+		add_action('admin_menu', array('sem_admin_menu_admin', 'add_admin_page'));
 	} # init()
 
 
@@ -25,7 +25,7 @@ class admin_menu_admin
 				__('Admin&nbsp;Menu', 'sem-admin-menu'),
 				'manage_options',
 				str_replace("\\", "/", __FILE__),
-				array('admin_menu_admin', 'display_admin_page')
+				array('sem_admin_menu_admin', 'display_admin_page')
 				);
 		}
 	} # end add_admin_page()
@@ -75,7 +75,7 @@ class admin_menu_admin
 	<?php
 		if ( $_POST['update_admin_menu_options'] )
 		{
-			admin_menu_admin::update_options();
+			sem_admin_menu_admin::update_options();
 		}
 
 	?><input type="hidden" name="update_admin_menu_options" value="1" />
@@ -113,7 +113,7 @@ class admin_menu_admin
 	</div>
 	<?php
 	} # end display_admin_page()
-} # admin_menu_admin
+} # sem_admin_menu_admin
 
-admin_menu_admin::init();
+sem_admin_menu_admin::init();
 ?>

@@ -52,6 +52,9 @@ class mediacaster_admin
 	function save_media($post_ID)
 	{
 		$path = mediacaster::get_path($post_ID);
+		mediacaster_admin::create_path($path);
+		#var_dump($path);
+		#die;
 
 		if ( current_user_can('upload_files') )
 		{
@@ -71,7 +74,7 @@ class mediacaster_admin
 
 					if ( $image = glob(ABSPATH . $path . $image . '.{jpg,png}', GLOB_BRACE) )
 					{
-						$image = end($image);
+						$image = current($image);
 						@unlink($image);
 					}
 				}
@@ -95,7 +98,7 @@ class mediacaster_admin
 
 						if ( $image = glob(ABSPATH . $path . $old_name . '.{jpg,png}', GLOB_BRACE) )
 						{
-							$image = end($image);
+							$image = current($image);
 
 							preg_match("/\.([^\.]+)$/", $image, $ext);
 							$ext = end($ext);
@@ -266,7 +269,10 @@ class mediacaster_admin
 				. __('Your media folder must be writable by the server for any of this to work at all.')
 				. '</li>'
 				. '<li>'
-				. __('Maximum file size is 8M. If large files won\'t upload on your server, have your host increase its upload_max_filesize parameter.')
+				. __('Maximum file size is 32M. If large files won\'t upload on your server, have your host increase its upload_max_filesize parameter.')
+				. '</li>'
+				. '<li>'
+				. __('If you\'re uploading <a href="http://www.semiologic.com/go/camtasia">Camtasia</a> videos, upload <em>only</em> the video file (swf, flv, mov...). The other files created by Camtasia are for use in a standalone web page.')
 				. '</li>'
 				. '</ul>';
 		}
@@ -352,9 +358,9 @@ class mediacaster_admin
 
 		if ( isset($_POST['delete_cover']) )
 		{
-			if ( $cover = glob(ABSPATH . 'media/cover.{jpg,png}', GLOB_BRACE) )
+			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
 			{
-				$cover = end($cover);
+				$cover = current($cover);
 				@unlink($cover);
 			}
 		}
@@ -425,16 +431,22 @@ class mediacaster_admin
 			}
 			else
 			{
-				if ( $cover = glob(ABSPATH . 'media/cover.{jpg,png}', GLOB_BRACE) )
+				if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
 				{
-					$cover = end($cover);
+					$cover = current($cover);
 					@unlink($cover);
 				}
 
 				preg_match("/\.([^\.]+)$/", $name, $ext);
 				$ext = end($ext);
 
-				$new_name = ABSPATH . 'media/cover.' . $ext;
+				$entropy = get_option('sem_entropy');
+
+				$entropy = intval($entropy) + 1;
+
+				update_option('sem_entropy', $entropy);
+
+				$new_name = ABSPATH . 'media/cover-' . $entropy . '.' . $ext;
 
 				@move_uploaded_file($tmp_name, $new_name);
 				@chmod($new_name, 0666);
@@ -493,9 +505,38 @@ class mediacaster_admin
 				. __('Player')
 				. '</h3>' . "\n";
 
+			echo '<p>'
+				. __('Player Position: ')
+				. '<label for="mediacaster[player][position][top]">'
+				. '<input type="radio"'
+					. ' id="mediacaster[player][position][top]" name="mediacaster[player][position]"'
+					. ' value="top"'
+					. ( $options['player']['position'] != 'bottom'
+						? ' checked="checked"'
+						: ''
+						)
+					. ' />'
+				. '&nbsp;'
+				. __('Top')
+				. '</label>'
+				. ' '
+				. '<label for="mediacaster[player][position][bottom]">'
+				. '<input type="radio"'
+					. ' id="mediacaster[player][position][bottom]" name="mediacaster[player][position]"'
+					. ' value="bottom"'
+					. ( $options['player']['position'] == 'bottom'
+						? ' checked="checked"'
+						: ''
+						)
+					. ' />'
+				. '&nbsp;'
+				. __('Bottom')
+				. '</label>'
+				. '</p>' . "\n";
+
 		echo '<p>'
 				. '<label for="mediacaster[player][width]">'
-				. __('Player Width') . ':'
+				. __('Player Width and Height') . ':'
 				. '</label>'
 				. '<br />'
 			. '<input type="text"'
@@ -507,16 +548,25 @@ class mediacaster_admin
 						)
 					 . '"'
 				. ' />' . "\n"
+			. '<input type="text"'
+				. ' id="mediacaster[player][height]" name="mediacaster[player][height]"'
+				. ' value="'
+					. ( ( isset($options['player']['height']) && $options['player']['height'] )
+						? $options['player']['height']
+						: intval($options['player']['width'] * 240 / 320 )
+						)
+					 . '"'
+				. ' />' . "\n"
 			. '</p>' . "\n";
 
 
-			if ( $cover = glob(ABSPATH . 'media/cover.{jpg,png}', GLOB_BRACE) )
+			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,png}', GLOB_BRACE) )
 			{
-				$cover = end($cover);
+				$cover = current($cover);
 			}
 
 			echo '<p>'
-					. __('Playlist Cover') . ':'
+					. __('MP3 Playlist Cover') . ':'
 				. '<br />' . "\n"
 				. ( file_exists($cover)
 					? ( '<img src="'
@@ -1095,7 +1145,7 @@ add_action('admin_head', 'ob_multipart_entry_form');
 
 function add_file_max_size()
 {
-	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="8000000" />' . "\n";
+	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="32000000" />' . "\n";
 }
 
 add_action('edit_form_advanced', 'add_file_max_size');

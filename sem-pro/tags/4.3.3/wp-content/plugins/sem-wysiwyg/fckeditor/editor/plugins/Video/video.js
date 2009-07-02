@@ -26,7 +26,7 @@ var FCKConfig	= oEditor.FCKConfig ;
 
 // Get the selected flash embed (if available).
 var oFakeImage = FCK.Selection.GetSelectedElement() ;
-var oEmbed ;
+var oEmbed = null ;
 
 if ( oFakeImage )
 {
@@ -67,9 +67,14 @@ function Ok()
 			var tmpnode = FCK.EditorDocument.createElement( 'DIV' );
 			pnode.parentNode.insertBefore(tmpnode, pnode.nextSibling);
 			FCK.Selection.SelectNode(tmpnode);
+		
 		}	
 
+		divNode		= FCK.EditorDocument.createElement( 'DIV' ) ;
+		SetAttribute( divNode, 'class', 'media' ) ;	
+		FCK.InsertElement(divNode);
 		oEmbed		= FCK.EditorDocument.createElement( 'EMBED' ) ;
+		divNode.appendChild(oEmbed);
 		oFakeImage  = null ;
 	}
 	

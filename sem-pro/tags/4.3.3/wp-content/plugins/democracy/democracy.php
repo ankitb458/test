@@ -3,7 +3,7 @@
 Plugin Name: Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.11 (fork)
+Version: 1.12 ( fork)
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
@@ -96,10 +96,10 @@ function jal_edit_poll () {
 		$aid = (int) $aid;
 
 		if (!empty($answer) && in_array($aid, $edits))
-			$wpdb->query("UPDATE {$table_prefix}democracyA SET answers='".$wpdb->escape(wp_filter_post_kses($answer))."' WHERE qid = {$poll_id} AND aid = {$aid}");
+			$wpdb->query("UPDATE {$table_prefix}democracyA SET answers='".$wpdb->escape(stripslashes(wp_filter_post_kses($answer)))."' WHERE qid = {$poll_id} AND aid = {$aid}");
 
 		if (!empty($answer) && !in_array($aid, $edits))
-			$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$poll_id}, '".$wpdb->escape(sripslashes(wp_filter_post_kses($answer)))."', 0)");
+			$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$poll_id}, '".$wpdb->escape(stripslashes(wp_filter_post_kses($answer)))."', 0)");
 
 	}
 }
@@ -165,7 +165,7 @@ function jal_add_question () {
     $allow_users_to_add = (isset($_POST['allowNewAnswers'])) ? "1" : "0";
 
     // Add a new question and activate it
-    $wpdb->query("INSERT INTO {$table_prefix}democracyQ (question, timestamp, allowusers, active) VALUES ('".$wpdb->escape(wp_filter_post_kses($_POST['jal_dem_question']))."', '".time()."', '".$allow_users_to_add."', '1')");
+    $wpdb->query("INSERT INTO {$table_prefix}democracyQ (question, timestamp, allowusers, active) VALUES ('".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['jal_dem_question'])))."', '".time()."', '".$allow_users_to_add."', '1')");
 
     // Get the id of that new question
     $new_q = $wpdb->get_var("SELECT id FROM {$table_prefix}democracyQ WHERE active = '1'");
@@ -173,7 +173,7 @@ function jal_add_question () {
     // Add the questions
     foreach($_POST['answer'] as $answer)
         if (!empty($answer))
-        	$sql[] = "INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$new_q}, '".$wpdb->escape(wp_filter_post_kses($answer))."', 0);";
+        	$sql[] = "INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$new_q}, '".$wpdb->escape(stripslashes(wp_filter_post_kses($answer)))."', 0);";
 
     foreach($sql as $query)
     	$wpdb->query($query);
@@ -212,7 +212,7 @@ function jal_dem_admin_page() {
     </p>
         <form action="edit.php?page=democracy" method="post" onsubmit="return jal_validate();">
 		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
-    <strong>Question: <input id="question" type="text" name="question" value="<?php echo stripslashes(htmlspecialchars($question['question'], ENT_QUOTES)); ?>" /></strong>
+    <strong>Question: <input id="question" type="text" name="question" value="<?php echo $question['question']; ?>" /></strong>
 
 	<ol id="inputList"><?php
 
@@ -222,8 +222,6 @@ function jal_dem_admin_page() {
 
         // Add to the list of answers in the hidden input element
         $loop = $loop ." ". $r->aid;
-
-        $r->answers = htmlspecialchars(stripslashes($r->answers), ENT_QUOTES);
 
      ?><li><input type="text" value="<?php echo $r->answers; ?>" name="answer[<?php echo $r->aid; ?>]" /></li><?php $count++; }
 
@@ -304,9 +302,9 @@ function jal_dem_admin_page() {
 	 $alt = ($alt) ? FALSE : TRUE;
 ?>	    <tr<?php if ($current == $r->id) { echo ' class="active"'; } if ($alt == true && $current !== $r->id) { echo ' class="alternate"';  } ?>>
 	       <td style="text-align: center"><?php echo $r->id; ?></td>
-	       <td style="text-align: center"><?php echo stripslashes($r->question); ?></td>
+	       <td style="text-align: center"><?php echo $r->question; ?></td>
 	       <td style="text-align: center"><?php if ($current == $r->id) { echo "So far, "; } echo $total_vote[$r->id]; ?></td>
-	       <td style="text-align: center"><?php echo stripslashes($winners[$r->id]); ?>	       <td style="text-align: center"><?php echo date(get_settings('date_format'), $r->timestamp); ?></td>
+	       <td style="text-align: center"><?php echo $winners[$r->id]; ?>	       <td style="text-align: center"><?php echo date(get_settings('date_format'), $r->timestamp); ?></td>
 	       <td style="text-align: center">
 	           <form action="" method="get">
 		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
@@ -404,7 +402,8 @@ function jal_democracy($poll_id = 0) {
  	$poll_question = $wpdb->get_row("SELECT id, question, voters, allowusers FROM {$table_prefix}democracyQ WHERE {$where}");
 
 // Check if they've voted
- if ($_GET['jal_no_js'] || isset($_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id]))
+ if ($_GET['jal_no_js'] || isset($_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id])
+ 	|| isset($_COOKIE['demVoted_'.$poll_question->id]))
     jal_SeeResults($poll_question->id);
  else {
         $wpdb->hide_errors();
@@ -423,12 +422,12 @@ function jal_democracy($poll_id = 0) {
  		$total_votes = $wpdb->get_var("SELECT SUM(votes) FROM {$table_prefix}democracyA WHERE qid = ".$poll_question->id);
     ?>     <form action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/democracy/democracy.php?jal_nojs=true'; ?>" method="post" id="democracyForm" onsubmit="return ReadVote();">
         <div id="democracy">
-        <?php echo $jal_before_question . stripslashes($poll_question->question) . $jal_after_question; ?>
+        <?php echo $jal_before_question . $poll_question->question . $jal_after_question; ?>
         <ul>
     	  <?php foreach ( $poll_answers as $r) { ?>            <li>
             	<label for="choice_<?php echo $r->aid; ?>">
             		<input type="radio" id="choice_<?php echo $r->aid; ?>" value="<?php echo $r->aid; ?>" name="poll_aid" />
-            		<?php echo stripslashes($r->answers); ?><?php if ($r->added_by == "1") { echo '<sup title="Added by users">1</sup>'; $user_added = TRUE; }?>            	</label>
+            		<?php echo $r->answers; ?><?php if ($r->added_by == "1") { echo '<sup title="Added by users">1</sup>'; $user_added = TRUE; }?>            	</label>
             </li>
     	  <?php }
     	  if ( $poll_question->allowusers == 1) {
@@ -532,12 +531,13 @@ function jal_SeeResults($poll_id = 0, $javascript = FALSE) {
     else
         header('Content-Type: text/html; charset='.get_option('blog_charset'));
 ?>
-                                <?php echo $jal_before_question . stripslashes($poll_question->question) . $jal_after_question; ?>
+                                <?php echo $jal_before_question . $poll_question->question . $jal_after_question; ?>
                                 <ul>
     <?php
 
     $output = "";
-    $cookie = $_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id];
+    $cookie1 = $_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id];
+    $cookie2 = $_COOKIE['demVoted_'.$poll_question->id];
     $values = array();
 
      // Search for the winner of the poll
@@ -557,7 +557,7 @@ function jal_SeeResults($poll_id = 0, $javascript = FALSE) {
         $graph_percent = ($jal_graph_from_total) ? $percent : round($r->votes / ($winner + 0.0001) * 100);
 
         // See which choice they voted for
-        $voted_for_this = ($cookie == $r->aid) ? TRUE : FALSE;
+        $voted_for_this = ($cookie1 == $r->aid || $cookie2 == $r->aid) ? TRUE : FALSE;
         $user_added = ($r->added_by == "1") ? '<sup title="Added by users">1</sup>' : '';
         if ($r->added_by == "1") {
                 $user_added = '<sup title="Added by a guest">1</sup>';
@@ -572,7 +572,7 @@ function jal_SeeResults($poll_id = 0, $javascript = FALSE) {
 
                 $output .= "<li>";
 
-                $output .= stripslashes($r->answers) . $user_added . ": ";
+                $output .= $r->answers . $user_added . ": ";
                 $output .= "<strong>".$percent."%</strong>";
                 $output .= " (".$r->votes.")";
 
@@ -591,7 +591,8 @@ function jal_SeeResults($poll_id = 0, $javascript = FALSE) {
                                 <p>
                                         <em id="dem-total-votes">Total Votes : <?php echo $total_votes; ?></em>
          <?php /* if they are just looking at the results and haven't voted */
-          if (!$_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id]) { ?>                                        <br />
+          if (!$_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id]
+          && !$_COOKIE['demVoted_'.$poll_question->id]) { ?>                                        <br />
                                         <a href="<?php echo htmlspecialchars($_SERVER['HTTP_REFERER'], ENT_QUOTES); ?>">Vote</a>
      <?php } ?>     <?php if ($add_sup) echo "<br /><small><sup>1</sup> = Added by a guest</small>"; ?>
                         </p>
@@ -632,7 +633,7 @@ function jal_democracy_archives ($show_active = FALSE, $before_title = '<h3>',$a
                 $total_votes = array_sum($poll_votes[$question['id']]);
                 $winner = max($poll_votes[$question['id']]);
 
-                echo $before_title.stripslashes($question['question']).$after_title;
+                echo $before_title.$question['question'].$after_title;
                 echo "<br /><strong>Started:</strong> ".date(get_settings('date_format'), $question['timestamp']);
                 echo "<br /><strong>Total Votes:</strong> {$total_votes}";
 
@@ -654,7 +655,7 @@ function jal_democracy_archives ($show_active = FALSE, $before_title = '<h3>',$a
 
                         $output = "<li>";
 
-                        $output .= stripslashes($answer['answers']). $user_added . ": ";
+                        $output .= $answer['answers']. $user_added . ": ";
                         $output .= "<strong>".$percent."%</strong>";
                         $output .= " ({$answer['votes']})";
 
@@ -701,7 +702,7 @@ if (isset($_GET['jal_nojs'])) {
     if ($_POST['poll_aid'] == "newAnswer") {
     	if ($wpdb->get_var("SELECT allowusers FROM {$table_prefix}democracyQ WHERE id = '".intval($_POST['poll_id'])."'") == 1) {
     		// Add the new choice
-    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES (".$wpdb->escape($_POST['poll_id']).", '".$wpdb->escape(wp_filter_post_kses($_POST['poll_vote']))."', 1, 1)");
+    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES (".$wpdb->escape($_POST['poll_id']).", '".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['poll_vote'])))."', 1, 1)");
     	}
 
     } else
@@ -723,11 +724,11 @@ if (isset($_GET['demSend'])) {
 		// Make sure users are allowed to add comments
 		if ($wpdb->get_var("SELECT allowusers FROM {$table_prefix}democracyQ WHERE id = '{$poll_id}'") == 1) {
     		// Add the new question and give it one vote
-    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES ($poll_id, '".$wpdb->escape(wp_filter_post_kses($_POST['vote']))."', 1, 1)");
+    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES ($poll_id, '".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['vote'])))."', 1, 1)");
     	    // Get the new id of the new answer
     	}
 	} else
-		$wpdb->query("UPDATE {$table_prefix}democracyA SET votes = (votes+1) WHERE qid = {$poll_id} AND aid = ".$wpdb->escape(wp_filter_post_kses($_POST['vote'])));
+		$wpdb->query("UPDATE {$table_prefix}democracyA SET votes = (votes+1) WHERE qid = {$poll_id} AND aid = ".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['vote']))));
 }
 
 // When the poll wants results
@@ -813,6 +814,8 @@ function widget_democracy_init()
 		{
 			$title = __('Democracy');
 		}
+
+		$before_widget = str_replace('id="democracy"', 'id="widget_democracy"', $before_widget);
 
 		echo $before_widget . $before_title . $title . $after_title;
 		jal_democracy();
