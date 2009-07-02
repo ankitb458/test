@@ -137,6 +137,25 @@ class widget_utils
 		 	. '</td>' . "\n"
 			. '</tr>' . "\n";
 		
+		echo '<tr valign="top">' . "\n"
+			. '<th scope="row">'
+			. '&nbsp;'
+			. '</th>' . "\n"
+			. '<td>'
+			. '<label>'
+			. '<input type="checkbox" tabindex="5"'
+			. ' name="widgets_exception"'
+			. ( get_post_meta($post_ID, '_widgets_exception', true)
+				? ' checked="checked"'
+				: ''
+				)
+			. ' />'
+			. '&nbsp;'
+			. '... except for silo stub, silo map, search reloaded and smart links.'
+			. '</label>'
+		 	. '</td>' . "\n"
+			. '</tr>' . "\n";
+		
 		echo '</table>';
 	} # widget_config()
 	
@@ -157,12 +176,18 @@ class widget_utils
 			}
 		
 			delete_post_meta($post_ID, '_widgets_exclude');
+			delete_post_meta($post_ID, '_widgets_exception');
 			delete_post_meta($post_ID, '_widgets_label');
 			delete_post_meta($post_ID, '_widgets_desc');
 
 			if ( $_POST['widgets_exclude'])
 			{
 				add_post_meta($post_ID, '_widgets_exclude', '1', true);
+			}
+			
+			if ( $_POST['widgets_exception'])
+			{
+				add_post_meta($post_ID, '_widgets_exception', '1', true);
 			}
 			
 			$label = trim(strip_tags(stripslashes($_POST['widgets_label'])));

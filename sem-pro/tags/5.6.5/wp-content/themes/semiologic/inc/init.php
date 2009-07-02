@@ -3,7 +3,7 @@
 # sem_version
 #
 
-define('sem_version', '5.6.4');
+define('sem_version', '5.6.5');
 
 define('sem_path', dirname(dirname(__FILE__)));
 define('sem_url', get_stylesheet_directory_uri());
@@ -171,6 +171,20 @@ if ( is_admin() && $_GET['page'] == 'wizards/upgrade.php' )
 	wp_redirect(trailingslashit(get_option('siteurl')) . 'wp-admin/');
 	die;
 }
+
+
+#
+# fix_wp_widgets()
+#
+
+function fix_wp_widgets($o)
+{
+	if ( !isset($o['array_version']) ) $o['array_version'] = 3;
+	
+	return $o;
+} # fix_wp_widgets()
+
+add_filter('pre_update_option_sidebars_widgets', 'fix_wp_widgets');
 
 
 #

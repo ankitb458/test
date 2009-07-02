@@ -3,7 +3,7 @@
 Plugin Name: PC Robots.txt
 Plugin URI: http://petercoughlin.com/wp-plugins/
 Description: Create and manage a virtual robots.txt file for your blog.
-Version: 1.0 (fork)
+Version: 1.1 (fork)
 Author: Peter Coughlin
 Author URI: http://petercoughlin.com/
 */
@@ -18,15 +18,13 @@ function pc_robots_txt() {
 
 		$options = get_option('pc_robots_txt');
 
-		if ( !is_array($options) ) {
+		if ( !is_array($options) || !$options['user_agents'] ) {
 
 			$options = pc_robots_txt_set_defaults();
 		}
-
-		if ( $options['user_agents'] != '' ) {
-
-			$pc_robots_txt .= stripslashes($options['user_agents']);
-		}
+		
+		$pc_robots_txt .= stripslashes($options['user_agents']);
+		
 
 		# if there's an existing sitemap.xml file or we're also using
 		# the Arne Brachhold sitemap plugin, add a reference to the robots.txt file
@@ -48,40 +46,8 @@ function pc_robots_txt_set_defaults() {
 
 	$options = array(
 		"user_agents" => "User-agent: *\n"
-		. "Disallow: /wp-\n"
-		. "Disallow: /cgi-bin\n"
-		. "Disallow: /wp-admin\n"
-		. "Disallow: /wp-includes\n"
-		. "Disallow: /wp-content/plugins\n"
-		. "Disallow: /wp-content/cache\n"
-		. "Disallow: /wp-content/themes\n"
-		. "Disallow: /wp-login.php\n"
-		. "Disallow: /wp-register.php\n"
-		. "Disallow: /feed\n"
-		. "Disallow: /trackback\n"
-		. "Disallow: /comments\n"
-		. "Disallow: /category/*/*\n"
-		. "Disallow: */trackback\n"
-		. "Disallow: */feed\n"
-		. "Disallow: */comments\n"
-		. "Disallow: /*?*\n"
-		. "Disallow: /*?\n"
+		. "Disallow: /wp-*\n"
 		. "Allow: /wp-content/uploads\n"
-		. "Allow: /media\n"
-		. "\n# Google Image\n"
-		. "User-agent: Googlebot-Image\n"
-		. "Disallow:\n"
-		. "Allow: /*\n"
-		. "\n# Google AdSense\n"
-		. "User-agent: Mediapartners-Google*\n"
-		. "Disallow:\n"
-		. "Allow: /*\n"
-		. "\n# Internet Archiver Wayback Machine\n"
-		. "User-agent: ia_archiver\n"
-		. "Disallow: /\n"
-		. "\n# digg mirror\n"
-		. "User-agent: duggmirror\n"
-		. "Disallow: /\n"
 		);
 	
 	update_option('pc_robots_txt', $options);

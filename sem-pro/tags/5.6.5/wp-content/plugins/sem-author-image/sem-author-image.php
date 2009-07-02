@@ -4,7 +4,7 @@ Plugin Name: Author Image
 Plugin URI: http://www.semiologic.com/software/publishing/author-image/
 Description: Adds the authors images to your site, which individual users can configure in their profile. Your wp-content folder needs to be writable by the server.
 Author: Denis de Bernardy
-Version: 3.0
+Version: 3.1
 Author URI: http://www.semiologic.com
 */
 
@@ -68,58 +68,170 @@ class author_image
 
 	function widget($args, $widget_args = 1)
 	{
-		if ( in_the_loop() || is_singular() )
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP );
+
+		$options = author_image::get_options();
+		
+		if ( $options[$number]['always'] )
+		{
+			$image = author_image::get_single_author_image();
+			
+		}
+		elseif ( in_the_loop() || is_singular() )
+		{
+			$image = author_image::get();
+		}
+		
+		if ( $image )
 		{
 			echo $args['before_widget'] . "\n"
-				. author_image::get() . "\n"
+				. $image . "\n"
 				. $args['after_widget'] . "\n";
 		}
-		else
+	} # widget()
+	
+	
+	#
+	# get_single_author_image()
+	#
+	
+	function get_single_author_image()
+	{
+		$author_id = get_option('single_author_id_cache');
+		
+		if ( $author_id === '' )
 		{
-			if ( is_numeric($widget_args) )
-				$widget_args = array( 'number' => $widget_args );
-			$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
-			extract( $widget_args, EXTR_SKIP );
-
-			$options = author_image::get_options();
+			return;
+		}
+		elseif ( !$author_id )
+		{
+			global $wpdb;
+			$i = 0;
 			
-			if ( $options[$number]['always'] )
+			do {
+				$offset = $i * 10;
+				$limit = ( $i + 1 ) * 10;
+				
+				$authors = $wpdb->get_col("
+					SELECT	user_login
+					FROM	$wpdb->users
+					ORDER BY ID
+					LIMIT $offset, $limit
+					");
+
+				if ( !$authors )
+				{
+					break;
+				}
+				
+				foreach ( $authors as $author_id )
+				{
+					if ( defined('GLOB_BRACE') )
+					{
+						if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+						{
+							$image = current($image);
+						}
+						else
+						{
+							$image = false;
+						}
+					}
+					else
+					{
+						if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '-*.jpg') )
+						{
+							$image = current($image);
+						}
+						else
+						{
+							$image = false;
+						}
+					}
+					
+					if ( $image )
+					{
+						update_option('single_author_id_cache', $author_id);
+						$GLOBALS['author_image_cache'][$author_id] = $image;
+						break;
+					}
+				}
+				
+				$i++;
+			} while ( !$image );
+			
+			if ( !$image )
 			{
-				echo $args['before_widget'] . "\n"
-					. author_image::get() . "\n"
-					. $args['after_widget'] . "\n";
+				# no image whatsoever was found...
+				update_option('single_author_id_cache', '');
 			}
 		}
-	} # widget()
+		
+		if ( $author_id && !$image )
+		{
+			if ( defined('GLOB_BRACE') )
+			{
+				if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
+				{
+					$image = current($image);
+				}
+				else
+				{
+					$image = false;
+				}
+			}
+			else
+			{
+				if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '-*.jpg') )
+				{
+					$image = current($image);
+				}
+				else
+				{
+					$image = false;
+				}
+			}
+			
+			$GLOBALS['author_image_cache'][$author_id] = $image;
+		}
+
+		if ( $GLOBALS['author_image_cache'][$author_id] )
+		{
+			$site_url = trailingslashit(get_option('siteurl'));
+
+			return '<div class="entry_author_image">'
+				. '<img src="'
+						. str_replace(ABSPATH, $site_url, $GLOBALS['author_image_cache'][$author_id])
+						. '"'
+					. ' alt=""'
+					. ' />'
+				. '</div>';
+		}
+		
+		return $author_image;
+	} # get_single_author_image()
 
 
 	#
 	# get()
 	#
 
-	function get($author_id = null)
+	function get()
 	{
-		if ( !$author_id )
+		if ( in_the_loop() )
 		{
 			$author_id = get_the_author_login();
+		}
+		else
+		{
+			global $wp_query;
 			
-			if ( !$author_id )
+			if ( $wp_query->posts )
 			{
-				global $wp_query;
-				
-				if ( $wp_query->posts )
-				{
-					$author_id = $wp_query->posts[0]->post_author;
-					$author = get_userdata( $author_id );
-					
-					$author_id->author;
-				}
-				else
-				{
-					global $wpdb;
-					
-					$author_id = $wpdb->get_var("SELECT user_login FROM $wpdb->users LIMIT 1");
-				}
+				$author_id = $wp_query->posts[0]->post_author;
 			}
 		}
 		

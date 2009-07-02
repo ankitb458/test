@@ -149,9 +149,21 @@ EOF;
 					
 					if ( trim($content) )
 					{
-						$_POST['content'] = $content;
+						$_POST['content'] = addslashes($content);
 						$_POST['kill_formatting'] = true;
+						
+						$wpdb->query("
+							UPDATE	$wpdb->posts
+							SET		post_content = '" . $wpdb->escape($content) . "'
+							WHERE	ID = " . intval($post_ID)
+							);
 					}
+					
+					if ( isset($_POST['kill_formatting']) )
+					{
+						add_post_meta($post_ID, '_kill_formatting', '1', true);
+					}
+					break;
 
 				case 'txt':
 				case 'text':
@@ -159,25 +171,33 @@ EOF;
 					
 					if ( trim($content) )
 					{
+						$_POST['content'] = addslashes($content);
+						
 						$wpdb->query("
 							UPDATE	$wpdb->posts
 							SET		post_content = '" . $wpdb->escape($content) . "'
 							WHERE	ID = " . intval($post_ID)
 							);
 					}
+					
+					if ( isset($_POST['kill_formatting']) )
+					{
+						add_post_meta($post_ID, '_kill_formatting', '1', true);
+					}
+					
 					break;
 				}
-			}
-
-			if ( isset($_POST['kill_formatting']) )
-			{
-				add_post_meta($post_ID, '_kill_formatting', '1', true);
 				
+			}
+			elseif ( isset($_POST['kill_formatting']) )
+			{
 				$wpdb->query("
 					UPDATE	$wpdb->posts
-					SET		post_content = '" . $wpdb->escape($_POST['content']) . "'
+					SET		post_content = '" . $wpdb->escape(stripslashes($_POST['content'])) . "'
 					WHERE	ID = " . intval($post_ID)
 					);
+				
+				add_post_meta($post_ID, '_kill_formatting', '1', true);
 			}
 		}
 	} # save_entry()

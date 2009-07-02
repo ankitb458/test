@@ -10,7 +10,7 @@ class author_image_admin
 	{
 		add_action('edit_user_profile', array('author_image_admin', 'display_image'));
 		add_action('show_user_profile', array('author_image_admin', 'display_image'));
-		add_action('personal_options_update', array('author_image_admin', 'save_image'));
+		add_action('profile_update', array('author_image_admin', 'save_image'));
 	} # init()
 
 
@@ -122,12 +122,11 @@ class author_image_admin
 	# save_image()
 	#
 
-	function save_image()
+	function save_image($user_ID)
 	{
 		if ( @ $_FILES['author_image']['name'] )
 		{
-			global $user_ID;
-			$user = get_userdata($_POST['user_id']);
+			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
 			if ( defined('GLOB_BRACE') )
@@ -220,7 +219,6 @@ class author_image_admin
 		}
 		elseif ( isset($_POST['delete_author_image']) )
 		{
-			$user_ID = $_POST['checkuser_id'];
 			$user = get_userdata($user_ID);
 			$author_id = $user->user_login;
 
@@ -244,6 +242,8 @@ class author_image_admin
 				@unlink($image);
 			}
 		}
+		
+		update_option('single_author_id_cache', '0');
 
 		return $user_ID;
 	} # save_image()

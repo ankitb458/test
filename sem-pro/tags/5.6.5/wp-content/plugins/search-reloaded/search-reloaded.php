@@ -4,7 +4,7 @@ Plugin Name: Search Reloaded
 Plugin URI: http://www.semiologic.com/software/wp-tweaks/search-reloaded/
 Description: Replaces the default WordPress search engine with a rudimentary one that orders posts by relevance.
 Author: Denis de Bernardy
-Version: 3.0
+Version: 3.1
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: search_reloaded
@@ -29,6 +29,14 @@ class search_reloaded
 	
 	function init()
 	{	
+		if ( version_compare(mysql_get_server_info(), '4.1', '<') )
+		{
+			add_action('admin_notices', array('search_reladed', 'mysql_warning'));
+			return;
+		}
+		
+		add_action('admin_menu', array('search_reloaded', 'meta_boxes'));
+		
 		add_filter('sem_api_key_protected', array('search_reloaded', 'sem_api_key_protected'));
 
 		if ( !get_option('search_reloaded_installed') )
@@ -40,18 +48,42 @@ class search_reloaded
 		
 		if ( !is_admin() )
 		{
+			if ( !get_option('search_reloaded_version') )
+			{
+				global $wpdb;
+
+				$wpdb->query("update $wpdb->posts set search_title = ''");
+				update_option('search_reloaded_indexed', 0);
+				update_option('search_reloaded_version', '3.1');
+			}
+			
 			if ( !get_option('search_reloaded_indexed') )
 			{
 				add_action('shutdown', array('search_reloaded', 'index_posts'));
 			}
 
-			#add_filter('posts_request', array('search_reloaded', 'posts_request'));
+			if ( is_search() )
+			{
+				#add_filter('posts_request', array('search_reloaded', 'posts_request'));
+			}
 			
 			add_filter('posts_fields', array('search_reloaded', 'posts_fields'));
 			add_filter('posts_where', array('search_reloaded', 'posts_where'));
 			add_filter('posts_orderby', array('search_reloaded', 'posts_orderby'));
 		}
 	} # init()
+	
+	
+	#
+	# mysql_warning()
+	#
+	
+	function mysql_warning()
+	{
+		echo '<div class="error">'
+			. '<p><b style="color: firebrick;">Search Reloaded Error</b><br /><b>Your MySQL version is lower than 4.1.</b> It\'s time to <a href="http://www.semiologic.com/resources/wp-basics/wordpress-server-requirements/">change hosts</a> if yours doesn\'t want to upgrade.</p>'
+			. '</div>';
+	} # mysql_warning()
 
 
 	#
@@ -64,6 +96,34 @@ class search_reloaded
 		
 		return $array;
 	} # sem_api_key_protected()
+	
+	
+	#
+	# meta_boxes()
+	#
+	
+	function meta_boxes()
+	{
+		if ( !class_exists('widget_utils') ) return;
+		
+		widget_utils::post_meta_boxes();
+		widget_utils::page_meta_boxes();
+
+		add_action('post_widget_config_affected', array('search_reloaded', 'widget_config_affected'));
+		add_action('page_widget_config_affected', array('search_reloaded', 'widget_config_affected'));
+	} # meta_boxes()
+	
+	
+	#
+	# widget_config_affected()
+	#
+	
+	function widget_config_affected()
+	{
+		echo '<li>'
+			. 'Search Reloaded (exclude only)'
+			. '</li>';
+	} # widget_config_affected()
 	
 	
 	#
@@ -347,12 +407,23 @@ class search_reloaded
 		
 		global $wpdb;
 		
+		$exclude_sql = "
+			SELECT	exclude.post_id
+			FROM	$wpdb->postmeta as exclude
+			LEFT JOIN $wpdb->postmeta as exception
+			ON		exception.post_id = exclude.post_id
+			AND		exception.meta_key = '_widgets_exception'
+			WHERE	exclude.meta_key = '_widgets_exclude'
+			AND		exception.post_id IS NULL
+			";
+		
 		$post_ids = (array) $wpdb->get_col("
 			SELECT	ID
 			FROM	$wpdb->posts
 			WHERE	post_status = 'publish'
 			AND		post_type IN ('post', 'page', 'attachment')
 			AND		search_title = ''
+			AND		ID NOT IN ( $exclude_sql )
 			LIMIT 50
 			;");
 		
@@ -374,4 +445,10 @@ class search_reloaded
 } # search_reloaded
 
 search_reloaded::init();
+
+if ( is_admin() && !class_exists('widget_utils') )
+{
+	include dirname(__FILE__) . '/widget-utils.php';
+}
+
 ?>

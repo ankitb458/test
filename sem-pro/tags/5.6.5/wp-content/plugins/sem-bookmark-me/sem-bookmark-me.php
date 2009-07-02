@@ -4,7 +4,7 @@ Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/widgets/bookmark-me/
 Description: Adds widgets that lets visitors subscribe your webpages to social bookmarking sites such as del.icio.us and Digg.
 Author: Denis de Bernardy
-Version: 4.3
+Version: 4.5
 Author URI: http://www.semiologic.com
 */
 
@@ -102,10 +102,6 @@ class bookmark_me
 				'name' => 'BUMPzee',
 				'url' => 'http://www.bumpzee.com/bump.php?u=%url%'
 				),
-			'buzzit' => array(
-				'name' => 'Blogg-Buzz',
-				'url' => 'http://www.blogg-buzz.com/submit.php?url=%url%'
-				),
 			'dzone' => array(
 				'name' => 'DZone',
 				'url' => 'http://www.dzone.com/links/add.html?title=%title%&amp;url=%url%',
@@ -157,10 +153,6 @@ class bookmark_me
 			'reddit' => array(
 				'name' => 'Reddit',
 				'url' => 'http://reddit.com/submit?title=%title%&amp;url=%url%'
-				),
-			'shadows' => array(
-				'name' => 'Shadows',
-				'url' => 'http://www.shadows.com/features/tcr.htm?title=%title%&amp;url=%url%'
 				),
 			'simpy' => array(
 				'name' => 'Simpy',
@@ -253,8 +245,13 @@ class bookmark_me
 		$default_options = bookmark_me::default_options();
 
 		$args = array_merge($defaults, (array) $default_options, (array) $args);
-
 		
+		if ( is_feed() )
+		{
+			# override arguments
+			$args['dropdown'] = false;
+			$args['show_names'] = false;
+		}
 		
 		if ( in_the_loop() )
 		{
@@ -275,9 +272,12 @@ class bookmark_me
 		}
 
 		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-bookmark-me/img/';
-
+			
 		$hash = md5(uniqid(rand()));
 		
+		
+		
+		# don't cache during rss feed
 		$cache_id = md5(serialize($args));
 		
 		if ( in_the_loop() )
@@ -313,11 +313,11 @@ class bookmark_me
 
 			return $o;
 		}
-		
 
 		# process output
 
 		$as_dropdown = intval($args['dropdown']);
+		$show_names = intval($args['show_names']);
 		$home_url = get_option('home');
 		$o = '';
 
@@ -346,7 +346,7 @@ class bookmark_me
 					? ' bookmark_dropdown'
 					: ''
 					)
-				. ( $as_dropdown && $args['show_names']
+				. ( $as_dropdown && $show_names
 					? ' bookmark_table'
 					: ''
 					)
@@ -358,7 +358,7 @@ class bookmark_me
 		{
 			$o .= '<div style="clear: both;"></div>';
 
-			if ( !$args['show_names'] )
+			if ( !$show_names )
 			{
 				$o .= '<div class="bookmark_service">';
 			}
@@ -380,7 +380,7 @@ class bookmark_me
 			
 			if ( !$details ) continue;
 
-			if ( $args['show_names'] )
+			if ( $show_names )
 			{
 				if ( $as_dropdown )
 				{
@@ -465,7 +465,7 @@ class bookmark_me
 
 		if ( $as_dropdown )
 		{
-			if ( !$args['show_names'] )
+			if ( !$show_names )
 			{
 				$o .= '</div>';
 			}
@@ -587,10 +587,6 @@ class bookmark_me
 
 	function widget($args, $widget_args = 1)
 	{
-		# don't display bookmark me items on a feed		
-		if ( is_feed() ) 
-			return;
-		
 		$options = bookmark_me::get_options();
 		
 		if ( is_numeric($widget_args) )

@@ -59,6 +59,8 @@ class silo_admin
 
 	function meta_boxes()
 	{
+		if ( !class_exists('widget_utils') ) return;
+		
 		widget_utils::post_meta_boxes();
 		widget_utils::page_meta_boxes();
 

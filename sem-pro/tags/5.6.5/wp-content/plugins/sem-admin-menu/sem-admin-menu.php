@@ -4,7 +4,7 @@ Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/publishing/admin-menu/
 Description: Adds a convenient admin menu to your blog.
 Author: Denis de Bernardy
-Version: 5.0
+Version: 5.1
 Author URI: http://www.semiologic.com
 */
 
@@ -35,7 +35,8 @@ class sem_admin_menu
 	function init()
 	{
 		add_action('wp_head', array('sem_admin_menu', 'display_css'));
-		add_action('wp_head', array('sem_admin_menu', 'ob_add_menu'), 1000);
+		#add_action('wp_head', array('sem_admin_menu', 'ob_add_menu'), 1000);
+		add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
 		
 		add_action('edit_page_form', array('sem_admin_menu', 'set_parent_id'), 0);
 	} # init()
@@ -148,14 +149,12 @@ class sem_admin_menu
 		if ( $user_ID || get_option('users_can_register') || $options['always_on'] )
 		{
 			$o .= '<div id="am">' . "\n"
-				. '<ul>' . "\n";
+				. '<div>' . "\n";
 
 			if ( $user_ID )
 			{
 				if ( current_user_can('edit_posts') || current_user_can('edit_pages') )
 				{
-					$o .= '<li>';
-					
 					if ( current_user_can('edit_posts') )
 					{
 						$o .= '<span class="am_new">'
@@ -184,14 +183,13 @@ class sem_admin_menu
 							. '>'
 							. __('New Page', 'sem-admin-menu')
 							. '</a>'
-							. '</span>';
+							. '</span>'
+							. ' ';
 					}
-					
-					$o .= '</li>' . "\n";
 					
 					if ( current_user_can('edit_pages') && is_page() || !current_user_can('edit_posts') )
 					{
-						$o .= '<li class="am_manage">'
+						$o .= '<span class="am_manage">'
 							. '<a href="'
 									. $site_url
 									. 'wp-admin/edit-pages.php'
@@ -199,11 +197,12 @@ class sem_admin_menu
 								. '>'
 								. __('Manage', 'sem-admin-menu')
 								. "</a>"
-							. '</li>' . "\n";
+							. '</span>'
+							. ' ';
 					}
 					else
 					{
-						$o .= '<li class="am_manage">'
+						$o .= '<span class="am_manage">'
 							. '<a href="'
 									. $site_url
 									. 'wp-admin/edit.php'
@@ -211,22 +210,24 @@ class sem_admin_menu
 								. '>'
 								. __('Manage', 'sem-admin-menu')
 								. "</a>"
-							. '</li>' . "\n";
+							. '</span>'
+							. ' ';
 					}
 					
-					$o .= '<li class="am_comments">'
+					$o .= '<span class="am_comments">'
 						. '<a href="'
 								. $site_url . 'wp-admin/edit-comments.php'
 								. '"'
 							. '>'
 							. __('Comments', 'sem-admin-menu')
 							. '</a>'
-						. '</li>' . "\n";
+						. '</span>'
+						. ' ';
 				}
 				
 				if ( current_user_can('switch_themes') )
 				{
-					$o .= '<li class="am_options">'
+					$o .= '<span class="am_options">'
 						. '<a href="'
 								. $site_url
 								. ( $GLOBALS['wp_registered_sidebars']
@@ -237,24 +238,26 @@ class sem_admin_menu
 							. '>'
 							. __('Design', 'sem-admin-menu')
 							. '</a>'
-							. '</li>' . "\n";
+							. '</span>'
+							. ' ';
 				}
 				
 				if ( current_user_can('manage_options') )
 				{
-					$o .= '<li class="am_options">'
+					$o .= '<span class="am_options">'
 						. '<a href="'
 								. $site_url . 'wp-admin/options-general.php'
 								. '"'
 							. '>'
 							. __('Settings', 'sem-admin-menu')
 							. '</a>'
-							. '</li>' . "\n";
+							. '</span>'
+							. ' ';
 				}
 
 				if ( current_user_can('switch_themes') && defined('sem_docs_path') )
 				{
-					$o .= '<li class="am_options">'
+					$o .= '<span class="am_options">'
 						. '<a href="'
 								. $site_url
 								. 'wp-admin/admin.php?page=sem-docs/features.php'
@@ -262,31 +265,34 @@ class sem_admin_menu
 							. '>'
 							. __('Features', 'sem-admin-menu')
 							. '</a>'
-							. '</li>' . "\n";
+							. '</span>'
+							. ' ';
 				}
 				
 				if ( current_user_can('activate_plugins') )
 				{
-					$o .= '<li class="am_options">'
+					$o .= '<span class="am_options">'
 						. '<a href="'
 								. $site_url . 'wp-admin/plugins.php'
 								. '"'
 							. '>'
 							. __('Plugins', 'sem-admin-menu')
 							. '</a>'
-							. '</li>' . "\n";
+							. '</span>'
+							. ' ';
 				}
 
-				$o .= '<li class="am_dashboard">'
+				$o .= '<span class="am_dashboard">'
 					. '<a href="'
 							. $site_url . 'wp-admin/'
 							. '"'
 						. '>'
 						. __('Dashboard', 'sem-admin-menu')
 						. '</a>'
-						. '</li>' . "\n";
+						. '</span>'
+						. ' ';
 
-				$o .= '<li class="am_user">'
+				$o .= '<span class="am_user">'
 						. apply_filters('loginout',
 							'<a href="'
 									. $site_url . 'wp-login.php?action=logout'
@@ -295,44 +301,49 @@ class sem_admin_menu
 								. __('Logout', 'sem-admin-menu')
 								. '</a>'
 							)
-						. '</li>' . "\n";
+						. '</span>'
+							. ' ';
 			}
 			else
 			{
 				if ( get_option('users_can_register') )
 				{
-					$o .= '<li class="am_user">'
+					$o .= '<span class="am_user">'
 								. '<a href="'
 									. $site_url . 'wp-register.php">'
 									. __('Register', 'sem-admin-menu')
 									. "</a>"
-								. "</li>\n";
+								. "</span>"
+								. ' ';
 				}
 				elseif ( function_exists('get_site_option') )
 				{
-					$o .= '<li class="am_user">'
+					$o .= '<span class="am_user">'
 								. '<a href="'
 									. $site_url . 'wp-signup.php">'
 									. __('Register', 'sem-admin-menu')
 									. "</a>"
-								. "</li>\n";
+								. "</span>"
+								. ' ';
 				}
 
-				$o .= '<li class="am_user">'
+				$o .= '<span class="am_user">'
 						. apply_filters('loginout',
 							'<a href="'
 								. $site_url . 'wp-login.php">'
 								. __('Login', 'sem-admin-menu')
 								. "</a>"
 							)
-						. "</li>\n";
+						. "</span>";
 			}
 
-			$o .= '</ul>' . "\n"
+			$o .= '</div>' . "\n"
 				. '</div>' . "\n";
 		}
+		
+		echo $o;
 
-		return $o;
+		#return $o;
 	} # display_menu()
 	
 	

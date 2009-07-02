@@ -4,7 +4,7 @@ Plugin Name: Smart Links
 Plugin URI: http://www.semiologic.com/software/publishing/smart-links/
 Description: Lets you write links as [link text->link url] (explicit link), or as [link text->] (implicit link).
 Author: Denis de Bernardy
-Version: 4.0
+Version: 4.1
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: smart_links
@@ -680,9 +680,13 @@ class wp_smart_links
 				}
 				
 				$exclude_sql = "
-					SELECT	post_id
-					FROM	$wpdb->postmeta
-					WHERE	meta_key = '_widgets_exclude'
+					SELECT	exclude.post_id
+					FROM	$wpdb->postmeta as exclude
+					LEFT JOIN $wpdb->postmeta as exception
+					ON		exception.post_id = exclude.post_id
+					AND		exception.meta_key = '_widgets_exception'
+					WHERE	exclude.meta_key = '_widgets_exclude'
+					AND		exception.post_id IS NULL
 					";
 		
 				$sql = "
@@ -1018,9 +1022,13 @@ class wp_smart_links
 				$filter_sql = "post_type = 'page' AND ID <> " . intval($object_id);
 				
 				$exclude_sql = "
-					SELECT	post_id
-					FROM	$wpdb->postmeta
-					WHERE	meta_key = '_widgets_exclude'
+					SELECT	exclude.post_id
+					FROM	$wpdb->postmeta as exclude
+					LEFT JOIN $wpdb->postmeta as exception
+					ON		exception.post_id = exclude.post_id
+					AND		exception.meta_key = '_widgets_exception'
+					WHERE	exclude.meta_key = '_widgets_exclude'
+					AND		exception.post_id IS NULL
 					";
 				
 				$sql = "

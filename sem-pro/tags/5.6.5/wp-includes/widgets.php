@@ -365,6 +365,7 @@ function wp_get_sidebars_widgets($update = true) {
 }
 
 function wp_set_sidebars_widgets( $sidebars_widgets ) {
+	$sidebars_widgets['array_version'] = 3;
 	update_option( 'sidebars_widgets', $sidebars_widgets );
 }
 

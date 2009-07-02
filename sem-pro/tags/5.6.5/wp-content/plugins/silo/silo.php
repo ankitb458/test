@@ -4,7 +4,7 @@ Plugin Name: Silo Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/silo/
 Description: Silo web design tools for sites built using static pages.
 Author: Denis de Bernardy
-Version: 2.1
+Version: 2.3
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: silo
@@ -539,9 +539,13 @@ class silo
 		static $children = array();
 		
 		$exclude_sql = "
-			SELECT	post_id
-			FROM	$wpdb->postmeta
-			WHERE	meta_key = '_widgets_exclude'
+			SELECT	exclude.post_id
+			FROM	$wpdb->postmeta as exclude
+			LEFT JOIN $wpdb->postmeta as exception
+			ON		exception.post_id = exclude.post_id
+			AND		exception.meta_key = '_widgets_exception'
+			WHERE	exclude.meta_key = '_widgets_exclude'
+			AND		exception.post_id IS NULL
 			";
 		
 		# fetch root page details
@@ -736,9 +740,13 @@ class silo
 		static $children = array();
 		
 		$exclude_sql = "
-			SELECT	post_id
-			FROM	$wpdb->postmeta
-			WHERE	meta_key = '_widgets_exclude'
+			SELECT	exclude.post_id
+			FROM	$wpdb->postmeta as exclude
+			LEFT JOIN $wpdb->postmeta as exception
+			ON		exception.post_id = exclude.post_id
+			AND		exception.meta_key = '_widgets_exception'
+			WHERE	exclude.meta_key = '_widgets_exclude'
+			AND		exception.post_id IS NULL
 			";
 		
 		# fetch root page details
@@ -935,7 +943,7 @@ class silo
 		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_silo_widgets_cache%'");
 		
 		update_option('silo_widgets_cache', array());
-
+		
 		return $id;
 	} # clear_cache()
 	

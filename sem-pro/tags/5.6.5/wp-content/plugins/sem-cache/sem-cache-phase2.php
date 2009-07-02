@@ -37,6 +37,7 @@ function wp_cache_phase2() {
 	add_action('update_option_sidebars_widgets', 'wp_cache_no_postid', 0);
 	add_action('update_option_active_plugins', 'wp_cache_no_postid', 0);
 	add_action('update_option_sem5_options', 'wp_cache_no_postid', 0);
+	add_action('update_option_sem6_options', 'wp_cache_no_postid', 0);
 	add_action('update_option_sem_seo', 'wp_cache_no_postid', 0);
 	add_action('update_option_script_manager', 'wp_cache_no_postid', 0);
 	add_action('update_option_show_on_front', 'wp_cache_no_postid', 0);
