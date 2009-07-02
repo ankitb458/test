@@ -1,0 +1,76 @@
+/*
+This software is copyright Bureau Blumenberg <http://www.bureaublumenberg.net>, and is used and redistributed with permission under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+
+http://www.semiologic.com/legal/license/
+**/
+
+body
+{
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+}
+
+#sem_admin_menu
+{
+	position: fixed;
+	width: 100%;
+	z-index: 200;
+	background: url(milk-bg.png) center center repeat-x;
+	border-bottom:  1px solid #cdcdcd; 
+	color: #000;
+
+	opacity: 0.8;
+		-moz-opacity:0.8;
+		filter: alpha(opacity=80);
+		-khtml-opacity:0.8;
+
+	font-family: Verdana, Helvetica, Sans-Serif;
+	font-size: 1.1em;
+	padding: 3px 5px 3px 0px;
+	margin: 0px 0px 6px 0px;
+	text-align: right;
+	color: #858585;
+}
+
+#sem_admin_menu ul
+{
+	display: inline;
+	padding: 3px 3px 3px 3px;
+	margin: 0px 3px 0px 3px;
+	text-align: center;
+	list-style-type: none;
+}
+
+#sem_admin_menu li
+{
+	display: inline;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	text-align: left;
+	list-style-type: none;
+}
+
+#sem_admin_menu li.new_item
+{
+	background: url(milk-item.png) center left no-repeat;
+	padding-left: 20px;
+}
+
+#sem_admin_menu li.register
+{
+	background: url(milk-admin.png) center left no-repeat;
+	padding-left: 20px;
+}
+
+#sem_admin_menu a, #sem_admin_menu a:link, #sem_admin_menu a:visited
+{
+	color: #858585;
+	text-decoration: none;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px -1px;
+}
+
+#sem_admin_menu a:hover
+{
+	color: #404040;
+}
