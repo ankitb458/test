@@ -477,7 +477,7 @@ class sem_docs
 				echo '<div id="' . $id .'">' . $err . '</div>'
 					. '<script type="text/javascript">sem_docs.prepend(\'' . $id .'\', \'wpbody\');</script>';
 			
-				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 13; # try in 3 days
+				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 13; # try in 1 days
 				update_option('sem_docs', $options);
 			
 				continue;
@@ -492,7 +492,7 @@ class sem_docs
 					)
 				)
 			{
-				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 13; # try in 3 days
+				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 13; # try in 1 days
 				update_option('sem_docs', $options);
 			
 				continue;
@@ -740,7 +740,7 @@ class sem_docs
 				. __('Resources')
 				. '</a>'
 				. ' &bull; '
-				. '<a href="http://www.semiologicforums.com">'
+				. '<a href="http://forum.semiologic.com">'
 				. __('Forums')
 				. '</a>';
 		}

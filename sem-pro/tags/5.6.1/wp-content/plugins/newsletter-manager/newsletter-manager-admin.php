@@ -39,7 +39,8 @@ class newsletter_manager_admin
 			if ( $options === false )
 			{
 				$options = $defaults;
-				break;
+				$options['version'] = 4;
+				return $options;
 			}
 			
 			# replace add_subscribe with syntax
@@ -70,7 +71,7 @@ class newsletter_manager_admin
 			$options = array_merge($defaults, $options);
 
 			# update version
-			$options['version'] = 3;
+			$options['version'] = 4;
 		}
 
 		return $options;
@@ -92,23 +93,21 @@ class newsletter_manager_admin
 		extract( $widget_args, EXTR_SKIP ); // extract number
 
 		$options = newsletter_manager::get_options();
-
+		
 		if ( !$updated && !empty($_POST['sidebar']) )
 		{
 			$sidebar = (string) $_POST['sidebar'];
 
 			$sidebars_widgets = wp_get_sidebars_widgets();
-			
+		
 			if ( isset($sidebars_widgets[$sidebar]) )
 				$this_sidebar =& $sidebars_widgets[$sidebar];
 			else
 				$this_sidebar = array();
 
-			foreach ( $this_sidebar as $_widget_id )
-			{
+			foreach ( $this_sidebar as $_widget_id ) {
 				if ( array('newsletter_manager', 'display_widget') == $wp_registered_widgets[$_widget_id]['callback']
-					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
-					)
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number']) )
 				{
 					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
 					if ( !in_array( "newsletter-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
@@ -116,7 +115,8 @@ class newsletter_manager_admin
 				}
 			}
 
-			foreach ( (array) $_POST['widget-newsletter'] as $num => $opt ) {
+			foreach ( (array) $_POST['widget-newsletter'] as $widget_number => $opt ) 
+			{
 				foreach ( array('email', 'syntax', 'redirect') as $var )
 				{
 					$$var = trim(strip_tags(stripslashes($opt[$var])));
@@ -127,14 +127,14 @@ class newsletter_manager_admin
 					$email = '';
 				}
 				
-				$caption = array();
+				$captions = array();
 
 				foreach ( array_keys($opt['captions']) as $key )
 				{
 					$captions[$key] = stripslashes(wp_filter_post_kses(stripslashes($opt['captions'][$key])));
 				}
 
-				$options[$num] = compact( 'email', 'syntax', 'redirect', 'captions' );
+				$options[$widget_number] = compact( 'email', 'syntax', 'redirect', 'captions' );
 			}
 
 			update_option('newsletter_manager_widgets', $options);
@@ -150,7 +150,7 @@ class newsletter_manager_admin
 		{
 			$ops = $options[$number];
 		}
-		
+
 		echo '<input type="hidden" name="update_newsletter_options" value="1" />';
 
 		echo '<table cellpadding="0" cellspacing="0" border="0" style="width: 680px;">'

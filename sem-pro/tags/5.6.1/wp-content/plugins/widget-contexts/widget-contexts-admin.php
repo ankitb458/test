@@ -141,7 +141,7 @@ class widget_contexts_admin
 		
 		echo '</td>';
 		
-		echo '<td style="width: 190px; padding: 2px; padding-left: 10px; border-left: dotted 1px Silver;>';
+		echo '<td style="width: 190px; padding: 2px; padding-left: 10px; border-left: dotted 1px Silver;">';
 		
 		echo '<h3 style="text-align: left;"><strong>' . __('Widget Contexts') . '</strong></h3>';
 		

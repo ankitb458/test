@@ -458,6 +458,7 @@ sem_features::set_handler(
 sem_features::lock('enforce_permalinks');
 sem_features::lock('static_front');
 sem_features::lock('sem_docs');
+sem_features::lock('smart_pings');
 sem_features::lock('version_checker');
 
 if ( defined('sem_fixes_path') ) sem_features::lock('sem_fixes');

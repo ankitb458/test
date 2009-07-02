@@ -5,7 +5,7 @@
  Description: Client-side javascript blocks all spam bots.  XHTML 1.1 compliant.
  Author: Elliott Back
  Author URI: http://elliottback.com
- Version: 4.2 fork
+ Version: 4.2.1 fork
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -311,8 +311,11 @@ function wphc_admin_options() {
  * Add JS to the header
  */
 function wphc_posthead() {
-	if((is_single() || is_page()))
+	if(is_single() || is_page())
+	{
 		wphc_addhead();
+		add_filter('preprocess_comment', 'wphc_check_hidden_tag');
+	}
 }
 add_action('wp_head', 'wphc_posthead');
 
@@ -496,7 +499,8 @@ add_action('comment_form', 'wphc_add_commentform');
  * Validate our tag
  */
 
-function wphc_check_signup_hidden_tag( $result ) {
+function wphc_check_signup_hidden_tag( $result ) 
+{
 	// get our options
 	$options = wphc_option();
 	$spam = false;
@@ -520,7 +524,8 @@ function wphc_check_signup_hidden_tag( $result ) {
 add_filter( 'wpmu_validate_blog_signup', 'wphc_check_signup_hidden_tag' );
 add_filter( 'wpmu_validate_user_signup', 'wphc_check_signup_hidden_tag' );
 
-function wphc_check_hidden_tag($comment) {
+function wphc_check_hidden_tag($comment) 
+{
 	// get our options
 	$type = $comment['comment_type'];
 	$options = wphc_option();
@@ -550,10 +555,13 @@ function wphc_check_hidden_tag($comment) {
 			if (@$snoop->fetchlinks($comment['comment_author_url'])){
 				$found = false;
 				
-				foreach($snoop->results as $url){
-					$url = preg_replace('/(\/|\/trackback|\/trackback\/)$/', '', $url);
-					if($url == $permalink)
-						$found = true;	
+				if( !empty( $snoop->results ) )
+				{
+					foreach($snoop->results as $url){
+						$url = preg_replace('/(\/|\/trackback|\/trackback\/)$/', '', $url);
+						if($url == $permalink)
+							$found = true;	
+					}
 				}
 				
 				if($options['logging'] && !$found) 
@@ -570,7 +578,7 @@ function wphc_check_hidden_tag($comment) {
 		// Check the wphc values against the last five keys
 		$spam = !in_array($_POST["wphc_value"], $options['key']);
 		if($options['logging'] && $spam)
-			$comment['comment_content'] .= "\n\n[WORDPRESS HASHCASH] The poster sent us '".intval($_POST["wphc_value"])." which is not a hashcash value.";
+			$comment['comment_content'] .= "\n\n[WORDPRESS HASHCASH] The poster sent us '".intval($_POST["wphc_value"])."' which is not a hashcash value.";
 	}
 	
 	if($spam){
@@ -597,5 +605,4 @@ function wphc_check_hidden_tag($comment) {
 	return $comment;
 }
 
-add_filter('preprocess_comment', 'wphc_check_hidden_tag');
 ?>

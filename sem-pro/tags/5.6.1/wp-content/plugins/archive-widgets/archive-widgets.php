@@ -4,7 +4,7 @@ Plugin Name: Archive Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/link-widgets/
 Description: Replaces WordPress' default archive widgets with advanced archive widgets
 Author: Denis de Bernardy
-Version: 1.0
+Version: 1.0.1
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: archive_widgets
@@ -145,9 +145,9 @@ class archive_widgets
 		{
 			echo '<select name="archive-dropdown" 
 				onchange="document.location.href=this.options[this.selectedIndex].value;"> 
-				<option value="">' . attribute_escape(__('Select Month')) . '</option> ' 
-				. wp_get_archives("type=monthly&format=option&show_post_count=$count") 
-				. '</select>';
+				<option value="">' . attribute_escape(__('Select Month')) . '</option> ';
+			echo wp_get_archives("type=monthly&format=option&show_post_count=$count");
+			echo '</select>';
 		} 
 		else 
 		{

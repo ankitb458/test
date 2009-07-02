@@ -4,7 +4,7 @@ Plugin Name: Semiologic Fixes
 Plugin URI: http://www.getsemiologic.com
 Description: A variety of teaks and fixes for WordPress and third party plugins
 Author: Denis de Bernardy
-Version: 1.5
+Version: 1.6
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: sem_fixes
@@ -27,6 +27,7 @@ global $sem_fixes_admin_files;
 $sem_fixes_files = array(
 	'impostercide.php',
 	'not-to-me.php',
+	'smart-update-pinger.php',
 	);
 $sem_fixes_admin_files = array(
 	'mypageorder/mypageorder.php',

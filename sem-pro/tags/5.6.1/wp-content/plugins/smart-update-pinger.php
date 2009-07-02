@@ -1,12 +1,9 @@
 <?php
 /*
-	Plugin Name: Ultimate Plugins Smart Update Pinger
-	Plugin URI: http://ultimateplugins.com/wordpress/smart-update-pinger/
-	Description: Replaces the built-in ping/notify functionality. Pings only when publishing new or future posts, not when editing. The new post's url is pinged, not the main url. Also includes reverse order logfile.
-	Author: Ultimate Plugins
-	Version: 3.1 (fork)
-	Author URI: http://ultimateplugins.com/
-	License: GNU General Public License: This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	Ultimate Plugins Smart Update Pinger
+	Description: Replaces the built-in ping/notify functionality. Pings only when publishing new or future posts, not when editing. The new post's url is pinged, not the main url. 
+	Also includes reverse order logfile (http://ultimateplugins.com/wordpress/smart-update-pinger/)
+	 GNU General Public License: This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 # Log
