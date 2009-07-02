@@ -57,6 +57,10 @@ class sem_footer
 			. '>' . "\n";
 		echo '<div class="pad">' . "\n";
 
+		echo '<div id="footer_nav" class="footer_nav inline_menu">';
+		sem_nav_menus::display('footer');
+		echo '</div><!-- #footer_nav -->' . "\n";
+		
 		if ( $sem_options['show_copyright'] )
 		{
 			global $wpdb;
@@ -94,12 +98,6 @@ class sem_footer
 			echo '</div><!-- #copyright_notice -->' . "\n";
 		}
 
-		echo '<div id="footer_nav" class="footer_nav inline_menu">';
-		
-		sem_nav_menus::display('footer');
-		
-		echo '</div><!-- #footer_nav -->' . "\n";
-		
 		do_action('display_footer_spacer');
 		
 		echo '</div>' . "\n";			

@@ -224,7 +224,7 @@ EOF;
 		
 		echo '<p>These fields let you override entry-specific SEO meta fields. They work in exactly the same way as their site-wide counterparts, which you can configure under <a href="' . trailingslashit(get_option('siteurl')) . 'wp-admin/options-general.php?page=' . plugin_basename(__FILE__) . '" target="_blank">Settings / SEO Meta</a>.</p>';
 		
-		echo '<table style="width: 100%;>';
+		echo '<table style="width: 100%;">';
 		
 		$fields = sem_seo_admin::get_fields();
 		$value = '';

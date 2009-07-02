@@ -91,7 +91,7 @@ class widget_utils
 		do_action($type . '_widget_config_affected');
 		echo '</ul>';
 	
-		echo '<table style="width: 100%;>';
+		echo '<table style="width: 100%;">';
 		
 		echo '<tr valign="top">' . "\n"
 			. '<th scope="row" width="120px;">'

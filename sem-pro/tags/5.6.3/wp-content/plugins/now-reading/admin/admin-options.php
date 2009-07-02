@@ -161,9 +161,6 @@ function nr_options() {
 					<p>
 						' . sprintf(__("If you choose this option, be sure you have a custom permalink structure set up at your <a href='%s'>Options &rarr; Permalinks</a> page.", NRTD), 'options-permalink.php') . '
 					</p>
-					<p>
-					' . __("Permalink base:") . ' ' . htmlentities(get_option('home')) . '/
-					<input type="text" name="permalink_base" id="permalink_base" value="' . htmlentities($options['permalinkBase']) . '" /></p>
 				</td>
 			</tr>
 			<tr valign="top">
@@ -193,15 +190,6 @@ function nr_options() {
 					<input type="checkbox" name="debug_mode" id="debug_mode"' . ( ($options['debugMode']) ? ' checked="checked"' : '' ) . ' />
 					<p>
 					' . __("With this option set, Now Reading will produce debugging output that might help you solve problems or at least report bugs.", NRTD) . '
-					</p>
-				</td>
-			</tr>
-			<tr valign="top">
-				<th width="33%" scope="row">' . __("Multiuser mode", NRTD) . ':</th>
-				<td>
-					<input type="checkbox" name="multiuser_mode" id="multiuser_mode"' . ( ($options['multiuserMode']) ? ' checked="checked"' : '' ) . ' />
-					<p>
-					' . __("If you have a multi-user blog, setting this option will enable you to specify which user is reading which book.", NRTD) . '
 					</p>
 				</td>
 			</tr>

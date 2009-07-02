@@ -4,7 +4,7 @@ Plugin Name: Contact Form
 Plugin URI: http://www.semiologic.com/software/publishing/contact-form/
 Description: Contact form widgets for WordPress, with built-in spam protection and akismet integration
 Author: Denis de Bernardy
-Version: 1.0
+Version: 1.0.1
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: contact_form
@@ -341,10 +341,9 @@ class contact_form
 			$args['comment'] =& $comment;
 			
 			# comment spam filters can now filter this the usual way with an appropriate method
-			$args = apply_filters('contact_form_validate', $args);
+			$ok = apply_filters('contact_form_validate', $args);
 		}
-		
-			
+				
 		if ( !$ok )
 		{
 			$GLOBALS['cf_status'][$_POST['cf_number']] = $status;
@@ -396,7 +395,7 @@ class contact_form
 			}
 		}
 		
-		return $ok;
+		return true;
 	} # akismet()
 	
 	

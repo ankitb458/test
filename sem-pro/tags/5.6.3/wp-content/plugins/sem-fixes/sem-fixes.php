@@ -4,7 +4,7 @@ Plugin Name: Semiologic Fixes
 Plugin URI: http://www.getsemiologic.com
 Description: A variety of teaks and fixes for WordPress and third party plugins
 Author: Denis de Bernardy
-Version: 1.6
+Version: 1.7
 Author URI: http://www.semiologic.com
 Update Service: http://version.semiologic.com/wordpress
 Update Tag: sem_fixes
@@ -14,7 +14,7 @@ Update Tag: sem_fixes
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
 
 http://www.mesoconcepts.com/license/
 **/
@@ -66,6 +66,9 @@ class sem_fixes
 		
 		# security fix
 		add_filter('option_default_role', array('sem_fixes', 'default_role'));
+	
+		# disable post revisions
+		add_action('init', array('sem_fixes', 'disable_post_revisions'));
 		
 		# shortcodes
 		add_filter('get_the_excerpt', array('sem_fixes', 'strip_shortcodes'), 0);
@@ -129,7 +132,17 @@ class sem_fixes
 		return $in;
 	} # restore_shortcodes()
 	
+	#
+	# disable_post_revisions()
+	#
 	
+	function disable_post_revisions()
+	{
+		remove_action ( 'pre_post_update', 'wp_save_post_revision' );
+		define('WP_POST_REVISIONS', false);
+	} # disable_post_revisions()	
+	
+
 	#
 	# default_role()
 	#

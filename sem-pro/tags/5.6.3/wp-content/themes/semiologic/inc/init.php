@@ -3,7 +3,7 @@
 # sem_version
 #
 
-define('sem_version', '5.6.2');
+define('sem_version', '5.6.3');
 
 define('sem_path', dirname(dirname(__FILE__)));
 define('sem_url', get_stylesheet_directory_uri());

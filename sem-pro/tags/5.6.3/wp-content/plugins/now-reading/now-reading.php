@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Now Reading
-Version: 4.4.3
+Version: 4.4.1
 Plugin URI: http://robm.me.uk/projects/plugins/wordpress/now-reading/
 Description: Allows you to display the books you're reading, have read recently and plan to read, with cover art fetched automatically from Amazon.
 Author: Rob Miller
@@ -9,14 +9,14 @@ Author URI: http://robm.me.uk/
  */
 /**
  * @author Rob Miller <r@robm.me.uk>
- * @version 4.4.3
+ * @version 4.4.1
  * @package now-reading
  */
 
-define('NOW_READING_VERSION', '4.4.3');
-define('NOW_READING_DB', 40);
-define('NOW_READING_OPTIONS', 10);
-define('NOW_READING_REWRITE', 9);
+define('NOW_READING_VERSION', '4.4.1');
+define('NOW_READING_DB', 38);
+define('NOW_READING_OPTIONS', 8);
+define('NOW_READING_REWRITE', 7);
 
 define('NRTD', 'now-reading');
 
@@ -96,7 +96,7 @@ function nr_install() {
 	}
 	
 	// WP's dbDelta function takes care of installing/upgrading our DB table.
-	$upgrade_file = file_exists(ABSPATH . 'wp-admin/includes/upgrade.php') ? ABSPATH . 'wp-admin/includes/upgrade.php' : ABSPATH . 'wp-admin/upgrade-functions.php';
+	$upgrade_file = file_exists(ABSPATH . 'wp-admin/upgrade.php') ? ABSPATH . 'wp-admin/upgrade.php' : ABSPATH . 'wp-admin/upgrade-functions.php';
 	require_once $upgrade_file;
 	// Until the nasty bug with duplicate indexes is fixed, we should hide dbDelta output.
 	ob_start();
@@ -110,13 +110,12 @@ function nr_install() {
 	b_nice_title VARCHAR(100) NOT NULL default '',
 	b_author VARCHAR(100) NOT NULL default '',
 	b_nice_author VARCHAR(100) NOT NULL default '',
-	b_image text NOT NULL,
+	b_image text NOT NULL default '',
 	b_asin varchar(12) NOT NULL default '',
 	b_status VARCHAR(8) NOT NULL default 'read',
 	b_rating tinyint(4) NOT NULL default '0',
-	b_review text NOT NULL,
+	b_review text NOT NULL default '',
 	b_post bigint(20) NOT NULL default '0',
-	b_reader tinyint(4) NOT NULL default '1',
 	PRIMARY KEY  (b_id),
 	INDEX permalink (b_nice_author, b_nice_title),
 	INDEX title (b_title),
@@ -126,7 +125,7 @@ function nr_install() {
 	m_id BIGINT(20) NOT NULL auto_increment,
 	m_book BIGINT(20) NOT NULL DEFAULT '0',
 	m_key VARCHAR(100) NOT NULL default '',
-	m_value TEXT NOT NULL,
+	m_value TEXT NOT NULL default '',
 	PRIMARY KEY  (m_id),
 	INDEX m_key (m_key)
 	);
@@ -165,8 +164,7 @@ function nr_install() {
 		'useModRewrite'	=> false,
 		'debugMode'		=> false,
 		'menuLayout'	=> NR_MENU_MULTIPLE,
-		'booksPerPage'  => 15,
-		'permalinkBase' => 'library/'
+		'booksPerPage'  => 15
 	);
 	add_option('nowReadingOptions', $defaultOptions);
 	
@@ -229,7 +227,7 @@ register_activation_hook('now-reading/now-reading.php', 'nr_install');
  * Checks to see if the library/book permalink query vars are set and, if so, loads the appropriate templates.
  */
 function library_init() {
-	global $wp, $wpdb, $q, $query, $wp_query;
+	global $wp, $wpdb, $q, $query;
 	
 	$wp->parse_request();
 	
@@ -238,19 +236,15 @@ function library_init() {
 	else
 		return;
 	
-	if ( get_query_var('now_reading_library') ) {
-		//filter by reader ?
-		if (get_query_var('now_reading_reader')){
-			$GLOBALS['nr_reader'] = intval(get_query_var('now_reading_reader'));
-		}
+	if ( $wp->query_vars['now_reading_library'] ) {
 		// Library page:
 		nr_load_template('library.php');
 		die;
 	}
 	
-	if ( get_query_var('now_reading_id') ) {
+	if ( $wp->query_vars['now_reading_id'] ) {
 		// Book permalink:
-		$GLOBALS['nr_id'] = intval(get_query_var('now_reading_id'));
+		$GLOBALS['nr_id'] = intval($wp->query_vars['now_reading_id']);
 		
 		$load = nr_load_template('single.php');
 		if ( is_wp_error($load) )
@@ -259,9 +253,9 @@ function library_init() {
 		die;
 	}
 	
-	if ( get_query_var('now_reading_tag') ) {
+	if ( $wp->query_vars['now_reading_tag'] ) {
 		// Tag permalink:
-		$GLOBALS['nr_tag'] = get_query_var('now_reading_tag');
+		$GLOBALS['nr_tag'] = $wp->query_vars['now_reading_tag'];
 		
 		$load = nr_load_template('tag.php');
 		if ( is_wp_error($load) )
@@ -270,7 +264,7 @@ function library_init() {
 		die;
 	}
 	
-	if ( get_query_var('now_reading_search') ) {
+	if ( $wp->query_vars['now_reading_search'] ) {
 		// Search page:
 		$GLOBALS['query'] = $_GET['q'];
 		unset($_GET['q']); // Just in case
@@ -282,10 +276,10 @@ function library_init() {
 		die;
 	}
 	
-	if ( get_query_var('now_reading_author') && get_query_var('now_reading_title') ) {
+	if ( $wp->query_vars['now_reading_author'] && $wp->query_vars['now_reading_title'] ) {
 		// Book permalink with title and author.
-		$author				= $wpdb->escape(urldecode(get_query_var('now_reading_author')));
-		$title				= $wpdb->escape(urldecode(get_query_var('now_reading_title')));
+		$author				= $wpdb->escape(urldecode($wp->query_vars['now_reading_author']));
+		$title				= $wpdb->escape(urldecode($wp->query_vars['now_reading_title']));
 		$GLOBALS['nr_id']	= $wpdb->get_var("
 		SELECT
 			b_id
@@ -304,9 +298,9 @@ function library_init() {
 		die;
 	}
 	
-	if ( get_query_var('now_reading_author') ) {
+	if ( $wp->query_vars['now_reading_author'] ) {
 		// Author permalink.
-		$author = $wpdb->escape(urldecode(get_query_var('now_reading_author')));
+		$author = $wpdb->escape(urldecode($wp->query_vars['now_reading_author']));
 		$GLOBALS['nr_author'] = $wpdb->get_var("SELECT b_author FROM {$wpdb->prefix}now_reading WHERE b_nice_author = '$author'");
 		
 		if ( empty($GLOBALS['nr_author']) )
@@ -357,11 +351,17 @@ function nr_check_for_updates() {
 	$check_url	= 'http://robm.me.uk/wp-content/plugins/downloads.php?name=now-reading&action=getlatest';
 	
 	// Some people don't have their plugins directory writable.
-	if ( !is_writable(dirname($cache)) )
+	if ( !is_writable($cache) )
 		return;
 	
+	// If the cache file doesn't exist and we can't create it, return.
+	if ( !file_exists($cache) ) {
+		if ( !@touch($cache) )
+			return;
+	}
+	
 	// Only check for updates once a day.
-	if ( file_exists($cache) && ( filemtime($cache) + 86400 ) <= time() )
+	if ( ( filemtime($cache) + 86400 ) <= time() )
 		return;
 	
 	
@@ -400,7 +400,7 @@ function nr_check_for_updates() {
 	do_action('nr_check_for_updates', compact('current', 'latest'));
 	
 	$newer_version_exists = apply_filters('nr_newer_version_exists', ( $latest > $current ));
-	
+		
 	return $newer_version_exists;
 }
 
@@ -408,23 +408,23 @@ function nr_check_for_updates() {
  * Adds our details to the title of the page - book title/author, "Library" etc.
  */
 function nr_page_title( $title ) {
-	global $wp, $wp_query;
+	global $wp;
 	$wp->parse_request();
 	
 	$title = '';
 	
-	if ( get_query_var('now_reading_library') )
+	if ( !empty($wp->query_vars['now_reading_library']) )
 		$title = 'Library';
 	
-	if ( get_query_var('now_reading_id') ) {
-		$book = get_book(intval(get_query_var('now_reading_id')));
+	if ( !empty($wp->query_vars['now_reading_id']) ) {
+		$book = get_book(intval($wp->query_vars['now_reading_id']));
 		$title = $book->title . ' by ' . $book->author;
 	}
 	
-	if ( get_query_var('now_reading_tag') )
-		$title = 'Books tagged with &ldquo;' . htmlentities(get_query_var('now_reading_tag')) . '&rdquo;';
+	if ( !empty($wp->query_vars['now_reading_tag']) )
+		$title = 'Books tagged with &ldquo;' . htmlentities($wp->query_vars['now_reading_tag']) . '&rdquo;';
 	
-	if ( get_query_var('now_reading_search') )
+	if ( !empty($wp->query_vars['now_reading_search']) )
 		$title = 'Library Search';
 	
 	if ( !empty($title) ) {
@@ -449,8 +449,7 @@ add_action('wp_head', 'nr_header_stats');
  * Adds a link in the footer. This is the best method of promotion for Now Reading; whilst you are certainly allowed to remove it, consider supporting NR by leaving it in.
  */
 function nr_promolink() {
-	
-echo "
+	echo "
 	<span class='now-reading-copyright'>
 		Powered by
 		<a href='http://robm.me.uk/'>Rob Miller</a>'s
@@ -458,7 +457,6 @@ echo "
 		plugin.
 	</span>
 	";
-
 }
 add_action('nr_footer', 'nr_promolink');
 
