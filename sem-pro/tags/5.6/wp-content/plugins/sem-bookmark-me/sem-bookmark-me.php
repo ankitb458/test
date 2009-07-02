@@ -4,7 +4,7 @@ Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/widgets/bookmark-me/
 Description: Adds widgets that lets visitors subscribe your webpages to social bookmarking sites such as del.icio.us and Digg.
 Author: Denis de Bernardy
-Version: 4.0 RC
+Version: 4.2
 Author URI: http://www.semiologic.com
 */
 
@@ -157,10 +157,6 @@ class bookmark_me
 			'reddit' => array(
 				'name' => 'Reddit',
 				'url' => 'http://reddit.com/submit?title=%title%&amp;url=%url%'
-				),
-			'rojo' => array(
-				'name' => 'Rojo',
-				'url' => 'http://www.rojo.com/submit/?title=%title%&amp;url=%url%'
 				),
 			'shadows' => array(
 				'name' => 'Shadows',
@@ -392,7 +388,7 @@ class bookmark_me
 					{
 						$o .= '<tr>';
 					}
-					elseif ( !( $i % 3 ) )
+					elseif ( !( $i % 2 ) )
 					{
 						$o .= '</tr><tr>';
 					}
@@ -475,7 +471,7 @@ class bookmark_me
 			}
 			else
 			{
-				while ( $i % 3 )
+				while ( $i % 2 )
 				{
 					$o .= '<td></td>';
 					$i++;

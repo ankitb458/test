@@ -138,7 +138,7 @@ EOF;
 					$content = file_get_contents($_FILES['upload_article']['tmp_name']);
 					
 					if ( preg_match("/
-						<\s*body(?:\s.*?)\s*>
+						<\s*body(?:\s.*?)?\s*>
 						(.*)
 						<\s*\/\s*body\s*>
 						/isx", $content, $body)

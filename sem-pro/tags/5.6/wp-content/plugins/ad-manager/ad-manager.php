@@ -4,9 +4,9 @@ Plugin Name: Ad Manager
 Plugin URI: http://www.semiologic.com/software/marketing/ad-manager/
 Description: A widget-based ad unit manager. Combine with inline widgets and widget contexts to get the most of it.
 Author: Denis de Bernardy
-Version: 1.0 RC
+Version: 1.0
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
+Update Service: http://version.semiologic.com/wordpress
 Update Tag: ad_manager
 Update Package: http://www.semiologic.com/media/software/marketing/ad-manager/ad-manager.zip
 */

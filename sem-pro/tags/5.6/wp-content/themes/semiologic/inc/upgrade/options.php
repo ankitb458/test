@@ -50,7 +50,6 @@ function sem_clean_up_options()
 	if ( get_option('silo_widgets') )
 		delete_option('silo_options');
 	delete_option('speller_options');
-	delete_option('SUP_ping');
 	delete_option('xdash_settings');
 	delete_option('yt_cache');
 	

@@ -2,7 +2,7 @@
 
 /* <WP plugin data>
  * Plugin Name:   Custom Query String
- * Version:       2.14 RC fork
+ * Version:       2.15 fork
  * Plugin URI:    http://mattread.com/projects/wp-plugins/custom-query-string-plugin/
  * Description:   Change the number of posts displayed when viewing different archive pages.
  * Author:        Matt Read
@@ -36,7 +36,7 @@
 
 
 # define the current verion
-define('k_CQS_VER', '2.11');
+define('k_CQS_VER', '2.15');
 
 class cqs
 {
@@ -61,9 +61,11 @@ class cqs
 	 * Register WordPress plugin actions and gets options.
 	 * @since version 2.6
 	 */
-	function cqs() {
-		add_action('activate_'.$this->plugin_basename(__FILE__), array(&$this, 'activate'));
-		add_action('deactivate_'.$this->plugin_basename(__FILE__), array(&$this, 'deactivate'));
+	function cqs() 
+	{
+		register_activation_hook(__FILE__, array('cqs', 'activate'));
+		register_deactivation_hook(__FILE__, array('cqs', 'deactivate'));
+	
 		add_action('admin_menu', array(&$this, 'admin_menu'));
 		add_filter('query_string', array(&$this, 'custom_query_string'));
 

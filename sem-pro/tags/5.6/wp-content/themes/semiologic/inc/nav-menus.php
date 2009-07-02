@@ -210,6 +210,11 @@ class sem_nav_menus
 			
 			foreach ( $options['items'] as $item )
 			{
+				if ( $options['display_sep'] && $i++ )
+				{
+					$o .= sem_nav_menus::display_seperator('|');
+				}
+				
 				switch ( $item['type'] )
 				{
 				case 'url':
@@ -372,6 +377,19 @@ class sem_nav_menus
 		
 		return $o;
 	} # display_page()
+	
+	
+	#
+	# display_seperator()
+	#
+	
+	function display_seperator($sep = '')
+	{
+		if ( !empty($sep) )
+		{
+			return '<span>' . $sep . '</span>';
+		}	
+	} # display_seperator()	
 	
 	
 	#

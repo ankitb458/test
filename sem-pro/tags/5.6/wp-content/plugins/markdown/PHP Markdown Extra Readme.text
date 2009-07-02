@@ -1,7 +1,11 @@
 PHP Markdown Extra
 ==================
 
-Version 1.1.7 - Wed 26 Sep 2007
+<<<<<<< HEAD:PHP Markdown Extra Readme.text
+Version 1.2.1 - Tue 27 May 2008
+=======
+Version 1.0.1m - Sat 21 Jun 2008
+>>>>>>> master:PHP Markdown Readme.text
 
 by Michel Fortin
 <http://www.michelf.com/>
@@ -203,6 +207,103 @@ expected; (3) the output PHP Markdown actually produced.
 
 Version History
 ---------------
+
+Extra 1.2.2 (21 Jun 2008):
+
+*	Fixed a problem where abbreviation definitions, footnote
+	definitions and link references were stripped inside
+	fenced code blocks.
+
+*	Fixed a bug where characters such as `"` in abbreviation
+	definitions weren't properly encoded to HTML entities.
+
+*	Fixed a bug where double quotes `"` were not correctly encoded
+	as HTML entities when used inside a footnote reference id.
+
+
+1.0.1m (21 Jun 2008):
+
+*	Lists can now have empty items.
+
+*	Rewrote the emphasis and strong emphasis parser to fix some issues
+	with odly placed and overlong markers.
+
+
+Extra 1.2.1 (27 May 2008):
+
+*	Fixed a problem where Markdown headers and horizontal rules were
+	transformed into their HTML equivalent inside fenced code blocks.
+
+
+Extra 1.2 (11 May 2008):
+
+*	Added fenced code block syntax which don't require indentation
+	and can start and end with blank lines. A fenced code block
+	starts with a line of consecutive tilde (~) and ends on the
+	next line with the same number of consecutive tilde. Here's an
+	example:
+	
+	    ~~~~~~~~~~~~
+		Hello World!
+		~~~~~~~~~~~~
+
+*	Rewrote parts of the HTML block parser to better accomodate
+	fenced code blocks.
+
+*	Footnotes may now be referenced from within another footnote.
+
+*	Added programatically-settable parser property `predef_attr` for 
+	predefined attribute definitions.
+
+*	Fixed an issue where an indented code block preceded by a blank
+	line containing some other whitespace would confuse the HTML 
+	block parser into creating an HTML block when it should have 
+	been code.
+
+
+1.0.1l (11 May 2008):
+
+*	Now removing the UTF-8 BOM at the start of a document, if present.
+
+*	Now accepting capitalized URI schemes (such as HTTP:) in automatic
+	links, such as `<HTTP://EXAMPLE.COM/>`.
+
+*	Fixed a problem where `<hr@example.com>` was seen as a horizontal
+	rule instead of an automatic link.
+
+*	Fixed an issue where some characters in Markdown-generated HTML
+	attributes weren't properly escaped with entities.
+
+*	Fix for code blocks as first element of a list item. Previously,
+	this didn't create any code block for item 2:
+	
+		*   Item 1 (regular paragraph)
+		
+		*       Item 2 (code block)
+
+*	A code block starting on the second line of a document wasn't seen
+	as a code block. This has been fixed.
+	
+*	Added programatically-settable parser properties `predef_urls` and 
+	`predef_titles` for predefined URLs and titles for reference-style 
+	links. To use this, your PHP code must call the parser this way:
+	
+		$parser = new Markdwon_Parser;
+		$parser->predef_urls = array('linkref' => 'http://example.com');
+		$html = $parser->transform($text);
+	
+	You can then use the URL as a normal link reference:
+	
+		[my link][linkref]	
+		[my link][linkRef]
+		
+	Reference names in the parser properties *must* be lowercase.
+	Reference names in the Markdown source may have any case.
+
+*	Added `setup` and `teardown` methods which can be used by subclassers
+	as hook points to arrange the state of some parser variables before and 
+	after parsing.
+
 
 Extra 1.1.7 (26 Sep 2007):
 

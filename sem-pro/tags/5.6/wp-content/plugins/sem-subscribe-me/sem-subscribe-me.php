@@ -4,7 +4,7 @@ Plugin Name: Subscribe Me
 Plugin URI: http://www.semiologic.com/software/widgets/subscribe-me/
 Description: Adds widgets that let you display feed subscription buttons.
 Author: Denis de Bernardy
-Version: 4.2 RC
+Version: 4.3
 Author URI: http://www.semiologic.com
 */
 
@@ -107,11 +107,6 @@ class subscribe_me
 				'name' => 'Netvibes',
 				'button' => 'addnetvibes.gif',
 				'url' => 'http://www.netvibes.com/subscribe.php?url=%feed_url%',
-				),
-			'rojo' => array(
-				'name' => 'Rojo',
-				'button' => 'addrojo.gif',
-				'url' => 'http://www.rojo.com/add-subscription?resource=%feed_url%'
 				),
 			'pageflakes' => array(
 				'name' => 'Pageflakes',

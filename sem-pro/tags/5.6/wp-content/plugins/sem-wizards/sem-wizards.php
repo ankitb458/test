@@ -4,9 +4,9 @@ Plugin Name: Semiologic Wizards
 Plugin URI: http://www.getsemiologic.com
 Description: Semiologic Pro Wizards
 Author: Denis de Bernardy
-Version: 1.0 RC
+Version: 1.4
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
+Update Service: http://version.semiologic.com/wordpress
 Update Tag: sem_wizards
 */
 

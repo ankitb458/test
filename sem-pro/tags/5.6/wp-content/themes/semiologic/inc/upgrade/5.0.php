@@ -194,9 +194,10 @@ $sem_seo = array(
 	'add_site_name' => (bool) $sem_options['seo']['add_site_name'],
 	'archives' => (bool) $sem_options['theme_archives'],
 	'category_dates' => true,
-	'category_excerpts' => true,
+	'category_excerpts' => false,
 	'tag_dates' => true,
 	'tag_excerpts' => false,
+	'enforce_www_preference' => false,
 	'keywords' => (string) $sem_options['seo']['keywords'],
 	'description' => (string) $sem_options['seo']['description']
 	);

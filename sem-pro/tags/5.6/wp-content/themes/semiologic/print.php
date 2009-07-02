@@ -26,6 +26,7 @@ else
 }
 ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset'); ?>" />
+<meta name="robots" content="noindex, nofollow" />
 <link rel="alternate" type="application/rss+xml" title="<?php _e('RSS feed'); ?>" href="<?php bloginfo('rss2_url'); ?>" />
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 <?php do_action('wp_head'); ?>

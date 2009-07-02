@@ -5,7 +5,7 @@ Plugin URI: http://www.ilfilosofo.com/blog/wp-db-backup
 Description: On-demand backup of your WordPress database. Navigate to <a href="edit.php?page=wp-db-backup">Manage &rarr; Backup</a> to get started.
 Author: Austin Matzko 
 Author URI: http://www.ilfilosofo.com/blog/
-Version: 2.1.5
+Version: 2.1.6 (fork)
 
 Development continued from that done by Skippy (http://www.skippy.net/)
 
@@ -61,7 +61,7 @@ class wpdbBackup {
 	var $basename;
 	var $page_url;
 	var $referer_check_key;
-	var $version = '2.1.5-alpha';
+	var $version = '2.1.6';
 
 	function gzip() {
 		return function_exists('gzopen');
@@ -92,18 +92,15 @@ class wpdbBackup {
 		if ($this->gzip()) $this->backup_filename .= '.gz';
 
 		$this->core_table_names = array(
-			$wpdb->categories,
 			$wpdb->comments,
-			$wpdb->link2cat,
-			$wpdb->linkcategories,
 			$wpdb->links,
 			$wpdb->options,
 			$wpdb->post2cat,
 			$wpdb->postmeta,
 			$wpdb->posts,
 			$wpdb->terms,
+			$wpdb->term_relationships,			
 			$wpdb->term_taxonomy,
-			$wpdb->term_relationships,
 			$wpdb->users,
 			$wpdb->usermeta,
 		);

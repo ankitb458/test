@@ -262,35 +262,26 @@ class sem_features
 		$all_features = array_keys($sem_features);
 		$activate = array_keys((array) $_POST['sem_features']);
 		$deactivate = array_diff($all_features, $activate);
-		
-		# some plugins rely on this to do things they shouldn't
-		$plugin_page_backup = $GLOBALS['plugin_page'];
-		unset($GLOBALS['plugin_page']);
-		
-		# working out a diff is invalid, as some feature can be locked or can depend on several plugins
+		$recent_plugins = get_option('active_plugins');
+
 		
 		# activate plugins
-
 		$plugins = array();
-		
 		foreach ( $activate as $key )
 		{
 			$plugins = array_merge($plugins, (array) $sem_features[$key]['plugins']);
 		}
 		
 		# have WP activate the plugins
-		$plugins = array_merge($plugins, get_option('active_plugins'));
-		update_option('deactivated_plugins', $plugins);
+		$plugins = array_merge($plugins, $recent_plugins);
 		$redirect = trailingslashit(get_option('siteurl'))
 			. 'wp-admin/admin.php?page=' . plugin_basename(__FILE__);
-		reactivate_all_plugins($redirect . '&error=true');
-		wp_redirect($redirect . '&update=true');
+		activate_plugins($plugins, $redirect . '?error=true');
 		
 		#dump($plugins);
 		#die;
 		
 		# loop through activate callbacks
-		
 		foreach ( $activate as $key )
 		{
 			if ( !is_null($sem_features[$key]['activate']) )
@@ -300,9 +291,7 @@ class sem_features
 		}
 		
 		# deactivate plugins
-
 		$plugins = array();
-		
 		foreach ( $deactivate as $k => $key )
 		{
 			if ( sem_features::is_locked($key) )
@@ -315,29 +304,17 @@ class sem_features
 			}
 		}
 		
+		deactivate_plugins($plugins);		
 		#dump($plugins);
 		#die;
 
-		# WP can deactivate plugins, but does so with a serious bug
-		$current = get_option('active_plugins');
-
-		foreach ( $plugins as $plugin )
-		{
-			if ( ( $key = array_search( $plugin, $current) ) !== false )
-			{
-				array_splice($current, $key, 1 ); // Fixed Array-fu!
-				do_action('deactivate_' . trim( $plugin ));
-			}
-		}
+		$deactivated = array();
+		$plugins = array_diff($recent_plugins, $activate);		
+		foreach( $plugins as $plugin )
+			$deactivated[ $plugin ] = time();
+		update_option('recently_activated', $deactivated + (array)get_option('recently_activated'));
 		
-		#dump($plugins);
-		#die;
-
-		update_option('active_plugins', $current);
-		
-
 		# loop through deactivate callbacks
-		
 		foreach ( $deactivate as $key )
 		{
 			if ( !is_null($sem_features[$key]['deactivate']) )
@@ -345,9 +322,8 @@ class sem_features
 				call_user_func($sem_features[$key]['deactivate']);
 			}
 		}
-		
-		# restore $plugin_page
-		$GLOBALS['plugin_page'] = $plugin_page_backup;
+				
+		wp_redirect($redirect . '&update=true');
 	} # update_options()
 	
 	
@@ -675,6 +651,7 @@ class sem_features
 		
 		unset($sem_features[$key]['locked']);
 	} # unlock()
+
 } # sem_features
 
 sem_features::init();

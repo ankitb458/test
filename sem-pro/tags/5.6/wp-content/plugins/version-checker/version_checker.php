@@ -236,7 +236,7 @@ class version_checker
 			|| $options['last_checked'] + 3600 * 24 * 2 < time()
 			)
 		{
-			$url = 'http://version.mesoconcepts.com/sem_pro/';
+			$url = 'http://version.semiologic.com/sem_pro/';
 
 			if ( function_exists('curl_init') )
 			{

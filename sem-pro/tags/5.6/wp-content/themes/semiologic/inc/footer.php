@@ -22,6 +22,10 @@ class sem_footer
 				'label' => 'Footer: Nav Menu',
 				'desc' => 'Footer: Navigation Menu. Only works in the footer.',
 				),
+			'credits' => array(
+				'label' => 'Footer: Credits',
+				'desc' => 'Footer: Credits. Only works in the footer.',
+				),				
 			) as $widget_id => $widget_details )
 		{
 			$widget_options = array('classname' => $widget_id, 'description' => $widget_details['desc'] );
@@ -98,9 +102,67 @@ class sem_footer
 		
 		do_action('display_footer_spacer');
 		
-		echo '</div>' . "\n";
+		echo '</div>' . "\n";			
+		
 		echo '</div><!-- #footer -->' . "\n";
 	} # footer_widget()
+
+
+	#
+	# credits_widget()
+	#
+	
+	function credits_widget($args)
+	{
+		global $sem_options;
+		
+		if ( is_admin() || !$GLOBALS['the_footer'] ) return;
+
+//		echo '<div class="pad">' . "\n";
+
+		if ( $sem_options['show_credits'] )
+		{		
+			echo '<div id="credits" class="credits">Made with '
+				. '<a href="http://wordpress.org">WordPress</a>'
+				. ' and '
+				. sem_footer::get_theme_description()
+				. ' &bull; '
+				. get_skin_credits()
+				. '</div><!-- #credits -->';
+		}
+		
+//		echo '</div>' . "\n";			
+		
+	} # credits_widget()
+
+	#
+	# get_theme_description()
+	#
+
+	function get_theme_description()
+	{
+		$theme_descriptions = array(
+			'<a href="http://www.semiologic.com">Semiologic</a>',
+			'a healthy dose of <a href="http://www.semiologic.com">Semiologic</a>',
+			'the <a href="http://www.semiologic.com/software/sem-theme/">Semiologic theme and CMS</a>',
+			'an <a href="http://www.semiologic.com/software/sem-theme/">easy to use WordPress theme</a>',
+			'an <a href="http://www.semiologic.com/software/sem-theme/">easy to customize WordPress theme</a>',
+			'a <a href="http://www.semiologic.com/software/sem-theme/">search engine optimized WordPress theme</a>'
+			);
+
+		$theme_descriptions = apply_filters('theme_descriptions', $theme_descriptions);
+
+		if ( sizeof($theme_descriptions) )
+		{
+			$i = rand(0, sizeof($theme_descriptions) - 1);
+
+			return $theme_descriptions[$i];
+		}
+		else
+		{
+			return '<a href="http://www.semiologic.com">Semiologic</a>';
+		}
+	} # end get_theme_description()
 } # sem_footer
 
 sem_footer::init();

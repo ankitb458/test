@@ -14,8 +14,6 @@ class related_widgets_admin
 	{
 		add_action('admin_menu', array('related_widgets_admin', 'meta_boxes'));
 
-		add_action('admin_print_scripts', array('related_widgets_admin', 'register_scripts'));
-		
 		add_filter('sem_api_key_protected', array('related_widgets_admin', 'sem_api_key_protected'));
 		
 		if ( version_compare(mysql_get_server_info(), '4.1', '<') )
@@ -49,73 +47,18 @@ class related_widgets_admin
 		return $array;
 	} # sem_api_key_protected()
 
-
-	#
-	# register_scripts()
-	#
-	
-	function register_scripts()
-	{
-		global $wp_scripts;
-		
-		if ( is_object($wp_scripts)
-			&& $wp_scripts->query( 'page', 'queue' ) //in_array('page', $wp_scripts->queue)
-			)
-		{
-			$plugin_path = plugin_basename(__FILE__);
-			$plugin_path = preg_replace("/[^\/]+$/", '', $plugin_path);
-			$plugin_path = '/wp-content/plugins/' . $plugin_path;
-
-			wp_enqueue_script( 'page_tags', $plugin_path . 'page-tags.js', array('suggest', 'jquery-ui-tabs', 'wp-lists'), '20080221' );
-
-			wp_localize_script( 'page_tags', 'page_tagsL10n', array(
-				'tagsUsed' =>  __('Tags used on this page:'),
-				'add' => attribute_escape(__('Add')),
-				'addTag' => attribute_escape(__('Add new tag')),
-				'separate' => __('Separate tags with commas'),
-			) );
-		}
-	} # register_scripts()
-
-
 	#
 	# meta_boxes()
 	#
 
 	function meta_boxes()
 	{
-		if ( !defined('page_tags_added') )
-		{
-			add_meta_box('tagsdiv', 'Tags', array('related_widgets_admin', 'page_tags'), 'page', 'normal');
-			if ( class_exists('autotag') )
-			{
-				add_meta_box('autotag', 'Autotag', array('autotag', 'entry_editor'), 'page', 'normal');
-			}
-			
-			define('page_tags_added', true);
-		}
-		
 		widget_utils::post_meta_boxes();
 		widget_utils::page_meta_boxes();
 
 		add_action('post_widget_config_affected', array('related_widgets_admin', 'widget_config_affected'));
 		add_action('page_widget_config_affected', array('related_widgets_admin', 'widget_config_affected'));
 	} # meta_boxes()
-	
-	
-	#
-	# page_tags()
-	#
-	
-	function page_tags()
-	{
-		$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
-?>
-		<p id="jaxtag"><input type="text" name="tags_input" class="tags-input" id="tags-input" size="40" tabindex="3" value="<?php echo get_tags_to_edit( $post_ID ); ?>" /></p>
-		<p id="tagchecklist"></p>
-<?php		
-	} # page_tags()
-
 
 	#
 	# widget_config_affected()

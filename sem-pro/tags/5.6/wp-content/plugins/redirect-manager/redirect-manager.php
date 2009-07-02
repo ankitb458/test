@@ -4,9 +4,9 @@ Plugin Name: Redirect Manager
 Plugin URI: http://www.semiologic.com/software/marketing/redirect-manager/
 Description: Lets you manage redirects on your site without messing around with .htaccess files
 Author: Denis de Bernardy
-Version: 1.0 RC
+Version: 1.0
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
+Update Service: http://version.semiologic.com/wordpress
 Update Tag: redirect_manager
 Update Package: http://www.semiologic.com/media/software/marketing/redirect-manager/redirect-manager.zip
 */

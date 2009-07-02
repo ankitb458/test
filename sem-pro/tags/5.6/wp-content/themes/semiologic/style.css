@@ -2,7 +2,7 @@
 Theme Name: Semiologic
 Theme URI: http://www.semiologic.com/software/wp-themes/sem-theme/
 Description: The Semiologic theme &bull; <a href="http://www.mesoconcepts.com/license/">Terms of use</a>
-Version: 5.5 RC
+Version: 5.6 Beta
 Author: Denis de Bernardy
 Author URI: http://www.mesoconcepts.com
 */
@@ -85,6 +85,13 @@ div.pad
 {
 	margin-top: 3px;
 	margin-bottom: 3px;
+}
+
+#credits
+{
+	margin: 10px auto;
+	text-align: center;
+	font-size: small;
 }
 
 .sidebar ul,
@@ -484,6 +491,68 @@ img.gravatar
 	margin: 0px .5em;
 }
 
+/* required by WP 2.5+ themes */
+.entry_content img.centered 
+{
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
+
+.entry_content img.alignright 
+{
+padding: 4px;
+margin: 0 0 2px 7px;
+display: inline;
+}
+
+.entry_content img.alignleft 
+{
+padding: 4px;
+margin: 0 7px 2px 0;
+display: inline;
+}
+
+.alignright 
+{
+float: right;
+}
+
+.alignleft 
+{
+float: left;
+}
+	
+/* required by WP 2.6+ themes */	
+.wp-caption 
+{
+   border: 1px solid #ddd;
+   text-align: center;
+   background-color: #f3f3f3;
+   padding-top: 4px;
+   margin: 10px;
+   /* optional rounded corners for browsers that support it */
+   -moz-border-radius: 3px;
+   -khtml-border-radius: 3px;
+   -webkit-border-radius: 3px;
+   border-radius: 3px;
+}
+
+.wp-caption img 
+{
+   margin: 0;
+   padding: 0;
+   border: 0 none;
+}
+
+.wp-caption p.wp-caption-text 
+{
+   font-size: 11px;
+   line-height: 17px;
+   padding: 0 4px 5px;
+   margin: 0;
+}
+
 
 /* gallery class */
 
@@ -544,11 +613,11 @@ div.announcement
 	text-align: center;
 }
 
-.sidebar .widget
+/*.sidebar .widget
 {
 	overflow: hidden;
 }
-
+*/
 
 /* calendar */
 
@@ -777,7 +846,7 @@ div.media
 }
 
 /* Image Aligns */
-
+/*
 .skin .aligncenter
 {
 	display: block;
@@ -796,3 +865,4 @@ div.media
 	float: right;
 	margin-left: .5em;
 }
+*/

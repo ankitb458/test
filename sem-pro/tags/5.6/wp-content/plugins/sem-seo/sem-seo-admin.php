@@ -65,6 +65,7 @@ class sem_seo_admin
 			case 'category_excerpts':
 			case 'tag_dates':
 			case 'tag_excerpts':
+			case 'enforce_www_preference':
 				$$field = isset($_POST[$field]);
 				break;
 			default:
@@ -149,6 +150,7 @@ EOF;
 			case 'category_excerpts':
 			case 'tag_dates':
 			case 'tag_excerpts':
+			case 'enforce_www_preference':
 				echo '<tr valign="top">'
 					. '<th scope="row">'
 					. $details['label']
@@ -229,7 +231,7 @@ EOF;
 		
 		foreach ( $fields as $field => $details )
 		{
-			if ( in_array($field, array('add_site_name', 'archives', 'category_dates', 'category_excerpts', 'tag_dates', 'tag_excerpts') ) ) continue;
+			if ( in_array($field, array('add_site_name', 'archives', 'category_dates', 'category_excerpts', 'tag_dates', 'tag_excerpts', 'enforce_www_preference') ) ) continue;
 			
 			if ( $post_ID > 0 )
 			{
@@ -280,7 +282,7 @@ EOF;
 		{
 			foreach ( array_keys(sem_seo_admin::get_fields()) as $field )
 			{
-				if ( in_array($field, array('add_site_name', 'archives', 'category_dates', 'category_excerpts', 'tag_dates', 'tag_excerpts') ) ) continue;
+				if ( in_array($field, array('add_site_name', 'archives', 'category_dates', 'category_excerpts', 'tag_dates', 'tag_excerpts', 'enforce_www_preference') ) ) continue;
 
 				delete_post_meta($post_ID, '_' . $field);
 
@@ -346,6 +348,12 @@ EOF
 In archives as lists of posts, display post excerpts in tag archives. Important: If you're using more or less the same set of tag for each post on your site, you <b>will</b> have duplicate content issues.
 EOF
 					),
+			'enforce_www_preference' => array(
+					'label' => 'Enforce WWW Preference',
+					'desc' => <<<EOF
+Provides 301 redirects to queries with <b>/index.php</b> and enforces your use or non-use of <b>www</b>.
+EOF
+					),					
 			'keywords' => array(
 					'label' => 'Meta Keywords',
 					'desc' => <<<EOF

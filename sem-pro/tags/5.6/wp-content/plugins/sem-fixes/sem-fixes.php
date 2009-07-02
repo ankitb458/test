@@ -4,9 +4,9 @@ Plugin Name: Semiologic Fixes
 Plugin URI: http://www.getsemiologic.com
 Description: A variety of teaks and fixes for WordPress and third party plugins
 Author: Denis de Bernardy
-Version: 1.0 RC
+Version: 1.5
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
+Update Service: http://version.semiologic.com/wordpress
 Update Tag: sem_fixes
 */
 
@@ -72,6 +72,9 @@ class sem_fixes
 		
 		# generator
 		add_filter('the_generator', array('sem_fixes', 'the_generator'));
+
+		# security fix		
+		add_filter('option_active_plugins', array('sem_fixes', 'kill_hack_files'));
 		
 		# tinyMCE
 		#add_filter('tiny_mce_before_init', array('sem_fixes', 'tiny_mce_config'));
@@ -336,10 +339,10 @@ class sem_fixes
 		}
 		
 		# hashcash
-		if ( function_exists('wphc_addform') )
+		if ( function_exists('wphc_add_commentform') )
 		{
 			remove_action('admin_menu', 'wphc_add_options_to_admin');
-			remove_action('comment_form', 'wphc_addform');
+			remove_action('comment_form', 'wphc_add_commentform');
 			remove_action('widgets_init', 'wphc_widget_init');
 			
 			add_action('comment_form', array('sem_fixes', 'wphc_addform'));
@@ -400,6 +403,23 @@ class sem_fixes
 		echo '<input type="hidden" id="wphc_value" name="wphc_value" value=""/>';
 		echo '<noscript><small>Wordpress Hashcash needs javascript to work, but your browser has javascript disabled. Your comment will be '.$verb.'!</small></noscript>';
 	} # wphc_addform()
+
+	#
+	# kill_hack_files()
+	#
+	function kill_hack_files($files)
+	{
+		foreach ( (array) $files as $k => $v )
+		{
+			if ( strpos($v, '..') !== false )
+			{
+				// maybe log the issue and auto-correct the option
+				unset($files[$k]);
+			}
+		}
+		return $files;
+	}
+
 } # sem_fixes
 
 sem_fixes::init();

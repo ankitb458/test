@@ -20,7 +20,7 @@
  Plugin Name: Google Sitemaps
  Plugin URI: http://www.arnebrachhold.de/2005/06/05/google-sitemaps-generator-v2-final
  Description: This generator will create a Google compliant sitemap of your WordPress blog.
- Version: 2.17 RC fork
+ Version: 2.17 fork
  Author: Arne Brachhold
  Author URI: http://www.arnebrachhold.de/
 

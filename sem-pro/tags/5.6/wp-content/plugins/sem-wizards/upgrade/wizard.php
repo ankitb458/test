@@ -707,7 +707,7 @@ class wiz_upgrade
 	{
 		if ( isset($_SESSION['sem_versions']) ) return $_SESSION['sem_versions'];
 		
-		$url = 'http://version.mesoconcepts.com/sem_pro/';
+		$url = 'http://version.semiologic.com/sem_pro/';
 
 		$lines = sem_http::get($url);
 		
@@ -1098,14 +1098,18 @@ class wiz_upgrade
 
 		closedir($files);
 
+		$filelist = array();
+		
 		foreach ( $do_dirs as $do_dir )
 		{
-			if ( !wiz_upgrade::scan_files($do_files, $do_dir) )
+			if ( !wiz_upgrade::scan_files($filelist, $do_dir) )
 			{
 				return false;
 			}
 		}
 
+		$do_files = array_merge($filelist, $do_files);
+		
 		return true;
 	} # scan_files()
 
@@ -1212,7 +1216,25 @@ class wiz_upgrade
 	#
 	# ftp_files()
 	#
+	var $filetypes = array(
+		'php' => FTP_ASCII,
+		'css' => FTP_ASCII,
+		'txt' => FTP_ASCII,
+		'js'  => FTP_ASCII,
+		'html'=> FTP_ASCII,
+		'htm' => FTP_ASCII,
+		'xml' => FTP_ASCII,
+		'ini' => FTP_ASCII,
 
+		'jpg' => FTP_BINARY,
+		'jpeg' => FTP_BINARY,		
+		'png' => FTP_BINARY,
+		'gif' => FTP_BINARY,
+		'bmp' => FTP_BINARY,
+		'swf' => FTP_BINARY,
+		'gz' => FTP_BINARY		
+		);
+							
 	function ftp_files($files)
 	{
 		if ( sem_debug ) echo "\n\n" . 'Uploading updated files' . "\n\n";
@@ -1227,7 +1249,7 @@ class wiz_upgrade
 
 			if ( !$ftp->connect($_POST['ftp_host'])
 				|| !$ftp->login($_POST['ftp_user'], $_POST['ftp_pass'])
-				|| !$ftp->Passive(true)
+				|| !$ftp->Passive(true) || !$ftp->SetType(FTP_ASCII)
 				)
 			{
 				$ftp->quit(true);
@@ -1236,10 +1258,26 @@ class wiz_upgrade
 
 			foreach ( $files[$dir] as $file )
 			{
-				if ( !$ftp->put("$tmp_path/$file", "$site_path/$file") )
+				$extension = substr(strrchr($file, '.'), 1);
+				$type = isset($ftp->filetypes[ $extension ]) ? $ftp->filetypes[ $extension ] : FTP_ASCII;
+				
+				// unfortunately the ftp class version included in wp and our ftp file use different put parameters to set transfer type
+				if ( !function_exists('ftp_connect') ) 
 				{
-					$ftp->quit(true);
-					return false;
+					$ftp->SetType($type);
+					if ( !$ftp->put("$tmp_path/$file", "$site_path/$file") )
+					{
+						$ftp->quit(true);
+						return false;
+					}
+				}
+				else
+				{
+					if ( !$ftp->put("$tmp_path/$file", "$site_path/$file", $type) )
+					{
+						$ftp->quit(true);
+						return false;
+					}
 				}
 			}
 

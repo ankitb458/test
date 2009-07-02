@@ -4,9 +4,9 @@ Plugin Name: Link Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/link-widgets/
 Description: Replaces WordPress' default link widgets with advanced link widgets
 Author: Denis de Bernardy
-Version: 1.0 RC
+Version: 1.1
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
+Update Service: http://version.semiologic.com/wordpress
 Update Tag: link_widgets
 Update Package: http://www.semiologic.com/media/software/widgets/link-widgets/link-widgets.zip
 */
@@ -129,12 +129,24 @@ class link_widgets
 		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
 		extract( $widget_args, EXTR_SKIP );
 
+		extract($args, EXTR_SKIP);
+
+		# front end: serve cache if available
+		if ( !is_admin() )
+		{
+			$cache = get_option('link_widgets_cache');
+
+			if ( isset($cache[$number]) )
+			{
+				echo $cache[$number];
+				return;
+			}
+		}
+
 		$options = get_option('link_widgets');
 		if ( !isset($options[$number]) )
 			return;
-		
-		extract($args, EXTR_SKIP);
-
+			
 		if ( is_admin() )
 		{
 			$title = $options[$number]['filter'] ? get_term_field('name', $options[$number]['filter'], 'link_category') : 'All Links';
@@ -144,14 +156,6 @@ class link_widgets
 				. $title
 				. $after_title
 				. $after_widget;
-			return;
-		}
-		
-		$cache = get_option('link_widgets_cache');
-		
-		if ( isset($cache[$number]) )
-		{
-			echo $cache[$number];
 			return;
 		}
 		

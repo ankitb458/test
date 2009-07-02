@@ -29,6 +29,10 @@ class sem_fixes_admin
 		
 		# Dashboard
 		add_action('load-index.php', array('sem_fixes_admin', 'dashboard_link'));
+		
+		#remove max width from admin screens
+		add_filter('tiny_mce_before_init', array('sem_fixes_admin', 'rmw_tinymce'));
+		add_action('admin_head', array('sem_fixes_admin', 'rmw_head'),99); //Hook late after all css has been done
 	} # init()
 	
 	
@@ -170,6 +174,14 @@ class sem_fixes_admin
 			remove_action('admin_head', 'nr_add_head');
 			add_action('admin_head', array('sem_fixes_admin', 'nr_admin_head'));
 		}
+		
+		# tinymce advanced
+		if ( function_exists('tadv_menu') ) 
+		{
+			remove_action('admin_menu', 'tadv_menu');
+			add_action('admin_menu', array('sem_fixes_admin', 'tinymce_advanced_admin_menu'));
+		}
+		
 	} # fix_plugins()
 	
 	
@@ -301,6 +313,49 @@ class sem_fixes_admin
 		<script type="text/javascript" src="' . get_bloginfo('url') . '/wp-content/plugins/now-reading/js/manage.js"></script>
 		';
 	} # nr_admin_head()
+
+	
+	#
+	# tinymce_advanced_admin_menu()
+	#
+	
+	function tinymce_advanced_admin_menu()
+	{
+		$page = add_options_page( 'TinyMCE Advanced', 'TinyMCE Advanced', 'manage_options', 'tinymce-advanced', 'tadv_page' );
+		add_action( "admin_print_scripts-$page", 'tadv_add_scripts' );
+		add_action( "admin_head-$page", 'tadv_admin_head' );
+	} #tinymce_advanced_admin_menu()	
+
+	/*
+	Remove Max Width functionality, version: 1.3
+	http://dd32.id.au/wordpress-plugins/remove-max-width/
+	by Dion Hulse (http://dd32.id.au/)
+	*/	
+	function rmw_tinymce($init)
+	{
+		$init['theme_advanced_resize_horizontal'] = true;
+		return $init;
+	}
+
+	function rmw_head()
+	{
+		global $is_IE; ?>
+		<style type="text/css" media="all">
+			.wrap, 
+			.updated,
+			.error,
+			#the-comment-list td.comment {
+				max-width: none !important;
+			}
+		<?php if( $is_IE )
+		{ ?>
+			* html #wpbody { 
+		 		_width: 99.9% !important; 
+		 	}
+		<?php } ?>
+		</style>
+	<?php } 
+	
 } # sem_fixes_admin
 
 sem_fixes_admin::init();

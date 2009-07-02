@@ -4,9 +4,9 @@ Plugin Name: Semiologic SEO
 Plugin URI: http://www.semiologic.com/software/marketing/sem-seo/
 Description: All in one SEO plugin for WordPress
 Author: Denis de Bernardy
-Version: 1.0 RC
+Version: 1.2
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
+Update Service: http://version.semiologic.com/wordpress
 Update Tag: sem_seo
 Update Package: http://www.semiologic.com/media/software/marketing/sem-seo/sem-seo.zip
 */
@@ -36,6 +36,10 @@ class sem_seo
 		
 		# redirect static front page
 		add_action('template_redirect', array('sem_seo', 'redirect'), 1000000);
+		
+		# page meta
+		if($options['enforce_www_preference'] == true)
+			add_action('wp_head', array('sem_seo', 'enforce_www'));
 		
 		# page title
 		add_filter('wp_title', array('sem_seo', 'title'), 20, 2);
@@ -95,7 +99,7 @@ class sem_seo
 	
 	#
 	# title()
-	#
+	#   Lightbox stuff&#8230;
 	
 	function title($title, $sep)
 	{
@@ -104,10 +108,13 @@ class sem_seo
 		global $wp_query;
 		
 		$title = trim($title);
-		
-		if ( strpos($title, $sep) === 0 )
+
+		if (!empty($sep))
 		{
-			$title = trim(substr($title, strlen($sep), strlen($title)));
+			if ( strpos($title, $sep) === 0 )
+			{
+				$title = trim(substr($title, strlen($sep), strlen($title)));
+			}
 		}
 		
 		#dump('</title>', $title, $sep);
@@ -619,6 +626,7 @@ class sem_seo
 				'category_excerpts' => true,
 				'tag_dates' => true,
 				'tag_excerpts' => false,
+				'enforce_www_preference' => false,
 				'keywords' => '',
 				'description' => ''
 				);
@@ -628,6 +636,39 @@ class sem_seo
 		
 		return $o;
 	} # get_options()
+
+	#
+	# get_options()
+	#
+
+/*
+Enforce <code>www.</code> Preference Version: 1.3
+http://txfx.net/code/wordpress/enforce-www-preference/
+Provides 301 redirects to queries with <strong>/index.php</strong> and enforces your use or non-use of <strong>www.</strong>
+by Mark Jaquith (http://txfx.net/)
+*/
+	function enforce_www()
+	{	
+		if ( $_SERVER['REQUEST_URI'] == str_replace('http://' . $_SERVER['HTTP_HOST'], '', get_bloginfo('home')) . '/index.php' ) 
+		{
+			header('HTTP/1.1 301 Moved Permanently');
+			header('Location: ' . get_bloginfo('home') . '/');
+			exit();
+		}
+
+		if ( strpos($_SERVER['HTTP_HOST'], 'www.') === 0  && strpos(get_bloginfo('home'), 'http://www.') === false ) 
+		{
+			header('HTTP/1.1 301 Moved Permanently');
+			header('Location: http://' . substr($_SERVER['HTTP_HOST'], 4) . $_SERVER['REQUEST_URI']);
+			exit();
+		} 
+		elseif ( strpos($_SERVER['HTTP_HOST'], 'www.') !== 0 && strpos(get_bloginfo('home'), 'http://www.') === 0 ) 
+		{
+			header('HTTP/1.1 301 Moved Permanently');
+			header('Location: http://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+			exit();
+		}
+	} # enforce_www()
 } # sem_seo
 
 sem_seo::init();

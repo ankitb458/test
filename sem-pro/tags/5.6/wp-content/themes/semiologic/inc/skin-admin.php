@@ -1,4 +1,6 @@
 <?php
+sem_path . '/inc/' . '/skin.php';
+
 #
 # add_theme_skin_options_admin()
 #
@@ -97,35 +99,6 @@ function display_theme_skin_options_admin()
 } # end display_theme_skin_options_admin()
 
 
-#
-# get_skin_data()
-#
-
-function get_skin_data($skin_id)
-{
-	$skin_data = file_get_contents(dirname(dirname(__FILE__)) . '/skins/' . $skin_id . '/skin.css');
-
-	$skin_data = str_replace("\r", "\n", $skin_data);
-
-	preg_match('/Skin(?:\s+name)?\s*:(.*)/i', $skin_data, $name);
-	preg_match('/Version\s*:(.*)/i', $skin_data, $version);
-	preg_match('/Author\s*:(.*)/i', $skin_data, $author);
-	preg_match('/Author\s+ur[il]\s*:(.*)/i', $skin_data, $author_uri);
-	preg_match('/Description\s*:(.*)/i', $skin_data, $description);
-
-#	echo '<pre>';
-#	var_dump($name, $version, $author, $author_uri, $description);
-#	echo '</pre>';
-
-	return array(
-		'skin' => $skin_id,
-		'name' => trim(end($name)),
-		'version' => trim(end($version)),
-		'author' => trim(end($author)),
-		'author_uri' => trim(end($author_uri)),
-		'description' => trim(end($description))
-		);
-} # end get_skin_data()
 
 
 #

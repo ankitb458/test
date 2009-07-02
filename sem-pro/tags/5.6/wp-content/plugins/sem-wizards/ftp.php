@@ -126,6 +126,25 @@ class ftp
 	} # chmod()
 
 
+	var $filetypes = array(
+		'php' => FTP_ASCII,
+		'css' => FTP_ASCII,
+		'txt' => FTP_ASCII,
+		'js'  => FTP_ASCII,
+		'html'=> FTP_ASCII,
+		'htm' => FTP_ASCII,
+		'xml' => FTP_ASCII,
+		'ini' => FTP_ASCII,
+
+		'jpg' => FTP_BINARY,
+		'jpeg' => FTP_BINARY,		
+		'png' => FTP_BINARY,
+		'gif' => FTP_BINARY,
+		'bmp' => FTP_BINARY,
+		'swf' => FTP_BINARY,
+		'gz' => FTP_BINARY				
+		);
+		
 	#
 	# put()
 	#
@@ -134,22 +153,10 @@ class ftp
 	{
 		if ( is_null($mode) )
 		{
-			$file_type = exec('file -i -b ' . escapeshellarg($local_file));
-
-			if ( strpos($file_type, 'application') !== false
-				|| strpos($file_type, 'image') !== false
-				|| strpos($file_type, 'audio') !== false
-				|| strpos($file_type, 'video') !== false
-				)
-			{
-				$mode = FTP_BINARY;
-			}
-			else
-			{
-				$mode = FTP_ASCII;
-			}
+			$extension = substr(strrchr($local_file, '.'), 1);
+			$mode = isset($this->filetypes[ $extension ]) ? $this->filetypes[ $extension ] : FTP_ASCII;
 		}
-
+		
 		if ( $this->debug )
 		{
 			echo 'FTP - PUT ' . $local_file . ' ' . $remote_file . "\n";
@@ -172,6 +179,30 @@ class ftp
 
 		return @ftp_chdir($this->conn, $dir);
 	} # chdir()
+	
+	
+	#
+	# SetType()
+	#
+
+	function SetType($mode)
+	{
+		if ( $this->debug )
+		{
+			echo 'FTP - SETTYPE ' . $mode . "\n";
+		}
+
+		if (( $this->conn ) && ($mode == FTP_ASCII || $mode == FTP_BINARY))
+		{
+			$this->mode = $mode;
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
+	} # SetType ()
 } # ftp
 
 endif;

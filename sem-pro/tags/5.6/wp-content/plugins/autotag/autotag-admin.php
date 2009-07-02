@@ -66,7 +66,7 @@ class autotag
 			{
 				$default = 'publish';
 			}
-			else
+			else  
 			{
 				$default = '';
 			}
@@ -82,7 +82,7 @@ class autotag
 				. '</label>' . '<br />' . "\n"
 				. '<label>'
 				. '<input type="radio" tabindex="4" name="sem_autotag" value="now" />'
-				. '&nbsp;' . 'Yes: Fetch some tags immediately, I\'d like to edit the resulting list.'
+				. '&nbsp;' . 'Yes: Fetch some tags upon saving, I\'d like to edit the resulting list.'
 				. '</label>' . '<br />' . "\n"
 				. '<label>'
 				. '<input type="radio" tabindex="4" name="sem_autotag" value="publish"'

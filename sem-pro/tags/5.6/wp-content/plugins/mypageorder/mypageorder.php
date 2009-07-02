@@ -94,7 +94,7 @@ else
 	}
 </style>
 
-<script language="JavaScript">
+<script type="text/javascript">
 	Sortable.create('order',{tag:'div'});
 
 	function orderPages() {

@@ -15,8 +15,9 @@ class sem_docs
 		global $wpdb;
 		$wpdb->sem_docs = $wpdb->prefix . 'sem_docs';
 		
-		add_action('shutdown', array('sem_docs', 'update'));
-
+//		add_action('shutdown', array('sem_docs', 'update'));
+		add_action('admin_head', array('sem_docs', 'update'));
+		
 		add_action('admin_head', array('sem_docs', 'css'));
 
 		$plugin_path = plugin_basename(__FILE__);
@@ -43,8 +44,14 @@ class sem_docs
 	
 	function init_docs()
 	{
-		$options = sem_docs::get_options();
+		global $wpdb;
 		
+		sem_docs::init_db();
+		
+//		$results = $wpdb->query("SELECT * FROM $wpdb->sem_docs");
+//		if (empty($results))
+			sem_docs::update(false);
+			
 		$user_prefs = sem_docs::get_user_prefs();
 		
 		if ( $user_prefs['show_docs'] )
@@ -69,14 +76,38 @@ class sem_docs
 	
 	function css()
 	{
-		echo '<link rel="stylesheet" type="text/css" href="'
-			. str_replace(
-				ABSPATH,
-				trailingslashit(get_option('siteurl')),
-				dirname(__FILE__) . '/admin.css'
-				)
-			. '">' . "\n";
+		echo '<link rel="stylesheet" type="text/css"'
+		. ' href="'
+			. trailingslashit(get_option('siteurl'))
+			. 'wp-content/plugins/sem-docs/admin.css'
+			. '"'
+		. ' />' . "\n";
+
 	} # css()
+	
+	
+	#
+	# init_db)
+	#
+	
+	function init_db()
+	{
+		global $wpdb;
+		
+		$wpdb->query("
+			CREATE TABLE IF NOT EXISTS $wpdb->sem_docs (
+				doc_id			int PRIMARY KEY AUTO_INCREMENT,
+				doc_cat			varchar(128) NOT NULL DEFAULT '',
+				doc_key			varchar(128) NOT NULL DEFAULT '',
+				doc_version		varchar(32) NOT NULL DEFAULT '',
+				doc_name		varchar(255) NOT NULL DEFAULT '',
+				doc_excerpt		text NOT NULL DEFAULT '',
+				doc_content		text NOT NULL DEFAULT '',
+				UNIQUE ( doc_cat, doc_key, doc_version )
+				);
+			");
+			
+	} # init_db)
 	
 	
 	#
@@ -446,7 +477,7 @@ class sem_docs
 				echo '<div id="' . $id .'">' . $err . '</div>'
 					. '<script type="text/javascript">sem_docs.prepend(\'' . $id .'\', \'wpbody\');</script>';
 			
-				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 11; # try in 3 days
+				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 13; # try in 3 days
 				update_option('sem_docs', $options);
 			
 				continue;
@@ -461,7 +492,7 @@ class sem_docs
 					)
 				)
 			{
-				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 11; # try in 3 days
+				$options[$cat][sem_docs_version] = time() - 3600 * 24 * 13; # try in 3 days
 				update_option('sem_docs', $options);
 			
 				continue;
@@ -571,21 +602,6 @@ class sem_docs
 		
 		if ( ( $o = get_option('sem_docs') ) === false )
 		{
-			global $wpdb;
-			
-			$wpdb->query("
-				CREATE TABLE IF NOT EXISTS $wpdb->sem_docs (
-					doc_id			int PRIMARY KEY AUTO_INCREMENT,
-					doc_cat			varchar(128) NOT NULL DEFAULT '',
-					doc_key			varchar(128) NOT NULL DEFAULT '',
-					doc_version		varchar(32) NOT NULL DEFAULT '',
-					doc_name		varchar(256) NOT NULL DEFAULT '',
-					doc_excerpt		text NOT NULL DEFAULT '',
-					doc_content		text NOT NULL DEFAULT '',
-					UNIQUE ( doc_cat, doc_key, doc_version )
-					);
-				");
-			
 			$o = array();
 			update_option('sem_docs', $o);
 			
@@ -724,8 +740,8 @@ class sem_docs
 				. __('Resources')
 				. '</a>'
 				. ' &bull; '
-				. '<a href="http://forum.semiologic.com">'
-				. __('Community')
+				. '<a href="http://www.semiologicforums.com">'
+				. __('Forums')
 				. '</a>';
 		}
 		else

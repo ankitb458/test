@@ -441,7 +441,7 @@ EOF;
 
 		if ( defined('GLOB_BRACE') )
 		{
-			if ( $post_ID
+			if ( isset($post_ID)
 				&& ( $header = glob(ABSPATH . 'wp-content/header/' . $post_ID . '/header{,-*}.{jpg,jpeg,png,gif,swf}', GLOB_BRACE) ) )
 			{
 				$header = current($header);

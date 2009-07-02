@@ -84,6 +84,8 @@ class sem_nav_menus_admin
 		{
 			$opt = (array) $_POST['nav-menu'][$area];
 			
+			$display_sep = isset($opt['display_sep']);
+			
 			$_items = (array) $opt['items'];
 		
 			$items = array();
@@ -119,7 +121,7 @@ class sem_nav_menus_admin
 				$items[] = $item;
 			}
 			
-			$sem_nav_menus[$area] = compact( 'items' );
+			$sem_nav_menus[$area] = compact( 'items', 'display_sep' );
 
 			update_option('sem_nav_menus', $sem_nav_menus);
 			sem_nav_menus::clear_cache();
@@ -282,6 +284,26 @@ class sem_nav_menus_admin
 		echo '</div>' . "\n"
 			. '<div style="clear: both;"></div>' . "\n"
 			. '</div>' . "\n";
+			
+		echo '<div style="margin: 0px 0px 6px 0px;">' . "\n"
+			. '<div style="width: 100px; float: left; padding-top: 2px;">' . "\n"
+			. '&nbsp;'
+			. '</div>' . "\n"
+			. '<div style="width: 350px; float: right;">' . "\n"
+			. '<label>'
+			. '<input type="checkbox"'
+			. ' id="nav-menu-display_sep-' . $number . '" name="nav-menu[' . $number . '][display_sep]"'
+			. ( $display_sep
+				? ' checked="checked"'
+				: ''
+				)
+			. ' />'
+			. '&nbsp;'
+			. 'Display Menu Seperator (|)'
+			. '</label>'
+			. '</div>' . "\n"
+			. '<div style="clear: both;"></div>' . "\n"
+			. '</div>' . "\n";				
 	} # widget_control()
 } # sem_nav_menus_admin
 

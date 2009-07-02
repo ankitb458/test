@@ -352,7 +352,7 @@ class sem_entry
 		global $sem_captions;
 
 		$o = '';
-
+		
 		if ( !is_page() )
 		{
 			if ( $sem_options['show_post_date']
@@ -363,6 +363,7 @@ class sem_entry
 					. $date
 					. '</h2>' . "\n";
 			}
+			
 		}
 
 		if ( $title = sem_entry::get('title') )
@@ -380,6 +381,17 @@ class sem_entry
 				. '</h1>' . "\n";
 		}
 
+		
+		if ( $author = sem_entry::get('author') )
+		{
+			$author_name = $sem_captions['entry_author'];
+			$author_name = str_replace('%author%', $author, $author_name);
+
+			$o .= '<div class="entry_author">'
+				. $author_name
+				. '</div>' . "\n";
+		}
+		
 		if ( $o )
 		{
 			$o = '<div class="spacer"></div>' . "\n" . $o;

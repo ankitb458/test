@@ -4,7 +4,7 @@ Plugin Name: Moderate Subscribers
 Plugin URI: http://www.skippy.net/blog/plugins/
 Description: Process comments by subscribers and contributors into the normal moderation queue, just like anonymous comments. This can become useful when registrations are open on your blog.
 Author: Scott Merrill
-Version: 1.3 RC fork
+Version: 1.3 fork
 Author URI: http://www.skippy.net/blog/
 */
 

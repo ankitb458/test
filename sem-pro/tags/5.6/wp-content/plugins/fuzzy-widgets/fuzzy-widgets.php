@@ -4,9 +4,9 @@ Plugin Name: Fuzzy Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/fuzzy-widgets/
 Description: WordPress widgets that let you list fuzzy numbers of posts, pages, links, or comments.
 Author: Denis de Bernardy
-Version: 2.0 RC
+Version: 2.1
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
+Update Service: http://version.semiologic.com/wordpress
 Update Tag: fuzzy_widgets
 Update Package: http://www.semiologic.com/media/software/widgets/fuzzy-widgets/fuzzy-widgets.zip
 */
@@ -90,6 +90,7 @@ class fuzzy_widgets
 		
 		# kill recent posts and recent comments widgets
 		global $wp_registered_widgets;
+		global $wp_registered_widget_controls;
 
 		foreach ( array('recent-posts', 'recent-comments') as $widget_id )
 		{
