@@ -214,8 +214,10 @@ class sem_panels {
 		if ( $panel_id != 'the_entry' && !class_exists('widget_contexts') && is_letter() )
 			return;
 		
+		# todo: remove
 		global $_wp_sidebars_widgets;
 		$_wp_sidebars_widgets = array();
+		# /todo
 		
 		switch ( $panel_id ) {
 		case 'left_sidebar':
@@ -281,8 +283,11 @@ class sem_panels {
 		
 		global $wp_widget_factory;
 		global $wp_registered_sidebars;
+		
+		# todo: remove
 		global $_wp_sidebars_widgets;
 		$_wp_sidebars_widgets = array();
+		# /todo
 		
 		$default_widgets = array(
 			'the_header' => array(

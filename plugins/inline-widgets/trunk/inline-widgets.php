@@ -69,8 +69,11 @@ class inline_widgets {
 	function sidebars_widgets($sidebars_widgets) {
 		global $wp_widget_factory;
 		global $wp_registered_sidebars;
+		
+		# todo: remove
 		global $_wp_sidebars_widgets;
 		$_wp_sidebars_widgets = array();
+		# /todo
 		
 		$default_widgets = array(
 			'inline_widgets' => array(
