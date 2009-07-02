@@ -104,6 +104,8 @@ function wp_write_post() {
 		$ss = ($ss > 59 ) ? $ss -60 : $ss;
 		$_POST['post_date'] = sprintf( "%04d-%02d-%02d %02d:%02d:%02d", $aa, $mm, $jj, $hh, $mn, $ss );
 		$_POST['post_date_gmt'] = get_gmt_from_date( $_POST['post_date'] );
+
+		unset($_POST['no_filter']);
 	}
 
 	// Create the post.
@@ -282,6 +284,8 @@ function edit_post() {
 		foreach ( $_POST['deletemeta'] as $key => $value )
 			delete_meta( $key );
 	}
+
+	unset($_POST['no_filter']);
 
 	add_meta( $post_ID );
 
