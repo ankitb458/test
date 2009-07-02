@@ -1,4 +1,9 @@
 <?php
+if ( !class_exists('widget_utils') )
+{
+	include dirname(__FILE__) . '/widget-utils.php';
+}
+
 class fuzzy_widgets_admin
 {
 	#
@@ -7,21 +12,52 @@ class fuzzy_widgets_admin
 
 	function init()
 	{
+		add_action('admin_menu', array('fuzzy_widgets_admin', 'meta_boxes'));
+
 		if ( !get_option('sem_links_db_changed') )
 		{
 			fuzzy_widgets_admin::install();
 		}
 
-		add_action('sidebar_admin_setup', array('fuzzy_widgets_admin', 'widget_setup'));
-		add_action('sidebar_admin_page', array('fuzzy_widgets_admin', 'widget_page'));
-
-		add_action('add_link', array('fuzzy_widgets_admin', 'link_added'));
-
 		if ( get_option('fuzzy_widgets_cache') === false )
 		{
 			update_option('fuzzy_widgets_cache', array());
 		}
+
+		add_action('add_link', array('fuzzy_widgets_admin', 'link_added'));
+
+		add_filter('sem_api_key_protected', array('fuzzy_widgets_admin', 'sem_api_key_protected'));
+		
+		if ( version_compare(mysql_get_server_info(), '4.1', '<') )
+		{
+			add_action('admin_notices', array('fuzzy_widgets_admin', 'mysql_warning'));
+			remove_action('widgets_init', array('fuzzy_widgets', 'widgetize'));
+		}
 	} # init()
+	
+	
+	#
+	# mysql_warning()
+	#
+	
+	function mysql_warning()
+	{
+		echo '<div class="error">'
+			. '<p><b style="color: firebrick;">Fuzzy Widgets Error</b><br /><b>Your MySQL version is lower than 4.1.</b> It\'s time to <a href="http://www.semiologic.com/resources/wp-basics/wordpress-server-requirements/">change hosts</a> if yours doesn\'t want to upgrade.</p>'
+			. '</div>';
+	} # mysql_warning()
+	
+		
+	#
+	# sem_api_key_protected()
+	#
+	
+	function sem_api_key_protected($array)
+	{
+		$array[] = 'http://www.semiologic.com/media/software/widgets/fuzzy-widgets/fuzzy-widgets.zip';
+		
+		return $array;
+	} # sem_api_key_protected()
 
 
 	#
@@ -64,65 +100,39 @@ class fuzzy_widgets_admin
 			WHERE	link_added = '0000-00-00 00:00:00'
 			");
 	} # link_added()
-
-
+	
+	
 	#
-	# widget_setup()
+	# meta_boxes()
 	#
-
-	function widget_setup()
+	
+	function meta_boxes()
 	{
-		$options = $newoptions = get_option('fuzzy_widgets');
+		widget_utils::post_meta_boxes();
+		widget_utils::page_meta_boxes();
 
-		if ( isset($_POST['fuzzy-widgets-number-submit']) )
-		{
-			$number = (int) $_POST['fuzzy-widgets-number'];
-			if ( $number > 9 ) $number = 9;
-			if ( $number < 1 ) $number = 1;
-			$newoptions['number'] = $number;
-		}
-
-		if ( $options != $newoptions )
-		{
-			$options = $newoptions;
-			update_option('fuzzy_widgets', $options);
-			fuzzy_widgets::widgetize();
-		}
-	} # widget_setup()
-
-
+		add_action('post_widget_config_affected', array('fuzzy_widgets_admin', 'widget_config_affected'));
+		add_action('page_widget_config_affected', array('fuzzy_widgets_admin', 'widget_config_affected'));
+	} # meta_boxes()
+	
+	
 	#
-	# widget_page()
+	# widget_config_affected()
 	#
-
-	function widget_page()
+	
+	function widget_config_affected()
 	{
-		$options = $newoptions = get_option('fuzzy_widgets');
-?>
-	<div class="wrap">
-		<form method="post" action="">
-			<h2><?php _e('Fuzzy Widgets', 'fuzzy-widgets'); ?></h2>
-			<p style="line-height: 30px;"><?php _e('How many fuzzy widgets would you like?', 'fuzzy-widgets'); ?>
-			<select id="fuzzy-widgets-number" name="fuzzy-widgets-number">
-<?php
-for ( $i = 1; $i < 10; ++$i )
-{
-	echo "<option value='$i' ".($options['number']==$i ? "selected='selected'" : '').">$i</option>";
-}
-?>
-			</select>
-			<span class="submit"><input type="submit" name="fuzzy-widgets-number-submit" id="fuzzy-widgets-number-submit" value="<?php echo attribute_escape(__('Save', 'fuzzy-widgets')); ?>" /></span></p>
-		</form>
-	</div>
-<?php
-	} # widget_page()
+		echo '<li>'
+			. 'Fuzzy Widgets'
+			. '</li>';
+	} # widget_config_affected()
 
 
 	#
 	# widget_control()
 	#
 
-	function widget_control($number = 1)
+	function widget_control($widget_args)
 	{
 		global $wpdb;
 		global $post_stubs;
@@ -170,105 +180,113 @@ for ( $i = 1; $i < 10; ++$i )
 				");
 		}
 
-		$options = $newoptions = get_option('fuzzy_widgets');
-
 		$fuzziness_types = array(
 			'days' => __('Days', 'fuzzy-widgets'),
 			'days_ago' => __('Days Ago', 'fuzzy-widgets'),
 			'items' => __('Items', 'fuzzy-widgets'),
 			);
 
-		if ( $_POST["fuzzy-widget-submit-$number"] )
+		
+		global $wp_registered_widgets;
+		static $updated = false;
+
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP ); // extract number
+
+		$options = fuzzy_widgets::get_options();
+
+		if ( !$updated && !empty($_POST['sidebar']) )
 		{
-			$opt = array();
-			$opt['title'] = strip_tags(stripslashes($_POST["fuzzy-widget-title-$number"]));
-			$opt['type'] = $_POST["fuzzy-widget-type-$number"];
-			$opt['amount'] = intval($_POST["fuzzy-widget-amount-$number"]);
-			$opt['fuzziness'] = $_POST["fuzzy-widget-fuzziness-$number"];
-			$opt['trim'] = intval($_POST["fuzzy-widget-trim-$number"]);
-			$opt['exclude'] = $_POST["fuzzy-widget-exclude-$number"];
-			$opt['date'] = isset($_POST["fuzzy-widget-date-$number"]);
-			$opt['desc'] = isset($_POST["fuzzy-widget-desc-$number"]);
+			$sidebar = (string) $_POST['sidebar'];
 
-			if ( !preg_match("/^([a-z_]+)(?:-(\d+))?$/", $opt['type'], $match) )
-			{
-				$opt['type'] = 'posts';
-				$opt['filter'] = false;
-			}
+			$sidebars_widgets = wp_get_sidebars_widgets();
+
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
 			else
-			{
-				$opt['type'] = $match[1];
-				$opt['filter'] = isset($match[2]) ? $match[2] : false;
+				$this_sidebar = array();
 
-				if ( $opt['type'] == 'links' )
+			foreach ( $this_sidebar as $_widget_id )
+			{
+				if ( array('fuzzy_widgets', 'display_widget') == $wp_registered_widgets[$_widget_id]['callback']
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
+					)
 				{
-					$opt['exclude'] = '';
+					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+					if ( !in_array( "fuzzy-widget-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
+						unset($options[$widget_number]);
+					
+					fuzzy_widgets::clear_cache();
+				}
+			}
+
+			foreach ( (array) $_POST['fuzzy-widget'] as $num => $opt ) {
+				$title = strip_tags(stripslashes($opt['title']));
+				$type = $opt['type'];
+				$amount = intval($opt['amount']);
+				$fuzziness = $opt['fuzziness'];
+				$date = isset($opt['date']);
+				$desc = isset($opt['desc']);
+
+				if ( !preg_match("/^([a-z_]+)(?:-(\d+))?$/", $type, $match) )
+				{
+					$type = 'posts';
+					$filter = false;
 				}
 				else
 				{
-					$opt['desc'] = false;
+					$type = $match[1];
+					$filter = isset($match[2]) ? $match[2] : false;
 				}
+
+				if ( $amount <= 0 )
+				{
+					$amount = 5;
+				}
+
+				if ( !in_array($fuzziness, array_keys($fuzziness_types)) )
+				{
+					$fuzziness = 'days';
+				}
+
+				if ( $type == 'comments' )
+				{
+					$desc = false;
+				}
+
+				$options[$num] = compact( 'title', 'type', 'filter', 'amount', 'fuzziness', 'date', 'desc' );
 			}
 
-			if ( $opt['amount'] <= 0 )
-			{
-				$opt['amount'] = 5;
-			}
-
-			if ( !in_array($opt['fuzziness'], array_keys($fuzziness_types)) )
-			{
-				$opt['fuzziness'] = 'days';
-			}
-
-			if ( $opt['trim'] <= 0 )
-			{
-				$opt['trim'] = '';
-			}
-
-			preg_match_all("/\d+/", $opt['exclude'], $exclude, PREG_PATTERN_ORDER);
-
-			$exclude = end($exclude);
-
-			$opt['exclude'] = '';
-
-			foreach ( $exclude as $id )
-			{
-				$opt['exclude'] .= ( $opt['exclude'] ? ', ' : '' ) . $id;
-			}
-
-			$newoptions[$number] = $opt;
-		}
-
-		if ( $options != $newoptions )
-		{
-			$options = $newoptions;
 			update_option('fuzzy_widgets', $options);
+
+			$updated = true;
 		}
 
-		if ( !is_array($options[$number]) )
+		if ( -1 == $number )
 		{
-			$options[$number] = array(
-				'title' => __('Recent Posts'),
-				'type' => 'posts',
-				'amount' => 5,
-				'fuzziness' => 'days',
-				'trim' => '',
-				'exclude' => '',
-				'date' => true,
-				'desc' => false,
-				);
+			$ops = fuzzy_widgets::default_options();
+			$number = '%i%';
 		}
+		else
+		{
+			$ops = $options[$number];
+		}
+
+		extract($ops);
+		
 
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="fuzzy-widget-title-' . $number . '">'
-			. __('Title', 'fuzzy-widgets') . ':'
+			. __('Title', 'fuzzy-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">'
 			. '<input style="width: 320px;"'
-			. ' id="fuzzy-widget-title-' . $number . '" name="fuzzy-widget-title-' . $number . '"'
-			. ' type="text" value="' . attribute_escape($options[$number]['title']) . '"'
+			. ' id="fuzzy-widget-title-' . $number . '" name="fuzzy-widget[' . $number . '][title]"'
+			. ' type="text" value="' . attribute_escape($title) . '"'
 			. ' />'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
@@ -278,20 +296,20 @@ for ( $i = 1; $i < 10; ++$i )
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="fuzzy-widget-type-' . $number . '">'
-			. __('Recent', 'fuzzy-widgets') . ':'
+			. __('Recent', 'fuzzy-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">';
 
-		$type = $options[$number]['type']
-			. ( $options[$number]['filter']
-				? ( '-' . $options[$number]['filter'] )
+		$type = $type
+			. ( $filter
+				? ( '-' . $filter )
 				: ''
 				);
 
 		echo '<select'
 				. ' style="width: 320px;"'
-				. ' id="fuzzy-widget-type-' . $number . '" name="fuzzy-widget-type-' . $number . '"'
+				. ' id="fuzzy-widget-type-' . $number . '" name="fuzzy-widget[' . $number . '][type]"'
 				. '>';
 
 		echo '<optgroup label="' . __('Posts', 'fuzzy-widgets') . '">'
@@ -314,7 +332,7 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Posts', 'fuzzy-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Posts', 'fuzzy-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
@@ -340,7 +358,7 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Pages', 'fuzzy-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Pages', 'fuzzy-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
@@ -366,7 +384,7 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Links', 'fuzzy-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Links', 'fuzzy-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
@@ -420,22 +438,23 @@ for ( $i = 1; $i < 10; ++$i )
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="fuzzy-widget-amount-' . $number . '">'
-			. __('Fuzziness', 'fuzzy-widgets') . ':'
+			. __('Fuzziness', 'fuzzy-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">'
 			. '<input style="width: 30px;"'
-			. ' id="fuzzy-widget-amount-' . $number . '" name="fuzzy-widget-amount-' . $number . '"'
-			. ' type="text" value="' . $options[$number]['amount'] . '"'
+			. ' id="fuzzy-widget-amount-' . $number . '" name="fuzzy-widget[' . $number . '][amount]"'
+			. ' type="text" value="' . $amount . '"'
 			. ' />'
+			. '&nbsp;'
 			. '<select'
-				. ' id="fuzzy-widget-fuzziness-' . $number . '" name="fuzzy-widget-fuzziness-' . $number . '"'
+				. ' id="fuzzy-widget-fuzziness-' . $number . '" name="fuzzy-widget[' . $number . '][fuzziness]"'
 				. '>';
 
-		foreach ( $fuzziness_types as $fuzziness => $label )
+		foreach ( $fuzziness_types as $fuzziness_type => $label )
 		{
-			echo '<option value="' . $fuzziness . '"'
-				. ( $fuzziness == $options[$number]['fuzziness']
+			echo '<option value="' . $fuzziness_type . '"'
+				. ( $fuzziness_type == $fuzziness
 					? ' selected="selected"'
 					: ''
 					)
@@ -453,14 +472,14 @@ for ( $i = 1; $i < 10; ++$i )
 			. '<div style="width: 330px; float: right;">'
 			. '<label for="fuzzy-widget-date-' . $number . '">'
 			. '<input'
-			. ' id="fuzzy-widget-date-' . $number . '" name="fuzzy-widget-date-' . $number . '"'
+			. ' id="fuzzy-widget-date-' . $number . '" name="fuzzy-widget[' . $number . '][date]"'
 			. ' type="checkbox"'
-			. ( $options[$number]['date']
+			. ( $date
 				? ' checked="checked"'
 				: ''
 				)
 			. ' />'
-			. '&nbsp;' . __('Show date', 'fuzzy-widgets')
+			. '&nbsp;' . __('Show Dates', 'fuzzy-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
@@ -470,58 +489,18 @@ for ( $i = 1; $i < 10; ++$i )
 			. '<div style="width: 330px; float: right;">'
 			. '<label for="fuzzy-widget-desc-' . $number . '">'
 			. '<input'
-			. ' id="fuzzy-widget-desc-' . $number . '" name="fuzzy-widget-desc-' . $number . '"'
+			. ' id="fuzzy-widget-desc-' . $number . '" name="fuzzy-widget[' . $number . '][desc]"'
 			. ' type="checkbox"'
-			. ( $options[$number]['desc']
+			. ( $desc
 				? ' checked="checked"'
 				: ''
 				)
 			. ' />'
-			. '&nbsp;' . __('Show <b>link</b> description', 'fuzzy-widgets')
+			. '&nbsp;' . __('Show Descriptions (posts, pages and links)', 'fuzzy-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
 			. '</div>';
-
-		echo '<div style="margin: 0px 0px 6px 0px;">'
-			. '<div style="width: 120px; float: left; padding-top: 2px;">'
-			. '<label for="fuzzy-widget-trim-' . $number . '">'
-			. __('Max Length', 'fuzzy-widgets') . ':'
-			. '</label>'
-			. '</div>'
-			. '<div style="width: 330px; float: right;">'
-			. '<input style="width: 30px;"'
-			. ' id="fuzzy-widget-trim-' . $number . '" name="fuzzy-widget-trim-' . $number . '"'
-			. ' type="text" value="' . ( $options[$number]['trim'] ? $options[$number]['trim'] : '' ) . '"'
-			. ' />'
-			. ' ' . __('Characters', 'fuzzy-widgets')
-			. '</div>'
-			. '<div style="clear: both;"></div>'
-			. '</div>';
-
-
-		echo '<div style="margin: 0px 0px 6px 0px;">'
-			. '<div style="width: 120px; float: left; padding-top: 2px;">'
-			. '<label for="fuzzy-widget-exclude-' . $number . '">'
-			. __('Exclude', 'fuzzy-widgets') . ':'
-			. '</label>'
-			. '</div>'
-			. '<div style="width: 330px; float: right;">'
-			. '<input style="width: 320px;"'
-			. ' id="fuzzy-widget-exclude-' . $number . '" name="fuzzy-widget-exclude-' . $number . '"'
-			. ' type="text" value="' . ( $options[$number]['exclude'] ? $options[$number]['exclude'] : '' ) . '"'
-			. ' />'
-			. '<br />'
-			. __('(Enter a comma separated list of post or page IDs)', 'fuzzy-widgets')
-			. '</div>'
-			. '<div style="clear: both;"></div>'
-			. '</div>';
-
-
-		echo '<input type="hidden"'
-			. ' id="fuzzy-widget-submit-' . $number . '" name="fuzzy-widget-submit-' . $number . '"'
-			. ' value="1"'
-			. ' />';
 	} # widget_control()
 } # fuzzy_widgets_admin
 

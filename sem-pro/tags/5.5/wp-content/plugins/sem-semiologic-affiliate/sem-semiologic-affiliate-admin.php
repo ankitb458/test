@@ -11,7 +11,7 @@ function add_semiologic_affiliate_admin()
 				__('Semiologic&nbsp;Affiliate'),
 				__('Semiologic&nbsp;Affiliate'),
 				'manage_options',
-				str_replace("\\", "/", __FILE__),
+				__FILE__,
 				'display_semiologic_affiliate_admin'
 				);
 	}
@@ -71,15 +71,14 @@ function display_semiologic_affiliate_admin()
 		echo "<div class=\"updated\">\n"
 			. "<p>"
 				. "<strong>"
-				. __('Options saved.')
+				. __('Settings saved.')
 				. "</strong>"
 			. "</p>\n"
 			. "</div>\n";
 	}
 ?><div class="wrap">
-	<h2><?php echo __('Semiologic Affiliate options'); ?></h2>
+	<h2><?php echo __('Semiologic Affiliate Settings'); ?></h2>
 
-	<p><a href="http://www.semiologic.com/partners/"><?php echo __('Semiologic Affiliate Program details'); ?></a></p>
 <?php
 	if ( $_POST['update_semiologic_affiliate_options'] )
 	{
@@ -107,20 +106,29 @@ function display_semiologic_affiliate_admin()
 	}
 
 
-		echo '<p>'
-			. '<label for="aff_id">'
-			. __('Your Affiliate ID') . ':'
-			. '<br />'
-			. 'http://www.getsemiologic.com?aff=<input type="text"'
-				. ' name="aff_id" id="aff_id"'
-				. ' value="' . htmlspecialchars($options['aff_id'], ENT_QUOTES) . '"'
-				. ' />'
-			. '</label>'
-			. '</p>';
+	echo '<table class="form-table">';
+	
+	echo '<tr>'
+		. '<th scope="row">'
+		. '<label for="aff_id">'
+		. __('Your Affiliate ID')
+		. '</label>'
+		. '</th>'
+		. '<td>'
+		. '<label for="aff_id">'
+		. 'http://www.getsemiologic.com?aff=<input type="text"'
+			. ' name="aff_id" id="aff_id"'
+			. ' value="' . htmlspecialchars($options['aff_id'], ENT_QUOTES) . '"'
+			. ' />'
+		. '</label>'
+		. '<p><a href="http://www.semiologic.com/partners/">' . __('Semiologic Affiliate Program details') . '</a></p>'
+		. '</td>'
+		. '</tr>'
+		. '</table>';
 
 ?>	<p class="submit">
 	<input type="submit"
-		value="<?php echo __('Update Options'); ?>"
+		value="<?php echo attribute_escape(__('Save Changes')); ?>"
 		 />
 	</p>
 </div>

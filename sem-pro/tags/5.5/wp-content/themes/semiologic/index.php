@@ -9,35 +9,34 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
-
 # show header
 include_once sem_path . '/header.php';
 
 do_action('before_the_entries');
 
 # show posts
-if ( have_posts() && !is_404() )
+if ( have_posts() )
 {
 	while ( have_posts() )
 	{
 		the_post();
 
-		echo '<div class="entry" id="entry-' . get_the_ID() . '">';
+		echo '<div class="entry" id="entry-' . get_the_ID() . '">' . "\n";
 
 		do_action('the_entry');
 
-		echo '</div>';
+		echo '</div>' . "\n";
 	}
 
 }
 # or fallback
-else
+elseif ( is_404() || is_search() )
 {
-	echo '<div class="entry">';
+	echo '<div class="entry">' . "\n";
 
-	do_action('display_404');
+	do_action('the_404');
 
-	echo '</div>';
+	echo '</div>' . "\n";
 }
 
 do_action('after_the_entries');

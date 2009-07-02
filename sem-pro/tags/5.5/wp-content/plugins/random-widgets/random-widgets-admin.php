@@ -1,4 +1,9 @@
 <?php
+if ( !class_exists('widget_utils') )
+{
+	include dirname(__FILE__) . '/widget-utils.php';
+}
+
 class random_widgets_admin
 {
 	#
@@ -7,68 +12,73 @@ class random_widgets_admin
 
 	function init()
 	{
-		add_action('sidebar_admin_setup', array('random_widgets_admin', 'widget_setup'));
-		add_action('sidebar_admin_page', array('random_widgets_admin', 'widget_page'));
+		add_action('admin_menu', array('random_widgets_admin', 'meta_boxes'));
+
+		add_filter('sem_api_key_protected', array('random_widgets_admin', 'sem_api_key_protected'));
+		
+		if ( version_compare(mysql_get_server_info(), '4.1', '<') )
+		{
+			add_action('admin_notices', array('random_widgets_admin', 'mysql_warning'));
+			remove_action('widgets_init', array('random_widgets', 'widgetize'));
+		}
 	} # init()
-
-
+	
+	
 	#
-	# widget_setup()
+	# mysql_warning()
 	#
-
-	function widget_setup()
+	
+	function mysql_warning()
 	{
-		$options = $newoptions = get_option('random_widgets');
-
-		if ( isset($_POST['random-widgets-number-submit']) )
-		{
-			$number = (int) $_POST['random-widgets-number'];
-			if ( $number > 9 ) $number = 9;
-			if ( $number < 1 ) $number = 1;
-			$newoptions['number'] = $number;
-		}
-
-		if ( $options != $newoptions )
-		{
-			$options = $newoptions;
-			update_option('random_widgets', $options);
-			random_widgets::widgetize();
-		}
-	} # widget_setup()
+		echo '<div class="error">'
+			. '<p><b style="color: firebrick;">Random Widgets Error</b><br /><b>Your MySQL version is lower than 4.1.</b> It\'s time to <a href="http://www.semiologic.com/resources/wp-basics/wordpress-server-requirements/">change hosts</a> if yours doesn\'t want to upgrade.</p>'
+			. '</div>';
+	} # mysql_warning()
 
 
 	#
-	# widget_page()
+	# sem_api_key_protected()
 	#
-
-	function widget_page()
+	
+	function sem_api_key_protected($array)
 	{
-		$options = $newoptions = get_option('random_widgets');
-?>
-	<div class="wrap">
-		<form method="post" action="">
-			<h2><?php _e('Random Widgets', 'random-widgets'); ?></h2>
-			<p style="line-height: 30px;"><?php _e('How many random widgets would you like?', 'random-widgets'); ?>
-			<select id="random-widgets-number" name="random-widgets-number">
-<?php
-for ( $i = 1; $i < 10; ++$i )
-{
-	echo "<option value='$i' ".($options['number']==$i ? "selected='selected'" : '').">$i</option>";
-}
-?>
-			</select>
-			<span class="submit"><input type="submit" name="random-widgets-number-submit" id="random-widgets-number-submit" value="<?php echo attribute_escape(__('Save', 'random-widgets')); ?>" /></span></p>
-		</form>
-	</div>
-<?php
-	} # widget_page()
+		$array[] = 'http://www.semiologic.com/media/software/widgets/random-widgets/random-widgets.zip';
+		
+		return $array;
+	} # sem_api_key_protected()
+	
+	
+	#
+	# meta_boxes()
+	#
+	
+	function meta_boxes()
+	{
+		widget_utils::post_meta_boxes();
+		widget_utils::page_meta_boxes();
+
+		add_action('post_widget_config_affected', array('random_widgets_admin', 'widget_config_affected'));
+		add_action('page_widget_config_affected', array('random_widgets_admin', 'widget_config_affected'));
+	} # meta_boxes()
+	
+	
+	#
+	# widget_config_affected()
+	#
+	
+	function widget_config_affected()
+	{
+		echo '<li>'
+			. 'Random Widgets'
+			. '</li>';
+	} # widget_config_affected()
 
 
 	#
 	# widget_control()
 	#
 
-	function widget_control($number = 1)
+	function widget_control($widget_args)
 	{
 		global $wpdb;
 		global $post_stubs;
@@ -116,91 +126,97 @@ for ( $i = 1; $i < 10; ++$i )
 				");
 		}
 
-		$options = $newoptions = get_option('random_widgets');
+		
+		global $wp_registered_widgets;
+		static $updated = false;
 
-		if ( $_POST["random-widget-submit-$number"] )
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP ); // extract number
+
+		$options = random_widgets::get_options();
+
+		if ( !$updated && !empty($_POST['sidebar']) )
 		{
-			$opt = array();
-			$opt['title'] = strip_tags(stripslashes($_POST["random-widget-title-$number"]));
-			$opt['type'] = $_POST["random-widget-type-$number"];
-			$opt['amount'] = intval($_POST["random-widget-amount-$number"]);
-			$opt['trim'] = intval($_POST["random-widget-trim-$number"]);
-			$opt['exclude'] = $_POST["random-widget-exclude-$number"];
-			$opt['desc'] = isset($_POST["random-widget-desc-$number"]);
+			$sidebar = (string) $_POST['sidebar'];
 
-			if ( !preg_match("/^([a-z_]+)(?:-(\d+))?$/", $opt['type'], $match) )
-			{
-				$opt['type'] = 'posts';
-				$opt['filter'] = false;
-			}
+			$sidebars_widgets = wp_get_sidebars_widgets();
+
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
 			else
-			{
-				$opt['type'] = $match[1];
-				$opt['filter'] = isset($match[2]) ? $match[2] : false;
+				$this_sidebar = array();
 
-				if ( $opt['type'] == 'links' )
+			foreach ( $this_sidebar as $_widget_id )
+			{
+				if ( array('random_widgets', 'display_widget') == $wp_registered_widgets[$_widget_id]['callback']
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
+					)
 				{
-					$opt['exclude'] = '';
+					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+					if ( !in_array( "random-widget-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
+						unset($options[$widget_number]);
+				}
+			}
+
+			foreach ( (array) $_POST['random-widget'] as $num => $opt ) {
+				$title = strip_tags(stripslashes($opt['title']));
+				$type = $opt['type'];
+				$amount = intval($opt['amount']);
+				$desc = isset($opt['desc']);
+
+				if ( !preg_match("/^([a-z_]+)(?:-(\d+))?$/", $type, $match) )
+				{
+					$type = 'posts';
+					$filter = false;
 				}
 				else
 				{
-					$opt['desc'] = false;
+					$type = $match[1];
+					$filter = isset($match[2]) ? $match[2] : false;
 				}
+
+				if ( $amount <= 0 )
+				{
+					$amount = 5;
+				}
+
+				if ( $type == 'comments' )
+				{
+					$desc = false;
+				}
+
+				$options[$num] = compact( 'title', 'type', 'filter', 'amount', 'desc' );
 			}
 
-			if ( $opt['amount'] <= 0 )
-			{
-				$opt['amount'] = 5;
-			}
-
-			if ( $opt['trim'] <= 0 )
-			{
-				$opt['trim'] = '';
-			}
-
-			preg_match_all("/\d+/", $opt['exclude'], $exclude, PREG_PATTERN_ORDER);
-
-			$exclude = end($exclude);
-
-			$opt['exclude'] = '';
-
-			foreach ( $exclude as $id )
-			{
-				$opt['exclude'] .= ( $opt['exclude'] ? ', ' : '' ) . $id;
-			}
-
-			$newoptions[$number] = $opt;
-		}
-
-		if ( !is_array($options[$number]) )
-		{
-			$options[$number] = array(
-				'title' => __('Random Posts'),
-				'type' => 'posts',
-				'amount' => 5,
-				'trim' => '',
-				'exclude' => '',
-				'desc' => false,
-				);
-		}
-
-		if ( $options != $newoptions )
-		{
-			$options = $newoptions;
 			update_option('random_widgets', $options);
+			$updated = true;
 		}
 
+		if ( -1 == $number )
+		{
+			$ops = random_widgets::default_options();
+			$number = '%i%';
+		}
+		else
+		{
+			$ops = $options[$number];
+		}
 
+		extract($ops);
+
+		
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="random-widget-title-' . $number . '">'
-			. __('Title', 'random-widgets') . ':'
+			. __('Title', 'random-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">'
 			. '<input style="width: 320px;"'
-			. ' id="random-widget-title-' . $number . '" name="random-widget-title-' . $number . '"'
-			. ' type="text" value="' . attribute_escape($options[$number]['title']) . '"'
+			. ' id="random-widget-title-' . $number . '" name="random-widget[' . $number . '][title]"'
+			. ' type="text" value="' . attribute_escape($title) . '"'
 			. ' />'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
@@ -210,20 +226,20 @@ for ( $i = 1; $i < 10; ++$i )
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="random-widget-type-' . $number . '">'
-			. __('Recent', 'random-widgets') . ':'
+			. __('Recent', 'random-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">';
 
-		$type = $options[$number]['type']
-			. ( $options[$number]['filter']
-				? ( '-' . $options[$number]['filter'] )
+		$type = $type
+			. ( $filter
+				? ( '-' . $filter )
 				: ''
 				);
 
 		echo '<select'
 				. ' style="width: 320px;"'
-				. ' id="random-widget-type-' . $number . '" name="random-widget-type-' . $number . '"'
+				. ' id="random-widget-type-' . $number . '" name="random-widget[' . $number . '][type]"'
 				. '>';
 
 		echo '<optgroup label="' . __('Posts', 'random-widgets') . '">'
@@ -246,7 +262,7 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Posts', 'random-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Posts', 'random-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
@@ -272,7 +288,7 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Pages', 'random-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Pages', 'random-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
@@ -298,7 +314,7 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Links', 'random-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Links', 'random-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
@@ -317,19 +333,6 @@ for ( $i = 1; $i < 10; ++$i )
 
 		echo '</optgroup>';
 
-		echo '<optgroup label="' . __('Updates', 'random-widgets') . '">'
-			. '<option'
-			. ' value="updates"'
-			. ( $type == 'updates'
-				? 'selected="selected"'
-				: ''
-				)
-			. '>'
-			. __('Updates', 'random-widgets')
-			. '</option>';
-
-		echo '</optgroup>';
-
 		echo '</select>'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
@@ -339,15 +342,14 @@ for ( $i = 1; $i < 10; ++$i )
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="random-widget-amount-' . $number . '">'
-			. __('Quantity', 'random-widgets') . ':'
+			. __('Quantity', 'random-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">'
 			. '<input style="width: 30px;"'
-			. ' id="random-widget-amount-' . $number . '" name="random-widget-amount-' . $number . '"'
-			. ' type="text" value="' . $options[$number]['amount'] . '"'
+			. ' id="random-widget-amount-' . $number . '" name="random-widget[' . $number . '][amount]"'
+			. ' type="text" value="' . $amount . '"'
 			. ' />'
-			. ' ' . __('items', 'random-widgets')
 			. '</div>'
 			. '<div style="clear: both;"></div>'
 			. '</div>';
@@ -356,58 +358,28 @@ for ( $i = 1; $i < 10; ++$i )
 			. '<div style="width: 330px; float: right;">'
 			. '<label for="random-widget-desc-' . $number . '">'
 			. '<input'
-			. ' id="random-widget-desc-' . $number . '" name="random-widget-desc-' . $number . '"'
+			. ' id="random-widget-desc-' . $number . '" name="random-widget[' . $number . '][desc]"'
 			. ' type="checkbox"'
-			. ( $options[$number]['desc']
+			. ( $desc
 				? ' checked="checked"'
 				: ''
 				)
 			. ' />'
-			. '&nbsp;' . __('Show link description', 'random-widgets')
+			. '&nbsp;' . __('Show Descriptions (posts, pages and links)', 'random-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
 			. '</div>';
-
+		
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
-			. '<label for="random-widget-trim-' . $number . '">'
-			. __('Max Length', 'random-widgets') . ':'
-			. '</label>'
+			. __('Notice', 'random-widgets')
 			. '</div>'
 			. '<div style="width: 330px; float: right;">'
-			. '<input style="width: 30px;"'
-			. ' id="random-widget-trim-' . $number . '" name="random-widget-trim-' . $number . '"'
-			. ' type="text" value="' . ( $options[$number]['trim'] ? $options[$number]['trim'] : '' ) . '"'
-			. ' />'
-			. ' ' . __('Characters', 'random-widgets')
+			. __('While fun, this plugin cannot be cached, and Google tends to hate randomness. Avoid like plague if performance and SEO are of any importance to you.', 'random-widgets')
 			. '</div>'
 			. '<div style="clear: both;"></div>'
 			. '</div>';
-
-
-		echo '<div style="margin: 0px 0px 6px 0px;">'
-			. '<div style="width: 120px; float: left; padding-top: 2px;">'
-			. '<label for="random-widget-exclude-' . $number . '">'
-			. __('Exclude', 'random-widgets') . ':'
-			. '</label>'
-			. '</div>'
-			. '<div style="width: 330px; float: right;">'
-			. '<input style="width: 320px;"'
-			. ' id="random-widget-exclude-' . $number . '" name="random-widget-exclude-' . $number . '"'
-			. ' type="text" value="' . ( $options[$number]['exclude'] ? $options[$number]['exclude'] : '' ) . '"'
-			. ' />'
-			. '<br />'
-			. __('(Enter a comma separated list of post or page IDs)', 'random-widgets')
-			. '</div>'
-			. '<div style="clear: both;"></div>'
-			. '</div>';
-
-
-		echo '<input type="hidden"'
-			. ' id="random-widget-submit-' . $number . '" name="random-widget-submit-' . $number . '"'
-			. ' value="1"'
-			. ' />';
 	} # widget_control()
 } # random_widgets_admin
 

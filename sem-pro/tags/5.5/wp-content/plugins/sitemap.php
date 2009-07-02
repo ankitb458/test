@@ -17,15 +17,12 @@
 
  Info for WordPress:
  ==============================================================================
- Plugin Name: Google Sitemaps (fork)
+ Plugin Name: Google Sitemaps
  Plugin URI: http://www.arnebrachhold.de/2005/06/05/google-sitemaps-generator-v2-final
  Description: This generator will create a Google compliant sitemap of your WordPress blog.
- Version: 2.16 fork
+ Version: 2.17 RC fork
  Author: Arne Brachhold
  Author URI: http://www.arnebrachhold.de/
- Update Service: http://version.mesoconcepts.com/wordpress
- Update Tag: sitemap
- Update URI: http://www.semiologic.com/members/sem-pro/download/
 
 
  Contributors:
@@ -807,7 +804,7 @@ if(!function_exists("sm_reg_admin")) {
 		if ( !function_exists('get_site_option') )
 		{
 			if (function_exists('add_options_page')) {
-				add_options_page('Sitemap Generator', 'Sitemap', 'manage_options', basename(__FILE__), 'sm_options_page');
+				add_options_page('Sitemap Generator', 'Sitemap', 'manage_options', __FILE__, 'sm_options_page');
 			}
 		}
 	}
@@ -1194,9 +1191,11 @@ function sm_serve_sitemap()
 {
 	if ( strpos($_SERVER['REQUEST_URI'], '/sitemap.xml') !== false )
 	{
+		$sitemap = preg_replace("/.*\/|\?.*/", '', $_SERVER['REQUEST_URI']);
+
 		$sitemap = ABSPATH
 				. 'wp-content/sitemaps/'
-				. $_SERVER['REQUEST_URI'];
+				. $sitemap;
 
 		if ( file_exists($sitemap) )
 		{

@@ -2,21 +2,19 @@
 /*
 Plugin Name: Dealdotcom
 Plugin URI: http://www.semiologic.com/software/marketing/dealdotcom/
-Description: A widget to display <a href="http://www.semiologic.com/go/dealdotcom">dealdotcom</a>'s deal of the day.
+Description: A widget to display <a href="http://go.semiologic.com/dealdotcom">dealdotcom</a>'s deal of the day.
 Author: Denis de Bernardy
-Version: 1.0
+Version: 1.1 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: dealdotcom
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
@@ -31,7 +29,11 @@ class dealdotcom
 	function init()
 	{
 		add_action('widgets_init', array('dealdotcom', 'widgetize'));
-		add_action('dealdotcom', array('dealdotcom', 'update'));
+		
+		if ( !is_admin() )
+		{
+			add_action('dealdotcom', array('dealdotcom', 'update'));
+		}
 	} # init()
 
 
@@ -41,19 +43,29 @@ class dealdotcom
 
 	function widgetize()
 	{
-		wp_register_sidebar_widget(
-			"dealdotcom",
-			__('Dealdotcom', 'dealdotcom'),
-			array('dealdotcom', 'display_widget'),
-			array('classname' => 'dealdotcom')
-			);
+		$options = dealdotcom::get_options();
+		
+		$widget_options = array('classname' => 'dealdotcom', 'description' => __( "Dealdotcom's deal of the day") );
+		$control_options = array('width' => 260, 'id_base' => 'dealdotcom');
+		
+		$id = false;
 
-		wp_register_widget_control(
-			"dealdotcom",
-			__('Dealdotcom', 'dealdotcom'),
-			array('dealdotcom_admin', 'widget_control'),
-			array('width' => 260, 'height' => 150)
-			);
+		# registered widgets
+		foreach ( array_keys($options) as $o )
+		{
+			if ( !is_numeric($o) ) continue;
+			$id = "dealdotcom-$o";
+			wp_register_sidebar_widget($id, __('Dealdotcom'), array('dealdotcom', 'display_widget'), $widget_options, array( 'number' => $o ));
+			wp_register_widget_control($id, __('Dealdotcom'), array('dealdotcom_admin', 'widget_control'), $control_options, array( 'number' => $o ) );
+		}
+		
+		# default widget if none were registered
+		if ( !$id )
+		{
+			$id = "dealdotcom-1";
+			wp_register_sidebar_widget($id, __('Dealdotcom'), array('dealdotcom', 'display_widget'), $widget_options, array( 'number' => -1 ));
+			wp_register_widget_control($id, __('Dealdotcom'), array('dealdotcom_admin', 'widget_control'), $control_options, array( 'number' => -1 ) );
+		}
 	} # widgetize()
 
 
@@ -61,11 +73,18 @@ class dealdotcom
 	# display_widget()
 	#
 
-	function display_widget($args)
+	function display_widget($args, $widget_args = 1)
 	{
-		$options = get_option('dealdotcom');
+		if ( is_admin() ) return;
+		
 		$deal = get_option('dealdotcom_deal');
-
+		$options = dealdotcom::get_options();
+		
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP );
+		
 		if ( !$deal )
 		{
 			$deal = dealdotcom::update();
@@ -73,10 +92,10 @@ class dealdotcom
 
 		echo $args['before_widget'];
 
-		if ( !$options['aff_id'] )
+		if ( !$options[$number]['aff_id'] )
 		{
 			echo '<div style="border: solid 2px firebrick; padding: 5px; background-color: AntiqueWhite; color: firebrick; font-weight: bold;">'
-				. __('Your <a href="http://www.semiologic.com/go/dealdotcom">dealdotcom</a> affiliate ID is not configured.')
+				. __('Your <a href="http://go.semiologic.com/dealdotcom">dealdotcom</a> affiliate ID is not configured.')
 				. '</div>';
 		}
 		else
@@ -95,12 +114,12 @@ class dealdotcom
 					. '">'
 				. '<a href="'
 					. 'http://dealdotcom.com/invite/'
-						. htmlspecialchars($options['aff_id'])
+						. htmlspecialchars($options[$number]['aff_id'])
 						. '"'
 					. ' title="' . htmlspecialchars(
 							$deal['name'] . ' @ $' . $deal['price']
 							) . '"'
-					. ( $options['nofollow']
+					. ( $options[$number]['nofollow']
 						? ' rel="nofollow"'
 						: ''
 						)
@@ -186,12 +205,70 @@ class dealdotcom
 
 		return $deal;
 	} # update()
+
+
+	#
+	# get_options()
+	#
+
+	function get_options()
+	{
+		if ( ( $o = get_option('dealdotcom_widgets') ) === false )
+		{
+			if ( ( $o = get_option('dealdotcom') ) !== false )
+			{
+				$o = array( 1 => $o );
+				
+				foreach ( array_keys( (array) $sidebars = get_option('sidebars_widgets') ) as $k )
+				{
+					if ( !is_array($sidebars[$k]) )
+					{
+						continue;
+					}
+
+					if ( ( $key = array_search('dealdotcom', $sidebars[$k]) ) !== false )
+					{
+						$sidebars[$k][$key] = 'dealdotcom-1';
+						update_option('sidebars_widgets', $sidebars);
+						break;
+					}
+					elseif ( ( $key = array_search('Dealdotcom', $sidebars[$k]) ) !== false )
+					{
+						$sidebars[$k][$key] = 'dealdotcom-1';
+						update_option('sidebars_widgets', $sidebars);
+						break;
+					}
+				}
+			}
+			else
+			{
+				$o = array();
+			}
+
+			update_option('dealdotcom_widgets', $o);
+		}
+
+		return $o;
+	} # get_options()
+
+
+	#
+	# default_options()
+	#
+
+	function default_options()
+	{
+		return array(
+			'aff_id' => '',
+			'nofollow' => false
+			);
+	} # default_options()
 } # dealdotcom
 
 dealdotcom::init();
 
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
+if ( is_admin() )
 {
-	include_once dirname(__FILE__) . '/dealdotcom-admin.php';
+	include dirname(__FILE__) . '/dealdotcom-admin.php';
 }
 ?>

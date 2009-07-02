@@ -11,10 +11,18 @@
 
 
 /*
-Template Name: Links Template
+Template Name: Links
 */
 
-do_action('setup_template', 'links');
+if ( isset($_GET['cat_id']) )
+{
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Status: 301 Moved Permanently');
 
-require_once sem_path . '/index.php';
+	global $wp_query;
+	wp_redirect(get_permalink($wp_query->get_queried_object_id()));
+	die;
+}
+
+include sem_path . '/index.php';
 ?>

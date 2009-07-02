@@ -1,49 +1,42 @@
 <?php
 /*
 Plugin Name: Unfancy Quote
-Plugin URI: http://www.semiologic.com/software/wp-fixes/unfancy-quote/
+Plugin URI: http://www.semiologic.com/software/wp-tweaks/unfancy-quote/
 Description: Removes WordPress fancy quotes, which is very useful if you post code snippets to your site.
 Author: Denis de Bernardy
-Version: 2.2
+Version: 2.3 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: unfancy_quote
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-class sem_unfancy_quote
+class unfancy_quote
 {
 	#
-	# Variables
+	# init()
 	#
 
-
-	#
-	# Constructor
-	#
-
-	function sem_unfancy_quote()
+	function init()
 	{
-		add_filter('category_description', array(&$this, 'strip_quotes'), 20);
-		add_filter('list_cats', array(&$this, 'strip_quotes'), 20);
-		add_filter('comment_author', array(&$this, 'strip_quotes'), 20);
-		add_filter('comment_text', array(&$this, 'strip_quotes'), 20);
-		add_filter('single_post_title', array(&$this, 'strip_quotes'), 20);
-		add_filter('the_title', array(&$this, 'strip_quotes'), 20);
-		add_filter('the_content', array(&$this, 'strip_quotes'), 20);
-		add_filter('the_excerpt', array(&$this, 'strip_quotes'), 20);
-		add_filter('bloginfo', array(&$this, 'strip_quotes'), 20);
-		add_filter('widget_text', array(&$this, 'strip_quotes'), 20);
-	} # end sem_unfancy_quote()
+		add_filter('category_description', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('list_cats', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('comment_author', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('comment_text', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('single_post_title', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('the_title', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('the_content', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('the_excerpt', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('bloginfo', array('unfancy_quote', 'strip_quotes'), 20);
+		add_filter('widget_text', array('unfancy_quote', 'strip_quotes'), 20);
+	} # init()
 
 
 	#
@@ -56,8 +49,8 @@ class sem_unfancy_quote
 		$text = str_replace(array("&#8220;", "&#8221;", "&#8243;"), "&#034;", $text);
 
 		return $text;
-	} # end strip_quotes()
-} # end sem_unfancy_quote
+	} # strip_quotes()
+} # unfancy_quote
 
-$sem_unfancy_quote =& new sem_unfancy_quote();
+unfancy_quote::init();
 ?>

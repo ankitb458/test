@@ -1,21 +1,73 @@
-***  These are Owen's dates.  You can remove them, or keep them for fun! ***
+#
+# Instructions
+# ============
+#
+# The easiest will generally be to delete the lines that follow these instructions
+# and to use the form underneath to add your own events. On occasion, though, it may
+# make sense to manually add events to the list. Here's how.
+#
+# First off, note that these lines and the section headers beneath are ignored: Lines
+# that begin with an asterisk (*) or a pound (#) character are treated as comments.
+#
+# The general syntax to insert an event is:
+# 
+#   [Date] [Event Name]
+#
+# The event name can include arbitrary HTML. Event dates can have various formats:
+#
+# - YYYY-MM-DD
+#
+#   The event occurs on that date.
+#
+# - MM-DD
+#
+#   The event occurs on that date, each year.
+#
+# - nth weekday month
+#
+#   The event occurs the nth weekday of that month.
+#
+#   nth, weekday, and month respectively are either of:
+#   - 1st, 2nd, 3rd, 4th, 5th, last
+#   - sun, mon, tue, wed, thu, fri, sat
+#   - jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, all
+#   
+# - YYYY-MM-DD through YYYY-MM-DD
+#
+#   The event occurs from the first date to the last.
+#
+# - every week starting YYYY-MM-DD
+#   every nth week starting YYYY-MM-DD
+#
+#   The event occurs every so many weeks starting that date.
+#
+#   nth is either of:
+#   - other, 2nd, 3rd, 4th
+# 
+# - every week starting YYYY-MM-DD until YYYY-MM-DD
+#   every nth week starting YYYY-MM-DD until YYYY-MM-DD
+#
+#   The event occurs every so many weeks between those dates.
+#
+# - Each of the available date formats can optionally be offset, in one of two ways:
+#
+#   - n days|weeks|years before|after
+#   - the weekday before|after
+#
+# Many examples follow. Keep or delete them, and start adding yours.
+#
 
-11-30 <a href="http://www.asymptomatic.net">Asymptomatic</a> Anniversary
-2 days before 06-04 <a href="www.amazon.com/gp/registry/BO39IKXRGGH4">Buy presents</a> for Owen
-06-04 <a href="http://www.asymptomatic.net">Owen</a>'s Birthday (Observed)
-last fri all <a href="http://ffaf.orangehairedboy.com/">Free For All Friday</a>
-3rd sat all <a href="http://wordpress.meetup.com/84/">Philadelphia WordPress Meetup</a>
-2006-02-21 Countdown 1.2 Release Date
 
-*** Canadian Holidays (Thanks misty!) ***
-02-15 Flag of Canada Day
-07-10 test
-3rd mon may Victoria Day
-07-01 Canada Day
-the mon before 10-25 Thanksgiving (Canada)
-12-26 Boxing Day
+*** Denis' Dates ***
 
-***  Holidates from http://www.madmanmike.com/us_events_dates.html ***
+2005-07-05                      Initial Launch of <a href="http://www.getsemiologic.com">Semiologic Pro</a>
+04-13                           <a href="http://www.semiologic.com">Denis</a>' Birthday
+3 days before 04-13             <a href="http://buy.semiologic.com/gift">Buy presents</a> for Denis
+1st mon all                     <a href="http://www.semiologic.com/partners/">Semiologic Affiliate</a> Pay Day
+every week starting 2008-01-01  Take a day off (new year resolution)
+
+
+*** US Holidays ***
 
 01-01 New Year's Day
 11-11 Veteran's Day
@@ -42,18 +94,15 @@ the mon before 10-25 Thanksgiving (Canada)
 2nd sun may Mother's Day
 3rd sun jun Father's Day
 3rd sun oct Sweetest Day
-1st sun apr Daylight Savings Starts
-5th sun oct Daylight Savings Ends
 
-*** A handful of religious holidays ***
-12-25 Christmas
-easter Easter Sunday
-2 days before easter Good Friday
-1 week before easter Palm Sunday
 
-*** Most religious holidays move based on lunar cycles,
-*** so it is difficult to compute calendar dates for them.
-*** At least, I don't know the math to do it.
-*** PHP includes an internal table of Easter dates,
-*** and so they are easier to include.
-*** This isn't a religios bias, just a technical limitation.
+*** Canadian Holidays ***
+
+02-15                 Flag of Canada Day
+3rd mon may           Victoria Day
+07-01                 Canada Day
+the mon before 10-25  Thanksgiving (Canada)
+12-26                 Boxing Day
+
+
+*** Your Dates ***

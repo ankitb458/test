@@ -1,15 +1,16 @@
 <?php
 /*
-Plugin Name: Moderate Subscribers (fork)
+Plugin Name: Moderate Subscribers
 Plugin URI: http://www.skippy.net/blog/plugins/
 Description: Process comments by subscribers and contributors into the normal moderation queue, just like anonymous comments. This can become useful when registrations are open on your blog.
 Author: Scott Merrill
-Version: 1.2 fork
+Version: 1.3 RC fork
 Author URI: http://www.skippy.net/blog/
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: moderate_subscribers
-Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
+
+global $sdm_moderate_author_check;
+
+$sdm_moderate_author_check = 0;
 
 function moderate_authors_init()
 {
@@ -30,11 +31,8 @@ function moderate_authors_init()
 
 add_action('init', 'moderate_authors_init');
 
-
 add_action('preprocess_comment', 'sdm_moderate_author', 1);
 add_filter('pre_comment_approved', 'sdm_moderate_author_approved');
-
-$sdm_moderate_author_check = 0;
 
 function sdm_moderate_author($comment) {
 	global $sdm_moderate_author_check;
@@ -63,4 +61,5 @@ function sdm_moderate_author_approved($approved) {
 		return $approved;
 	}
 }
+
 ?>

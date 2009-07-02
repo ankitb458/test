@@ -7,6 +7,7 @@
 
 define('EZSQL_VERSION', 'WP1.25');
 define('OBJECT', 'OBJECT', true);
+define('OBJECT_K', 'OBJECT_K', false);
 define('ARRAY_A', 'ARRAY_A', false);
 define('ARRAY_N', 'ARRAY_N', false);
 
@@ -15,11 +16,15 @@ if (!defined('SAVEQUERIES'))
 
 class wpdb {
 
-	var $show_errors = true;
+	var $show_errors = false;
+	var $suppress_errors = false;
+	var $last_error = '';
 	var $num_queries = 0;
 	var $last_query;
 	var $col_info;
 	var $queries;
+	var $prefix = '';
+	var $ready = false;
 
 	// Our tables
 	var $posts;
@@ -29,16 +34,13 @@ class wpdb {
 	var $comments;
 	var $links;
 	var $options;
-	var $optiontypes;
-	var $optionvalues;
-	var $optiongroups;
-	var $optiongroup_options;
 	var $postmeta;
 	var $usermeta;
 	var $terms;
 	var $term_taxonomy;
 	var $term_relationships;
-
+	var $tables = array('users', 'usermeta', 'posts', 'categories', 'post2cat', 'comments', 'links', 'link2cat', 'options',
+			'postmeta', 'terms', 'term_taxonomy', 'term_relationships');
 	var $charset;
 	var $collate;
 
@@ -56,13 +58,16 @@ class wpdb {
 	function __construct($dbuser, $dbpassword, $dbname, $dbhost) {
 		register_shutdown_function(array(&$this, "__destruct"));
 
+		if ( defined('WP_DEBUG') and WP_DEBUG == true )
+			$this->show_errors();
+
 		if ( defined('DB_CHARSET') )
 			$this->charset = DB_CHARSET;
 
 		if ( defined('DB_COLLATE') )
 			$this->collate = DB_COLLATE;
 
-		$this->dbh = @mysql_connect($dbhost, $dbuser, $dbpassword);
+		$this->dbh = @mysql_connect($dbhost, $dbuser, $dbpassword, true);
 		if (!$this->dbh) {
 			$this->bail("
 <h1>Error establishing a database connection</h1>
@@ -74,9 +79,12 @@ class wpdb {
 </ul>
 <p>If you're unsure what these terms mean you should probably contact your host. If you still need help you can always visit the <a href='http://wordpress.org/support/'>WordPress Support Forums</a>.</p>
 ");
+			return;
 		}
 
-		if ( !empty($this->charset) && version_compare(mysql_get_server_info(), '4.1.0', '>=') )
+		$this->ready = true;
+
+		if ( !empty($this->charset) && version_compare(mysql_get_server_info($this->dbh), '4.1.0', '>=') )
  			$this->query("SET NAMES '$this->charset'");
 
 		$this->select($dbname);
@@ -86,20 +94,43 @@ class wpdb {
 		return true;
 	}
 
+	function set_prefix($prefix) {
+
+		if ( preg_match('|[^a-z0-9_]|i', $prefix) )
+			return new WP_Error('invalid_db_prefix', 'Invalid database prefix'); // No gettext here
+
+		$old_prefix = $this->prefix;
+		$this->prefix = $prefix;
+
+		foreach ( $this->tables as $table )
+			$this->$table = $this->prefix . $table;
+
+		if ( defined('CUSTOM_USER_TABLE') )
+			$this->users = CUSTOM_USER_TABLE;
+
+		if ( defined('CUSTOM_USER_META_TABLE') )
+			$this->usermeta = CUSTOM_USER_META_TABLE;
+
+		return $old_prefix;
+	}
+
 	/**
 	 * Selects a database using the current class's $this->dbh
 	 * @param string $db name
 	 */
 	function select($db) {
 		if (!@mysql_select_db($db, $this->dbh)) {
+			$this->ready = false;
 			$this->bail("
 <h1>Can&#8217;t select database</h1>
 <p>We were able to connect to the database server (which means your username and password is okay) but not able to select the <code>$db</code> database.</p>
 <ul>
 <li>Are you sure it exists?</li>
+<li>Does the user <code>".DB_USER."</code> have permission to use the <code>$db</code> database?</li>
 <li>On some systems the name of your database is prefixed with your username, so it would be like username_wordpress. Could that be the problem?</li>
 </ul>
 <p>If you don't know how to setup a database you should <strong>contact your host</strong>. If all else fails you may find help at the <a href='http://wordpress.org/support/'>WordPress Support Forums</a>.</p>");
+			return;
 		}
 	}
 
@@ -110,11 +141,14 @@ class wpdb {
 	 * @return string query safe string
 	 */
 	function escape($string) {
-		return addslashes( $string ); // Disable rest for now, causing problems
+		return addslashes( $string );
+		// Disable rest for now, causing problems
+		/*
 		if( !$this->dbh || version_compare( phpversion(), '4.3.0' ) == '-1' )
 			return mysql_escape_string( $string );
 		else
 			return mysql_real_escape_string( $string, $this->dbh );
+		*/
 	}
 
 	/**
@@ -145,33 +179,62 @@ class wpdb {
 
 	function print_error($str = '') {
 		global $EZSQL_ERROR;
+
 		if (!$str) $str = mysql_error($this->dbh);
 		$EZSQL_ERROR[] =
 		array ('query' => $this->last_query, 'error_str' => $str);
 
+		if ( $this->suppress_errors )
+			return false;
+
+		$error_str = "WordPress database error $str for query $this->last_query";
+		if ( $caller = $this->get_caller() )
+			$error_str .= " made by $caller";
+
+		$log_error = true;
+		if ( ! function_exists('error_log') )
+			$log_error = false;
+
+		$log_file = @ini_get('error_log');
+		if ( !empty($log_file) && ('syslog' != $log_file) && !is_writable($log_file) )
+			$log_error = false;
+
+		if ( $log_error )
+			@error_log($error_str, 0);
+
+		// Is error output turned on or not..
+		if ( !$this->show_errors )
+			return false;
+
 		$str = htmlspecialchars($str, ENT_QUOTES);
 		$query = htmlspecialchars($this->last_query, ENT_QUOTES);
-		// Is error output turned on or not..
-		if ( $this->show_errors ) {
-			// If there is an error then take note of it
-			print "<div id='error'>
-			<p class='wpdberror'><strong>WordPress database error:</strong> [$str]<br />
-			<code>$query</code></p>
-			</div>";
-		} else {
-			return false;
-		}
+
+		// If there is an error then take note of it
+		print "<div id='error'>
+		<p class='wpdberror'><strong>WordPress database error:</strong> [$str]<br />
+		<code>$query</code></p>
+		</div>";
 	}
 
 	// ==================================================================
 	//	Turn error handling on or off..
 
-	function show_errors() {
-		$this->show_errors = true;
+	function show_errors( $show = true ) {
+		$errors = $this->show_errors;
+		$this->show_errors = $show;
+		return $errors;
 	}
 
 	function hide_errors() {
+		$show = $this->show_errors;
 		$this->show_errors = false;
+		return $show;
+	}
+
+	function suppress_errors( $suppress = true ) {
+		$errors = $this->suppress_errors;
+		$this->suppress_errors = $suppress;
+		return $errors;
 	}
 
 	// ==================================================================
@@ -187,6 +250,9 @@ class wpdb {
 	//	Basic Query	- see docs for more detail
 
 	function query($query) {
+		if ( ! $this->ready )
+			return false;
+
 		// filter the query, if filters are available
 		// NOTE: some queries are made before the plugins have been loaded, and thus cannot be filtered with this method
 		if ( function_exists('apply_filters') )
@@ -210,10 +276,10 @@ class wpdb {
 		++$this->num_queries;
 
 		if (SAVEQUERIES)
-			$this->queries[] = array( $query, $this->timer_stop() );
+			$this->queries[] = array( $query, $this->timer_stop(), $this->get_caller() );
 
 		// If there is an error then take note of it..
-		if ( mysql_error($this->dbh) ) {
+		if ( $this->last_error = mysql_error($this->dbh) ) {
 			$this->print_error();
 			return false;
 		}
@@ -251,6 +317,39 @@ class wpdb {
 	}
 
 	/**
+	 * Insert an array of data into a table
+	 * @param string $table WARNING: not sanitized!
+	 * @param array $data should not already be SQL-escaped
+	 * @return mixed results of $this->query()
+	 */
+	function insert($table, $data) {
+		$data = add_magic_quotes($data);
+		$fields = array_keys($data);
+		return $this->query("INSERT INTO $table (`" . implode('`,`',$fields) . "`) VALUES ('".implode("','",$data)."')");
+	}
+
+	/**
+	 * Update a row in the table with an array of data
+	 * @param string $table WARNING: not sanitized!
+	 * @param array $data should not already be SQL-escaped
+	 * @param array $where a named array of WHERE column => value relationships.  Multiple member pairs will be joined with ANDs.  WARNING: the column names are not currently sanitized!
+	 * @return mixed results of $this->query()
+	 */
+	function update($table, $data, $where){
+		$data = add_magic_quotes($data);
+		$bits = $wheres = array();
+		foreach ( array_keys($data) as $k )
+			$bits[] = "`$k` = '$data[$k]'";
+
+		if ( is_array( $where ) )
+			foreach ( $where as $c => $v )
+				$wheres[] = "$c = '" . $this->escape( $v ) . "'";
+		else
+			return false;
+		return $this->query( "UPDATE $table SET " . implode( ', ', $bits ) . ' WHERE ' . implode( ' AND ', $wheres ) . ' LIMIT 1' );
+	}
+
+	/**
 	 * Get one variable from the database
 	 * @param string $query (can be null as well, for caching, see codex)
 	 * @param int $x = 0 row num to return
@@ -263,7 +362,7 @@ class wpdb {
 			$this->query($query);
 
 		// Extract var out of cached results based x,y vals
-		if ( $this->last_result[$y] ) {
+		if ( !empty( $this->last_result[$y] ) ) {
 			$values = array_values(get_object_vars($this->last_result[$y]));
 		}
 
@@ -320,7 +419,7 @@ class wpdb {
 	/**
 	 * Return an entire result set from the database
 	 * @param string $query (can also be null to pull from the cache)
-	 * @param string $output ARRAY_A | ARRAY_N | OBJECT
+	 * @param string $output ARRAY_A | ARRAY_N | OBJECT_K | OBJECT
 	 * @return mixed results
 	 */
 	function get_results($query = null, $output = OBJECT) {
@@ -331,22 +430,33 @@ class wpdb {
 		else
 			return null;
 
-		// Send back array of objects. Each row is an object
 		if ( $output == OBJECT ) {
+			// Return an integer-keyed array of row objects
 			return $this->last_result;
+		} elseif ( $output == OBJECT_K ) {
+			// Return an array of row objects with keys from column 1
+			// (Duplicates are discarded)
+			foreach ( $this->last_result as $row ) {
+				$key = array_shift( get_object_vars( $row ) );
+				if ( !isset( $new_array[ $key ] ) )
+					$new_array[ $key ] = $row;
+			}
+			return $new_array;
 		} elseif ( $output == ARRAY_A || $output == ARRAY_N ) {
+			// Return an integer-keyed array of...
 			if ( $this->last_result ) {
 				$i = 0;
 				foreach( $this->last_result as $row ) {
-					$new_array[$i] = (array) $row;
 					if ( $output == ARRAY_N ) {
-						$new_array[$i] = array_values($new_array[$i]);
+						// ...integer-keyed row arrays
+						$new_array[$i] = array_values( get_object_vars( $row ) );
+					} else {
+						// ...column name-keyed row arrays
+						$new_array[$i] = get_object_vars( $row );
 					}
-					$i++;
+					++$i;
 				}
 				return $new_array;
-			} else {
-				return null;
 			}
 		}
 	}
@@ -399,10 +509,66 @@ class wpdb {
 	 * @param string $message
 	 */
 	function bail($message) { // Just wraps errors in a nice header and footer
-		if ( !$this->show_errors )
+		if ( !$this->show_errors ) {
+			if ( class_exists('WP_Error') )
+				$this->error = new WP_Error('500', $message);
+			else
+				$this->error = $message;
 			return false;
+		}
 		wp_die($message);
 	}
+
+	/**
+	 * Checks wether of not the database version is high enough to support the features WordPress uses
+	 * @global $wp_version
+	 */
+	function check_database_version()
+	{
+		global $wp_version;
+		// Make sure the server has MySQL 4.0
+		$mysql_version = preg_replace('|[^0-9\.]|', '', @mysql_get_server_info($this->dbh));
+		if ( version_compare($mysql_version, '4.0.0', '<') )
+			return new WP_Error('database_version',sprintf(__('<strong>ERROR</strong>: WordPress %s requires MySQL 4.0.0 or higher'), $wp_version));
+	}
+
+	/**
+	 * This function is called when WordPress is generating the table schema to determine wether or not the current database
+	 * supports or needs the collation statements.
+	 */
+	function supports_collation()
+	{
+		return ( version_compare(mysql_get_server_info($this->dbh), '4.1.0', '>=') );
+	}
+
+	/**
+	 * Get the name of the function that called wpdb.
+	 * @return string the name of the calling function
+	 */
+	function get_caller() {
+		// requires PHP 4.3+
+		if ( !is_callable('debug_backtrace') )
+			return '';
+
+		$bt = debug_backtrace();
+		$caller = '';
+
+		foreach ( $bt as $trace ) {
+			if ( @$trace['class'] == __CLASS__ )
+				continue;
+			elseif ( strtolower(@$trace['function']) == 'call_user_func_array' )
+				continue;
+			elseif ( strtolower(@$trace['function']) == 'apply_filters' )
+				continue;
+			elseif ( strtolower(@$trace['function']) == 'do_action' )
+				continue;
+
+			$caller = $trace['function'];
+			break;
+		}
+		return $caller;
+	}
+
 }
 
 if ( ! isset($wpdb) )

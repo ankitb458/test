@@ -1,76 +1,89 @@
 body
 {
-	padding: 0px 0px 0px 0px;
-	margin: 0px 0px 0px 0px;
+	padding-top: 0px;
+	padding-left: 0px;
+	padding-bottom: 0px;
+	margin-top: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
 }
 
-#sem_admin_menu
+#am
 {
-	background-color: gainsboro;
+	background-color: Gainsboro;
 	border: outset 1px;
-	color: black;
-	font-family: Verdana, Helvetica, Sans-Serif;
+	color: Black;
+	font-family: Trebuchet MS, Tahoma, Helvetica, Sans-Serif;
 	font-size: 8pt;
-	padding: 3px 0px 3px 0px;
-	margin: 0px 0px 6px 0px;
+	padding: 3px 0px;
+	margin: 0px;
 	text-align: right;
 }
 
-#sem_admin_menu ul
+#am ul
 {
 	display: inline;
-	padding: 3px 3px 3px 3px;
-	margin: 3px 3px 3px 3px;
+	padding: 3px;
+	margin: 3px 0px;
 	text-align: left;
 	list-style-type: none;
 }
 
-#sem_admin_menu li
+#am li
 {
 	display: inline;
-	padding: 6px 0px 6px 0px;
-	margin: 3px 0px 3px 0px;
+	padding: 6px 0px;
+	margin: 4px 2px;
 	text-align: left;
 	list-style-type: none;
 }
 
-#sem_admin_menu li.new_item
+#am .am_new
 {
 	background: url(new_file.gif) center left no-repeat;
-	padding-left: 13px;
+	padding-left: 14px;
 }
 
-#sem_admin_menu li.options
+#am .am_manage
+{
+	background: url(edit.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_comments
+{
+	background: url(comment.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_options
 {
 	background: url(options.gif) center left no-repeat;
-	padding-left: 13px;
+	padding-left: 14px;
 }
 
-#sem_admin_menu li.dashboard
+#am .am_dashboard
 {
 	background: url(activity.gif) center left no-repeat;
-	padding-left: 13px;
+	padding-left: 14px;
 }
 
-#sem_admin_menu li.profile,
-#sem_admin_menu li.login,
-#sem_admin_menu li.logout,
-#sem_admin_menu li.register
+#am .am_user
 {
 	background: url(user.gif) center left no-repeat;
-	padding-left: 13px;
+	padding-left: 14px;
 }
 
-#sem_admin_menu a, #sem_admin_menu a:link, #sem_admin_menu a:visited
+#am a, #am a:link, #am a:visited
 {
-	color: dimgray;
+	color: DimGray;
 	text-decoration: none;
-	padding: 0px 0px 0px 0px;
-	margin: 0px 0px 0px 0px;
+	padding: 0px;
+	margin: 0px;
 }
 
-#sem_admin_menu a:hover
+#am a:hover
 {
-	color: black;
+	color: Black;
 	text-decoration: underline;
 }

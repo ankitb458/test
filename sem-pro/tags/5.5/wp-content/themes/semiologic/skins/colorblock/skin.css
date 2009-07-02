@@ -51,6 +51,7 @@ a:active, a:hover
 	text-align: center;
 }
 
+.skin #header h1,
 #header h1 a
 {
 	color: white;

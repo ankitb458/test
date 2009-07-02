@@ -1,14 +1,11 @@
 <?php
 /*
-Plugin Name: Democracy (fork)
+Plugin Name: Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
 Version: 1.14 fork
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: democracy
-Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 if ( isset($_GET['jal_add_user_answer']) || isset($_GET['jal_no_js']) )
@@ -366,11 +363,9 @@ function jal_add_js () {
     //$jal_wp_url = (dirname($_SERVER['PHP_SELF']) == "/") ? "/" : dirname($_SERVER['PHP_SELF']) . "/";
     $jal_wp_url = get_bloginfo('wpurl') . "/";
 
-    echo '
-    <!-- Added By Democracy Plugin. Version '.$jal_dem_version.' -->
-    <script type="text/javascript" src="'.$jal_wp_url.'wp-content/plugins/democracy/js.php"></script>
-    <link rel="stylesheet" href="'.$jal_wp_url.'wp-content/plugins/democracy/democracy.css" type="text/css" />
-	 ';
+    echo '<script type="text/javascript" src="'.$jal_wp_url.'wp-content/plugins/democracy/js.php"></script>
+<link rel="stylesheet" href="'.$jal_wp_url.'wp-content/plugins/democracy/democracy.css?ver=1.14" type="text/css" />
+';
 }
 
 // Run a check of visitors IP to make sure they haven't voted already.
@@ -801,54 +796,53 @@ if (function_exists('add_action')) {
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+function widget_democracy( $args )
+{
+	extract( $args );
+	$options = get_option( 'widget_democracy' );
+
+	$title = htmlspecialchars($options['title'], ENT_QUOTES);
+
+	if ( !$title )
+	{
+		$title = __('Democracy');
+	}
+
+	$before_widget = str_replace('id="democracy"', 'id="widget_democracy"', $before_widget);
+
+	echo $before_widget . $before_title . $title . $after_title;
+	if ( !is_admin() ) jal_democracy();
+	echo $after_widget;
+}
+
+function widget_democracy_control()
+{
+	$options = get_option( 'widget_democracy' );
+	if (!is_array( $options )) {
+		$options = array( 'title' => 'Democracy' );
+	}
+
+	if ($_POST['democracy-submit']) {
+		$options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST['democracy-title'])));
+
+		update_option( 'widget_democracy', $options );
+	}
+
+	$title = htmlspecialchars($options['title'], ENT_QUOTES);
+
+	?>Title: <input type="text" id="democracy-title" name="democracy-title" value="<?php echo $title ?>" />
+	<input type="hidden" id="democracy-submit" name="democracy-submit" value="1" />
+	<?php
+}
+
+
 function widget_democracy_init()
 {
 	if (!function_exists('register_sidebar_widget')) return;
 	if (!function_exists('jal_democracy')) return;
 
-	function widget_democracy( $args )
-	{
-		extract( $args );
-		$options = get_option( 'widget_democracy' );
-
-		$title = htmlspecialchars($options['title'], ENT_QUOTES);
-
-		if ( !$title )
-		{
-			$title = __('Democracy');
-		}
-
-		$before_widget = str_replace('id="democracy"', 'id="widget_democracy"', $before_widget);
-
-		echo $before_widget . $before_title . $title . $after_title;
-		jal_democracy();
-		echo $after_widget;
-	}
-
-	function widget_democracy_control()
-	{
-		$options = get_option( 'widget_democracy' );
-		if (!is_array( $options )) {
-			$options = array( 'title' => 'Democracy' );
-		}
-
-		if ($_POST['democracy-submit']) {
-			$options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST['democracy-title'])));
-
-			update_option( 'widget_democracy', $options );
-		}
-
-		$title = htmlspecialchars($options['title'], ENT_QUOTES);
-
-		?>			<ul>
-				<li>Title: <input type="text" id="democracy-title" name="democracy-title" value="<?php echo $title ?>" /></li>
-			</ul>
-			<input type="hidden" id="democracy-submit" name="democracy-submit" value="1" />
-		<?php
-	}
-
-	register_sidebar_widget( 'Democracy', 'widget_democracy' );
-	register_widget_control( 'Democracy', 'widget_democracy_control', 300, 300 );
+	wp_register_sidebar_widget( 'democracy', 'Democracy', 'widget_democracy', array('description' => 'The poll you\'ve configured under Manage / Polls') );
+	wp_register_widget_control( 'democracy', 'Democracy', 'widget_democracy_control', array('width' => 300 ) );
 }
 
 ?>

@@ -162,6 +162,7 @@ body
 	color: black;
 }
 
+#header h1,
 #header h1 a
 {
 	color: black;
@@ -1214,9 +1215,9 @@ div.entry
 	background: gainsboro url(image-in-same-folder.jpg) no-repeat bottom center;
 }
 
-.entry_body,
+.entry_content,
 .entry_meta,
-.spread_the_word,
+.bookmark_me,
 .entry_related_searches,
 .entry_related_tags,
 .entry_related_entries,

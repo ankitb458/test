@@ -24,6 +24,14 @@ if ( $post->post_password !== ''
 	return;
 }
 
+#
+# Displaytrackback uri
+#
+
+if ( $sem_options['show_trackback_uri'] )
+{
+	display_trackback_uri();
+}
 
 #
 # Display comments
@@ -74,6 +82,10 @@ if ( $comments )
 
 		echo '<h3>'
 			. '<span class="comment_author">'
+				. '<span class="avatar">'
+					. get_avatar( $comment, 32 )
+					. '</span>'
+				. ' '
 				. get_comment_author_link()
 				. '</span>'
 			. ' @ '
@@ -196,7 +208,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 
 			echo '<p>'
-				. '<label for="email">'
+				. '<label for="url">'
 				. $sem_captions['url_field']
 				. ':<br />'
 				. '<input type="text" name="url" id="url"'
@@ -227,4 +239,26 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 
 	echo '</div><!-- #commentform -->' . "\n";
 } # comments_open()
+
+
+#
+# display_entry_trackback_uri()
+#
+
+function display_trackback_uri()
+{
+	global $sem_captions;
+
+	if ( pings_open() && is_singular() )
+	{
+?><div class="comment_entry">
+<!--
+<?php trackback_rdf(); ?>
+-->
+<h2><?php echo $sem_captions['comment_trackback']; ?></h2>
+<p><a href="<?php trackback_url(); ?>" rel="trackback nofollow"><?php trackback_url(); ?></a></p>
+</div>
+<?php
+	}
+} # display_trackback_uri()
 ?>

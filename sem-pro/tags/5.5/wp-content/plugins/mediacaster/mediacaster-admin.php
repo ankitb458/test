@@ -8,17 +8,33 @@ class mediacaster_admin
 
 	function init()
 	{
-		add_action('init', array('mediacaster_admin', 'setup_admin_editor'));
-		add_action('admin_head', array('mediacaster_admin', 'display_all_files'));
-
 		add_action('admin_menu', array('mediacaster_admin', 'add_admin_page'));
-
-		add_action('dbx_post_advanced', array('mediacaster_admin', 'display_media'));
-		add_action('dbx_page_advanced', array('mediacaster_admin', 'display_media'));
-
+		add_action('admin_menu', array('mediacaster_admin', 'add_meta_boxes'), 20);
+		
 		add_action('save_post', array('mediacaster_admin', 'update_path'), 20);
 		add_action('save_post', array('mediacaster_admin', 'save_media'), 30);
+		
+		add_action('admin_head', array('mediacaster_admin', 'display_js_files'), 0);
+		add_filter('admin_footer', array('mediacaster_admin', 'quicktag'));
+		add_filter('mce_external_plugins', array('mediacaster_admin', 'editor_plugin'), 5);
+		add_filter('mce_buttons', array('mediacaster_admin', 'editor_button'));
+		
+		if ( get_option('mediacaster') === false )
+		{
+			$options = mediacaster::regen_options();
+		}
 	} # init()
+
+
+	#
+	# add_meta_boxes()
+	#
+
+	function add_meta_boxes()
+	{
+		add_meta_box('mediacaster', 'Mediacaster', array('mediacaster_admin', 'display_media'), 'post', 'normal');
+		add_meta_box('mediacaster', 'Mediacaster', array('mediacaster_admin', 'display_media'), 'page', 'normal');
+	} # add_meta_boxes()
 
 
 	#
@@ -51,6 +67,8 @@ class mediacaster_admin
 
 	function save_media($post_ID)
 	{
+		global $wpdb;
+		
 		$path = mediacaster::get_path($post_ID);
 		mediacaster_admin::create_path($path);
 		#var_dump($path);
@@ -60,15 +78,28 @@ class mediacaster_admin
 		{
 			foreach ( array_keys((array) $_POST['delete_media']) as $key )
 			{
-				$key = str_replace("_", " ", $key);
+				$key = stripslashes(html_entity_decode(urldecode($key)));
 
-				preg_match("/\.([^\.]+)$/", $key, $ext);
-				$ext = end($ext);
+				$ext = pathinfo($key, PATHINFO_EXTENSION);
 
 				@unlink(ABSPATH . $path . $key);
 				unset($_POST['update_media'][$key]);
 
-				if ( in_array(strtolower($ext), array('flv', 'swf')) )
+				$post_content = $wpdb->get_var("
+						SELECT	post_content
+						FROM	$wpdb->posts
+						WHERE	ID = " . intval($post_ID) . "
+						");
+				
+				$post_content = str_replace('[media:' . $key . ']', '', $post_content);
+				
+				$wpdb->query("
+						UPDATE	$wpdb->posts
+						SET		post_content = '" . $wpdb->escape($post_content) . "'
+						WHERE	ID = " . intval($post_ID) . "
+						");
+
+				if ( in_array(strtolower($ext), array('flv', 'swf', 'mov', 'mp4', 'm4v', 'm4a')) )
 				{
 					$image = basename($key, '.' . $ext);
 
@@ -93,16 +124,32 @@ class mediacaster_admin
 
 			foreach ( (array) $_POST['update_media'] as $old => $new )
 			{
-				$old = str_replace("_", " ", $old);
-
+				$old = stripslashes(html_entity_decode(urldecode($old)));
+				$new = strip_tags(stripslashes($new));
+				$new = str_replace(array("<", ">", "&", "%", "/"), "", $new);
+				$new = preg_replace("/\s+/", " ", $new);
+				
 				if ( $old != $new )
 				{
 					@rename(ABSPATH . $path . $old, ABSPATH . $path . $new);
+					
+					$post_content = $wpdb->get_var("
+							SELECT	post_content
+							FROM	$wpdb->posts
+							WHERE	ID = " . intval($post_ID) . "
+							");
+					
+					$post_content = str_replace('[media:' . $old . ']', '[media:' . $new . ']', $post_content);
+					
+					$wpdb->query("
+							UPDATE	$wpdb->posts
+							SET		post_content = '" . $wpdb->escape($post_content) . "'
+							WHERE	ID = " . intval($post_ID) . "
+							");
 
-					preg_match("/\.([^\.]+)$/", $old, $ext);
-					$ext = end($ext);
+					$ext = pathinfo($old, PATHINFO_EXTENSION);
 
-					if ( in_array(strtolower($ext), array('flv', 'swf')) )
+					if ( in_array(strtolower($ext), array('flv', 'swf', 'mov', 'mp4', 'm4v', 'm4a')) )
 					{
 						$old_name = basename($old, '.' . $ext);
 						$new_name = basename($new, '.' . $ext);
@@ -113,8 +160,7 @@ class mediacaster_admin
 							{
 								$image = current($image);
 
-								preg_match("/\.([^\.]+)$/", $image, $ext);
-								$ext = end($ext);
+								$ext = pathinfo($image, PATHINFO_EXTENSION);
 								$ext = strtolower($ext);
 
 								$old_name = basename($image, '.' . $ext);
@@ -128,8 +174,7 @@ class mediacaster_admin
 							{
 								$image = current($image);
 
-								preg_match("/\.([^\.]+)$/", $image, $ext);
-								$ext = end($ext);
+								$ext = pathinfo($image, PATHINFO_EXTENSION);
 								$ext = strtolower($ext);
 
 								$old_name = basename($image, '.' . $ext);
@@ -144,10 +189,12 @@ class mediacaster_admin
 			if ( $_FILES['new_media'] )
 			{
 				$tmp_name = $_FILES['new_media']['tmp_name'];
-				$new_name = ABSPATH . $path . $_FILES['new_media']['name'];
-
-				preg_match("/\.([^\.]+)$/", $new_name, $ext);
-				$ext = end($ext);
+				$new_name = strip_tags(stripslashes($_FILES['new_media']['name']));
+				$new_name = str_replace(array("<", ">", "&", "%", "/"), "", $new_name);
+				$new_name = preg_replace("/\s+/", " ", $new_name);
+				$new_name = ABSPATH . $path . $new_name;
+				
+				$ext = pathinfo($new_name, PATHINFO_EXTENSION);
 				$new_name = str_replace('.' . $ext, '.' . strtolower($ext), $new_name);
 				$ext = strtolower($ext);
 
@@ -156,7 +203,8 @@ class mediacaster_admin
 						array(
 							'jpg', 'jpeg', 'png',
 							'mp3', 'm4a',
-							'mp4', 'm4v', 'mov', 'flv', 'swf'
+							'mp4', 'm4v', 'mov', 'flv', 'swf',
+							'pdf', 'zip', 'gz'
 							)
 						)
 					)
@@ -189,16 +237,6 @@ class mediacaster_admin
 		#var_dump($post_ID);
 		#echo '</pre>';
 
-		echo '<div class="dbx-b-ox-wrapper">';
-
-		echo '<fieldset id="mediacaster" class="dbx-box">'
-			. '<div class="dbx-h-andle-wrapper">'
-			. '<h3 class="dbx-handle">' . __('Media') . '</h3>'
-			. '</div>';
-
-		echo '<div class="dbx-c-ontent-wrapper">'
-			. '<div id="mediacasterstuff" class="dbx-content">';
-
 		if ( $post_ID > 0 )
 		{
 			echo '<p>'
@@ -219,51 +257,114 @@ class mediacaster_admin
 					. __('Media files currently include:')
 					. '</p>';
 
-				echo '<ul>';
-
 				foreach ( (array) $files as $key => $file )
 				{
 					$name = $key;
-					$key = str_replace(" ", "_", $key);
+					$key = str_replace(
+							array("\\", "'"),
+							array("\\\\", "\\'"),
+							htmlentities($key)
+							);
+					$key = urlencode($key);
+					
+					$ext = pathinfo($name, PATHINFO_EXTENSION);
+					
+					if ( in_array($ext, array('flv', 'swf', 'mov', 'mp4', 'm4a', 'm4v')) )
+					{
+						$file_name = basename($name, '.' . $ext);
+						
+						if ( defined('GLOB_BRACE') )
+						{
+							if ( $img_cover = glob(ABSPATH . $path . $file_name . '.{jpg,jpeg,png}', GLOB_BRACE) )
+							{
+								$img_cover = current($img_cover);
+							}
+							else
+							{
+								$img_cover = dirname(__FILE__) . '/tinymce/images/video.gif';
+							}
+						}
+						else
+						{
+							if ( $img_cover = glob(ABSPATH . $path . $file_name . '.jpg') )
+							{
+								$img_cover = current($img_cover);
+							}
+							else
+							{
+								$img_cover = dirname(__FILE__) . '/tinymce/images/video.gif';
+							}
+						}
+					}
+					else
+					{
+						$img_cover = false;
+					}
 
-					echo '<li>'
-						. '<input type="text" style="width: 320px;"'
-							. ' id="update_media[' . $key . ']" name=update_media[' . $key . ']'
-							. ' value="' . htmlspecialchars($name, ENT_QUOTES) . '"'
+					echo '<div style="margin: 1em 0px;">'
+						. ( $img_cover
+							? ( '<img src="'
+								. str_replace(ABSPATH, trailingslashit(get_option('siteurl')), $img_cover)
+								. '" />' . '<br />'
+								)
+							: ''
+							)
+						. '<input type="text" tabindex="4" style="width: 320px;"'
+							. ' name=update_media[' . $key . ']'
+							. ' value="' . htmlentities($name) . '"'
+							. ( !current_user_can('upload_files') ? ' disabled="disabled"' : '' )
 							. ' />'
 						. '&nbsp;'
-						. '<label for="delete_media[' . $key . ']">'
-							. '<input type="checkbox"'
-								. ' id=delete_media[' . $key . '] name=delete_media[' . $key . ']'
+						. '<label>'
+							. '<input type="checkbox" tabindex="4"'
+								. ' name=delete_media[' . $key . ']'
+								. ( !current_user_can('upload_files') ? ' disabled="disabled"' : '' )
 								. ' />'
 							. '&nbsp;'
 							. __('Delete')
 							. '</label>'
-						. '</li>';
+						. '</div>' . "\n";
 				}
 
 				if ( strpos($cover, $path) !== false )
 				{
 					$key = basename($cover);
+					$key = str_replace(
+							array("\\", "'"),
+							array("\\\\", "\\'"),
+							htmlentities($key)
+							);
+					$key = urlencode($key);
 
-					echo '<li>'
-						. '<input type="text" style="width: 320px;"'
-							. ' id="update_media[' . $key . ']" name=update_media[' . $key . ']'
-							. ' value="' . $key . '"'
+					echo '<div style="margin: 1em 0px;">'
+						. '<img src="'
+							. trailingslashit(get_option('siteurl')) . $cover
+							. '" />' . '<br />'
+						. '<input type="text" style="width: 320px;" tabindex="4"'
+							. ' value="Entry-specific mp3 playlist cover"'
 							. ' disabled="disabled"'
 							. ' />'
 						. '&nbsp;'
-						. '<label for="delete_media[' . $key . ']">'
-							. '<input type="checkbox"'
-								. ' id=delete_media[' . $key . '] name=delete_media[' . $key . ']'
+						. '<label>'
+							. '<input type="checkbox" tabindex="4"'
+								. ' name=delete_media[' . $key . ']'
+								. ( !current_user_can('upload_files') ? ' disabled="disabled"' : '' )
 								. ' />'
 							. '&nbsp;'
 							. __('Delete')
 							. '</label>'
-						. '</li>';
+						. '</div>';
 				}
-
-				echo '</ul>';
+				
+				if ( current_user_can('upload_files') )
+				{
+					echo '<p>'
+						.  '<input type="button" class="button" tabindex="4"'
+						. ' value="' . __('Save Changes') . '"'
+						. ' onclick="return form.save.click();"'
+						. ' />'
+						. '</p>';
+				}
 			}
 			else
 			{
@@ -279,31 +380,29 @@ class mediacaster_admin
 
 			echo '<ul>'
 				. '<li>'
-					. '<input type="file" style="width: 400px;"'
+					. '<input type="file" style="width: 400px;" tabindex="4"'
 					. ' id="new_media" name="new_media"'
+					. ' />'
+					. ' '
+					. '<input type="button"'
+					. ' value="' . __('Upload') . '"'
+					. ' onclick="return form.save.click();"'
 					. ' />'
 				. '</li>'
 				. '</ul>';
-
-			echo '<p class="submit">'
-				. '<input type="button"'
-				. ' value="' . __('Save and Continue Editing') . '"'
-				. ' onclick="return form.save.click();"'
-				. ' />'
-				. '</p>';
 
 			echo '<p>'
 				. __('Tips') . ':'
 				. '</p>'
 				. '<ul>'
 				. '<li>'
-				. __('Supported formats include .mp3, .flv, .swf, .m4a, .mp4, .m4v and .mov.')
+				. __('Supported formats include .mp3, .flv, .swf, .m4a, .mp4, .m4v, .mov, .pdf, .zip and .gz.')
 				. '</li>'
 				. '<li>'
-				. __('Upload a .jpg or .png image named after your .flv or .swf video to use it as the cover for that video. <i>e.g.</i> myvideo.jpg for myvideo.swf.')
+				. __('Upload a .jpg or .png image named after your video to use it as the cover for that video. <i>e.g.</i> myvideo.jpg for myvideo.swf or myvideo.mov.')
 				. '</li>'
 				. '<li>'
-				. __('Upload a cover.jpg or cover.png image to override the default cover for your podcast playlist.')
+				. __('Upload a cover.jpg or cover.png image if you with to override the default cover for your podcast playlist.')
 				. '</li>'
 				. '<li>'
 				. __('Your media folder must be writable by the server for any of this to work at all.')
@@ -312,7 +411,7 @@ class mediacaster_admin
 				. __('Maximum file size is 32M. If large files won\'t upload on your server, have your host increase its upload_max_filesize parameter.')
 				. '</li>'
 				. '<li>'
-				. __('If you\'re uploading <a href="http://www.semiologic.com/go/camtasia">Camtasia</a> videos, upload <em>only</em> the video file (swf, flv, mov...). The other files created by Camtasia are for use in a standalone web page.')
+				. __('If you\'re uploading <a href="http://go.semiologic.com/camtasia">Camtasia</a> videos, upload <em>only</em> the video file (swf, flv, mov...). The other files created by Camtasia are for use in a standalone web page.')
 				. '</li>'
 				. '</ul>';
 
@@ -321,13 +420,6 @@ class mediacaster_admin
 				echo '<p>' . __('Notice: GLOB_BRACE is an undefined constant on your server. Non .jpg images will be ignored.') . '</p>';
 			}
 		}
-
-		echo '</div>';
-		echo '</div>';
-
-		echo '</fieldset>';
-
-		echo '</div>';
 	} # display_media()
 
 
@@ -365,7 +457,7 @@ class mediacaster_admin
 			__('Mediacaster'),
 			__('Mediacaster'),
 			'manage_options',
-			str_replace("\\", "/", __FILE__),
+			__FILE__,
 			array('mediacaster_admin', 'display_admin_page')
 			);
 	} # add_admin_page()
@@ -433,14 +525,17 @@ class mediacaster_admin
 		$options = $_POST['mediacaster'];
 
 		$options = mediacaster_admin::strip_tags_rec($options);
+		
+		$options['player']['center'] = isset($options['player']['center']);
 
 		if ( @ $_FILES['mediacaster']['name']['itunes']['image']['new'] )
 		{
 			$name =& $_FILES['mediacaster']['name']['itunes']['image']['new'];
 			$tmp_name =& $_FILES['mediacaster']['tmp_name']['itunes']['image']['new'];
+			
+			$name = strip_tags(stripslashes($name));
 
-			preg_match("/\.([^\.]+)$/", $name, $ext);
-			$ext = end($ext);
+			$ext = pathinfo($name, PATHINFO_EXTENSION);
 
 			if ( !in_array(strtolower($ext), array('jpg', 'jpeg', 'png')) )
 			{
@@ -471,9 +566,10 @@ class mediacaster_admin
 		{
 			$name =& $_FILES['new_cover']['name'];
 			$tmp_name =& $_FILES['new_cover']['tmp_name'];
+			
+			$name = strip_tags(stripslashes($name));
 
-			preg_match("/\.([^\.]+)$/", $name, $ext);
-			$ext = end($ext);
+			$ext = pathinfo($name, PATHINFO_EXTENSION);
 
 			if ( !in_array(strtolower($ext), array('jpg', 'jpeg', 'png')) )
 			{
@@ -504,8 +600,7 @@ class mediacaster_admin
 					}
 				}
 
-				preg_match("/\.([^\.]+)$/", $name, $ext);
-				$ext = end($ext);
+				$ext = pathinfo($name, PATHINFO_EXTENSION);
 
 				$entropy = get_option('sem_entropy');
 
@@ -543,7 +638,7 @@ class mediacaster_admin
 			echo '<div class="updated">' . "\n"
 				. '<p>'
 					. '<strong>'
-					. __('Options saved.')
+					. __('Settings saved.')
 					. '</strong>'
 				. '</p>' . "\n"
 				. '</div>' . "\n";
@@ -562,50 +657,69 @@ class mediacaster_admin
 		$site_url = trailingslashit(get_option('siteurl'));
 
 		echo '<div class="wrap">' . "\n"
-			. '<h2>'. __('Mediacaster options') . '</h2>' . "\n"
+			. '<h2>'. __('Mediacaster Settings') . '</h2>' . "\n"
 			. '<input type="hidden" name="update_mediacaster_options" value="1" />' . "\n";
 
 		if ( function_exists('wp_nonce_field') ) wp_nonce_field('mediacaster');
 
-		echo '<fieldset>' . "\n"
-			. '<h3>'
-				. __('Player')
+		echo '<h3>'
+				. __('Media Player')
 				. '</h3>' . "\n";
 
-			echo '<p>'
-				. __('Player Position: ')
-				. '<label for="mediacaster[player][position][top]">'
-				. '<input type="radio"'
-					. ' id="mediacaster[player][position][top]" name="mediacaster[player][position]"'
-					. ' value="top"'
-					. ( $options['player']['position'] != 'bottom'
-						? ' checked="checked"'
-						: ''
-						)
-					. ' />'
-				. '&nbsp;'
-				. __('Top')
-				. '</label>'
-				. ' '
-				. '<label for="mediacaster[player][position][bottom]">'
-				. '<input type="radio"'
-					. ' id="mediacaster[player][position][bottom]" name="mediacaster[player][position]"'
-					. ' value="bottom"'
-					. ( $options['player']['position'] == 'bottom'
-						? ' checked="checked"'
-						: ''
-						)
-					. ' />'
-				. '&nbsp;'
-				. __('Bottom')
-				. '</label>'
-				. '</p>' . "\n";
+		echo '<table class="form-table">';
+		
+		echo '<tr valign="top">'
+			. '<th scope="row">'
+			. __('Player Position')
+			. '</th>'
+			. '<td>'
+			. '<label for="mediacaster[player][position][top]">'
+			. '<input type="radio"'
+				. ' id="mediacaster[player][position][top]" name="mediacaster[player][position]"'
+				. ' value="top"'
+				. ( $options['player']['position'] != 'bottom'
+					? ' checked="checked"'
+					: ''
+					)
+				. ' />'
+			. '&nbsp;'
+			. __('Top')
+			. '</label>'
+			. ' '
+			. '<label for="mediacaster[player][position][bottom]">'
+			. '<input type="radio"'
+				. ' id="mediacaster[player][position][bottom]" name="mediacaster[player][position]"'
+				. ' value="bottom"'
+				. ( $options['player']['position'] == 'bottom'
+					? ' checked="checked"'
+					: ''
+					)
+				. ' />'
+			. '&nbsp;'
+			. __('Bottom')
+			. '</label>'
+			. ' '
+			. '<label for="mediacaster[player][center]">'
+			. '<input type="checkbox"'
+				. ' id="mediacaster[player][center]" name="mediacaster[player][center]"'
+				. ( $options['player']['center']
+					? ' checked="checked"'
+					: ''
+					)
+				. ' />'
+			. '&nbsp;'
+			. __('Center-Aligned')
+			. '</label>'
+			. '</td>'
+			. '</tr>' . "\n";
 
-		echo '<p>'
-				. '<label for="mediacaster[player][width]">'
-				. __('Player Width and Height') . ':'
-				. '</label>'
-				. '<br />'
+		echo '<tr valign="top">'
+			. '<th scope="row">'
+			. '<label for="mediacaster[player][width]">'
+				. __('Player Width x Height') . ':'
+			. '</label>'
+			. '</th>'
+			. '<td>'
 			. '<input type="text"'
 				. ' id="mediacaster[player][width]" name="mediacaster[player][width]"'
 				. ' value="'
@@ -615,6 +729,7 @@ class mediacaster_admin
 						)
 					 . '"'
 				. ' />' . "\n"
+			. ' x '
 			. '<input type="text"'
 				. ' id="mediacaster[player][height]" name="mediacaster[player][height]"'
 				. ' value="'
@@ -624,37 +739,41 @@ class mediacaster_admin
 						)
 					 . '"'
 				. ' />' . "\n"
-			. '</p>' . "\n";
+			. '</td>' . "\n"
+			. '</tr>';
 
 
-			if ( defined('GLOB_BRACE') )
+		if ( defined('GLOB_BRACE') )
+		{
+			if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
 			{
-				if ( $cover = glob(ABSPATH . 'media/cover{,-*}.{jpg,jpeg,png}', GLOB_BRACE) )
-				{
-					$cover = current($cover);
-				}
+				$cover = current($cover);
 			}
-			else
+		}
+		else
+		{
+			if ( $cover = glob(ABSPATH . 'media/cover-*.jpg') )
 			{
-				if ( $cover = glob(ABSPATH . 'media/cover-*.jpg') )
-				{
-					$cover = current($cover);
-				}
+				$cover = current($cover);
 			}
+		}
 
-			echo '<p>'
-					. __('MP3 Playlist Cover') . ':'
-				. '<br />' . "\n"
-				. ( file_exists($cover)
-					? ( '<img src="'
-							. str_replace(ABSPATH, $site_url, $cover)
-							. '"'
-						. ' />' . "\n"
-						. '<br />' . "\n"
-						)
-					: ''
-					);
+		echo '<tr valign="top">'
+			. '<th scope="row">'
+				. __('MP3 Playlist Cover') . ':'
+			. '</th>' . "\n"
+			. '<td>';
 
+		if ( file_exists($cover) )
+		{
+			echo '<div style="margin-botton: 6px;">';
+			
+			echo '<img src="'
+					. str_replace(ABSPATH, $site_url, $cover)
+					. '"'
+				. ' />' . "\n"
+				. '<br />' . "\n";
+				
 			if ( is_writable($cover) )
 			{
 				echo '<label for="delete_cover">'
@@ -666,42 +785,55 @@ class mediacaster_admin
 					. __('Delete')
 					. '</label>';
 			}
-			elseif ( file_exists($cover) )
+			else
 			{
 				echo __('This cover is not writable by the server.');
 			}
+			
+			echo '</div>';
+		}
 
-			echo '</p>' . "\n";
-
-			echo '<p>'
-				. '<label for="new_cover">'
-					. __('New Image (jpg or png)') . ':'
-					. '</label>'
-				. '<br />' . "\n"
-				. '<input type="file" style="width: 480px;"'
-					. ' id="new_cover" name="new_cover"'
-					. ' />' . "\n"
-				. '</p>' . "\n";
+		echo '<div style="margin-botton: 6px;">'
+			. '<label for="new_cover">'
+				. __('New Image (jpg or png)') . ':'
+			. '</label>'
+			. '<br />' . "\n"
+			. '<input type="file" style="width: 480px;"'
+				. ' id="new_cover" name="new_cover"'
+				. ' />'
+			. '</div>' . "\n";
 
 		if ( !defined('GLOB_BRACE') )
 		{
 			echo '<p>' . __('Notice: GLOB_BRACE is an undefined constant on your server. Non .jpg images will be ignored.') . '</p>';
 		}
+		
+		echo '</td>'
+			. '</tr>';
+			
+		echo '</table>';
 
 		echo '<p class="submit">'
 			. '<input type="submit"'
-				. ' value="' . __('Update Options') . '"'
+				. ' value="' . attribute_escape(__('Save Changes')) . '"'
 				. ' />'
-			. '</p>' . "\n";;
-
-		echo '</fieldset>' . "\n";
+			. '</p>' . "\n";
 
 
-		echo '<fieldset>' . "\n"
-			. '<h3>'
+		echo '<h3>'
 				. __('Enclosures')
 				. '</h3>' . "\n";
 
+		echo '<table class="form-table">';
+		
+		echo '<tr valign="top">'
+			. '<th scope="row">'
+			. '<p>'
+			. __('Preferences')
+			. '</p>'
+			. '</th>'
+			. '<td>';
+		
 		echo '<p>'
 			. __('Media files you include using Mediacaster will get listed in your site\'s RSS feed as enclosures (the term itself is blogging jargon). This lets feed readers and various devices (e.g. an iPod) know media files are attached, and process them accordingly.')
 			. '</p>';
@@ -733,77 +865,92 @@ class mediacaster_admin
 				. __('List enclosures in machine readable format, and as download links in human readable format at the end of each post.')
 				. '</label>'
 			. '</p>' . "\n";
+		
+		echo '</td>'
+			. '</tr>';
 
 		if ( !$options['captions']['enclosures'] )
 		{
 			$options['captions']['enclosures'] = __('Enclosures');
 		}
 
-		echo '<p>'
+		echo '<tr valign="top">'
+			. '<th scope="row">'
 			. '<label for="mediacaster[captions][enclosures]">'
 			. __('Enclosure Caption')
-			. '<br />'
+			. '</label>'
+			. '</th>'
+			. '<td>'
 			. '<input type="text" style="width: 480px;"'
 				. ' id="mediacaster[captions][enclosures]" name="mediacaster[captions][enclosures]"'
-				. ' value="' . htmlspecialchars($options['captions']['enclosures']) . '"'
+				. ' value="' . attribute_escape($options['captions']['enclosures']) . '"'
 				. ' />' . "\n"
-			. '</label>'
-			. '</p>' . "\n";
+			. '</td>'
+			. '</tr>' . "\n";
+		
+		echo '</table>';
 
 		echo '<p class="submit">'
 			. '<input type="submit"'
-				. ' value="' . __('Update Options') . '"'
+				. ' value="' . attribute_escape(__('Save Changes')) . '"'
 				. ' />'
-			. '</p>' . "\n";;
-
-		echo '</fieldset>' . "\n";
+			. '</p>' . "\n";
 
 
-		echo '<fieldset>' . "\n"
-			. '<h3>'
-				. __('iTunes')
-				. '</h3>' . "\n";
+		echo '<h3>'
+			. __('iTunes')
+			. '</h3>' . "\n";
 
 		if ( class_exists('podPress_class') )
 		{
 			echo '<p>'
-				. __('PodPress detected. Configure itunes-related fields in your PodPress options')
+				. __('PodPress was detected. Configure itunes-related fields in your PodPress options')
 				. '</p>' . "\n";
 		}
 		else
 		{
-			echo '<p>'
+			echo '<table class="form-table">';
+			
+			echo '<tr valign="top">'
+				. '<th scope="row">'
 				. '<label for="mediacaster[itunes][author]">'
-					. __('Author') . ':'
+					. __('Author')
 					. '</label>'
-				. '<br />' . "\n"
+				. '</th>'
+				. '<td>'
 				. '<input type="text" style="width: 480px;"'
 					. ' id="mediacaster[itunes][author]" name="mediacaster[itunes][author]"'
-					. ' value="' . htmlspecialchars($options['itunes']['author'], ENT_QUOTES) . '"'
+					. ' value="' . attribute_escape($options['itunes']['author']) . '"'
 					. ' />' . "\n"
-				. '</p>' . "\n";
+				. '</td>'
+				. '</tr>' . "\n";
 
 
-			echo '<p>'
+			echo '<tr valign="top">'
+				. '<th scope="row">'
 				. '<label for="mediacaster[itunes][summary]">'
 					. __('Summary') . ':'
 					. '</label>'
-				. '<br />' . "\n"
+				. '</th>'
+				. '<td>'
 				. '<textarea style="width: 480px; height: 40px;"'
 					. ' id="mediacaster[itunes][summary]" name="mediacaster[itunes][summary]"'
 					. ' >' . "\n"
 					. $options['itunes']['summary']
 					. '</textarea>' . "\n"
-				. '</p>' . "\n";
+				. '</td>'
+				. '</tr>' . "\n";
 
 
-			echo '<p>'
-					. __('Categories') . ':';
+			echo '<tr valign="rop">'
+				. '<th scope="row">'
+					. __('Categories')
+				. '</th>'
+				. '<td>';
 
 			for ( $i = 1; $i <= 3; $i++ )
 			{
-				echo '<br />' . "\n"
-					. '<select style="width: 480px;"'
+				echo '<select style="width: 480px;"'
 						. ' id="mediacaster[itunes][category][' . $i . ']" name="mediacaster[itunes][category][' . $i . ']"'
 						. ' >' . "\n"
 					. '<option value="">' . __('Select...') . '</option>' . "\n";
@@ -813,84 +960,93 @@ class mediacaster_admin
 					$category = $category;
 
 					echo '<option'
-						. ' value="' . htmlspecialchars($category, ENT_QUOTES) . '"'
+						. ' value="' . attribute_escape($category) . '"'
 						. ( ( $category == $options['itunes']['category'][$i] )
 							? ' selected="selected"'
 							: ''
 							)
 						. '>'
-						. htmlspecialchars($category, ENT_QUOTES)
+						. attribute_escape($category)
 						. '</option>' . "\n";
 				}
-				echo '</select>' . "\n";
+				echo '</select>'
+				 	. '<br />'. "\n";
 			}
 
-			echo '</p>' . "\n";
+			echo '</td>'
+			 	. '</tr>' . "\n";
 
 
-			echo '<p>'
+			echo '<tr valign="top">'
+				. '<th scope="row">'
 					. __('Itunes Cover') . ':'
-				. '<br />' . "\n"
+				. '</th>'
+				. '<td>'
 				. '<input type="hidden"'
 					. ' id="mediacaster[itunes][image][counter]" name="mediacaster[itunes][image][counter]"'
 					. ' value="' . intval($options['itunes']['image']['counter']) . '"'
 					. ' />' . "\n"
 				. '<input type="hidden"'
 					. ' id="mediacaster[itunes][image][name]" name="mediacaster[itunes][image][name]"'
-					. ' value="' . htmlspecialchars($options['itunes']['image']['name'], ENT_QUOTES) . '"'
-					. ' />' . "\n"
-				. ( file_exists(ABSPATH . 'wp-content/itunes/' . $options['itunes']['image']['name'])
-					? ( '<img src="'
+					. ' value="' . attribute_escape($options['itunes']['image']['name']) . '"'
+					. ' />' . "\n";
+			
+			if ( file_exists(ABSPATH . 'wp-content/itunes/' . $options['itunes']['image']['name']) )
+			{
+				echo '<div style="margin-bottom: 6px;">';
+
+				echo '<img src="'
 							. $site_url
 							. 'wp-content/itunes/'
-							. htmlspecialchars($options['itunes']['image']['name'], ENT_QUOTES)
+							. attribute_escape($options['itunes']['image']['name'])
 							. '"'
-						. ' />' . '<br />' . "\n"
-						)
-						: ''
-					);
-
-			if ( is_writable(ABSPATH . 'wp-content/itunes/' . $options['itunes']['image']['name']) )
-			{
-				echo '<label for="delete_itunes">'
-					. '<input type="checkbox"'
-						. ' id="delete_itunes" name="delete_itunes"'
-						. ' style="text-align: left; width: auto;"'
-						. ' />'
-					. '&nbsp;'
-					. __('Delete')
-					. '</label>';
+						. ' />' . '<br />' . "\n";
+				
+				if ( is_writable(ABSPATH . 'wp-content/itunes/' . $options['itunes']['image']['name']) )
+				{
+					echo '<label for="delete_itunes">'
+						. '<input type="checkbox"'
+							. ' id="delete_itunes" name="delete_itunes"'
+							. ' style="text-align: left; width: auto;"'
+							. ' />'
+						. '&nbsp;'
+						. __('Delete')
+						. '</label>';
+				}
+				elseif ( file_exists(ABSPATH . 'wp-content/itunes/' . $options['itunes']['image']['name']) )
+				{
+					echo __('This cover is not writable by the server.');
+				}
+				
+				echo '</div>';
 			}
-			elseif ( file_exists(ABSPATH . 'wp-content/itunes/' . $options['itunes']['image']['name']) )
-			{
-				echo __('This cover is not writable by the server.');
-			}
 
-			echo '</p>' . "\n";
-
-			echo '<p>'
-				. '<label for="mediacaster[itunes][image][new]">'
+			echo '<label for="mediacaster[itunes][image][new]">'
 					. __('New Image (jpg or png)') . ':'
 					. '</label>'
 				. '<br />' . "\n"
 				. '<input type="file" style="width: 480px;"'
 					. ' id="mediacaster[itunes][image][new]" name="mediacaster[itunes][image][new]"'
-					. ' />' . "\n"
-				. '</p>' . "\n";
+					. ' />' . "\n";
+			
+			echo '</td>'
+				. '</tr>';
+			
 
-
-			echo '<p>'
+			echo '<tr valign="top">'
+				. '<th scope="row">'
 					. '<label for="mediacaster[itunes][explicit]">'
 					. __('Explicit') . ':'
 					. '</label>'
-					. '<br />' . "\n"
+				. '</th>'
+				. '<td>'
 				. '<select style="width: 480px;"'
 					. ' id="mediacaster[itunes][explicit]" name="mediacaster[itunes][explicit]"'
 					. ' >' . "\n";
 
 			foreach ( array('Yes', 'No', 'Clean') as $answer )
 			{
-				$answer = htmlspecialchars($answer, ENT_QUOTES);
+				$answer = attribute_escape($answer);
 
 				echo '<option'
 					. ' value="' . $answer . '"'
@@ -904,21 +1060,24 @@ class mediacaster_admin
 			}
 
 			echo '</select>' . "\n"
-				. '</p>' . "\n";
+				. '</td>'
+				. '</tr>' . "\n";
 
 
-			echo '<p>'
+			echo '<tr valign="top">'
+				. '<th scope="row">'
 					. '<label for="mediacaster[itunes][block]">'
 					. __('Block iTunes') . ':'
 					. '</label>'
-					. '<br />' . "\n"
+				. '</th>'
+				. '<td>'
 				. '<select style="width: 480px;"'
 					. ' id="mediacaster[itunes][block]" name="mediacaster[itunes][block]"'
 					. ' >' . "\n";
 
 			foreach ( array('Yes', 'No') as $answer )
 			{
-				$answer = htmlspecialchars($answer, ENT_QUOTES);
+				$answer = attribute_escape($answer);
 
 				echo '<option'
 					. ' value="' . $answer . '"'
@@ -932,29 +1091,34 @@ class mediacaster_admin
 			}
 
 			echo '</select>' . "\n"
-				. '</p>' . "\n";
+				. '</td>'
+				. '</tr>' . "\n";
 
-			echo '<p>'
+			echo '<tr valign="top">'
+				. '<th scope="row">'
 				. '<label for="mediacaster[itunes][copyright]">'
 					. __('Copyright') . ':'
 					. '</label>'
-				. '<br />' . "\n"
+				. '</th>'
+				. '<td>'
 				. '<textarea style="width: 480px; height: 40px;"'
 					. ' id="mediacaster[itunes][copyright]" name="mediacaster[itunes][copyright]"'
 					. ' >' . "\n"
 					. $options['itunes']['copyright']
 					. '</textarea>' . "\n"
-				. '</p>' . "\n";
+				. '</td>'
+				. '</tr>' . "\n";
+				
+			echo '</table>';
+
+			echo '<p class="submit">'
+				. '<input type="submit"'
+					. ' value="' . attribute_escape(__('Save Changes')) . '"'
+					. ' />'
+				. '</p>' . "\n";;
 		}
 
-		echo '<p class="submit">'
-			. '<input type="submit"'
-				. ' value="' . __('Update Options') . '"'
-				. ' />'
-			. '</p>' . "\n";;
-
-		echo '</fieldset>' . "\n"
-			. '</div>' . "\n";
+		echo '</div>' . "\n";
 
 		echo '</form>' . "\n";
 	} # display_admin_page()
@@ -1051,151 +1215,152 @@ class mediacaster_admin
 			'TV & Film',
 		);
 	} # get_itunes_categories()
-
-
+	
+	
 	#
-	# setup_admin_editor()
+	# quicktag()
 	#
 
-	function setup_admin_editor()
+	function quicktag()
 	{
-		if ( function_exists('get_user_option')
-			&& ( get_user_option('rich_editing') == 'true' )
-			&& file_exists(ABSPATH . 'wp-includes/js/tinymce/plugins/mediacaster')
-			)
-		{
-			add_filter('mce_plugins', array('mediacaster_admin', 'add_mce_plugin'));
-			add_filter('mce_buttons', array('mediacaster_admin', 'add_mce_button'));
-		}
-
-		add_filter('admin_footer', array('mediacaster_admin', 'display_quicktag'));
-	} # end setup_admin_editor()
-
-
-	#
-	# display_quicktag()
-	#
-
-	function display_quicktag()
-	{
-		global $post;
-
-		$path = mediacaster::get_path($post);
-
-		$files = mediacaster::get_files($path);
-
-		$js_options = "";
-
-		$js_options .= '<option value="-'
-				. 'media#url'
-			. '-">'
-			. __('Enter a url')
-			. '<\/option>';
-
-		foreach ( array_keys($files) as $file )
-		{
-			$js_options .= '<option value="-'
-					. 'media#' . $file
-				. '-">'
-				. $file
-				. '<\/option>';
-		}
+		if ( !$GLOBALS['editing'] ) return;
 
 ?><script type="text/javascript">
-
 if ( document.getElementById('quicktags') )
 {
-
-function add_media(elt)
-{
-	if ( elt && elt.value == '-media#url-' )
+	function mediacasterAddMedia(elt)
 	{
-		var url = prompt('Enter the url of a media file', 'http://');
-		edInsertContent(edCanvas, '<!--media#' + url + '-->');
-	}
-	else if ( elt && elt.value != '' )
+		if ( elt.value == 'media:url' )
+		{
+			var url = prompt('<?php echo __('Enter the url of a media file'); ?>', 'http://');
+		
+			if ( url && url != 'http://' )
+			{
+				edInsertContent(edCanvas, '[media:' + url + ']');
+			}
+		}
+		else if ( elt.value != '' )
+		{
+			edInsertContent(edCanvas, '[media:' + elt.value + ']');
+		}
+
+		elt.selectedIndex = 0;
+	} // mediacasterAddMedia()
+
+	var mediacasterQTButton = '<select class="ed_button" style="width: 100px;" onchange="return mediacasterAddMedia(this);">';
+
+	mediacasterQTButton += '<option value="" selected="selected"><?php echo __('Mediacaster'); ?><\/option>';
+	mediacasterQTButton += '<option value="media:url"><?php echo __('Enter a url'); ?><\/option>';
+
+	var i;
+	var label;
+	var value;
+
+	for ( i = 0; i < mediacasterFiles.length; i++ )
 	{
-		edInsertContent(edCanvas, '<!-'+ elt.value +'->');
+		label = new String(mediacasterFiles[i].label);
+		value = new String(mediacasterFiles[i].value);
+		value = value.replace("\"", "&quot;");
+	
+		mediacasterQTButton += '<option value="' + value + '">' + label + '<\/option>';
 	}
 
-	elt.selectedIndex = 0;
-} // add_media()
+	mediacasterQTButton += '<\/select>';
 
-document.getElementById('ed_toolbar').innerHTML
-	+= '<select class="ed_button" style="width: 100px;" onchange="return add_media(this);">'
-	+ '<option value="" selected><?php echo __('Media'); ?><\/option>'
-	+ '<?php echo $js_options; ?>'
-	+ '<\/select>';
+	document.getElementById('ed_toolbar').innerHTML += mediacasterQTButton;
 } // end if
 </script>
 <?php
-	} # end display_quicktag()
+	} # quicktag()
 
 
 	#
-	# display_all_files()
+	# display_js_files()
 	#
 
-	function display_all_files()
+	function display_js_files()
 	{
+		if ( !$GLOBALS['editing'] ) return;
+
 		global $post;
 
 		$path = mediacaster::get_path($post);
-
 		$files = mediacaster::get_files($path);
 
-		$js_options = "";
 		$i = 0;
+		$js_options = array();
 
 		foreach ( array_keys($files) as $file )
 		{
-			$js_options .= ( $js_options ? "\n" : '' )
-				. "all_media['"
+			$js_option = "mediacasterFiles['"
 				. $i++
 				. "']"
-				. "='"
-				. $file
-				. "';";
+				. "= {"
+				. "label: '" . str_replace(
+						array("\\", "'"),
+						array("\\\\", "\\'"),
+						preg_replace("/\.([^.]+)$/U", " ($1)", $file)
+					) . "', "
+				. "value: '" . str_replace(
+						array("\\", "'"),
+						array("\\\\", "\\'"),
+						$file
+					) . "'"
+				. "};";
+			#var_dump($js_option);
+			$js_options[] = $js_option;
 		}
 ?><script type="text/javascript">
-var all_media = new Array();
-<?php echo $js_options . "\n"; ?>
-document.all_media = all_media;
-//alert(document.all_media);
+var mediacasterFiles = new Array();
+<?php echo implode("\n", $js_options) . "\n"; ?>
+document.mediacasterFiles = mediacasterFiles;
+//alert(document.mediacasterFiles);
 </script>
 <?php
-	} # display_all_files()
+	} # display_js_files()
 
 
 	#
-	# add_mce_plugin()
+	# editor_button()
 	#
-
-	function add_mce_plugin($plugins)
-	{
-		$plugins[] = 'mediacaster';
-
-		return $plugins;
-	} # end add_mce_plugin()
-
-
-	#
-	# add_mce_button()
-	#
-
-	function add_mce_button($buttons)
+	
+	function editor_button($buttons)
 	{
 		if ( !empty($buttons) )
 		{
-			$buttons[] = 'separator';
+			$buttons[] = '|';
+		}
+		
+		$buttons[] = 'mediacaster';
+		
+		return $buttons;
+	} # editor_button()
+	
+
+	#
+	# editor_plugin()
+	#
+
+	function editor_plugin($plugin_array)
+	{
+		if ( get_user_option('rich_editing') == 'true')
+		{
+			$path = plugin_basename(__FILE__);
+
+			$plugin = trailingslashit(get_option('siteurl'))
+				. 'wp-content/plugins/'
+				. ( strpos($path, '/') !== false
+					? ( dirname($path) . '/' )
+					: ''
+					)
+				. 'tinymce/editor_plugin.js';
+				
+			$plugin_array['mediacaster'] = $plugin;
 		}
 
-		$buttons[] = 'mediacaster';
-
-		return $buttons;
-	} # end add_mce_button()
+		return $plugin_array;
+	} # editor_plugin()
 } # mediacaster_admin
-
 
 mediacaster_admin::init();
 
@@ -1223,7 +1388,7 @@ function ob_multipart_entry_form_callback($buffer)
 
 function ob_multipart_entry_form()
 {
-	if ( current_user_can('unfiltered_html') )
+	if ( current_user_can('upload_files') && $GLOBALS['editing'] )
 	{
 		ob_start('ob_multipart_entry_form_callback');
 	}

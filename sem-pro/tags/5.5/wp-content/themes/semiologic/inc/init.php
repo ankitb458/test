@@ -3,17 +3,31 @@
 # sem_version
 #
 
-define('sem_version', '5.0');
+define('sem_version', '5.5 RC-3');
 
 define('sem_path', dirname(dirname(__FILE__)));
-define('sem_pro_path', ABSPATH . PLUGINDIR . '/semiologic');
+define('sem_url', get_stylesheet_directory_uri());
 
-define('sem_pro', file_exists(sem_pro_path));
-define('sem_debug', true);
+define('sem_debug', false);
+#$_GET['add_stops'] = true;
 
 
 #
-# true() and false()
+# override memory limit: 32M is too low on some sites
+#
+
+if ( abs(intval(WP_MEMORY_LIMIT)) < 64
+	&& function_exists('memory_get_usage')
+	&& ( (int) @ini_get('memory_limit') < 64 )
+	) :
+
+@ini_set('memory_limit', '64M');
+
+endif;
+
+
+#
+# true(), false() and reset_plugin_hook()
 # these are useful to override theme defaults in the custom.php file
 #
 
@@ -21,19 +35,27 @@ if ( !function_exists('true') ) :
 function true($bool = null)
 {
 	return true;
-} # end true()
+} # true()
 endif;
 
 if ( !function_exists('false') ) :
 function false($bool = null)
 {
 	return false;
-} # end false()
+} # false()
 endif;
+
+function reset_plugin_hook($plugin_hook = null)
+{
+	if ( isset($plugin_hook) )
+	{
+		unset($GLOBALS['wp_filter'][$plugin_hook]);
+	}
+} # reset_plugin_hook()
 
 
 #
-# dump() and dump_time()
+# dump()
 #
 
 if ( !function_exists('dump') ) :
@@ -48,42 +70,116 @@ function dump()
 } # dump()
 endif;
 
-if ( !function_exists('dump_time') ) :
-function dump_time($where = '')
-{
-	echo '<div style="margin: 10px auto; text-align: center;">';
-	echo ( $where ? ( $where . ': ' ) : '' ) . get_num_queries() . " queries - " . timer_stop() . " seconds";
-	echo '</div>';
-} # dump_time()
-endif;
-
-if ( !function_exists('add_stop') ) :
-function add_stop($in = null, $where = null)
-{
-	dump_time($where);
-
-	return $in;
-} # add_stop()
-endif;
-
 
 #
-# reset_plugin_hook()
+# stops
 #
 
-function reset_plugin_hook($plugin_hook = null)
+if ( isset($_GET['add_stops']) )
 {
-	if ( isset($plugin_hook) )
+	if ( current_user_can('administrator') )
 	{
-		unset($GLOBALS['wp_filter'][$plugin_hook]);
-	}
-} # end reset_plugin_hook()
+		function add_stop($in = null, $where = null)
+		{
+			$queries = get_num_queries();
+			$seconds = timer_stop();
+			$memory = number_format(memory_get_usage() / 1024, 0);
+			
+			$out =  "$queries queries - {$seconds}s - {$memory}kB";
+			
+			if ( $where )
+			{
+				$GLOBALS['sem_stops'][$where] = $out;
+			}
+			else
+			{
+				dump($out);
+			}
 
+			return $in;
+		} # add_stop()
+
+		function dump_stops($in = null)
+		{
+			echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
+			foreach ( $GLOBALS['sem_stops'] as $where => $stop )
+			{
+				echo "$where: $stop\n";
+			}
+			echo '</pre>';
+			
+			if ( SAVEQUERIES )
+			{
+				global $wpdb;
+				dump($wpdb->queries);
+			}
+
+			return $in;
+		} # dump_stops()
+
+		add_action('init', create_function('$in', '
+			return add_stop($in, "Load");
+			'), 10000000);
+
+		add_action('template_redirect', create_function('$in', '
+			return add_stop($in, "Query");
+			'), -10000000);
+
+		add_action('wp_footer', create_function('$in', '
+			return add_stop($in, "Display");
+			'), 10000000);
+
+		add_action('admin_footer', create_function('$in', '
+			return add_stop($in, "Admin Display");
+			'), 10000000);
+
+		add_action('wp_footer', 'dump_stops', 10000000);
+		add_action('admin_footer', 'dump_stops', 10000000);
+	}
+	else
+	{
+
+		add_action('init', create_function('', '
+			header("HTTP/1.1 301 Moved Permanently");
+	        header("Status: 301 Moved Permanently");
+			wp_redirect(get_option("home"));
+			'));
+	}
+}
+
+
+#
+# diagnosis (obsolete)
+#
+
+if ( isset($_GET['send_diagnosis']) )
+{
+	add_action('init', create_function('', '
+		header("HTTP/1.1 301 Moved Permanently");
+        header("Status: 301 Moved Permanently");
+		wp_redirect(get_option("home"));
+		'));
+}
+
+
+#
+# catch old wizard upgrader
+#
+
+if ( is_admin() && $_GET['page'] == 'wizards/upgrade.php' )
+{
+	wp_redirect(trailingslashit(get_option('siteurl')) . 'wp-admin/');
+	die;
+}
+
+
+#
+# load options
+#
 
 $GLOBALS['sem_options'] = get_option('sem5_options');
 $GLOBALS['sem_captions'] = get_option('sem5_captions');
-$GLOBALS['sem_nav'] = get_option('sem5_nav');
-$GLOBALS['sem_nav_cache'] = get_option('sem5_nav_cache');
+$GLOBALS['sem_nav_menus'] = get_option('sem_nav_menus');
 
 # autoinstall test
 #$GLOBALS['sem_options'] = false;
@@ -95,118 +191,10 @@ $GLOBALS['sem_nav_cache'] = get_option('sem5_nav_cache');
 
 if ( !$GLOBALS['sem_options'] )
 {
-	include_once sem_path . '/inc/autoinstall.php';
+	include sem_path . '/inc/autoinstall.php';
 }
 elseif ( version_compare($GLOBALS['sem_options']['version'], sem_version, '<') )
 {
-	require_once sem_path . '/inc/upgrade.php';
+	include sem_path . '/inc/upgrade.php';
 }
-
-
-#
-# register panels
-#
-
-register_sidebar(
-	array(
-		'id' => 'the_header',
-		'name' => 'Header',
-		'before_widget' => '<div class="%2$s">',
-		'after_widget' => '</div>' . "\n",
-		'before_title' => '<h2>',
-		'after_title' => '</h2>' . "\n",
-		)
-	);
-
-register_sidebar(
-	array(
-		'id' => 'before_the_entries',
-		'name' => 'Before All Entries',
-		'before_widget' => '<div class="%2$s">',
-		'after_widget' => '</div>' . "\n",
-		'before_title' => '<h2>',
-		'after_title' => '</h2>' . "\n",
-		)
-	);
-
-register_sidebar(
-	array(
-		'id' => 'the_entry',
-		'name' => 'Each Entry',
-		'before_widget' => '<div class="%2$s">',
-		'after_widget' => '</div>' . "\n",
-		'before_title' => '<h2>',
-		'after_title' => '</h2>' . "\n",
-		)
-	);
-
-register_sidebar(
-	array(
-		'id' => 'after_the_entries',
-		'name' => 'After All Entries',
-		'before_widget' => '<div class="%2$s">',
-		'after_widget' => '</div>' . "\n",
-		'before_title' => '<h2>',
-		'after_title' => '</h2>' . "\n",
-		)
-	);
-
-if ( substr($GLOBALS['sem_options']['active_layout'], 0, 1) == 'e' )
-{
-	register_sidebar(
-		array(
-			'id' => 'ext_sidebar',
-			'name' => 'Ext Sidebar',
-			)
-		);
-}
-
-switch ( substr_count($GLOBALS['sem_options']['active_layout'], 's') )
-{
-case 2:
-	register_sidebar(
-		array(
-			'id' => 'sidebar-1',
-			'name' => 'Left Sidebar',
-			)
-		);
-	register_sidebar(
-		array(
-			'id' => 'sidebar-2',
-			'name' => 'Right Sidebar',
-			)
-		);
-	break;
-
-case 1:
-	register_sidebar(
-		array(
-			'id' => 'sidebar-1',
-			'name' => 'Sidebar',
-			)
-		);
-	break;
-}
-
-if ( substr($GLOBALS['sem_options']['active_layout'], strlen($GLOBALS['sem_options']['active_layout']) - 1, 1) == 'e' )
-{
-	register_sidebar(
-		array(
-			'id' => 'ext_sidebar',
-			'name' => 'Ext Sidebar',
-			)
-		);
-}
-
-register_sidebar(
-	array(
-		'id' => 'the_footer',
-		'name' => 'Footer',
-		'before_widget' => '<div class="%2$s">',
-		'after_widget' => '</div>' . "\n",
-		'before_title' => '<h2>',
-		'after_title' => '</h2>' . "\n",
-		)
-	);
-
 ?>

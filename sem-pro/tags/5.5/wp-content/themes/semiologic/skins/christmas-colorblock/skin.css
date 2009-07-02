@@ -52,6 +52,7 @@ a:active, a:hover
 	text-align: center;
 }
 
+.skin #header h1,
 #header h1 a
 {
 	color: #339900;
@@ -260,21 +261,4 @@ blockquote
 	padding: 2px 20px;
     background-color: #F4F4F4;
     background-image: none;
-}
-
-div.credits
-{
-	color: white;
-}
-
-div.credits a
-{
-	color: white;
-	font-weight: bold;
-	text-decoration:none;
-}
-
-div.credits a:hover
-{
-	text-decoration:underline;
 }

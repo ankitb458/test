@@ -9,25 +9,21 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
-# send a 404 error if necessary
-if ( ( !is_search() && !is_home() && !have_posts() ) || is_404() )
-{
-	header('HTTP/1.0 404 Not Found');
-}
-elseif ( is_singular() )
-{
-	$GLOBALS['post'] = $GLOBALS['posts'][0];
-	setup_postdata($GLOBALS['post']);
-}
-
-$GLOBALS['sem_captions'] = get_option('sem5_captions');
-$GLOBALS['sem_options'] = get_option('sem5_options');
-
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html><head><title><?php do_action('display_page_title'); ?></title>
-<?php
-do_action('wp_head');
-?>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title><?php
+if ( $title = wp_title('&raquo;', false) )
+{
+	echo $title;
+}
+else
+{
+	bloginfo('description');
+}
+?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset'); ?>" />
+<link rel="alternate" type="application/rss+xml" title="<?php _e('RSS feed'); ?>" href="<?php bloginfo('rss2_url'); ?>" />
+<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+<?php do_action('wp_head'); ?>
 </head>
 <body class="<?php do_action('display_page_class'); ?>">
 <?php
@@ -39,9 +35,8 @@ do_action('before_the_wrapper');
 <div id="wrapper">
 
 <?php
-do_action('before_the_header');
 do_action('the_header');
-do_action('after_the_header');
+do_action('the_header_boxes');
 ?>
 
 <div id="body" class="body">

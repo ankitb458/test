@@ -1,13 +1,8 @@
 <?php
-/*
-Terms of use
-------------
-
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
-
-http://www.semiologic.com/legal/license/
-**/
-
+if ( !class_exists('widget_utils') )
+{
+	include dirname(__FILE__) . '/widget-utils.php';
+}
 
 class silo_admin
 {
@@ -17,10 +12,100 @@ class silo_admin
 
 	function init()
 	{
-		add_action('widgets_init', array('silo_admin', 'widgetize'));
+		add_action('admin_menu', array('silo_admin', 'meta_boxes'));
+		
+		add_action('admin_print_scripts', array('silo_admin', 'register_scripts'));
 
-		add_action('edit_page_form', array('silo_admin', 'page_tags'));
+		if ( get_option('silo_widgets_cache') === false )
+		{
+			update_option('silo_widgets_cache', array());
+		}
+		
+		add_filter('sem_api_key_protected', array('silo_admin', 'sem_api_key_protected'));
+
+		if ( version_compare(mysql_get_server_info(), '4.1', '<') )
+		{
+			add_action('admin_notices', array('silo_admin', 'mysql_warning'));
+			remove_action('widgets_init', array('silo', 'widgetize'));
+		}
 	} # init()
+	
+	
+	#
+	# mysql_warning()
+	#
+	
+	function mysql_warning()
+	{
+		echo '<div class="error">'
+			. '<p><b style="color: firebrick;">Silo Web Design Error</b><br /><b>Your MySQL version is lower than 4.1.</b> It\'s time to <a href="http://www.semiologic.com/resources/wp-basics/wordpress-server-requirements/">change hosts</a> if yours doesn\'t want to upgrade.</p>'
+			. '</div>';
+	} # mysql_warning()
+
+
+	#
+	# sem_api_key_protected()
+	#
+	
+	function sem_api_key_protected($array)
+	{
+		$array[] = 'http://www.semiologic.com/media/software/widgets/silo/silo.zip';
+		
+		return $array;
+	} # sem_api_key_protected()
+
+
+	#
+	# register_scripts()
+	#
+
+	function register_scripts()
+	{
+		global $wp_scripts;
+
+		if ( is_object($wp_scripts)
+			&& $wp_scripts->query( 'page', 'queue' ) //in_array('page', $wp_scripts->queue)
+			)
+		{
+			$plugin_path = plugin_basename(__FILE__);
+			$plugin_path = preg_replace("/[^\/]+$/", '', $plugin_path);
+			$plugin_path = '/wp-content/plugins/' . $plugin_path;
+
+			wp_enqueue_script( 'page_tags', $plugin_path . 'page-tags.js', array('suggest', 'jquery-ui-tabs', 'wp-lists'), '20080221' );
+
+			wp_localize_script( 'page_tags', 'page_tagsL10n', array(
+				'tagsUsed' =>  __('Tags used on this page:'),
+				'add' => attribute_escape(__('Add')),
+				'addTag' => attribute_escape(__('Add new tag')),
+				'separate' => __('Separate tags with commas'),
+			) );
+		}
+	} # register_scripts()
+
+
+	#
+	# meta_boxes()
+	#
+
+	function meta_boxes()
+	{
+		if ( !defined('page_tags_added') )
+		{
+			add_meta_box('tagsdiv', 'Tags', array('silo_admin', 'page_tags'), 'page', 'normal');
+			if ( class_exists('autotag') )
+			{
+				add_meta_box('autotag', 'Autotag', array('autotag', 'entry_editor'), 'page', 'normal');
+			}
+
+			define('page_tags_added', true);
+		}
+		
+		widget_utils::post_meta_boxes();
+		widget_utils::page_meta_boxes();
+
+		add_action('post_widget_config_affected', array('silo_admin', 'widget_config_affected'));
+		add_action('page_widget_config_affected', array('silo_admin', 'widget_config_affected'));
+	} # meta_boxes()
 
 
 	#
@@ -29,99 +114,131 @@ class silo_admin
 
 	function page_tags()
 	{
-		if ( !isset($GLOBALS['simple_tags_admin']) )
-		{
-			global $post_ID;
+		$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
 ?>
-<fieldset id="tagdiv">
-	<legend><?php _e('Tags (separate multiple tags with commas: cats, pet food, dogs).'); ?></legend>
-	<div><input type="text" name="tags_input" class="tags-input" id="tags-input" size="30" tabindex="3" value="<?php echo get_tags_to_edit( $post_ID ); ?>" /></div>
-</fieldset>
-<?php
-		}
+		<p id="jaxtag"><input type="text" name="tags_input" class="tags-input" id="tags-input" size="40" tabindex="3" value="<?php echo get_tags_to_edit( $post_ID ); ?>" /></p>
+		<p id="tagchecklist"></p>
+<?php		
 	} # page_tags()
 
 
 	#
-	# widgetize()
+	# widget_config_affected()
 	#
 
-	function widgetize()
+	function widget_config_affected()
 	{
-		if ( function_exists('register_widget_control') )
-		{
-			register_widget_control('Silo Pages', array('silo_admin', 'widget_pages_control'));
-		}
-	} # widgetize()
+		echo '<li>'
+			. 'Silo Pages'
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. 'Silo Stub'
+			. '</li>' . "\n";
+		
+		echo '<li>'
+			. 'Silo Map (except title)'
+			. '</li>' . "\n";
+	} # widget_config_affected()
 
 
 	#
-	# widget_pages_control()
+	# widget_control()
 	#
 
-	function widget_pages_control()
+	function widget_control($widget_args)
 	{
-		$options = get_option('silo_options');
+		global $wp_registered_widgets;
+		static $updated = false;
 
-		if ( $_POST["silo_pages_update"] )
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP ); // extract number
+
+		$options = silo::get_options();
+
+		if ( !$updated && !empty($_POST['sidebar']) )
 		{
-			$new_options = $options;
+			$sidebar = (string) $_POST['sidebar'];
 
-			$new_options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST["silo_pages_title"])));
+			$sidebars_widgets = wp_get_sidebars_widgets();
+			
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
+			else
+				$this_sidebar = array();
 
-			preg_match_all("/\d+/", $_POST["silo_pages_exclude"], $exclude);
-			$new_options['exclude'] = end($exclude);
-
-			if ( $options != $new_options )
+			foreach ( $this_sidebar as $_widget_id )
 			{
-				$options = $new_options;
-
-				update_option('silo_options', $options);
-
-				silo::flush_cache(0);
+				if ( array('silo', 'display_widget') == $wp_registered_widgets[$_widget_id]['callback']
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
+					)
+				{
+					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+					if ( !in_array( "silo_widget-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
+						unset($options[$widget_number]);
+					
+					silo::clear_cache();
+				}
 			}
+
+			foreach ( (array) $_POST['silo-widget'] as $num => $opt ) {
+				$title = stripslashes(strip_tags($opt['title']));
+				$desc = isset($opt['desc']);
+				
+				$options[$num] = compact( 'title', 'desc' );
+			}
+
+			update_option('silo_widgets', $options);
+			$updated = true;
 		}
-		elseif ( $options === false )
+
+		if ( -1 == $number )
 		{
-			$options = array('title' => __('Browse'));
-			update_option('silo_options', $options);
+			$ops = silo::default_options();
+			$number = '%i%';
 		}
-
-		$title = htmlspecialchars($options['title'], ENT_QUOTES);
-
-		$exclude = '';
-		foreach ( (array) $options['exclude'] as $val )
+		else
 		{
-			$exclude .= ( $exclude ? ', ' : '' ) . $val;
+			$ops = $options[$number];
 		}
+		
+		extract($ops);
 
-		echo '<input type="hidden"'
-				. ' id="silo_pages_update"'
-				. ' name="silo_pages_update"'
-				. ' value="1"'
-				. ' />'
-			. '<p>'
-			. '<label for="silo_title">'
-				. __('Title:')
-				. '&nbsp;'
-				. '<input style="width: 250px;"'
-					. ' id="silo_pages_title"'
-					. ' name="silo_pages_title"'
-					. ' type="text" value="' . $title . '" />'
-				. '</label>'
-				. '</p>'
-			. '<p>'
-			. '<label for="silo_pages_exclude">'
-			. __('Exclude (ID list)') . ':'
-			. '<br />'
-			. '<input type="text" style="width: 250px;"'
-				. ' id="silo_pages_exclude" name="silo_pages_exclude"'
-				. ' value="' . $exclude . '"'
-				. ' />'
+		echo '<div style="margin: 0px 0px 6px 0px;">'
+			. '<div style="width: 120px; float: left; padding-top: 2px;">'
+			. '<label for="silo-widget-title-' . $number . '">'
+			. __('Title', 'silo-widgets')
 			. '</label>'
-			. '</p>'
-			;
-	} # widget_pages_control()
+			. '</div>'
+			. '<div style="width: 330px; float: right;">'
+			. '<input style="width: 320px;"'
+			. ' id="silo-widget-title-' . $number . '" name="silo-widget[' . $number . '][title]"'
+			. ' type="text" value="' . attribute_escape($title) . '"'
+			. ' />'
+			. '</div>'
+			. '<div style="clear: both;"></div>'
+			. '</div>';
+
+
+		echo '<div style="margin: 0px 0px 6px 0px;">'
+			. '<div style="width: 330px; float: right;">'
+			. '<label for="silo-widget-desc-' . $number . '">'
+			. '<input'
+			. ' id="silo-widget-desc-' . $number . '" name="silo-widget[' . $number . '][desc]"'
+			. ' type="checkbox"'
+			. ( $desc
+				? ' checked="checked"'
+				: ''
+				)
+			. ' />'
+			. '&nbsp;' . __('Show Descriptions', 'silo-widgets')
+			. '</label>'
+			. '</div>'
+			. '<div style="clear: both;"></div>'
+			. '</div>';
+	} # widget_control()
 } # silo_admin
 
 silo_admin::init();

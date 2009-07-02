@@ -1,40 +1,33 @@
 <?php
 /*
 Plugin Name: Frame Buster
-Plugin URI: http://www.semiologic.com/software/wp-fixes/frame-buster/
+Plugin URI: http://www.semiologic.com/software/wp-tweaks/frame-buster/
 Description: Prevents your blog from being loaded into a frame.
 Author: Denis de Bernardy
-Version: 3.6
+Version: 4.0 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: frame_buster
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
 class sem_frame_buster
 {
 	#
-	# Variables
-	#
-
-
-	#
 	# Constructor
 	#
 
-	function sem_frame_buster()
+	function init()
 	{
-		add_action('wp_head', array(&$this, 'kill_frame'));
-	} # end sem_frame_buster()
+		add_action('wp_footer', array('sem_frame_buster', 'kill_frame'));
+	} # init()
 
 
 	#
@@ -72,8 +65,8 @@ catch ( err )
 </script>
 KILL_FRAME_SCRIPT;
 		}
-	} # end kill_frame()
-} # end sem_frame_buster
+	} # kill_frame()
+} # sem_frame_buster
 
-$sem_frame_buster =& new sem_frame_buster();
+sem_frame_buster::init();
 ?>

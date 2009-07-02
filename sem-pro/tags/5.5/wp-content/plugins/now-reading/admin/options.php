@@ -5,9 +5,7 @@
  */
 
 if ( !empty($_POST['update']) ) {
-	$admin = realpath(dirname(__FILE__) . '/../../../../') . '/wp-admin';
-	chdir($admin);
-	require_once $admin . '/admin.php';
+	require '../../../../wp-config.php';
 	
 	if ( !current_user_can('level_9') )
 		die ( __('Cheatin&#8217; uh?') );
@@ -27,6 +25,8 @@ if ( !empty($_POST['update']) ) {
 	$options['proxyHost']		= $_POST['proxy_host'];
 	$options['proxyPort']		= $_POST['proxy_port'];
 	$options['booksPerPage']    = $_POST['books_per_page'];
+	$options['permalinkBase']   = $_POST['permalink_base'];
+	$options['multiuserMode']	= $_POST['multiuser_mode'];
 	
 	$nr_url->load_scheme($options['menuLayout']);
 	
@@ -53,10 +53,10 @@ if ( !empty($_POST['update']) ) {
 		$options['httpLib'] = 'snoopy';
 	}
 	
+	update_option('nowReadingOptions', $options);
+	
 	global $wp_rewrite;
 	$wp_rewrite->flush_rules();
-	
-	update_option('nowReadingOptions', $options);
 	
 	wp_redirect($nr_url->urls['options'] . "&updated=1$append");
 	die;

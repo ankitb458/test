@@ -10,6 +10,6 @@
 #
 
 
-include_once dirname(__FILE__) . '/inc/init.php';
-include_once dirname(__FILE__) . '/inc/inc.php';
+include dirname(__FILE__) . '/inc/init.php';
+include dirname(__FILE__) . '/inc/inc.php';
 ?>

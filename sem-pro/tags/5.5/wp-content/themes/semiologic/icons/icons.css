@@ -10,7 +10,7 @@ Terms of use
 
 This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
 
-http://www.semiologic.com/legal/license/
+http://www.mesoconcepts.com/license/
 **/
 
 .link_entry a,
@@ -59,57 +59,51 @@ http://www.semiologic.com/legal/license/
 	padding-right: 0px;
 }
 
-.entry_author a,
-.comment_author a,
-.loginout a
-{
-	background: url(user.gif) center left no-repeat;
-	padding-left: 13px;
-	padding-right: 0px;
-}
-
-.entry_tags a
+.entry_tags a,
+.entry_categories a
 {
 	background: url(folder.gif) center left no-repeat;
 	padding-left: 13px;
 	padding-right: 0px;
 }
 
+.entry_author a,
+.comment_author a,
+.loginout a,
+a.entry_author
+{
+	background: url(user.gif) center left no-repeat;
+	padding-left: 13px;
+	padding-right: 0px;
+}
+
 .sidebar ul ul,
-.sidebar .display_sidebar_nav_widget div span
+.fuzzy_widget ul
 {
 	list-style-image: url(file.gif);
 }
 
-.sidebar .widget_categories ul,
-.sidebar .widget_archives ul
+.widget_categories ul,
+.widget_archive ul
 {
 	list-style-image: url(folder.gif);
 }
 
-.sidebar .sem_subscribe_me ul,
-.sidebar .now-reading ul
+.sem_subscribe_me ul,
+.now-reading ul
 {
 	list-style-image: none;
 }
 
-.sidebar .now-reading li
+.now-reading li
 {
 	list-style-type: none;
 	margin-left: 0px;
 }
 
-.main .sem_post_list ul,
-.main .sem_link_list ul,
-.main .archive_listing ul
+.post_list ul
 {
 	list-style-image: url(file.gif);
-}
-
-.main .sem_post_archive ul,
-.main .sem_link_archive ul
-{
-	list-style-image: url(folder.gif);
 }
 
 .skin .bullet ul,
@@ -146,4 +140,17 @@ http://www.semiologic.com/legal/license/
 #democracy ul
 {
 	list-style-image: none;
+}
+
+li.nav_home,
+li.nav_blog,
+li.nav_branch
+{
+	list-style-image: url(folder.gif);
+}
+
+li.nav_leaf,
+li.page_item
+{
+	list-style-image: url(file.gif);
 }

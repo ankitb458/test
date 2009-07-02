@@ -5,7 +5,7 @@ Terms of use
 
 This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
 
-http://www.semiologic.com/legal/license/
+http://www.mesoconcepts.com/license/
 
 
 Hat tips
@@ -25,28 +25,6 @@ IMPORTANT
 
 if ( !class_exists('extract_terms') ) :
 
-#
-# Config
-#
-
-if ( !defined('sem_cache_path') )
-{
-	define('sem_cache_path', ABSPATH . 'wp-content/cache/'); # same as wp-cache
-
-	if ( !get_option('sem_cache_created') )
-	{
-		@mkdir(sem_cache_path);
-		@chmod(sem_cache_path, 0777);
-
-		update_option('sem_cache_created', 1);
-	}
-}
-if ( !defined('sem_cache_long_timeout') )
-{
-	define('sem_cache_long_timeout', 3600 * 24 * 7); # one week
-}
-
-
 class extract_terms
 {
 	#
@@ -55,29 +33,29 @@ class extract_terms
 
 	function init()
 	{
-		add_action('shutdown', array('extract_terms', 'clean_cache'));
+		global $wpdb;
+		
+		$wpdb->yt_cache = $wpdb->prefix . 'yt_cache';
+		
+		register_taxonomy('yahoo_terms', 'post', array('update_count_callback' => array('extract_terms', 'update_taxonomy_count')));
 	} # end init()
-
-
+	
+	
 	#
-	# clean_cache()
+	# update_taxonomy_count()
 	#
-
-	function clean_cache()
+	
+	function update_taxonomy_count($terms)
 	{
-		if ( ( get_option('sem_clean_yt_cache') + sem_cache_long_timeout ) < time() )
-		{
-			foreach ( glob(sem_cache_path . "yt-*") as $cache_file )
-			{
-				if ( ( filemtime($cache_file) + sem_cache_long_timeout ) < time() )
-				{
-					@unlink($cache_file);
-				}
-			}
-
-			update_option('sem_clean_yt_cache', time());
+		global $wpdb;
+		
+		if ( !method_exists($wpdb, 'prepare') ) return;
+		
+		foreach ( $terms as $term ) {
+			$count = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts WHERE $wpdb->posts.ID = $wpdb->term_relationships.object_id AND post_status = 'publish' AND post_type IN ('post', 'page') AND term_taxonomy_id = %d", $term ) );
+			$wpdb->update( $wpdb->term_taxonomy, compact( 'count' ), array( 'term_taxonomy_id' => $term ) );
 		}
-	} # end clean_cache()
+	} # update_taxonomy_count()
 
 
 	#
@@ -86,20 +64,23 @@ class extract_terms
 
 	function get_terms($context = '', $query = '')
 	{
-		# catch no cache error
-
-		if ( !is_writable(sem_cache_path) )
-		{
-			return array();
-		}
-
 		# clean up
-
-		$context = str_replace("\r", "", $context);
-		$context = trim(strip_tags($context));
-
-		$query = str_replace("\r", "", $query);
-		$query = trim(strip_tags($query));
+		
+		foreach ( array('context', 'query') as $var )
+		{
+			foreach ( array('script', 'style') as $junk )
+			{
+				$$var = preg_replace("/
+					<\s*$junk\b
+					.*
+					<\s*\/\s*$junk\s*>
+					/isUx", '', $$var);
+			}
+			$$var = strip_tags($$var);
+			$$var = html_entity_decode($$var, ENT_NOQUOTES);
+			$$var = str_replace("\r", "\n", $$var);
+			$$var = trim($$var);
+		}
 
 		# query vars
 
@@ -109,17 +90,22 @@ class extract_terms
 			"query" => $query
 			);
 
-		$cache_file = sem_cache_path . "yt-". md5($context.$query) . ".xml";
-
-		clearstatcache(); // reset file cache status, in case of multiple calls
-
-		if ( @file_exists($cache_file)
-			&& ( ( @filemtime($cache_file) + sem_cache_long_timeout ) > time() )
-			)
+		global $wpdb;
+			
+		if ( !get_option('yt_cache_created') )
 		{
-			$xml = file_get_contents( $cache_file );
+			$wpdb->query("
+				CREATE TABLE $wpdb->yt_cache (
+					cache_id		varchar(32) PRIMARY KEY,
+					cache_content	text NOT NULL DEFAULT ''
+				);");
+			
+			update_option('yt_cache_created', 1);
 		}
-		else
+		
+		$cache_id = md5(preg_replace("/\s+/", " ", $context . $query));
+
+		if ( !( $xml = $wpdb->get_var("SELECT cache_content FROM $wpdb->yt_cache WHERE cache_id = '$cache_id'") ) )
 		{
 			# Process content
 
@@ -176,11 +162,8 @@ Content-Length: " . strlen($content) . "
 			$xml = preg_replace("/^[^<]*|[^>]*$/", "", $xml);
 
 			# Cache
-
-			$fp = @fopen($cache_file, "w+");
-			@fwrite($fp, $xml);
-			@fclose($fp);
-			@chmod($cache_file, 0666);
+			
+			$wpdb->query("INSERT INTO $wpdb->yt_cache (cache_id, cache_content) VALUES ( '$cache_id', '" . $wpdb->escape($xml) . "');");
 		}
 
 		preg_match_all("/<Result>([^<]+)<\/Result>/", $xml, $out);
@@ -213,42 +196,11 @@ Content-Length: " . strlen($content) . "
 			}
 		}
 
-		return extract_terms::get_terms($post->post_title . "\n\n" . $post->post_content);
+		return extract_terms::get_terms($post->post_title . "\n\n" . apply_filters('the_content', $post->post_content));
 	}
-} # end extract_terms
+} # extract_terms
 
 extract_terms::init();
-
-
-#
-# Template tags
-#
-
-function get_the_post_terms($post = null)
-{
-	return extract_terms::get_post_terms($post);
-} # end get_the_post_terms()
-
-function get_the_terms($context = null, $query = null)
-{
-	return extract_terms::get_terms($context, $query);
-} # end get_the_terms()
-
-
-########################
-#
-# Backward compatibility
-#
-
-function sem_extract_terms($post = null)
-{
-	return get_the_post_terms($post);
-} # end sem_extract_terms()
-
-function sem_get_terms($context = null, $query = null)
-{
-	return get_the_terms($context, $query);
-} # end sem_get_terms()
 
 endif;
 ?>

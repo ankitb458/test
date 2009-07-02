@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: role-manager\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-04-09 08:01+0100\n"
-"Last-Translator: Fairweb <web@fairweb.fr>\n"
+"PO-Revision-Date: 2007-10-23 16:22+0100\n"
+"Last-Translator: Myriam Faulkner <web@fairweb.fr>\n"
 "Language-Team: Myriam Faulkner <web@fairweb.fr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,20 +13,18 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: role-manager.php:77
-msgid "Removing this permission from a role assigned to you could be a
-really bad idea.  Are you sure?"
-msgstr "Supprimer ce droit de ce rôle peut être une très mauvaise
-idée. Etes-vous certains ?"
+msgid "Removing this permission from a role assigned to you could be a really bad idea.  Are you sure?"
+msgstr "Supprimer ce droit de ce rôle peut être une très mauvaise idée. Etes-vous certain ?"
 
 #: role-manager.php:171
 #: role-manager.php:383
 msgid "Capability granted"
-msgstr "Permission affectée"
+msgstr "Droit affecté"
 
 #: role-manager.php:171
 #: role-manager.php:385
 msgid "Capability denied"
-msgstr "Permission refusée"
+msgstr "Droit refusé"
 
 #: role-manager.php:255
 #: role-manager.php:263
@@ -35,7 +33,7 @@ msgstr "Renommer le rôle"
 
 #: role-manager.php:259
 msgid "New Name:"
-msgstr "Nouveau nom:"
+msgstr "Nouveau nom :"
 
 #: role-manager.php:287
 msgid "You cannot delete the default role."
@@ -62,15 +60,8 @@ msgid "Delete Role"
 msgstr "Supprimer le rôle."
 
 #: role-manager.php:354
-msgid "All users with this role will have it removed, and they will
-lose all capabilities from this role (unless other roles provide it).
-If a user has only this role, they will be assigned the default role,
-"
-msgstr "Ce rôle sera supprimé pour les utilisateurs qui y sont
-assignés et ceux-ci perdront les autorisations correspondantes (à
-moins qu&#8217;un autre rôle ne les prévoient). Si un utilisateur ne
-bénéficie d&#8217;aucun autre rôle, il lui sera attribué le rôle par
-défaut."
+msgid "All users with this role will have it removed, and they will lose all capabilities from this role (unless other roles provide it). If a user has only this role, they will be assigned the default role, "
+msgstr "Ce rôle sera supprimé pour tous les utilisateurs qui y sont affectés et ceux-ci perdront les droits correspondants (à moins que les autres rôles ne les détiennent). Si un utilisateur est seulement affecté à ce rôle, il se verra attribuer le rôle par défaut,"
 
 #: role-manager.php:358
 msgid "Confirm Delete Role"
@@ -82,11 +73,11 @@ msgstr "Le nouveau rôle a été créé"
 
 #: role-manager.php:389
 msgid "New capability created"
-msgstr "La nouvelle autorisation a été créée"
+msgstr "Le nouveau droit a été créé"
 
 #: role-manager.php:391
 msgid "Unused capabilites purged"
-msgstr "Les autorisations non-utilisées ont été purgées"
+msgstr "Les droits non-utilisés ont été purgées"
 
 #: role-manager.php:393
 msgid "Role renamed"
@@ -109,15 +100,8 @@ msgid "Manage Roles"
 msgstr "Gérer les rôles"
 
 #: role-manager.php:404
-msgid "This page is for editing what capabilities are associated with
-each role. To change the capabilities of a specific user, click on
-Authors &amp; Users, then click Edit next to the user you want to
-change. You can <a href=\"#new-role\">add new roles</a> as well."
-msgstr "Cette page permet de modifier les autorisations affectées à
-chaque rôle. Pour modifier les autorisations d&#8217;un utilisateur
-spécifique, cliquez sur Auteur &amp; Utilisateurs, puis cliquez sur
-Modifier en face de l&#8217;utilisateur que vous voulez modifier. Vous
-pouvez également <a href=\"#new-role\">ajouter un nouveau rôle</a>."
+msgid "This page is for editing what capabilities are associated with each role. To change the capabilities of a specific user, click on Authors &amp; Users, then click Edit next to the user you want to change. You can <a href=\"#new-role\">add new roles</a> as well."
+msgstr "Cette page permet d&#8217;éditer les droits affectés à chaque rôles. Pour modifier les droits d&#8217;un utilisateur spécifique, cliquez sur Auteurs et Utilisateurs, puis cliquez sur Modifier en face de l&#8217;utilisateur concerné. You pouvez également <a href=\"#new-role\">Ajouter un nouveau rôle</a>."
 
 #: role-manager.php:420
 msgid "rename"
@@ -155,7 +139,7 @@ msgstr "Nom du rôle:"
 
 #: role-manager.php:469
 msgid "Capabilities to be included:"
-msgstr "Autorisations à affecter:"
+msgstr "Droits à affecter:"
 
 #: role-manager.php:477
 msgid "Create Role"
@@ -163,28 +147,25 @@ msgstr "Créer un rôle"
 
 #: role-manager.php:480
 msgid "Custom Capabilities"
-msgstr "Autorisations personnalisées"
+msgstr "Droits personnalisés"
 
 #: role-manager.php:482
 msgid "New Capability Name:"
-msgstr "Nom de la nouvelle autorisation:"
+msgstr "Nom du nouveau droit :"
 
 #: role-manager.php:483
 msgid "Create Capability"
-msgstr "Créer une autorisation"
+msgstr "Créer un droit"
 
 #: role-manager.php:486
 msgid "Purge Unused Capabilities"
-msgstr "Purger les autorisations non-utilisées"
+msgstr "Purger les droits non-utilisés"
 
 #: role-manager.php:486
-msgid "If core capabilities are not currently assigned to any Role,
-then you must manually re-add them after this action if you want to
-use them.  Are you sure you want to do this?"
-msgstr "Si les autorisations standards ne sont actuellement affectées
-à aucun rôle, vous devrez alors les rajouter manuellement si vous
-voulez les utiliser. Etes-vous certain de vouloir faire celà ?"
+msgid "If core capabilities are not currently assigned to any Role, then you must manually re-add them after this action if you want to use them.  Are you sure you want to do this?"
+msgstr "Si les droits par défaut de Wordpress ne sont actuellement pas affectés aux rôles, vous devez alors les ré-ajouter manuellement après cette action si vous voulez les utiliser. Etes-vous certain de vouloir faire celà ?"
 
 #: role-manager.php:496
 msgid "Assign extra capabilites"
-msgstr "Ajouter des autorisations complémentaires"
+msgstr "Ajouter des droits complémentaires"
+

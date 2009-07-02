@@ -1,15 +1,12 @@
 <?php
 
 /* <WP plugin data>
- * Plugin Name:   Custom Query String (fork)
- * Version:       2.13 fork
+ * Plugin Name:   Custom Query String
+ * Version:       2.14 RC fork
  * Plugin URI:    http://mattread.com/projects/wp-plugins/custom-query-string-plugin/
  * Description:   Change the number of posts displayed when viewing different archive pages.
  * Author:        Matt Read
  * Author URI:    http://www.mattread.com/
- * Update Service: http://version.mesoconcepts.com/wordpress
- * Update Tag: custom_query
- * Update URI: http://www.semiologic.com/members/sem-pro/download/
  *
  * License:       GNU General Public License
  *
@@ -53,7 +50,7 @@ class cqs
 	var $option = array();
 
 //	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_date', 'is_year', 'is_month', 'is_day', 'is_time', 'is_search', 'is_home', 'is_paged', 'is_feed');
-	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_feed', 'is_home', 'is_paged', 'is_search', 'is_tag');
+	var $conditions = array('is_archive', 'is_author', 'is_category', 'is_feed', 'is_home', 'is_search', 'is_tag');
 	var $orderbys = array('date', 'category', 'title', 'author', 'modified');
 	var $orders = array('DESC', 'ASC');
 
@@ -285,7 +282,7 @@ class cqs
 	 * @since version 2.6
 	 */
 	function admin_menu() {
-		add_options_page('CQS Options', 'CQS', 'manage_options', $this->plugin_basename(__FILE__), array(&$this, 'options_page'));
+		add_options_page('Custom Query', 'Custom Query', 'manage_options', __FILE__, array(&$this, 'options_page'));
 	}
 
 
@@ -395,15 +392,15 @@ class cqs
 	 */
 	function display_options_page ($updated = false) {
 		if ($updated)
-			echo '<div id="message" class="updated fade"><p><strong>'. __('Options saved.', 'cqs') .'</strong></p></div>';
+			echo '<div id="message" class="updated fade"><p><strong>'. __('Settings saved.', 'cqs') .'</strong></p></div>';
 
-		ob_start();
 		?>
 
 	<form name="cqsoptions" method="post">
-	<?php if ($this->options) : ?>
-	<div class="wrap" onmouseover="window.status='Customize My Queries Please!'; return true;"><h2>Custom Query String <?php echo k_CQS_VER; ?></h2>
+	<div class="wrap">
+	<h2>Custom Query String</h2>
 
+	<?php if ($this->options) : ?>
 	<h3><?php _e('Current Conditions', 'cqs'); ?></h3>
 
 		<table cellspacing="2" cellpadding="5" width="100%">
@@ -451,7 +448,7 @@ class cqs
 		</p>
 	<?php endif; ?>
 
-	<h3 style="margin-top:4em;"><?php _e('Add New Condition', 'cqs'); ?></h3>
+	<h3 style="margin-top:2em;"><?php _e('Add New Condition', 'cqs'); ?></h3>
 
 		<p><?php _e('To update current conditions replace them with new ones here. Use \'-1\' to show all posts.', 'cqs'); ?></p>
 
@@ -539,13 +536,12 @@ class cqs
 			</tr>
 
 			</table>
-
-			<?php $this->footer(); ?>
 	</div>
 
 	<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('custom_query_string'); ?>
 
 	</form>
+	</div>
 
 		<?php
 		ob_end_flush();

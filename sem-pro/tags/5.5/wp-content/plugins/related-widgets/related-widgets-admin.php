@@ -1,4 +1,9 @@
 <?php
+if ( !class_exists('widget_utils') )
+{
+	include dirname(__FILE__) . '/widget-utils.php';
+}
+
 class related_widgets_admin
 {
 	#
@@ -7,78 +12,132 @@ class related_widgets_admin
 
 	function init()
 	{
-		add_action('sidebar_admin_setup', array('related_widgets_admin', 'widget_setup'));
-		add_action('sidebar_admin_page', array('related_widgets_admin', 'widget_page'));
+		add_action('admin_menu', array('related_widgets_admin', 'meta_boxes'));
 
-		if ( get_option('related_widgets_cache') === false )
+		add_action('admin_print_scripts', array('related_widgets_admin', 'register_scripts'));
+		
+		add_filter('sem_api_key_protected', array('related_widgets_admin', 'sem_api_key_protected'));
+		
+		if ( version_compare(mysql_get_server_info(), '4.1', '<') )
 		{
-			update_option('related_widgets_cache', array());
+			add_action('admin_notices', array('related_widgets_admin', 'mysql_warning'));
+			remove_action('widgets_init', array('related_widgets', 'widgetize'));
 		}
 	} # init()
-
-
+	
+	
 	#
-	# widget_setup()
+	# mysql_warning()
 	#
-
-	function widget_setup()
+	
+	function mysql_warning()
 	{
-		$options = $newoptions = get_option('related_widgets');
-
-		if ( isset($_POST['related-widgets-number-submit']) )
-		{
-			$number = (int) $_POST['related-widgets-number'];
-			if ( $number > 9 ) $number = 9;
-			if ( $number < 1 ) $number = 1;
-			$newoptions['number'] = $number;
-		}
-
-		if ( $options != $newoptions )
-		{
-			$options = $newoptions;
-			update_option('related_widgets', $options);
-			related_widgets::widgetize();
-		}
-	} # widget_setup()
+		echo '<div class="error">'
+			. '<p><b style="color: firebrick;">Related Widgets Error</b><br /><b>Your MySQL version is lower than 4.1.</b> It\'s time to <a href="http://www.semiologic.com/resources/wp-basics/wordpress-server-requirements/">change hosts</a> if yours doesn\'t want to upgrade.</p>'
+			. '</div>';
+	} # mysql_warning()
 
 
 	#
-	# widget_page()
+	# sem_api_key_protected()
 	#
-
-	function widget_page()
+	
+	function sem_api_key_protected($array)
 	{
-		$options = $newoptions = get_option('related_widgets');
+		$array[] = 'http://www.semiologic.com/media/software/widgets/related-widgets/related-widgets.zip';
+		
+		return $array;
+	} # sem_api_key_protected()
+
+
+	#
+	# register_scripts()
+	#
+	
+	function register_scripts()
+	{
+		global $wp_scripts;
+		
+		if ( is_object($wp_scripts)
+			&& $wp_scripts->query( 'page', 'queue' ) //in_array('page', $wp_scripts->queue)
+			)
+		{
+			$plugin_path = plugin_basename(__FILE__);
+			$plugin_path = preg_replace("/[^\/]+$/", '', $plugin_path);
+			$plugin_path = '/wp-content/plugins/' . $plugin_path;
+
+			wp_enqueue_script( 'page_tags', $plugin_path . 'page-tags.js', array('suggest', 'jquery-ui-tabs', 'wp-lists'), '20080221' );
+
+			wp_localize_script( 'page_tags', 'page_tagsL10n', array(
+				'tagsUsed' =>  __('Tags used on this page:'),
+				'add' => attribute_escape(__('Add')),
+				'addTag' => attribute_escape(__('Add new tag')),
+				'separate' => __('Separate tags with commas'),
+			) );
+		}
+	} # register_scripts()
+
+
+	#
+	# meta_boxes()
+	#
+
+	function meta_boxes()
+	{
+		if ( !defined('page_tags_added') )
+		{
+			add_meta_box('tagsdiv', 'Tags', array('related_widgets_admin', 'page_tags'), 'page', 'normal');
+			if ( class_exists('autotag') )
+			{
+				add_meta_box('autotag', 'Autotag', array('autotag', 'entry_editor'), 'page', 'normal');
+			}
+			
+			define('page_tags_added', true);
+		}
+		
+		widget_utils::post_meta_boxes();
+		widget_utils::page_meta_boxes();
+
+		add_action('post_widget_config_affected', array('related_widgets_admin', 'widget_config_affected'));
+		add_action('page_widget_config_affected', array('related_widgets_admin', 'widget_config_affected'));
+	} # meta_boxes()
+	
+	
+	#
+	# page_tags()
+	#
+	
+	function page_tags()
+	{
+		$post_ID = isset($GLOBALS['post_ID']) ? $GLOBALS['post_ID'] : $GLOBALS['temp_ID'];
 ?>
-	<div class="wrap">
-		<form method="post" action="">
-			<h2><?php _e('Related Widgets', 'related-widgets'); ?></h2>
-			<p style="line-height: 30px;"><?php _e('How many related widgets would you like?', 'related-widgets'); ?>
-			<select id="related-widgets-number" name="related-widgets-number">
-<?php
-for ( $i = 1; $i < 10; ++$i )
-{
-	echo "<option value='$i' ".($options['number']==$i ? "selected='selected'" : '').">$i</option>";
-}
-?>
-			</select>
-			<span class="submit"><input type="submit" name="related-widgets-number-submit" id="related-widgets-number-submit" value="<?php echo attribute_escape(__('Save', 'related-widgets')); ?>" /></span></p>
-		</form>
-	</div>
-<?php
-	} # widget_page()
+		<p id="jaxtag"><input type="text" name="tags_input" class="tags-input" id="tags-input" size="40" tabindex="3" value="<?php echo get_tags_to_edit( $post_ID ); ?>" /></p>
+		<p id="tagchecklist"></p>
+<?php		
+	} # page_tags()
+
+
+	#
+	# widget_config_affected()
+	#
+
+	function widget_config_affected()
+	{
+		echo '<li>'
+			. 'Related Widgets'
+			. '</li>';
+	} # widget_config_affected()
 
 
 	#
 	# widget_control()
 	#
 
-	function widget_control($number = 1)
+	function widget_control($widget_args)
 	{
 		global $wpdb;
 		global $post_stubs;
 		global $page_stubs;
-		global $link_stubs;
 
 		if ( !isset($post_stubs) )
 		{
@@ -107,85 +166,96 @@ for ( $i = 1; $i < 10; ++$i )
 				");
 		}
 
-		$options = $newoptions = get_option('related_widgets');
 
-		if ( $_POST["related-widget-submit-$number"] )
+		global $wp_registered_widgets;
+		static $updated = false;
+
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP ); // extract number
+
+		$options = related_widgets::get_options();
+
+		if ( !$updated && !empty($_POST['sidebar']) )
 		{
-			$opt = array();
-			$opt['title'] = strip_tags(stripslashes($_POST["related-widget-title-$number"]));
-			$opt['type'] = $_POST["related-widget-type-$number"];
-			$opt['amount'] = intval($_POST["related-widget-amount-$number"]);
-			$opt['trim'] = intval($_POST["related-widget-trim-$number"]);
-			$opt['exclude'] = $_POST["related-widget-exclude-$number"];
-			$opt['score'] = isset($_POST["related-widget-score-$number"]);
+			$sidebar = (string) $_POST['sidebar'];
 
-			if ( !preg_match("/^([a-z_]+)(?:-(\d+))?$/", $opt['type'], $match) )
-			{
-				$opt['type'] = 'posts';
-				$opt['filter'] = false;
-			}
+			$sidebars_widgets = wp_get_sidebars_widgets();
+
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
 			else
+				$this_sidebar = array();
+
+			foreach ( $this_sidebar as $_widget_id )
 			{
-				$opt['type'] = $match[1];
-				$opt['filter'] = isset($match[2]) ? $match[2] : false;
+				if ( array('related_widgets', 'display_widget') == $wp_registered_widgets[$_widget_id]['callback']
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
+					)
+				{
+					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+					if ( !in_array( "related-widget-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
+						unset($options[$widget_number]);
+					
+					related_widgets::clear_cache();
+				}
 			}
 
-			if ( $opt['amount'] <= 0 )
-			{
-				$opt['amount'] = 5;
+			foreach ( (array) $_POST['related-widget'] as $num => $opt ) {
+				$title = strip_tags(stripslashes($opt['title']));
+				$type = $opt['type'];
+				$amount = intval($opt['amount']);
+				$score = isset($opt['score']);
+				$desc = isset($opt['desc']);
+
+				if ( !preg_match("/^([a-z_]+)(?:-(\d+))?$/", $type, $match) )
+				{
+					$type = 'posts';
+					$filter = false;
+				}
+				else
+				{
+					$type = $match[1];
+					$filter = isset($match[2]) ? $match[2] : false;
+				}
+
+				if ( $amount <= 0 )
+				{
+					$amount = 5;
+				}
+
+				$options[$num] = compact( 'title', 'type', 'filter', 'amount', 'score', 'desc' );
 			}
 
-			if ( $opt['trim'] <= 0 )
-			{
-				$opt['trim'] = '';
-			}
-
-			preg_match_all("/\d+/", $opt['exclude'], $exclude, PREG_PATTERN_ORDER);
-
-			$exclude = end($exclude);
-
-			$opt['exclude'] = '';
-
-			foreach ( $exclude as $id )
-			{
-				$opt['exclude'] .= ( $opt['exclude'] ? ', ' : '' ) . $id;
-			}
-
-			$newoptions[$number] = $opt;
-		}
-
-		if ( $options != $newoptions )
-		{
-			$options = $newoptions;
 			update_option('related_widgets', $options);
+
+			$updated = true;
 		}
 
-		if ( !is_array($options[$number]) )
+		if ( -1 == $number )
 		{
-			$options[$number] = array(
-				'title' => __('Related Posts'),
-				'type' => 'posts',
-				'amount' => 5,
-				'trim' => '',
-				'exclude' => '',
-				'score' => false,
-				);
+			$ops = related_widgets::default_options();
+			$number = '%i%';
+		}
+		else
+		{
+			$ops = $options[$number];
 		}
 
-		echo '<p>'
-			. __('To make use of this plugin, add tags to your posts and pages.')
-			. '</p>';
+		extract($ops);
+
 
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="related-widget-title-' . $number . '">'
-			. __('Title', 'related-widgets') . ':'
+			. __('Title', 'related-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">'
 			. '<input style="width: 320px;"'
-			. ' id="related-widget-title-' . $number . '" name="related-widget-title-' . $number . '"'
-			. ' type="text" value="' . attribute_escape($options[$number]['title']) . '"'
+			. ' id="related-widget-title-' . $number . '" name="related-widget[' . $number . '][title]"'
+			. ' type="text" value="' . attribute_escape($title) . '"'
 			. ' />'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
@@ -195,20 +265,20 @@ for ( $i = 1; $i < 10; ++$i )
 		echo '<div style="margin: 0px 0px 6px 0px;">'
 			. '<div style="width: 120px; float: left; padding-top: 2px;">'
 			. '<label for="related-widget-type-' . $number . '">'
-			. __('Recent', 'related-widgets') . ':'
+			. __('Recent', 'related-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="width: 330px; float: right;">';
 
-		$type = $options[$number]['type']
-			. ( $options[$number]['filter']
-				? ( '-' . $options[$number]['filter'] )
+		$type = $type
+			. ( $filter
+				? ( '-' . $filter )
 				: ''
 				);
 
 		echo '<select'
 				. ' style="width: 320px;"'
-				. ' id="related-widget-type-' . $number . '" name="related-widget-type-' . $number . '"'
+				. ' id="related-widget-type-' . $number . '" name="related-widget[' . $number . '][type]"'
 				. '>';
 
 		echo '<optgroup label="' . __('Posts', 'related-widgets') . '">'
@@ -231,7 +301,7 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Posts', 'related-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Posts', 'related-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
@@ -257,28 +327,29 @@ for ( $i = 1; $i < 10; ++$i )
 					: ''
 					)
 				. '>'
-				. __('Pages', 'related-widgets') . ' / ' . htmlspecialchars($option->label)
+				. __('Pages', 'related-widgets') . ' / ' . attribute_escape($option->label)
 				. '</option>';
 		}
 
 		echo '</optgroup>';
 
-/*
-		echo '<optgroup label="' . __('Tags', 'related-widgets') . '">'
-			. '<option'
-			. ' value="tags"'
-			. ( $type == 'tags'
-				? ' selected="selected"'
-				: ''
-				)
-			. '>'
-			. __('Tags', 'related-widgets')
-			. '</option>';
-
-		echo '</optgroup>';
-*/
-
 		echo '</select>'
+			. '</div>'
+			. '<div style="clear: both;"></div>'
+			. '</div>';
+
+
+		echo '<div style="margin: 0px 0px 6px 0px;">'
+			. '<div style="width: 120px; float: left; padding-top: 2px;">'
+			. '<label for="related-widget-amount-' . $number . '">'
+			. __('Quantity', 'related-widgets')
+			. '</label>'
+			. '</div>'
+			. '<div style="width: 330px; float: right;">'
+			. '<input style="width: 30px;"'
+			. ' id="related-widget-amount-' . $number . '" name="related-widget[' . $number . '][amount]"'
+			. ' type="text" value="' . $amount . '"'
+			. ' />'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
 			. '</div>';
@@ -287,58 +358,35 @@ for ( $i = 1; $i < 10; ++$i )
 			. '<div style="width: 330px; float: right;">'
 			. '<label for="related-widget-score-' . $number . '">'
 			. '<input'
-			. ' id="related-widget-score-' . $number . '" name="related-widget-score-' . $number . '"'
+			. ' id="related-widget-score-' . $number . '" name="related-widget[' . $number . '][score]"'
 			. ' type="checkbox"'
-			. ( $options[$number]['score']
+			. ( $score
 				? ' checked="checked"'
 				: ''
 				)
 			. ' />'
-			. '&nbsp;' . __('Show relevance score', 'related-widgets')
+			. '&nbsp;' . __('Show Score', 'related-widgets')
 			. '</label>'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
 			. '</div>';
 
 		echo '<div style="margin: 0px 0px 6px 0px;">'
-			. '<div style="width: 120px; float: left; padding-top: 2px;">'
-			. '<label for="related-widget-trim-' . $number . '">'
-			. __('Max Length', 'related-widgets') . ':'
-			. '</label>'
-			. '</div>'
 			. '<div style="width: 330px; float: right;">'
-			. '<input style="width: 30px;"'
-			. ' id="related-widget-trim-' . $number . '" name="related-widget-trim-' . $number . '"'
-			. ' type="text" value="' . ( $options[$number]['trim'] ? $options[$number]['trim'] : '' ) . '"'
+			. '<label for="related-widget-desc-' . $number . '">'
+			. '<input'
+			. ' id="related-widget-desc-' . $number . '" name="related-widget[' . $number . '][desc]"'
+			. ' type="checkbox"'
+			. ( $desc
+				? ' checked="checked"'
+				: ''
+				)
 			. ' />'
-			. ' ' . __('Characters', 'related-widgets')
+			. '&nbsp;' . __('Show Descriptions', 'related-widgets')
+			. '</label>'
 			. '</div>'
 			. '<div style="clear: both;"></div>'
 			. '</div>';
-
-
-		echo '<div style="margin: 0px 0px 6px 0px;">'
-			. '<div style="width: 120px; float: left; padding-top: 2px;">'
-			. '<label for="related-widget-exclude-' . $number . '">'
-			. __('Exclude', 'related-widgets') . ':'
-			. '</label>'
-			. '</div>'
-			. '<div style="width: 330px; float: right;">'
-			. '<input style="width: 320px;"'
-			. ' id="related-widget-exclude-' . $number . '" name="related-widget-exclude-' . $number . '"'
-			. ' type="text" value="' . ( $options[$number]['exclude'] ? $options[$number]['exclude'] : '' ) . '"'
-			. ' />'
-			. '<br />'
-			. __('(Enter a comma separated list of post or page IDs)', 'related-widgets')
-			. '</div>'
-			. '<div style="clear: both;"></div>'
-			. '</div>';
-
-
-		echo '<input type="hidden"'
-			. ' id="related-widget-submit-' . $number . '" name="related-widget-submit-' . $number . '"'
-			. ' value="1"'
-			. ' />';
 	} # widget_control()
 } # related_widgets_admin
 

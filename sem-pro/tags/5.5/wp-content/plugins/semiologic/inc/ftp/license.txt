@@ -1,6 +1,1 @@
-(c) Alexey Dotsenko
-
-LGPL Licensed
-http://www.opensource.org/licenses/lgpl-license.html
-
-http://phpclasses.100pour100net.com/browse/package/1743.html
+# obsolete file

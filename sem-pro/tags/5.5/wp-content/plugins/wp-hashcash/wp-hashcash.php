@@ -1,195 +1,538 @@
 <?php
 /*
-Plugin Name: WordPress Hashcash (fork)
-Plugin URI: http://elliottback.com/wp/archives/2005/10/23/wordpress-hashcash-30-beta/
-Description: Client-side javascript blocks all spam bots.  XHTML 1.1 compliant.
-Author: Elliott Back
-Author URI: http://elliottback.com
-Version: 3.7 fork
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: hashcash
-Update URI: http://www.semiologic.com/members/sem-pro/download/
-*/
+ Plugin Name: WordPress Hashcash
+ Plugin URI: http://wordpress-plugins.feifei.us/hashcash/
+ Description: Client-side javascript blocks all spam bots.  XHTML 1.1 compliant.
+ Author: Elliott Back
+ Author URI: http://elliottback.com
+ Version: 4.1 fork
 
-$GLOBALS['wpdb']->wp_hashcash = $GLOBALS['table_prefix'] . "WP_HASHCASH";
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
 
-function hashcash_init()
-{
-	global $wpdb;
-	global $table_prefix;
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-	if ( !get_option('hashcash_installed') )
-	{
-		// CREATE HASHCASH BADLIST TABLE
-		$wpdb->query("
-			CREATE TABLE IF NOT EXISTS $wpdb->wp_hashcash
-			(
-				hash VARCHAR(32) NOT NULL,
-				day DATETIME NOT NULL,
-				INDEX(hash, day)
-			)
-			");
+ */
 
-		update_option('hashcash_installed', 1);
+function wphc_option($save = false){
+	if($save) {
+		update_option('plugin_wp-hashcash', $save);
+	} else {
+		$options = get_option('plugin_wp-hashcash');
+
+		if(!is_array($options))
+		$options = array();
+
+		return $options;
 	}
 }
 
-if ( !get_option('hashcash_installed') )
-{
-	hashcash_init();
+/**
+ * Install WP Hashcash
+ */
+
+function wphc_install () {
+	// set our default options
+	$options = wphc_option();
+	$options['comments-spam'] = $options['comments-spam'] || 0;
+	$options['comments-ham'] = $options['comments-ham'] || 0;
+	$options['key'] = array();
+	$options['key-date'] = 0;
+	$options['refresh'] = 60 * 60 * 24 * 7;
+
+	// akismet compat check
+	if(function_exists('akismet_init')){
+		$options['moderation'] = 'akismet';
+	} else {
+		$options['moderation'] = 'moderate';
+	}
+	
+	// validate ip / url
+	$options['validate-ip'] = true;
+	$options['validate-url'] = true;
+
+	// logging
+	$options['logging'] = true;
+
+	// update the key
+	wphc_option($options);
+	wphc_refresh();
 }
 
+add_action('activate_wp-hashcash/wp-hashcash.php', 'wphc_install');
+add_action('activate_wp-hashcash.php', 'wphc_install');
 
-require_once(dirname(__FILE__) . '/wp-hashcash.lib');
+/**
+ * Update the key, if needed
+ */
 
-// UPDATE RANDOM SECRET
-#$curr = @file_get_contents(HASHCASH_SECRET_FILE);
-$curr = get_option('hashcash_secret_key');
-#if(empty($curr) || (time() - @filemtime(HASHCASH_SECRET_FILE)) > HASHCASH_REFRESH){
-if(empty($curr) || (time() - intval(get_option('hashcash_secret_key_time'))) > HASHCASH_REFRESH){
-	global $table_prefix, $wpdb;
+function wphc_refresh(){
+	$options = wphc_option();
 
-	// update our secret
-	/*
-	$fp = @fopen(HASHCASH_SECRET_FILE, 'w');
+	if(!is_array($options['key']))
+	return;
 
-	if ( $fp )
-	{
-		if(@flock($fp, LOCK_EX)){
-			fwrite($fp, rand(21474836, 2126008810));
-			@flock($fp, LOCK_UN);
+	if(time() - $options['key-date'] > $options['refresh']) {
+		if(count($options['key']) >= 5)
+		array_shift($options['key']);
+
+		array_push($options['key'], rand(21474836, 2126008810));
+
+		$options['key-date'] = time();
+		wphc_option($options);
+	}
+}
+
+add_action('shutdown', 'wphc_refresh');
+
+/**
+ * Our plugin can also have a widget
+ */
+
+function widget_ratio($options){
+	$ham = $options['comments-ham'];
+	$spam = $options['comments-spam'];
+
+	if(empty($spam)) $spam = 0;
+	if(empty($ham)) $ham = 0;
+
+	if($spam + $ham == 0)
+	$ratio = 0;
+	else
+	$ratio = round(100 * ($spam/($ham+$spam)),2);
+
+	$ham = htmlspecialchars($ham, ENT_QUOTES);
+	$spam = htmlspecialchars($spam, ENT_QUOTES);
+	$ratio = htmlspecialchars($ratio, ENT_QUOTES);
+
+	return "$spam spam comments blocked out of $ham human comments.  " . $ratio ."% of your comments are spam!";
+}
+
+function wphc_widget_init () {
+	if(!function_exists('register_sidebar_widget'))
+	return;
+
+	function widget_wphc($args) {
+		extract($args);
+		$options = wphc_option();
+
+		echo $before_widget . $before_title . '<a href="http://wordpress-plugins.feifei.us/hashcash/">WP Hashcash</a>' . $after_title;
+		echo '<ul>';
+		echo '<li><small>By <a href="http://elliottback.com">Elliott Back</a></small></li>';
+		echo "<li>".widget_ratio($options)."</li>";
+		echo '</ul>';
+		echo $after_widget;
+	}
+	
+	register_sidebar_widget(array('WP Hashcash', 'widgets'), 'widget_wphc');
+}
+
+add_action('widgets_init', 'wphc_widget_init');
+
+/**
+ * Admin Options
+ */
+
+add_action('admin_menu', 'wphc_add_options_to_admin');
+
+function wphc_add_options_to_admin() {
+	if (function_exists('add_options_page')) {
+		add_options_page('Wordpress Hashcash', 'Wordpress Hashcash', 8, basename(__FILE__), 'wphc_admin_options');
+	}
+}
+function wphc_admin_options() {
+	$options = wphc_option();
+
+	// POST HANDLER
+	if($_POST['wphc-submit']){
+		if ( function_exists('current_user_can') && !current_user_can('manage_options') )
+		die('Current user not authorized to managed options');
+
+		$options['refresh'] = strip_tags(stripslashes($_POST['wphc-refresh']));
+		$options['moderation'] = strip_tags(stripslashes($_POST['wphc-moderation']));
+		$options['validate-ip'] = strip_tags(stripslashes($_POST['wphc-validate-ip']));
+		$options['validate-url'] = strip_tags(stripslashes($_POST['wphc-validate-url']));
+		$options['logging'] = strip_tags(stripslashes($_POST['wphc-logging']));
+		wphc_option($options);
+	}
+	
+	// MAIN FORM
+	echo '<style type="text/css">
+		.wrap h3 { color: black; background-color: #e5f3ff; padding: 4px 8px; }
+
+		.sidebar {
+			border-right: 2px solid #e5f3ff;
+			width: 200px;
+			float: left;
+			padding: 0px 20px 0px 10px;
+			margin: 0px 20px 0px 0px;
 		}
 
-		fclose($fp);
-	}
-	*/
-	update_option('hashcash_secret_key', rand(21474836, 2126008810));
-	update_option('hashcash_secret_key_time', time());
+		.sidebar input {
+			background-color: #FFF;
+			border: none;
+		}
 
-	// remove old entries from DB
-	$res = $wpdb->query("DELETE FROM $wpdb->wp_hashcash WHERE (unix_timestamp(NOW()) - unix_timestamp(day)) > " . HASHCASH_IP_EXPIRE);
-	if(FALSE === $res)
-		$wpdb->print_error();
+		.main {
+			float: left;
+			width: 600px;
+		}
 
-	// clean wp-cache
-	if(function_exists('wp_cache_clean_expired')){
-		wp_cache_clean_expired('wp-cache-');
+		.clear { clear: both; }
+	</style>';
+
+	echo '<div class="wrap">';
+
+	echo '<div class="sidebar">';
+	echo '<h3>Plugin</h3>';
+	echo '<ul>
+	<li><a href="http://wordpress-plugins.feifei.us/hashcash/">Plugin\'s Homepage</a></li>
+	<li><a href="http://wordpress.org/support/">WordPress Support</a></li>
+	</ul>';		
+	echo '<h3>Donation</h3>';
+	echo '<center><form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input style="border:none;" type="image" src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----"></form></center>';
+	echo '<p>Any small donation would be highly appreciated.</p>';
+	echo '<h3>Miscellaneous</h3>';
+	echo '<ul>
+	<li><a href="http://wordpress-plugins.feifei.us/">My Other WP Plugins</a></li>
+	</ul>';
+	echo '<h3>Statistics</h3>';
+	echo '<p>'.widget_ratio($options).'</p>';
+	echo '</div>';
+
+	echo '<div class="main">';
+	echo '<h2>Wordpress Hashcash</h2>';
+	echo '<p>WP Hashcash is an antispam plugin that eradicates comment spam on Wordpress blogs. It works because your visitors must use obfuscated
+	javascript to submit a proof-of-work that indicates they opened your website in a web browser, not a robot.  You can read more about it on the 
+	<a href="http://wordpress-plugins.feifei.us/hashcash/">Wordpress Hashcash plugin page</a> of my site.</p>';
+
+	echo '<h3>Standard Options</h3>';
+	echo '<form method="POST" action="'.$_SERVER['PHP_SELF'].'?page='.basename(__FILE__).'&updated=true">';
+
+	// moderation options
+	$moderate = htmlspecialchars($options['moderation'], ENT_QUOTES);
+	echo '<p><label for="wphc-moderation">' . __('Moderation:', 'wp-hashcash') . '</label>';
+	echo '<select id="wphc-moderation" name="wphc-moderation">';
+	echo '<option value="moderate"'.($moderate=='moderate'?' selected':'').'>Moderate</option>';
+	echo '<option value="akismet"'.($moderate=='akismet'?' selected':'').'>Akismet</option>';
+	echo '<option value="delete"'.($moderate=='delete'?' selected':'').'>Delete</option>';
+	echo '</select>';
+	echo '<br/><span style="color: grey; font-size: 90%;">The default is to place spam comments into the
+	akismet/moderation queue. Otherwise, the delete option will immediately discard spam comments.</span>';
+	echo '</p>';
+
+	// refresh interval
+	$refresh = htmlspecialchars($options['refresh'], ENT_QUOTES);
+	echo '<p><label for="wphc-refresh">' . __('Key Expiry:', 'wp-hashcash').'</label>
+		<input style="width: 200px;" id="wphc-refresh" name="wphc-refresh" type="text" value="'.$refresh.'" />
+		<br/><span style="color: grey; font-size: 90%;">Default is one week, or <strong>604800</strong> seconds.</p>';
+
+	// current key
+	echo '<p>Your current key is <strong>' . $options['key'][count($options['key']) - 1] . '</strong>.';
+	if(count($options['key']) > 1)
+	echo ' Previously you had keys '. join(', ', array_reverse(array_slice($options['key'], 0, count($options['key']) - 1))).'.';
+	echo '</p>';
+
+	// additional options
+	echo '<h3>Additional options:</h3>';
+
+	$validate_ip = htmlspecialchars($options['validate-ip'], ENT_QUOTES);
+	echo '<p><label for="wphc-validate-ip">Validate IP Address</label>
+		<input name="wphc-validate-ip" type="checkbox" id="wphc-validate-ip"'.($validate_ip?' checked':'').'/> 
+		<br /><span style="color: grey; font-size: 90%;">
+		Checks if the IP address of the trackback sender is equal to the IP address of the webserver the trackback URL is referring to.</span></p>';
+
+	$validate_url = htmlspecialchars($options['validate-url'], ENT_QUOTES);
+	echo '<p><label for="wphc-validate-url">Validate URL</label>
+		<input name="wphc-validate-url" type="checkbox" id="wphc-validate-url"'.($validate_url?' checked':'').'/> 
+		<br /><span style="color: grey; font-size: 90%;">Retrieves the web page located at the URL included 
+		in the trackback to check if it contains a link to your blog.  If it does not, it is spam!</span></p>';
+
+	// logging options
+	echo '<h3>Logging:</h3>';
+
+	$logging = htmlspecialchars($options['logging'], ENT_QUOTES);
+	echo '<p><label for="wphc-logging">Logging</label>
+		<input name="wphc-logging" type="checkbox" id="wphc-logging"'.($logging?' checked':'').'/> 
+		<br /><span style="color: grey; font-size: 90%;">Logs the reason why a given comment failed the spam
+		check into the comment body.  Works only if moderation / akismet mode is enabled.</span></p>';
+
+	echo '<input type="hidden" id="wphc-submit" name="wphc-submit" value="1" />';
+	echo '<input type="submit" id="wphc-submit-override" name="wphc-submit-override" value="Save WP Hashcash Settings"/>';
+	echo '</form>';
+	echo '</div>';
+
+	echo '<div class="clear">';
+	echo '<p style="text-align: center; font-size: .85em;">&copy; Copyright '.date('Y').' <a href="http://elliottback.com">Elliott B&auml;ck</a></p>';
+	echo '</div>';
+
+	echo '</div>';
+}
+
+/**
+ * Add JS to the header
+ */
+function wphc_addhead() {
+	if ((is_single() || is_page())) {
+		echo "<script type=\"text/javascript\"><!--\n";
+		echo 'function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != \'function\') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+';
+		echo  wphc_getjs() . "\n";
+		echo "addLoadEvent(function(){document.getElementById('wphc_value').value=wphc();});\n";
+		echo "//--></script>\n";
 	}
 }
 
-function hashcash_add_hidden_tag() {
-	global $post;
-	if ( is_singular()
-		&& $post->comment_status == 'open'
-		&& !( get_option('comment_registration') && !$GLOBALS['user_ID'] )
-		){
-//		echo '<link rel="powered" title="Elliott Back\'s Antispam" href="http://elliottback.com" />';
-		echo '<script type="text/javascript" src="' . trailingslashit(get_option('siteurl')) . 'wp-content/plugins/wp-hashcash/wp-hashcash-js.php"></script>';
+add_action('wp_head', 'wphc_addhead');
+
+function wphc_getjs(){
+	$options = wphc_option();
+	$val = $options['key'][count($options['key']) - 1];
+	$js = 'function wphc_compute(){';
+
+	switch(rand(0, 3)){
+		/* Addition of n times of field value / n, + modulus:
+		 Time guarantee:  100 iterations or less */
+		case 0:
+			$inc = rand($val / 100, $val - 1) + 1;
+			$n = floor($val / $inc);
+			$r = $val % $inc;
+		
+			$js .= "var wphc_eax = $inc; ";
+			for($i = 0; $i < $n - 1; $i++){
+				$js .= "wphc_eax += $inc; ";
+			}
+			
+			$js .= "wphc_eax += $r; ";
+			$js .= 'return wphc_eax; ';
+			break;
+
+			/* Conversion from binary:
+		Time guarantee:  log(n) iterations or less */
+		case 1:
+			$binval = strrev(base_convert($val, 10, 2));
+			$js .= "var wphc_eax = \"$binval\"; ";
+			$js .= 'var wphc_ebx = 0; ';
+			$js .= 'var wphc_ecx = 0; ';
+			$js .= 'while(wphc_ecx < wphc_eax.length){ ';
+			$js .= 'if(wphc_eax.charAt(wphc_ecx) == "1") { ';
+			$js .= 'wphc_ebx += Math.pow(2, wphc_ecx); ';
+			$js .= '} ';
+			$js .= 'wphc_ecx++; ';
+			$js .= '} ';
+			$js .= 'return wphc_ebx;';
+			
+		break;
+		
+		/* Multiplication of square roots:
+		Time guarantee:  constant time */
+		case 2:
+			$sqrt = floor(sqrt($val));
+			$r = $val - ($sqrt * $sqrt);
+			$js .= "return $sqrt * $sqrt + $r; ";
+		break;
+		
+		/* Sum of random numbers to the final value:
+		Time guarantee:  log(n) expected value */
+		case 3:
+			$js .= 'return ';
+	
+			$i = 0;
+			while($val > 0){
+				if($i++ > 0)
+					$js .= '+';
+				
+				$temp = rand(1, $val);
+				$val -= $temp;
+				$js .= $temp;
+			}
+	
+			$js .= ';';
+		break;
 	}
+		
+	$js .= '} wphc_compute();';
+	
+	// pack bytes
+	function strToLongs($s) {
+		$l = array();
+	    
+		// pad $s to some multiple of 4
+		$s = preg_split('//', $s, -1, PREG_SPLIT_NO_EMPTY);
+	    
+		while(count($s) % 4 != 0){
+			$s [] = ' ';
+		}
+	
+		for ($i = 0; $i < ceil(count($s)/4); $i++) {
+			$l[$i] = ord($s[$i*4]) + (ord($s[$i*4+1]) << 8) + (ord($s[$i*4+2]) << 16) + (ord($s[$i*4+3]) << 24);
+	    	}
+	
+		return $l;
+	}
+	
+	// xor all the bytes with a random key
+	$key = rand(21474836, 2126008810);
+	$js = strToLongs($js);
+	
+	for($i = 0; $i < count($js); $i++){
+		$js[$i] = $js[$i] ^ $key;
+	}
+	
+	// libs function encapsulation
+	$libs = "function wphc(){\n";
+	
+	// write bytes to javascript, xor with key
+	$libs .= "\tvar wphc_data = [".join(',',$js)."]; \n";
+	
+	// do the xor with key
+	$libs .= "\n\tfor (var i=0; i<wphc_data.length; i++){\n";
+	$libs .= "\t\twphc_data[i]=wphc_data[i]^$key;\n";
+	$libs .= "\t}\n";
+	
+	// convert bytes back to string
+	$libs .= "\n\tvar a = new Array(wphc_data.length); \n";
+	$libs .= "\tfor (var i=0; i<wphc_data.length; i++) { \n";
+	$libs .= "\t\ta[i] = String.fromCharCode(wphc_data[i] & 0xFF, wphc_data[i]>>>8 & 0xFF, ";
+	$libs .= "wphc_data[i]>>>16 & 0xFF, wphc_data[i]>>>24 & 0xFF);\n";
+	$libs .= "\t}\n";
+	
+	$libs .= "\n\treturn eval(a.join('')); \n";
+	
+	// call libs function
+	$libs .= "}";
+	
+	// return code
+	return $libs;
 }
 
-function hashcash_check_hidden_tag($comment_id) {
-	global $wpdb, $table_prefix;
+/**
+ * Hook into the comments form
+ */
 
-	// Ignore trackbacks
-	$type = $wpdb->get_var("SELECT comment_type FROM $wpdb->comments WHERE comment_ID = '$comment_id'");
-	if($type === "trackback" || $type === "pingback"){
-		return $comment_id;
+function wphc_addform(){
+	$options = wphc_option();
+	
+	switch($options['moderation']){
+		case 'delete':
+			$verb = 'deleted';
+			break;
+		case 'akismet':
+			$verb = 'queued in Akismet';
+			break;
+		case 'moderate':
+		default:
+			$verb = 'placed in moderation';
+			break;
 	}
-
-	// Check the banlist
-	$ban_count = $wpdb->get_var("SELECT count(*) FROM $wpdb->wp_hashcash WHERE hash = '" . md5($_SERVER['REMOTE_ADDR']) . "'");
-	if($ban_count < 4){
-		if($_POST["hashcash_value"] == hashcash_field_value())
-			return $comment_id;
-
-		$res = $wpdb->query("INSERT INTO $wpdb->wp_hashcash (hash, day) VALUES ('" . md5($_SERVER['REMOTE_ADDR']) . "', '" . date("y-m-d H:i:s") . "')");
-		if($res === false)
-			$wpdb->print_error();
-	}
-
-	// If here, the comment has failed the check: delete
-	if ($wpdb->query("DELETE FROM $wpdb->comments WHERE comment_ID='$comment_id' LIMIT 1") === false)
-		$wpdb->print_error();
-
-	// Be more user friendly if we detect spam, and it sends a referer
-	if(strlen(trim($_SERVER['HTTP_REFERER'])) > 0 && preg_match('|' . get_bloginfo('url') . '|i', $_SERVER['HTTP_REFERER']))
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-	<head profile="http://gmpg.org/xfn/11">
-		<title>WP-Hashcash Check Failed</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<style type="text/css">
-			body {
-				font-family: Arial, Verdana, Helvetica;
-				color: #3F3F3F;
-			}
-
-			h1 {
-				margin: 0px;
-				color: #6A8E1C;
-				font-size: 1.8em;
-			}
-
-			a:link {
-				color: #78A515;
-				font-weight: bold;
-				text-decoration: none;
-			}
-
-			a:visited { color: #999; }
-
-			a:hover, a:active {
-				background: #78A515;
-				color: #fff;
-				text-decoration: none;
-			}
-		</style>
-	</head>
-
-	<body>
-		<div style="margin: 0 auto; margin-top:50px; padding: 20px; text-align: left; width: 400px; border: 1px solid #78A515;">
-			<h1>WP-Hashcash Check Failed</h1>
-
-			<p>Your client has failed to compute the special javascript code required to comment on this blog.
-			If you believe this to be in error, please contact the blog administrator, and check for javascript,
-			validation, or php errors.  It is also possible that you are trying to spam this blog.</p>
-
-			<p>If you are using Google Web Accelerator, a proxy, or some other caching system, WP-Hashcash may not let you comment.
-			There are known issues with caching that are fundamentally insoluble, because the page being written to you must be generated freshly.
-			Turn off your caching software and reload the page. If you are using a proxy, commenting should work, but it is untested.</p>
-
-			<?php if($ban_count >= 4)
-				echo '<p style="border: 2px solid red; color:red; padding:4px;">You have previously failed the check ' . $ban_count . ' times.</p>';
-			?>
-			<?php
-				echo '<p style="border: 2px solid red; color:red; padding:4px;">Your POST variables are: ';
-				print_r($_POST);
-				echo '</p>';
-			?>
-			<p>This comment has been logged, and will not be displayed on the blog.</p>
-		</div>
-	</body>
-</html>
-<?php	die();
+	
+	echo '<input type="hidden" id="wphc_value" name="wphc_value" value=""/>';
+	echo '<p>' . __('Powered by', 'wp-hashcash') . ' <a href="http://wordpress-plugins.feifei.us/hashcash/">WP Hashcash</a></p>';
+	echo '<noscript><small>Wordpress Hashcash needs javascript to work, but your browser has javascript disabled. Your comment will be '.$verb.'!</small></noscript>';
 }
 
-add_filter('comment_post', 'hashcash_check_hidden_tag');
-add_action('wp_head', 'hashcash_add_hidden_tag');
+add_action('comment_form', 'wphc_addform');
 
+/**
+ * Validate our tag
+ */
 
-function load_hashcash($post_ID)
-{
-	echo '<img src="'
-			. trailingslashit(get_option('siteurl'))
-			. 'wp-content/plugins/wp-hashcash/wp-hashcash.gif'
-			. '"'
-		. ' alt=""'
-		. ' onload="load_hashcash();"'
-		. ' />';
+function wphc_check_hidden_tag($comment) {
+	// get our options
+	$type = $comment['comment_type'];
+	$options = wphc_option();
+	$spam = false;
 
-	return $post_ID;
+	if($type == "trackback" || $type == "pingback"){
+		// check the website's IP against the url it's sending as a trackback
+		if($options['validate-ip']){
+			$server_ip = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'];
+			$web_ip = gethostbyname(parse_url($comment['comment_author_url'], PHP_URL_HOST));
+			$ipv = $server_ip != $web_ip;
+			$spam = $spam || ($ipv);
+			
+			if($options['logging'] && $ipv) $comment['comment_content'] .= "\n\n[WORDPRESS HASHCASH] The comment's server IP (".$server_ip.") doesn't match the"
+				. " comment's URL host IP (".$web_ip.") and so is spam.";
+		}
+
+		// look for our link in the page itself
+		if(!$spam && $options['validate-url']){
+			if(!class_exists('Snoopy'))
+				require_once( ABSPATH . WPINC . '/class-snoopy.php' );
+				
+			$permalink = get_permalink($comment['comment_post_ID']);
+			$permalink = preg_replace('/\/$/', '', $permalink);
+			$snoop = new Snoopy;
+			
+			if (@$snoop->fetchlinks($comment['comment_author_url'])){
+				$found = false;
+				
+				foreach($snoop->results as $url){
+					$url = preg_replace('/(\/|\/trackback|\/trackback\/)$/', '', $url);
+					if($url == $permalink)
+						$found = true;	
+				}
+				
+				if($options['logging'] && !$found) $comment['comment_content'] .= "\n\n[WORDPRESS HASHCASH] The comment's actual post text "
+				."did not contain your blog url (".$permalink.") and so is spam.";
+				
+				$spam = $spam || !$found;
+			} else {
+				$spam = true;
+				if($options['logging']) $comment['comment_content'] .= "\n\n[WORDPRESS HASHCASH] Snoopy failed to fetch results for "
+				."the comment blog url (".$comment['comment_author_url'].") with error '".$snoop->error."' and so is spam.";
+			}
+		}
+	} else {
+		// Check the wphc values against the last five keys
+		$spam = !in_array($_POST["wphc_value"], (array) $options['key']);
+		if($options['logging'] && $spam) $comment['comment_content'] .= "\n\n[WORDPRESS HASHCASH] The poster sent us '".intval($_POST["wphc_value"])." which is not a hashcash value.";
+	}
+	
+	if($spam){
+		$options['comments-spam'] = ((int) $options['comments-spam']) + 1;
+		wphc_option($options);
+			
+		switch($options['moderation']){
+			case 'delete':
+				add_filter('comment_post', create_function('$id', 'wp_delete_comment($id); die(\'This comment has been deleted by WP Hashcash\');'));
+				break;
+			case 'akismet':
+				add_filter('pre_comment_approved', create_function('$a', 'return \'spam\';'));
+				break;
+			case 'moderate':
+			default:
+				add_filter('pre_comment_approved', create_function('$a', 'return 0;'));
+				break;
+		}
+	} else {
+		$options['comments-ham'] = ((int) $options['comments-ham']) + 1;
+		wphc_option($options);
+	}
+	
+	return $comment;
 }
 
-add_filter('comment_form', 'load_hashcash');
+add_filter('preprocess_comment', 'wphc_check_hidden_tag');
 ?>

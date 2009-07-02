@@ -4,19 +4,17 @@ Plugin Name: Opt-in Front Page
 Plugin URI: http://www.semiologic.com/software/publishing/opt-in-front/
 Description: Restricts the access to your front page on an opt-in basis: Only posts within the category with a slug of 'blog' will be displayed on your front page.
 Author: Denis de Bernardy
-Version: 3.0
+Version: 3.1 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: opt_in_front
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
@@ -30,26 +28,25 @@ class sem_opt_in_front
 	{
 		global $wpdb;
 
-		if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
-		{
-			$main_cat_id = $wpdb->get_var("
-				SELECT	terms.term_id
-				FROM	$wpdb->terms as terms
-				INNER JOIN $wpdb->term_taxonomy as term_taxonomy
-				ON		term_taxonomy.term_id = terms.term_id
-				AND		term_taxonomy.taxonomy = 'category'
-				INNER JOIN $wpdb->term_relationships as term_relationships
-				ON		term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id
-				INNER JOIN $wpdb->posts as posts
-				ON		posts.ID = term_relationships.object_id
-				WHERE	terms.slug = 'blog'
-				LIMIT 1
-				");
-		}
+		$main_cat_id = $wpdb->get_var("
+			SELECT	terms.term_id
+			FROM	$wpdb->terms as terms
+			INNER JOIN $wpdb->term_taxonomy as term_taxonomy
+			ON		term_taxonomy.term_id = terms.term_id
+			AND		term_taxonomy.taxonomy = 'category'
+			INNER JOIN $wpdb->term_relationships as term_relationships
+			ON		term_relationships.term_taxonomy_id = term_taxonomy.term_taxonomy_id
+			INNER JOIN $wpdb->posts as posts
+			ON		posts.ID = term_relationships.object_id
+			WHERE	terms.slug = 'blog'
+			LIMIT 1
+			");
 
-		define('sem_main_cat_id', $main_cat_id ? intval($main_cat_id) : false);
+		define('main_cat_id', $main_cat_id ? intval($main_cat_id) : false);
 
-		if ( sem_main_cat_id )
+		if ( is_admin() ) return;
+		
+		if ( main_cat_id )
 		{
 			add_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
 			add_filter('category_link', array('sem_opt_in_front', 'change_permalink'), 10, 2);
@@ -81,15 +78,15 @@ class sem_opt_in_front
 			INNER JOIN $wpdb->term_taxonomy as sem_taxonomy
 			ON sem_taxonomy.term_taxonomy_id = sem_relationships.term_taxonomy_id
 			AND sem_taxonomy.taxonomy = 'category'
-			AND sem_taxonomy.term_id = " . intval(sem_main_cat_id) . "
+			AND sem_taxonomy.term_id = " . intval(main_cat_id) . "
 			";
 
-		$extra = preg_replace("/\s+/", " ", $extra);
+		$extra = str_replace(array("\n", "\r", "\t"), " ", $extra);
 
 		$posts_join .= $extra;
 
-		$wp_query->is_category = !class_exists('YLSY_PermalinkRedirect');
-		$wp_query->is_home = true;
+		$wp_query->is_category = false;
+		$wp_query->is_home = !is_feed();
 
 		define('did_opt_in_front', true);
 
@@ -108,11 +105,30 @@ class sem_opt_in_front
 			return $link;
 		}
 
-		if ( !( defined('sem_home_page_id') && sem_home_page_id )
-			&& $id == sem_main_cat_id
-			)
+		if ( $id == main_cat_id )
 		{
-			$link = get_option('home');
+			static $new_link;
+			
+			if ( !isset($new_link) )
+			{
+				if ( get_option('show_on_front') == 'page' && get_option('page_on_front') )
+				{
+					if ( $blog_page_id = get_option('page_for_posts') )
+					{
+						$new_link = get_permalink($blog_page_id);
+					}
+					else
+					{
+						$new_link = $link;
+					}
+				}
+				else
+				{
+					$new_link = get_option('home');
+				}
+			}
+			
+			$link = $new_link;
 		}
 
 		return $link;

@@ -1,14 +1,11 @@
 <?php
 /*
-Plugin Name: Subscribe To Comments (fork)
-Version: 2.4 fork
+Plugin Name: Subscribe To Comments
+Version: 2.5 RC fork
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to receive notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
 Author URI: http://txfx.net/
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: subscribe2comments
-Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 /* This is the code that is inserted into the comment form */
@@ -207,14 +204,14 @@ class sg_subscribe_settings {
 	function options_page() {
 		/** Display "saved" notification on post **/
 		if ( isset($_POST['sg_subscribe_settings_submit']) )
-			echo '<div class="updated"><p><strong>' . __('Options saved.', 'subscribe-to-comments') . '</strong></p></div>';
+			echo '<div class="updated"><p><strong>' . __('Settings saved.', 'subscribe-to-comments') . '</strong></p></div>';
 
 		echo '<form method="post"><div class="wrap">';
 
 		sg_subscribe_settings::options_page_contents();
 
 	  echo '<p class="submit"><input type="submit" name="sg_subscribe_settings_submit" value="';
-	  _e('Update Options &raquo;', 'subscribe-to-comments');
+	  echo attribute_escape(__('Save Changes'));
 	  echo '" /></p></div>';
 
 		if ( function_exists('wp_nonce_field') )
@@ -833,9 +830,9 @@ class sg_subscribe {
 
 
 	function add_admin_menu() {
-		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 'administrator', str_replace("\\", "/", __FILE__), 'sg_subscribe_admin');
+		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 'administrator', __FILE__, 'sg_subscribe_admin');
 
-		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 'administrator', str_replace("\\", "/", __FILE__), array('sg_subscribe_settings', 'options_page'));
+		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 'administrator', __FILE__, array('sg_subscribe_settings', 'options_page'));
 	}
 
 
@@ -904,7 +901,6 @@ function sg_subscribe_admin($standalone = false) {
 	if ( $standalone ) {
 		$sg_subscribe->form_action = get_option('home') . '/?wp-subscription-manager=1';
 		$sg_subscribe->standalone = true;
-		ob_start(create_function('$a', 'return str_replace("<title>", "<title> " . __("Subscription Manager", "subscribe-to-comments") . " &raquo; ", $a);'));
 	} else {
 		$sg_subscribe->form_action = 'edit.php?page=subscribe-to-comments.php';
 		$sg_subscribe->standalone = false;
@@ -1205,8 +1201,8 @@ function checkAll(form) {
 <?php die(); // stop WP from loading ?>
 <?php }
 
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
+if ( is_admin() )
 {
-	include_once dirname(dirname(__FILE__)) . '/wp-subscribed.php';
+	include_once dirname(__FILE__) . '/subscribe-reports.php';
 }
 ?>

@@ -6,11 +6,8 @@ by froman118 <froman118@gmail.com>
 */
 
 function mypageorder_menu()
-{   if (function_exists('add_submenu_page')) {
-        $location = "../wp-content/plugins/";
-        add_submenu_page("edit.php", 'Page Order', 'Page Order', 'edit_pages',"mypageorder",'mypageorder');
-
-    }
+{
+	add_submenu_page("edit.php", 'Page Order', 'Page Order', 'edit_pages',"mypageorder",'mypageorder');
 }
 function mypageorder_js_libs() {
     if ( $_GET['page'] == "mypageorder" ) {
@@ -38,7 +35,8 @@ if($mode == "act_OrderPages")
 
 	for($i = 0; $i < $result; $i++)
 	{
-		$wpdb->query("UPDATE $wpdb->posts SET menu_order = '$i' WHERE id ='$IDs[$i]'");
+		$j = $i + 1;
+		$wpdb->query("UPDATE $wpdb->posts SET menu_order = '$j' WHERE id ='$IDs[$i]'");
     }
 }
 else

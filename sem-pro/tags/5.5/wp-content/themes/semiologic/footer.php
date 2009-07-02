@@ -26,9 +26,8 @@ do_action('display_body_spacer');
 </div><!-- #body -->
 
 <?php
-do_action('before_the_footer');
+do_action('the_footer_boxes');
 do_action('the_footer');
-do_action('after_the_footer');
 ?>
 
 </div><!-- #wrapper -->

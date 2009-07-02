@@ -8,6 +8,7 @@
 #
 # You'll find detailed sample files in the custom-samples folder
 #
+
 ?>
 <div id="ext_sidebar" class="sidebar">
 <div class="pad">

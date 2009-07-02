@@ -2,12 +2,13 @@
 /*
 Plugin Name: Random Widgets
 Plugin URI: http://www.semiologic.com/software/widgets/random-widgets/
-Description: WordPress widgets that let you list a random number of posts, pages, links, or comments.
+Description: WordPress widgets that let you list random selections of posts, pages, links, or comments.
 Author: Denis de Bernardy
-Version: 1.0
+Version: 2.0 RC
 Author URI: http://www.semiologic.com
 Update Service: http://version.mesoconcepts.com/wordpress
 Update Tag: random_widgets
+Update Package: http://www.semiologic.com/media/software/widgets/random-widgets/random-widgets.zip
 */
 
 /*
@@ -16,7 +17,7 @@ Terms of use
 
 This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
 
-http://www.semiologic.com/legal/license/
+http://www.mesoconcepts.com/license/
 **/
 
 
@@ -40,37 +41,29 @@ class random_widgets
 
 	function widgetize()
 	{
-		$options = get_option('random_widgets');
-		$number = intval($options['number']);
+		$options = random_widgets::get_options();
+		
+		$widget_options = array('classname' => 'random_widget', 'description' => __( "A random selection of posts, pages, links or comments") );
+		$control_options = array('width' => 500, 'id_base' => 'random-widget');
+		
+		$id = false;
 
-		if ( $number < 1 ) $number = 1;
-		if ( $number > 9 ) $number = 9;
-
-		$dims = array('width' => 460, 'height' => 350);
-		$class = array('classname' => 'random_widgets');
-
-		for ($i = 1; $i <= 9; $i++)
+		# registered widgets
+		foreach ( array_keys($options) as $o )
 		{
-			$name = sprintf(__('Random Widget %d', 'random-widgets'), $i);
-			$id = "random-widget-$i";
+			if ( !is_numeric($o) ) continue;
+			$id = "random-widget-$o";
 
-			wp_register_sidebar_widget(
-				$id,
-				$name,
-				$i <= $number
-				? array('random_widgets', 'display_widget')
-				: /* unregister */ '',
-				$class,
-				$i);
-
-			wp_register_widget_control(
-				$id,
-				$name,
-				$i <= $number
-					? array('random_widgets_admin', 'widget_control')
-					: /* unregister */ '',
-				$dims,
-				$i);
+			wp_register_sidebar_widget($id, __('Random Widget'), array('random_widgets', 'display_widget'), $widget_options, array( 'number' => $o ));
+			wp_register_widget_control($id, __('Random Widget'), array('random_widgets_admin', 'widget_control'), $control_options, array( 'number' => $o ) );
+		}
+		
+		# default widget if none were registered
+		if ( !$id )
+		{
+			$id = "random-widget-1";
+			wp_register_sidebar_widget($id, __('Random Widget'), array('random_widgets', 'display_widget'), $widget_options, array( 'number' => -1 ));
+			wp_register_widget_control($id, __('Random Widget'), array('random_widgets_admin', 'widget_control'), $control_options, array( 'number' => -1 ) );
 		}
 	} # widgetize()
 
@@ -79,23 +72,33 @@ class random_widgets
 	# display_widget()
 	#
 
-	function display_widget($args, $number = 1)
+	function display_widget($args, $widget_args = 1)
 	{
-		$options = get_option('random_widgets');
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP );
+		
+		$number = intval($number);
+		
+		# get options
+		$options = random_widgets::get_options();
 		$options = $options[$number];
-
-		if ( !is_array($options) )
+		
+		# admin area: serve a formatted title
+		if ( is_admin() )
 		{
-			$options = array(
-				'title' => __('Random Posts'),
-				'type' => 'posts',
-				'amount' => 5,
-				'trim' => '',
-				'exclude' => '',
-				'desc' => false,
-				);
+			echo $args['before_widget']
+				. $args['before_title'] . $options['title'] . $args['after_title']
+				. $args['after_widget'];
+
+			return;
 		}
 
+		# initialize
+		$o = '';
+
+		# fetch items
 		switch ( $options['type'] )
 		{
 		case 'posts':
@@ -119,34 +122,34 @@ class random_widgets
 			break;
 
 		default:
-			return;
+			$items = array();
+			break;
 		}
 
-		$o = '';
-
-		if ( !empty($items) )
+		# fetch output
+		if ( $items )
 		{
-			$o .= $args['before_widget'];
+			$o .= $args['before_widget'] . "\n"
+				. ( $options['title']
+					? ( $args['before_title'] . $options['title'] . $args['after_title'] . "\n" )
+					: ''
+					);
 
-			if ( $options['title'] )
-			{
-				$o .= $args['before_title'] . $options['title'] . $args['after_title'];
-			}
-
-			$o .= '<ul>';
+			$o .= '<ul>' . "\n";
 
 			foreach ( $items as $item )
 			{
 				$o .= '<li>'
 					. $item->item_label
-					. '</li>';
+					. '</li>' . "\n";
 			}
 
-			$o .= '</ul>';
+			$o .= '</ul>' . "\n";
 
-			$o .= $args['after_widget'];
+			$o .= $args['after_widget'] . "\n";
 		}
 
+		# display
 		echo $o;
 	} # display_widget()
 
@@ -159,9 +162,16 @@ class random_widgets
 	{
 		global $wpdb;
 
+		$exclude_sql = "
+			SELECT	post_id
+			FROM	$wpdb->postmeta
+			WHERE	meta_key = '_widgets_exclude'
+			";
+		
 		$items_sql = "
 			SELECT	posts.*,
-					posts.post_date as item_date
+					COALESCE(post_label.meta_value, post_title) as post_label,
+					COALESCE(post_desc.meta_value, '') as post_desc
 			FROM	$wpdb->posts as posts
 			"
 			. ( $options['filter']
@@ -176,17 +186,16 @@ class random_widgets
 				: ''
 				)
 			. "
+			LEFT JOIN $wpdb->postmeta as post_label
+			ON		post_label.post_id = posts.ID
+			AND		post_label.meta_key = '_widgets_label'
+			LEFT JOIN $wpdb->postmeta as post_desc
+			ON		post_desc.post_id = posts.ID
+			AND		post_desc.meta_key = '_widgets_desc'
 			WHERE	posts.post_status = 'publish'
 			AND		posts.post_type = 'post'
 			AND		posts.post_password = ''
-			"
-			. ( $options['exclude']
-				? ( "
-			AND		posts.ID NOT IN (" . $options['exclude'] . ")
-			" )
-				: ''
-				)
-			. "
+			AND		posts.ID NOT IN ( $exclude_sql )
 			ORDER BY RAND()
 			LIMIT " . intval($options['amount'])
 			;
@@ -194,18 +203,18 @@ class random_widgets
 		$items = (array) $wpdb->get_results($items_sql);
 
 		update_post_cache($items);
-		update_page_cache($items);
 
 		foreach ( array_keys($items) as $key )
 		{
 			$items[$key]->item_label = '<a href="'
 				. htmlspecialchars(apply_filters('the_permalink', get_permalink($items[$key]->ID)))
 				. '">'
-				. ( $options['trim'] && strlen($items[$key]->post_title) > $options['trim']
-					? ( substr($items[$key]->post_title, 0, $options['trim']) . '...' )
-					: $items[$key]->post_title
-					)
-				. '</a>';
+				. $items[$key]->post_label
+				. '</a>'
+				. ( $options['desc'] && $items[$key]->post_desc
+					? wpautop($items[$key]->post_desc)
+					: ''
+					);
 		}
 
 		return $items;
@@ -221,6 +230,12 @@ class random_widgets
 		global $wpdb;
 		global $page_filters;
 
+		$exclude_sql = "
+			SELECT	post_id
+			FROM	$wpdb->postmeta
+			WHERE	meta_key = '_widgets_exclude'
+			";
+
 		if ( $options['filter'] )
 		{
 			if ( isset($page_filters[$options['filter']]) )
@@ -235,40 +250,40 @@ class random_widgets
 				{
 					$old_parents = $parents;
 
-					$parents_sql = '';
-
-					foreach ( $parents as $parent )
-					{
-						$parents_sql .= ( $parents_sql ? ', ' : '' ) . $parent;
-					}
+					$parents_sql = implode(', ', $parents);
 
 					$parents = (array) $wpdb->get_col("
 						SELECT	posts.ID
 						FROM	$wpdb->posts as posts
 						WHERE	posts.post_status = 'publish'
 						AND		posts.post_type = 'page'
-						AND		posts.post_password = ''
-						AND		( posts.ID IN ( $parents_sql ) OR posts.post_parent IN ( $parents_sql ) )
-						AND		EXISTS (
-								SELECT	1
-								FROM	$wpdb->posts as children
-								WHERE	children.post_status = 'publish'
-								AND		children.post_parent = posts.ID
-								AND		children.post_type = 'page'
-								AND		children.post_password = ''
-								)
-						ORDER BY posts.ID
+						AND		posts.ID IN ( $parents_sql )
+						UNION
+						SELECT	posts.ID
+						FROM	$wpdb->posts as posts
+						WHERE	posts.post_status = 'publish'
+						AND		posts.post_type = 'page'
+						AND		posts.post_parent IN ( $parents_sql )
 						");
-
+					
+					sort($parents);
 				} while ( $parents != $old_parents );
 
-				$page_filters[$options['filter']] = $parent_sql;
+				$page_filters[$options['filter']] = $parents_sql;
 			}
 		}
 
 		$items_sql = "
-			SELECT	posts.*
+			SELECT	posts.*,
+					COALESCE(post_label.meta_value, post_title) as post_label,
+					COALESCE(post_desc.meta_value, '') as post_desc
 			FROM	$wpdb->posts as posts
+			LEFT JOIN $wpdb->postmeta as post_label
+			ON		post_label.post_id = posts.ID
+			AND		post_label.meta_key = '_widgets_label'
+			LEFT JOIN $wpdb->postmeta as post_desc
+			ON		post_desc.post_id = posts.ID
+			AND		post_desc.meta_key = '_widgets_desc'
 			WHERE	posts.post_status = 'publish'
 			AND		posts.post_type = 'page'
 			AND		posts.post_password = ''
@@ -279,13 +294,8 @@ class random_widgets
 			" )
 				: ''
 				)
-			. ( $options['exclude']
-				? ( "
-			AND		posts.ID NOT IN (" . $options['exclude'] . ")
-			" )
-				: ''
-				)
 			. "
+			AND		posts.ID NOT IN ( $exclude_sql )
 			ORDER BY RAND()
 			LIMIT " . intval($options['amount'])
 			;
@@ -293,18 +303,18 @@ class random_widgets
 		$items = (array) $wpdb->get_results($items_sql);
 
 		update_post_cache($items);
-		update_page_cache($items);
 
 		foreach ( array_keys($items) as $key )
 		{
 			$items[$key]->item_label = '<a href="'
 				. htmlspecialchars(apply_filters('the_permalink', get_permalink($items[$key]->ID)))
 				. '">'
-				. ( $options['trim'] && strlen($items[$key]->post_title) > $options['trim']
-					? ( substr($items[$key]->post_title, 0, $options['trim']) . '...' )
-					: $items[$key]->post_title
-					)
-				. '</a>';
+				. $items[$key]->post_label
+				. '</a>'
+				. ( $options['desc'] && $items[$key]->post_desc
+					? wpautop($items[$key]->post_desc)
+					: ''
+					);
 		}
 
 		return $items;
@@ -347,13 +357,10 @@ class random_widgets
 			$items[$key]->item_label = '<a href="'
 				. htmlspecialchars($items[$key]->link_url)
 				. '">'
-				. ( $options['trim'] && strlen($items[$key]->link_name) > $options['trim']
-					? ( substr($items[$key]->link_name, 0, $options['trim']) . '...' )
-					: $items[$key]->link_name
-					)
+				. $items[$key]->link_name
 				. '</a>'
 				. ( $options['desc'] && $items[$key]->link_description
-					? ( '<br />' . $items[$key]->link_description )
+					? ( wpautop($items[$key]->link_description) )
 					: ''
 					);
 		}
@@ -370,24 +377,27 @@ class random_widgets
 	{
 		global $wpdb;
 
+		$exclude_sql = "
+			SELECT	post_id
+			FROM	$wpdb->postmeta
+			WHERE	meta_key = '_widgets_exclude'
+			";
+		
 		$items_sql = "
 			SELECT	posts.*,
-					comments.*
+					comments.*,
+					COALESCE(post_label.meta_value, post_title) as post_label
 			FROM	$wpdb->posts as posts
 			INNER JOIN $wpdb->comments as comments
 			ON		comments.comment_post_ID = posts.ID
+			LEFT JOIN $wpdb->postmeta as post_label
+			ON		post_label.post_id = posts.ID
+			AND		post_label.meta_key = '_widgets_label'
 			WHERE	posts.post_status = 'publish'
 			AND		posts.post_type IN ('post', 'page')
 			AND		posts.post_password = ''
-			AND		comments.comment_approved = 1
-			"
-			. ( $options['exclude']
-				? ( "
-			AND		posts.ID NOT IN (" . $options['exclude'] . ")
-			" )
-				: ''
-				)
-			. "
+			AND		comments.comment_approved = '1'
+			AND		posts.ID NOT IN ( $exclude_sql )
 			ORDER BY RAND()
 			LIMIT " . intval($options['amount'])
 			;
@@ -395,7 +405,6 @@ class random_widgets
 		$items = (array) $wpdb->get_results($items_sql);
 
 		update_post_cache($items);
-		update_page_cache($items);
 
 		foreach ( array_keys($items) as $key )
 		{
@@ -407,11 +416,8 @@ class random_widgets
 				. '<a href="'
 				. htmlspecialchars(apply_filters('the_permalink', get_permalink($items[$key]->ID)) . '#comment-' . $items[$key]->comment_ID)
 				. '">'
-				. ( $options['trim'] && strlen($items[$key]->post_title) > $options['trim']
-					? ( substr($items[$key]->post_title, 0, $options['trim']) . '...' )
-					: $items[$key]->post_title
-					)
-				. '</a>';
+				. 	$items[$key]->post_label
+					. '</a>';
 		}
 
 		return $items;
@@ -426,21 +432,28 @@ class random_widgets
 	{
 		global $wpdb;
 
+		$exclude_sql = "
+			SELECT	post_id
+			FROM	$wpdb->postmeta
+			WHERE	meta_key = '_widgets_exclude'
+			";
+		
 		$items_sql = "
-			SELECT	posts.*
+			SELECT	posts.*,
+					COALESCE(post_label.meta_value, post_title) as post_label,
+					COALESCE(post_desc.meta_value, '') as post_desc
 			FROM	$wpdb->posts as posts
+			LEFT JOIN $wpdb->postmeta as post_label
+			ON		post_label.post_id = posts.ID
+			AND		post_label.meta_key = '_widgets_label'
+			LEFT JOIN $wpdb->postmeta as post_desc
+			ON		post_desc.post_id = posts.ID
+			AND		post_desc.meta_key = '_widgets_desc'
 			WHERE	posts.post_status = 'publish'
 			AND		posts.post_type IN ('post', 'page')
 			AND		posts.post_password = ''
-			AND		posts.post_modified <> posts.post_date
-			"
-			. ( $options['exclude']
-				? ( "
-			AND		posts.ID NOT IN (" . $options['exclude'] . ")
-			" )
-				: ''
-				)
-			. "
+			AND		posts.post_modified > DATE_ADD(posts.post_date, INTERVAL 2 DAY)
+			AND		posts.ID NOT IN ( $exclude_sql )
 			ORDER BY RAND()
 			LIMIT " . intval($options['amount'])
 			;
@@ -448,28 +461,61 @@ class random_widgets
 		$items = (array) $wpdb->get_results($items_sql);
 
 		update_post_cache($items);
-		update_page_cache($items);
 
 		foreach ( array_keys($items) as $keys )
 		{
 			$items[$key]->item_label = '<a href="'
 				. htmlspecialchars(apply_filters('the_permalink', get_permalink($items[$key]->ID)))
 				. '">'
-				. ( $options['trim'] && strlen($items[$key]->post_title) > $options['trim']
-					? ( substr($items[$key]->post_title, 0, $options['trim']) . '...' )
-					: $items[$key]->post_title
-					)
-				. '</a>';
+				. $items[$key]->post_label
+				. '</a>'
+				. ( $options['desc'] && $items[$key]->post_desc
+					? wpautop($items[$key]->post_desc)
+					: ''
+					);
 		}
 
 		return $items;
 	} # get_updates()
+
+
+	#
+	# get_options()
+	#
+
+	function get_options()
+	{
+		if ( ( $o = get_option('random_widgets') ) === false )
+		{
+			$o = array();
+
+			update_option('random_widgets', $o);
+		}
+
+		return $o;
+	} # get_options()
+
+
+	#
+	# default_options()
+	#
+
+	function default_options()
+	{
+		return array(
+			'title' => __('Random Posts'),
+			'type' => 'posts',
+			'amount' => 5,
+			'desc' => false,
+			);
+	} # default_options()
 } # random_widgets
 
 random_widgets::init();
 
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
+
+if ( is_admin() )
 {
-	include_once dirname(__FILE__) . '/random-widgets-admin.php';
+	include dirname(__FILE__) . '/random-widgets-admin.php';
 }
 ?>

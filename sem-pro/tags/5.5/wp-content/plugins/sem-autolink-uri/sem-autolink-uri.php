@@ -4,19 +4,17 @@ Plugin Name: Autolink URI
 Plugin URI: http://www.semiologic.com/software/publishing/autolink-uri/
 Description: Automatically wrap unhyperlinked uri with html anchors.
 Author: Denis de Bernardy
-Version: 1.5
+Version: 1.5.1 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: autolink_uri
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 

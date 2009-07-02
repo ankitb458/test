@@ -1,22 +1,20 @@
 <?php
 /*
-Plugin Name: Bookmark me
+Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/widgets/bookmark-me/
-Description: Adds a widget that lets visitors subscribe your webpages to social bookmarking sites such as del.icio.us and Digg.
+Description: Adds widgets that lets visitors subscribe your webpages to social bookmarking sites such as del.icio.us and Digg.
 Author: Denis de Bernardy
-Version: 3.1
+Version: 4.0 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: bookmark_me
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 
 
 Hat tips
@@ -33,6 +31,39 @@ load_plugin_textdomain('sem-bookmark-me');
 class bookmark_me
 {
 	#
+	# init()
+	#
+	
+	function init()
+	{
+		add_action('wp_head', array('bookmark_me', 'css'));
+		
+		if ( !is_admin() )
+		{
+			add_action('wp_print_scripts', array('bookmark_me', 'js'));
+		}
+		
+		add_action('widgets_init', array('bookmark_me', 'widgetize'));
+		
+		foreach ( array(
+				'generate_rewrite_rules',
+				'switch_theme',
+				'update_option_active_plugins',
+				'update_option_show_on_front',
+				'update_option_page_on_front',
+				'update_option_page_for_posts',
+				'save_post',
+				) as $hook)
+		{
+			add_action($hook, array('bookmark_me', 'clear_cache'));
+		}
+		
+		register_activation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
+		register_deactivation_hook(__FILE__, array('bookmark_me', 'clear_cache'));
+	} # init()
+	
+	
+	#
 	# get_services()
 	#
 
@@ -47,13 +78,9 @@ class bookmark_me
 				'name' => 'Digg',
 				'url' => 'http://digg.com/submit?phase=2&amp;title=%title%&amp;url=%url%'
 				),
-			'furl' => array(
-				'name' => 'Furl',
-				'url' => 'http://www.furl.net/storeIt.jsp?t=%title%&amp;u=%url%'
-				),
-			'reddit' => array(
-				'name' => 'Reddit',
-				'url' => 'http://reddit.com/submit?title=%title%&amp;url=%url%'
+			'stumbleupon' => array(
+				'name' => 'StumbleUpon',
+				'url' => 'http://www.stumbleupon.com/submit?title=%title%&amp;url=%url%'
 				),
 			'ask' => array(
 				'name' => 'Ask',
@@ -79,9 +106,17 @@ class bookmark_me
 				'name' => 'Blogg-Buzz',
 				'url' => 'http://www.blogg-buzz.com/submit.php?url=%url%'
 				),
+			'dzone' => array(
+				'name' => 'DZone',
+				'url' => 'http://www.dzone.com/links/add.html?title=%title%&amp;url=%url%',
+				),				
 			'facebook' => array(
 				'name' => 'Facebook',
 				 'url' => 'http://www.facebook.com/share.php?u=%url%'
+				),
+			'furl' => array(
+				'name' => 'Furl',
+				'url' => 'http://www.furl.net/storeIt.jsp?t=%title%&amp;u=%url%'
 				),
 			'google' => array(
 				'name' => 'Google',
@@ -95,6 +130,10 @@ class bookmark_me
 				'name' => 'Mixx',
 				'url' => 'http://www.mixx.com/submit?page_url=%url%'
 				),
+			'misterwong' => array(
+				'name' => 'MisterWong',
+				'url' => 'http://www.mister-wong.com/addurl/?bm_description=%title%&amp;plugin=soc&amp;bm_url=%url%',
+				),				
 			'muti' => array(
 				'name' => 'muti',
 				'url' => 'http://www.muti.co.za/submit?title=%title%&amp;url=%url%'
@@ -114,6 +153,10 @@ class bookmark_me
 			'propeller' => array(
 				'name' => 'Propeller',
 				'url' => 'http://www.propeller.com/submit/?T=%title%&amp;U=%url%'
+				),
+			'reddit' => array(
+				'name' => 'Reddit',
+				'url' => 'http://reddit.com/submit?title=%title%&amp;url=%url%'
 				),
 			'rojo' => array(
 				'name' => 'Rojo',
@@ -137,15 +180,15 @@ class bookmark_me
 				),
 			'sphere' => array(
 				'name' => 'Sphere',
-				'url' => 'http://www.sphere.com/search?q=sphereit:%url%'
+				'url' => 'http://www.sphere.com/search?q=sphereit:title=%title%&amp;url=%url%'
 				),
+			'sphinn' => array(
+				'name' => 'Sphinn',
+				'url' => 'http://sphinn.com/submit.php?title=%title%&amp;url=%url%',
+				),					
 			'spurl' => array(
 				'name' => 'Spurl',
 				'url' => 'http://www.spurl.net/spurl.php?title=%title%&amp;url=%url%'
-				),
-			'stumbleupon' => array(
-				'name' => 'StumbleUpon',
-				'url' => 'http://www.stumbleupon.com/submit?title=%title%&amp;url=%url%'
 				),
 			'tailrank' => array(
 				'name' => 'Tailrank',
@@ -155,6 +198,14 @@ class bookmark_me
 		        'name' => 'Technorati',
 		        'url' => 'http://www.technorati.com/faves?add=%url%'
 				),
+			'thisnext' => array(
+				'name' => 'ThisNext',
+				'url' => 'http://www.thisnext.com/pick/new/submit/sociable/?title=%title%&amp;url=%url%',
+		        ),				
+		    'twitter' => array(
+		        'name' => 'Twitter',
+				'url' => 'http://twitthis.com/twit?url=%url%',
+				),				
 			'windows_live' => array(
 				'name' => 'Windows Live',
 				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;title=%title%&amp;top=1&amp;url=%url%'
@@ -163,32 +214,17 @@ class bookmark_me
 				'name' => 'Wists',
 				'url' => 'http://wists.com/r.php?c=&amp;title=%title%&amp;r=%url%'
 				),
-			'yahoo' => array(
-				'name' => 'Yahoo!',
+			'yahoomyweb' => array(
+				'name' => 'YahooMyWeb',
 				'url' => 'http://myweb2.search.yahoo.com/myresults/bookmarklet?title=%title%&amp;popup=true&amp;u=%url%'
 				),
+			
 			'help' => array(
 				'name' => 'Help',
 				'url' => 'http://www.semiologic.com/resources/blogging/help-with-social-bookmarking-sites/'
 				)
 			);
 	} # get_services()
-
-
-	#
-	# default_services()
-	#
-
-	function default_services()
-	{
-		return array(
-			'delicious',
-			'digg',
-			'furl',
-			'reddit',
-			'help'
-			);
-	} # default_services()
 
 
 	#
@@ -210,53 +246,83 @@ class bookmark_me
 	function display($args = null)
 	{
 		# default args
-
+		
 		$defaults = array(
-			'title' => __('Spread the Word!'),
-			'show_names' => true,
 			'before_widget' => '',
 			'after_widget' => '',
 			'before_title' => '<h2>',
 			'after_title' => '</h2>',
 			);
+		
+		$default_options = bookmark_me::default_options();
 
-		$options = get_option('sem_bookmark_me_params');
+		$args = array_merge($defaults, (array) $default_options, (array) $args);
 
-		$args = array_merge($defaults, (array) $options, (array) $args);
-
-		$args['entry_title'] = trim(wp_title(null, false));
-		$args['entry_url'] = ( $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://' )
-			. $_SERVER['HTTP_HOST']
-			. $_SERVER['REQUEST_URI'];
-
-		$args['services'] = get_option('sem_bookmark_me_services');
-		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-bookmark-me/img/';
-
-		if ( !$args['services'] )
+		
+		
+		if ( in_the_loop() )
 		{
-			$args['services'] = bookmark_me::default_services();
+			$args['entry_title'] = trim(strip_tags(get_the_title(get_the_ID())));
+			$args['entry_url'] = get_permalink(get_the_ID());
+		}
+		elseif ( is_singular() )
+		{
+			$args['entry_title'] = trim( strip_tags(get_the_title($GLOBALS['wp_query']->get_queried_object_id())));
+			$args['entry_url'] = get_permalink($GLOBALS['wp_query']->get_queried_object_id());
+		}
+		else
+		{
+			$args['entry_title'] = trim(wp_title(null, false));
+			$args['entry_url'] = ( $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://' )
+				. $_SERVER['HTTP_HOST']
+				. $_SERVER['REQUEST_URI'];
 		}
 
-		$hash = md5(uniqid(rand()));
+		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-bookmark-me/img/';
 
-		$cache_file = ABSPATH . 'wp-content/cache/bookmark-me-' . md5(serialize($args));
+		$hash = md5(uniqid(rand()));
+		
+		$cache_id = md5(serialize($args));
+		
+		if ( in_the_loop() )
+		{
+			$object_id = get_the_ID();
+			$cache = get_post_meta($object_id, '_bookmark_me_cache', true);
+			
+			if ( $cache === '' )
+			{
+				$cache = false;
+			}
+		}
+		elseif ( is_singular() )
+		{
+			$object_id = $GLOBALS['wp_query']->get_queried_object_id();
+			$cache = get_post_meta($object_id, '_bookmark_me_cache', true);
+			
+			if ( $cache === '' )
+			{
+				$cache = false;
+			}
+		}
+		else
+		{
+			$cache = get_option('bookmark_me_cache');
+		}
 
 		# return cache if relevant
-
-		if ( file_exists($cache_file) )
+		
+		if ( $o = $cache[$cache_id] )
 		{
-			$o = file_get_contents($cache_file);
-
 			$o = str_replace('{$hash}', $hash, $o);
 
 			return $o;
 		}
-
+		
 
 		# process output
 
 		$as_dropdown = intval($args['dropdown']);
-
+		$home_url = get_option('home');
 		$o = '';
 
 		$o .= $args['before_widget'] . "\n"
@@ -265,17 +331,12 @@ class bookmark_me
 				: ''
 				);
 
-		$o .= '<div'
-				. ( $as_dropdown
-					? ( ' onmouseover="fade_bookmark_buttons_in(\'bookmark_me_{$hash}\');"'
-						. ' onmouseout="fade_bookmark_buttons_out(\'bookmark_me_{$hash}\');"'
-						)
-					: ''
-					)
-				. '>' . "\n";
-
 		if ( $as_dropdown )
 		{
+			$o .= '<div'
+				. ' onmouseover="fade_bookmark_buttons_in(\'bookmark_me_{$hash}\');"'
+				. ' onmouseout="fade_bookmark_buttons_out(\'bookmark_me_{$hash}\');"'
+				. '>' . "\n";
 			$o .= '<div class="bookmark_service">'
 				. '<img'
 					. ' src="' . $args['img_path'] . 'bookmark.gif"'
@@ -284,8 +345,16 @@ class bookmark_me
 				. '</div>' . "\n";
 		}
 
-		$o .= '<div'
-			. ' class="bookmark_services' . ( $as_dropdown ? ' bookmark_dropdown' : '' ) . ( $as_dropdown && $args['show_names'] ? ' bookmark_table' : '' ) . '"'
+		$o .= '<div class="bookmark_services'
+				. ( $as_dropdown
+					? ' bookmark_dropdown'
+					: ''
+					)
+				. ( $as_dropdown && $args['show_names']
+					? ' bookmark_table'
+					: ''
+					)
+				. '"'
 			. ' id="bookmark_me_{$hash}"'
 			. '>';
 
@@ -302,98 +371,99 @@ class bookmark_me
 				$o .= '<table>';
 			}
 		}
+		else
+		{
+			$o .= '<p>';
+		}
 
 		$i = 0;
 
 		foreach ( (array) $args['services'] as $service )
 		{
 			$details = bookmark_me::get_service($service);
+			
+			if ( !$details ) continue;
 
-			if ( $details )
+			if ( $args['show_names'] )
 			{
-				if ( $args['show_names'] )
+				if ( $as_dropdown )
 				{
-					if ( $as_dropdown )
+					if ( !$i )
 					{
-						if ( !$i )
-						{
-							$o .= '<tr>';
-						}
-						elseif ( !( $i % 3 ) )
-						{
-							$o .= '</tr><tr>';
-						}
-
-						$o .= '<td class="bookmark_service">';
-
-						$i++;
+						$o .= '<tr>';
+					}
+					elseif ( !( $i % 3 ) )
+					{
+						$o .= '</tr><tr>';
 					}
 
-					$o .= '<span>'
-						. '<a'
-						. ' href="'
-							. str_replace(
-								'%url%',
-								( strpos($details['url'], '?') !== false
-									? urlencode($args['entry_url'])
-									: $args['entry_url']
-									),
-								str_replace(
-									'%title%',
-									rawurlencode($args['entry_title']),
-									$details['url'])
-									)
-							. '"'
-						. ' style="'
-							. 'padding-left: 22px;'
-							. ' background: url('
-								. trailingslashit(get_option('siteurl'))
-								. 'wp-content/plugins/sem-bookmark-me/img/'
-								. $service . '.gif'
-								. ') center left no-repeat;'
-								. '"'
-						. ' class="noicon"'
-						. ( $args['add_nofollow']
-							? ' rel="nofollow"'
-							: ''
-							)
-						. '>'
-						. __($details['name'])
-						. '</a>'
-						. '</span>'
-						. "\n";
+					$o .= '<td class="bookmark_service">';
 
-					if ( $as_dropdown )
-					{
-						$o .= '</td>';
-					}
+					$i++;
 				}
-				else
-				{
-					$o .= '<span>'
-						. '<a'
-						. ' href="'
-							. str_replace('%url%', $args['entry_url'], str_replace('%title%', rawurlencode($args['entry_title']), $details['url']))
+
+				$o .= '<a'
+					. ' href="'
+						. str_replace(
+							'%url%',
+							( strpos($details['url'], '?') !== false
+								? urlencode($args['entry_url'])
+								: $args['entry_url']
+								),
+							str_replace(
+								'%title%',
+								rawurlencode($args['entry_title']),
+								$details['url'])
+								)
+						. '"'
+					. ' style="'
+						. 'padding: 2px 2px 2px 22px;'
+						. ' background: url('
+							. trailingslashit(get_option('siteurl'))
+							. 'wp-content/plugins/sem-bookmark-me/img/'
+							. $service . '.gif'
+							. ') center left no-repeat;'
 							. '"'
-						. ' class="noicon"'
-						. ( $args['add_nofollow']
-							? ' rel="nofollow"'
-							: ''
-							)
-						. ' title="' . __($details['name']) . '"'
-						. '>'
-						. '<img src="'
-								. trailingslashit(get_option('siteurl'))
-								. 'wp-content/plugins/sem-bookmark-me/img/'
-								. $service . '.gif'
-								. '"'
-								. ' alt="' . __($details['name']) . '"'
-								. ' style="border: none; margin: 0px 1px;"'
-								. ' />'
-						. '</a>'
-						. '</span>'
-						. "\n";
+					. ' class="noicon"'
+					. ( $args['add_nofollow'] && strpos($details['url'], $home_url) !== 0
+						? ' rel="nofollow"'
+						: ''
+						)
+					. '>'
+					. __($details['name'])
+					. '</a>'
+					. "\n";
+
+				if ( $as_dropdown )
+				{
+					$o .= '</td>';
 				}
+			}
+			else
+			{
+				$o .= '<span>'
+					. '<a'
+					. ' href="'
+						. str_replace('%url%', $args['entry_url'], str_replace('%title%', rawurlencode($args['entry_title']), $details['url']))
+						. '"'
+					. ' class="noicon"'
+					. ( $args['add_nofollow'] && strpos($details['url'], $home_url) !== 0
+						? ' rel="nofollow"'
+						: ''
+						)
+					. ' title="' . __($details['name']) . '"'
+					. '>'
+					. '<img src="'
+							. trailingslashit(get_option('siteurl'))
+							. 'wp-content/plugins/sem-bookmark-me/img/'
+							. $service . '.gif'
+							. '"'
+							. ' alt="' . __($details['name']) . '"'
+							. ' style="border: none; margin: 0px 1px;"'
+							. ' />'
+					. '</a>'
+					. '</span>'
+					. "\n";
 			}
 		}
 
@@ -416,26 +486,36 @@ class bookmark_me
 			}
 
 			$o .= '<div style="clear: both;"></div>' . "\n";
-
+		}
+		else
+		{
+			$o .= '</p>' . "\n";
 		}
 
-		$o .= '</div>' . "\n";
+		$o .= '</div>' . "\n"; # bookmark services
 
-		$o .= '</div>' . "\n"
-			. $args['after_widget'] . "\n";
+		if ( $as_dropdown )
+		{
+			$o .= '</div>' . "\n";
+		}
+		
+		$o .= $args['after_widget'] . "\n";
 
 
 		# store output
 
-		if ( is_writable($cache_file) && is_writable(dirname($cache_file)) )
+		$cache[$cache_id] = $o;
+		
+		if ( in_the_loop() || is_singular() )
 		{
-			$fp = fopen($cache_file, "w+");
-			@fwrite($fp, $o);
-			@fclose($fp);
-			@chmod($cache_file, 0666);
+			delete_post_meta($object_id, '_bookmark_me_cache');
+			add_post_meta($object_id, '_bookmark_me_cache', $cache, true );
 		}
-
-
+		else
+		{
+			update_option('bookmark_me_cache', $cache);
+		}
+		
 		# return output
 
 		$o = str_replace('{$hash}', $hash, $o);
@@ -453,7 +533,7 @@ class bookmark_me
 		echo '<link rel="stylesheet" type="text/css"'
 			. ' href="'
 				. trailingslashit(get_option('siteurl'))
-				. 'wp-content/plugins/sem-bookmark-me/sem-bookmark-me.css'
+				. 'wp-content/plugins/sem-bookmark-me/sem-bookmark-me.css?ver=4.0'
 				. '"'
 			. ' />' . "\n";
 	} # css()
@@ -465,12 +545,11 @@ class bookmark_me
 
 	function js()
 	{
-		echo '<script type="text/javascript"'
-			. ' src="'
-				. trailingslashit(get_option('siteurl'))
-				. 'wp-content/plugins/sem-bookmark-me/sem-bookmark-me.js'
-				. '"'
-			. '></script>' . "\n";
+		$plugin_path = plugin_basename(__FILE__);
+		$plugin_path = preg_replace("/[^\/]+$/", '', $plugin_path);
+		$plugin_path = '/wp-content/plugins/' . $plugin_path;
+		
+		wp_enqueue_script( 'bookmark_me', $plugin_path . 'sem-bookmark-me.js', false, '20080416' );
 	} # js()
 
 
@@ -480,26 +559,175 @@ class bookmark_me
 
 	function widgetize()
 	{
-		if ( function_exists('register_sidebar_widget') )
+		$options = bookmark_me::get_options();
+		
+		$widget_options = array('classname' => 'bookmark_me', 'description' => __( "Social bookmarking links") );
+		$control_options = array('width' => 460, 'id_base' => 'bookmark_me');
+		
+		$id = false;
+		
+		# registered widgets
+		foreach ( array_keys($options) as $o )
 		{
-			register_sidebar_widget('Bookmark Me', array('bookmark_me', 'display_widget'));
+			if ( !is_numeric($o) ) continue;
+			$id = "bookmark_me-$o";
+			wp_register_sidebar_widget($id, __('Bookmark Me'), array('bookmark_me', 'widget'), $widget_options, array( 'number' => $o ));
+			wp_register_widget_control($id, __('Bookmark Me'), array('bookmark_me_admin', 'widget_control'), $control_options, array( 'number' => $o ) );
+		}
+		
+		# default widget if none were registered
+		if ( !$id )
+		{
+			$id = "bookmark_me-1";
+			wp_register_sidebar_widget($id, __('Bookmark Me'), array('bookmark_me', 'widget'), $widget_options, array( 'number' => -1 ));
+			wp_register_widget_control($id, __('Bookmark Me'), array('bookmark_me_admin', 'widget_control'), $control_options, array( 'number' => -1 ) );
 		}
 	} # widgetize()
 
 
 	#
-	# display_widget()
+	# widget()
 	#
 
-	function display_widget($args)
+	function widget($args, $widget_args = 1)
 	{
-		echo bookmark_me::display($args);
-	} # display_widget()
+		$options = bookmark_me::get_options();
+		
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP );
+		
+		$args = array_merge((array) $options[$number], (array) $args);
+		
+		if ( is_admin() )
+		{
+			echo $args['before_widget']
+				. $args['before_title']
+				. $args['title']
+				. $args['after_title']
+				. $args['after_widget'];
+			
+			return;
+		}
+		
+		echo bookmark_me::display($args, $widget_args);
+	} # widget()
+	
+	
+	#
+	# get_options()
+	#
+	
+	function get_options()
+	{
+		if ( ( $o = get_option('bookmark_me_widgets') ) === false )
+		{
+			if ( ( $o = get_option('sem_bookmark_me_params') ) !== false )
+			{
+				unset($o['before_widget']);
+				unset($o['after_widget']);
+				unset($o['before_title']);
+				unset($o['after_title']);
+				
+				$o['services'] = get_option('sem_bookmark_me_services');
+				
+				if ( !$o['services'] )
+				{
+					$defaults = bookmark_me::default_options();
+					$o['services'] = $defaults['services'];
+				}
+				
+				$o = array( 1 => $o );
+				
+				foreach ( array_keys( $sidebars = get_option('sidebars_widgets') ) as $k )
+				{
+					if ( !is_array($sidebars[$k]) )
+					{
+						continue;
+					}
+					
+					if ( ( $key = array_search('bookmark-me', $sidebars[$k]) ) !== false )
+					{
+						$sidebars[$k][$key] = 'bookmark_me-1';
+						update_option('sidebars_widgets', $sidebars);
+						break;
+					}
+					elseif ( ( $key = array_search('Bookmark Me', $sidebars[$k]) ) !== false )
+					{
+						$sidebars[$k][$key] = 'bookmark_me-1';
+						update_option('sidebars_widgets', $sidebars);
+						break;
+					}
+				}
+			}
+			else
+			{
+				$o = array();
+			}
+			
+			update_option('bookmark_me_widgets', $o);
+		}
+		
+		return $o;
+	} # get_options()
+	
+	
+	#
+	# new_widget()
+	#
+	
+	function new_widget()
+	{
+		$o = bookmark_me::get_options();
+		$k = time();
+		do $k++; while ( isset($o[$k]) );
+		$o[$k] = bookmark_me::default_options();
+		
+		update_option('bookmark_me_widgets', $o);
+		
+		return 'bookmark_me-' . $k;
+	} # new_widget()
+	
+	
+	#
+	# default_options()
+	#
+	
+	function default_options()
+	{
+		return array(
+			'title' => __('Spread the Word!'),
+			'dropdown' => false,
+			'show_names' => true,
+			'add_nofollow' => false,
+			'services' => array(
+				'delicious',
+				'digg',
+				'stumbleupon',
+				'help'
+				),
+			);
+	} # default_options()
+	
+	
+	#
+	# clear_cache()
+	#
+	
+	function clear_cache($in = null)
+	{
+		update_option('bookmark_me_cache', array());
+
+		global $wpdb;
+		
+		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE meta_key LIKE '_bookmark_me_cache%'");
+		
+		return $in;
+	} # clear_cache()
 } # bookmark_me
 
-add_action('wp_head', array('bookmark_me', 'css'));
-add_action('wp_head', array('bookmark_me', 'js'));
-add_action('widgets_init', array('bookmark_me', 'widgetize'));
+bookmark_me::init();
 
 
 #
@@ -512,8 +740,8 @@ function the_bookmark_links()
 } # the_bookmark_links()
 
 
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
+if ( is_admin() )
 {
-	include_once dirname(__FILE__) . '/sem-bookmark-me-admin.php';
+	include dirname(__FILE__) . '/sem-bookmark-me-admin.php';
 }
 ?>

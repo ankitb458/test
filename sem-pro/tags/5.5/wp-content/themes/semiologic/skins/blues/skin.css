@@ -63,6 +63,8 @@ a:hover, a:active {
 {
 	background-color: white;
 }
+
+.skin #header h1,
 #header h1 a
 {
 	color: #335588;

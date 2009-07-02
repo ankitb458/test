@@ -3,97 +3,97 @@
 class bookmark_me_admin
 {
 	#
-	# init()
-	#
-
-	function init()
-	{
-		add_action('widgets_init', array('bookmark_me_admin', 'widgetize'));
-	} # init()
-
-
-	#
-	# widgetize()
-	#
-
-	function widgetize()
-	{
-		if ( function_exists('register_sidebar_widget') )
-		{
-			register_widget_control('Bookmark Me', array('bookmark_me_admin', 'widget_control'), 480, 350);
-		}
-	} # widgetize()
-
-
-	#
 	# widget_control()
 	#
 
-	function widget_control()
+	function widget_control($widget_args)
 	{
-		$options = get_option('sem_bookmark_me_params');
+		global $wp_registered_widgets;
+		static $updated = false;
 
-		if ( !$options )
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP ); // extract number
+
+		$options = bookmark_me::get_options();
+
+		if ( !$updated && !empty($_POST['sidebar']) )
 		{
-			$options = array(
-				'title' => __('Spread the Word!'),
-				'show_names' => true,
-				'before_widget' => '',
-				'after_widget' => '',
-				'before_title' => '<h2>',
-				'after_title' => '</h2>',
-				);
-		}
+			$sidebar = (string) $_POST['sidebar'];
 
-		if ( $_POST["sem_bookmark_me_widget_update"] )
-		{
-			$new_options = $options;
+			$sidebars_widgets = wp_get_sidebars_widgets();
+			
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
+			else
+				$this_sidebar = array();
 
-			$new_options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST["sem_bookmark_me_widget_title"])));
-			$new_options['dropdown'] = isset($_POST['sem_bookmark_me_dropdown']);
-			$new_options['add_nofollow'] = isset($_POST['sem_bookmark_me_add_nofollow']);
-			$new_options['show_names'] = isset($_POST['sem_bookmark_me_show_names']);
-
-			if ( $options != $new_options )
+			foreach ( $this_sidebar as $_widget_id )
 			{
-				$options = $new_options;
-
-				update_option('sem_bookmark_me_params', $options);
+				if ( array('bookmark_me', 'widget') == $wp_registered_widgets[$_widget_id]['callback']
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
+					)
+				{
+					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+					if ( !in_array( "bookmark_me-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
+						unset($options[$widget_number]);
+					
+					bookmark_me::clear_cache();
+				}
 			}
 
-			$services = (array) $_POST['bookmark_me_services'];
-
-			$services = array_map('strip_tags', $services);
-			$services = array_map('stripslashes', $services);
-
-			update_option('sem_bookmark_me_services', $services);
+			foreach ( (array) $_POST['widget-bookmark-me'] as $num => $opt ) {
+				$title = stripslashes(wp_filter_post_kses(strip_tags($opt['title'])));
+				$dropdown = isset($opt['dropdown']);
+				$add_nofollow = isset($opt['add_nofollow']);
+				$show_names = isset($opt['show_names']);
+				
+				$services = (array) $opt['services'];
+				$services = array_map('strip_tags', $services);
+				$services = array_map('stripslashes', $services);
+				
+				$options[$num] = compact( 'title', 'dropdown', 'add_nofollow', 'show_names', 'services' );
+			}
+			
+			update_option('bookmark_me_widgets', $options);
+			$updated = true;
 		}
 
-		$title = htmlspecialchars($options['title']);
-
-		$services = get_option('sem_bookmark_me_services');
-
+		if ( -1 == $number )
+		{
+			$ops = bookmark_me::default_options();
+			$number = '%i%';
+		}
+		else
+		{
+			$ops = $options[$number];
+		}
+		
+		extract($ops);
+		
+		
+		$title = attribute_escape($title);
+		
 		echo '<input type="hidden"'
 				. ' id="sem_bookmark_me_widget_update"'
 				. ' name="sem_bookmark_me_widget_update"'
 				. ' value="1"'
 				. ' />'
 			. '<div style="margin-bottom: .2em;">'
-			. '<label for="sem_bookmark_me_widget_title">'
+			. '<label>'
 				. __('Title:')
 				. '<br />'
-				. '<input style="width: 80%;"'
-					. ' id="sem_bookmark_me_widget_title"'
-					. ' name="sem_bookmark_me_widget_title"'
+				. '<input style="width: 440px;"'
+					. ' name="widget-bookmark-me[' . $number. '][title]"'
 					. ' type="text" value="' . $title . '" />'
 				. '</label>'
 				. '</div>'
 			. '<div style="margin-bottom: .2em;">'
-			. '<label for="sem_bookmark_me_dropdown">'
+			. '<label>'
 				. '<input'
-					. ' id="sem_bookmark_me_dropdown"'
-					. ' name="sem_bookmark_me_dropdown"'
-					. ( intval($options['dropdown'])
+					. ' name="widget-bookmark-me[' . $number. '][dropdown]"'
+					. ( $dropdown
 						? ' checked="checked"'
 						: ''
 						)
@@ -103,11 +103,10 @@ class bookmark_me_admin
 				. '</label>'
 				. '</div>'
 			. '<div style="margin-bottom: .2em;">'
-			. '<label for="sem_bookmark_me_show_names">'
+			. '<label>'
 				. '<input'
-					. ' id="sem_bookmark_me_show_names"'
-					. ' name="sem_bookmark_me_show_names"'
-					. ( intval($options['show_names'])
+					. ' name="widget-bookmark-me[' . $number. '][show_names]"'
+					. ( $show_names
 						? ' checked="checked"'
 						: ''
 						)
@@ -117,11 +116,10 @@ class bookmark_me_admin
 				. '</label>'
 				. '</div>'
 			. '<div style="margin-bottom: .2em;">'
-			. '<label for="sem_bookmark_me_add_nofollow">'
+			. '<label>'
 				. '<input'
-					. ' id="sem_bookmark_me_add_nofollow"'
-					. ' name="sem_bookmark_me_add_nofollow"'
-					. ( intval($options['add_nofollow'])
+					. ' name="widget-bookmark-me[' . $number. '][add_nofollow]"'
+					. ( $add_nofollow
 						? ' checked="checked"'
 						: ''
 						)
@@ -136,7 +134,7 @@ class bookmark_me_admin
 		$args['site_path'] = trailingslashit(get_option('siteurl'));
 		$args['img_path'] = trailingslashit(get_option('siteurl')) . 'wp-content/plugins/sem-bookmark-me/img/';
 
-		echo '<table border="0" cellpadding="2" cellspacing="0" width="100%">';
+		echo '<table border="0" cellpadding="1" cellspacing="0" style="width: 440px;">';
 		$i = 0;
 
 		foreach ( array_keys((array) bookmark_me::get_services()) as $service )
@@ -157,9 +155,9 @@ class bookmark_me_admin
 				$i++;
 
 				echo '<td>'
-					. '<label for="bookmark_me_services__' . $service . '">'
+					. '<label>'
 						. '<input type="checkbox"'
-							. ' name="bookmark_me_services[]" id="bookmark_me_services__' . $service . '"'
+							. ' name="widget-bookmark-me[' . $number. '][services][]"'
 							. ' value="' . $service . '"'
 							. ( in_array($service, (array) $services)
 								? ' checked="checked"'
@@ -201,6 +199,4 @@ class bookmark_me_admin
 		echo '</table>'. "\n";
 	} # end widget_control()
 } # bookmark_me_admin
-
-bookmark_me_admin::init();
 ?>

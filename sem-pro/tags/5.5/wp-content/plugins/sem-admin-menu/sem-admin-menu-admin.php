@@ -24,7 +24,7 @@ class sem_admin_menu_admin
 				__('Admin&nbsp;Menu', 'sem-admin-menu'),
 				__('Admin&nbsp;Menu', 'sem-admin-menu'),
 				'manage_options',
-				str_replace("\\", "/", __FILE__),
+				__FILE__,
 				array('sem_admin_menu_admin', 'display_admin_page')
 				);
 		}
@@ -65,13 +65,13 @@ class sem_admin_menu_admin
 			echo "<div class=\"updated\">\n"
 				. "<p>"
 					. "<strong>"
-					. __('Options saved.', 'sem-admin-menu')
+					. __('Settings saved.', 'sem-admin-menu')
 					. "</strong>"
 				. "</p>\n"
 				. "</div>\n";
 		}
 	?><div class="wrap">
-		<h2><?php echo __('Admin Menu options', 'sem-admin-menu'); ?></h2>
+		<h2><?php echo __('Admin Menu Settings', 'sem-admin-menu'); ?></h2>
 	<?php
 		if ( $_POST['update_admin_menu_options'] )
 		{
@@ -91,8 +91,10 @@ class sem_admin_menu_admin
 			update_option('sem_admin_menu_params', $options);
 		}
 
-
-		echo '<p><label for="always_on">'
+		echo '<table class="form-table">';
+		
+		echo '<tr><td>'
+			. '<label for="always_on">'
 			. '<input type="checkbox"'
 				. ' id="always_on" name="always_on"'
 				. ( ( !isset($options['always_on']) || $options['always_on'] )
@@ -101,17 +103,20 @@ class sem_admin_menu_admin
 				)
 				. ' />'
 			. '&nbsp;'
-			. __('Show the admin menu to non-logged in visitors when registrations are turned off (Options / General)', 'sem-admin-menu')
+			. __('Display a menu bar with a login link when I am logged out.', 'sem-admin-menu')
 			. '</label>'
-			. '</p>';
+			. '</td></tr>';
+		
+		echo '</table>';
 
-	?>	<p class="submit">
-		<input type="submit"
-			value="<?php echo __('Update Options', 'sem-admin-menu'); ?>"
-			 />
-		</p>
-	</div>
-	<?php
+		echo '<p class="submit">'
+			. '<input type="submit"'
+				. ' value="' . attribute_escape(__('Save Changes')) . '"'
+				. ' />'
+			. '</p>' . "\n";
+		
+		echo '</form>' . "\n"
+			. '</div>' . "\n";
 	} # end display_admin_page()
 } # sem_admin_menu_admin
 

@@ -1,3 +1,3 @@
 <?php
-# obsolete wizard
+# obsolete file
 ?>

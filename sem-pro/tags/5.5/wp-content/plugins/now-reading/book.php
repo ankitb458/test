@@ -9,9 +9,9 @@
 *
  * Example usage:
  * <code>
- * $books = get_books('status=reading&orderby=started&order=asc&num=-1');
+ * $books = get_books('status=reading&orderby=started&order=asc&num=-1&reader=user');
  * </code>
- * @param string $query Query string containing restrictions on what to fetch. Valid variables: $num, $status, $orderby, $order, $search, $author, $title
+ * @param string $query Query string containing restrictions on what to fetch. Valid variables: $num, $status, $orderby, $order, $search, $author, $title, $reader
  * @return array Returns a numerically indexed array in which each element corresponds to a book.
  */
 function get_books( $query ) {
@@ -99,16 +99,39 @@ function get_books( $query ) {
 		$title	= "AND b_title = '$title'";
 	}
 	
+	if ( !empty($tag) ) {
+		$tag = $wpdb->escape($tag);
+		$tag = "AND t_name = '$tag'";
+	}
+	
+	$meta = '';
+	if ( !empty($meta_key) ) {
+		$meta_key = $wpdb->escape($meta_key);
+		$meta = "AND meta_key = '$meta_key'";
+		if ( !empty($meta_value )) {
+			$meta_value = $wpdb->escape($meta_value);
+			$meta .= " AND meta_value = '$meta_value'";
+		}
+	}
+	
+	if ( !empty($reader)){
+		$reader = "AND b_reader = '$reader'";
+	}
+	
 	$books = $wpdb->get_results("
 	SELECT
 		COUNT(*) AS count,
 		b_id AS id, b_title AS title, b_author AS author, b_image AS image, b_status AS status, b_nice_title AS nice_title, b_nice_author AS nice_author,
 		b_added AS added, b_started AS started, b_finished AS finished,
-		b_asin AS asin, b_rating AS rating, b_review AS review, b_post AS post
+		b_asin AS asin, b_rating AS rating, b_review AS review, b_post AS post, b_reader as reader
 	FROM
 		{$wpdb->prefix}now_reading
 	LEFT JOIN {$wpdb->prefix}now_reading_meta
 		ON m_book = b_id
+	LEFT JOIN {$wpdb->prefix}now_reading_books2tags
+		ON book_id = b_id
+	LEFT JOIN {$wpdb->prefix}now_reading_tags
+		ON tag_id = t_id
 	WHERE
 		1=1
 		$status
@@ -116,6 +139,9 @@ function get_books( $query ) {
 		$search
 		$author
 		$title
+		$tag
+		$meta
+		$reader
 	GROUP BY
 		b_id
 	ORDER BY
@@ -150,7 +176,7 @@ function get_book( $id ) {
 		COUNT(*) AS count,
 		b_id AS id, b_title AS title, b_author AS author, b_image AS image, b_status AS status, b_nice_title AS nice_title, b_nice_author AS nice_author,
 		b_added AS added, b_started AS started, b_finished AS finished,
-		b_asin AS asin, b_rating AS rating, b_review AS review, b_post AS post
+		b_asin AS asin, b_rating AS rating, b_review AS review, b_post AS post, b_reader as reader
 	FROM {$wpdb->prefix}now_reading
 	WHERE b_id = $id
 	GROUP BY b_id
@@ -178,7 +204,7 @@ function add_book( $query ) {
  * @return boolean True on success, false on failure.
  */
 function update_book( $query ) {
-	global $wpdb, $query, $fields;
+	global $wpdb, $query, $fields, $userdata;
 	
 	parse_str($query, $fields);
 	
@@ -199,6 +225,10 @@ function update_book( $query ) {
 			$columns .= ", $field";
 			$values .= ", '$value'";
 		}
+				get_currentuserinfo();
+		$reader_id = $userdata->ID;
+		$columns .= ", b_reader";
+		$values .= ", '$reader_id'";
 		
 		$columns = preg_replace('#^, #', '', $columns);
 		$values = preg_replace('#^, #', '', $values);
@@ -210,6 +240,8 @@ function update_book( $query ) {
 		");
 		
 		$id = $wpdb->get_var("SELECT MAX(b_id) FROM {$wpdb->prefix}now_reading");
+		
+		
 		if ( $id > 0 ) {
 			do_action('book_added', $id);
 			return $id;
@@ -343,64 +375,10 @@ function set_book_tags( $id, $tags, $append = false ) {
 }
 
 /**
- * Fetches all the books tagged with the given tag.
+ * DEPRECATED: Fetches all the books tagged with the given tag.
  */
 function get_books_by_tag( $tag, $query ) {
-	global $wpdb;
-	
-	$tid = add_library_tag($tag);
-	
-	parse_str($query);
-	
-	$order	= ( strtolower($order) == 'desc' ) ? 'DESC' : 'ASC';
-	
-	switch ( $orderby ) {
-		case 'added':
-			$orderby = 'b_added';
-			break;
-		case 'started':
-			$orderby = 'b_started';
-			break;
-		case 'finished':
-			$orderby = 'b_finished';
-			break;
-		case 'title':
-			$orderby = 'b_title';
-			break;
-		case 'author':
-			$orderby = 'b_author';
-			break;
-		case 'asin':
-			$orderby = 'b_asin';
-			break;
-		case 'status':
-			$orderby = "b_status $order, b_added";
-			break;
-		default:
-			$orderby = 'b_added';
-			break;
-	}
-	
-	$books = $wpdb->get_results("
-	SELECT
-		b_id AS id, b_title AS title, b_author AS author, b_image AS image, b_status AS status,
-		b_added AS added, b_started AS started, b_finished AS finished,
-		b_asin AS asin, b_rating AS rating, b_review AS review, b_nice_title AS nice_title, b_nice_author AS nice_author
-	FROM
-		{$wpdb->prefix}now_reading, {$wpdb->prefix}now_reading_tags, {$wpdb->prefix}now_reading_books2tags
-	WHERE
-		t_id = tag_id
-		AND
-		tag_id = '$tid'
-		AND
-		book_id = b_id
-	GROUP BY
-		b_id
-	ORDER BY
-		$orderby $order
-	");
-	
-	return $books;
+	return get_books("tag=$tag");
 }
 
 /**

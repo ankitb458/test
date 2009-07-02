@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Now Reading
-Version: 4.4.2 (edited)
+Version: 4.4.3
 Plugin URI: http://robm.me.uk/projects/plugins/wordpress/now-reading/
 Description: Allows you to display the books you're reading, have read recently and plan to read, with cover art fetched automatically from Amazon.
 Author: Rob Miller
@@ -9,14 +9,14 @@ Author URI: http://robm.me.uk/
  */
 /**
  * @author Rob Miller <r@robm.me.uk>
- * @version 4.4.1
+ * @version 4.4.3
  * @package now-reading
  */
 
-define('NOW_READING_VERSION', '4.4.1');
-define('NOW_READING_DB', 38);
-define('NOW_READING_OPTIONS', 8);
-define('NOW_READING_REWRITE', 7);
+define('NOW_READING_VERSION', '4.4.3');
+define('NOW_READING_DB', 40);
+define('NOW_READING_OPTIONS', 10);
+define('NOW_READING_REWRITE', 9);
 
 define('NRTD', 'now-reading');
 
@@ -80,13 +80,12 @@ function nr_check_versions() {
 }
 add_action('init', 'nr_check_versions');
 
-
 /**
  * Handler for the activation hook. Installs/upgrades the database table and adds/updates the nowReadingOptions option.
  */
 function nr_install() {
 	global $wpdb, $wp_rewrite, $wp_version;
-
+	
 	if ( version_compare('2.0', $wp_version) == 1 && strpos($wp_version, 'wordpress-mu') === false ) {
 		echo '
 		<p><code>+++ Divide By Cucumber Error. Please Reinstall Universe And Reboot +++</code></p>
@@ -95,9 +94,10 @@ function nr_install() {
 		';
 		return;
 	}
-
+	
 	// WP's dbDelta function takes care of installing/upgrading our DB table.
-	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+	$upgrade_file = file_exists(ABSPATH . 'wp-admin/includes/upgrade.php') ? ABSPATH . 'wp-admin/includes/upgrade.php' : ABSPATH . 'wp-admin/upgrade-functions.php';
+	require_once $upgrade_file;
 	// Until the nasty bug with duplicate indexes is fixed, we should hide dbDelta output.
 	ob_start();
 	dbDelta("
@@ -110,12 +110,13 @@ function nr_install() {
 	b_nice_title VARCHAR(100) NOT NULL default '',
 	b_author VARCHAR(100) NOT NULL default '',
 	b_nice_author VARCHAR(100) NOT NULL default '',
-	b_image text NOT NULL default '',
+	b_image text NOT NULL,
 	b_asin varchar(12) NOT NULL default '',
 	b_status VARCHAR(8) NOT NULL default 'read',
 	b_rating tinyint(4) NOT NULL default '0',
-	b_review text NOT NULL default '',
+	b_review text NOT NULL,
 	b_post bigint(20) NOT NULL default '0',
+	b_reader tinyint(4) NOT NULL default '1',
 	PRIMARY KEY  (b_id),
 	INDEX permalink (b_nice_author, b_nice_title),
 	INDEX title (b_title),
@@ -125,7 +126,7 @@ function nr_install() {
 	m_id BIGINT(20) NOT NULL auto_increment,
 	m_book BIGINT(20) NOT NULL DEFAULT '0',
 	m_key VARCHAR(100) NOT NULL default '',
-	m_value TEXT NOT NULL default '',
+	m_value TEXT NOT NULL,
 	PRIMARY KEY  (m_id),
 	INDEX m_key (m_key)
 	);
@@ -145,7 +146,7 @@ function nr_install() {
 	");
 	$log = ob_get_contents();
 	ob_end_clean();
-
+	
 	$log_file = dirname(__FILE__) . '/install-log-' . date('Y-m-d') . '.txt';
 	if ( is_writable($log_file) ) {
 		$fh = @fopen( $log_file, 'w' );
@@ -154,7 +155,7 @@ function nr_install() {
 			fclose($fh);
 		}
 	}
-
+	
 	$defaultOptions = array(
 		'formatDate'	=> 'jS F Y',
 		'associate'		=> 'roblog-21',
@@ -164,18 +165,19 @@ function nr_install() {
 		'useModRewrite'	=> false,
 		'debugMode'		=> false,
 		'menuLayout'	=> NR_MENU_MULTIPLE,
-		'booksPerPage'  => 15
+		'booksPerPage'  => 15,
+		'permalinkBase' => 'library/'
 	);
 	add_option('nowReadingOptions', $defaultOptions);
-
+	
 	// Merge any new options to the existing ones.
 	$options = get_option('nowReadingOptions');
 	$options = array_merge($defaultOptions, $options);
 	update_option('nowReadingOptions', $options);
-
+	
 	// Update our .htaccess file.
 	$wp_rewrite->flush_rules();
-
+	
 	// Update our nice titles/authors.
 	$books = $wpdb->get_results("
 	SELECT
@@ -199,7 +201,7 @@ function nr_install() {
 			b_id = '$id'
 		");
 	}
-
+	
 	// De-activate and attempt to delete the old widget.
 	$active_plugins = get_option('active_plugins');
 	foreach ( (array) $active_plugins as $key => $plugin ) {
@@ -216,7 +218,7 @@ function nr_install() {
 		if ( !@unlink($widget_file) )
 			die("Please delete your <code>wp-content/plugins/widgets/now-reading.php</code> file!");
 	}
-
+	
 	// Set an option that stores the current installed versions of the database, options and rewrite.
 	$versions = array('db' => NOW_READING_DB, 'options' => NOW_READING_OPTIONS, 'rewrite' => NOW_READING_REWRITE);
 	update_option('nowReadingVersions', $versions);
@@ -227,59 +229,63 @@ register_activation_hook('now-reading/now-reading.php', 'nr_install');
  * Checks to see if the library/book permalink query vars are set and, if so, loads the appropriate templates.
  */
 function library_init() {
-	global $wp, $wpdb, $q, $query;
-
+	global $wp, $wpdb, $q, $query, $wp_query;
+	
 	$wp->parse_request();
-
+	
 	if ( is_now_reading_page() )
 		add_filter('wp_title', 'nr_page_title');
 	else
 		return;
-
-	if ( $wp->query_vars['now_reading_library'] ) {
+	
+	if ( get_query_var('now_reading_library') ) {
+		//filter by reader ?
+		if (get_query_var('now_reading_reader')){
+			$GLOBALS['nr_reader'] = intval(get_query_var('now_reading_reader'));
+		}
 		// Library page:
 		nr_load_template('library.php');
 		die;
 	}
-
-	if ( $wp->query_vars['now_reading_id'] ) {
+	
+	if ( get_query_var('now_reading_id') ) {
 		// Book permalink:
-		$GLOBALS['nr_id'] = intval($wp->query_vars['now_reading_id']);
-
+		$GLOBALS['nr_id'] = intval(get_query_var('now_reading_id'));
+		
 		$load = nr_load_template('single.php');
 		if ( is_wp_error($load) )
 			echo $load->get_error_message();
-
+		
 		die;
 	}
-
-	if ( $wp->query_vars['now_reading_tag'] ) {
+	
+	if ( get_query_var('now_reading_tag') ) {
 		// Tag permalink:
-		$GLOBALS['nr_tag'] = $wp->query_vars['now_reading_tag'];
-
+		$GLOBALS['nr_tag'] = get_query_var('now_reading_tag');
+		
 		$load = nr_load_template('tag.php');
 		if ( is_wp_error($load) )
 			echo $load->get_error_message();
-
+		
 		die;
 	}
-
-	if ( $wp->query_vars['now_reading_search'] ) {
+	
+	if ( get_query_var('now_reading_search') ) {
 		// Search page:
 		$GLOBALS['query'] = $_GET['q'];
 		unset($_GET['q']); // Just in case
-
+		
 		$load = nr_load_template('search.php');
 		if ( is_wp_error($load) )
 			echo $load->get_error_message();
-
+		
 		die;
 	}
-
-	if ( $wp->query_vars['now_reading_author'] && $wp->query_vars['now_reading_title'] ) {
+	
+	if ( get_query_var('now_reading_author') && get_query_var('now_reading_title') ) {
 		// Book permalink with title and author.
-		$author				= $wpdb->escape(urldecode($wp->query_vars['now_reading_author']));
-		$title				= $wpdb->escape(urldecode($wp->query_vars['now_reading_title']));
+		$author				= $wpdb->escape(urldecode(get_query_var('now_reading_author')));
+		$title				= $wpdb->escape(urldecode(get_query_var('now_reading_title')));
 		$GLOBALS['nr_id']	= $wpdb->get_var("
 		SELECT
 			b_id
@@ -290,26 +296,26 @@ function library_init() {
 			AND
 			b_nice_author = '$author'
 		");
-
+		
 		$load = nr_load_template('single.php');
 		if ( is_wp_error($load) )
 			echo $load->get_error_message();
-
+		
 		die;
 	}
-
-	if ( $wp->query_vars['now_reading_author'] ) {
+	
+	if ( get_query_var('now_reading_author') ) {
 		// Author permalink.
-		$author = $wpdb->escape(urldecode($wp->query_vars['now_reading_author']));
+		$author = $wpdb->escape(urldecode(get_query_var('now_reading_author')));
 		$GLOBALS['nr_author'] = $wpdb->get_var("SELECT b_author FROM {$wpdb->prefix}now_reading WHERE b_nice_author = '$author'");
-
+		
 		if ( empty($GLOBALS['nr_author']) )
 			die("Invalid author");
-
+		
 		$load = nr_load_template('author.php');
 		if ( is_wp_error($load) )
 			echo $load->get_error_message();
-
+		
 		die;
 	}
 }
@@ -322,13 +328,13 @@ add_action('template_redirect', 'library_init');
 function nr_load_template( $filename ) {
 	$filename = basename($filename);
 	$template = TEMPLATEPATH ."/now-reading/$filename";
-
+	
 	if ( !file_exists($template) )
 		$template = dirname(__FILE__)."/templates/$filename";
-
+	
 	if ( !file_exists($template) )
 		return new WP_Error('template-missing', sprintf(__("Oops! The template file %s could not be found in either the Now Reading template directory or your theme's Now Reading directory.", NRTD), "<code>$filename</code>"));
-
+	
 	load_template($template);
 }
 
@@ -346,61 +352,55 @@ function nr_display() {
  * @todo See about a move to a unified framework once Wordpress releases one
  */
 function nr_check_for_updates() {
-
+	
 	$cache		= dirname(__FILE__) . '/latest-version.txt';
 	$check_url	= 'http://robm.me.uk/wp-content/plugins/downloads.php?name=now-reading&action=getlatest';
-
+	
 	// Some people don't have their plugins directory writable.
-	if ( !is_writable($cache) )
+	if ( !is_writable(dirname($cache)) )
 		return;
-
-	// If the cache file doesn't exist and we can't create it, return.
-	if ( !file_exists($cache) ) {
-		if ( !@touch($cache) )
-			return;
-	}
-
+	
 	// Only check for updates once a day.
-	if ( ( filemtime($cache) + 86400 ) <= time() )
+	if ( file_exists($cache) && ( filemtime($cache) + 86400 ) <= time() )
 		return;
-
-
+	
+	
 	if ( $options['httpLib'] == 'curl' ) {
 		if ( !function_exists('curl_init') ) {
 			return new WP_Error('curl-not-installed', __('cURL is not installed correctly.', NRTD));
 		} else {
 			$ch = curl_init();
-
+			
 			curl_setopt($ch, CURLOPT_URL, $check_url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 			curl_setopt($ch, CURLOPT_HEADER, 0);
-
+			
 			$latest = curl_exec($ch);
-
+			
 			curl_close($ch);
 		}
 	} else {
 		require_once ABSPATH . WPINC . '/class-snoopy.php';
-
-		$snoopy	= new snoopy;
+			
+		$snoopy	= new snoopy;		
 		$snoopy->fetch($check_url);
 		$latest	= $snoopy->results;
 	}
-
+		
 	$download_url	= 'http://robm.me.uk/wp-content/plugins/downloads.php?file=now-reading%2Ffiles%2F' . $latest . '%2Fnow-reading.zip&name=now-reading';
 	$plugin_page	= 'http://robm.me.uk/projects/plugins/wordpress/now-reading/';
-
+	
 	// Cache the changes
 	$fh = fopen($cache, 'w');
 	@fwrite($fh, preg_replace('#[^a-z0-9\.\-]#i', '', $latest));
 	fclose($fh);
-
+	
 	$current = NOW_READING_VERSION;
-
+	
 	do_action('nr_check_for_updates', compact('current', 'latest'));
-
+	
 	$newer_version_exists = apply_filters('nr_newer_version_exists', ( $latest > $current ));
-
+	
 	return $newer_version_exists;
 }
 
@@ -408,25 +408,25 @@ function nr_check_for_updates() {
  * Adds our details to the title of the page - book title/author, "Library" etc.
  */
 function nr_page_title( $title ) {
-	global $wp;
+	global $wp, $wp_query;
 	$wp->parse_request();
-
+	
 	$title = '';
-
-	if ( !empty($wp->query_vars['now_reading_library']) )
+	
+	if ( get_query_var('now_reading_library') )
 		$title = 'Library';
-
-	if ( !empty($wp->query_vars['now_reading_id']) ) {
-		$book = get_book(intval($wp->query_vars['now_reading_id']));
+	
+	if ( get_query_var('now_reading_id') ) {
+		$book = get_book(intval(get_query_var('now_reading_id')));
 		$title = $book->title . ' by ' . $book->author;
 	}
-
-	if ( !empty($wp->query_vars['now_reading_tag']) )
-		$title = 'Books tagged with &ldquo;' . htmlentities($wp->query_vars['now_reading_tag']) . '&rdquo;';
-
-	if ( !empty($wp->query_vars['now_reading_search']) )
+	
+	if ( get_query_var('now_reading_tag') )
+		$title = 'Books tagged with &ldquo;' . htmlentities(get_query_var('now_reading_tag')) . '&rdquo;';
+	
+	if ( get_query_var('now_reading_search') )
 		$title = 'Library Search';
-
+	
 	if ( !empty($title) ) {
 		$title = apply_filters('now_reading_page_title', $title);
 		$separator = apply_filters('now_reading_page_title_separator', ' - ');
@@ -449,7 +449,8 @@ add_action('wp_head', 'nr_header_stats');
  * Adds a link in the footer. This is the best method of promotion for Now Reading; whilst you are certainly allowed to remove it, consider supporting NR by leaving it in.
  */
 function nr_promolink() {
-	echo "
+	
+echo "
 	<span class='now-reading-copyright'>
 		Powered by
 		<a href='http://robm.me.uk/'>Rob Miller</a>'s
@@ -457,6 +458,7 @@ function nr_promolink() {
 		plugin.
 	</span>
 	";
+
 }
 add_action('nr_footer', 'nr_promolink');
 

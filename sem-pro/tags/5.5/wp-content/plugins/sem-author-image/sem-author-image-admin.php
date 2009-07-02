@@ -1,6 +1,6 @@
 <?php
 
-class sem_author_image_admin
+class author_image_admin
 {
 	#
 	# init()
@@ -8,11 +8,9 @@ class sem_author_image_admin
 
 	function init()
 	{
-		add_action('edit_user_profile', array('sem_author_image_admin', 'display_image'));
-		add_action('profile_update', array('sem_author_image_admin', 'save_image'));
-
-		add_action('show_user_profile', array('sem_author_image_admin', 'display_image'));
-		add_action('personal_options_update', array('sem_author_image_admin', 'save_image'));
+		add_action('edit_user_profile', array('author_image_admin', 'display_image'));
+		add_action('show_user_profile', array('author_image_admin', 'display_image'));
+		add_action('personal_options_update', array('author_image_admin', 'save_image'));
 	} # init()
 
 
@@ -41,21 +39,24 @@ class sem_author_image_admin
 			}
 		}
 
-		echo '<fieldset>'
-			. '<legend>'
+		echo '<h3>'
 			. __('Author Image')
-			. '</legend>';
+			. '</h3>';
 
+		echo '<table class="form-table">';
+		
 		if ( $image )
 		{
-			echo '<p>'
+			echo '<tr valign="top">'
+				. '<th scope="row">'
+				. 'Author Image'
+				. '</th>'
+				. '<td>'
 				. '<img src="'
 						. str_replace(ABSPATH, $site_url, $image)
 						. '"'
-					. ' />' . "\n"
-					.  '</p>' . "\n";
-
-			echo '<p>';
+					. ' />'
+				. '<br />'. "\n";
 
 			if ( is_writable($image) )
 			{
@@ -73,7 +74,7 @@ class sem_author_image_admin
 				echo __('This author image is not writable by the server.');
 			}
 
-			echo '</p>' . "\n";
+			echo '</td></tr>' . "\n";
 		}
 
 		@mkdir(ABSPATH . 'wp-content/authors');
@@ -83,17 +84,18 @@ class sem_author_image_admin
 			|| is_writable($image)
 			)
 		{
-			echo '<p>'
-				. '<label for="author_image">'
-					. __('New Image (jpg or png)') . ':'
-					. '</label>'
-				. '<br />' . "\n";
+			echo '<tr valign-"top">'
+				. '<th scope="row">'
+				. 'New Image'
+				. '</th>'
+				. '<td>';
 
 			if ( is_writable(ABSPATH . 'wp-content/authors') )
 			{
 				echo '<input type="file" style="width: 480px;"'
 					. ' id="author_image" name="author_image"'
-					. ' />' . "\n";
+					. ' />'
+					. __('(jpg or png)') . "\n";
 			}
 			elseif ( !is_writable(ABSPATH . 'wp-content') )
 			{
@@ -104,7 +106,7 @@ class sem_author_image_admin
 				echo __('The wp-content/authors folder is not writeable by the server') . "\n";
 			}
 
-			echo '</p>' . "\n";
+			echo '</td></tr>' . "\n";
 		}
 
 		if ( !defined('GLOB_BRACE') )
@@ -112,7 +114,7 @@ class sem_author_image_admin
 			echo '<p>' . __('Notice: GLOB_BRACE is an undefined constant on your server. Non .jpg images will be ignored.') . '</p>';
 		}
 
-		echo '</fieldset>';
+		echo '</table>';
 	} # display_image()
 
 
@@ -120,11 +122,12 @@ class sem_author_image_admin
 	# save_image()
 	#
 
-	function save_image($user_ID)
+	function save_image()
 	{
 		if ( @ $_FILES['author_image']['name'] )
 		{
-			$user = get_userdata($user_ID);
+			global $user_ID;
+			$user = get_userdata($_POST['user_id']);
 			$author_id = $user->user_login;
 
 			if ( defined('GLOB_BRACE') )
@@ -150,8 +153,8 @@ class sem_author_image_admin
 
 			$tmp_name =& $_FILES['author_image']['tmp_name'];
 
-			preg_match("/\.([^\.]+)$/", $_FILES['author_image']['name'], $ext);
-			$ext = end($ext);
+			$ext = pathinfo($_FILES['author_image']['name'], PATHINFO_EXTENSION);
+			$ext = strtolower($ext);
 
 			if ( !in_array($ext, array('jpg', 'jpeg', 'png')) )
 			{
@@ -244,9 +247,96 @@ class sem_author_image_admin
 
 		return $user_ID;
 	} # save_image()
-} # sem_author_image_admin
+	
+	
+	#
+	# widget_control()
+	#
+	
+	function widget_control($widget_args)
+	{
+		global $wp_registered_widgets;
+		static $updated = false;
 
-sem_author_image_admin::init();
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP ); // extract number
+
+		$options = author_image::get_options();
+
+		if ( !$updated && !empty($_POST['sidebar']) )
+		{
+			$sidebar = (string) $_POST['sidebar'];
+
+			$sidebars_widgets = wp_get_sidebars_widgets();
+			
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
+			else
+				$this_sidebar = array();
+
+			foreach ( $this_sidebar as $_widget_id )
+			{
+				if ( array('author_image', 'widget') == $wp_registered_widgets[$_widget_id]['callback']
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
+					)
+				{
+					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+					if ( !in_array( "author_image-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
+						unset($options[$widget_number]);
+				}
+			}
+
+			foreach ( (array) $_POST['widget-author-image'] as $num => $opt ) {
+				$always = isset($opt['always']);
+				$options[$num] = compact( 'always' );
+			}
+			
+			update_option('author_image_widgets', $options);
+			$updated = true;
+		}
+
+		if ( -1 == $number )
+		{
+			$ops = author_image::default_options();
+			$number = '%i%';
+		}
+		else
+		{
+			$ops = $options[$number];
+		}
+		
+		extract($ops);
+		
+		echo '<input type="hidden"'
+			. ' name="widget-author-image[' . $number . '][update]"'
+			. ' value="1"'
+			. ' />';
+		
+		echo '<div style="margin: 0px 0px 6px 0px;">'
+			. '<div>'
+			. '<label>'
+			. '<input'
+			. ' name="widget-author-image[' . $number . '][always]"'
+			. ' type="checkbox"'
+			. ( $always
+				? ' checked="checked"'
+				: ''
+				)
+			. ' />'
+			. '&nbsp;' . __('This site has a single author.', 'author-image')
+			. '</label>'
+			. '</div>'
+			. '<div>'
+			. 'When placed outside of the loop, the author image widget only displays its contents on individual posts. Checking the above option will make it always display its contents.'
+			. '</div>'
+			. '<div style="clear: both;"></div>'
+			. '</div>';
+	} # widget_control()
+} # author_image_admin
+
+author_image_admin::init();
 
 
 

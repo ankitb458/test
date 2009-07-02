@@ -1,39 +1,13 @@
 <?php
-#delete_option('semiologic');
+#delete_option('sem5_options');
 
-if ( !get_option('sem5_options') )
-{
-	update_option('template', 'semiologic');
-	update_option('stylesheet', 'semiologic');
+if ( !get_option('sem5_options') ) :
 
-	include_once ABSPATH . 'wp-content/themes/semiologic/inc/init.php';
-}
-else
-{
-	#
-	# dump()
-	#
+update_option('current_theme', 'Semiologic');
+update_option('template', 'semiologic');
+update_option('stylesheet', 'semiologic');
 
-	function dump()
-	{
-		foreach ( func_get_args() as $var )
-		{
-			echo '<pre style="padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
-			var_dump($var);
-			echo '</pre>';
-		}
-	} # dump()
+include ABSPATH . 'wp-content/themes/semiologic/inc/init.php';
 
-
-	#
-	# dump_time()
-	#
-
-	function dump_time($where = '')
-	{
-		echo '<div style="margin: 10px auto; text-align: center;">';
-		echo ( $where ? ( $where . ': ' ) : '' ) . get_num_queries() . " - " . timer_stop();
-		echo '</div>';
-	} # dump_time()
-}
+endif;
 ?>

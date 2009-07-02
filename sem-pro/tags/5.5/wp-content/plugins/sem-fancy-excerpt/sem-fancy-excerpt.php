@@ -1,22 +1,20 @@
 <?php
 /*
 Plugin Name: Fancy Excerpt
-Plugin URI: http://www.semiologic.com/software/wp-fixes/fancy-excerpt/
+Plugin URI: http://www.semiologic.com/software/wp-tweaks/fancy-excerpt/
 Description: Enhances WordPress' default excerpt generator by generating sentence aware excerpts.
 Author: Denis de Bernardy
-Version: 2.8
+Version: 2.8.1 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: fancy_excerpt
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 
 
 Hat tips

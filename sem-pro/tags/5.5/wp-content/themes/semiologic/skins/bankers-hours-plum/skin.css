@@ -54,6 +54,7 @@ a:active, a:hover
 	text-align: left;
 }
 
+.skin #header h1,
 #header h1 a
 {
 	color: #837680;

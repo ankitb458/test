@@ -1,14 +1,11 @@
 <?php
 /*
-Plugin Name: Flickr Widget (fork)
+Plugin Name: Flickr Widget
 Plugin URI: http://donncha.wordpress.com/flickr-widget/
 Description: A widget which will display your latest Flickr photos.
 Author: Donncha O Caoimh
 Version: 0.3.2 fork
 Author URI: http://inphotos.org/
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: flickr_widget
-Update URI: http://www.semiologic.com/members/sem-pro/download/
 
 Installing
 1. Make sure you have the Widget plugin available at http://automattic.com/code/widgets/
@@ -117,11 +114,8 @@ function widget_flickr_control() {
 
 
 function flickr_widgets_init() {
-	if ( function_exists('register_sidebar_widget') )
-	{
-		register_widget_control('Flickr', 'widget_flickr_control', 500, 250);
-		register_sidebar_widget('Flickr', 'widget_flickr');
-	}
+	wp_register_widget_control('flickr', 'Flickr', 'widget_flickr_control', array('width' => 500 ));
+	wp_register_sidebar_widget('flickr', 'Flickr', 'widget_flickr', array('description' => 'Photos via an RSS feed from Flickr'));
 }
 add_action( "widgets_init", "flickr_widgets_init" );
 

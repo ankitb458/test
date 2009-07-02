@@ -1,14 +1,11 @@
 <?php
 /*
-Plugin Name: Favicon Head (fork)
+Plugin Name: Favicon Head
 Plugin URI: http://timjoh.com/wordpress-plugin-favicon-head/
 Description: Favicon Head adds meta tags in the head of every page, specifying the location of your blog's favicon.ico.
 Author: Tim A. Johansson
-Version: 1.2 fork
+Version: 1.3 RC fork
 Author URI: http://timjoh.com/
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: favicon
-Update URI: http://www.semiologic.com/members/sem-pro/download/
 
 Copyright 2006  Tim A. Johansson
 
@@ -77,30 +74,28 @@ function taj_fh_options_page() {
 		<div class="wrap">
 			<form method="post" action="options-general.php?page=favicon-head.php">
 			<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('favicon'); ?>
-			<h2>Favicon Head Options</h2>
-			<fieldset class="options">
-				<legend>Basic Options</legend>
-				<table class="editform" cellspacing="2" cellpadding="5" width="100%">
+			<h2>Favicon Settings</h2>
+				<table class="form-table">
 					<tr>
-						<th width="30%" valign="top" style="padding-top: 10px;">
-							<label for="taj_fh_location">Favicon location:</label>
+						<th scope="row">
+							<label for="taj_fh_location">Static Favicon</label>
 						</th>
 						<td>
-							<input type="text" name="taj_fh_location" size="32" value="<?php echo get_option('taj_fh_location'); ?>" />
-							<p style="margin: 5px 10px;">Since the directory depth of WordPress varies, this value should begin with "http://" or "/". The default value "/favicon.ico" means that the favicon.ico file is in the root directory.</p>
+							<input type="text" name="taj_fh_location" size="60" class="code" value="<?php echo attribute_escape(get_option('taj_fh_location')); ?>" />
+							<p>"/favicon.ico", means that the favicon.ico file is located in the root folder of the site.</p>
+							<p>To override this, enter the url of your favicon file.</p>
 						</td>
 					</tr>
 					<tr>
-						<th width="30%" valign="top" style="padding-top: 10px;">
-							<label for="taj_fha_location">Animated favicon location:</label>
+						<th scope="row">
+							<label for="taj_fha_location">Animated Favicon</label>
 						</th>
 						<td>
-							<input type="text" name="taj_fha_location" size="32" value="<?php echo get_option('taj_fha_location'); ?>" />
-							<p style="margin: 5px 10px;">Leave this field blank to use the static icon.</p>
+							<input type="text" name="taj_fha_location" size="60" class="code" value="<?php echo attribute_escape(get_option('taj_fha_location')); ?>" />
+							<p>To use an animated favicon, enter its url. Be sure to keep a static favicon around if you do, however: animated favicons do not work in most versions of IE.</p>
 						</td>
 					</tr>
 				</table>
-			</fieldset>
 			<p class="submit">
 				<input type="submit" name="info_update" value="Update Options" />
 			</p>
@@ -113,8 +108,8 @@ function taj_fh_meta() {
 	/* The guidelines in the Wikipedia article are followed. */
 	$favicon_location = get_option('taj_fh_location');
 	$afavicon_location = get_option('taj_fha_location');
-	echo '<link rel="shortcut icon" href="' . $favicon_location . '" type="image/x-icon" />'; /* For IE */
-	echo '<link rel="icon" href="' . ( empty( $afavicon_location ) ? $favicon_location : $afavicon_location ) . '" type="image/x-icon" />'; /* For sane browsers */
+	echo '<link rel="shortcut icon" href="' . $favicon_location . '" type="image/x-icon" />' . "\n"; /* For IE */
+	echo '<link rel="icon" href="' . ( empty( $afavicon_location ) ? $favicon_location : $afavicon_location ) . '" type="image/x-icon" />' . "\n"; /* For sane browsers */
 }
 
 

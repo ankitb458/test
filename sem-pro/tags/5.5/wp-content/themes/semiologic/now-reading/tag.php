@@ -1,6 +1,6 @@
 <?php
 
-require_once(sem_path . '/header.php');
+include sem_path . '/header.php';
 
 
 do_action('before_the_entries');
@@ -35,5 +35,5 @@ do_action('before_the_entry');
 do_action('after_the_entry');
 do_action('after_the_entries');
 
-require_once(sem_path . '/footer.php');
+include sem_path . '/footer.php';
 ?>

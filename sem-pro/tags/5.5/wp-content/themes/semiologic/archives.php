@@ -10,10 +10,27 @@
 #
 
 /*
-Template Name: Archives Template
+Template Name: Archives
 */
 
-do_action('setup_template', 'archives');
+if ( isset($_GET['mon']) )
+{
+	header('HTTP/1.1 301 Moved Permanently');
+	header('Status: 301 Moved Permanently');
+	
+	$mon = explode('-', $_GET['mon']);
 
-require_once sem_path . '/index.php';
+	if ( count($mon) == 2 )
+	{
+		wp_redirect(get_month_link($mon[0], $mon[1]));
+	}
+	else
+	{
+		global $wp_query;
+		wp_redirect(get_permalink($wp_query->get_queried_object_id()));
+	}
+	die;
+}
+
+include sem_path . '/index.php';
 ?>

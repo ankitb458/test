@@ -1,16 +1,17 @@
 <?php
 /*
-Plugin Name: Countdown (fork)
+Plugin Name: Countdown
 Plugin URI: http://redalt.com/wiki/Countdown
-Description: Adds template tags to count down to a specified date.  <strong>Important:</strong> Edit your dates and settings on the Options | Countdown admin panel. The Plugin will not work as expected until you do.
-Version: 2.2 fork
+Description: Adds template tags to count down to a specified date. Browse Manage / Events to configure your events.
+Version: 2.3 RC fork
 Author: Owen Winkler &amp; Denis de Bernardy
-Author URI: http://www.asymptomatic.net
+Author URI: http://www.semiologic.com
 License: MIT License - http://www.opensource.org/licenses/mit-license.php
 Update Service: http://version.mesoconcepts.com/wordpress
 Update Tag: countdown
 Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
+
 /*
 Countdown - Adds template tags to count down to a specified date
 
@@ -122,7 +123,7 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 {
 	$options = get_option('dtr_options');
 	if(!is_array($options)) {
-		$options['listformat'] = '<b>%date%</b> (%until%)<br />%event%';
+		$options['listformat'] = '<b>%date%</b> (%until%)<br />' . "\n" . '%event%';
 		$options['dateformat'] = 'M j';
 		$options['timeoffset'] = 0;
 		update_option('dtr_options', $options);
@@ -149,11 +150,20 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 
 	foreach($dates as $entry)
 	{
-		$entry = $entry;
+		$entry = trim($entry);
 
-		if(trim($entry) == '') continue;
+		if ( $entry == ''
+			|| strpos($entry, '#') === 0
+			|| strpos($entry, '*') === 0
+			)
+		{
+			continue;
+		}
+		
 		$flags = array();
-		if(preg_match('/every ?(2nd|other|3rd|4th)? week (starting|from) ([0-9]{4}-[0-9]{2}-[0-9]{2})( until ([0-9]{4}-[0-9]{2}-[0-9]{2}))?[\\s]+(.*)/i', $entry, $matches))
+		if ( preg_match('/every ?(2nd|other|3rd|4th)? week (starting|from) ([0-9]{4}-[0-9]{2}-[0-9]{2})( until ([0-9]{4}-[0-9]{2}-[0-9]{2}))?[\\s]+(.*)/i',
+			$entry, $matches)
+			)
 		{
 			switch($matches[1])
 			{
@@ -184,28 +194,34 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 			}
 			$eventname = $matches[6];
 		}
-		else if(preg_match('/easter[\\s]+(.*)/i', $entry, $matches) && function_exists('easter_date')) {
+		elseif ( preg_match('/easter[\\s]+(.*)/i', $entry, $matches)
+			&& function_exists('easter_date')
+			) {
 			$eventtime = easter_date(intval(date('Y')));
 			if($eventtime < time()) $eventtime = easter_date(intval(date('Y')) + 1);
 			$eventname = $matches[1];
 		}
-		else if(preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2})[\\s]+(?:through|thru)[\\s+]([0-9]{4}-[0-9]{2}-[0-9]{2})[\\s]+(.*)/i', $entry, $matches))
+		elseif ( preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2})[\\s]+(?:through|thru)[\\s+]([0-9]{4}-[0-9]{2}-[0-9]{2})[\\s]+(.*)/i',
+			$entry, $matches)
+			)
 		{
 			$eventtime = strtotime($matches[1]);
 			$eventname = $matches[3];
 		}
-		else if(preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2})[\\s]+(.*)/i', $entry, $matches))
+		elseif ( preg_match('/([0-9]{4}-[0-9]{2}-[0-9]{2})[\\s]+(.*)/i', $entry, $matches) )
 		{
 			$eventtime = strtotime($matches[1]);
 			$eventname = $matches[2];
 		}
-		else if(preg_match('/([0-9]{2}-[0-9]{2})[\\s]+(.*)/i', $entry, $matches))
+		elseif ( preg_match('/([0-9]{2}-[0-9]{2})[\\s]+(.*)/i', $entry, $matches) )
 		{
 			$eventtime = strtotime(date('Y', time() + ($options['timeoffset'] * 3600)).'-'.$matches[1]);
 			if($timefrom > $eventtime) $eventtime = strtotime(date('Y', time() + 31536000).'-'.$matches[1]);
 			$eventname = $matches[2];
 		}
-		else if(preg_match('/(1st|2nd|3rd|4th|5th|last)[\\s]+(mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)[\\s]+(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?|all)(.*)/i', $entry, $matches))
+		elseif ( preg_match('/(1st|2nd|3rd|4th|5th|last)[\\s]+(mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)[\\s]+(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?|all)(.*)/i',
+			$entry, $matches)
+			)
 		{
 			$eventname = $matches[4];
 			$xst = dtr_xsttonum($matches[1]);
@@ -232,14 +248,19 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 			continue;
 		}
 
-		if(preg_match('/^the[\\s]+(mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)[\\s]+(before|after)/i', $entry, $matches)) {
+		if ( preg_match('/^the[\\s]+(mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)[\\s]+(before|after)/i',
+			$entry, $matches)
+			) {
 			switch($matches[2]) {
 				case 'before': $direction = 'last'; break;
 				case 'after': $direction = 'next'; break;
 			}
 			$eventtime = strtotime("{$direction} {$matches[1]}", $eventtime);
 		}
-		if(preg_match('/^([0-9]+)[\\s]+(days?|weeks?|months?)[\\s]+(before|after)/i', $entry, $matches)) {
+		
+		if ( preg_match('/^([0-9]+)[\\s]+(days?|weeks?|months?)[\\s]+(before|after)/i',
+			$entry, $matches)
+			) {
 			switch($matches[3]) {
 				case 'before': $direction = '-'; break;
 				case 'after': $direction = '+'; break;
@@ -322,263 +343,100 @@ function countdown_days($event, $date, $startswith = '', $endswith = '', $pastst
 	}
 }
 
-function dtr_admin_menu()
+
+function countdown_widget($args)
 {
-	add_management_page('Events', 'Events', 'edit_pages', basename(__FILE__), 'dtr_management_page');
-	add_options_page('Countdown', 'Countdown', 'manage_options', basename(__FILE__), 'dtr_options_page');
+	extract($args);
+	$options = get_option('countdown_widget');
+
+
+	$options['number'] = $options['number'] ? $options['number'] : 5;
+
+	echo $before_widget
+		. $before_title
+		. ( ( isset($options['title']) )
+			? $options['title']
+			: __('Upcoming Events')
+			)
+		. $after_title
+		. '<ul>';
+
+		dates_to_remember($options['number']);
+	echo '</ul>'
+		. $after_widget;
 }
 
-function dtr_management_page()
+function countdown_widget_control()
 {
-	$datefile = get_option('countdown_datefile');
-
-	if ( !$datefile )
+	$options = get_option('countdown_widget');
+	
+	if ( $options === false )
 	{
-		$datefile = implode('', file(dirname(__FILE__) . '/default-dates.txt'));
-
-		update_option('countdown_datefile', $datefile);
-	}
-
-	#echo '<pre>';
-	#var_dump(get_option('countdown_datefile'), $_POST['dates']);
-	#echo '</pre>';
-
-	if (isset($_POST['action']) && $_POST['action'] == 'update_countdown') {
-		check_admin_referer('countdown');
-		if (get_magic_quotes_gpc()) {
-			$_POST = array_map('stripslashes', $_POST);
-		}
-
-		$datefile = stripslashes(wp_filter_post_kses($_POST['dates']));
-
-		update_option('countdown_datefile', $datefile);
-
-		echo '<div id="message" class="updated fade"><p><strong>Options Updated.</strong></p></div>';
-	}
-	?>	<div class="wrap">
-	<h2>Countdown Events</h2>
-	<p>Countdown shows the next few events that are scheduled in your dates list, and provides very flexible recurring date settings.</p>
-	<form action="" method="post" id="countdown_events">
-		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('countdown'); ?>
-		<input type="hidden" name="action" value="update_countdown" />
-		<h3>Dates</h3>
-		<p>This is a list of events that will be used for output. You can add new events manually, or use the form
-		underneath this field to add events.</p>
-		<textarea style="width:100%;height:200px;" name="dates" id="dates"><?php echo htmlspecialchars($datefile); ?></textarea>
-		<p class="submit"><input type="submit" name="Submit" value="Submit" /></p>
-	</form>
-	</div>
-	<div class="wrap">
-		<h2>Add an Event</h2>
-		<p>Use this form to add an event. Choose the type of event, fill out the attributes, and click "Create".</p>
-		<p>Don't forget to submit the changes to your options (including the new events you've added) after you've created a new event with this form.</p>
-
-<script type="text/javascript">
-function $d(e)
-{
-	return document.getElementById(e);
-}
-function newevent()
-{
-	var event = '';
-	if($d('net1').checked) {
-		event = 'every ' + $d('t1freq').value + ' week from ' + $d('t1yearstart').value + '-' + $d('t1monthstart').value + '-' + $d('t1daystart').value;
-		if($d('t1end').checked) event = event + ' until ' + $d('t1yearend').value + '-' + $d('t1monthend').value + '-' + $d('t1dayend').value;
-	}
-	if($d('net2').checked) {
-		event = $d('t2year').value + '-' + $d('t2month').value + '-' + $d('t2day').value;
-	}
-	if($d('net3').checked) {
-		event = $d('t3month').value + '-' + $d('t3day').value;
-	}
-	if($d('net4').checked) {
-		event = $d('t4freq').value + ' ' + $d('t4day').value + ' ' + $d('t4month').value;
-	}
-	if(event == '') {
-		alert('You need to select one of the options to specify the type of event to create.');
-		return;
-	}
-	if($d('neweventname').value == '') {
-		alert('You did not set an event name.  Set the event name at the top of the form.');
-		return;
-	}
-	event += ' ' + $d('neweventname').value;
-	//if(confirm('Add this event:\n' + event)) {
-		$d('dates').value = $d('dates').value + '\n' + event;
-		// alert('You must submit the options form to save this event.');
-		$d('countdown_events').submit();
-	//}
-}
-</script>
-		<div style="border:1px solid #999999;padding:5px;">
-			<p>Event Name: <input type="text" id="neweventname" />
-
-			<div style="border:1px solid #cccccc;margin-top:5px;">
-				<h4><label><input id="net2" type="radio" value="t2" name="eventtype" /> On a specific date</label></h4>
-				<p>Date:
-				  Year:<input type="text" id="t2year" value="<?php echo date('Y'); ?>" size="4"/>
-				  Month:<input type="text" id="t2month" value="<?php echo date('m'); ?>" size="4"/>
-				  Day:<input type="text" id="t2day" value="<?php echo date('d'); ?>" size="4"/></p>
-			</div>
-			<div style="border:1px solid #cccccc;margin-top:5px;">
-				<h4><label><input id="net3" type="radio" value="t3" name="eventtype" /> Same day every year</label></h4>
-				<p>Date:
-				  Month:<input type="text" id="t3month" value="<?php echo date('m'); ?>" size="4"/>
-				  Day:<input type="text" id="t3day" value="<?php echo date('d'); ?>" size="4"/></p>
-			</div>
-			<div style="border:1px solid #cccccc;margin-top:5px;">
-				<h4><label><input id="net4" type="radio" value="t4" name="eventtype" /> <i>X</i>th weekday of a specific month</label></h4>
-				<p>Which incident: <select id="t4freq"><option value="1st">1st</option><option value="2nd">2nd</option><option value="3rd">3rd</option><option value="4th">4th</option><option value="5th">5th</option><option value="last">last</option></select></p>
-				<p>Which weekday: <select id="t4day"><option value="mon">Monday</option><option value="tue">Tuesday</option><option value="wed">Wednesday</option><option value="thu">Thursday</option><option value="fri">Friday</option><option value="sat">Saturday</option><option value="sun">Sunday</option></select></p>
-				<p>Which month: <select id="t4month"><option value="jan">January</option><option value="feb">February</option><option value="mar">March</option><option value="apr">April</option><option value="may">May</option><option value="jun">June</option><option value="jul">July</option><option value="aug">August</option><option value="sep">September</option><option value="oct">October</option><option value="nov">November</option><option value="dec">December</option><option value="any">Any</option></select></p>
-			</div>
-			<div style="border:1px solid #cccccc;margin-top:5px;">
-				<h4><label><input id="net1" type="radio" value="t1" name="eventtype" /> Repeating every <i>X</i> weeks</label></h4>
-				<p>Repeating: <select id="t1freq"><option value="2nd">Every 2nd week</option><option value="3rd">Every 3rd week</option><option value="4th">Every 4th week</option></select></p>
-				<p>Starting:
-				  Year:<input type="text" id="t1yearstart" value="<?php echo date('Y'); ?>" size="4"/>
-				  Month:<input type="text" id="t1monthstart" value="<?php echo date('m'); ?>" size="4"/>
-				  Day:<input type="text" id="t1daystart" value="<?php echo date('d'); ?>" size="4"/></p>
-				<p>Ending (<label><input type="checkbox" id="t1end" />Use End Date?</label>):
-				  Year:<input type="text" id="t1yearend" value="<?php echo date('Y'); ?>" size="4"/>
-				  Month:<input type="text" id="t1monthend" value="<?php echo date('m'); ?>" size="4"/>
-				  Day:<input type="text" id="t1dayend" value="<?php echo date('d'); ?>" size="4"/></p>
-			</div>
-
-			<p class="submit"><input type="submit" value="Create" onclick="newevent();return false;" /></p>
-		</div>
-	</div>
-	<div class="wrap">
-	<h2>Sample</h2>
-	<p>Here is a sample output of Countdown, called as <code>&lt;?php dates_to_remember(10); ?&gt;</code>:</p>
-	<ul>
-	<?php dates_to_remember(10); ?>	</ul>
-	</div>
-	<?php
-}
-
-function dtr_options_page()
-{
-	if (isset($_POST['Submit'])) {
-		check_admin_referer('countdown');
-		if (get_magic_quotes_gpc()) {
-			$_POST = array_map('stripslashes', $_POST);
-		}
-
-		$listformat = trim(stripslashes(wp_filter_post_kses($_POST['listformat'])));
-		$dateformat = trim(stripslashes(wp_filter_post_kses(strip_tags($_POST['dateformat']))));
-		$timeoffset = intval($_POST['timeoffset']);
-
 		$options = array(
-			'listformat' => $listformat,
-			'dateformat' => $dateformat,
-			'timeoffset' => $timeoffset
+			'title' => 'Upcoming Events',
+			'number' => 5
 			);
-		update_option('dtr_options', $options);
-		echo '<div id="message" class="updated fade"><p><strong>Options Updated.</strong></p></div>';
+		
+		update_option('countdown_widget', $options);
 	}
-	$options = get_option('dtr_options');
-	if(!is_array($options)) {
-		$options['listformat'] = '<b>%date%</b> (%until%)<br />%event%';
-		$options['dateformat'] = 'M j';
-		$options['timeoffset'] = 0;
+
+	if ( $_POST["countdown_widget_update"] )
+	{
+		$new_options = $options;
+
+		$new_options['title'] = strip_tags(stripslashes($_POST["countdown_widget_title"]));
+		$new_options['number'] = intval($_POST["countdown_widget_number"]);
+
+		if ( $options != $new_options )
+		{
+			$options = $new_options;
+
+			update_option('countdown_widget', $options);
+		}
 	}
-	?>	<div class="wrap">
-	<h2>Countdown Options</h2>
-	<p>Countdown shows the next few events that are scheduled in your dates list, and provides very flexible recurring date settings.</p>
-	<form method="post">
-		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('countdown'); ?>
-		<h3>Event List</h3>
-		<p>Each entry in the output will appear inside a &lt;li&gt;&lt;/li&gt; in the format specified here.</p>
-		<p>List format: <input type="text" name="listformat" value="<?php echo htmlspecialchars($options['listformat'], ENT_QUOTES); ?>" /></p>
-		<p>Use these tags to output special values:</p>
-		<ul>
-			<li>%date% - Outputs the event date in the format specified below.</li>
-			<li>%event% - Outputs the event name.</li>
-			<li>%until% - Outputs the days remaining until that event.</li>
-		</ul>
 
-		<h3>Date Format</h3>
-		<p>When outputting the date, you may want to output the month name or just a number.
-		Use this setting to select the style you prefer.  Use the <a href="http://php.net/date">PHP date format strings</a> to
-		set this.</p>
-		<p>Date format: <input type="text" name="dateformat" value="<?php echo htmlspecialchars($options['dateformat'], ENT_QUOTES); ?>" /></p>
+	$title = attribute_escape($options['title']);
+	$number = $options['number'] ? $options['number'] : '';
 
-		<h3>The Time Is</h3>
-		<p>Countdown thinks that the current date/time is <?php echo date('Y-m-d h:i:s a', time() + ($options['timeoffset'] * 3600)); ?>.</p>
-		<input type="hidden" name="timeoffset" value="0" />
+	echo '<input type="hidden" name="countdown_widget_update" value="1" />';
 
-		<p>If that seems awfully incorrect, you might check out <a href="<?php echo trailingslashit(get_option('siteurl')); ?>wp-admin/options-general.php">your timezone settings</a> in WordPress, or the system time on your server.</p>
-
-		<p class="submit"><input type="submit" name="Submit" value="Submit" /></p>
-	</form>
-	</div>
-	<?php
+	echo '<div style="margin-bottom: 6px;">'
+		. '<label>'
+		. 'Title' . '<br />'
+		. '<input type="text" size="45"'
+		. ' name="countdown_widget_title"'
+		. ' value="' . $title . '"'
+		. ' />'
+		. '</label>'
+		. '</div>';
+	
+	echo '<div style="margin-bottom: 6px;">'
+		. '<label>'
+		. 'Number of events' . '<br />'
+		. '<input type="text" size="45"'
+		. ' name="countdown_widget_number"'
+		. ' value="' . $number . '"'
+		. ' />'
+		. '</label>'
+		. '</div>';
 }
-
-add_action('admin_menu', 'dtr_admin_menu');
-
 
 
 function countdown_widget_init()
 {
-	if ( !function_exists('register_sidebar_widget') ) return;
-
-	function countdown_widget($args)
-	{
-		extract($args);
-		$options = get_option('countdown_widget');
-
-
-		$options['number'] = $options['number'] ? $options['number'] : 5;
-
-		echo $before_widget
-			. $before_title
-			. ( ( isset($options['title']) && $options['title'] )
-				? $options['title']
-				: __('Upcoming Events')
-				)
-			. $after_title
-			. '<ul>';
-
-			dates_to_remember($options['number']);
-		echo '</ul>'
-			. $after_widget;
-	}
-
-	function countdown_widget_control()
-	{
-		$options = get_option('countdown_widget');
-
-		if ( $_POST["countdown_widget_update"] )
-		{
-			$new_options = $options;
-
-			$new_options['title'] = strip_tags(stripslashes($_POST["countdown_widget_title"]));
-			$new_options['number'] = intval($_POST["countdown_widget_number"]);
-
-			if ( $options != $new_options )
-			{
-				$options = $new_options;
-
-				update_option('countdown_widget', $options);
-			}
-		}
-
-		$title = htmlspecialchars($options['title'], ENT_QUOTES);
-		$number = $options['number'] ? $options['number'] : '';
-
-		?>			<ul>
-				<li><label for="countdown_widget_title">Title: <input type="text" id="countdown_widget_title" name="countdown_widget_title" value="<?php echo $title ?>" /></label></li>
-				<li><label for="countdown_widget_number">Number: <input type="text" id="countdown_widget_number" name="countdown_widget_number" value="<?php echo $number ?>" /></label></li>
-			</ul>
-			<input type="hidden" id="countdown_widget_update" name="countdown_widget_update" value="1" />
-		<?php
-	}
-
-	register_sidebar_widget('Countdown', 'countdown_widget' );
-	register_widget_control('Countdown', 'countdown_widget_control');
+	$widget_options = array('classname' => 'countdown', 'description' => __( "Displays upcoming events") );
+	$control_options = array('width' => 460);
+	
+	wp_register_sidebar_widget('countdown', 'Countdown', 'countdown_widget', $widget_options );
+	wp_register_widget_control('countdown', 'Countdown', 'countdown_widget_control', $control_options );
 }
 
 add_action('widgets_init', 'countdown_widget_init');
+
+
+if ( is_admin() )
+{
+	include dirname(__FILE__) . '/countdown-admin.php';
+	include dirname(__FILE__) . '/countdown-manage.php';
+}
 ?>

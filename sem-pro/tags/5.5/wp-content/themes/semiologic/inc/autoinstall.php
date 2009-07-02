@@ -1,72 +1,17 @@
 <?php
-include_once ABSPATH . 'wp-admin/admin-functions.php';
-
-include_once sem_path . '/utils/wizards.php';
-include_once sem_path . '/utils/skin.php';
-include_once sem_path . '/utils/layout.php';
-include_once sem_path . '/utils/captions.php';
-
-include_once sem_path . '/admin/skin.php';
-include_once sem_path . '/admin/nav-menus.php';
-include_once sem_path . '/admin/docs.php';
-
-global $sem_options;
-global $sem_captions;
-$sidebars = get_option('sidebars_widgets');
-
-if ( $sem_options && !current_user_can('administrator') )
-{
-	return;
-}
-
-# Reset
-$sem_options = array();
-$old_options = get_option('semiologic');
-
-# Header Nav
-$sem_nav['header_nav'] = array(
-			'Home' => get_bloginfo('home'),
-			'Blog' => 'blog',
-			'About' => 'about',
-			'Contact' => 'contact'
-			);
-
-# Sidebar Nav
-$sem_nav['sidebar_nav'] = array(
-			);
-
-# Footer Nav
-$sem_nav['footer_nav'] = array(
-			'Archives' => 'archives',
-			'About' => 'about',
-			'Contact' => 'contact'
-			);
-
-# Skin, layout, font, width
-$sem_options['active_skin'] = get_skin_data('sky-gold');
-$sem_options['active_layout'] = 'ms';
-$sem_options['active_width'] = 'wide';
-$sem_options['active_font'] = 'trebuchet';
-$sem_options['active_font_size'] = 'small';
-
-# Header
-$sem_options['header']['mode'] = 'header';
-
-# Template
-$sem_options['show_article_date'] = true;
-$sem_options['show_post_date'] = true;
-$sem_options['show_permalink'] = true;
-$sem_options['show_print_link'] = true;
-$sem_options['show_comment_link'] = true;
-$sem_options['show_search_form'] = true;
-$sem_options['show_copyright'] = true;
+#
+# Step 1
+# ------
+# Set default captions
+#
 
 $sem_captions = array(
 	"1_comment_link" => "1 Comment",
-	"by_author" => "By %author%",
 	"cats_title" => "Categories",
 	"comment_link" => "Comment",
 	"comments_on" => "Comments on %title%",
+	"comment_permalink" => "Permalink",
+	"comment_trackback" => "Trackback URI",	
 	"copyright" => "Copyright %year%",
 	"email_field" => "Email",
 	"email_link" => "Email",
@@ -89,160 +34,290 @@ $sem_captions = array(
 	"submit_field" => "Submit Comment",
 	"tags" => "Tags: %tags%",
 	"tags_title" => "Tags",
-	"url_field" => "Url",
+	"url_field" => "URL",
 	);
 
-
-$default_sidebars = array(
-	"the_header" => array(
-		"header",
-		"header-nav-menu",
-		),
-	"the_entry" => array(
-		"entry-header",
-		"entry-content",
-		"entry-tags",
-		"entry-categories",
-		"entry-actions",
-		"entry-comments",
-		),
-	"after_the_entries" => array(
-		"nextprev-posts",
-		),
-	"the_footer" => array(
-		"footer-nav-menu",
-		),
-	);
+# Update
+update_option('sem5_captions', $sem_captions);
 
 
-if ( file_exists(sem_pro_path . '/inc/autoinstall.php') )
+#
+# Step 2
+# ------
+# Default Nav Menus
+#
+
+foreach ( array('header', 'footer') as $area )
 {
-	include_once sem_pro_path . '/inc/autoinstall.php';
+	$sem_nav_menus[$area] = array(
+		'items' => array(
+			0 => array(
+				'type' => 'home',
+				'label' => 'Home',
+				)
+			)
+		);
 }
 
-if ( is_array($sidebars) )
+# Update
+update_option('sem_nav_menus', $sem_nav_menus);
+
+
+#
+# Step 3
+# ------
+# Set theme defaults
+#
+
+# Skin, layout, font, width
+$sem_options['active_skin'] = 'sky-gold';
+$sem_options['active_layout'] = 'ms';
+$sem_options['active_width'] = 'wide';
+$sem_options['active_font'] = 'trebuchet';
+$sem_options['active_font_size'] = 'small';
+
+# Header
+$sem_options['header']['mode'] = 'header';
+
+# Template
+$sem_options['show_post_date'] = true;
+$sem_options['show_permalink'] = true;
+$sem_options['show_print_link'] = true;
+$sem_options['show_comment_link'] = true;
+$sem_options['show_search_form'] = true;
+$sem_options['show_copyright'] = true;
+
+# Version
+$sem_options['version'] = sem_version;
+
+# Update
+update_option('sem5_options', $sem_options);
+
+
+#
+# Step 4
+# ------
+# Check if this is a new site
+#
+
+global $wpdb;
+
+$max_id = $wpdb->get_var("
+	SELECT	ID
+	FROM	$wpdb->posts
+	WHERE	post_type IN ( 'post', 'page' )
+	ORDER BY ID DESC
+	LIMIT 1
+	");
+
+if ( $max_id == 2 )
 {
-	foreach ( array_keys($sidebars) as $key )
-	{
-		if ( is_array($sidebars[$key]) )
-		{
-			foreach ( array_keys($sidebars[$key]) as $k )
-			{
-				$sidebars[$key][$k] = sanitize_title($sidebars[$key][$k]);
-			}
-		}
-	}
-
-	if ( !isset($sidebars['array_version']) )
-	{
-		$sidebars['array_version'] = 3;
-	}
-
-	foreach ( array_keys($default_sidebars) as $key )
-	{
-		$sidebars[$key] = array_unique(array_merge($default_sidebars[$key], (array) $sidebars[$key]));
-	}
+	$do_reset = (bool) $wpdb->get_var("
+		SELECT	1 as do_reset
+		FROM	$wpdb->posts as posts,
+		 		$wpdb->posts as pages
+		WHERE	posts.post_type = 'post'
+		AND		pages.post_type = 'page'
+		AND		posts.post_date = pages.post_date
+		");
 }
 else
 {
-	$sidebars = $default_sidebars;
+	$do_reset = false;
 }
 
-if ( $old_options )
+
+#
+# Steps 5, 6 and 7 only apply to new sites
+#
+
+if ( $do_reset ) :
+
+
+#
+# Step 5
+# ------
+# Flush WP junk
+#
+
+# Delete default posts, links and comments
+$wpdb->query("DELETE FROM $wpdb->posts;");
+$wpdb->query("DELETE FROM $wpdb->postmeta;");
+$wpdb->query("DELETE FROM $wpdb->comments;");
+$wpdb->query("DELETE FROM $wpdb->links;");
+$wpdb->query("DELETE FROM $wpdb->term_relationships;");
+$wpdb->query("UPDATE $wpdb->term_taxonomy SET count = 0;");
+
+# Rename uncategorized category as Blog
+$wpdb->query("
+	UPDATE	$wpdb->terms
+	SET		name = '" . __('Blog') . "',
+			slug = '" . 'blog' . "'
+	WHERE	slug = 'uncategorized'
+	");
+
+
+#
+# Step 6
+# ------
+# Set permalink structure
+#
+
+$permalink_structure = '';
+$cat_base = '';
+$tag_base = '';
+
+if ( !function_exists('got_mod_rewrite') )
 {
-	foreach ( array_keys($old_options) as $key )
+	include ABSPATH . 'wp-admin/includes/file.php';
+	include ABSPATH . 'wp-admin/includes/misc.php';
+}
+
+if ( got_mod_rewrite() && is_file(ABSPATH . '.htaccess') && is_writable(ABSPATH . '.htaccess') )
+{
+	$permalink_structure = '/%year%/%monthnum%/%day%/%postname%/';
+}
+
+update_option('permalink_structure', $permalink_structure);
+update_option('category_base', $cat_base);
+update_option('tag_base', $tag_base);
+
+$GLOBALS['wp_rewrite'] =& new WP_Rewrite();
+$GLOBALS['wp_rewrite']->flush_rules();
+
+
+#
+# Step 7
+# ------
+# Ping List and Comments Status
+#
+
+update_option('default_comment_status', 'closed');
+update_option('default_ping_status', 'closed');
+
+$ping_sites = "
+http://rpc.pingomatic.com
+http://www.blogpeople.net/servlet/weblogUpdates
+http://bulkfeeds.net/rpc
+http://ping.myblog.jp
+http://ping.bitacoras.com
+http://ping.bloggers.jp/rpc/
+http://bblog.com/ping.php
+http://blogsearch.google.com/ping/RPC2
+";
+
+update_option("ping_sites", $ping_sites);
+
+
+#
+# last step applies to all sites
+#
+
+endif;
+
+
+#
+# Step 8
+# ------
+# Activate Semiologic Pro plugins
+#
+
+if ( ( $active_plugins = get_option('active_plugins') ) === false )
+{
+	$active_plugins = array();
+}
+
+$extra_plugins = array(
+	'ad-manager/ad-manager.php',
+	'autotag/autotag.php',
+	'contact-form/contact-form.php',
+	'feed-widgets/feed-widgets.php',
+ 	'feedburner/feedburner.php',
+	'fuzzy-widgets/fuzzy-widgets.php',
+	'google-analytics/google-analytics.php',
+	'inline-widgets/inline-widgets.php',
+	'link-widgets/link-widgets.php',
+	'mediacaster/mediacaster.php',
+	'newsletter-manager/newsletter-manager.php',
+	'nav-menus/nav-menus.php',
+	'related-widgets/related-widgets.php',
+	'script-manager/script-manager.php',
+	'sem-admin-menu/sem-admin-menu.php',
+	'sem-author-image/sem-author-image.php',
+	'sem-bookmark-me/sem-bookmark-me.php',
+	'sem-docs/sem-docs.php',
+	'sem-fancy-excerpt/sem-fancy-excerpt.php',
+	'sem-fixes/sem-fixes.php',
+	'sem-frame-buster/sem-frame-buster.php',
+	'sem-search-reloaded/sem-search-reloaded.php',
+	'sem-semiologic-affiliate/sem-semiologic-affiliate.php',
+	'sem-seo/sem-seo.php',
+	'sem-subscribe-me/sem-subscribe-me.php',
+	'sem-unfancy-quote/sem-unfancy-quote.php',
+	'sem-wizards/sem-wizards.php',
+	'silo/silo.php',
+	'singular.php',
+	'sitemap.php',
+	'text-widgets/text-widgets.php',
+	'version-checker/version-checker.php',
+	'widget-contexts/widget-contexts.php',
+	);
+
+foreach ( $extra_plugins as $plugin )
+{
+	if ( file_exists(ABSPATH . PLUGINDIR . '/' . $plugin ) )
 	{
-		switch ( $key )
-		{
-		case 'nav_menu_cache':
-			break;
-		case 'nav_menus':
-			$sem_nav = $old_options[$key];
-			break;
-		case 'captions':
-			foreach ( $old_options[$key] as $k => $v )
-			{
-				if ( $k == 'filed_under' ) continue;
-
-				if ( isset($sem_captions[$k]) )
-				{
-					$sem_captions[$k] = $v;
-				}
-			}
-			break;
-		default:
-			$sem_options[$key] = $old_options[$key];
-			break;
-		}
+		$active_plugins[] = $plugin;
 	}
-
-	#delete_option('semiologic');
-
-	#dump($old_options);
 }
 
-# widget contexts
-$sem_widget_contexts = get_option('sem_widget_contexts');
+$active_plugins = array_unique($active_plugins);
+sort($active_plugins);
 
-foreach ( array(
-	'header',
-	'header-nav-menu',
-	'footer-nav-menu',
-	'entry-header',
-	'entry-tags',
-	'entry-categories',
-	'entry-comments',
-	) as $widget )
+update_option('active_plugins', $active_plugins);
+
+$plugin_page_backup = $GLOBALS['plugin_page'];
+
+unset($GLOBALS['plugin_page']);
+
+foreach ( $active_plugins as $plugin )
 {
-	$sem_widget_contexts[$widget] = array(
-		'sell' => false,
-		);
-}
-
-foreach ( array(
-	'author-image',
-	'entry-actions',
-	'bookmark-me',
-	) as $widget )
-{
-	$sem_widget_contexts[$widget] = array(
-		'special' => false,
-		'sell' => false,
-		);
-}
-
-update_option('sem_widget_contexts', $sem_widget_contexts);
-
-# Version
-$sem_options['version'] = (string) sem_version;
-
-#dump($sem_options);
-#dump($sem_captions);
-#dump($sem_nav);
-#dump($sidebars);
-#die;
-
-update_option('sem5_options', $sem_options);
-update_option('sem5_captions', $sem_captions);
-update_option('sem5_nav', $sem_nav);
-update_option('sidebars_widgets', $sidebars);
-
-
-sem_docs::update(true);
-
-regen_theme_nav_menu_cache();
-
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
-{
-	#dump($_SERVER['REQUEST_URI']);
-	if ( strpos($_SERVER['PHP_SELF'], 'wp-login.php') !== false
-		&& strpos($_SERVER['REQUEST_URI'], 'wp-login.php') === false
-		)
+	if ( file_exists(ABSPATH . PLUGINDIR . '/' . $plugin) )
 	{
-		$_SERVER['REQUEST_URI'] = trailingslashit($_SERVER['REQUEST_URI']) . 'wp-login.php';
+		include_once(ABSPATH . PLUGINDIR . '/' . $plugin);
+		do_action('activate_' . $plugin);
 	}
-
-	wp_redirect($_SERVER['REQUEST_URI']);
-	die;
 }
+
+$GLOBALS['plugin_page'] = $plugin_page_backup;
+
+
+#
+# Step 9
+# ------
+# Fetch docs
+#
+
+function sem_update_docs()
+{
+	if ( class_exists('sem_docs') )
+	{
+		sem_docs::update(true);
+	}
+} # sem_update_docs()
+
+add_action('shutdown', 'sem_update_docs');
+
+
+#
+# Step 10
+# -------
+# Import Semiologic 4 options if present
+#
+
+if ( get_option('semiologic') ) :
+
+include sem_path . '/inc/upgrade/4.x.php';
+
+endif;
 ?>

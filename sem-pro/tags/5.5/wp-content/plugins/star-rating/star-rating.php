@@ -1,14 +1,11 @@
 <?php
 /*
-Plugin Name: Star Rating for Reviews (fork)
+Plugin Name: Star Rating for Reviews
 Plugin URI: http://www.channel-ai.com/blog/plugins/star-rating/
 Description: Insert inline rating stars within your posts based on the score you assign.
-Version: 0.2 fork
+Version: 0.2.1 RC fork
 Author: Yaosan Yeo
 Author URI: http://www.channel-ai.com/blog/
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: star_rating
-Update URI: http://www.semiologic.com/members/sem-pro/download/
 */
 
 /*  Copyright 2006  Yaosan Yeo  (email : eyn@channel-ai.com)
@@ -27,6 +24,21 @@ Update URI: http://www.semiologic.com/members/sem-pro/download/
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
+foreach ( array(
+		'sr_limitstar',
+		'sr_defaultstar',
+		'sr_prefix',
+		'sr_allprefix',
+		'sr_suffix',
+		'sr_ext',
+		'sr_usetext',
+		'sr_tscore',
+		'sr_counter',
+		) as $var )
+{
+	global $$var;
+}
 
 // configurable variables (global variables)
 

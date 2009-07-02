@@ -9,20 +9,33 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
+add_filter('pre_blog_public', create_function('$in', 'return "0";'));
+add_filter('active_layout', 'force_m');
+add_filter('active_width', 'force_narrow');
 
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html><head><title><?php do_action('display_page_title'); ?></title>
-<?php
-do_action('wp_head');
-?>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title><?php
+if ( $title = wp_title('&raquo;', false) )
+{
+	echo $title;
+}
+else
+{
+	bloginfo('description');
+}
+?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset'); ?>" />
+<link rel="alternate" type="application/rss+xml" title="<?php _e('RSS feed'); ?>" href="<?php bloginfo('rss2_url'); ?>" />
+<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+<?php do_action('wp_head'); ?>
 </head>
 <body class="<?php do_action('display_page_class'); ?>">
 <?php
 do_action('before_the_entries');
 
 # show posts
-if ( have_posts() && !is_404() )
+if ( have_posts() )
 {
 	while ( have_posts() )
 	{
@@ -39,17 +52,14 @@ if ( have_posts() && !is_404() )
 
 }
 # or fallback
-else
+elseif ( is_404() )
 {
-	do_action('display_404');
+	do_action('404_error');
 }
 
 do_action('after_the_entries');
 
 # show footer
-?>
-
-<?php
 do_action('wp_footer');
 ?>
 </body>

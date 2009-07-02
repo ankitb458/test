@@ -3,73 +3,77 @@
 class subscribe_me_admin
 {
 	#
-	# init()
-	#
-
-	function init()
-	{
-		add_action('widgets_init', array('subscribe_me_admin', 'widgetize'));
-	} # init()
-
-
-	#
-	# widgetize()
-	#
-
-	function widgetize()
-	{
-		if ( function_exists('register_sidebar_widget') )
-		{
-			register_widget_control('Subscribe Me', array('subscribe_me_admin', 'widget_control'), 250, 300);
-		}
-	} # widgetize()
-
-
-	#
 	# widget_control()
 	#
 
-	function widget_control()
+	function widget_control($widget_args)
 	{
-		$options = get_option('sem_subscribe_me_params');
+		global $wp_registered_widgets;
+		static $updated = false;
 
-		if ( !$options )
+		if ( is_numeric($widget_args) )
+			$widget_args = array( 'number' => $widget_args );
+		$widget_args = wp_parse_args( $widget_args, array( 'number' => -1 ) );
+		extract( $widget_args, EXTR_SKIP ); // extract number
+
+		$options = subscribe_me::get_options();
+
+		if ( !$updated && !empty($_POST['sidebar']) )
 		{
-			$options = array(
-				'title' => __('Syndicate'),
-				'before_widget' => '',
-				'after_widget' => '',
-				'before_title' => '<h2>',
-				'after_title' => '</h2>'
-				);
-		}
+			$sidebar = (string) $_POST['sidebar'];
 
-		if ( $_POST["sem_subscribe_me_widget_update"] )
-		{
-			$new_options = $options;
+			$sidebars_widgets = wp_get_sidebars_widgets();
+			
+			if ( isset($sidebars_widgets[$sidebar]) )
+				$this_sidebar =& $sidebars_widgets[$sidebar];
+			else
+				$this_sidebar = array();
 
-			$new_options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST["sem_subscribe_me_widget_title"])));
-			$new_options['dropdown'] = isset($_POST['sem_subscribe_me_dropdown']);
-			$new_options['add_nofollow'] = isset($_POST['sem_subscribe_me_add_nofollow']);
-
-			if ( $options != $new_options )
+			foreach ( $this_sidebar as $_widget_id )
 			{
-				$options = $new_options;
-
-				update_option('sem_subscribe_me_params', $options);
+				if ( array('subscribe_me', 'display_widget') == $wp_registered_widgets[$_widget_id]['callback']
+					&& isset($wp_registered_widgets[$_widget_id]['params'][0]['number'])
+					)
+				{
+					$widget_number = $wp_registered_widgets[$_widget_id]['params'][0]['number'];
+					if ( !in_array( "subscribe_me-$widget_number", $_POST['widget-id'] ) ) // the widget has been removed.
+						unset($options[$widget_number]);
+				
+					subscribe_me::clear_cache();
+				}
 			}
 
-			$services = (array) $_POST['subscribe_me_services'];
-
-			$services = array_map('strip_tags', $services);
-			$services = array_map('stripslashes', $services);
-
-			update_option('sem_subscribe_me_services', $services);
+			foreach ( (array) $_POST['widget-subscribe-me'] as $num => $opt ) {
+				$title = stripslashes(wp_filter_post_kses(strip_tags($opt['title'])));
+				$dropdown = isset($opt['dropdown']);
+				$add_nofollow = isset($opt['add_nofollow']);
+				
+				$services = (array) $opt['services'];
+				$services = array_map('strip_tags', $services);
+				$services = array_map('stripslashes', $services);
+				
+				$options[$num] = compact( 'title', 'dropdown', 'add_nofollow', 'services' );
+			}
+			
+			update_option('subscribe_me_widgets', $options);
+			$updated = true;
 		}
 
-		$title = htmlspecialchars($options['title']);
+		if ( -1 == $number )
+		{
+			$ops = subscribe_me::default_options();
+			$number = '%i%';
+		}
+		else
+		{
+			$ops = $options[$number];
+		}
+		
+		extract($ops);
+		
+		
+		$title = attribute_escape($title);
 
-		$services = get_option('sem_subscribe_me_services');
 
 		echo '<input type="hidden"'
 				. ' id="sem_subscribe_me_widget_update"'
@@ -77,21 +81,19 @@ class subscribe_me_admin
 				. ' value="1"'
 				. ' />'
 			. '<div style="margin-bottom: .2em;">'
-			. '<label for="sem_subscribe_me_widget_title">'
+			. '<label>'
 				. __('Title:')
 				. '&nbsp;'
 				. '<input style="width: 250px;"'
-					. ' id="sem_subscribe_me_widget_title"'
-					. ' name="sem_subscribe_me_widget_title"'
+					. ' name="widget-subscribe-me[' . $number. '][title]"'
 					. ' type="text" value="' . $title . '" />'
 				. '</label>'
 				. '</div>'
 			. '<div style="margin-bottom: .2em;">'
-			. '<label for="sem_subscribe_me_dropdown">'
+			. '<label>'
 				. '<input'
-					. ' id="sem_subscribe_me_dropdown"'
-					. ' name="sem_subscribe_me_dropdown"'
-					. ( intval($options['dropdown'])
+					. ' name="widget-subscribe-me[' . $number. '][dropdown]"'
+					. ( intval($dropdown)
 						? ' checked="checked"'
 						: ''
 						)
@@ -101,11 +103,10 @@ class subscribe_me_admin
 				. '</label>'
 				. '</div>'
 			. '<div style="margin-bottom: .2em;">'
-			. '<label for="sem_subscribe_me_add_nofollow">'
+			. '<label>'
 				. '<input'
-					. ' id="sem_subscribe_me_add_nofollow"'
-					. ' name="sem_subscribe_me_add_nofollow"'
-					. ( intval($options['add_nofollow'])
+					. ' name="widget-subscribe-me[' . $number. '][add_nofollow]"'
+					. ( intval($add_nofollow)
 						? ' checked="checked"'
 						: ''
 						)
@@ -138,9 +139,9 @@ class subscribe_me_admin
 							. ' width: 130px; height: 20px;'
 							. '"'
 						. '>'
-						. '<label for="subscribe_me_services__' . $service . '">'
+						. '<label>'
 						. '<input type="checkbox"'
-							. ' name="subscribe_me_services[]" id="subscribe_me_services__' . $service . '"'
+							. ' name="widget-subscribe-me[' . $number. '][services][]"'
 							. ' value="' . $service . '"'
 							. ( in_array($service, (array) $services)
 								? ' checked="checked"'
@@ -170,9 +171,9 @@ class subscribe_me_admin
 							. ' width: 130px; height: 20px;'
 							. '"'
 						. '>'
-						. '<label for="subscribe_me_services__' . $service . '">'
+						. '<label>'
 						. '<input type="checkbox"'
-							. ' name="subscribe_me_services[]" id="subscribe_me_services__' . $service . '"'
+							. ' name="widget-subscribe-me[' . $number. '][services][]"'
 							. ' value="' . $service . '"'
 							. ( in_array($service, (array) $services)
 								? ' checked="checked"'
@@ -198,6 +199,4 @@ class subscribe_me_admin
 		echo $o;
 	} # end widget_control()
 } # subscribe_me_admin
-
-subscribe_me_admin::init();
 ?>

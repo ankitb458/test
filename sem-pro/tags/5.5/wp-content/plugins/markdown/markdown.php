@@ -68,15 +68,15 @@ function Markdown($text) {
 ### WordPress Plugin Interface ###
 
 /*
-Plugin Name: Markdown Extra
+Plugin Name: Markdown Extra (edited)
 Plugin URI: http://www.michelf.com/projects/php-markdown/
 Description: <a href="http://daringfireball.net/projects/markdown/syntax">Markdown syntax</a> allows you to write using an easy-to-read, easy-to-write plain text format. Based on the original Perl version by <a href="http://daringfireball.net/">John Gruber</a>. <a href="http://www.michelf.com/projects/php-markdown/">More...</a>
-Version: 1.1.7
+Version: 1.1.7 (edited)
 Author: Michel Fortin
 Author URI: http://www.michelf.com/
 */
 
-if (isset($wp_version)) {
+if (isset($GLOBALS['wp_version'])) {
 	# More details about how it works here:
 	# <http://www.michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
 

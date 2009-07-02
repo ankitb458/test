@@ -4,15 +4,13 @@
  * @package now-reading
  */
 
-$admin = realpath(dirname(__FILE__) . '/../../../../') . '/wp-admin';
-chdir($admin);
-require_once $admin . '/admin.php';
+require '../../../../wp-config.php';
 
 $_POST = stripslashes_deep($_POST);
 
 if ( !empty($_POST['amazon_data']) ) {
 	
-	if ( !current_user_can('level_9') )
+	if ( !current_user_can('publish_posts') )
 		die ( __('Cheatin&#8217; uh?') );
 	
 	$data = unserialize(stripslashes($_POST['amazon_data']));

@@ -315,4 +315,7 @@ class MiniXMLNode extends MiniXMLTreeComponent {
 	
 	
 } /* end class definition */
+
+
+
 ?>

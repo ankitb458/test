@@ -1,22 +1,20 @@
 <?php
 /*
-Plugin Name: Dofollow
-Plugin URI: http://www.semiologic.com/software/wp-fixes/dofollow/
-Description: Disables the rel=nofollow attribute in comments.
+Plugin Name: Do Follow
+Plugin URI: http://www.semiologic.com/software/wp-tweaks/dofollow/
+Description: The Do Follow plugin removes the nofollow attribute that WordPress adds in comments.
 Author: Denis de Bernardy
-Version: 3.0
+Version: 3.0.1 RC
 Author URI: http://www.semiologic.com
-Update Service: http://version.mesoconcepts.com/wordpress
-Update Tag: dofollow
 */
 
 /*
 Terms of use
 ------------
 
-This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+This software is copyright Mesoconcepts Ltd (http://www.mesoconcepts.com), and is distributed under the terms of the GPL license, v.2.
 
-http://www.semiologic.com/legal/license/
+http://www.opensource.org/licenses/gpl-2.0.php
 
 
 Hat tips
@@ -26,7 +24,7 @@ Hat tips
 	* Thomas Parisot <http://oncle-tom.net>
 **/
 
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false ) :
+if ( !is_admin() ) :
 
 function strip_nofollow($text = '')
 {
@@ -60,7 +58,7 @@ function strip_nofollow($text = '')
 } # strip_nofollow()
 
 //add filters
-remove_filter('pre_comment_content', 'wp_rel_nofollow');
+remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
 add_filter('get_comment_author_link', 'strip_nofollow', 15);
 add_filter('comment_text', 'strip_nofollow', 15);
 

@@ -11,10 +11,10 @@
 
 
 /*
-Template Name: Monocolumn Template
+Template Name: Mono Column
 */
 
-do_action('setup_template', 'monocolumn');
+add_filter('active_layout', 'strip_s');
 
-require_once sem_path . '/index.php';
+include sem_path . '/index.php';
 ?>

@@ -82,6 +82,7 @@ function nr_query_vars( $vars ) {
 	$vars[] = 'now_reading_search';
 	$vars[] = 'now_reading_title';
 	$vars[] = 'now_reading_author';
+	$vars[] = 'now_reading_reader'; //in order to filter books by reader
 	return $vars;
 }
 add_filter('query_vars', 'nr_query_vars');
@@ -92,16 +93,16 @@ add_filter('query_vars', 'nr_query_vars');
  * @return array The modified rewrite rules with our additions.
  */
 function nr_mod_rewrite( $rules ) {
-	global $wp_rewrite;
-	$rules['^library/([0-9]+)/?$']			= 'index.php?now_reading_id=' . $wp_rewrite->preg_index(1);
-	$rules['^library/tag/([^/]+)/?$']		= 'index.php?now_reading_tag=' . $wp_rewrite->preg_index(1);
-	$rules['^library/search/?$']			= 'index.php?now_reading_search=true';
-	$rules['^library/([^/]+)/([^/]+)/?$']	= 'index.php?now_reading_author=' . $wp_rewrite->preg_index(1) . '&now_reading_title=' . $wp_rewrite->preg_index(2);
-	$rules['^library/([^/]+)/?$']			= 'index.php?now_reading_author=' . $wp_rewrite->preg_index(1);
-	$rules['^library/?$']					= 'index.php?now_reading_library=true';
-	return $rules;
+	$options = get_option('nowReadingOptions');
+	add_rewrite_rule(preg_quote($options['permalinkBase']) . '([0-9]+)/?$', 'index.php?now_reading_id=$matches[1]', 'top');
+	add_rewrite_rule(preg_quote($options['permalinkBase']) . 'tag/([^/]+)/?$', 'index.php?now_reading_tag=$matches[1]', 'top');
+	add_rewrite_rule(preg_quote($options['permalinkBase']) . 'search/?$', 'index.php?now_reading_search=true', 'top');
+	add_rewrite_rule(preg_quote($options['permalinkBase']) . 'reader/([^/]+)/?$', 'index.php?now_reading_library=1&now_reading_reader=$matches[1]', 'top');
+	add_rewrite_rule(preg_quote($options['permalinkBase']) . '([^/]+)/([^/]+)/?$', 'index.php?now_reading_author=$matches[1]&now_reading_title=$matches[2]', 'top');
+	add_rewrite_rule(preg_quote($options['permalinkBase']) . '([^/]+)/?$', 'index.php?now_reading_author=$matches[1]', 'top');
+	add_rewrite_rule(preg_quote($options['permalinkBase']) . '?$', 'index.php?now_reading_library=1', 'top');
 }
-add_filter('rewrite_rules_array', 'nr_mod_rewrite');
+add_action('init', 'nr_mod_rewrite');
 
 /**
  * Returns true if we're on a Now Reading page.
@@ -111,12 +112,12 @@ function is_now_reading_page() {
 	$wp->parse_request();
 	
 	return (
-		!empty($wp->query_vars['now_reading_library'])	||
-		!empty($wp->query_vars['now_reading_search'])	||
-		!empty($wp->query_vars['now_reading_id'])		||
-		!empty($wp->query_vars['now_reading_tag'])		||
-		!empty($wp->query_vars['now_reading_title'])	||
-		!empty($wp->query_vars['now_reading_author'])
+		get_query_var('now_reading_library') ||
+		get_query_var('now_reading_search')  ||
+		get_query_var('now_reading_id')      ||
+		get_query_var('now_reading_tag')     ||
+		get_query_var('now_reading_title')   ||
+		get_query_var('now_reading_author')
 	);
 }
 

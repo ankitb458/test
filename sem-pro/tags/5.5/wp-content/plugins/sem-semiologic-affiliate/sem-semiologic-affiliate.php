@@ -4,10 +4,11 @@ Plugin Name: Semiologic Affiliate
 Plugin URI: http://www.semiologic.com/software/marketing/sem-affiliate/
 Description: Automatically adds your affiliate ID to all links to Semiologic.
 Author: Denis de Bernardy
-Version: 1.6
+Version: 1.7 RC
 Author URI: http://www.semiologic.com
 Update Service: http://version.mesoconcepts.com/wordpress
 Update Tag: semiologic_affiliate
+Update Package: http://www.semiologic.com/media/software/marketing/sem-affiliate/sem-semiologic-affiliate.zip
 */
 
 /*
@@ -16,7 +17,7 @@ Terms of use
 
 This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
 
-http://www.semiologic.com/legal/license/
+http://www.mesoconcepts.com/license/
 **/
 
 
@@ -34,7 +35,7 @@ function sem_semiologic_affiliate_process_links($buffer = '')
 
 	if ( isset($options['aff_id'])
 		&& $options['aff_id'] !== ''
-		&& ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
+		&& !is_admin()
 		)
 	{
 		$buffer = preg_replace_callback(
@@ -84,7 +85,9 @@ function sem_semiologic_affiliate_process_links($buffer = '')
 	return $buffer;
 } # end sem_semiologic_affiliate_process_links()
 
+add_action('the_excerpt', 'sem_semiologic_affiliate_process_links', 2000);
 add_action('the_content', 'sem_semiologic_affiliate_process_links', 2000);
+add_action('comment_text', 'sem_semiologic_affiliate_process_links', 2000);
 
 
 #
@@ -193,22 +196,8 @@ function sem_semiologic_affiliate_add_id($input)
 } # end sem_semiologic_affiliate_add_id()
 
 
-#
-# sem_semiologic_affiliate_ob()
-#
-
-function sem_semiologic_affiliate_ob()
+if ( is_admin() )
 {
-	remove_action('the_content', 'sem_semiologic_affiliate_process_links', 2000);
-
-	ob_start('sem_semiologic_affiliate_process_links');
-} # end sem_semiologic_affiliate_ob()
-
-add_action('init', 'sem_semiologic_affiliate_ob', -1000);
-
-
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
-{
-	include_once dirname(__FILE__) . '/sem-semiologic-affiliate-admin.php';
+	include dirname(__FILE__) . '/sem-semiologic-affiliate-admin.php';
 }
 ?>
