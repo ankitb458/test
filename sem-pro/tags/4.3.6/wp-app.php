@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * wp-app.php - Atom Publishing Protocol support for WordPress
  * Original code by: Elias Torres, http://torrez.us/archives/2006/08/31/491/
  * Modified by: Dougal Campbell, http://dougal.gunters.org/
@@ -109,7 +109,7 @@ class AtomParser {
 		$fp = fopen("php://input", "r");
 		while(!feof($fp)) {
 			$line = fgets($fp, 4096);
-		 
+
 			if($app_logging) $contents .= $line;
 
 			if(!xml_parse($parser, $line)) {
@@ -162,11 +162,11 @@ class AtomParser {
 			if(count($this->in_content) == 2) {
 				array_push($this->in_content, ">");
 			}
-		 
+
 			array_push($this->in_content, "<". $this->ns_to_prefix($name) ."{$xmlns_str}{$attrs_str}");
 		} else if(in_array($tag, $this->ATOM_CONTENT_ELEMENTS) || in_array($tag, $this->ATOM_SIMPLE_ELEMENTS)) {
 			$this->in_content = array();
-			$this->is_xhtml = $attrs['type'] == 'xhtml'; 
+			$this->is_xhtml = $attrs['type'] == 'xhtml';
 			array_push($this->in_content, array($tag,$this->depth));
 		} else if($tag == 'link') {
 			array_push($this->entry->links, $attrs);
@@ -182,7 +182,7 @@ class AtomParser {
 		$tag = array_pop(split(":", $name));
 
 		if(!empty($this->in_content)) {
-			if($this->in_content[0][0] == $tag && 
+			if($this->in_content[0][0] == $tag &&
 			$this->in_content[0][1] == $this->depth) {
 				array_shift($this->in_content);
 				if($this->is_xhtml) {
@@ -245,14 +245,14 @@ class AtomParser {
 					}
 				}
 			}
-		} 
+		}
 		return $name;
 	}
 
 	function xml_escape($string)
 	{
-			 return str_replace(array('&','"',"'",'<','>'), 
-				array('&amp;','&quot;','&apos;','&lt;','&gt;'), 
+			 return str_replace(array('&','"',"'",'<','>'),
+				array('&amp;','&quot;','&apos;','&lt;','&gt;'),
 				$string );
 	}
 }
@@ -284,27 +284,27 @@ class AtomServer {
 		$this->script_name = array_pop(explode('/',$_SERVER['SCRIPT_NAME']));
 
 		$this->selectors = array(
-			'@/service@' => 
+			'@/service@' =>
 				array('GET' => 'get_service'),
 			'@/categories@' =>
 				array('GET' => 'get_categories_xml'),
-			'@/post/(\d+)@' => 
-				array('GET' => 'get_post', 
-						'PUT' => 'put_post', 
+			'@/post/(\d+)@' =>
+				array('GET' => 'get_post',
+						'PUT' => 'put_post',
 						'DELETE' => 'delete_post'),
-			'@/posts/?([^/]+)?@' => 
-				array('GET' => 'get_posts', 
+			'@/posts/?([^/]+)?@' =>
+				array('GET' => 'get_posts',
 						'POST' => 'create_post'),
-			'@/attachments/?(\d+)?@' => 
-				array('GET' => 'get_attachment', 
+			'@/attachments/?(\d+)?@' =>
+				array('GET' => 'get_attachment',
 						'POST' => 'create_attachment'),
-			'@/attachment/file/(\d+)@' => 
-				array('GET' => 'get_file', 
-						'PUT' => 'put_file', 
+			'@/attachment/file/(\d+)@' =>
+				array('GET' => 'get_file',
+						'PUT' => 'put_file',
 						'DELETE' => 'delete_file'),
-			'@/attachment/(\d+)@' => 
-				array('GET' => 'get_attachment', 
-						'PUT' => 'put_attachment', 
+			'@/attachment/(\d+)@' =>
+				array('GET' => 'get_attachment',
+						'PUT' => 'put_attachment',
 						'DELETE' => 'delete_attachment'),
 		);
 	}
@@ -324,7 +324,7 @@ class AtomServer {
 			$method = 'GET';
 		}
 
-		// lame. 
+		// lame.
 		if(strlen($path) == 0 || $path == '/') {
 			$path = '/service';
 		}
@@ -354,27 +354,27 @@ class AtomServer {
 	function get_service() {
 		log_app('function','get_service()');
 		$entries_url = $this->get_entries_url();
-		$categories_url = $this->get_categories_url(); 
+		$categories_url = $this->get_categories_url();
 		$media_url = $this->get_attachments_url();
 		$accepted_content_types = join(',',$this->media_content_types);
 		$introspection = <<<EOD
-<service xmlns="http://purl.org/atom/app#" xmlns:atom="http://www.w3.org/2005/Atom"> 
-	<workspace title="WordPress Workspace"> 
-	    <collection href="$entries_url" title="Posts"> 
-		<atom:title>WordPress Posts</atom:title> 
-		<accept>entry</accept> 
-		<categories href="$categories_url" /> 
-	    </collection> 
-	    <collection href="$media_url" title="Media"> 
-		<atom:title>WordPress Media</atom:title> 
-		<accept>$accepted_content_types</accept> 
-	    </collection> 
-	</workspace> 
+<service xmlns="http://purl.org/atom/app#" xmlns:atom="http://www.w3.org/2005/Atom">
+	<workspace title="WordPress Workspace">
+	    <collection href="$entries_url" title="Posts">
+		<atom:title>WordPress Posts</atom:title>
+		<accept>entry</accept>
+		<categories href="$categories_url" />
+	    </collection>
+	    <collection href="$media_url" title="Media">
+		<atom:title>WordPress Media</atom:title>
+		<accept>$accepted_content_types</accept>
+	    </collection>
+	</workspace>
 </service>
 
 EOD;
 
-		$this->output($introspection, $this->INTROSPECTION_CONTENT_TYPE); 
+		$this->output($introspection, $this->INTROSPECTION_CONTENT_TYPE);
 	}
 
 function get_categories_xml() {
@@ -393,7 +393,7 @@ function get_categories_xml() {
 	$categories
 </app:categories>
 EOD;
-	$this->output($output, $this->CATEGORIES_CONTENT_TYPE); 
+	$this->output($output, $this->CATEGORIES_CONTENT_TYPE);
 }
 
 	/*
@@ -893,7 +893,7 @@ EOD;
 		$total_count = $this->get_posts_count();
 		$last_page = (int) ceil($total_count / $count);
 		$next_page = (($page + 1) > $last_page) ? NULL : $page + 1;
-		$prev_page = ($page - 1) < 1 ? NULL : $page - 1; 
+		$prev_page = ($page - 1) < 1 ? NULL : $page - 1;
 		$last_page = ((int)$last_page == 1 || (int)$last_page == 0) ? NULL : (int) $last_page;
 ?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:app="http://purl.org/atom/app#" xml:lang="<?php echo get_option('rss_language'); ?>">
 <id><?php $this->the_entries_url() ?></id>
@@ -911,7 +911,7 @@ EOD;
 <link rel="self" type="application/atom+xml" href="<?php $this->the_entries_url() ?>" />
 <rights type="text">Copyright <?php echo mysql2date('Y', get_lastpostdate('blog')); ?></rights>
 <generator uri="http://wordpress.com/" version="1.0.5-dc">WordPress.com Atom API</generator>
-<?php if ( have_posts() ) : while ( have_posts() ) : the_post(); 
+<?php if ( have_posts() ) : while ( have_posts() ) : the_post();
 $post = $GLOBALS['post'];
 ?>
 <entry>
@@ -944,10 +944,10 @@ $post = $GLOBALS['post'];
 <?php endif; ?>
 	</entry>
 <?php
-	endwhile; 
+	endwhile;
 	endif;
 ?></feed>
-<?php 
+<?php
 		$feed = ob_get_contents();
 		ob_end_clean();
 		return $feed;
@@ -1010,17 +1010,17 @@ $post = $GLOBALS['post'];
 		ob_end_clean();
 
 		log_app('get_entry returning:',$entry);
-		return $entry; 
+		return $entry;
 	}
 
-	function ok() { 
+	function ok() {
 		log_app('Status','200: OK');
 		header('Content-Type: text/plain');
 		status_header('200');
 		exit;
 	}
 
-	function no_content() { 
+	function no_content() {
 		log_app('Status','204: No Content');
 		header('Content-Type: text/plain');
 		status_header('204');
@@ -1108,7 +1108,7 @@ $post = $GLOBALS['post'];
 		log_app('Status','401: Auth Required');
 		nocache_headers();
 		header('WWW-Authenticate: Basic realm="WordPress Atom Protocol"');
-		header('WWW-Authenticate: Form action="' . get_option('siteurl') . '/wp-login.php"', false); 
+		header('WWW-Authenticate: Form action="' . get_option('siteurl') . '/wp-login.php"', false);
 		header("HTTP/1.1 401 $msg");
 		header('Status: ' . $msg);
 		header('Content-Type: plain/text');
@@ -1158,7 +1158,7 @@ $post = $GLOBALS['post'];
 		// if using mod_rewrite/ENV hack
 		// http://www.besthostratings.com/articles/http-auth-php-cgi.html
 		if(isset($_SERVER['HTTP_AUTHORIZATION'])) {
-			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = 
+			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) =
 				explode(':', base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6)));
 		}
 
@@ -1197,7 +1197,7 @@ $post = $GLOBALS['post'];
 		log_app("get_accepted_content_type", "type=$type, subtype=$subtype");
 
 		foreach($types as $t) {
-			list($acceptedType,$acceptedSubtype) = explode('/',$t); 
+			list($acceptedType,$acceptedSubtype) = explode('/',$t);
 			if($acceptedType == '*' || $acceptedType == $type) {
 				if($acceptedSubtype == '*' || $acceptedSubtype == $subtype)
 					return $type;
@@ -1232,9 +1232,9 @@ $post = $GLOBALS['post'];
 		@header("ETag: $wp_etag");
 
 		// Support for Conditional GET
-		if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) 
+		if (isset($_SERVER['HTTP_IF_NONE_MATCH']))
 			$client_etag = stripslashes($_SERVER['HTTP_IF_NONE_MATCH']);
-		else 
+		else
 			$client_etag = false;
 
 		$client_last_modified = trim( $_SERVER['HTTP_IF_MODIFIED_SINCE']);

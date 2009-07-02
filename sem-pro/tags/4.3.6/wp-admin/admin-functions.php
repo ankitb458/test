@@ -347,7 +347,7 @@ function get_post_to_edit( $id ) {
 	$post->post_title = apply_filters( 'title_edit_pre', $post->post_title );
 
 	$post->post_password = format_to_edit( $post->post_password );
-	
+
 	$post->menu_order = (int) $post->menu_order;
 
 	if ( $post->post_type == 'page' )
@@ -398,7 +398,7 @@ function get_default_post_to_edit() {
 
 function get_comment_to_edit( $id ) {
 	$comment = get_comment( $id );
-	
+
 	$comment->comment_ID = (int) $comment->comment_ID;
 	$comment->comment_post_ID = (int) $comment->comment_post_ID;
 
@@ -415,7 +415,7 @@ function get_comment_to_edit( $id ) {
 
 function get_category_to_edit( $id ) {
 	$category = get_category( $id );
-	
+
 	$category->term_id = (int) $category->term_id;
 	$category->parent = (int) $category->parent;
 
@@ -491,7 +491,7 @@ function edit_user( $user_id = 0 ) {
 	if ( isset( $_POST['pass2'] ))
 		$pass2 = $_POST['pass2'];
 
-	if ( isset( $_POST['role'] ) && current_user_can( 'edit_users' ) ) { 
+	if ( isset( $_POST['role'] ) && current_user_can( 'edit_users' ) ) {
 		if( $user_id != $current_user->id || $wp_roles->role_objects[$_POST['role']]->has_cap( 'edit_users' ))
 			$user->role = $_POST['role'];
 	}
@@ -848,17 +848,17 @@ function page_rows( $parent = 0, $level = 0, $pages = 0, $hierarchy = true ) {
 		$id = (int) $post->ID;
 		$class = ('alternate' == $class ) ? '' : 'alternate';
 ?>
-  <tr id='page-<?php echo $id; ?>' class='<?php echo $class; ?>'> 
-    <th scope="row" style="text-align: center"><?php echo $post->ID; ?></th> 
+  <tr id='page-<?php echo $id; ?>' class='<?php echo $class; ?>'>
+    <th scope="row" style="text-align: center"><?php echo $post->ID; ?></th>
     <td>
       <?php echo $pad; ?><?php the_title() ?>
-    </td> 
+    </td>
     <td><?php the_author() ?></td>
-    <td><?php if ( '0000-00-00 00:00:00' ==$post->post_modified ) _e('Unpublished'); else echo mysql2date( __('Y-m-d g:i a'), $post->post_modified ); ?></td> 
+    <td><?php if ( '0000-00-00 00:00:00' ==$post->post_modified ) _e('Unpublished'); else echo mysql2date( __('Y-m-d g:i a'), $post->post_modified ); ?></td>
 	<td><a href="<?php the_permalink(); ?>" rel="permalink" class="edit"><?php _e( 'View' ); ?></a></td>
-    <td><?php if ( current_user_can( 'edit_page', $id ) ) { echo "<a href='page.php?action=edit&amp;post=$id' class='edit'>" . __( 'Edit' ) . "</a>"; } ?></td> 
-    <td><?php if ( current_user_can( 'delete_page', $id ) ) { echo "<a href='" . wp_nonce_url( "page.php?action=delete&amp;post=$id", 'delete-page_' . $id ) .  "' class='delete' onclick=\"return deleteSomething( 'page', " . $id . ", '" . js_escape(sprintf( __("You are about to delete the '%s' page.\n'OK' to delete, 'Cancel' to stop." ), get_the_title() ) ) . "' );\">" . __( 'Delete' ) . "</a>"; } ?></td> 
-  </tr> 
+    <td><?php if ( current_user_can( 'edit_page', $id ) ) { echo "<a href='page.php?action=edit&amp;post=$id' class='edit'>" . __( 'Edit' ) . "</a>"; } ?></td>
+    <td><?php if ( current_user_can( 'delete_page', $id ) ) { echo "<a href='" . wp_nonce_url( "page.php?action=delete&amp;post=$id", 'delete-page_' . $id ) .  "' class='delete' onclick=\"return deleteSomething( 'page', " . $id . ", '" . js_escape(sprintf( __("You are about to delete the '%s' page.\n'OK' to delete, 'Cancel' to stop." ), get_the_title() ) ) . "' );\">" . __( 'Delete' ) . "</a>"; } ?></td>
+  </tr>
 
 <?php
 		if ( $hierarchy ) page_rows( $id, $level + 1, $pages );
@@ -1117,7 +1117,7 @@ function add_meta( $post_ID ) {
 	$metavalue = $wpdb->escape( $metavalue );
 
 	if ( ('0' === $metavalue || !empty ( $metavalue ) ) && ((('#NONE#' != $metakeyselect) && !empty ( $metakeyselect) ) || !empty ( $metakeyinput) ) ) {
-		// We have a key/value pair. If both the select and the 
+		// We have a key/value pair. If both the select and the
 		// input for the key have data, the input takes precedence:
 
  		if ('#NONE#' != $metakeyselect)
@@ -1130,8 +1130,8 @@ function add_meta( $post_ID ) {
 			return false;
 
 		$result = $wpdb->query( "
-						INSERT INTO $wpdb->postmeta 
-						(post_id,meta_key,meta_value ) 
+						INSERT INTO $wpdb->postmeta
+						(post_id,meta_key,meta_value )
 						VALUES ('$post_ID','$metakey','$metavalue' )
 					" );
 		return $wpdb->insert_id;
@@ -1175,7 +1175,7 @@ function touch_time( $edit = 1, $for_post = 1 ) {
 
 	if ( $for_post )
 		$edit = ( ('draft' == $post->post_status ) && (!$post->post_date || '0000-00-00 00:00:00' == $post->post_date ) ) ? false : true;
- 
+
 	echo '<fieldset><legend><input type="checkbox" class="checkbox" name="edit_date" value="1" id="timestamp" /> <label for="timestamp">'.__( 'Edit timestamp' ).'</label></legend>';
 
 	$time_adj = time() + (get_option( 'gmt_offset' ) * 3600 );
@@ -1480,8 +1480,8 @@ function get_admin_page_title() {
 	} else {
 		foreach (array_keys( $submenu ) as $parent) {
 			foreach ( $submenu[$parent] as $submenu_array ) {
-				if ( isset( $plugin_page ) && 
-					($plugin_page == $submenu_array[2] ) && 
+				if ( isset( $plugin_page ) &&
+					($plugin_page == $submenu_array[2] ) &&
 					(($parent == $pagenow ) || ($parent == $plugin_page ) || ($plugin_page == $hook ) || (($pagenow == 'admin.php' ) && ($parent1 != $submenu_array[2] ) ) )
 					) {
 						$title = $submenu_array[3];
@@ -2176,7 +2176,7 @@ function wp_crop_image( $src_file, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_
 
 	if (function_exists('imageantialias'))
 		imageantialias( $dst, true );
-	
+
 	imagecopyresampled( $dst, $src, 0, 0, $src_x, $src_y, $dst_w, $dst_h, $src_w, $src_h );
 
 	if ( !$dst_file )

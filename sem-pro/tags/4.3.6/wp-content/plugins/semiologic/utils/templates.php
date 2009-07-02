@@ -83,7 +83,9 @@ function archive_page_permalink($permalink, $mon = null)
 {
 	if ( !isset($mon) )
 	{
-		$mon = $_GET['mon'];
+		$mon = ( isset($_GET['mon']) && preg_match("/\d{4}-\d{2}/", $_GET['mon']) )
+		? $_GET['mon']
+		: false;
 	}
 
 	return $permalink
@@ -379,7 +381,7 @@ function links_page_permalink($permalink, $cat_id = null)
 {
 	if ( !isset($cat_id) )
 	{
-		$cat_id = $_GET['cat_id'];
+		$cat_id = intval($_GET['cat_id']);
 	}
 
 	return $permalink

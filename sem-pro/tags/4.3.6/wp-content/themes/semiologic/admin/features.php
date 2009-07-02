@@ -148,10 +148,6 @@ function get_theme_features()
 
 	$features['Extra Sidebar Widgets']
 		= array(
-			'around_this_date' => array(
-					'Around This Date',
-					'A sidebar widget to display old posts from the same week in the past.'
-					),
 			'automatic_translation' => array(
 					'Automatic Translations',
 					'This is keyword spam. Use only if it sounds like a recommendable practice to you. This feature requires fancy urls (Options / Permalinks) and an Apache server (it won\'t work on Windows).',

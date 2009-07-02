@@ -17,7 +17,7 @@ function wptexturize($text) {
 		$cockneyreplace = array("&#8217;tain&#8217;t","&#8217;twere","&#8217;twas","&#8217;tis","&#8217;twill","&#8217;til","&#8217;bout","&#8217;nuff","&#8217;round","&#8217;cause");
 	}
 
-	$static_characters = array_merge(array('---', ' -- ', '--', 'xn&#8211;', '...', '``', '\'s', '\'\'', ' (tm)'), $cockney); 
+	$static_characters = array_merge(array('---', ' -- ', '--', 'xn&#8211;', '...', '``', '\'s', '\'\'', ' (tm)'), $cockney);
 	$static_replacements = array_merge(array('&#8212;', ' &#8212; ', '&#8211;', 'xn--', '&#8230;', '&#8220;', '&#8217;s', '&#8221;', ' &#8482;'), $cockneyreplace);
 
 	$dynamic_characters = array('/\'(\d\d(?:&#8217;|\')?s)/', '/(\s|\A|")\'/', '/(\d+)"/', '/(\d+)\'/', '/(\S)\'([^\'\s])/', '/(\s|\A)"(?!\s)/', '/"(\s|\S|\Z)/', '/\'([\s.]|\Z)/', '/(\d+)x(\d+)/');
@@ -131,7 +131,7 @@ function utf8_uri_encode( $utf8_string, $length = 0 ) {
 
 		if ( $value < 128 ) {
 			if ( $length && ( strlen($unicode) + 1 > $length ) )
-				break; 
+				break;
 			$unicode .= chr($value);
 		} else {
 			if ( count( $values ) == 0 ) $num_octets = ( $value < 224 ) ? 2 : 3;
@@ -647,13 +647,13 @@ function convert_smilies($text) {
 	if (get_option('use_smilies')) {
 		// HTML loop taken from texturize function, could possible be consolidated
 		$textarr = preg_split("/(<.*>)/U", $text, -1, PREG_SPLIT_DELIM_CAPTURE); // capture the tags as well as in between
-		$stop = count($textarr);// loop stuff 
-		for ($i = 0; $i < $stop; $i++) { 
-			$content = $textarr[$i]; 
-			if ((strlen($content) > 0) && ('<' != $content{0})) { // If it's not a tag 
-				$content = preg_replace($wp_smiliessearch, $wp_smiliesreplace, $content); 
-			} 
-			$output .= $content; 
+		$stop = count($textarr);// loop stuff
+		for ($i = 0; $i < $stop; $i++) {
+			$content = $textarr[$i];
+			if ((strlen($content) > 0) && ('<' != $content{0})) { // If it's not a tag
+				$content = preg_replace($wp_smiliessearch, $wp_smiliesreplace, $content);
+			}
+			$output .= $content;
 		}
 	} else {
 		// return default text.
@@ -1083,10 +1083,10 @@ function clean_url( $url, $protocols = null ) {
 	if ( strpos($url, '://') === false &&
 		substr( $url, 0, 1 ) != '/' && !preg_match('/^[a-z0-9-]+?\.php/i', $url) )
 		$url = 'http://' . $url;
-	
+
 	$url = preg_replace('/&([^#])(?![a-z]{2,8};)/', '&#038;$1', $url);
 	if ( !is_array($protocols) )
-		$protocols = array('http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet'); 
+		$protocols = array('http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet');
 	if ( wp_kses_bad_protocol( $url, $protocols ) != $url )
 		return '';
 	return $url;

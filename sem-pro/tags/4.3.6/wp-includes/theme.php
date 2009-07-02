@@ -57,7 +57,7 @@ function get_template_directory_uri() {
 
 function get_theme_data( $theme_file ) {
 	$theme_data = implode( '', file( $theme_file ) );
-	$theme_data = str_replace ( '\r', '\n', $theme_data ); 
+	$theme_data = str_replace ( '\r', '\n', $theme_data );
 	preg_match( '|Theme Name:(.*)|i', $theme_data, $theme_name );
 	preg_match( '|Theme URI:(.*)|i', $theme_data, $theme_uri );
 	preg_match( '|Description:(.*)|i', $theme_data, $description );
@@ -189,7 +189,7 @@ function get_themes() {
 		if ( !file_exists("$theme_root/$template/index.php") ) {
 			$parent_dir = dirname(dirname($theme_file));
 			if ( file_exists("$theme_root/$parent_dir/$template/index.php") ) {
-				$template = "$parent_dir/$template"; 
+				$template = "$parent_dir/$template";
 			} else {
 				$wp_broken_themes[$name] = array('Name' => $name, 'Title' => $title, 'Description' => __('Template is missing.'));
 				continue;

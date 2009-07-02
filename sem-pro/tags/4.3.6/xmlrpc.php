@@ -5,7 +5,7 @@ define('XMLRPC_REQUEST', true);
 // Some browser-embedded clients send cookies. We don't want them.
 $_COOKIE = array();
 
-// A bug in PHP < 5.2.2 makes $HTTP_RAW_POST_DATA not set by default, 
+// A bug in PHP < 5.2.2 makes $HTTP_RAW_POST_DATA not set by default,
 // but we can do it ourself.
 if ( !isset( $HTTP_RAW_POST_DATA ) ) {
 	$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
@@ -17,7 +17,7 @@ if ( isset($HTTP_RAW_POST_DATA) )
 
 include('./wp-config.php');
 
-if ( isset( $_GET['rsd'] ) ) { // http://archipelago.phrasewise.com/rsd 
+if ( isset( $_GET['rsd'] ) ) { // http://archipelago.phrasewise.com/rsd
 header('Content-type: text/xml; charset=' . get_option('blog_charset'), true);
 
 ?>
@@ -509,7 +509,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		if(empty($category["description"])) {
 			$category["description"] = "";
 		}
-	
+
 		$new_category = array(
 			"cat_name"				=> $category["name"],
 			"category_nicename"		=> $category["slug"],
@@ -731,7 +731,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	  fclose($f);
 
 	  /* so it is actually editable with a windows/mac client */
-	  // FIXME: (or delete me) do we really want to cater to bad clients at the expense of good ones by BEEPing up their line breaks? commented.     $content = str_replace("\n", "\r\n", $content); 
+	  // FIXME: (or delete me) do we really want to cater to bad clients at the expense of good ones by BEEPing up their line breaks? commented.     $content = str_replace("\n", "\r\n", $content);
 
 	  return $content;
 	}
@@ -788,7 +788,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	  if (!$this->login_pass_ok($user_login, $user_pass)) {
 	    return $this->error;
 	  }
-	  
+
 	  $cap = ($publish) ? 'publish_posts' : 'edit_posts';
 	  $user = set_current_user(0, $user_login);
 	  if ( !current_user_can($cap) )
