@@ -1,0 +1,84 @@
+<?php
+
+define('HASHCASH_FORM_ACTION', 'wp-comments-post.php');
+define('HASHCASH_SECRET_FILE', realpath(dirname(__FILE__) . '/') . '/wp-hashcash.key');
+define('HASHCASH_FORM_ID', 'commentform');
+define('HASHCASH_REFRESH', 60*60*4);
+define('HASHCASH_IP_EXPIRE', 60*60*24*7);
+define('HASHCASH_VERSION', 3.0);
+
+// Produce random unique strings
+function hashcash_random_string($l, $exclude = array()) {
+	// Sanity check
+	if($l < 1){
+		return '';
+	}
+
+	$str = '';
+	while(in_array($str, $exclude) || strlen($str) < $l){
+		$str = '';
+		while(strlen($str) < $l){
+			$str .= chr(rand(65, 90) + rand(0, 1) * 32);
+		}
+	}
+
+	return $str;
+}
+
+// looks up the secret key
+function hashcash_field_value(){
+	return get_settings('hashcash_secret_key');
+	if(function_exists('file_get_contents')){
+		return file_get_contents(HASHCASH_SECRET_FILE);
+	} else {
+		$fp = fopen(HASHCASH_SECRET_FILE, 'r');
+		$data = fread($fp, @filesize(HASHCASH_SECRET_FILE));
+		fclose($fp);
+		return $data;
+	}
+}
+
+// Returns a phrase representing the product
+function hashcash_verbage(){
+	return '';
+
+	$links = array('http://elliottback.com', 'http://elliottback.com/wp/');
+	shuffle($links);
+
+	$link_titles = array('Elliott Back\'s Anti-blog-spam protection', 'Protect your blog from spam', 'No more comment spam', 'Say no to comment spammers and other internet parasites', 'Easy, quick wordpress plugin', '#1 Wordpress antispam plugin');
+	shuffle($link_titles);
+
+	$verbs = array('Protected by', 'Stop spam with', 'Prevent comment spam using', 'Stop blog spam today with', 'I\'ll protect you:', 'What\'s a blog without spam:', 'I\'m', 'Show some love for', 'Your blog, no spam:');
+	shuffle($verbs);
+
+	$adjectives = array('great', 'large', 'considerable', 'fair', 'above par', 'bulky', 'titanic', 'Atlantean', 'Herculean', 'cyclopean', 'voluminous', 'ample', 'abundant', 'intense', 'strong', 'sound', 'plenary', 'world-wide', 'widespread', 'far-famed', 'extensive', 'noble', 'precious', 'mighty', 'profound', 'intense', 'consummate', 'unmitigated', 'red-hot desperate', 'glaring', 'flagrant', 'thorough-paced', 'magnitudinous', 'thumping', 'extraordinary');
+	shuffle($adjectives);
+
+	$nouns = array('Wordpress Hashcash', 'WP-Hashcash', 'Hash-cash', 'Hashcash', 'WP Hashcash', 'Wordpress Hash-cash', 'Wordpress Anti-Spam Plugin', 'Wordpress Spam-be-gone plugin');
+	shuffle($nouns);
+
+	$punctuation = array('!', '.', '?');
+	shuffle($punctuation);
+
+	// the phrase
+	$phrase = $verbs[0] . " the ";
+
+	// get some adjectives
+	$num = rand(1, 4);
+	for($i = 0; $i < $num; $i++){
+		if($i > 0)
+			if($num > 2)
+				$phrase .= ", ";
+			else
+				$phrase .= " ";
+		if($i == $num - 1 && $num > 1)
+			$phrase .= "and ";
+
+		$phrase .= $adjectives[$i];
+	}
+
+	$phrase .= ' <a href="' . $links[0] . '" title="' . $link_titles[0] . '">' . $nouns[0] . '</a>' . $punctuation[0];
+	return $phrase;
+}
+
+?>
