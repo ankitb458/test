@@ -20,7 +20,7 @@
  Plugin Name: Google Sitemaps
  Plugin URI: http://www.arnebrachhold.de/2005/06/05/google-sitemaps-generator-v2-final
  Description: This generator will create a Google compliant sitemap of your WordPress blog.
- Version: 2.11 (fork)
+ Version: 2.12 (fork)
  Author: Arne Brachhold
  Author URI: http://www.arnebrachhold.de/
 
@@ -157,30 +157,6 @@ if ( !defined('use_post_type_fixed') )
 
 //Enable for dev
 //error_reporting(E_ALL);
-
-function get_gs_option($option)
-{
-#	if ( function_exists('get_site_option') )
-#	{
-#		return get_site_option($option);
-#	}
-#	else
-#	{
-		return get_option($option);
-#	}
-}
-
-function update_gs_option($option, $value)
-{
-#	if ( function_exists('get_site_option') )
-#	{
-#		return update_site_option($option, $value);
-#	}
-#	else
-#	{
-		return update_option($option, $value);
-#	}
-}
 
 
 /******** Required files ********/
@@ -381,23 +357,7 @@ $sm_options["sm_full_auto"]=1;				//Full auto mode
 //Addition sites
 $sm_pages=array();
 
-//First init default values, then overwrite it with stored values so we can add default
-//values with an update which get stored by the next edit.
-$sm_storedoptions=get_gs_option("sm_options");
-
-if ( !isset($sm_storedoptions['sm_full_auto']) )
-{
-	update_gs_option("sm_options",$sm_options); //First time use, store default values
-}
-elseif ( !$sm_storedoptions['sm_full_auto'] )
-{
-	if($sm_storedoptions) {
-		foreach($sm_storedoptions AS $k=>$v) {
-			$sm_options[$k]=$v;
-		}
-	} else update_gs_option("sm_options",$sm_options); //First time use, store default values
-}
-$sm_storedpages=get_gs_option("sm_cpages");
+$sm_storedpages=get_option("sm_cpages");
 
 if($sm_storedpages) {
 	$sm_pages=$sm_storedpages;
@@ -424,8 +384,8 @@ function sm_getHomePath() {
 		//libraries because many plugins check for the "check_admin_referer"
 		//function to detect if you are on an admin page. So we have to copy
 		//the get_home_path function in our own...
-		$home = get_settings('home');
-		if ( $home != '' && $home != get_settings('siteurl') ) {
+		$home = get_option('home');
+		if ( $home != '' && $home != get_option('siteurl') ) {
 			$home_path = parse_url($home);
 			$home_path = $home_path['path'];
 			$root = str_replace($_SERVER["PHP_SELF"], '', $_SERVER["SCRIPT_FILENAME"]);
@@ -497,8 +457,7 @@ if(!function_exists("sm_getXmlPath")) {
 		{
 			//ABSPATH has a slash
 			return sm_getHomePath()
-				. 'wp-content/cache/sitemaps/'
-				. intval($GLOBALS['blog_id']) . '/'
+				. 'wp-content/sitemaps/'
 				. sm_go("sm_b_filename");
 		}
 	}
@@ -601,7 +560,7 @@ if(!function_exists("sm_apply_pages")) {
 		if(isset($_POST["sm_pages_mark"]) && is_array($_POST["sm_pages_mark"])) {
 			for($i=0; $i<count($_POST["sm_pages_mark"]); $i++) {
 
-				$site_url = get_settings('home');
+				$site_url = get_option('home');
 				$site_url = preg_replace("/^https?:\/\//i", "", $site_url);
 				$site_url = preg_replace("/^www\.|\/+$/i", "", $site_url);
 				//var_dump($site_url, $sm_pages_ur[$i], strpos($sm_pages_ur[$i], $site_url));
@@ -708,7 +667,7 @@ if(!function_exists("sm_options_page")) {
 					}
 				}
 
-				update_gs_option("sm_options",$sm_options);
+				update_option("sm_options",$sm_options);
 				$message.=__('Configuration updated', 'sitemap');
 
 			//Pressed Button: New Page
@@ -729,7 +688,7 @@ if(!function_exists("sm_options_page")) {
 				$sm_pages=sm_apply_pages();
 
 				//Store in the database
-				if(update_gs_option("sm_cpages",$sm_pages)) $message.=__("Pages saved",'sitemap');
+				if(update_option("sm_cpages",$sm_pages)) $message.=__("Pages saved",'sitemap');
 				else $message.=__("Error while saving pages",'sitemap');
 
 			//Pressed Button: Delete page
@@ -775,7 +734,7 @@ if(!function_exists("sm_options_page")) {
 				<fieldset name="sm_pages"  class="options">
 					<legend><?php _e('Additional pages', 'sitemap') ?></legend>
 					<?php
-					_e('Here you can specify files or URLs which should be included in the sitemap, but do not belong to your Blog/WordPress.<br />For example, if your domain is www.foo.com and your blog is located on www.foo.com/blog you might want to include your homepage at www.foo.com','sitemap');
+					_e('Here you can specify files or URLs which should be included in the sitemap, but do not belong to your Blog/WordPress.<br />For example, if your blog is www.foo.com and you\'ve a separate page located at www.foo.com/page.htm you might want to include it.','sitemap');
 					echo "<ul><li>";
 					echo "<strong>" . __('Note','sitemap'). "</strong>: ";
 					_e("You cannot add pages that are NOT in the blog directory! Invalid pages will be ignored.",'sitemap');
@@ -835,230 +794,7 @@ if(!function_exists("sm_options_page")) {
 						</div>
 					</div>
 				</fieldset>
-
-
-<input type="hidden" id="sm_b_auto_prio" name="sm_b_auto_prio" value="" />
-<input type="hidden" id="sm_b_debug" name="sm_b_debug" value="" />
-<input type="hidden" id="sm_b_xml" name="sm_b_xml" value="on" />
-<input type="hidden" id="sm_b_gzip" name="sm_b_gzip" value="on" />
-<input type="hidden" id="sm_b_ping" name="sm_b_ping" value="on" />
-
-<?php if ( false ) : ?>
-				<!-- Basic Options -->
-				<fieldset name="sm_basic_options"  class="options">
-					<legend><?php _e('Basic Options', 'sitemap') ?></legend>
-					<ul>
-						<li>
-							<label for="sm_b_auto_prio">
-								<input type="checkbox" id="sm_b_auto_prio" name="sm_b_auto_prio" <?php echo (sm_go("sm_b_auto_prio")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Enable automatic priority calculation for posts based on comment count', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_b_debug">
-								<input type="checkbox" id="sm_b_debug" name="sm_b_debug" <?php echo (sm_go("sm_b_debug")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Write debug comments', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_b_xml">
-								<input type="checkbox" id="sm_b_xml" name="sm_b_xml" <?php echo (sm_go("sm_b_xml")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Write a normal XML file (your filename)', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_b_gzip">
-								<input type="checkbox" id="sm_b_gzip" name="sm_b_gzip" <?php if(function_exists("gzencode")) { echo (sm_go("sm_b_gzip")==true?"checked=\"checked\"":""); } else echo "disabled=\"disabled\"";  ?> />
-								<?php _e('Write a gzipped file (your filename + .gz)', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_b_ping">
-								<input type="checkbox" id="sm_b_ping" name="sm_b_ping" <?php echo (sm_go("sm_b_ping")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Auto-Ping Google Sitemaps', 'sitemap') ?><br />
-								<?php _e('This option will automatically tell Google about changes.','sitemap') ?>							</label>
-						</li>
-					</ul>
-				</fieldset>
-
-<?php endif; ?>
-<input type="hidden" id="sm_location_useauto" name="sm_b_location_mode" value="auto" />
-<input type="hidden" id="sm_b_filename" name="sm_b_filename" value="<?php echo sm_go("sm_b_filename"); ?>" />
-
-<?php if ( false ) : ?>				<!-- Location Options -->
-				<fieldset name="sm_location"  class="options">
-					<legend><?php _e('Location of your sitemap file', 'sitemap') ?></legend>
-
-					<fieldset name="sm_location_auto">
-						<legend><label for="sm_location_useauto"><input type="radio" id="sm_location_useauto" name="sm_b_location_mode" value="auto" <?php echo (sm_go("sm_b_location_mode")=="auto"?"checked=\"checked\"":"") ?> /><?php _e('Automatic location','sitemap') ?></label></legend>
-						<ul>
-							<li>
-								<label for="sm_b_filename">
-									<?php _e('Filename of the sitemap file', 'sitemap') ?>									<input type="text" id="sm_b_filename" name="sm_b_filename" value="<?php echo sm_go("sm_b_filename"); ?>" />
-								</label><br />
-								<?php _e('Detected Path', 'sitemap') ?>: <?php echo sm_getXmlPath(true); ?><br /><?php _e('Detected URL', 'sitemap') ?>: <a href="<?php echo sm_getXmlUrl(true); ?>"><?php echo sm_getXmlUrl(true); ?></a>
-							</li>
-						</ul>
-					</fieldset>
-
-					<p><?php _e('OR','sitemap'); ?></p>
-
-					<fieldset name="sm_location_manual">
-						<legend><label for="sm_location_usemanual"><input type="radio" id="sm_location_usemanual" name="sm_b_location_mode" value="manual" <?php echo (sm_go("sm_b_location_mode")=="manual"?"checked=\"checked\"":"") ?>  /><?php _e('Manual location','sitemap') ?></label></legend>
-						<ul>
-							<li>
-								<label for="sm_b_filename_manual">
-									<?php _e('Absolute or relative path to the sitemap file, including name.','sitemap');
-									echo "<br />";
-									_e('Example','sitemap');
-									echo ": /var/www/htdocs/wordpress/sitemap.xml"; ?><br />
-									<input style="width:300px;" type="text" id="sm_b_filename_manual" name="sm_b_filename_manual" value="<?php echo (!sm_go("sm_b_filename_manual")?sm_getXmlPath():sm_go("sm_b_filename_manual")); ?>" />
-								</label>
-							</li>
-							<li>
-								<label for="sm_b_fileurl_manual">
-									<?php _e('Complete URL to the sitemap file, including name.','sitemap');
-									echo "<br />";
-									_e('Example','sitemap');
-									echo ": http://www.yourdomain.com/sitemap.xml"; ?><br />
-									<input style="width:300px;" type="text" id="sm_b_fileurl_manual" name="sm_b_fileurl_manual" value="<?php echo (!sm_go("sm_b_fileurl_manual")?sm_getXmlUrl():sm_go("sm_b_fileurl_manual")); ?>" />
-								</label>
-							</li>
-						</ul>
-					</fieldset>
-				</fieldset>
-<?php endif; ?>
-
-<input type="hidden" id="sm_in_home" name="sm_in_home" value="on" />
-<input type="hidden" id="sm_in_posts" name="sm_in_home" value="on" />
-<input type="hidden" id="sm_in_pages" name="sm_in_home" value="on" />
-<input type="hidden" id="sm_in_cats" name="sm_in_home" value="on" />
-<input type="hidden" id="sm_in_arch" name="sm_in_home" value="on" />
-
-				<!-- Includes -->
-<?php if ( false ) : ?>				<fieldset name="sm_includes"  class="options">
-					<legend><?php _e('Includings', 'sitemap') ?></legend>
-					<ul>
-						<li>
-							<label for="sm_in_home">
-								<input type="checkbox" id="sm_in_home" name="sm_in_home"  <?php echo (sm_go("sm_in_home")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Include homepage', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_in_posts">
-								<input type="checkbox" id="sm_in_posts" name="sm_in_posts"  <?php echo (sm_go("sm_in_posts")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Include posts', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_in_pages">
-								<input type="checkbox" id="sm_in_pages" name="sm_in_pages"  <?php echo (sm_go("sm_in_pages")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Include static pages', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_in_cats">
-								<input type="checkbox" id="sm_in_cats" name="sm_in_cats"  <?php echo (sm_go("sm_in_cats")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Include categories', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_in_arch">
-								<input type="checkbox" id="sm_in_arch" name="sm_in_arch"  <?php echo (sm_go("sm_in_arch")==true?"checked=\"checked\"":"") ?> />
-								<?php _e('Include archives', 'sitemap') ?>							</label>
-						</li>
-					</ul>
-				</fieldset>
-<?php endif; ?>
-
-<input type="hidden" id="sm_cf_home" name="sm_cf_home" value="daily" />
-<input type="hidden" id="sm_cf_posts" name="sm_cf_posts" value="weekly" />
-<input type="hidden" id="sm_cf_pages" name="sm_cf_pages" value="weekly" />
-<input type="hidden" id="sm_cf_cats" name="sm_cf_cats" value="daily" />
-<input type="hidden" id="sm_cf_arch_curr" name="sm_cf_arch_curr" value="daily" />
-<input type="hidden" id="sm_cf_arch_old" name="sm_cf_arch_old" value="monthly" />
-
-<?php if ( false ) : ?>				<!-- Change frequencies -->
-				<fieldset name="sm_change_frequencies"  class="options">
-					<legend><?php _e('Change frequencies', 'sitemap') ?></legend>
-					<b><?php _e('Note', 'sitemap') ?>:</b>
-					<?php _e('Please note that the value of this tag is considered a hint and not a command. Even though search engine crawlers consider this information when making decisions, they may crawl pages marked "hourly" less frequently than that, and they may crawl pages marked "yearly" more frequently than that. It is also likely that crawlers will periodically crawl pages marked "never" so that they can handle unexpected changes to those pages.', 'sitemap') ?>					<ul>
-						<li>
-							<label for="sm_cf_home">
-								<select id="sm_cf_home" name="sm_cf_home"><?php sm_freq_names(sm_go("sm_cf_home")); ?></select>
-								<?php _e('Homepage', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_cf_posts">
-								<select id="sm_cf_posts" name="sm_cf_posts"><?php sm_freq_names(sm_go("sm_cf_posts")); ?></select>
-								<?php _e('Posts', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_cf_pages">
-								<select id="sm_cf_pages" name="sm_cf_pages"><?php sm_freq_names(sm_go("sm_cf_pages")); ?></select>
-								<?php _e('Static pages', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_cf_cats">
-								<select id="sm_cf_cats" name="sm_cf_cats"><?php sm_freq_names(sm_go("sm_cf_cats")); ?></select>
-								<?php _e('Categories', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_cf_arch_curr">
-								<select id="sm_cf_arch_curr" name="sm_cf_arch_curr"><?php sm_freq_names(sm_go("sm_cf_arch_curr")); ?></select>
-								<?php _e('The current archive of this month (Should be the same like your homepage)', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_cf_arch_old">
-								<select id="sm_cf_arch_old" name="sm_cf_arch_old"><?php sm_freq_names(sm_go("sm_cf_arch_old")); ?></select>
-								<?php _e('Older archives (Changes only if you edit an old post)', 'sitemap') ?>							</label>
-						</li>
-					</ul>
-				</fieldset>
-<?php endif; ?>
-<input type="hidden" id="sm_pr_home" name="sm_pr_home" value="1.0" />
-<input type="hidden" id="sm_pr_posts" name="sm_pr_posts" value="0.8" />
-<input type="hidden" id="sm_pr_posts_min" name="sm_pr_posts_min" value="0.1" />
-<input type="hidden" id="sm_pr_pages" name="sm_pr_pages" value="0.8" />
-<input type="hidden" id="sm_pr_cats" name="sm_pr_cats" value="0.6" />
-<input type="hidden" id="sm_pr_arch" name="sm_pr_arch" value="0.3" />
-
-<?php if ( false ) : ?>				<!-- Priorities -->
-				<fieldset name="sm_priorities"  class="options">
-					<legend><?php _e('Priorities', 'sitemap') ?></legend>
-					<ul>
-						<li>
-							<label for="sm_pr_home">
-								<select id="sm_pr_home" name="sm_pr_home"><?php sm_prio_names(sm_go("sm_pr_home")); ?></select>
-								<?php _e('Homepage', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_pr_posts">
-								<select id="sm_pr_posts" name="sm_pr_posts"><?php sm_prio_names(sm_go("sm_pr_posts")); ?></select>
-								<?php _e('Posts', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_pr_posts_min">
-								<select id="sm_pr_posts_min" name="sm_pr_posts_min"><?php sm_prio_names(sm_go("sm_pr_posts_min")); ?></select>
-								<?php _e('Minimum post priority (auto calculation is enabled)', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_pr_pages">
-								<select id="sm_pr_pages" name="sm_pr_pages"><?php sm_prio_names(sm_go("sm_pr_pages")); ?></select>
-								<?php _e('Static pages', 'sitemap'); ?>							</label>
-						</li>
-						<li>
-							<label for="sm_pr_cats">
-								<select id="sm_pr_cats" name="sm_pr_cats"><?php sm_prio_names(sm_go("sm_pr_cats")); ?></select>
-								<?php _e('Categories', 'sitemap') ?>							</label>
-						</li>
-						<li>
-							<label for="sm_pr_arch">
-								<select id="sm_pr_arch" name="sm_pr_arch"><?php sm_prio_names(sm_go("sm_pr_arch")); ?></select>
-								<?php _e('Archives', 'sitemap') ?>							</label>
-						</li>
-					</ul>
-				</fieldset>
-<?php endif; ?>
-<?php if ( false ): ?>				<div class="submit"><input type="submit" name="info_update" value="<?php _e('Update options', 'sitemap') ?>" /></div>
-				<fieldset class="options">
-					<legend><?php _e('Informations and support', 'sitemap') ?></legend>
-					<p><?php echo str_replace("%s","<a href=\"http://www.arnebrachhold.de/2005/06/05/google-sitemaps-generator-v2-final\">http://www.arnebrachhold.de/2005/06/05/google-sitemaps-generator-v2-final</a>",__("Check %s for updates and comment there if you have any problems / questions / suggestions.",'sitemap')); ?></p>
-				</fieldset>
-<?php endif; ?>			</form>
+			</form>
 		</div> <?php
 	}
 }
@@ -1070,10 +806,10 @@ if(!function_exists("sm_reg_admin")) {
 	* Add the options page in the admin menu
 	*/
 	function sm_reg_admin() {
-		if ( !function_exists('get_site_option') || is_site_admin() )
+		if ( !function_exists('get_site_option') )
 		{
 			if (function_exists('add_options_page')) {
-				add_options_page('Sitemap Generator', 'Sitemap', 8, basename(__FILE__), 'sm_options_page');
+				add_options_page('Sitemap Generator', 'Sitemap', 'manage_options', basename(__FILE__), 'sm_options_page');
 			}
 		}
 	}
@@ -1324,15 +1060,11 @@ if(!function_exists("sm_buildSitemap")) {
 
 		$pingUrl="";
 
-		if ( !file_exists(sm_getHomePath() . 'wp-content/cache/sitemaps') )
+		if ( !file_exists(sm_getHomePath() . 'wp-content/sitemaps') )
 		{
-			if ( !@mkdir(sm_getHomePath() . 'wp-content/cache/sitemaps', 0777) )
+			if ( !@mkdir(sm_getHomePath() . 'wp-content/sitemaps', 0777) )
 			{
 				$messages[count($messages)] = __('Could not create cache directory');
-			}
-			else
-			{
-				mkdir(sm_getHomePath() . 'wp-content/cache/sitemaps/' . intval($GLOBALS['blog_id']), 0777);
 			}
 		}
 
@@ -1420,17 +1152,25 @@ function sm_serve_sitemap()
 	if ( strpos($_SERVER['REQUEST_URI'], '/sitemap.xml') !== false )
 	{
 		$sitemap = ABSPATH
-				. 'wp-content/cache/sitemaps/'
-				. intval($GLOBALS['blog_id'])
+				. 'wp-content/sitemaps/'
 				. $_SERVER['REQUEST_URI'];
 
 		if ( file_exists($sitemap) )
 		{
-			include $sitemap;
+			// Reset WP
+
+			$GLOBALS['wp_filter'] = array();
+
+			while ( @ob_end_clean() );
+
+			ob_start();
+
+			header( 'Content-Type:text/xml; charset=utf-8' ) ;
+			readfile($sitemap);
 			die;
 		}
 	}
 } # end sm_serve_sitemap()
 
-add_action('template_redirect', 'sm_serve_sitemap', 0);
+add_action('init', 'sm_serve_sitemap', 1000);
 ?>

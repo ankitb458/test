@@ -3,10 +3,24 @@
 Plugin Name: Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.6 (fork)
+Version: 1.11 (fork)
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
+
+if ( isset($_GET['jal_add_user_answer']) || isset($_GET['jal_no_js']) )
+{
+	function jal_redirect()
+	{
+		preg_match("/(.*)(\?|&)(jal_add_user_answer|jal_no_js)(.*)/i", $_SERVER['REQUEST_URI'], $match);
+
+        header('HTTP/1.1 301 Moved Permanently');
+        header('Status: 301 Moved Permanently');
+		wp_redirect($match[1]);
+		die;
+	}
+	add_action('init', 'jal_redirect');
+}
 
 // With hat tips from Denis de Bernhardy
 // http://semiologic.com
@@ -16,9 +30,6 @@ Author URI: http://blog.jalenack.com/
 
 // The current version of this plugin
 $jal_dem_version = "1.2";
-
-// Required user level to access admin panel
-$jal_dem_admin_level = 7;
 
 // When viewing results, order the answers by number of votes or by original order
 // To order by votes, set this to TRUE
@@ -50,17 +61,18 @@ $jal_cookietime = 60*60*24*30*3;
 //\\//\\//\\//\\//\\//\\//\\/*/
 
 function jal_edit_poll () {
-    global $wpdb, $table_prefix, $user_level, $jal_dem_admin_level;
+    global $wpdb, $table_prefix;
 
     // Security
-    get_currentuserinfo();
-    if ($user_level <  $jal_dem_admin_level) { die('Nice try, you cheeky monkey!'); }
+    if ( !current_user_can('switch_themes')) { die('Nice try, you cheeky monkey!'); }
+
+	check_admin_referer('democracy');
 
     $poll_id = (int) $_POST['poll_id'];
 
     // read which aids are in this poll
     $edits = explode(" ", $_POST['editable']);
-	 $question = $wpdb->escape(wp_filter_post_kses($_POST['question']));
+	 $question = $wpdb->escape(stripslashes(wp_filter_post_kses($_POST['question'])));
 
     // Allow users to edit poll?
     $allowusers = (isset($_POST['allowNewAnswers'])) ? "1" : "0";
@@ -68,27 +80,37 @@ function jal_edit_poll () {
     // update the question
     $wpdb->query("UPDATE {$table_prefix}democracyQ SET question='{$question}', allowusers = '{$allowusers}' WHERE id = {$poll_id}");
 
-	foreach($_POST['answer'] as $aid => $answer) {
+	$answers = array_keys((array) $_POST['answer'] );
+
+	foreach ( $edits as $aid )
+	{
 		$aid = (int) $aid;
 
-		if (empty($answer) && in_array($aid, $edits))
-		   $wpdb->query("DELETE FROM {$table_prefix}democracyA WHERE qid = {$poll_id} AND aid = {$aid}");
+		if ( !in_array($aid, $answers) )
+		{
+			$wpdb->query("DELETE FROM {$table_prefix}democracyA WHERE qid = {$poll_id} AND aid = {$aid}");
+		}
+	}
+
+	foreach($_POST['answer'] as $aid => $answer) {
+		$aid = (int) $aid;
 
 		if (!empty($answer) && in_array($aid, $edits))
 			$wpdb->query("UPDATE {$table_prefix}democracyA SET answers='".$wpdb->escape(wp_filter_post_kses($answer))."' WHERE qid = {$poll_id} AND aid = {$aid}");
 
 		if (!empty($answer) && !in_array($aid, $edits))
-			$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$poll_id}, '".$wpdb->escape(wp_filter_post_kses($answer))."', 0)");
+			$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$poll_id}, '".$wpdb->escape(sripslashes(wp_filter_post_kses($answer)))."', 0)");
 
 	}
 }
 
 function jal_activate_poll () {
-    global $wpdb, $table_prefix, $user_level, $jal_dem_admin_level;
+    global $wpdb, $table_prefix;
 
     // Security
-    get_currentuserinfo();
-    if ($user_level <  $jal_dem_admin_level) { die('Nice try, you cheeky monkey!'); }
+    if ( !current_user_can('switch_themes')) { die('Nice try, you cheeky monkey!'); }
+
+	check_admin_referer('democracy');
 
     $id = (int) $_GET['poll_id'];
 
@@ -100,11 +122,12 @@ function jal_activate_poll () {
 
 
 function jal_deactivate_poll () {
-    global $wpdb, $table_prefix, $user_level, $jal_dem_admin_level;
+    global $wpdb, $table_prefix;
 
     // Security
-    get_currentuserinfo();
-    if ($user_level <  $jal_dem_admin_level) { die('Nice try, you cheeky monkey!'); }
+    if ( !current_user_can('switch_themes')) { die('Nice try, you cheeky monkey!'); }
+
+	check_admin_referer('democracy');
 
     // Deactivate the old active poll
     $wpdb->query("UPDATE {$table_prefix}democracyQ SET active='0' WHERE active = '1'");
@@ -112,13 +135,14 @@ function jal_deactivate_poll () {
 
 
 function jal_delete_poll () {
-    global $wpdb, $table_prefix, $user_level, $jal_dem_admin_level;
+    global $wpdb, $table_prefix;
 
     // Security
-    get_currentuserinfo();
-    if ($user_level <  $jal_dem_admin_level) die('Nice try, you cheeky monkey!');
+    if ( !current_user_can('switch_themes')) { die('Nice try, you cheeky monkey!'); }
 
-	 $id = (int) $_GET['poll_id'];
+	check_admin_referer('democracy');
+
+	$id = (int) $_GET['poll_id'];
 
     // Delete the poll question and its answers
     $wpdb->query("DELETE FROM {$table_prefix}democracyQ WHERE id = {$id}");
@@ -127,11 +151,12 @@ function jal_delete_poll () {
 
 
 function jal_add_question () {
-    global $wpdb, $table_prefix, $user_level, $jal_dem_admin_level;
+    global $wpdb, $table_prefix;
 
     // Security
-    get_currentuserinfo();
-    if ($user_level <  $jal_dem_admin_level) die('Nice try, you cheeky monkey!');
+    if ( !current_user_can('switch_themes')) { die('Nice try, you cheeky monkey!'); }
+
+	check_admin_referer('democracy');
 
     // deactive old poll
     $wpdb->query("UPDATE {$table_prefix}democracyQ SET active='0' WHERE active='1'");
@@ -186,6 +211,7 @@ function jal_dem_admin_page() {
     ?>    <p>To delete an answer, leave the input box blank. Moving an answer from one box to another will erase its votes.<br />
     </p>
         <form action="edit.php?page=democracy" method="post" onsubmit="return jal_validate();">
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
     <strong>Question: <input id="question" type="text" name="question" value="<?php echo stripslashes(htmlspecialchars($question['question'], ENT_QUOTES)); ?>" /></strong>
 
 	<ol id="inputList"><?php
@@ -240,16 +266,16 @@ function jal_dem_admin_page() {
 <?php
    $winners = array();
 	$totalvotes = array();
-	$x = $wpdb->get_results("SELECT * from {$table_prefix}democracyQ ORDER BY id");
+	$x = (array) $wpdb->get_results("SELECT * from {$table_prefix}democracyQ ORDER BY id");
 
-	$totalvotes = $wpdb->get_results("
+	$totalvotes = (array) $wpdb->get_results("
 	 SELECT SUM(votes) as total_votes, qid
 	 FROM {$table_prefix}democracyA
 	 GROUP BY qid
 	 ORDER BY qid"
 	 , ARRAY_A);
 
-	 $winner_answers = $wpdb->get_results("
+	 $winner_answers = (array) $wpdb->get_results("
 	  SELECT votes, answers, qid
 	  FROM {$table_prefix}democracyA
 	  GROUP BY qid, votes
@@ -283,6 +309,7 @@ function jal_dem_admin_page() {
 	       <td style="text-align: center"><?php echo stripslashes($winners[$r->id]); ?>	       <td style="text-align: center"><?php echo date(get_settings('date_format'), $r->timestamp); ?></td>
 	       <td style="text-align: center">
 	           <form action="" method="get">
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
 	               <div>
 	                   <input type="hidden" name="page" value="democracy" />
 	                   <input type="hidden" name="poll_id" value="<?php echo $r->id; ?>" />
@@ -299,6 +326,7 @@ function jal_dem_admin_page() {
     <h2>Add a New Poll</h2>
     <p>Some HTML is allowed in polls, and no character entities will be converted, so if you want to use &amp;, write <code>&amp;amp;</code>, etc.. If you have no idea know what the last two sentences meant, don't worry about 'em. Blank fields will be skipped.</p>
     <form action="edit.php?page=democracy" method="post" onsubmit="return jal_validate();">
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('democracy'); ?>
     <div id="form_questions">
 
     <a href="javascript: addQuestion();" id="adder">Add an Answer</a><br />
@@ -326,8 +354,7 @@ function jal_dem_admin_page() {
 
 // Adds the Democracy Poll Plugin tab to the admin navigation
 function jal_add_page() {
-    global $jal_dem_admin_level;
-    add_management_page('Polls', 'Polls', $jal_dem_admin_level, 'democracy', 'jal_dem_admin_page');
+    add_management_page('Polls', 'Polls', 'switch_themes', 'democracy', 'jal_dem_admin_page');
 }
 
 
@@ -407,7 +434,7 @@ function jal_democracy($poll_id = 0) {
     	  if ( $poll_question->allowusers == 1) {
     	   ?>
 
-    	    <?php /* No-JS users */ if (isset($_GET['jal_add_user_answer'])) { ?>
+    	    <?php /* No-JS users */ if (false && isset($_GET['jal_add_user_answer'])) { ?>
     	    <li>
     	    <input type="radio" name="poll_aid" id="jalAddAnswerRadio" value="newAnswer" checked="checked" />
     	    <input type="text" size="15" id="jalAddAnswerInput" name="poll_vote" value="" />
@@ -415,7 +442,7 @@ function jal_democracy($poll_id = 0) {
     	    </li>
 
 			<?php } else { ?>    	    <li>
-    	    	<a href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES).$x; ?>jal_add_user_answer=true" id="jalAddAnswer">Add an Answer</a>
+    	    	<script type="text/javascript">document.write('<a href="#" id="jalAddAnswer">Add an Answer</a>');</script>
     	    	<input type="radio" name="poll_aid" id="jalAddAnswerRadio" value="<?php echo $latestaid + 1; ?>" style="display: none" /> <input type="text" size="15" style="display: none" id="jalAddAnswerInput" />
     	    </li>
 
@@ -423,7 +450,9 @@ function jal_democracy($poll_id = 0) {
         <p><input type="hidden" id="poll_id" name="poll_id" value="<?php echo $poll_question->id; ?>" /><input type="submit" name="vote" value="Vote" /></p>
         <p><?php if ($total_votes > 0) {
         	// For non-js users...JS users get this link changed onload
-        ?>        	<a id="view-results" href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES).$x; ?>jal_no_js=true&amp;poll_id=<?php echo $poll_question->id; ?>">View Results</a>
+        ?>  <script type="text/javascript">
+        	document.write('<a id="view-results" href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES).$x; ?>jal_no_js=true&amp;poll_id=<?php echo $poll_question->id; ?>">View Results</a>');
+        	</script>
         	<?php if ($user_added) echo "<br /><small><sup>1</sup> = Added by a guest</small>"; ?>        <?php } else { echo "No votes yet"; } ?></p>
        </div>
     </form>
@@ -435,12 +464,9 @@ function jal_democracy($poll_id = 0) {
 // Check the codex article for more info
 // http://codex.wordpress.org/creating_tables_with_plugins
 function jal_dem_install () {
-   global $table_prefix, $wpdb, $user_level,  $jal_dem_admin_level;
+   global $table_prefix, $wpdb;
 
    $table_name = $table_prefix . "democracyQ";
-
-   get_currentuserinfo();
-   if ($user_level <  $jal_dem_admin_level) return;
 
    $result = mysql_list_tables(DB_NAME);
    $tables = array();

@@ -5,6 +5,8 @@
 
 function sem_external_links_update_options()
 {
+	check_admin_referer('external_links');
+
 	#echo '<pre>';
 	#var_dump($_POST['sem_external_links']);
 	#echo '</pre>';
@@ -13,6 +15,7 @@ function sem_external_links_update_options()
 	$options['global'] = isset($options['global']);
 	$options['add_css'] = isset($options['add_css']);
 	$options['add_target'] = isset($options['add_target']);
+	$options['add_nofollow'] = isset($options['add_nofollow']);
 
 	update_option('sem_external_links_params', $options);
 } # end sem_external_links_update_options()
@@ -27,7 +30,7 @@ function sem_external_links_add_admin()
 	add_options_page(
 			__('External&nbsp;Links'),
 			__('External&nbsp;Links'),
-			7,
+			'manage_options',
 			str_replace("\\", "/", __FILE__),
 			'sem_external_links_admin'
 			);
@@ -67,6 +70,8 @@ function sem_external_links_admin()
 		. "<h2>" . __('External Links Options') . "</h2>\n"
 		. "<form method=\"post\" action=\"\">\n";
 
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('external_links');
+
 	echo '<input type="hidden" name="update_sem_external_links_options" value="1">';
 
 	echo '<p><label for="sem_external_links[global]">'
@@ -95,7 +100,17 @@ function sem_external_links_admin()
 			. ( $options['add_target'] ? ' checked="checked"' : '' )
 			. ' />'
 		. '&nbsp;'
-		. __('Open outgoing links in new windows. Note that it is poor usability practice.')
+		. __('Open outgoing links in new windows. This can damage your visitor\'s trust towards your site in that they can think your site used a pop-under.')
+		. '</label>'
+		. '</p>';
+
+	echo '<p><label for="sem_external_links[add_nofollow]">'
+		. '<input type="checkbox"'
+			. ' name="sem_external_links[add_nofollow]" id="sem_external_links[add_nofollow]"'
+			. ( $options['add_nofollow'] ? ' checked="checked"' : '' )
+			. ' />'
+		. '&nbsp;'
+		. __('Add rel=nofollow to the links. This is not very nice for those you\'re linking to.')
 		. '</label>'
 		. '</p>';
 

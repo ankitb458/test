@@ -2,28 +2,38 @@
 /*
  * Plugin Name: Permalink Redirect
  * Plugin URI: http://fucoder.com/code/permalink-redirect/
- * Description: This plugin ensures that pages and entries are always accessed via the permalink. Otherwise, a 301 redirect will be issued.
- * Version: 0.6.3
+ * Description: Permalink Redirect ensures that pages and entries are always accessed via the permalink. Otherwise, a 301 redirect will be issued.
+ * Version: 0.7.0 (edited)
  * Author: Scott Yang
  * Author URI: http://scott.yang.id.au/
  */
 
 class YLSY_PermalinkRedirect {
     function admin_menu() {
-        add_options_page('Permalink Redirect Manager', 'Permalink Redirect', 5,
+        add_options_page('Permalink Redirect Manager', 'Permalink Redirect', 'administrator',
             __FILE__, array('YLSY_PermalinkRedirect', 'admin_page'));
     }
 
     function admin_page() {
-        global $wp_version;
-        $feedburner = get_settings('permalink_redirect_feedburner');
-        $skip = get_settings('permalink_redirect_skip');
-        if ($wp_version < '2') {
-            if (!$feedburner)
-                add_option('permalink_redirect_feedburner');
-            if (!$skip)
-                add_option('permalink_redirect_skip');
+        global $wp_rewrite, $wp_version;
+
+        // If we are updating, we will flush all the rewrite rules to force the
+        // old structure to be added.
+        if (isset($_GET['updated'])) {
+            $wp_rewrite->flush_rules();
         }
+
+        $options = array('feedburner', 'hostname', 'oldstruct', 'skip');
+        $optionvars = array();
+        foreach ($options as $option) {
+            $$option = get_settings("permalink_redirect_$option");
+            if ($wp_version < '2' && !$$option) {
+                add_option("permalink_redirect_$option");
+            }
+            $optionvars[] = "permalink_redirect_$option";
+        }
+
+        $home = parse_url(get_settings('home'));
 ?>
 <div class="wrap">
     <h2>Permalink Redirect Manager</h2>
@@ -32,16 +42,24 @@ class YLSY_PermalinkRedirect {
             <legend>Paths to be skipped:<br/><small><em>(Separate each entry with a new line. Matched with regular expression.)</em></small></legend>
             <textarea name="permalink_redirect_skip" style="width:98%;" rows="5"><?php echo htmlspecialchars($skip); ?></textarea>
             <table class="optiontable">
+                <tr valign="top">
+                    <th scope="row">Old Permalink Structure:</th>
+                    <td><input name="permalink_redirect_oldstruct" type="text" id="permalink_redirect_oldstruct" size="50" value="<?php echo htmlspecialchars($oldstruct); ?>"/><br/><small><a href="http://codex.wordpress.org/Using_Permalinks">Available tags</a>. Current permalink structure: <a href="#" onclick="document.getElementById('permalink_redirect_oldstruct').value = '<?php echo htmlspecialchars(get_settings('permalink_structure')); ?>';return false;"><code><?php echo htmlspecialchars(get_settings('permalink_structure')); ?></code></a></td>
+                </tr>
                 <tr>
                     <th scope="row">FeedBurner Redirect:</th>
                     <td>http://feeds.feedburner.com/<input name="permalink_redirect_feedburner" type="text" id="permalink_redirect_feedburner" value="<?php echo htmlspecialchars($feedburner) ?>" size="25" /></td>
+                </tr>
+                <tr>
+                    <th scope="row">Hostname Redirect:</th>
+                    <td><input name="permalink_redirect_hostname" type="checkbox" id="permalink_redirect_hostname" value="1"<?php if ($hostname) { ?> checked="checked"<?php } ?>/> Redirect if hostname is not <code><?php echo htmlspecialchars($home['host']); ?></code>.</td>
                 </tr>
             </table>
         </fieldset>
         <p class="submit">
             <input type="submit" name="Submit" value="<?php _e('Update Options') ?> &raquo;" />
             <input type="hidden" name="action" value="update" />
-            <input type="hidden" name="page_options" value="permalink_redirect_feedburner,permalink_redirect_skip"/>
+            <input type="hidden" name="page_options" value="<?php echo join(',', $optionvars); ?>"/>
             <?php if (function_exists('wp_nonce_field')) { wp_nonce_field('update-options'); } ?>
         </p>
     </form>
@@ -49,18 +67,30 @@ class YLSY_PermalinkRedirect {
 <?php
     }
 
+    function check_hostname() {
+        if (! get_settings('permalink_redirect_hostname')) {
+            return false;
+        }
+        $requested = $_SERVER['HTTP_HOST'];
+        $home = parse_url(get_settings('home'));
+        return $requested != $home['host'];
+    }
+
     function execute() {
         global $withcomments;
 
-        $requested = @parse_url($_SERVER['REQUEST_URI']);
-        if ($requested === false)
-            return;
-
-        $requested = $requested['path'];
-
+        $requested = $_SERVER['REQUEST_URI'];
         if (is_404() || is_trackback() || is_search() ||
             is_comments_popup() || YLSY_PermalinkRedirect::is_skip($requested))
+        {
             return;
+        }
+
+        if (($requested = @parse_url($_SERVER['REQUEST_URI'])) === false) {
+            return;
+        }
+
+        $requested = $requested['path'];
 
         // Check whether we need to do redirect for FeedBurner.
         // NOTE this might not always get executed. For feeds,
@@ -78,17 +108,20 @@ class YLSY_PermalinkRedirect {
             }
         }
 
-        $link = YLSY_PermalinkRedirect::guess_permalink();
-        if (!$link)
+        if (! ($link = YLSY_PermalinkRedirect::guess_permalink())) {
             return;
+        }
         $permalink = @parse_url($link);
 
         // WP2.1: If a static page has been set as the front-page, we'll get
         // empty string here.
-        if (!$permalink['path'])
+        if (!$permalink['path']) {
             $permalink['path'] = '/';
+        }
 
-        if ($requested != $permalink['path']) {
+        if ($requested != $permalink['path'] ||
+            YLSY_PermalinkRedirect::check_hostname())
+        {
             header('HTTP/1.1 301 Moved Permanently');
             header('Status: 301 Moved Permanently');
             header("Location: $link");
@@ -199,8 +232,22 @@ class YLSY_PermalinkRedirect {
 
         return false;
     }
+
+    function post_rewrite_rules($rules) {
+        global $wp_rewrite;
+        $oldstruct = get_settings('permalink_redirect_oldstruct');
+        if ($oldstruct) {
+            $rules = array_merge($rules,
+                $wp_rewrite->generate_rewrite_rule($oldstruct, false, false,
+                false, true));
+
+        }
+	return $rules;
+    }
 }
 
 add_action('admin_menu', array('YLSY_PermalinkRedirect', 'admin_menu'));
+add_filter('post_rewrite_rules', array('YLSY_PermalinkRedirect',
+    'post_rewrite_rules'));
 add_action('template_redirect', array('YLSY_PermalinkRedirect', 'execute'));
 ?>

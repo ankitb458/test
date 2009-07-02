@@ -22,7 +22,7 @@ class hitslink_admin
 			add_options_page(
 					__('HitsLink'),
 					__('HitsLink'),
-					7,
+					'manage_options',
 					str_replace("\\", "/", __FILE__),
 					array('hitslink_admin', 'display_options')
 					);
@@ -36,6 +36,7 @@ class hitslink_admin
 
 	function update_options()
 	{
+		check_admin_referer('hitslink');
 		$_POST['hitslink']['script'] = stripslashes($_POST['hitslink']['script']);
 
 		if ( preg_match("/
@@ -127,6 +128,8 @@ EOF;
 			. "<h2>" . __('HitsLink Options', 'hitslink') . "</h2>\n"
 			. '<form method="post" action="">' . "\n"
 			. '<input type="hidden" name="action" value="update_hitslink" />' . "\n";
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('hitslink');
 
 		echo '<fieldset class="options">' . "\n"
 			. "<legend>" . __('HitsLink script', 'hitslink') . "</legend>\n";

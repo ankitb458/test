@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Ad Spaces
-Plugin URI: http://www.semiologic.com/software/ad-space/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/ad-space/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Lets you easily manage advertisement real estate on your blog
+Plugin URI: http://www.semiologic.com/software/marketing/ad-spaces/
+Description: Manage advertisement real estate on your blog
 Author: Denis de Bernardy
-Version: 3.17
+Version: 3.21
 Author URI: http://www.semiologic.com
 */
 
@@ -33,31 +33,37 @@ register_shutdown_function('ob_end_flush_all');
 endif;
 
 
+# Initialize DB
+
+$wpdb->ad_tags = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_tags";
+$wpdb->ad_blocks = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_blocks";
+$wpdb->ad_block2tag = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_block2tag";
+$wpdb->ad_distributions = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_distributions";
+$wpdb->ad_distribution2tag = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_distribution2tag";
+$wpdb->ad_distribution2post = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_distribution2post";
+
+
 #
 # sem_ad_spaces_init()
 #
 
 function sem_ad_spaces_init()
 {
+	if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false
+		|| is_feed()
+		)
+	{
+		return;
+	}
+
 	global $wpdb;
-	global $table_prefix;
-	global $wpmuBaseTablePrefix;
 	global $sem_ad_block2tag;
 
 	$options = function_exists('get_site_option')
 		? get_site_option('sem_ad_space_params')
 		: get_settings('sem_ad_space_params');
 
-	# Step 1: Initialize DB
-
-	$wpdb->ad_tags = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_tags";
-	$wpdb->ad_blocks = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_blocks";
-	$wpdb->ad_block2tag = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_block2tag";
-	$wpdb->ad_distributions = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_distributions";
-	$wpdb->ad_distribution2tag = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_distribution2tag";
-	$wpdb->ad_distribution2post = ( isset($wpmuBaseTablePrefix) ? $wpmuBaseTablePrefix : $table_prefix ) . "ad_distribution2post";
-
-	# Step 2: Identify the ad distribution used
+	# Step 1: Identify the ad distribution used
 
 	if ( ( is_single()
 			|| is_page()
@@ -87,7 +93,7 @@ function sem_ad_spaces_init()
 
 	if ( !isset($ad_distribution_id) )
 	{
-		if ( is_home() )
+		if ( is_home() || ( class_exists('sem_static_front') && sem_static_front::is_home() ) )
 		{
 			$ad_distribution_id = $options['default_ad_distribution']['home'];
 		}
@@ -127,7 +133,7 @@ function sem_ad_spaces_init()
 	#var_dump($ad_distribution_id);
 	#echo '</pre>';
 
-	# Step 3: Fetch the relevant Ad names and initialize $sem_ad_blocks2tag
+	# Step 2: Fetch the relevant Ad names and initialize $sem_ad_blocks2tag
 
 	$sem_ad_block2tag = array();
 
@@ -179,7 +185,7 @@ function sem_ad_spaces_init()
 	#var_dump($sem_ad_block2tag);
 	#echo '</pre>';
 
-	# Step 4: Complete with default ad blocks
+	# Step 3: Complete with default ad blocks
 
 	if ( $ad_distribution_id )
 	{
@@ -214,10 +220,10 @@ function sem_ad_spaces_init()
 	#echo '<pre>';
 	#var_dump($sem_ad_block2tag);
 	#echo '</pre>';
-
 } # end sem_ad_spaces_init()
 
-add_action('template_redirect', 'sem_ad_spaces_init', 0);
+add_action('wp_head', 'sem_ad_spaces_init');
+
 
 
 #
@@ -233,7 +239,7 @@ function sem_ad_spaces_start_ob()
 	}
 } # end sem_ad_spaces_start_ob()
 
-add_action('template_redirect', 'sem_ad_spaces_start_ob');
+add_action('init', 'sem_ad_spaces_start_ob');
 
 
 #
@@ -242,6 +248,11 @@ add_action('template_redirect', 'sem_ad_spaces_start_ob');
 
 function sem_ad_spaces_ob_callback($buffer)
 {
+	if ( is_feed() )
+	{
+		return $buffer;
+	}
+
 	global $sem_ad_blocks;
 
 	$sem_ad_blocks = array();
@@ -803,7 +814,9 @@ function the_sidebar_ad()
 # admin screens
 #
 
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
+if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false
+	|| strpos($_SERVER['REQUEST_URI'], 'wp-includes') !== false
+	)
 {
 	include_once dirname(__FILE__) . '/sem-ad-space-admin.php';
 }

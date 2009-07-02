@@ -107,14 +107,16 @@ function display_page_class()
 			break;
 	}
 
+	$template = '';
 
-	$header_bg = ( header_bg || background_header )
-		? 'header_bg'
-		: '';
+	if ( is_page() )
+	{
+		$template = get_post_meta($GLOBALS['posts'][0]->ID, '_wp_page_template', true);
 
-	$header_img = ( image_header || flash_header )
-		? 'header_img'
-		: '';
+		$template = preg_replace("/\.[^\.]+$/", "", $template);
+	}
+
+	$header_class = header::get_class();
 
 	$page_class = $layout
 		. ' ' . $width
@@ -122,9 +124,9 @@ function display_page_class()
 		. ' ' . $old_width
 		. ' ' . $font
 		. ' ' . $font_size
-		. ' ' . $header_img
-		. ' ' . $header_bg
+		. ' ' . $header_class
 		. ' ' . $skin
+		. ' ' . $template
 		. ' skin'
 		. ' custom';
 

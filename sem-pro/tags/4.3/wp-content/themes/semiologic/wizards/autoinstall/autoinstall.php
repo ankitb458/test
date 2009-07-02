@@ -1,7 +1,16 @@
 <?php
 
-require_once ABSPATH . 'wp-content/themes/semiologic/admin/captions.php';
-require_once ABSPATH . 'wp-content/themes/semiologic/admin/nav-menus.php';
+include_once ABSPATH . 'wp-admin/admin-functions.php';
+
+$sem_path = dirname(dirname(dirname(__FILE__)));
+
+include_once $sem_path . '/utils/wizards.php';
+include_once $sem_path . '/utils/skin.php';
+include_once $sem_path . '/utils/layout.php';
+include_once $sem_path . '/utils/captions.php';
+
+include_once $sem_path . '/admin/skin.php';
+include_once $sem_path . '/admin/nav-menus.php';
 
 
 #
@@ -10,11 +19,16 @@ require_once ABSPATH . 'wp-content/themes/semiologic/admin/nav-menus.php';
 
 function install_semiologic()
 {
+	if ( get_option('semiologic') && !current_user_can('administrator') )
+	{
+		return;
+	}
+
 	# Reset
-	$GLOBALS['semiologic'] = array();
+	$options = array();
 
 	# Header Nav
-	$GLOBALS['semiologic']['nav_menus']['header_nav'] = array(
+	$options['nav_menus']['header_nav'] = array(
 				'Home' => get_bloginfo('home'),
 				'Blog' => 'blog',
 				'About' => 'about',
@@ -22,36 +36,45 @@ function install_semiologic()
 				);
 
 	# Sidebar Nav
-	$GLOBALS['semiologic']['nav_menus']['sidebar_nav'] = array(
+	$options['nav_menus']['sidebar_nav'] = array(
 				);
 
 	# Footer Nav
-	$GLOBALS['semiologic']['nav_menus']['footer_nav'] = array(
+	$options['nav_menus']['footer_nav'] = array(
 				'Archives' => 'archives',
 				'About' => 'about',
 				'Contact' => 'contact'
 				);
 
 	# Skin, layout, font, width
-	$GLOBALS['semiologic']['active_skin'] = get_skin_data('sky-gold');
-	$GLOBALS['semiologic']['active_layout'] = 'mse';
-	$GLOBALS['semiologic']['active_width'] = 'wide';
-	$GLOBALS['semiologic']['active_font'] = 'trebuchet';
-	$GLOBALS['semiologic']['active_font_size'] = 'small';
+	$options['active_skin'] = get_skin_data('sky-gold');
+	$options['active_layout'] = 'mse';
+	$options['active_width'] = 'wide';
+	$options['active_font'] = 'trebuchet';
+	$options['active_font_size'] = 'small';
 
 	# Header
-	$GLOBALS['semiologic']['active_header'] = '';
+	$options['header']['mode'] = 'header';
 
 	# Captions
-	$GLOBALS['semiologic']['captions'] = get_all_captions();
+	$options['captions'] = get_all_captions();
+
+	update_option('semiologic', $options);
 
 	if ( function_exists('wiz_autoinstall_pro') )
 	{
 		wiz_autoinstall_pro();
 	}
 
-	update_option('semiologic', $GLOBALS['semiologic']);
 	regen_theme_nav_menu_cache();
+
+	if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
+	{
+		wp_redirect($_SERVER['REQUEST_URI']);
+		die;
+	}
+
+	$GLOBALS['semiologic'] = get_option('semiologic');
 } # end install_semiologic()
 
 

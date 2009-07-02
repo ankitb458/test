@@ -32,7 +32,6 @@ if ( have_posts() && !is_404() )
 		do_action('display_entry_meta');
 		do_action('display_entry_actions');
 		do_action('after_the_entry');
-		comments_template();
 ?>
 </div>
 <?php

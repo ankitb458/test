@@ -6,8 +6,10 @@
 		<ul>
 
 		<?php while( have_books('status=unread') ) : the_book(); ?>
-			<li><a href="<?php book_permalink() ?>"><?php book_title() ?></a> by <?php book_author() ?></li>
-
+			<li>
+				<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+				<p><strong><?php book_title() ?></strong> by <?php book_author() ?></p>
+			</li>
 		<?php endwhile; ?>
 		</ul>
 
@@ -39,8 +41,10 @@
 		<ul>
 
 		<?php while( have_books('status=read&orderby=finished&order=desc') ) : the_book(); ?>
-			<li><a href="<?php book_permalink() ?>"><?php book_title() ?></a> by <?php book_author() ?></li>
-
+			<li>
+				<p><a href="<?php book_permalink() ?>" class="noicon"><img src="<?php book_image() ?>" alt="<?php book_title() ?>" /></a></p>
+				<p><strong><?php book_title() ?></strong> by <?php book_author() ?></p>
+			</li>
 		<?php endwhile; ?>
 		</ul>
 

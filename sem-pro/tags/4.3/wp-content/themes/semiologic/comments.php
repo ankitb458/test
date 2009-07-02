@@ -37,6 +37,10 @@ if ( $comments )
 <div id="comments" class="comments">
 <h1><?php comments_number(get_caption('no_comments'), get_caption('1_comment'), get_caption('n_comments')); ?>
 <?php
+	echo ' ' . get_caption('on') . ' ';
+	the_title();
+?>
+<?php
 	if ( comments_open() )
 	{
 ?>
@@ -83,7 +87,8 @@ if ( !isset($prev_date) || $cur_date != $prev_date )
 				: ''
 				);
 		?>
-		<span class="comment_author"><?php comment_author_link(); ?></span> <?php comment_type(__(':'), __(' (Trackback)'), __(' (Pingback)')); ?></h3>
+		<span class="comment_author"><?php comment_author_link(); ?></span>
+		@ <span class="comment_time"><?php comment_date('g:i a'); ?></span><?php comment_type(__(':'), __(' (Trackback)'), __(' (Pingback)')); ?></h3>
 </div>
 <div class="comment_body">
 <?php comment_text() ?>

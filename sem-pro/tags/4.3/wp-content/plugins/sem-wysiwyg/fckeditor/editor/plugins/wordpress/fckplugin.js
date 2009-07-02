@@ -21,13 +21,14 @@ FCKWordPress.prototype.Execute = function()
     switch ( iname )
     {
         case 'more' :
-        case 'nextpage' :
+			FCK.InsertHtml(CreateFakeElement(iname));
+			break;
+		case 'nextpage' :
         case 'contactform' :
         case 'newsletter' :
             var pnode = FCKSelection.MoveToAncestorNode('P');
             if(pnode)
             {
-
                 var tmpnode = FCK.EditorDocument.createElement( 'DIV' );
                 tmpnode.innerHTML = CreateFakeElement(iname);
                 var node = tmpnode.firstChild;
@@ -92,6 +93,16 @@ function CreateFakeElement(fakename)
 	return '<img class="wordpress_'+fakename+'" _fckwordpress="'+fakename+'" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/'+fakename+'_bug.gif" _fckfake _moz_resizing="true" />';
 }
 
+function CreateFakeAudioElement(media_file)
+{
+	return '<img class="wordpress_media" _fckwordpress="media#'+media_file+'" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/audio.gif" _fckfake _moz_resizing="true" />';
+}
+
+function CreateFakeVideoElement(media_file)
+{
+	return '<img class="wordpress_media" _fckwordpress="media#'+media_file+'" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/video.gif" _fckfake _moz_resizing="true" />';
+}
+
 function CreateFakePodcastElement(audiofile)
 {
 	return '<img class="wordpress_podcast" _fckwordpress="podcast#'+audiofile+'" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/podcast_bug.gif" _fckfake _moz_resizing="true" />';
@@ -106,11 +117,11 @@ function CreateFakeAdUnitElement(adunit)
 {
 	if (adunit)
 	{
-		return '<img class="wordpress_adunit" _fckwordpress="adunit#'+adunit+'" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/adunit_bug.gif" _fckfake _moz_resizing="true" />';
+		return '<img class="wordpress_adunit" _fckwordpress="adunit#'+adunit+'" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/ad-unit.gif" style="padding: 10px; border: solid 1px lightsteelblue; background-color: ghostwhite;" _fckfake _moz_resizing="true" />';
 	}
 	else
 	{
-		return '<img class="wordpress_adunit" _fckwordpress="adunit" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/adunit_bug.gif" _fckfake _moz_resizing="true" />';
+		return '<img class="wordpress_adunit" _fckwordpress="adunit" src="'+FCKConfig.EditorPath+'editor/plugins/wordpress/ad-unit.gif" style="padding: 10px; border: solid 1px lightsteelblue; background-color: ghostwhite;" _fckfake _moz_resizing="true" />';
 	}
 }
 
@@ -122,10 +133,10 @@ FCKXHtml.TagProcessors['img'] = function( node, htmlNode )
 		if ( sSavedUrl != null )
 			FCKXHtml._AppendAttribute( node, 'src', sSavedUrl ) ;
 
-		// The "ALT" attribute is required in XHTML.. 
+		// The "ALT" attribute is required in XHTML..
 		if ( ! node.attributes.getNamedItem( 'alt' ) )
 			FCKXHtml._AppendAttribute( node, 'alt', '' ) ;
-			
+
 		// now for the WordPress stuff...
         var _fckwordpress = htmlNode.getAttribute('_fckwordpress');
         if(_fckwordpress == undefined)
@@ -149,8 +160,6 @@ FCKXHtml.TagProcessors['img'] = function( node, htmlNode )
         switch ( _fckwordpress )
         {
             case 'more':
-//                 wrapinp = true;
-                //fall through
             case 'nextpage':
             case 'contactform':
             case 'newsletter':
@@ -168,6 +177,7 @@ FCKXHtml.TagProcessors['img'] = function( node, htmlNode )
             case 'podcast':
             case 'videocast':
             case 'adunit':
+            case 'media':
             	var tag = _fckwordpress;
 
             	if ( attribute )
@@ -210,6 +220,8 @@ FCKWordPress.Redraw = function()
 //         FCK.EditorDocument.body.innerText =
 // 		var oRange = FCK.EditorDocument.body.createTextRange() ;
 	    xhtml = xhtml.replace(/(?:<p>\s*)?<\!\-\-\s*(more|nextpage|contactform|newsletter)\s*\-\->(?:<\/p>)?/g, CreateFakeElement('$1'));
+	    xhtml = xhtml.replace(/<\!\-\-\s*media\s*#([^>]*\.(?:mp3|m4a))\-\->/ig, CreateFakeAudioElement('$1'));
+	    xhtml = xhtml.replace(/<\!\-\-\s*media\s*#([^>]*(?:flv|swf|mov|mp4|m4v))\-\->/ig, CreateFakeVideoElement('$1'));
 	    xhtml = xhtml.replace(/<\!\-\-\s*podcast\s*#([^>]*)\-\->/ig, CreateFakePodcastElement('$1'));
 	    xhtml = xhtml.replace(/<\!\-\-\s*videocast\s*#([^>]*)\-\->/ig, CreateFakeVideocastElement('$1'));
     	xhtml = xhtml.replace(/<\!\-\-\s*(?:ad(?:_)?(?:unit|block|space|sense))\s*\-\->/ig, CreateFakeAdUnitElement(''));
@@ -315,6 +327,87 @@ FCKToolbarAdUnitCombo.prototype.CreateItems = function( targetSpecialCombo )
 }
 
 
+
+/*****************************************************************
+// media combobox
+******************************************************************/
+
+/*----------------- FCKAdUnitComboCommand --------------------------*/
+
+var FCKMediaComboCommand = function()
+{
+    this.Name="InsertMedia";
+}
+
+FCKMediaComboCommand.prototype.Execute = function(itemid, item)
+{
+	var media_ext = itemid;
+    media_ext = media_ext.replace(/.*\./, '');
+
+    switch ( media_ext )
+    {
+    case 'mp3':
+    case 'm4a':
+    	FCK.InsertHtml(CreateFakeAudioElement(itemid));
+    	break;
+    case 'flv':
+    case 'swf':
+    case 'mov':
+    case 'mp4':
+    case 'm4v':
+    	FCK.InsertHtml(CreateFakeVideoElement(itemid));
+    	break;
+    }
+}
+
+FCKMediaComboCommand.prototype.GetState = function()
+{
+    return FCK_TRISTATE_OFF ;
+}
+
+/*------------------ Registering the Command ------------------------------*/
+FCKCommands.RegisterCommand( 'InsertMedia', new FCKMediaComboCommand() ) ;
+
+
+
+//creation function
+var FCKToolbarMediaCombo = function( tooltip, style )
+{
+	this.CommandName= 'InsertMedia' ;
+	this.Command    = FCKCommands.GetCommand('InsertMedia');
+	this.Label		= this.GetLabel() ;
+	this.Tooltip	= tooltip ? tooltip : this.Label ;
+	this.Style		= style ? style : FCK_TOOLBARITEM_ICONTEXT ;
+}
+
+// Inherit from FCKToolbarSpecialCombo.
+FCKToolbarMediaCombo.prototype = new FCKToolbarSpecialCombo ;
+
+FCKToolbarMediaInsertAd = new Object();
+
+FCKToolbarMediaCombo.prototype.GetLabel = function()
+{
+	return 'Media';
+}
+
+FCKToolbarMediaCombo.prototype.CreateItems = function( targetSpecialCombo )
+{
+	targetSpecialCombo.FieldWidth = 70 ;
+
+	var media_files = window.parent.document.all_media;
+	var media_file;
+	var media_name;
+
+	for ( var i = 0 ; i < media_files.length ; i++ )
+	{
+		media_name = media_files[i];
+		media_name = media_name.replace(/.*\//, '');
+
+		this._Combo.AddItem( media_name, media_name, media_name ) ;
+	}
+}
+
+
 /*------------------------------------------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------------------------------------------*/
 
@@ -334,30 +427,34 @@ FCKWordPress.Redraw();
 
 
 // Create the WordPress tag buttons.
-var oWordPressItem = new FCKToolbarButton( 'WordPressMore', 'More...', null, FCK_TOOLBARITEM_ICONTEXT, true, true ) ;
+var oWordPressItem = new FCKToolbarButton( 'WordPressMore', 'More...', null, null, false, true ) ;
 oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'more.gif' ;
 FCKToolbarItems.RegisterItem( 'WordPressMore', oWordPressItem ) ;
 
-var oWordPressItem = new FCKToolbarButton( 'WordPressNextPage', 'Next Page', null, FCK_TOOLBARITEM_ICONTEXT, true, true ) ;
+var oWordPressItem = new FCKToolbarButton( 'WordPressNextPage', 'Next Page', null, null, false, true ) ;
 oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'nextpage.gif' ;
 FCKToolbarItems.RegisterItem( 'WordPressNextPage', oWordPressItem ) ;
 
-var oWordPressItem = new FCKToolbarButton( 'WordPressContactForm', 'Contact', null, FCK_TOOLBARITEM_ONLYICON, true, true ) ;
+var oWordPressItem = new FCKToolbarButton( 'WordPressContactForm', 'Contact', null, null, false, true ) ;
 oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'contactform.gif' ;
 FCKToolbarItems.RegisterItem( 'WordPressContactForm', oWordPressItem ) ;
 
-var oWordPressItem = new FCKToolbarButton( 'WordPressNewsletter', 'Newsletter', null, FCK_TOOLBARITEM_ONLYICON, true, true ) ;
+var oWordPressItem = new FCKToolbarButton( 'WordPressNewsletter', 'Newsletter', null, null, false, true ) ;
 oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'newsletter.gif' ;
 FCKToolbarItems.RegisterItem( 'WordPressNewsletter', oWordPressItem ) ;
 
-var oWordPressItem = new FCKToolbarButton( 'WordPressPodcast', 'Podcast', null, FCK_TOOLBARITEM_ONLYICON, true, true ) ;
+var oWordPressItem = new FCKToolbarButton( 'WordPressPodcast', 'Podcast', null, null, false, true ) ;
 oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'podcast.gif' ;
 FCKToolbarItems.RegisterItem( 'WordPressPodcast', oWordPressItem ) ;
 
-var oWordPressItem = new FCKToolbarButton( 'WordPressVideocast', 'Videocast', null, FCK_TOOLBARITEM_ONLYICON, true, true ) ;
+var oWordPressItem = new FCKToolbarButton( 'WordPressVideocast', 'Videocast', null, null, false, true ) ;
 oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'videocast.gif' ;
 FCKToolbarItems.RegisterItem( 'WordPressVideocast', oWordPressItem ) ;
 
 var oWordPressItem = new FCKToolbarAdUnitCombo( 'Ad&nbsp;Unit', FCK_TOOLBARITEM_ONLYTEXT );
-oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'adunit.gif' ;
+//oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'adunit.gif' ;
 FCKToolbarItems.RegisterItem( 'WordPressAdUnit', oWordPressItem ) ;
+
+var oWordPressItem = new FCKToolbarMediaCombo( 'Media', FCK_TOOLBARITEM_ONLYTEXT );
+//oWordPressItem.IconPath = FCKPlugins.Items['wordpress'].Path + 'media.gif' ;
+FCKToolbarItems.RegisterItem( 'WordPressMedia', oWordPressItem ) ;

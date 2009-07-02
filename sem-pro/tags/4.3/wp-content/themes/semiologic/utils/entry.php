@@ -153,38 +153,74 @@ function display_entry_filed_under_by()
 
 	if ( $show_entry_filed_under_by )
 	{
-		echo '<div class="entry_meta">';
-
-		echo '<p>';
-
-		echo get_caption('filed_under') . ' '
-			. '<span class="entry_tags">';
-
-		the_category(', ');
-
-		echo '</span>'
-			. ' ' . strtolower(get_caption('by')) . ' ';
-
-		echo '<span class="entry_author">';
-
-		if ( trim(get_the_author_url()) != 'http://' )
+		if ( get_the_category() )
 		{
-			echo '<a href="';
-			the_author_url();
-			echo '">';
-			the_author();
-			echo '</a>';
+			echo '<div class="entry_meta">';
+
+			echo '<p>';
+
+			echo get_caption('filed_under') . ' '
+				. '<span class="entry_tags">';
+
+			the_category(', ');
+
+			echo '</span>'
+				. ' ' . strtolower(get_caption('by')) . ' ';
+
+			echo '<span class="entry_author">';
+
+			$author_url = trim(get_the_author_url());
+
+			if ( $author_url && $author_url != 'http://' )
+			{
+				echo '<a href="';
+				the_author_url();
+				echo '">';
+				the_author();
+				echo '</a>';
+			}
+			else
+			{
+				the_author();
+			}
+
+			echo '</span>';
+
+			echo '</p>';
+
+			echo '</div>';
 		}
 		else
 		{
-			the_author();
+			echo '<div class="entry_meta">';
+
+			echo '<p>';
+
+			echo get_caption('by') . ' ';
+
+			echo '<span class="entry_author">';
+
+			$author_url = trim(get_the_author_url());
+
+			if ( $author_url && $author_url != 'http://' )
+			{
+				echo '<a href="';
+				the_author_url();
+				echo '">';
+				the_author();
+				echo '</a>';
+			}
+			else
+			{
+				the_author();
+			}
+
+			echo '</span>';
+
+			echo '</p>';
+
+			echo '</div>';
 		}
-
-		echo '</span>';
-
-		echo '</p>';
-
-		echo '</div>';
 	}
 } # end display_entry_filed_under_by()
 
@@ -229,13 +265,13 @@ function display_entry_filed_under()
 function get_email_link($url = null, $subject = null)
 {
 	$url = isset($url) ? $url : apply_filters('the_permalink', get_permalink());
-	$subject = isset($subject) ? $subject : the_title(null, null, false);
+	$subject = isset($subject) ? $subject : get_the_title();
 
 	return 'mailto:'
 		. '?'
-		. 'subject=' . $subject
+		. 'subject=' . rawurlencode($subject)
 		. '&amp;'
-		. 'body=' . rawurlencode(str_replace('&amp;', '&', $url));
+		. 'body=' . rawurlencode($url);
 } # end get_email_link()
 
 
@@ -408,35 +444,6 @@ add_action('after_the_entry', 'display_entry_follow_ups', 6);
 
 
 #
-# display_entry_related_entries()
-#
-
-function display_entry_related_entries()
-{
-	$show_entry_related_entries = is_single();
-
-	if ( function_exists('the_terms2posts')
-		&& apply_filters('show_entry_related_entries', $show_entry_related_entries)
-		&& get_the_post_terms()
-		)
-	{
-		echo '<div class="entry_related_entries">'
-			. '<h2>'
-			. get_caption('related_entries')
-			. '</h2>'
-			. '<ul>';
-
-		the_terms2posts();
-
-		echo '</ul>'
-			. '</div>';
-	}
-} # end display_entry_related_entries()
-
-add_action('after_the_entry', 'display_entry_related_entries', 8);
-
-
-#
 # display_404()
 #
 
@@ -466,4 +473,16 @@ function display_entry_author_image()
 } # end display_author_image()
 
 add_action('display_entry_title_meta', 'display_entry_author_image', 5);
+
+
+#
+# comments
+#
+
+function display_entry_comments()
+{
+	comments_template();
+}
+
+add_action('after_the_entry', 'display_entry_comments', 50);
 ?>

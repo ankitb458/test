@@ -8,9 +8,9 @@ function add_theme_nav_menu_options_admin()
 {
 	add_submenu_page(
 		'themes.php',
-		__('Nav Menus'),
-		__('Nav Menus'),
-		7,
+		__('Nav&nbsp;Menus'),
+		__('Nav&nbsp;Menus'),
+		'switch_themes',
 		str_replace("\\", "/", basename(__FILE__)),
 		'display_theme_nav_menu_options_admin'
 		);
@@ -25,11 +25,15 @@ add_action('admin_menu', 'add_theme_nav_menu_options_admin');
 
 function update_theme_nav_menu_options()
 {
-	$GLOBALS['semiologic']['nav_menus'] = array();
+	check_admin_referer('sem_nav_menus');
+
+	$options = get_option('semiologic');
+
+	$options['nav_menus'] = array();
 
 	foreach ( array('header_nav', 'sidebar_nav', 'footer_nav') as $menu_id )
 	{
-		$GLOBALS['semiologic']['nav_menus'][$menu_id] = array();
+		$options['nav_menus'][$menu_id] = array();
 
 		foreach ( $_POST[$menu_id . '_item'] as $key => $value )
 		{
@@ -75,45 +79,15 @@ function update_theme_nav_menu_options()
 					$_POST[$menu_id . '_ref'][$key] = sanitize_title($_POST[$menu_id . '_ref'][$key]);
 				}
 
-				$GLOBALS['semiologic']['nav_menus'][$menu_id][$value] = $_POST[$menu_id . '_ref'][$key];
+				$options['nav_menus'][$menu_id][$value] = $_POST[$menu_id . '_ref'][$key];
 			}
 		}
 	}
 
-	#echo '<pre>';
-	#var_dump($GLOBALS['semiologic']['nav_menus']);
-	#echo '</pre>';
-
-	update_option('semiologic', $GLOBALS['semiologic']);
+	update_option('semiologic', $options);
 
 	regen_theme_nav_menu_cache();
 } # end update_theme_nav_menu_options()
-
-
-#
-# flush_theme_nav_menu_cache()
-#
-
-function flush_theme_nav_menu_cache()
-{
-	$GLOBALS['semiologic']['nav_menu_cache'] = '';
-
-	if ( is_writable(sem_cache_path) )
-	{
-		$cache_files = glob(sem_cache_path ."*");
-
-		if ( $cache_files )
-		{
-			foreach ( $cache_files as $cache_file )
-			{
-				if ( is_file($cache_file) && is_writable($cache_file) )
-				{
-					unlink( $cache_file );
-				}
-			}
-		}
-	}
-} # end flush_theme_nav_menu_cache()()
 
 
 #
@@ -125,21 +99,19 @@ function regen_theme_nav_menu_cache()
 	global $wpdb;
 	global $cache_categories;
 
-	$GLOBALS['semiologic']['nav_menu_cache'] = array();
+	$options = get_option('semiologic');
+
+	$options['nav_menu_cache'] = array();
 
 	foreach ( array('header_nav', 'sidebar_nav', 'footer_nav') as $menu_id )
 	{
-		$GLOBALS['semiologic']['nav_menu_cache'][$menu_id] = array();
+		$options['nav_menu_cache'][$menu_id] = array();
 
 		$found = array();
 		$seek = array();
 		$refs = "";
 
-#		echo '<pre>';
-#		var_dump($GLOBALS['semiologic']['nav_menus']);
-#		echo '</pre>';
-
-		foreach ( (array) $GLOBALS['semiologic']['nav_menus'][$menu_id] as $item => $ref )
+		foreach ( (array) $options['nav_menus'][$menu_id] as $item => $ref )
 		{
 #			echo '<pre>';
 #			var_dump($item, $ref);
@@ -282,7 +254,7 @@ function regen_theme_nav_menu_cache()
 #		var_dump($found);
 #		echo '</pre>';
 
-		foreach ( (array) $GLOBALS['semiologic']['nav_menus'][$menu_id] as $item => $ref )
+		foreach ( (array) $options['nav_menus'][$menu_id] as $item => $ref )
 		{
 			if ( !$ref )
 			{
@@ -291,12 +263,14 @@ function regen_theme_nav_menu_cache()
 
 			if ( isset($found[$ref]) )
 			{
-				$GLOBALS['semiologic']['nav_menu_cache'][$menu_id][$item] = $found[$ref];
+				$options['nav_menu_cache'][$menu_id][$item] = $found[$ref];
 			}
 		}
 	}
 
-	update_option('semiologic', $GLOBALS['semiologic']);
+	update_option('semiologic', $options);
+
+	$GLOBALS['semiologic'] = $options;
 } # end regen_theme_nav_menu_cache()
 
 add_action('publish_post', 'regen_theme_nav_menu_cache', 0);
@@ -340,12 +314,16 @@ function display_theme_nav_menu_options_admin()
 
 	regen_theme_nav_menu_cache();
 
+	$options = get_option('semiologic');
+
 	# Display admin page
 
 	echo "<div class=\"wrap\">\n"
 		. "<h2>" . __('Theme Navigation Menus', 'sem-theme') . "</h2>\n"
 		. "<form method=\"post\" action=\"\">\n"
 		. "<input type=\"hidden\" name=\"action\" value=\"update_sem_theme_nav_menu\" />\n";
+
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_nav_menus');
 
 	foreach ( array('header_nav' => 'Header Navigation Menu',
 					'sidebar_nav' => 'Sidebar Navigation Menu',
@@ -365,7 +343,7 @@ function display_theme_nav_menu_options_admin()
 
 		$i = 0;
 
-		foreach ( (array) $GLOBALS['semiologic']['nav_menus'][$menu_id] as $item => $ref )
+		foreach ( (array) $options['nav_menus'][$menu_id] as $item => $ref )
 		{
 			$i++;
 
@@ -389,9 +367,9 @@ function display_theme_nav_menu_options_admin()
 					. " />"
 					. "</td>\n"
 				. "<td>"
-					. ( isset($GLOBALS['semiologic']['nav_menu_cache'][$menu_id][$item])
+					. ( isset($options['nav_menu_cache'][$menu_id][$item])
 						? ( "<a href=\""
-								. $GLOBALS['semiologic']['nav_menu_cache'][$menu_id][$item]
+								. $options['nav_menu_cache'][$menu_id][$item]
 								. "\">"
 								. str_replace(" ", "&nbsp;", $item)
 								. "</a>"

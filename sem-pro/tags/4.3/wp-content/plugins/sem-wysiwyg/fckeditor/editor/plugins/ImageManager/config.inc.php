@@ -44,9 +44,17 @@ $site_path = trailingslashit(get_option('siteurl'));
 $site_path = preg_replace("/https?:\/\//i", "", $site_path);
 $site_path = preg_replace("/" . $_SERVER['HTTP_HOST'] . "/i", "", $site_path);
 
-$IMConfig['base_url'] = $site_path . 'uploads/Image/';
+$IMConfig['base_url'] = $site_path . 'wp-content/uploads/image/';
 #$IMConfig['base_dir'] = Files::makepath(ABSPATH, $IMConfig['base_url']);
-$IMConfig['base_dir'] = Files::makepath(ABSPATH, 'uploads/Image/');
+$IMConfig['base_dir'] = Files::makepath(ABSPATH, 'wp-content/uploads/image/');
+
+if ( !file_exists($IMConfig['base_dir']) )
+{
+	@mkdir(ABSPATH . 'wp-content/uploads');
+	@chmod(ABSPATH . 'wp-content/uploads', 0777);
+	@mkdir(ABSPATH . 'wp-content/uploads/image');
+	@chmod(ABSPATH . 'wp-content/uploads/image', 0777);
+}
 
 $IMConfig['server_name'] = $_SERVER['SERVER_NAME'];
 
@@ -118,7 +126,7 @@ $IMConfig['thumbnail_dir'] = '.thumbs';
  NOTE: If $IMConfig['safe_mode'] = true, this parameter
        is ignored, you can not create directories
 */
-$IMConfig['allow_new_dir'] = true;
+$IMConfig['allow_new_dir'] = current_user_can('upload_files');
 
 /*
   Possible values: true, false
@@ -127,7 +135,7 @@ $IMConfig['allow_new_dir'] = true;
 
   FALSE - No uploading allowed.
 */
-$IMConfig['allow_upload'] = true;
+$IMConfig['allow_upload'] = current_user_can('upload_files');
 
 /*
   Possible values: true, false
@@ -145,7 +153,7 @@ $IMConfig['allow_replace'] = false;
 
   FALSE - No deleting allowed
 */
-$IMConfig['allow_delete'] = true;
+$IMConfig['allow_delete'] = current_user_can('upload_files');
 
 /*
   Possible values: true, false
@@ -154,7 +162,7 @@ $IMConfig['allow_delete'] = true;
 
   FALSE - Overwrite
 */
-$IMConfig['allow_newFileName'] = true;
+$IMConfig['allow_newFileName'] = current_user_can('upload_files');
 
 /*
   Possible values: true, false
@@ -164,7 +172,7 @@ $IMConfig['allow_newFileName'] = true;
 
   FALSE - Save to variant of entered filename, if file already exist.
 */
-$IMConfig['allow_overwrite'] = true;
+$IMConfig['allow_overwrite'] = current_user_can('upload_files');
 
 /*
   Specify the paths of the watermarks to use (relative to $IMConfig['base_dir']).
@@ -210,4 +218,13 @@ $IMConfig['thumbnail_height'] = 96;
   Image Editor temporary filename prefix.
 */
 $IMConfig['tmp_prefix'] = '.editor_';
+
+
+// Reset WP
+
+$GLOBALS['wp_filter'] = array();
+
+while ( @ob_end_clean() );
+
+ob_start();
 ?>

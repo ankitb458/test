@@ -4,7 +4,7 @@ Plugin Name: Favicon Head
 Plugin URI: http://timjoh.com/wordpress-plugin-favicon-head/
 Description: Favicon Head adds meta tags in the head of every page, specifying the location of your blog's favicon.ico.
 Author: Tim A. Johansson
-Version: 1.1 (fork)
+Version: 1.2 (fork)
 Author URI: http://timjoh.com/
 
 Copyright 2006  Tim A. Johansson
@@ -32,62 +32,48 @@ Todo:
 /*
 Changelog:
 
+	2006-11-21: Version 1.1
+		Animated favicon support added by pp (www.elvete.com)
 	2006-08-21: Version 1.0
 		Initial release
 
 */
 
 define('taj_fh_location_default', '/favicon.ico', TRUE);
+define('taj_fha_location_default', '', TRUE);
 
 add_action('admin_menu', 'taj_fh_add_options_pages');
 
-if ( function_exists('get_site_option') )
-{
-	add_site_option('taj_fh_location', taj_fh_location_default, 'Default location for the favicon.');
-}
-else
-{
-	add_option('taj_fh_location', taj_fh_location_default, 'Default location for the favicon.');
-}
+add_option('taj_fh_location', taj_fh_location_default, 'Default location for the favicon.');
+add_option('taj_fha_location', taj_fha_location_default, 'Default location for the animated favicon.');
 
 function taj_fh_add_options_pages() {
-	if ( !function_exists('get_site_option') || is_site_admin() )
-	{
-		add_options_page('Favicon Head', 'Favicon Head', 8, __FILE__, 'taj_fh_options_page');
-	}
+	add_options_page('Favicon', 'Favicon', 'manage_options', __FILE__, 'taj_fh_options_page');
 }
 
 function taj_fh_options_page() {
-
  	if (isset($_POST['info_update'])) {
-		check_admin_referer();
+		check_admin_referer('favicon');
 
 		// Update location
-		$taj_fh_location = stripslashes(strip_tags($_POST['taj_fh_location']));
-
-		if ( !$taj_fh_location )
-		{
+		$taj_fh_location = $_POST['taj_fh_location'];
+		$taj_fha_location = $_POST['taj_fha_location'];
+		if ( ! isset( $taj_fh_location ) ) {
 			$taj_fh_location = taj_fh_location_default;
 		}
-
-		if ( function_exists('get_site_option') )
-		{
-			update_site_option('taj_fh_location', $taj_fh_location);
+		update_option('taj_fh_location', $taj_fh_location);
+		if ( ! isset( $taj_fha_location ) ) {
+			$taj_fha_location = taj_fha_location_default;
 		}
-		else
-		{
-			update_option('taj_fh_location', $taj_fh_location);
-		}
+		update_option('taj_fha_location', $taj_fha_location);
 
 		// Acknowledge
 		echo '<div class="updated"><p><strong>Favicon Head options updated</strong></p></div>';
 	}
-
-	$taj_fh_location = function_exists('get_site_option') ? get_site_option('taj_fh_location') : get_option('taj_fh_location');
-
 	?>
 		<div class="wrap">
 			<form method="post" action="options-general.php?page=favicon-head.php">
+			<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('favicon'); ?>
 			<h2>Favicon Head Options</h2>
 			<fieldset class="options">
 				<legend>Basic Options</legend>
@@ -97,8 +83,17 @@ function taj_fh_options_page() {
 							<label for="taj_fh_location">Favicon location:</label>
 						</th>
 						<td>
-							<input type="text" name="taj_fh_location" size="32" value="<?php echo htmlspecialchars($taj_fh_location, ENT_QUOTES); ?>" />
+							<input type="text" name="taj_fh_location" size="32" value="<?php echo get_option('taj_fh_location'); ?>" />
 							<p style="margin: 5px 10px;">Since the directory depth of WordPress varies, this value should begin with "http://" or "/". The default value "/favicon.ico" means that the favicon.ico file is in the root directory.</p>
+						</td>
+					</tr>
+					<tr>
+						<th width="30%" valign="top" style="padding-top: 10px;">
+							<label for="taj_fha_location">Animated favicon location:</label>
+						</th>
+						<td>
+							<input type="text" name="taj_fha_location" size="32" value="<?php echo get_option('taj_fha_location'); ?>" />
+							<p style="margin: 5px 10px;">Leave this field blank to use the static icon.</p>
 						</td>
 					</tr>
 				</table>
@@ -112,17 +107,11 @@ function taj_fh_options_page() {
 }
 
 function taj_fh_meta() {
-	if ( !function_exists('get_site_option') || is_site_admin() )
-	{
-		/* The guidelines in the Wikipedia article are followed. */
-		$favicon_location = get_option('taj_fh_location');
-
-		if ( $favicon_location )
-		{
-			echo '<link rel="icon" href="' . $favicon_location . '" type="image/x-icon" />'; /* For sane browsers */
-			echo '<link rel="shortcut icon" href="' . $favicon_location . '" type="image/x-icon" />'; /* For IE */
-		}
-	}
+	/* The guidelines in the Wikipedia article are followed. */
+	$favicon_location = get_option('taj_fh_location');
+	$afavicon_location = get_option('taj_fha_location');
+	echo '<link rel="shortcut icon" href="' . $favicon_location . '" type="image/x-icon" />'; /* For IE */
+	echo '<link rel="icon" href="' . ( empty( $afavicon_location ) ? $favicon_location : $afavicon_location ) . '" type="image/x-icon" />'; /* For sane browsers */
 }
 
 

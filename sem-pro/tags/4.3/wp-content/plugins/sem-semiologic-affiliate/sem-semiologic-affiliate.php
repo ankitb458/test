@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Semiologic Affiliate
-Plugin URI: http://www.semiologic.com/software/sem-affiliate/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/sem-affiliate/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Automatically adds your affiliate ID to all links to Semiologic.
+Plugin URI: http://www.semiologic.com/software/marketing/sem-affiliate/
+Description: Automatically adds your affiliate ID to all links to Semiologic.
 Author: Denis de Bernardy
-Version: 1.3
+Version: 1.5
 Author URI: http://www.semiologic.com
 */
 
@@ -46,6 +46,7 @@ function sem_semiologic_affiliate_process_links($buffer = '')
 
 	if ( isset($options['aff_id'])
 		&& $options['aff_id'] !== ''
+		&& ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') === false )
 		)
 	{
 		$buffer = preg_replace_callback(

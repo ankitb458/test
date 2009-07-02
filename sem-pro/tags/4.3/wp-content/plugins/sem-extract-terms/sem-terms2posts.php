@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Related Entries
-Plugin URI: http://www.semiologic.com/software/terms2posts/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/terms2posts/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Requires the <a href="http://www.semiologic.com/software/extract-terms/">Extract terms plugin</a>. Returns Yahoo! terms as related posts. To use, call the_terms2posts(); where you want the related posts to appear.
-Version: 2.12
+Plugin URI: http://www.semiologic.com/software/widgets/terms2posts/
+Description: Leverages Yahoo's terms extraction web service to display related posts on your site.
+Version: 2.14
 Author: Denis de Bernardy
 Author URI: http://www.semiologic.com
 */
@@ -83,13 +83,11 @@ class sem_terms2posts
 
 			$related_posts = $wpdb->get_results("
 				SELECT
-					DISTINCT posts.*,
+					posts.*,
 					MATCH ( posts.post_title, posts.post_content )
 						AGAINST ( '" . addslashes($s) . "' ) AS mysql_score
 				FROM
 					$wpdb->posts as posts
-				LEFT JOIN $wpdb->postmeta as postmeta
-					ON postmeta.post_id = posts.ID
 				WHERE
 					posts.post_date_gmt <= '" . $now . "'
 					AND posts.ID <> " . intval($post->ID)
@@ -107,8 +105,8 @@ class sem_terms2posts
 					AND ( posts.post_password = '' )
 					AND "
 					. ( use_post_type_fixed
-						? "( post_status = 'publish' AND ( post_type = 'post' OR ( post_type = 'page' AND postmeta.meta_value = 'article.php' ) ) )"
-						: "( post_status = 'publish' OR ( post_status = 'static' AND postmeta.meta_value = 'article.php' ) )"
+						? "( post_status = 'publish' )"
+						: "( post_status = 'publish' OR post_status = 'static' )"
 						)
 					. "
 				GROUP BY
@@ -178,6 +176,35 @@ function the_terms2posts($num_posts = 5, $post = null)
 
 	echo $sem_terms2posts->display($num_posts, $post);
 } # end the_terms2posts()
+
+
+#
+# display_entry_related_entries()
+#
+
+function display_entry_related_entries()
+{
+	$show_entry_related_entries = is_single();
+
+	if ( function_exists('the_terms2posts')
+		&& apply_filters('show_entry_related_entries', $show_entry_related_entries)
+		&& get_the_post_terms()
+		)
+	{
+		echo '<div class="entry_related_entries">'
+			. '<h2>'
+			. get_caption('related_entries')
+			. '</h2>'
+			. '<ul>';
+
+		the_terms2posts();
+
+		echo '</ul>'
+			. '</div>';
+	}
+} # end display_entry_related_entries()
+
+add_action('after_the_entry', 'display_entry_related_entries', 8);
 
 
 ########################

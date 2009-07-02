@@ -7,6 +7,9 @@
  *
  *  See the online documentation for more information:
  *  http://wiki.fckeditor.net/
+ *
+  * File Authors:
+ *		Mike Koepke (mike.koepke@gmail.com)
  */
 
 // Register the related commands.
@@ -16,8 +19,8 @@ FCKCommands.RegisterCommand(
 		'Video',
 		FCKLang["VideoDlgTitle"],
 		FCKPlugins.Items['Video'].Path + 'video_dialog.html',
-		500,
-		580
+		530,
+		512
 	)
 );
  

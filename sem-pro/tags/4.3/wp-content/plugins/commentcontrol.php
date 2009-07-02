@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 /*
 Plugin Name: Extended Comment Options
 Plugin URI: http://beingmrkenny.co.uk/wordpress/plugins/extended-comment-options/
 Description: This plugin allows you to switch comments and/or pings on or off for batches of existing posts.
-Version: 1.1
+Version: 1.1 (edited)
 Author: Mark Kenny
 Author URI: http://beingmrkenny.co.uk/
 */
@@ -13,7 +13,7 @@ define ('DEBUGGING', FALSE); // Change to TRUE if you want to display informatio
 
 function eco_extended_comments_options() {
 	if (function_exists('add_options_page') )
-		add_options_page('Extended Comment Options', 'Comments Status', 8, basename(__FILE__), 'comment_conf');
+		add_options_page('Extended Comment Options', 'Comments Status', 'manage_options', basename(__FILE__), 'comment_conf');
 		// The first argument does into the <title>, the second goes on the tab in options
 }
 
@@ -46,7 +46,7 @@ if ( $eco_clean['submitted'] === true) { ?><div id="message" class="updated fade
  *
  *
  */
-global $eco_html;?> 
+global $eco_html;?>
 <h2>Simple Settings</h2>
 
 <!-- fieldsets are used here so that the admin page retains good layout when Tiger Admin is used -->
@@ -118,9 +118,9 @@ function setCheckedValue(radioObj, newValue) {
 <h2>Advanced Settings</h2>
 
 <fieldset class="options">
-	
+
 	<table width="100%" cellspacing="2" cellpadding="5" class="editform">
-	
+
 	<tr valign="top">
 		<th width="33%" scope="row">Set the status to:</th>
 		<td>
@@ -128,7 +128,7 @@ function setCheckedValue(radioObj, newValue) {
 			<input name="status" value="closed" id="off" type="radio" checked="checked" /> <label for="off">Closed (off)</label>
 		</td>
 	</tr>
-	
+
 	<tr valign="top">
 		<th width="33%" scope="row">Apply this to:</th>
 		<td>
@@ -136,7 +136,7 @@ function setCheckedValue(radioObj, newValue) {
 			<input name="pings" value="pings" id="pings" type="checkbox" checked="checked" /> <label for="pings">Pings (and Trackbacks).</label>
 		</td>
 	</tr>
-	
+
 	<tr valign="top">
 		<th width="33%" scope="row">Change the default status of new posts?</th>
 		<td>
@@ -144,7 +144,7 @@ function setCheckedValue(radioObj, newValue) {
 			<label for="future">Yes</label>
 		</td>
 	</tr>
-	
+
 	<tr valign="top">
 		<th width="33%" scope="row">Which posts?</th>
 		<td>
@@ -159,14 +159,14 @@ function setCheckedValue(radioObj, newValue) {
 			<!-- Option 3 -->
 			<p>
 				<input name="for" value="for-bora" id="for-bora" type="radio" /> <label for="for-bora">All posts made</label>
-				
+
 				<span onclick="setCheckedValue(document.forms['advanced'].elements['for'], 'for-bora')">
-				
+
 					<select name="beforeafter">
 						<option value="before" selected="selected">Before</option>
 						<option value="after">After</option>
 					</select> :
-					
+
 					<input name="day" value="01" type="text" maxlength="2" size="2" id="day" title="Enter the day (2 digits)" />
 					<select name="month">
 						<option value="01">January</option>
@@ -183,10 +183,10 @@ function setCheckedValue(radioObj, newValue) {
 						<option value="12">December</option>
 					</select>
 					<input name="year" value="<?php echo date('Y') ?>" type="text" maxlength="4" size="4" id="year" title="Enter the year (4 digits)" />
-					
+
 				</span>
 			</p>
-			
+
 			<!-- Option 4 -->
 			<p>
 				<input name="for" value="for-last" id="for-last" type="radio" /> <label for="for-last">The last</label>
@@ -206,7 +206,7 @@ function setCheckedValue(radioObj, newValue) {
 			</p>
 		</td>
 	</tr>
-	
+
 	<tr valign="top">
 		<th width="33%" scope="row">
 			Exclude posts?
@@ -216,8 +216,8 @@ function setCheckedValue(radioObj, newValue) {
 			<p>
 				Enter the IDs of posts you don&#8217;t want to change, separated by a
 				<strong>comma</strong>. For example: <kbd>12,34,129</kbd>.
-			</p>				
-			
+			</p>
+
 			<p>
 				IDs can be found on the &#8216;Manage posts&#8217; page. IDs are saved and will reappear
 				the next time you load this page. If you want to include a post again, just delete its ID.
@@ -225,15 +225,15 @@ function setCheckedValue(radioObj, newValue) {
 			</p>
 		</td>
 	</tr>
-	
+
 	</table>
-	
+
 </fieldset>
-		
+
 	<p class="submit">
 		<input name="submit" value="Update" type="submit" />
 	</p>
-	
+
 </form>
 
 <?php // OTHERWISE IF FORM HAS BEEN SUBMITTED :
@@ -291,16 +291,16 @@ switch ($_POST['for']) {
 
 // BEFOREAFTER SETTINGS
 if ( $eco_clean['for'] == 'for-bora') {
-	
+
 	if ( $_POST['beforeafter'] == 'before' || $_POST['beforeafter'] == 'after' ) {
 		$eco_clean['beforeafter'] = $_POST['beforeafter'];
 	}
-	
+
 	// Could I use this alone to check for valid date information?
 	if ( checkdate($_POST['day'], $_POST['month'], $_POST['year']) ) {
 		$eco_clean['date'] = date('Y-m-d',  strtotime("{$_POST['year']}-{$_POST['month']}-{$_POST['day']}"));
 	}
-	
+
 }
 
 // LAST 'X' SETTINGS
@@ -312,7 +312,7 @@ elseif ( $eco_clean['for'] == 'for-last' || $eco_clean['for'] == 'oneclick-last'
 	} else {
 		$eco_clean['last'] = 'error';
 	}
-	
+
 	switch($_POST['units']) {
 		case 'posts':
 		case 'days':
@@ -322,7 +322,7 @@ elseif ( $eco_clean['for'] == 'for-last' || $eco_clean['for'] == 'oneclick-last'
 			$eco_clean['units'] = $_POST['units'];
 			break;
 	}
-	
+
 	function date_from_last($time, $units) {
 		switch ($units) {
 			case 'days':
@@ -387,7 +387,7 @@ foreach ($eco_clean as $key => $value) {
  *
  *
  */
- 
+
 if (DEBUGGING === TRUE) {
 	function eco_debugging() { ?>		<h3>Debugging Information</h3>
 		<pre style="border: 1px solid black; background: #fafafa; padding: 5px;"><?php
@@ -397,12 +397,12 @@ if (DEBUGGING === TRUE) {
 				$eco_POST_html[$key] = wp_specialchars($value);
 			}
 			echo '<strong>$_POST</strong>:'."\n"; print_r($eco_POST_html); echo "\n";
-			
+
 			foreach ($eco_clean as $key => $value) {
 				$eco_clean_html[$key] = wp_specialchars($value);
 			}
 			echo '<strong>$eco_clean</strong>:'."\n"; print_r($eco_clean_html); echo "\n";
-			
+
 			echo "These are the arguments supplied to eco_query():\n";
 			echo '<strong>ECO_QUERYVARS</strong>:  ' . ECO_QUERYVARS . "\n";
 			if ( defined('ECO_QUERYVARS2') ) {
@@ -417,7 +417,7 @@ if (DEBUGGING === TRUE) {
 			?></pre><?php
 	}
 }
- 
+
 function eco_error($err_message) {
 	global $eco_error;
 	echo '<div class="error">';
@@ -457,7 +457,7 @@ if ( $eco_clean['posts'] == 'error' ) {
  *
  *
  */
- 
+
  if ( $eco_clean['posts'] != get_option('eco_excluded_posts') ) {
 	update_option('eco_excluded_posts', $eco_clean['posts']);
 }
@@ -478,16 +478,16 @@ function default_comments_status() {
 
 function eco_query($which, $status, $horizon='', $criterion='', $excluded='') {
 	global $wpdb;
-	
+
 	// Escape the strings, just in case!
 	$which = $wpdb->escape($which);
 	$status = $wpdb->escape($status);
 	$horizon = $wpdb->escape($horizon);
 	$criterion = $wpdb->escape($criterion);
 	$excluded = $wpdb->escape($excluded);
-	
+
 	$sql = "UPDATE $wpdb->posts ";
-	
+
 	switch ($which) {
 		case 'comments':
 			$sql .= " SET `comment_status` = '$status' ";
@@ -498,13 +498,13 @@ function eco_query($which, $status, $horizon='', $criterion='', $excluded='') {
 		case 'both':
 			$sql .= " SET `comment_status` = '$status', `ping_status` = '$status' ";
 	}
-	
+
 	$sql .= " WHERE `post_status` = 'publish' ";
-	
+
 	if ( $excluded != '' ) {
 		$sql .= " AND `ID` NOT IN ($excluded) ";
 	}
-	
+
 	if ( $horizon != '' ) {
 		switch($horizon) {
 			case 'before' :
@@ -521,23 +521,23 @@ function eco_query($which, $status, $horizon='', $criterion='', $excluded='') {
 				break;
 		}
 	}
-	
+
 	$wpdb->query($sql);
-	
+
 	if (DEBUGGING === TRUE) {
 		if ( defined('ECO_QUERYVARS') ) {
 			define ('ECO_QUERYVARS2', wp_specialchars("[$which] [$status] [$horizon] [$criterion] [$excluded]"));
 		} else {
 			define ('ECO_QUERYVARS', wp_specialchars("[$which] [$status] [$horizon] [$criterion] [$excluded]"));
 		}
-		
+
 		if ( defined('ECO_SQL') ) {
 			define ('ECO_SQL2', wp_specialchars($sql));
 		} else {
 			define ('ECO_SQL', wp_specialchars($sql));
 		}
 	}
-	
+
 }
 
 switch ($eco_clean['for']) {
@@ -642,7 +642,7 @@ case 'for-last' :
 		eco_query($eco_clean['which'], $eco_clean['status'], 'after', $eco_clean['date'], $eco_clean['posts']);
 		eco_query($eco_clean['which'], $eco_clean['opposite_status'], 'before', $eco_clean['date'], $eco_clean['posts']);
 	}
-		
+
 	$eco_message =
 		"<strong>{$eco_html['message_which']}</strong> for the "
 		. "<strong>last {$eco_html['last']} {$eco_html['units']}</strong>"
@@ -669,7 +669,7 @@ if ( $eco_clean['future'] === true ) {
 if ( !empty($eco_clean['posts']) && $eco_clean['for'] != 'for-new' ) {
 	echo "\t<li>The following posts were not changed: <strong>{$eco_html['posts']}</strong>.</li>\n";
 }
-	
+
 ?>
 </ul>
 

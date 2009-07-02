@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Cosmos Link
-Plugin URI: http://www.semiologic.com/software/cosmos-link/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/cosmos-link/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Adds the technorati cosmos link of your posts and pages. Calling the_cosmos_link(); and the_cosmos_feed(); will echo the proper urls within the loop.
+Plugin URI: http://www.semiologic.com/software/geekery/cosmos-link/
+Description: Adds a technorati cosmos link to your posts and pages.
 Author: Denis de Bernardy
 Version: 2.1
 Author URI: http://www.semiologic.com

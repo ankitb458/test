@@ -3,7 +3,7 @@
 Plugin Name: Countdown
 Plugin URI: http://redalt.com/wiki/Countdown
 Description: Adds template tags to count down to a specified date.  <strong>Important:</strong> Edit your dates and settings on the Options | Countdown admin panel. The Plugin will not work as expected until you do.
-Version: 2.0 (fork)
+Version: 2.1 (fork)
 Author: Owen Winkler &amp; Denis de Bernardy
 Author URI: http://www.asymptomatic.net
 License: MIT License - http://www.opensource.org/licenses/mit-license.php
@@ -341,6 +341,7 @@ function dtr_management_page()
 	#echo '</pre>';
 
 	if (isset($_POST['action']) && $_POST['action'] == 'update_countdown') {
+		check_admin_referer('countdown');
 		if (get_magic_quotes_gpc()) {
 			$_POST = array_map('stripslashes', $_POST);
 		}
@@ -355,6 +356,7 @@ function dtr_management_page()
 	<h2>Countdown Events</h2>
 	<p>Countdown shows the next few events that are scheduled in your dates list, and provides very flexible recurring date settings.</p>
 	<form action="" method="post" id="countdown_events">
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('countdown'); ?>
 		<input type="hidden" name="action" value="update_countdown" />
 		<h3>Dates</h3>
 		<p>This is a list of events that will be used for output. You can add new events manually, or use the form
@@ -455,6 +457,7 @@ function newevent()
 function dtr_options_page()
 {
 	if (isset($_POST['Submit'])) {
+		check_admin_referer('countdown');
 		if (get_magic_quotes_gpc()) {
 			$_POST = array_map('stripslashes', $_POST);
 		}
@@ -481,6 +484,7 @@ function dtr_options_page()
 	<h2>Countdown Options</h2>
 	<p>Countdown shows the next few events that are scheduled in your dates list, and provides very flexible recurring date settings.</p>
 	<form method="post">
+		<?php if ( function_exists('wp_nonce_field') ) wp_nonce_field('countdown'); ?>
 		<h3>Event List</h3>
 		<p>Each entry in the output will appear inside a &lt;li&gt;&lt;/li&gt; in the format specified here.</p>
 		<p>List format: <input type="text" name="listformat" value="<?php echo htmlspecialchars($options['listformat'], ENT_QUOTES); ?>" /></p>

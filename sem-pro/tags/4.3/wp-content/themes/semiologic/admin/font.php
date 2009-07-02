@@ -9,7 +9,7 @@ function add_theme_font_options_admin()
 		'themes.php',
 		__('Font'),
 		__('Font'),
-		7,
+		'switch_themes',
 		str_replace("\\", "/", basename(__FILE__)),
 		'display_theme_font_options_admin'
 		);
@@ -24,12 +24,14 @@ add_action('admin_menu', 'add_theme_font_options_admin');
 
 function update_theme_font_options()
 {
-	global $semiologic;
+	check_admin_referer('sem_font');
 
-	$semiologic['active_font'] = $_POST['active_font'];
-	$semiologic['active_font_size'] = $_POST['active_font_size'];
+	$options = get_option('semiologic');
 
-	update_option('semiologic', $GLOBALS['semiologic']);
+	$options['active_font'] = $_POST['active_font'];
+	$options['active_font_size'] = $_POST['active_font_size'];
+
+	update_option('semiologic', $options);
 } # end update_theme_font_options
 
 add_action('update_theme_font_options', 'update_theme_font_options');
@@ -59,10 +61,12 @@ function display_theme_font_options_admin()
 
 	echo '<form method="post" action="">';
 
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_font');
+
 	echo '<input type="hidden"'
 		. ' name="action"'
 		. ' value="update_theme_font_options"'
-		. '>';
+		. ' />';
 
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Font') . '</h2>';
@@ -84,7 +88,9 @@ function display_theme_font_options_admin()
 
 function display_theme_font_options()
 {
-	$active_font = $GLOBALS['semiologic']['active_font'];
+	$options = get_option('semiologic');
+
+	$active_font = $options['active_font'];
 
 	$fonts = array(
 		'arial' => array(
@@ -209,7 +215,9 @@ add_action('display_theme_font_options', 'display_theme_font_options');
 
 function display_theme_font_size_options()
 {
-	$active_font_size = isset($GLOBALS['semiologic']['active_font_size']) ? $GLOBALS['semiologic']['active_font_size'] : 'small';
+	$options = get_option('semiologic');
+
+	$active_font_size = isset($options['active_font_size']) ? $options['active_font_size'] : 'small';
 
 	$font_sizes = array(
 		'small' => array(

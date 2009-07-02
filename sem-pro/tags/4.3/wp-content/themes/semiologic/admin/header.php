@@ -1,156 +1,294 @@
 <?php
-#
-# add_theme_header_options_admin()
-#
 
-function add_theme_header_options_admin()
+class header_admin
 {
-	add_submenu_page(
-		'themes.php',
-		__('Header'),
-		__('Header'),
-		7,
-		str_replace("\\", "/", basename(__FILE__)),
-		'display_theme_header_options_admin'
-		);
-} # end add_theme_header_options_admin()
+	#
+	# init()
+	#
 
-add_action('admin_menu', 'add_theme_header_options_admin');
-
-
-#
-# display_theme_header_options_admin()
-#
-
-function display_theme_header_options_admin()
-{
-	if ( !empty($_POST)
-		&& isset($_POST['action'])
-		&& $_POST['action'] == 'update_theme_header_options'
-		)
+	function init()
 	{
-		do_action('update_theme_header_options');
-
-		echo "<div class=\"updated\">\n"
-			. "<p>"
-				. "<strong>"
-				. __('Options saved.')
-				. "</strong>"
-			. "</p>\n"
-			. "</div>\n";
-	}
-
-	echo '<form method="post" action="">';
-
-	echo '<input type="hidden"'
-		. ' name="action"'
-		. ' value="update_theme_header_options"'
-		. '>';
-
-	echo '<div class="wrap">';
-	echo '<h2>' . __('Header') . '</h2>';
-	do_action('display_theme_header_options');
-	echo '</div>';
-
-	echo '</form>';
-} # end display_theme_header_options_admin()
+		add_action('admin_menu', array('header_admin', 'add_admin_page'));
+		add_action('admin_head', array('header', 'display_script'));
+	} # init()
 
 
-#
-# update_theme_header_options()
-#
+	#
+	# add_admin_page()
+	#
 
-function update_theme_header_options()
-{
-	global $semiologic;
+	function add_admin_page()
+	{
+		if ( !glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		{
+			add_submenu_page(
+				'themes.php',
+				__('Header'),
+				__('Header'),
+				'switch_themes',
+				str_replace("\\", "/", basename(__FILE__)),
+				array('header_admin', 'display_admin_page')
+				);
+		}
+	} # add_admin_page()
 
-	$semiologic['active_header'] = $_POST['active_header'];
 
-	update_option('semiologic', $GLOBALS['semiologic']);
-} # end update_theme_header_options
+	#
+	# display_admin_page()
+	#
 
-add_action('update_theme_header_options', 'update_theme_header_options');
+	function display_admin_page()
+	{
+		if ( !empty($_POST)
+			&& isset($_POST['action'])
+			&& $_POST['action'] == 'update_theme_header_options'
+			)
+		{
+			header_admin::save_header();
 
+			echo "<div class=\"updated\">\n"
+				. "<p>"
+					. "<strong>"
+					. __('Options saved.')
+					. "</strong>"
+				. "</p>\n"
+				. "</div>\n";
+		}
 
-#
-# display_theme_header_options()
-#
+		echo '<form enctype="multipart/form-data" method="post" action="">';
 
-function display_theme_header_options()
-{
-	echo '<div style="clear: both;"></div>';
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_header');
 
-	echo '<p>' . __('The headers below will display beneath the site\'s name and tagline. You can drop additional .jpg images into the theme\'s headers directory.') . '</p>';
+		$options = get_option('semiologic');
 
-	echo '<p>' . __('<strong>The theme also features a few built-in integration shortcuts that allow to insert a logo or replace the entire header with an image or a flash file</strong>. Drop any of the following into your skin directory and things will work out of the box:') . '</p>';
+		$header = header::get_header();
 
-	echo '<ul>';
+		echo '<input type="hidden"'
+			. ' name="action"'
+			. ' value="update_theme_header_options"'
+			. ' />';
 
-	echo '<li>' . __('header.jpg (or .jpeg, .png, .gif) will insert itself as the site\'s name -- leaving the header and tagline untouched.') . '</li>';
+		echo '<div class="wrap">';
+		echo '<h2>' . __('Header') . '</h2>';
 
-	echo '<li>' . __('header-background.jpg (or .jpeg, .png, .gif) will insert itself as the header -- in place of the header.') . '</li>';
+		echo '<h3>' . __('Header File') . '</h3>';
 
-	echo '<li>' . __('header.swf (flash file) will insert itself as the header -- in place of the header.') . '</li>';
+		if ( $header )
+		{
+			preg_match("/\.([^\.]+)$/", $header, $ext);
+			$ext = end($ext);
 
-	echo '</ul>';
+			if ( $ext != 'swf' )
+			{
+				echo '<p>';
 
-	echo '<p>' . __('Header files should be 590px or 770px wide if you are using one of the default widths. The height adjust itself automagically.') . '</p>';
+				header::display_logo($header);
 
-	$headers = (array) glob(TEMPLATEPATH . '/headers/*');
+				echo '</p>' . "\n";
+			}
 
-	natsort($headers);
+			else
+			{
+				header::display_flash($header);
+			}
 
-	$active_header = $GLOBALS['semiologic']['active_header'];
+			if ( is_writable($header) )
+			{
+				echo '<label for="delete_header">'
+					. '<input type="checkbox"'
+						. ' id="delete_header" name="delete_header"'
+						. ' style="text-align: left; width: auto;"'
+						. ' />'
+					. '&nbsp;'
+					. __('Delete header')
+					. '</label>';
+			}
+			else
+			{
+				echo __('This header is not writable by the server.');
+			}
+
+			echo '</p>' . "\n";
+		}
+
+		@mkdir(ABSPATH . 'wp-content/header');
+		@chmod(ABSPATH . 'wp-content/header', 0777);
+
+		if ( !$header
+			|| is_writable($header)
+			)
+		{
+			echo '<p>'
+				. '<label for="header_file">'
+					. __('New Header (jpg, png, gif, swf)') . ':'
+					. '</label>'
+				. '<br />' . "\n";
+
+			if ( is_writable(ABSPATH . 'wp-content/header') )
+			{
+				echo '<input type="file" style="width: 480px;"'
+					. ' id="header_file" name="header_file"'
+					. ' />' . "\n";
+			}
+			elseif ( !is_writable(ABSPATH . 'wp-content') )
+			{
+				echo __('The wp-content folder is not writeable by the server') . "\n";
+			}
+			else
+			{
+				echo __('The wp-content/headers folder is not writeable by the server') . "\n";
+			}
+
+			echo '</p>' . "\n";
+		}
+
+		echo '<div class="submit">';
+		echo '<input type="submit" value="' . __('Update Options') . ' &raquo;" />';
+		echo '</div>';
+
 
 		echo '<h3>'
-			. '<label for="active_header[]">'
-			. '<input type="radio"'
-				. ' id="active_header[]" name="active_header"'
-				. ' value=""'
-				. ( $active_header == ''
-					? ' checked="checked"'
-					: ''
-					)
-				. ' />'
-			. '&nbsp;'
-			. __('None')
-			. '</label>'
+			. __('Header Options')
 			. '</h3>';
 
-	foreach ( $headers as $header )
-	{
-		$header = basename($header);
+		if ( !isset($options['header']['mode']) )
+		{
+			$options['header']['mode'] = 'header';
+		}
 
-		echo '<h3>'
-			. '<label for="active_header[' . $header . ']">'
+		echo '<p>'
+			. '<label for="header[mode][header]">'
 			. '<input type="radio"'
-				. ' id="active_header[' . $header . ']" name="active_header"'
-				. ' value="' . $header . '"'
-				. ( ( $active_header == $header )
+				. 'id=header[mode][header] name="header[mode]"'
+				. ' value="header"'
+				. ( ( $options['header']['mode'] == 'header' )
 					? ' checked="checked"'
 					: ''
 					)
 				. ' />'
 			. '&nbsp;'
-			. $header
-			. '</label>'
-			. '</h3>'
-			. '<p>'
-			. '<label for="active_header[' . $header . ']">'
-			. '<img src="'
-				. get_template_directory_uri() . '/headers/' . $header
-				. '"'
-				. 'alt=""'
-				. ' />'
+			. __('Use this file as the site\'s header.')
 			. '</label>'
 			. '</p>';
-	}
 
-	echo '<div class="submit">';
-	echo '<input type="submit" value="' . __('Update Options') . ' &raquo;" />';
-	echo '</div>';
-} # end display_theme_header_options()
+		echo '<p>'
+			. '<label for="header[mode][background]">'
+			. '<input type="radio"'
+				. 'id=header[mode][background] name="header[mode]"'
+				. ' value="background"'
+				. ( ( $options['header']['mode'] == 'background' )
+					? ' checked="checked"'
+					: ''
+					)
+				. ' />'
+			. '&nbsp;'
+			. __('Use this <u>image</u> file as a background for the site\'s header.')
+			. '</label>'
+			. '</p>';
 
-add_action('display_theme_header_options', 'display_theme_header_options');
+		echo '<p>'
+			. '<label for="header[mode][logo]">'
+			. '<input type="radio"'
+				. 'id=header[mode][logo] name="header[mode]"'
+				. ' value="logo"'
+				. ( ( $options['header']['mode'] == 'logo' )
+					? ' checked="checked"'
+					: ''
+					)
+				. ' />'
+			. '&nbsp;'
+			. __('Use this file as a logo in place of the site\'s name.')
+			. '</label>'
+			. '</p>';
 
+		echo '<div class="submit">';
+		echo '<input type="submit" value="' . __('Update Options') . ' &raquo;" />';
+		echo '</div>';
+
+		echo '</div>';
+
+		echo '</form>';
+	} # display_admin_page()
+
+
+	#
+	# save_header()
+	#
+
+	function save_header()
+	{
+		check_admin_referer('sem_header');
+
+		#echo '<pre>';
+		#var_dump($_POST);
+		#var_dump($_FILES);
+		#echo '</pre>';
+
+		$options = get_option('semiologic');
+
+		if ( @ $_FILES['header_file']['name'] )
+		{
+			if ( $header = header::get_header() )
+			{
+				@unlink($header);
+			}
+
+			$tmp_name =& $_FILES['header_file']['tmp_name'];
+
+			preg_match("/\.([^\.]+)$/", $_FILES['header_file']['name'], $ext);
+			$ext = end($ext);
+
+			if ( !in_array($ext, array('jpg', 'png', 'gif', 'swf')) )
+			{
+				echo '<div class="error">'
+					. "<p>"
+						. "<strong>"
+						. __('Invalid File Type.')
+						. "</strong>"
+					. "</p>\n"
+					. "</div>\n";
+			}
+			else
+			{
+				$name = ABSPATH . 'wp-content/header/header.' . $ext;
+
+				@move_uploaded_file($tmp_name, $name);
+				@chmod($name, 0666);
+			}
+		}
+		elseif ( isset($_POST['delete_header']) )
+		{
+			if ( $header = header::get_header() )
+			{
+				@unlink($header);
+			}
+		}
+
+		if ( $header = header::get_header() )
+		{
+			preg_match("/\.([^\.]+)$/",$header, $ext);
+			$ext = end($ext);
+
+			if ( $ext == 'swf' && $_POST['header']['mode'] == 'background' )
+			{
+				$_POST['header']['mode'] = 'header';
+			}
+		}
+		else
+		{
+			$_POST['header']['mode'] = 'header';
+		}
+
+		if ( !in_array($_POST['header']['mode'], array('header', 'background', 'logo')) )
+		{
+			$_POST['header']['mode'] = 'header';
+		}
+
+		$options['header'] = $_POST['header'];
+
+		update_option('semiologic', $options);
+	} # save_header()
+} # header_admin
+
+header_admin::init();
 ?>

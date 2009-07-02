@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Related Entries for Feeds
-Plugin URI: http://www.semiologic.com/software/terms2posts4feeds/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/terms2posts4feeds/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Requires the <a href="http://www.semiologic.com/software/extract-terms/">Extract terms plugin</a>. Returns Yahoo! terms as related entries in your RSS feed.
-Version: 2.12
+Plugin URI: http://www.semiologic.com/software/widgets/terms2posts4feeds/
+Description: Leverages Yahoo's terms extraction web service to display related posts in your RSS feed.
+Version: 2.14
 Author: Denis de Bernardy
 Author URI: http://www.semiologic.com
 */
@@ -85,13 +85,11 @@ class sem_terms2posts4feeds
 
 			$related_posts = $wpdb->get_results("
 				SELECT
-					DISTINCT posts.*,
+					posts.*,
 					MATCH ( posts.post_title, posts.post_content )
 						AGAINST ( '" . addslashes($s) . "' ) AS mysql_score
 				FROM
 					$wpdb->posts as posts
-				LEFT JOIN $wpdb->postmeta as postmeta
-					ON postmeta.post_id = posts.ID
 				WHERE
 					posts.post_date_gmt <= '" . $now . "'
 					AND posts.ID <> " . intval($post->ID)
@@ -109,8 +107,8 @@ class sem_terms2posts4feeds
 					AND ( posts.post_password = '' )
 					AND "
 					. ( use_post_type_fixed
-						? "( post_status = 'publish' AND ( post_type = 'post' OR ( post_type = 'page' AND postmeta.meta_value = 'article.php' ) ) )"
-						: "( post_status = 'publish' OR ( post_status = 'static' AND postmeta.meta_value = 'article.php' ) )"
+						? "( post_status = 'publish' )"
+						: "( post_status = 'publish' OR post_status = 'static' )"
 						)
 					. "
 				GROUP BY

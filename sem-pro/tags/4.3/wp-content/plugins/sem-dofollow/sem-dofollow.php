@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Dofollow
-Plugin URI: http://www.semiologic.com/software/dofollow/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/dofollow/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Disables the rel=nofollow attribute in comments.
+Plugin URI: http://www.semiologic.com/software/wp-fixes/dofollow/
+Description: Disables the rel=nofollow attribute in comments.
 Author: Denis de Bernardy
 Version: 2.0
 Author URI: http://www.semiologic.com

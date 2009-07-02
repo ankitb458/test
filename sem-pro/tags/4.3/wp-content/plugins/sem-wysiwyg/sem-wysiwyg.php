@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Wysiwyg Editor
-Plugin URI: http://www.semiologic.com/software/wysiwyg-editor/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/wysiwyg-editor/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; A Wysiwyg Editor plugin that works. Be sure to activate the rich text editor in your user preferences, under Users / Your Profile.
+Plugin URI: http://www.semiologic.com/software/publishing/wysiwyg-editor/
+Description: A Wysiwyg Editor that works. <strong>Be sure to activate the rich text editor in your user preferences, under Users / Your Profile.</strong>
 Author: Denis de Bernardy and Mike Koepke
-Version: 2.1.5
-Author URI: http://www.semiologic.com
+Version: 2.2
+Author URI: http://www.mikekoepke.com
 */
 
 /*
@@ -64,6 +64,13 @@ function sem_wysiwyg_admin_header()
 #uploading
 {
 	display: none;
+}
+
+#postdiv a
+{
+	margin-top: -12px;
+	border-bottom: none;
+	text-decoration: underline;
 }
 </style>
 		<?php
@@ -191,6 +198,7 @@ function sem_add_fck_buttons()
 	echo 'document.show_fck_podcast = ' . ( function_exists('ap_insert_player_widgets') ? 'true' : 'false' ) . ';' . "\n";
 	echo 'document.show_fck_videocast = ' . ( function_exists('wpflv_replace') ? 'true' : 'false' ) . ';' . "\n";
 	echo 'document.show_fck_adunit = ' . ( ( function_exists('sem_ad_spaces_init') && ( !function_exists('get_site_option') || is_site_admin() ) ) ? 'true' : 'false' ) . ';' . "\n";
+	echo 'document.show_fck_media = ' . ( class_exists('mediacaster') ? 'true' : 'false' ) . ';' . "\n";
 
 	echo '</script>' . "\n";
 } # end sem_add_fck_buttons()
@@ -237,100 +245,8 @@ function sem_fck_tags($content)
 			);
 	}
 
-	if ( function_exists('ap_insert_player_widgets') )
-	{
-		$content = preg_replace(
-			"/
-				(?:<br\s*\/>|\n|\r)*
-				<!--\s*podcast\s*(\#[^>]*)-->
-				(?:<br\s*\/>|\n|\r)*
-			/ix",
-			"<!--podcast$1-->",
-			$content
-			);
-
-		$content = preg_replace(
-			"/
-				(?:<p>)?
-				<!--\s*podcast\s*(\#[^>]*)-->
-				(?:<\/p>)?
-			/ix",
-			"<!--podcast$1-->",
-			$content
-			);
-
-		$content = preg_replace(
-			"/
-				<!--\s*podcast\s*\#([^>]*)-->
-			/ix",
-			"\n\n<div>[audio:$1]</div>\n\n",
-			$content
-			);
-	}
-
-	if ( function_exists('wpflv_replace') )
-	{
-		$content = preg_replace(
-			"/
-				(?:<br\s*\/>|\n|\r)*
-				<!--\s*videocast\s*(\#[^>]*)-->
-				(?:<br\s*\/>|\n|\r)*
-			/ix",
-			"<!--videocast$1-->",
-			$content
-			);
-
-		$content = preg_replace(
-			"/
-				(?:<p>)?
-				<!--\s*videocast\s*(\#[^>]*)-->
-				(?:<\/p>)?
-			/ix",
-			"<!--videocast$1-->",
-			$content
-			);
-
-		$content = preg_replace_callback(
-			"/
-				<!--\s*videocast\s*\#([^>]*)-->
-			/ix",
-			'replace_videocast_tag',
-			$content
-			);
-	}
-
 	return $content;
 } # end sem_fck_tags()
 
 add_filter('the_content', 'sem_fck_tags', 0);
-
-
-#
-# replace_videocast_tag()
-#
-
-function replace_videocast_tag($input)
-{
-	$params = explode("#", $input[1]);
-
-	$file = strip_tags($params[0]);
-	$width = intval($params[1]);
-	$height = intval($params[2]);
-
-	if ( !$width || !$height )
-	{
-		$options = wpflv_get_options();
-		$width = $width ? $width : $options['width'];
-		$height = $height ? $height : $options['height'];
-	}
-
-	return "\n\n"
-		. '<div>'
-		. '<flv href="' . $file . '"'
-		. ' width="' . $width . '"'
-		. ' height="' . $height . '"'
-		. ' />'
-		. '</div>'
-		. "\n\n";
-} # end replace_videocast_tag()
 ?>

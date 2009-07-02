@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe To Comments
-Version: 2.1
+Version: 2.1.1 (edited)
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to recieve notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
@@ -777,12 +777,12 @@ class sg_subscribe {
 
 
 	function add_admin_menu() {
-		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 8, __FILE__, 'sg_subscribe_admin');
+		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 'administrator', __FILE__, 'sg_subscribe_admin');
 
 		if ( class_exists('SmallOptions') )
 			add_action('small_options_page', array('sg_subscribe_settings', 'options_page_contents'));
 		else
-			add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 5, basename(__FILE__), array('sg_subscribe_settings', 'options_page'));
+			add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 'administrator', basename(__FILE__), array('sg_subscribe_settings', 'options_page'));
 	}
 
 
@@ -899,7 +899,7 @@ function sg_subscribe_admin($standalone = false) {
 			break;
 
 		case "block" :
-			if ($sg_subscribe->add_block($sg_subscribe->email)) 
+			if ($sg_subscribe->add_block($sg_subscribe->email))
 				$sg_subscribe->add_message(sprintf(__('<strong>%s</strong> has been added to the "do not mail" list. You will no longer receive any notifications from this site. If this was done in error, please contact the <a href="mailto:%s">site administrator</a> to remove this block.', 'subscribe-to-comments'), $sg_subscribe->email, $sg_subscribe->site_email));
 			else
 				$sg_subscribe->add_error(sprintf(__('<strong>%s</strong> has already been blocked!', 'subscribe-to-comments'), $sg_subscribe->email), 'manager');
@@ -924,7 +924,7 @@ function sg_subscribe_admin($standalone = false) {
 			@import url( <?php echo get_settings('siteurl'); ?>/wp-admin/wp-admin.css );
 		</style>
 
-		<link rel="stylesheet" type="text/css" media="print" href="<?php echo get_settings('siteurl'); ?>/print.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo  get_stylesheet_directory_uri() . '/print.css'; ?>" />
 
 		<meta http-equiv="Content-Type" content="text/html;
 	charset=<?php bloginfo('charset'); ?>" />
@@ -1180,7 +1180,7 @@ function checkAll(form) {
 				</p>
 
 				<p>
-				<?php _e('New E-mail Address:', 'subscribe-to-comments'); ?> 
+				<?php _e('New E-mail Address:', 'subscribe-to-comments'); ?>
 				<input name="new_email" type="text" id="new_email" size="40" />
 				</p>
 

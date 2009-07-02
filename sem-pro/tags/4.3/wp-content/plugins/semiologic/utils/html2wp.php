@@ -57,5 +57,5 @@ function html2wp_revive_formatting()
 	}
 } # html2wp_revive_formatting()
 
-add_filter('after_the_entry', 'html2wp_revive_formatting');
+add_filter('after_the_entry', 'html2wp_revive_formatting', -10000);
 ?>

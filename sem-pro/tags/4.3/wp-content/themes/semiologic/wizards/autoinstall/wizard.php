@@ -1,7 +1,7 @@
 <?php
 #
 # Wizard Name: Semiologic Autoinstall
-# Version: 1.1
+# Version: 1.5
 # Author: Denis de Bernardy
 # Author uri: http://www.mesoconcepts.com
 # Description: <p>This wizard will restore your initial Semiologic theme settings, including:</p> <ul><li>Skin, layout, font and width</li><li>Header, footer</li><li>Nav menus</li><li>Captions</li><li>Features (Pro)</li><li>Sidebars (Pro)</li></ul>

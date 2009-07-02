@@ -2,7 +2,7 @@
 
 if ( !defined('clone_script_version') )
 {
-	define('clone_script_version', 1.5);
+	define('clone_script_version', 1.6);
 }
 
 #
@@ -13,9 +13,25 @@ function export_semiologic_config()
 {
 	global $wpdb;
 
-	# clean buffer
+	// Reset WP
 
-	ob_end_clean();
+	$GLOBALS['wp_filter'] = array();
+
+	while ( @ob_end_clean() );
+
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+	// always modified
+	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+	// HTTP/1.1
+	header('Cache-Control: no-store, no-cache, must-revalidate');
+	header('Cache-Control: post-check=0, pre-check=0', false);
+	// HTTP/1.0
+	header('Pragma: no-cache');
+
+	// Set the response format.
+	header( 'Content-Type:text/xml; charset=utf-8' );
+
+	echo '<?xml version="1.0" encoding="utf-8" ?>';
 
 	# validate request
 
@@ -24,8 +40,7 @@ function export_semiologic_config()
 		|| !isset($_REQUEST['user_pass'])
 		)
 	{
-		die('ERROR
-Request failed');
+		die('<error>Request failed</error>');
 	}
 
 	# validate user
@@ -36,15 +51,13 @@ Request failed');
 		|| ( $user_data->user_pass != $_REQUEST['user_pass'] )
 		)
 	{
-		die('ERROR
-Authentication failed: Please verify your user details');
+		die('<error>Authentication failed: Please verify your user details</error>');
 	}
 
 	$user = new WP_User($user_data->user_login);
 	if ( !$user->has_cap('administrator') )
 	{
-		die('ERROR
-Access denied: This user is not an administrator');
+		die('<error>Access denied: This user is not an administrator</error>');
 	}
 
 	$data = false;
@@ -158,8 +171,7 @@ Access denied: This user is not an administrator');
 		break;
 
 	default:
-		echo 'ERROR
-Data Processing Failed';
+		echo '<error>Invalid Data</error>';
 		break;
 	}
 

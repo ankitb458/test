@@ -178,4 +178,25 @@ if ( !defined('use_post_type_fixed') )
 			function_exists('get_site_option')
 		);
 }
+
+
+remove_filter('pre_category_description', 'wp_filter_kses');
+add_filter('pre_category_description', 'wp_filter_post_kses');
+
+
+
+#
+# enable_easy_auctionads()
+#
+
+function enable_easy_auctionads()
+{
+	if ( function_exists('wp_easy_auctionads_start') )
+	{
+		add_action('before_the_wrapper', 'wp_easy_auctionads_start');
+		add_action('after_the_wrapper', 'wp_easy_auctionads_end');
+	}
+} # enable_easy_auctionads()
+
+add_action('init', 'enable_easy_auctionads');
 ?>

@@ -9,7 +9,7 @@ function add_theme_skin_options_admin()
 		'themes.php',
 		__('Skin'),
 		__('Skin'),
-		7,
+		'switch_themes',
 		str_replace("\\", "/", basename(__FILE__)),
 		'display_theme_skin_options_admin'
 		);
@@ -24,11 +24,13 @@ add_action('admin_menu', 'add_theme_skin_options_admin');
 
 function update_theme_skin_options()
 {
-	global $semiologic;
+	check_admin_referer('sem_skin');
 
-	$semiologic['active_skin'] = get_skin_data($_POST['active_skin']);
+	$options = get_option('semiologic');
 
-	update_option('semiologic', $GLOBALS['semiologic']);
+	$options['active_skin'] = get_skin_data($_POST['active_skin']);
+
+	update_option('semiologic', $options);
 } # end update_theme_skin_options
 
 add_action('update_theme_skin_options', 'update_theme_skin_options');
@@ -58,10 +60,12 @@ function display_theme_skin_options_admin()
 
 	echo '<form method="post" action="">';
 
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_skin');
+
 	echo '<input type="hidden"'
 		. ' name="action"'
 		. ' value="update_theme_skin_options"'
-		. '>';
+		. ' />';
 
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Skin') . '</h2>';
@@ -78,7 +82,7 @@ function display_theme_skin_options_admin()
 
 function get_skin_data($skin_id)
 {
-	$skin_data = file_get_contents(TEMPLATEPATH . '/skins/' . $skin_id . '/skin.css');
+	$skin_data = file_get_contents(dirname(dirname(__FILE__)) . '/skins/' . $skin_id . '/skin.css');
 
 	$skin_data = str_replace("\r", "\n", $skin_data);
 
@@ -113,7 +117,8 @@ function display_theme_skin_options()
 
 	sort($skins);
 
-	$active_skin = $GLOBALS['semiologic']['active_skin']['skin'];
+	$options = get_option('semiologic');
+	$active_skin = $options['active_skin']['skin'];
 
 	foreach ( array_keys($skins) as $key )
 	{

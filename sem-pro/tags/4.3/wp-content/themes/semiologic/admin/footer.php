@@ -11,7 +11,7 @@ function add_theme_footer_admin()
 			'themes.php',
 			__('Footer'),
 			__('Footer'),
-			7,
+			'switch_themes',
 			str_replace("\\", "/", basename(__FILE__)),
 			'display_theme_footer_admin'
 			);
@@ -45,10 +45,12 @@ function display_theme_footer_admin()
 
 	echo '<form method="post" action="">';
 
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_footer');
+
 	echo '<input type="hidden"'
 		. ' name="action"'
 		. ' value="update_theme_footer"'
-		. '>';
+		. ' />';
 
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Footer Options') . '</h2>';
@@ -65,7 +67,7 @@ function display_theme_footer_admin()
 
 function display_theme_footer()
 {
-	if ( !function_exists('update_theme_footer') )
+	if ( !sem_pro )
 	{
 		pro_feature_notice();
 	}
@@ -77,7 +79,7 @@ function display_theme_footer()
 	echo '<div>'
 		. '<textarea'
 		. ' id="extra_footer" name="extra_footer"'
-		. ( function_exists('update_theme_footer')
+		. ( sem_pro
 			? ''
 			: ' disabled="disabled"'
 			)
@@ -97,7 +99,7 @@ function display_theme_footer()
 				? ' checked="checked"'
 				: ''
 				)
-			. ( function_exists('update_theme_footer')
+			. ( sem_pro
 				? ''
 				: ' disabled="disabled"'
 				)

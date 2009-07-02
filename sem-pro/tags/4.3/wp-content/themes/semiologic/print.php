@@ -22,7 +22,7 @@ do_action('wp_head');
 do_action('before_the_entries');
 
 # show posts
-if ( have_posts() )
+if ( have_posts() && !is_404() )
 {
 	while ( have_posts() )
 	{

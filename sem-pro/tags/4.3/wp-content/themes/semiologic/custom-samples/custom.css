@@ -200,19 +200,9 @@ The font family
 */
 
 .custom,
-.custom h1,
-.custom h2,
-.custom h3,
-.custom p,
-.custom li,
-.custom dt,
-.custom dd,
-.custom th,
-.custom td,
 .custom input,
 .custom select,
-.custom button,
-.custom textarea
+.custom button
 {
 	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;
 }
@@ -233,7 +223,8 @@ The font size
 	font-size: medium;
 }
 
-.custom body,
+body.custom,
+.custom,
 .custom h3,
 .custom p,
 .custom li,
@@ -245,9 +236,11 @@ The font size
 .custom input,
 .custom select,
 .custom button,
-.custom textarea,
 .custom pre,
-.custom code
+.custom code,
+.custom .entry_header h2,
+.custom .spread_the_word h2,
+.custom .comment_header h2
 {
 	font-size: small;
 }

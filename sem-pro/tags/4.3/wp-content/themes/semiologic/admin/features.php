@@ -5,14 +5,17 @@
 
 function add_theme_features_admin()
 {
-	add_submenu_page(
-		'themes.php',
-		__('Features'),
-		__('Features'),
-		7,
-		str_replace("\\", "/", basename(__FILE__)),
-		'display_theme_features_admin'
-		);
+	if ( !function_exists('get_site_option') )
+	{
+		add_submenu_page(
+			'themes.php',
+			__('Features'),
+			__('Features'),
+			'switch_themes',
+			str_replace("\\", "/", basename(__FILE__)),
+			'display_theme_features_admin'
+			);
+	}
 } # end add_theme_features_admin()
 
 add_action('admin_menu', 'add_theme_features_admin');
@@ -42,10 +45,12 @@ function display_theme_features_admin()
 
 	echo '<form method="post" action="">';
 
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_features');
+
 	echo '<input type="hidden"'
 		. ' name="action"'
 		. ' value="update_theme_features"'
-		. '>';
+		. ' />';
 
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Features') . '</h2>';
@@ -101,30 +106,13 @@ function get_theme_features()
 					),
 			);
 
-	if ( !function_exists('get_site_option') )
-	{
 	$features['WordPress Features']
 		= array(
 			'advanced_cache' => array(
 					'Advanced Cache',
 					'An advanced cache for sites with lots of traffic. It comes in handy when you get slashdotted, among other things. Configure and activate via Options / WP-Cache. Note that the cache script is loaded before WordPress; It will remain active even when the WP-Cache plugin is deactivated.'
 					),
-			/*
-			'cc_license' => array(
-					'Creative Commons License',
-					'Easily add a CC license to your site.'
-					),
-			*/
-			'exec_php' => array(
-					'php in Pages',
-					'Allow php in Pages.'
-					),
-			'rss_aggregator' => array(
-					'RSS Aggregator',
-					'A tool to aggregate feeds and republish feeds from elsewhere. Configure via Options / WP-Autoblog.'
-					),
 			);
-	}
 
 	$features['Theme Features']
 		= array(
@@ -138,16 +126,11 @@ function get_theme_features()
 					'Display your flickr gallery from your site.',
 					function_exists('get_site_option') ? false : null
 					),
-			'sidebar_tile' => array(
-					'Sidebar Page',
-					'Stick the contents of your \'Sidebar\' page in your sidebar (use only when widgets are disabled).',
-					function_exists('get_site_option') ? false : null
-					),
 			*/
 			'sidebar_widgets' => array(
 					'Sidebar Widgets',
 					'Drag and drop widgets into your sidebars.',
-					function_exists('get_site_option') ? true : null
+					true
 					),
 			'theme_archives' => array(
 					'Archives as Title Lists',
@@ -159,7 +142,7 @@ function get_theme_features()
 		= array(
 			'automatic_translation' => array(
 					'Automatic Translations',
-					'This is keyword spam. Use only if it sounds like a recommendable practice to you.',
+					'This is keyword spam. Use only if it sounds like a recommendable practice to you. This feature requires fancy urls (Options / Permalinks) and an Apache server (it won\'t work on Windows).',
 					function_exists('get_site_option') ? false : null
 					),
 			'delicious' => array(
@@ -169,11 +152,6 @@ function get_theme_features()
 			'event_manager' => array(
 					'Event Manager',
 					'Configure via Options / Countdown.',
-					function_exists('get_site_option') ? false : null
-					),
-			'exec_php_widget' => array(
-					'php Widgets',
-					'Allow php code in php widgets.',
 					function_exists('get_site_option') ? false : null
 					),
 			'flickr_widget' => array(
@@ -258,7 +236,7 @@ function get_theme_features()
 					),
 			'related_tags' => array(
 					'Related Tags',
-					'Automatically generated links to related technorati tags. NB: This contributes outgoing links with no SEO benefit.',
+					'Automatically generated links to related technorati tags. NB: While fun, this merely contributes outgoing links with no SEO benefit.',
 					function_exists('get_site_option') ? false : null
 					),
 			'bookmark_me' => array(
@@ -274,13 +252,8 @@ function get_theme_features()
 					'Lets you use php Markdown Extra Syntax in your blog entries. See the <a href="http://daringfireball.net/projects/markdown/syntax">Markdown</a> and the <a href="http://www.michelf.com/projects/php-markdown/extra/">Markdown Extra</a> for more details.'
 					),
 			'podcasting' => array(
-					'Podcasting',
-					'An audio player (.mp3) for your site. Configure via Options / Audio Player.',
-					function_exists('get_site_option') ? true : null
-					),
-			'videocasting' => array(
-					'Videocasting',
-					'A flash movie player (.flv) for your site. Configure via Options / WP-FLV.',
+					'Podcasting and Videocasting',
+					'Adds players and support for .mp3, .m4a, .flv, .swf, .mp4, .m4v and .mov formats for your site. Configure via Options / Mediacaster.',
 					function_exists('get_site_option') ? true : null
 					),
 			'star_rating' => array(
@@ -302,10 +275,6 @@ function get_theme_features()
 					'Do Follow Links',
 					'WordPress adds a nofollow attribute to links in comments. Doing so kills the very nature of the web. This plugin will remove the pesky attribute.'
 					),
-			'gravatars' => array(
-					'Commenter Gravatars',
-					'Add <a href="http://www.gravatar.com">gravatars</a> to your comments.'
-					),
 			'subscribe2comments' => array(
 					'Comment Subscriptions',
 					'Send email notifications to subscribed users whenever a new comment is added.'
@@ -316,11 +285,15 @@ function get_theme_features()
 		= array(
 			'akismet' => array(
 					'Akismet',
-					'Akismet is the anti-spam offered by Automattic. An API key required. Use this if anything starts to get passed Hashcash.'
+					'Akismet puts new comments through a centralized spam detector before validating comments. It requires a wordpress.com API key.'
 					),
 			'hashcash' => array(
 					'Hashcash',
 					'Hashcash is a Turing Machine based anti-spam plugin that is set to remain 100% efficient for a long time (working around it is too computationally costly).'
+					),
+			'tb_validator' => array(
+					'Trackback Validator',
+					'Enforce that sites who send you trackbacks are indeed linking to you.'
 					),
 			);
 
@@ -358,23 +331,13 @@ function get_theme_features()
 	$features['Permalink Features']
 		= array(
 			'enforce_permalink' => array(
-					'Enforce Permalink',
-					'Enforce the proper permalink for your entries.',
+					'Enforce Permalink Structure',
+					'Enforce the proper permalink for your entries. Configure under Options / Permalink Redirect.',
 					function_exists('get_site_option') ? true : null
-					),
-			'kill_index_php' => array(
-					'Enforce www. and index.php preferences',
-					'Enforce www. and index.php preferences. Do not use this if you are using a permalink structure with index.php in it.',
-					function_exists('get_site_option') ? false : null
 					),
 			'non_unique_slugs' => array(
 					'Allow Non-Unique Slugs',
 					'Use this only if your permalink structure will not potentially result in slug conflicts.',
-					function_exists('get_site_option') ? true : null
-					),
-			'track_old_slugs' => array(
-					'Autoredirect on slug change',
-					'Detect entry slug changes, and automatically set up a 301 redirect to the new address.',
 					function_exists('get_site_option') ? true : null
 					),
 			);
@@ -386,22 +349,27 @@ function get_theme_features()
 					'Improve the way Googlebot crawls your site.',
 					function_exists('get_site_option') ? false : null
 					),
+			'silo_site' => array(
+					'Silo Site',
+					'<a href="http://www.seo2020.com/promo.html">Silo functionalities</a> for sites built using static pages.'
+					),
 			'smart_links' => array(
 					'Smart Links',
 					'Preinsert links into your entries. <a href="http://www.semiologic.com/software/smart-link/">More details</a>.'
 					),
-			'smart_pings' => array(
-					'Smart Pings',
-					'Ping only when necessary, and do so in a smart way.',
-					function_exists('get_site_option') ? true : null
+			'social_poster' => array(
+					'Auto Social Poster',
+					'Requires the <a href="http://www.semiologic.com/go/social-poster/">Social Poster plugin</a>. Automatically add content on your site to social bookmarking sites. See also <a href="http://www.semiologic.com/go/tagandping/">Tag and Ping course</a>, by the same author.',
+					!file_exists(ABSPATH . 'wp-content/plugins/social-poster') ? false : null
 					),
 			'theme_meta' => array(
-					'Advanced Meta Tags Generation',
-					'Automatically generate meta keywords (post categories) and description (post excerpt) tags, and allow to override these tags and the page title.'
+					'Meta Tags',
+					'Meta keyword and meta description functions.',
+					true
 					),
 			'theme_title' => array(
 					'Optimized Page Title',
-					'Search Engine Optimized Page Title. This is hard-coded in the Semiologic Pro theme.',
+					'Search Engine Optimized Page Title.',
 					true
 					),
 			);
@@ -441,6 +409,12 @@ function get_theme_features()
 					'Book Library',
 					'Adds a book library feature and widget, with an amazon search feature that allows to readily add your affiliate ID. See Now Reading under Write, Manage, and Options.'
 					),
+			/*
+			'shopping_cart' => array(
+					'Shopping Cart',
+					'Adds a shopping car and the relevant widgets. Manage under E-Commerce once active.'
+					),
+			*/
 			);
 	}
 
@@ -473,47 +447,16 @@ function get_theme_features()
 					'Database Backups via WordPress',
 					'If your host doesn\'t provide you with a backup feature (many do), WordPress can do this for you. Configure and use via Manage / Backups.'
 					),
-			/*
 			'role_manager' => array(
 					'Role Manager',
 					'A tool to create and manage WordPress user roles. Use via Users / Roles. Note that the Role Manager plugin changes WordPress internal variables; Its changes remains active after it is deactivated.'
 					),
-			*/
 			'site_unavailable' => array(
 					'Site Unavailable',
 					'Mark your site as "Unavailable" while the admin area remains accessible by logged in users.'
 					),
 			);
 	}
-
-	/*
-	if ( !function_exists('get_site_option') )
-	{
-	$features['Cron Jobs']
-		= array(
-			'cron_dashboard' => array(
-					'Refresh Dashboard Cache',
-					'Periodically refresh the Dashboard.'
-					),
-			'cron_email' => array(
-					'Check Site\'s Mailbox',
-					'Periodically check the site\'s mailbox. You\'ll need to configure posting by email under Options / Writing.'
-					),
-			'cron_links' => array(
-					'Update Blogroll Cache',
-					'Periodically check the links in your Link Manager for updates.'
-					),
-			'cron_moderation' => array(
-					'Send Moderation Notification Digests',
-					'Send new comment and moderation notifications as digests.'
-					),
-			'cron_pings' => array(
-					'Send Pings for Future Posts',
-					'Ping update services later when publishing posts in the future.'
-					),
-			);
-	}
-	*/
 
 	return $features;
 } # end get_theme_features()
@@ -525,7 +468,7 @@ function get_theme_features()
 
 function display_theme_features()
 {
-	if ( !function_exists('theme_feature_is_active') )
+	if ( !sem_pro )
 	{
 		pro_feature_notice();
 	}
@@ -571,56 +514,74 @@ function uncheck_all(id_list)
 			{
 				$feature_ids .= ( $feature_ids ? ',' : '' )
 					. $feature_id;
-				}
+			}
 		}
-?><h3><label for="all_<?php echo str_replace(',', '_', $feature_ids); ?>"><input type="checkbox"
-		id="all_<?php echo str_replace(',', '_', $feature_ids); ?>"
-		<?php if ( function_exists('theme_feature_is_active') ) : ?>		onchange="if ( this.checked ) check_all('<?php echo $feature_ids; ?>'); else uncheck_all('<?php echo $feature_ids; ?>');"
-		<?php else : ?>		disabled="disabled"
-		<?php endif; ?>		/>
-		<?php echo $feature_set_name; ?></label></h3>
-<?php
+
+		echo '<h3>'
+			. '<label for="all_' . str_replace(',', '_', $feature_ids) . '">'
+			. '<input type="checkbox"'
+				. '  id="all_' . str_replace(',', '_', $feature_ids) . '"'
+				. ( function_exists('theme_feature_is_active')
+					? ( ' onchange="if ( this.checked ) check_all(\'' . $feature_ids . '\'); else uncheck_all(\'' . $feature_ids. '\');"' )
+					: ' disabled="disabled"'
+					)
+				. ' />'
+			. '&nbsp;'
+			. $feature_set_name
+			. '</label>'
+			. '</h3>';
+
+
 		foreach ( $feature_set as $feature_id => $feature_description )
 		{
-			if ( !( isset($feature_description[2]) && !$feature_description[2] ) )
-			{
-?>	<p>
-		<label for="feature_key[<?php echo $feature_id; ?>]">
-		<input type="checkbox"
-			id="feature_key[<?php echo $feature_id ?>]" name="feature_id[]"
-			value="<?php echo $feature_id; ?>"
-			<?php
-				if ( !function_exists('theme_feature_is_active')
-					|| isset($feature_description[2])
-					) :
-			?>			disabled="disabled"
-			<?php
-				endif;
-				if ( ( function_exists('theme_feature_is_active')
+			echo '<p>'
+				. '<label for="feature_key[' . $feature_id . ']">'
+				. '<input type="checkbox"'
+					. ' id="feature_key[' . $feature_id . ']" name="feature_id[]"'
+					. ' value="' . $feature_id . '"'
+					. ( ( !sem_pro
+						|| ( isset($feature_description[2]) )
+						)
+						? ' disabled="disabled"'
+						: ''
+						)
+					. ( ( ( sem_pro
+							&& theme_feature_is_active($feature_id)
+							)
+						|| ( isset($feature_description[2])
+							&& $feature_description[2]
+							)
+						)
+						? ' checked="checked"'
+						: ''
+						)
+					. ' />'
+					. '&nbsp;'
+					. ( ( ( sem_pro
 						&& theme_feature_is_active($feature_id)
 						)
-					|| ( isset($feature_description[2])
-						&& $feature_description[2]
+						|| ( isset($feature_description[2])
+							&& $feature_description[2]
+							)
 						)
-					) :
-			?>			checked="checked"
-			<?php endif; ?>			/>&nbsp;<?php
-			if ( ( function_exists('theme_feature_is_active')
-						&& theme_feature_is_active($feature_id)
+						? ( '<strong>'
+							. '<u>'
+							. $feature_description[0]
+							. '</u>'
+							. '</strong>'
+							. '<br />'
+							. $feature_description[1]
+							)
+						: ( '<strong>'
+							. $feature_description[0]
+							. '</strong>'
+							. '<br />'
+							. $feature_description[1]
+							)
 						)
-					|| ( isset($feature_description[2])
-						&& $feature_description[2]
-						)
-					) : ?>			<strong><u><?php echo $feature_description[0]; ?></u></strong><br />
-			<?php echo $feature_description[1]; ?>			<?php elseif ( isset($feature_description[2])
-						&& !$feature_description[2]
-						) : ?>			<span style="color: dimgray;"><strong><?php echo $feature_description[0]; ?></strong><br />
-		<?php echo $feature_description[1]; ?></span>
-			<?php else : ?>			<strong><?php echo $feature_description[0]; ?></strong><br />
-			<?php echo $feature_description[1]; ?>			<?php endif; ?>			</label>
-	</p>
-<?php
-			}
+					. '</label>'
+					. '</p>';
+
 		}
 		echo '<div style="clear: both;"></div>';
 

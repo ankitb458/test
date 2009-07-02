@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Opt-in Front Page
-Plugin URI: http://www.semiologic.com/software/opt-in-front/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/opt-in-front/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Restricts the access to your front page on an opt-in basis: Only posts within the category with a slug of 'blog' will be displayed on your front page. <a href="?action=autoinstall_opt_in_front">Autoinstall</a> (creates a Blog category and puts every post in it)
+Plugin URI: http://www.semiologic.com/software/publishing/opt-in-front/
+Description: Restricts the access to your front page on an opt-in basis: Only posts within the category with a slug of 'blog' will be displayed on your front page. <a href="?action=autoinstall_opt_in_front">Autoinstall</a> (creates a Blog category and puts every post in it)
 Author: Denis de Bernardy
 Version: 2.9
 Author URI: http://www.semiologic.com
@@ -275,10 +275,9 @@ class sem_opt_in_front
 
 	function autoinstall()
 	{
-		global $user_level;
 		global $wpdb;
 
-		if ( $user_level >= 9 )
+		if ( current_user_can('administrator') )
 		{
 			$main_cat_id = $wpdb->get_var("SELECT cat_ID FROM $wpdb->categories WHERE category_nicename = 'blog'");
 

@@ -7,7 +7,7 @@
  */
 
 
-require_once('Transform.php');
+require_once dirname(__FILE__) . '/' . "Transform.php";
 
 /**
  * Thumbnail creation

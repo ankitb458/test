@@ -9,7 +9,7 @@ function add_theme_layout_options_admin()
 		'themes.php',
 		__('Layout'),
 		__('Layout'),
-		7,
+		'switch_themes',
 		str_replace("\\", "/", basename(__FILE__)),
 		'display_theme_layout_options_admin'
 		);
@@ -24,12 +24,14 @@ add_action('admin_menu', 'add_theme_layout_options_admin');
 
 function update_theme_layout_options()
 {
-	global $semiologic;
+	check_admin_referer('sem_layout');
 
-	$semiologic['active_width'] = $_POST['active_width'];
-	$semiologic['active_layout'] = $_POST['active_layout'];
+	$options = get_option('semiologic');
 
-	update_option('semiologic', $GLOBALS['semiologic']);
+	$options['active_width'] = $_POST['active_width'];
+	$options['active_layout'] = $_POST['active_layout'];
+
+	update_option('semiologic', $options);
 } # end update_theme_layout_options
 
 add_action('update_theme_layout_options', 'update_theme_layout_options');
@@ -59,10 +61,12 @@ function display_theme_layout_options_admin()
 
 	echo '<form method="post" action="">';
 
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_layout');
+
 	echo '<input type="hidden"'
 		. ' name="action"'
 		. ' value="update_theme_layout_options"'
-		. '>';
+		. ' />';
 
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Width') . '</h2>';
@@ -84,7 +88,9 @@ function display_theme_layout_options_admin()
 
 function display_theme_width_options()
 {
-	$active_width = $GLOBALS['semiologic']['active_width'];
+	$options = get_option('semiologic');
+
+	$active_width = $options['active_width'];
 
 	$widths = array(
 		'narrow' => array(
@@ -153,7 +159,9 @@ add_action('display_theme_width_options', 'display_theme_width_options');
 
 function display_theme_layout_options()
 {
-	$active_layout = $GLOBALS['semiologic']['active_layout'];
+	$options = get_option('semiologic');
+
+	$active_layout = $options['active_layout'];
 
 	$layouts = array(
 		'essm' => array(

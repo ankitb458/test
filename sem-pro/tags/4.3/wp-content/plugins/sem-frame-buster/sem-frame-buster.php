@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Frame Buster
-Plugin URI: http://www.semiologic.com/software/frame-buster/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/frame-buster/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Prevents your blog from being loaded into a frame.
+Plugin URI: http://www.semiologic.com/software/wp-fixes/frame-buster/
+Description: Prevents your blog from being loaded into a frame.
 Author: Denis de Bernardy
 Version: 3.5
 Author URI: http://www.semiologic.com

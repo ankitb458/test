@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Static Front Page
-Plugin URI: http://www.semiologic.com/software/static-front/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/static-front/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Sticks the page with a slug of 'home' to your front page.
+Plugin URI: http://www.semiologic.com/software/publishing/static-front/
+Description: Sticks the page with a slug of 'home' to your front page.
 Author: Denis de Bernardy
 Version: 3.1
 Author URI: http://www.semiologic.com

@@ -1,4 +1,6 @@
 <?php
+// obsolete file
+
 $active_plugins = get_option('active_plugins');
 
 foreach ( (array) $active_plugins as $key => $plugin )

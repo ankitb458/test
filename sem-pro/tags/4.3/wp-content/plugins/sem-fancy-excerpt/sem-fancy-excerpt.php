@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Fancy Excerpt
-Plugin URI: http://www.semiologic.com/software/fancy-excerpt/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/fancy-excerpt/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Enhances WordPress' default excerpt generator by generating sentence aware excerpts.
+Plugin URI: http://www.semiologic.com/software/wp-fixes/fancy-excerpt/
+Description: Enhances WordPress' default excerpt generator by generating sentence aware excerpts.
 Author: Denis de Bernardy
-Version: 2.6
+Version: 2.7
 Author URI: http://www.semiologic.com
 */
 
@@ -33,7 +33,18 @@ function sem_fancy_excerpt($text = '', $max_length = 200)
 
 	if ( $text == '' )
 	{
-		$excerpt = apply_filters('the_content', $post->post_content);
+		$content = $post->post_content;
+
+		if ( function_exists('nzshpcrt_shopping_basket') )
+		{
+			$content = str_replace(
+				array('[productspage]', '[shoppingcart]', '[checkout]', '[transactionresults]'),
+				'',
+				$content
+				);
+		}
+
+		$excerpt = apply_filters('the_content', $content);
 		$excerpt = trim(strip_tags($excerpt));
 		str_replace("&#8212;", "-", $excerpt);
 

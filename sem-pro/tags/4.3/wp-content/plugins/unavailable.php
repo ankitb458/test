@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Site Unavailable
-Plugin URI: http://www.semiologic.com/software/site-unavailable/
+Plugin URI: http://www.semiologic.com/software/
 Description: Activate this plugin when you want to make your site unavailable for maintenance.
 Author: Denis de Bernardy
 Author URI: http://www.semiologic.com

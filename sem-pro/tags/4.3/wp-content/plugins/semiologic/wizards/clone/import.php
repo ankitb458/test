@@ -2,7 +2,7 @@
 
 if ( !defined('clone_script_version') )
 {
-	define('clone_script_version', 1.5);
+	define('clone_script_version', 1.6);
 }
 
 #
@@ -149,6 +149,7 @@ function notify_site_cloned($step = 2)
 
 	echo '<ul>';
 
+	echo '<li>' . __('Header and nav menu options, under Presentation') . '</li>';
 	echo '<li>' . __('Google Analytics, under Options / Google Analytics') . '</li>';
 	echo '<li>' . __('Feeburner URL, under Options / Permalink Redirect') . '</li>';
 	echo '<li>' . __('WP-Cache options, under Options / WP-Cache') . '</li>';
@@ -207,6 +208,8 @@ function get_semiologic_config($errors, $site_uri, $user_login, $user_pass)
 		#echo '</pre>';
 		#die();
 
+		@set_time_limit(60);
+
 		if ( function_exists('curl_exec') )
 		{
 			$ch = curl_init();
@@ -236,43 +239,38 @@ function get_semiologic_config($errors, $site_uri, $user_login, $user_pass)
 
 		if ( $$data === false )
 		{
-			$errors[] = 'Failed to open stream. Double checked your cloned site\'s details? ';
+			$errors[] = 'Failed to open stream. Please double check your cloned site\'s details. Mind the url preferences (www., trailing /).';
 			break;
 		}
 
 		#var_dump($$data);
 		#die();
 
-		if ( preg_match("/^ERROR/", $$data) )
+		if ( preg_match("/<error>(.*)<\/error>/isUx", $$data, $msg) )
 		{
-			$error = trim(preg_replace("/^ERROR/", "", $$data));
-
-			$errors[] = $error;
-
-			if ( $error == 'Data Processing Failed' )
-			{
-				$errors[] = 'Please make sure both sites are using the same version of the cloning script';
-			}
-
+			$error = trim($msg[1]);
 			break;
 		}
 
+		#echo '<pre>';
 		#var_dump($$data);
+		#echo '</pre>';
 		#die();
 
-		#$$data = preg_replace("/.*<data>/s", "", $$data);
-		#$$data = preg_replace("/<\/data>.*/s", "", $$data);
+		$$data = preg_replace("/.*<data>/is", "", $$data);
+		$$data = preg_replace("/<\/data>.*/is", "", $$data);
 
-		$$data = substr($$data, strlen('<data>'));
-		$$data = substr($$data, 0, strpos($$data, '</data>'));
-
+		#echo '<pre>';
 		#var_dump($$data);
+		#echo '</pre>';
 		#die();
 
 		$$data = base64_decode($$data);
 		$$data = unserialize($$data);
 
+		#echo '<pre>';
 		#var_dump($$data);
+		#echo '</pre>';
 		#die();
 
 		if ( $data == 'version' )
@@ -304,6 +302,11 @@ function get_semiologic_config($errors, $site_uri, $user_login, $user_pass)
 
 function import_semiologic_config($user, $options, $ads)
 {
+	if ( !current_user_can('administrator') )
+	{
+		return;
+	}
+
 	global $wpdb, $wp_rewrite;
 
 	$user_data = get_object_vars($user);
@@ -351,24 +354,27 @@ function import_semiologic_config($user, $options, $ads)
 	}
 
 	# ads
-	foreach ( (array) $ads as $table_name => $table_data )
+	if ( $ads )
 	{
-		$table_name = mysql_real_escape_string($table_name);
-
-		$wpdb->query("DELETE FROM {$wpdb->$table_name}");
-
-		foreach ( (array) $table_data as $row )
+		foreach ( (array) $ads as $table_name => $table_data )
 		{
-			$fields = "";
-			$values = "";
-			foreach ( $row as $field => $value )
+			$table_name = mysql_real_escape_string($table_name);
+
+			$wpdb->query("DELETE FROM {$wpdb->$table_name}");
+
+			foreach ( (array) $table_data as $row )
 			{
-				$fields .= ( $fields ? ", " : "" ) . mysql_real_escape_string($field);
-				$values .= ( $values ? ", " : "" ) . "'" . mysql_real_escape_string($value) . "'";
+				$fields = "";
+				$values = "";
+				foreach ( $row as $field => $value )
+				{
+					$fields .= ( $fields ? ", " : "" ) . mysql_real_escape_string($field);
+					$values .= ( $values ? ", " : "" ) . "'" . mysql_real_escape_string($value) . "'";
+				}
+
+				$wpdb->query("INSERT INTO {$wpdb->$table_name} ($fields) VALUES ($values);");
+
 			}
-
-			$wpdb->query("INSERT INTO {$wpdb->$table_name} ($fields) VALUES ($values);");
-
 		}
 	}
 
@@ -405,17 +411,13 @@ function import_semiologic_config($user, $options, $ads)
 	$wpdb->hide_errors();
 
 	# fire autoinstallers
-	if ( file_exists(ABSPATH . 'wp-content/plugins/democracy/democracy.php') )
-	{
-		require_once ABSPATH . 'wp-content/plugins/democracy/democracy.php';
-		jal_dem_install();
-	}
+	@include_once ABSPATH . 'wp-content/plugins/democracy/democracy.php';
+	@jal_dem_install();
 
-	if ( file_exists(ABSPATH . 'wp-content/plugins/now-reading/now-reading.php') )
-	{
-		require_once ABSPATH . 'wp-content/plugins/now-reading/now-reading.php';
-		nr_install();
-	}
+	@include_once ABSPATH . 'wp-content/plugins/now-reading/now-reading.php';
+	@nr_install();
+
+	regen_theme_nav_menu_cache();
 
 	$wpdb->show_errors();
 } # end import_semiologic_config()

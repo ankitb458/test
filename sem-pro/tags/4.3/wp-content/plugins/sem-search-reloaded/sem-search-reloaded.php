@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Search Reloaded
-Plugin URI: http://www.semiologic.com/software/search-reloaded/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/search-reloaded/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Enhances WordPress' default search engine.
+Plugin URI: http://www.semiologic.com/software/wp-fixes/search-reloaded/
+Description: Enhances WordPress' default search engine functionality.
 Author: Denis de Bernardy
-Version: 2.8
+Version: 2.9
 Author URI: http://www.semiologic.com
 */
 
@@ -131,7 +131,7 @@ class sem_search_reloaded
 
 			$search_query = "
 				SELECT
-					DISTINCT posts.*,
+					posts.*,
 					CASE
 						WHEN posts.post_title REGEXP '$reg_one_present'
 							THEN 1
@@ -141,8 +141,6 @@ class sem_search_reloaded
 						AGAINST ( '" . addslashes($query_string) . "' ) AS mysql_score
 				FROM
 					$wpdb->posts as posts
-				LEFT JOIN $wpdb->postmeta as postmeta
-					ON postmeta.post_id = posts.ID
 				WHERE
 					posts.post_date_gmt <= '" . $now . "'"
 					. ( ( defined('sem_home_page_id') && sem_home_page_id )
@@ -159,8 +157,8 @@ class sem_search_reloaded
 					AND ( posts.post_password = '' )
 					AND ( "
 					. ( use_post_type_fixed
-						? "( post_status = 'publish' AND ( post_type = 'post' OR ( post_type = 'page' AND postmeta.meta_value = 'article.php' ) ) )"
-						: "( post_status = 'publish' OR ( post_status = 'static' AND postmeta.meta_value = 'article.php' ) )"
+						? "( post_status = 'publish' )"
+						: "( post_status = 'publish' OR post_status = 'static' )"
 						)
 					. " )
 					AND ( posts.post_title REGEXP '$reg_one_present' OR posts.post_content REGEXP '$reg_one_present' )
@@ -172,11 +170,9 @@ class sem_search_reloaded
 
 			$request_query = "
 				SELECT
-					DISTINCT posts.*
+					posts.*
 				FROM
 					$wpdb->posts as posts
-				LEFT JOIN $wpdb->postmeta as postmeta
-					ON postmeta.post_id = posts.ID
 				WHERE
 					posts.post_date_gmt <= '" . $now . "'"
 					. ( ( defined('sem_home_page_id') && sem_home_page_id )
@@ -193,8 +189,8 @@ class sem_search_reloaded
 					AND ( posts.post_password = '' )
 					AND ( "
 					. ( use_post_type_fixed
-						? "( post_status = 'publish' AND ( post_type = 'post' OR ( post_type = 'page' AND postmeta.meta_value = 'article.php' ) ) )"
-						: "( post_status = 'publish' OR ( post_status = 'static' AND postmeta.meta_value = 'article.php' ) )"
+						? "( post_status = 'publish' )"
+						: "( post_status = 'publish' OR post_status = 'static' )"
 						)
 					. " )
 					AND ( posts.post_title REGEXP '$reg_one_present' OR posts.post_content REGEXP '$reg_one_present' )

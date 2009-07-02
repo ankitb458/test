@@ -333,7 +333,7 @@ function book_url( $echo = true, $domain = null ) {
 		$domain = $options['domain'];
 	
 	if ( is_custom_book() )
-		book_permalink($echo);
+		return book_permalink($echo);
 	else {
 		$url = apply_filters('book_url', "http://www.amazon{$domain}/exec/obidos/ASIN/{$book->asin}/ref=nosim/{$options['associate']}");
 		if ( $echo )
@@ -522,11 +522,14 @@ function search_query( $echo = true ) {
  * @param bool $echo Whether or not to echo the results.
  */
 function library_search_form( $echo = true ) {
-	echo '
+	$html = '
 	<form method="get" action="' . search_url(0) . '">
 		<input type="text" name="q" /> <input type="submit" value="' . __("Search Library", NRTD) . '" />
 	</form>
 	';
+	if ( $echo )
+		echo $html;
+	return $html;
 }
 
 /**

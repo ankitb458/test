@@ -24,6 +24,7 @@ add_option('wpcf_textarea_rows', '8');
 /*check form submission and update options*/
 if ('process' == $_POST['stage'])
 {
+	check_admin_referer('contact_form');
 	#echo '<pre>';
 	#var_dump($_POST);
 	#echo '</pre>';
@@ -60,6 +61,7 @@ $wpcf_apply_css = get_option('wpcf_apply_css');
 <div class="wrap">
   <h2><?php _e('Contact Form ][ Options', 'wpcf') ?></h2>
   <form name="form1" method="post" action="<?php echo $location ?>&amp;updated=true">
+<?php	if ( function_exists('wp_nonce_field') ) wp_nonce_field('contact_form'); ?>
 	<input type="hidden" name="stage" value="process" />
     <table width="100%" cellspacing="2" cellpadding="5" class="editform">
       <tr valign="top">

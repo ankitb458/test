@@ -22,7 +22,7 @@ class sem_google_analytics_admin
 			add_options_page(
 					__('Google&nbsp;Analytics'),
 					__('Google&nbsp;Analytics'),
-					7,
+					'manage_options',
 					str_replace("\\", "/", __FILE__),
 					array('sem_google_analytics_admin', 'display_options')
 					);
@@ -36,6 +36,8 @@ class sem_google_analytics_admin
 
 	function update_options()
 	{
+		check_admin_referer('google_analytics');
+
 		$_POST['sem_google_analytics']['script'] = stripslashes($_POST['sem_google_analytics']['script']);
 
 		if ( preg_match("/
@@ -112,6 +114,8 @@ EOF;
 			. "<h2>" . __('Google Analytics Options', 'sem-google-analytics') . "</h2>\n"
 			. '<form method="post" action="">' . "\n"
 			. '<input type="hidden" name="action" value="update_sem_google_analytics" />' . "\n";
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('google_analytics');
 
 		echo '<fieldset class="options">' . "\n"
 			. "<legend>" . __('Google analytics script', 'sem-google-analytics') . "</legend>\n";

@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Subscribe me
-Plugin URI: http://www.semiologic.com/software/subscribe-me/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/subscribe-me/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Displays a tile with subscribe buttons. To use, call the_subscribe_links(); where you want the tile to appear. Alternatively, do nothing and the tile will display when wp_meta(); is called.
+Plugin URI: http://www.semiologic.com/software/widgets/subscribe-me/
+Description: Adds a widget with feed subscription buttons.
 Author: Denis de Bernardy
-Version: 3.7
+Version: 3.8
 Author URI: http://www.semiologic.com
 */
 
@@ -95,7 +95,7 @@ class subscribe_me
 			'help_link' => array(
 				'name' => __('Help'),
 				'button' =>'help.gif',
-				'url' => 'http://www.semiologic.com/resources/help-with-feeds/'
+				'url' => 'http://www.semiologic.com/resources/blogging/help-with-feeds/'
 				),
 			);
 	} # get_services()
@@ -173,7 +173,7 @@ class subscribe_me
 
 		if ( !$args['services'] )
 		{
-			$args['services'] = subscribe_me::default_services();
+			return;
 		}
 
 		$hash = md5(uniqid(rand()));
@@ -236,7 +236,7 @@ class subscribe_me
 			. ' id="subscribe_me_{$hash}"'
 			. '>';
 
-		$o .= '<div style="clear: both;"></div>' . "\n";
+		if ( $as_dropdown ) $o .= '<div style="clear: both;"></div>' . "\n";
 
 		foreach ( (array) $args['services'] as $service )
 		{
@@ -256,7 +256,11 @@ class subscribe_me
 								. ')'
 								. ' center left no-repeat;'
 								. ' padding-left: 18px;"'
-								. '>'
+							. ( ( $options['add_nofollow'] && $service != 'local_feed' )
+								? ' rel="nofollow"'
+								: ''
+								)
+							. '>'
 						. $details['name']
 						. '</a>'
 						. '</div>' . "\n";
@@ -265,6 +269,10 @@ class subscribe_me
 					$o .= '<div class="subscribe_service">'
 						. '<a'
 							. ' href="' . str_replace('%site_url%', $args['site_path'], str_replace('%feed_url%', $args['feed_url'], $details['url'])) . '"'
+							. ( $options['add_nofollow']
+								? ' rel="nofollow"'
+								: ''
+								)
 							. '>'
 						. '<img'
 							. ' src="' . $args['img_path'] . $details['button'] . '"'
@@ -277,8 +285,9 @@ class subscribe_me
 			}
 		}
 
-		$o .= '<div style="clear: both;"></div>'
-			. '</div>' . "\n";
+		if ( $as_dropdown ) $o .= '<div style="clear: both;"></div>' . "\n";
+
+		$o .= '</div>' . "\n";
 
 		$o .= '</div>' . "\n"
 			. '</div>' . "\n"

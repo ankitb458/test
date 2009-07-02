@@ -5,17 +5,15 @@ function wiz_autoinstall_pro()
 	global $wpdb;
 	global $wp_rewrite;
 
-	# autopopulate keywords and description?
-	$GLOBALS['semiologic']['theme_meta'] = true;
+	$options = get_option('semiologic');
 
 	# display lists of post titles rather than entire entries as archives?
-	$GLOBALS['semiologic']['theme_archives'] = true;
+	$options['theme_archives'] = true;
 
 	# kudos?
-	if ( !function_exists('get_site_option') )
-	{
-		$GLOBALS['semiologic']['theme_credits'] = true;
-	}
+	$options['theme_credits'] = true;
+
+	update_option('semiologic', $options);
 
 
 	#
@@ -25,11 +23,11 @@ function wiz_autoinstall_pro()
 	$default_plugins = array(
 				'countdown/countdown.php',
 				'democracy/democracy.php',
+				'mediacaster/mediacaster.php',
 				'sem-ad-space/sem-ad-space.php',
 				'sem-admin-menu/sem-admin-menu.php',
 				'sem-author-image/sem-author-image.php',
 				'sem-bookmark-me/sem-bookmark-me.php',
-				'sem-external-links/sem-external-links.php',
 				'sem-extract-terms/sem-terms2posts.php',
 				'sem-extract-terms/sem-terms2posts4feeds.php',
 				'sem-fancy-excerpt/sem-fancy-excerpt.php',
@@ -44,23 +42,18 @@ function wiz_autoinstall_pro()
 				'sem-subscribe-me/sem-subscribe-me.php',
 				'sem-unfancy-quote/sem-unfancy-quote.php',
 				'sem-wysiwyg/sem-wysiwyg.php',
+				'silo/silo.php',
 				'star-rating/star-rating.php',
-				'widgets/widgets.php',
+				'TBValidator/trackback_validator.php',
 				'wp-contact-form/wp-contactform.php',
-				'audio-player.php',
-				'category-cloud.php',
 				'commentcontrol.php',
 				'flickr_widget.php',
-				'nopingwait2.php',
 				'singular.php',
 				'sitemap.php',
-				'smart-update-pinger.php',
 				'translator.php',
 				'wppaypal.php',
-				'wp_ozh_betterfeed.php',
 				'wp-db-backup.php',
 				'wp-hashcash.php',
-				'wp-flv.php',
 				'ylsy_permalink_redirect.php'
 		);
 
@@ -79,9 +72,9 @@ function wiz_autoinstall_pro()
 				'sidebar-2' => array(
 						'Newsletter',
 						'Subscribe Me',
-						'Fuzzy Posts',
-						'Pages',
+						'Silo Pages',
 						'Categories',
+						'Fuzzy Posts',
 						),
 				'sidebar-3' => array(
 						)
@@ -89,20 +82,12 @@ function wiz_autoinstall_pro()
 
 	$ping_sites = "
 http://rpc.pingomatic.com
-http://ping.weblogs.se/
-http://blogmatcher.com/u.php
-http://coreblog.org/ping/
 http://www.blogpeople.net/servlet/weblogUpdates
 http://bulkfeeds.net/rpc
-http://trackback.bakeinu.jp/bakeping.php
 http://ping.myblog.jp
 http://ping.bitacoras.com
 http://ping.bloggers.jp/rpc/
-http://ping.blogmura.jp/rpc/
-http://xmlrpc.blogg.de
-http://1470.net/api/ping
 http://bblog.com/ping.php
-http://blog.goo.ne.jp/XMLRPC
 ";
 
 
@@ -165,32 +150,22 @@ http://blog.goo.ne.jp/XMLRPC
 			);
 
 		$wpdb->hide_errors();
-		if ( file_exists(ABSPATH . 'wp-content/plugins/democracy/democracy.php') )
-		{
-			require_once ABSPATH . 'wp-content/plugins/democracy/democracy.php';
-			jal_dem_install();
-		}
-		elseif ( file_exists(ABSPATH . 'wp-content/mu-plugins/democracy/democracy.php') )
-		{
-			require_once ABSPATH . 'wp-content/mu-plugins/democracy/democracy.php';
-			jal_dem_install();
-		}
 
-		if ( file_exists(ABSPATH . 'wp-content/plugins/now-reading/now-reading.php') )
-		{
-			require_once ABSPATH . 'wp-content/plugins/now-reading/now-reading.php';
-			nr_install();
-		}
+		@include_once ABSPATH . 'wp-content/plugins/democracy/democracy.php';
+		@jal_dem_install();
+
+		@include_once ABSPATH . 'wp-content/plugins/now-reading/now-reading.php';
+		@nr_install();
+
 		$wpdb->show_errors();
 
 		update_option("ping_sites", $ping_sites);
 
-		if ( function_exists('get_site_option')
-			&& get_site_option($ping_sites) === false
-			)
-		{
-			update_site_option("ping_sites", $ping_sites);
-		}
+		$role = get_role('administrator');
+
+		$role->remove_cap('edit_files');
+		$role->remove_cap('edit_themes');
+		$role->remove_cap('edit_plugins');
 	}
 } # end wiz_autoinstall_pro()
 ?>

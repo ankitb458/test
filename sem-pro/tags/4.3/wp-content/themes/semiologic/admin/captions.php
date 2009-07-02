@@ -1,46 +1,4 @@
 <?php
-#
-# get_all_captions()
-#
-
-function get_all_captions()
-{
-	return array(
-		'search' => __('Search'),
-		'go' => __('Go'),
-		'copyright' => __('Copyright %year%'),
-		'edit' => __('Edit'),
-		'by' => __('By'),
-		'more' => __('More on %title%'),
-		'page' => __('Page'),
-		'filed_under' => __('Filed under'),
-		'permalink' => __('Permalink'),
-		'print' => __('Print'),
-		'email' => __('Email'),
-		'comment' => __('Comment'),
-		'reply' => __('Reply'),
-		'no_comments' => __('No Comments'),
-		'1_comment' => __('1 Comment'),
-		'n_comments' => __('% Comments'),
-		'leave_comment' => __('Leave a Comment'),
-		'password_protected' => __('Enter your password to view comments.'),
-		'login_required' => __('You must be <a href="%login_url%">logged in</a> to post a comment.'),
-		'logged_in_as' => __('Logged in as %identity%'),
-		'logout' => __('Logout'),
-		'name_field' => __('Name'),
-		'email_field' => __('Email'),
-		'website_field' => __('Web site'),
-		'required_field' => __('(required)'),
-		'submit_comment' => __('Submit Comment'),
-		'trackback_uri' => __('Trackback uri'),
-		'track_this_entry' => __('Track this entry'),
-		'related_entries' => __('Related Entries'),
-		'no_entries_found' => __('No entries found'),
-		'previous_page' => __('Previous Page'),
-		'next_page' => __('Next Page'),
-		'spread_the_word' => __('Spread the word')
-		);
-}
 
 
 #
@@ -53,7 +11,7 @@ function add_theme_captions_admin()
 		'themes.php',
 		__('Captions'),
 		__('Captions'),
-		7,
+		'switch_themes',
 		str_replace("\\", "/", basename(__FILE__)),
 		'display_theme_captions_admin'
 		);
@@ -86,10 +44,12 @@ function display_theme_captions_admin()
 
 	echo '<form method="post" action="">';
 
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_captions');
+
 	echo '<input type="hidden"'
 		. ' name="action"'
 		. ' value="update_theme_captions"'
-		. '>';
+		. ' />';
 
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Captions') . '</h2>';
@@ -106,6 +66,10 @@ function display_theme_captions_admin()
 
 function update_theme_captions()
 {
+	check_admin_referer('sem_captions');
+
+	$options = get_option('semiologic');
+
 	$all_captions = get_all_captions();
 
 	foreach ( array_keys((array) $_POST['caption']) as $key )
@@ -118,12 +82,13 @@ function update_theme_captions()
 		}
 	}
 
-	$GLOBALS['semiologic']['captions'] = $_POST['caption'];
+	$options['captions'] = $_POST['caption'];
 
-	update_option('semiologic', $GLOBALS['semiologic']);
+	update_option('semiologic', $options);
 } # end update_theme_captions()
 
 add_action('update_theme_captions', 'update_theme_captions');
+
 
 #
 # display_theme_captions()
@@ -133,6 +98,8 @@ function display_theme_captions()
 {
 	$all_captions = get_all_captions();
 
+	$options = get_option('semiologic');
+
 	foreach ( array_keys($all_captions) as $caption_id )
 	{
 ?>	<p>
@@ -141,8 +108,8 @@ function display_theme_captions()
 		<input type="text" style="width: 360px;"
 			id="caption[<?php echo $caption_id; ?>]" name="caption[<?php echo $caption_id; ?>]"
 			value="<?php echo htmlspecialchars(
-				( $GLOBALS['semiologic']['captions'][$caption_id]
-					? $GLOBALS['semiologic']['captions'][$caption_id]
+				( $options['captions'][$caption_id]
+					? $options['captions'][$caption_id]
 					: $all_captions[$caption_id]
 					),
 				ENT_QUOTES

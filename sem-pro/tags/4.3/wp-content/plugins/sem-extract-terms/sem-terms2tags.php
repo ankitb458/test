@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Related Tags
-Plugin URI: http://www.semiologic.com/software/terms2tags/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/terms2tags/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Requires the <a href="http://www.semiologic.com/software/extract-terms/">Extract terms plugin</a>. Returns Yahoo! terms as technorati tags. To use, call the_terms2tags(); where you want the terms to appear.
-Version: 2.12
+Plugin URI: http://www.semiologic.com/software/geekery/terms2tags/
+Description: Leverages Yahoo!'s term extraction web service to display links to related technorati tags. This has no SEO benefit, but it can be fun.
+Version: 2.14
 Author: Denis de Bernardy
 Author URI: http://www.semiologic.com
 */
@@ -91,6 +91,32 @@ function the_terms2tags($post = null)
 
 	$sem_terms2tags->display($post);
 } # end the_terms2tags()
+
+
+#
+# display_entry_related_tags()()
+#
+
+function display_entry_related_tags()
+{
+	if ( apply_filters('show_entry_related_tags', is_single())
+		&& get_the_post_terms()
+		)
+	{
+		echo '<div class="entry_related_tags">'
+			. '<h2>'
+			. __('Related Tags')
+			. '</h2>'
+			. '<p>';
+
+		the_terms2tags();
+
+		echo '</p>'
+			. '</div>';
+	}
+} # end display_entry_related_tags()
+
+add_filter('after_the_entry', 'display_entry_related_tags', 9);
 
 
 ########################

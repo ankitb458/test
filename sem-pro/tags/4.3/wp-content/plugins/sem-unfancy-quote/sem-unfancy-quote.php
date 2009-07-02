@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Unfancy Quote
-Plugin URI: http://www.semiologic.com/software/unfancy-quote/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/unfancy-quote/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Removes WP-inserted fancy quotes.
+Plugin URI: http://www.semiologic.com/software/wp-fixes/unfancy-quote/
+Description: Removes WordPress fancy quotes, which is very useful if you post code snippets to your site.
 Author: Denis de Bernardy
 Version: 2.0
 Author URI: http://www.semiologic.com

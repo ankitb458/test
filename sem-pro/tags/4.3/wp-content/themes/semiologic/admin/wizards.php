@@ -5,20 +5,11 @@
 
 function add_wizard_admin()
 {
-/*
-	add_menu_page(
-		__('Wizards'),
-		__('Wizards'),
-		7,
-		str_replace("\\", "/", basename(__FILE__)),
-		'display_wizard_admin'
-		);
-*/
 	add_submenu_page(
 		'themes.php',
 		__('Wizards'),
 		__('Wizards'),
-		7,
+		'administrator',
 		str_replace("\\", "/", basename(__FILE__)),
 		'display_wizard_admin'
 		);
@@ -44,6 +35,7 @@ function display_wizard_admin()
 		&& $_POST['action'] == 'wizard'
 		)
 	{
+		check_admin_referer('sem_wizard');
 		add_action('display_wizard', 'display_wizard_step');
 		do_wizard($_POST['wizard'], $step);
 	}
@@ -111,6 +103,8 @@ function display_all_wizards()
 			. '">';
 
 		echo '<form method="post" action="' . trailingslashit(get_settings('siteurl')). 'wp-admin/themes.php?page=wizards.php' . '" style="padding: 12px;">';
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_wizard');
 
 		echo '<input type="hidden"'
 			. ' name="action"'
@@ -183,6 +177,8 @@ function display_wizard_step()
 				. '">';
 
 		echo '<form method="post" action="" style="padding: 12px;">';
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_wizard');
 
 		echo '<input type="hidden" name="action" value="wizard" />';
 		echo '<input type="hidden" name="wizard" value="'. $_REQUEST['wizard'] . '" />';

@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Smart Link
-Plugin URI: http://www.semiologic.com/software/smart-link/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/smart-link/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Lets you write links as [link text->link url] (explicit link), or as [link text->] (implicit link).
+Plugin URI: http://www.semiologic.com/software/publishing/smart-link/
+Description: Lets you write links as [link text->link url] (explicit link), or as [link text->] (implicit link).
 Author: Denis de Bernardy
 Version: 3.11
 Author URI: http://www.semiologic.com

@@ -113,6 +113,9 @@ function drawErrorBase(&$manager)
 ?>
 <table width="100%">
   <tr>
+    <td class="error">Your wp-content folder is not writable by the server.</td>
+  </tr>
+  <tr>
     <td class="error">Invalid base directory: <?php echo $manager->config['base_dir']; ?></td>
   </tr>
 </table>

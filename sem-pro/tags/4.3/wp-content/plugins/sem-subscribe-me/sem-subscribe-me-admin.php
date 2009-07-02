@@ -29,6 +29,7 @@ class subscribe_me_admin
 
 			$new_options['title'] = stripslashes(wp_filter_post_kses(strip_tags($_POST["sem_subscribe_me_widget_title"])));
 			$new_options['dropdown'] = isset($_POST['sem_subscribe_me_dropdown']);
+			$new_options['add_nofollow'] = isset($_POST['sem_subscribe_me_add_nofollow']);
 
 			if ( $options != $new_options )
 			{
@@ -37,7 +38,7 @@ class subscribe_me_admin
 				update_option('sem_subscribe_me_params', $options);
 			}
 
-			$services = $_POST['subscribe_me_services'];
+			$services = (array) $_POST['subscribe_me_services'];
 
 			$services = array_map('strip_tags', $services);
 			$services = array_map('stripslashes', $services);
@@ -46,6 +47,8 @@ class subscribe_me_admin
 		}
 
 		$title = htmlspecialchars($options['title'], ENT_QUOTES);
+
+		$services = get_option('sem_subscribe_me_services');
 
 		echo '<input type="hidden"'
 				. ' id="sem_subscribe_me_widget_update"'
@@ -76,18 +79,25 @@ class subscribe_me_admin
 				. __('Show as a drop down button')
 				. '</label>'
 				. '</p>'
+			. '<p>'
+			. '<label for="sem_subscribe_me_add_nofollow">'
+				. '<input'
+					. ' id="sem_subscribe_me_add_nofollow"'
+					. ' name="sem_subscribe_me_add_nofollow"'
+					. ( intval($options['add_nofollow'])
+						? ' checked="checked"'
+						: ''
+						)
+					. ' type="checkbox" value="1" />'
+				. '&nbsp;'
+				. __('Add nofollow')
+				. '</label>'
+				. '</p>'
 			;
 
 
 		$args['site_path'] = trailingslashit(get_settings('siteurl'));
 		$args['img_path'] = trailingslashit(get_settings('siteurl')) . 'wp-content/plugins/sem-subscribe-me/img/';
-
-		$services = get_settings('sem_subscribe_me_services');
-
-		if ( !$services )
-		{
-			$services = subscribe_me::default_services();
-		}
 
 		$o .= '<div style="width: 280px;">';
 
@@ -174,13 +184,18 @@ class subscribe_me_admin
 
 	function add2menu()
 	{
-		add_options_page(
-				__('Subscribe&nbsp;Me', 'sem-subscribe-me'),
-				__('Subscribe&nbsp;Me', 'sem-subscribe-me'),
-				8,
-				str_replace("\\", "/", __FILE__),
-				array('subscribe_me_admin', 'display')
-				);
+		if ( ( version_compare($GLOBALS['wp_version'], '2.2', '<') )
+			&& !in_array('widgets/widgets.php', (array) get_option('active_plugins'))
+			)
+		{
+			add_options_page(
+					__('Subscribe&nbsp;Me', 'sem-subscribe-me'),
+					__('Subscribe&nbsp;Me', 'sem-subscribe-me'),
+					'manage_options',
+					str_replace("\\", "/", __FILE__),
+					array('subscribe_me_admin', 'display')
+					);
+		}
 	} # add2menu()
 
 

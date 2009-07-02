@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: HitsLink
-Plugin URI: http://www.semiologic.com/software/hitslink/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/hitslink/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> to your blog, with all sorts of advanced tracking toys enabled.
+Plugin URI: http://www.semiologic.com/software/marketing/hitslink/
+Description: Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> to your blog, with all sorts of advanced tracking toys enabled.
 Author: Denis de Bernardy
-Version: 1.0
+Version: 1.2
 Author URI: http://www.semiologic.com
 */
 
@@ -85,18 +85,15 @@ class hitslink
 			return ;
 		}
 
-		global $user_ID;
-		global $user_level;
-
 		$options = hitslink::get_options();
 
 		if ( !$options['script'] )
 		{
-			echo __('<!-- You need to configure the HitsLink plugin under Options / HitsLink -->');
+			echo __('<!-- You need to configure the HitsLink plugin under Options / HitsLink -->') . "\n";
 		}
-		elseif ( $user_ID && intval($user_level) > 1 )
+		elseif ( current_user_can('publish_posts') )
 		{
-			echo __('<!-- The HitsLink plugin does not track site authors, editors and admins when they are logged in -->');
+			echo __('<!-- The HitsLink plugin does not track site authors, editors and admins when they are logged in -->') . "\n";
 		}
 		else
 		{

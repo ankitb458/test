@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Newsletter Manager
-Plugin URI: http://www.semiologic.com/software/newsletter-manager/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/newsletter-manager/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Lets you readily add a newsletter subscription form to your WordPress installation. If your theme does not support widgets, add a call to the_subscribe_form() in your template.
+Plugin URI: http://www.semiologic.com/software/marketing/newsletter-manager/
+Description: Lets you readily add a newsletter subscription form to your WordPress installation.
 Author: Denis de Bernardy
-Version: 2.7
+Version: 2.9
 Author URI: http://www.semiologic.com
 */
 
@@ -131,19 +131,19 @@ function get_the_subscribe_form()
 				. ' value="' . __('Your Name') . '"'
 				. ' onfocus="if ( this.value == \'' . __('Your Name') . '\' ) this.value = \'\';"'
 				. ' onblur="if ( this.value == \'\' ) this.value = \'' . __('Your Name') . '\';"'
-				. '/><br />'
+				. ' /><br />'
 			. '<input type="text"'
 				. ' id="subscriber_email_' . $hash . '" name="subscriber_email"'
 				. ' value="' . __('Your Email') . '"'
 				. ' onfocus="if ( this.value == \'' . __('Your Email') . '\' ) this.value = \'\';"'
 				. ' onblur="if ( this.value == \'\' ) this.value = \'' . __('Your Email') . '\';"'
-				. '/>'
+				. ' />'
 			. '</div>'
 			. '<div class="newsletter_submit">'
 			. '<input type="submit"'
 				. ' value="' . __('Sign Up') . '"'
 				. ' onclick="if ( !getElementById(\'subscriber_email_' . $hash . '\').value.match(/\S+@\S+/) ) { getElementById(\'subscriber_email_' . $hash . '\').focus(); return false; }"'
-				. '/></div>'
+				. ' /></div>'
 			. '</form>';
 	}
 
@@ -165,8 +165,8 @@ function get_the_aweber_form()
 
 	$o = $options['teaser']
 		. '<form method="post" action="http://www.aweber.com/scripts/addlead.pl">'
-		. '<input type="hidden" name="meta_split_id" value="">'
-		. '<input type="hidden" name="unit" value="' . $unit . '">'
+		. '<input type="hidden" name="meta_split_id" value="" />'
+		. '<input type="hidden" name="unit" value="' . $unit . '" />'
 		. '<input type="hidden" name="redirect" value="'
 			. 'http' . ( $_SERVER['HTTPS'] == 'on' ? 's' : '' ) . '://'
 			. $_SERVER['HTTP_HOST']
@@ -176,29 +176,29 @@ function get_the_aweber_form()
 				: '?'
 				) . 'subscribed'
 			. '">'
-		. '<input type="hidden" name="meta_message" value="1">'
-		. '<input type="hidden" name="meta_required" value="name,from">'
-		. '<input type="hidden" name="meta_forward_vars" value="0">'
+		. '<input type="hidden" name="meta_message" value="1" />'
+		. '<input type="hidden" name="meta_required" value="name,from" />'
+		. '<input type="hidden" name="meta_forward_vars" value="0" />'
 		. '<div class="newsletter_fields">'
 		. '<input type="text"'
 			. ' id="subscriber_name_' . $hash . '" name="name"'
 			. ' value="' . __('Your Name') . '"'
 			. ' onfocus="if ( this.value == \'' . __('Your Name') . '\' ) this.value = \'\';"'
 			. ' onblur="if ( this.value == \'\' ) this.value = \'' . __('Your Name') . '\';"'
-			. '/><br />'
+			. ' /><br />'
 		. '<input type="text"'
 			. ' id="subscriber_email_' . $hash . '" name="from"'
 			. ' value="' . __('Your Email') . '"'
 			. ' onfocus="if ( this.value == \'' . __('Your Email') . '\' ) this.value = \'\';"'
 			. ' onblur="if ( this.value == \'\' ) this.value = \'' . __('Your Email') . '\';"'
-			. '/>'
+			. ' />'
 		. '</div>'
 		. '<div class="newsletter_submit">'
 		. '<input type="submit"'
 			. ' value="' . __('Sign Up') . '"'
 			. ' name="submit"'
 			. ' onclick="if ( !getElementById(\'subscriber_email_' . $hash . '\').value.match(/\S+@\S+/) ) { getElementById(\'subscriber_email_' . $hash . '\').focus(); return false; }"'
-			. '/></div>'
+			. ' /></div>'
 		. '</form>';
 
 	return $o;
@@ -347,79 +347,9 @@ function update_newsletter_options()
 	}
 
 
-	//if ( $options != $new_options )
-	//{
-	//	$options = $new_options;
-
-		update_option('sem_newsletter_params', array());
-		update_option('sem_newsletter_params', $new_options);
-	//}
+	update_option('sem_newsletter_params', array());
+	update_option('sem_newsletter_params', $new_options);
 } # end update_newsletter_options()
-
-
-#
-# add_newsletter_admin()
-#
-
-function add_newsletter_admin()
-{
-	add_options_page(
-			__('Newsletter'),
-			__('Newsletter'),
-			7,
-			str_replace("\\", "/", __FILE__),
-			'display_newsletter_admin'
-			);
-} # end add_newsletter_admin()
-
-add_action('admin_menu', 'add_newsletter_admin');
-
-
-#
-# display_newsletter_admin()
-#
-
-function display_newsletter_admin()
-{
-?><form method="post" action="">
-<?php
-	if ( $_POST['update_newsletter_options'] )
-	{
-		echo "<div class=\"updated\">\n"
-			. "<p>"
-				. "<strong>"
-				. __('Options saved.')
-				. "</strong>"
-			. "</p>\n"
-			. "</div>\n";
-	}
-?><div class="wrap">
-	<h2><?php echo __('Newsletter options'); ?></h2>
-	<?php newsletter_widget_control(); ?>	<p class="submit">
-	<input type="submit"
-		value="<?php echo __('Update Options'); ?>"
-		 />
-	</p>
-</div>
-<div class="wrap">
-	<h2>How to use this plugin</h2>
-	<p>You will need a working version of mailing list manager that uses standard subscription commands (list-subscribe@domain.com or list@domain.com) to take advantage of this plugin.</p>
-
-	<p>Such managers include <a href="http://www.ezmlm.org">ezmlm</a>, <a href="http://www.list.org">Mailman</a> and <a href="http://www.greatcircle.com/majordomo">Majordomo</a>. Your host typically installs one of these by default. It also includes popular commercial tools such as <a href="http://www.semiologic.com/go/aweber">aWeber</a>.</p>
-
-	<h3>If you are using a non-commercial mailing list manager, be sure to configure your list:</h3>
-	<ul>
-		<li>Message moderation. (<strong>important</strong>: do not forget to add yourself to the moderators)</li>
-		<li>Posts from addresses other than moderators are rejected.</li>
-		<li>Respond to administrative requests. (<strong>important</strong>: the plugin won't work if you disable this)</li>
-	</ul>
-
-	<p>Please contact your host, or <a href="mailto:sales@semiologic.com">sales@semiologic.com</a>, if you need further assistance in configuring your list.</p>
-
-</div>
-</form>
-<?php
-} # end display_newsletter_admin()
 
 
 #

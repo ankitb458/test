@@ -11,9 +11,9 @@ function display_page_title()
 	global $s;
 	global $sem_s;
 	global $tag;
+	global $semiologic;
 
 	$o = "";
-	$add_sitename = true;
 
 	if ( is_search() )
 	{
@@ -43,7 +43,6 @@ function display_page_title()
 		if ( $title = get_post_meta($posts[0]->ID, '_title', true) )
 		{
 			$o .= convert_chars(strip_tags($title));
-			$add_sitename = false;
 		}
 		else
 		{
@@ -60,12 +59,16 @@ function display_page_title()
 	{
 		$o .= __('Not Found');
 	}
+	elseif ( $semiologic['seo']['title'] )
+	{
+		$o .= convert_chars($semiologic['seo']['title']);
+	}
 	else
 	{
 		$o .= convert_chars(apply_filters('bloginfo', get_bloginfo('description'), 'description'));
 	}
 
-	if ( $add_sitename )
+	if ( $semiologic['seo']['add_site_name'] )
 	{
 		$o .= ( $o ? " | " : "" )
 			. convert_chars(apply_filters('bloginfo', get_bloginfo('name'), 'name'));
@@ -84,65 +87,102 @@ add_action('display_page_title', 'display_page_title');
 
 function display_seo_meta()
 {
-	if ( !isset($GLOBALS['semiologic']['theme_seo'])
-		|| $GLOBALS['semiologic']['theme_seo']
-		)
+	global $posts;
+
+	if ( is_single() || is_page() || ( class_exists('sem_static_front') && sem_static_front::is_home() ) )
 	{
-		global $posts;
+		$GLOBALS['posts'] = $GLOBALS['wp_query']->posts;
+		$GLOBALS['post'] = $GLOBALS['wp_query']->posts[0];
 
-		if ( is_single() || is_page() || ( class_exists('sem_static_front') && sem_static_front::is_home() ) )
+		echo "\n"
+			. "<meta name=\"keywords\" content=\"";
+
+		if ( $keywords = get_post_meta($posts[0]->ID, '_keywords', true) )
 		{
-			$GLOBALS['posts'] = $GLOBALS['wp_query']->posts;
-			$GLOBALS['post'] = $GLOBALS['wp_query']->posts[0];
-
-			echo "<meta name=\"keywords\" content=\"";
-
-			if ( $keywords = get_post_meta($posts[0]->ID, '_keywords', true) )
-			{
-				echo htmlspecialchars($keywords, ENT_QUOTES);
-			}
-			else
-			{
-				the_title();
-
-				echo " - ";
-
-				echo strip_tags(get_the_category_list(', '));
-
-			}
-
-				echo "\" />\n";
-
-			echo "<meta name=\"description\" content=\"";
-
-			if ( $description = get_post_meta($posts[0]->ID, '_description', true) )
-			{
-				echo htmlspecialchars($description, ENT_QUOTES);
-			}
-			else
-			{
-				echo preg_replace("/(\n\r?){2,}/",
-					"\n\n",
-					htmlspecialchars(strip_tags(get_the_excerpt()), ENT_QUOTES)
-					);
-			}
-
-				echo "\" />\n";
+			echo htmlspecialchars($keywords, ENT_QUOTES);
 		}
 		else
 		{
-			echo "<meta name=\"keywords\" content=\"";
+			the_title();
 
-				bloginfo('name');
+			echo " - ";
 
-				echo "\" />\n";
+			echo strip_tags(get_the_category_list(', '));
 
-			echo "<meta name=\"description\" content=\"";
-
-				echo htmlspecialchars(strip_tags(get_bloginfo('description')), ENT_QUOTES);
-
-				echo "\" />\n";
 		}
+
+			echo "\" />\n";
+
+		echo "<meta name=\"description\" content=\"";
+
+		if ( $description = get_post_meta($posts[0]->ID, '_description', true) )
+		{
+			echo htmlspecialchars($description, ENT_QUOTES);
+		}
+		else
+		{
+			echo preg_replace("/(\n\r?){2,}/",
+				"\n\n",
+				htmlspecialchars(strip_tags(get_the_excerpt()), ENT_QUOTES)
+				);
+		}
+
+			echo "\" />\n";
+	}
+	elseif ( is_category() )
+	{
+		echo "\n"
+			. "<meta name=\"keywords\" content=\"";
+
+			echo convert_chars(stripslashes(single_cat_title('', false)));
+
+			echo "\" />\n";
+
+		echo "<meta name=\"description\" content=\"";
+
+			if ( $description = category_description() )
+			{
+				echo htmlspecialchars(trim(strip_tags($description)), ENT_QUOTES);
+			}
+			elseif ( $GLOBALS['semiologic']['seo']['description'] )
+			{
+				echo htmlspecialchars($GLOBALS['semiologic']['seo']['description'], ENT_QUOTES);
+			}
+			else
+			{
+				echo htmlspecialchars(strip_tags(get_bloginfo('description')), ENT_QUOTES);
+			}
+
+			echo "\" />\n";
+	}
+	else
+	{
+		echo "\n"
+			. "<meta name=\"keywords\" content=\"";
+
+			if ( $GLOBALS['semiologic']['seo']['keywords'] )
+			{
+				echo htmlspecialchars($GLOBALS['semiologic']['seo']['keywords'], ENT_QUOTES);
+			}
+			else
+			{
+				echo bloginfo('name');
+			}
+
+			echo "\" />\n";
+
+		echo "<meta name=\"description\" content=\"";
+
+			if ( $GLOBALS['semiologic']['seo']['description'] )
+			{
+				echo htmlspecialchars($GLOBALS['semiologic']['seo']['description'], ENT_QUOTES);
+			}
+			else
+			{
+				echo htmlspecialchars(strip_tags(get_bloginfo('description')), ENT_QUOTES);
+			}
+
+			echo "\" />\n";
 	}
 } # end display_seo_meta()
 
@@ -202,88 +242,20 @@ add_filter('permalink_redirect_skip', 'fix_permalink_redirect');
 
 
 #
-# display_translator()
-#
-
-function display_translator()
-{
-	if ( function_exists('create_translator_bar') )
-	{
-		echo '<div id="translator_bar">';
-		create_translator_bar();
-		echo '</div>';
-	}
-} # end display_translator()
-
-add_action('before_the_wrapper', 'display_translator', 0);
-
-
-#
 # add_more_keywords()
 #
 
 function add_more_keywords($cats)
 {
-	return function_exists('get_the_post_keytags')
+	if (!is_admin())
+		return function_exists('get_the_post_keytags')
 		? get_the_post_keytags(true)
 		: $cats;
+	else
+		return ($cats);
 } # end add_more_keywords()
 
 add_filter('the_category', 'add_more_keywords', -1000);
-
-
-#
-# display_entry_related_searches()()
-#
-
-function display_entry_related_searches()
-{
-	if ( function_exists('the_terms2search')
-		&& apply_filters('show_entry_related_searches', is_single())
-		&& get_the_post_terms()
-		)
-	{
-		echo '<div class="entry_related_searches">'
-			. '<h2>'
-			. __('Related Searches')
-			. '</h2>'
-			. '<p>';
-
-		the_terms2search();
-
-		echo '</p>'
-			. '</div>';
-	}
-} # end display_entry_related_searches()
-
-add_filter('after_the_entry', 'display_entry_related_searches', 9);
-
-
-#
-# display_entry_related_tags()()
-#
-
-function display_entry_related_tags()
-{
-	if ( function_exists('the_terms2tags')
-		&& apply_filters('show_entry_related_tags', is_single())
-		&& get_the_post_terms()
-		)
-	{
-		echo '<div class="entry_related_tags">'
-			. '<h2>'
-			. __('Related Tags')
-			. '</h2>'
-			. '<p>';
-
-		the_terms2tags();
-
-		echo '</p>'
-			. '</div>';
-	}
-} # end display_entry_related_tags()
-
-add_filter('after_the_entry', 'display_entry_related_tags', 9);
 
 
 #

@@ -17,6 +17,9 @@ function setup_advanced_template($template)
 {
 	switch ($template)
 	{
+		case 'raw':
+			add_filter('show_entry_spread_the_word', 'false');
+			break;
 		case 'article':
 			add_filter('show_entry_by_on', 'true');
 			add_filter('show_entry_trackback_uri', 'pings_open');
@@ -47,6 +50,7 @@ function setup_advanced_template($template)
 			reset_plugin_hook('after_the_header');
 			reset_plugin_hook('before_the_entries');
 			reset_plugin_hook('before_the_entry');
+			reset_plugin_hook('display_entry_header');
 			reset_plugin_hook('display_entry_date');
 			reset_plugin_hook('display_entry_title');
 			reset_plugin_hook('display_entry_title_meta');
@@ -62,6 +66,7 @@ function setup_advanced_template($template)
 			add_action('before_the_entry', create_function('$in', 'echo "<div class=\"sell\">";'));
 			add_action('after_the_entry', create_function('$in', 'echo "</div>"; edit_post_link(get_caption(\'edit\'), \' <p class="admin_link" style="text-align: right;">\', \'</p>\');'));
 			add_action('before_the_entry', 'html2wp_kill_formatting');
+			add_action('after_the_entry', 'display_entry_comments', 50);
 			break;
 	}
 } # end setup_advanced_template()
@@ -507,7 +512,7 @@ function display_links_template()
 					echo "<h2>" . stripslashes($link_cat->cat_name) . "</h2>\n"
 						. "<ul>\n";
 					get_links($cat_id, '<li>', '</li>', '<br />', false, 'name', true,
-true, -1, false);
+false, -1, false);
 					echo "</ul>\n";
 					break;
 				}
@@ -518,7 +523,7 @@ true, -1, false);
 			echo "<h2>" .  __('Latest links') . "</h2>\n"
 						. "<ul>\n";
 			get_links(-1, '<li>', '</li>', '<br />', false, '_id', true,
-true, 10, false);
+false, 10, false);
 			echo "</ul>\n";
 		}
 

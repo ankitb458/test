@@ -10,7 +10,7 @@ function add_semiologic_affiliate_admin()
 		add_options_page(
 				__('Semiologic&nbsp;Affiliate'),
 				__('Semiologic&nbsp;Affiliate'),
-				7,
+				'manage_options',
 				str_replace("\\", "/", __FILE__),
 				'display_semiologic_affiliate_admin'
 				);
@@ -26,12 +26,23 @@ add_action('admin_menu', 'add_semiologic_affiliate_admin');
 
 function update_semiologic_affiliate_options()
 {
+	check_admin_referer('sem_affiliate');
+
 	#echo '<pre>';
 	#var_dump($_POST);
 	#echo '</pre>';
 
+	$aff_id = $_POST['aff_id'];
+
+	if ( preg_match("/^http:\/\/www\.getsemiologic.com\?aff=(.+)/i", $aff_id, $match) )
+	{
+		$aff_id = end($match);
+	}
+
+	$aff_id = trim(preg_replace("/[^0-9a-zA-Z_-]/", "", $aff_id));
+
 	$options = array(
-		'aff_id' => trim(preg_replace("/[^0-9a-zA-Z_-]/", "", $_POST['aff_id']))
+		'aff_id' => $aff_id
 		);
 
 	if ( function_exists('get_site_option') )
@@ -51,8 +62,10 @@ function update_semiologic_affiliate_options()
 
 function display_semiologic_affiliate_admin()
 {
-?><form method="post" action="">
-<?php
+	echo '<form method="post" action="">';
+
+	if ( function_exists('wp_nonce_field') ) wp_nonce_field('sem_affiliate');
+
 	if ( $_POST['update_semiologic_affiliate_options'] )
 	{
 		echo "<div class=\"updated\">\n"
@@ -100,7 +113,7 @@ function display_semiologic_affiliate_admin()
 			. '<label for="aff_id">'
 			. __('Your Affiliate ID') . ':'
 			. '<br />'
-			. '<input type="text"'
+			. 'http://www.getsemiologic.com?aff=<input type="text"'
 				. ' name="aff_id" id="aff_id"'
 				. ' value="' . htmlspecialchars($options['aff_id'], ENT_QUOTES) . '"'
 				. ' />'

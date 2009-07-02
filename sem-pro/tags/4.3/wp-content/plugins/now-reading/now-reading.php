@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Now Reading
-Version: 4.3.5 (edited)
+Version: 4.3.6
 Plugin URI: http://robm.me.uk/projects/plugins/wordpress/now-reading/
 Description: Allows you to display the books you're reading, have read recently and plan to read, with cover art fetched automatically from Amazon.
 Author: Rob Miller
@@ -9,11 +9,11 @@ Author URI: http://robm.me.uk/
  */
 /**
  * @author Rob Miller <r@robm.me.uk>
- * @version 4.3.5
+ * @version 4.3.6
  * @package now-reading
  */
 
-define('NOW_READING_VERSION', '4.3.5');
+define('NOW_READING_VERSION', '4.3.6');
 define('NOW_READING_DB', 38);
 define('NOW_READING_OPTIONS', 6);
 define('NOW_READING_REWRITE', 7);
@@ -175,7 +175,7 @@ add_filter('rewrite_rules_array', 'nr_mod_rewrite');
 function nr_install() {
 	global $wpdb, $wp_rewrite, $wp_version;
 
-	if ( version_compare('2.0', $wp_version) == 1 ) {
+	if ( version_compare('2.0', $wp_version) == 1 && strpos($wp_version, 'wordpress-mu') === false ) {
 		echo '
 		<p><code>+++ Divide By Cucumber Error. Please Reinstall Universe And Reboot +++</code></p>
 		<p>Melon melon melon</p>
@@ -298,11 +298,10 @@ function nr_install() {
 		}
 	}
 	$widget_file = ABSPATH . '/wp-content/plugins/widgets/now-reading.php';
-	if ( file_exists($widget_file) ) {
+	if ( file_exists($widget_file) && filesize($widget_file) > 400 ) {
 		@chmod($widget_file, 0666);
 		if ( !@unlink($widget_file) )
-			//die("Please delete your <code>wp-content/plugins/widgets/now-reading.php</code> file!");
-			;
+			die("Please delete your <code>wp-content/plugins/widgets/now-reading.php</code> file!");
 	}
 
 	// Set an option that stores the current installed versions of the database, options and rewrite.
@@ -313,7 +312,7 @@ register_activation_hook('now-reading/now-reading.php', 'nr_install');
 
 // Include other functionality
 require_once dirname(__FILE__) . '/compat.php';
-require_once dirname(__FILE__) . '/now-reading-admin.php';
+require_once dirname(__FILE__) . '/admin.php';
 require_once dirname(__FILE__) . '/default-filters.php';
 require_once dirname(__FILE__) . '/template-functions.php';
 require_once dirname(__FILE__) . '/widget.php';
@@ -496,13 +495,18 @@ function add_book( $query ) {
 		$values .= ", '$value'";
 	}
 
+	$columns = preg_replace('#^, #', '', $columns);
+	$values = preg_replace('#^, #', '', $values);
+
 	$query = "
 	INSERT INTO {$wpdb->prefix}now_reading
-	(b_id$columns)
-	VALUES(''$values)
+	($columns)
+	VALUES($values)
 	";
 
-	$id = $wpdb->query($query);
+	$wpdb->query($query);
+	// Ugh, insert_id doesn't want to work here. Ah well.
+	$id = $wpdb->get_var("SELECT MAX(b_id) FROM {$wpdb->prefix}now_reading");
 	if ( $id > 0 ) {
 		do_action('book_added', $id);
 		return $id;
@@ -556,6 +560,16 @@ function query_amazon( $query ) {
 			curl_setopt($ch, CURLOPT_USERAGENT, 'Now Reading ' . NOW_READING_VERSION);
 			curl_setopt($ch, CURLOPT_HEADER, 0);
 
+			if ( !empty($options['proxyHost']) ) {
+				$proxy = $options['proxyHost'];
+
+				if ( !empty($options['proxyPort']) ) {
+					$proxy .= ":{$options['proxyPort']}";
+				}
+
+				curl_setopt($ch, CURLOPT_PROXY, $proxy);
+			}
+
 			$xmlString = curl_exec($ch);
 
 			curl_close($ch);
@@ -565,6 +579,12 @@ function query_amazon( $query ) {
 
 		$snoopy = new snoopy;
 		$snoopy->agent = 'Now Reading ' . NOW_READING_VERSION;
+
+		if ( !empty($options['proxyHost']) )
+			$snoopy->proxy_host = $options['proxyHost'];
+		if ( !empty($options['proxyHost']) && !empty($options['proxyPort']) )
+			$snoopy->proxy_port = $options['proxyPort'];
+
 		$snoopy->fetch($url);
 
 		$xmlString = $snoopy->results;
@@ -603,7 +623,11 @@ function query_amazon( $query ) {
 	}
 
 	$items = $doc->getElementByPath('ItemSearchResponse/Items');
-	$items = $items->getAllChildren('Item');
+	if ( $items )
+		$items = $items->getAllChildren('Item');
+
+	if ( $options['debugMode'] )
+		robm_dump("items:", $items);
 
 	if ( count($items) > 0 ) {
 

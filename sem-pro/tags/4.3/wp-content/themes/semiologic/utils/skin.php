@@ -56,6 +56,9 @@ function get_active_font_size()
 function display_theme_css()
 {
 ?><link rel="stylesheet" type="text/css" href="<?php echo get_stylesheet_directory_uri() . '/style.css'; ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo get_stylesheet_directory_uri() . '/layout.css'; ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo get_stylesheet_directory_uri() . '/font.css'; ?>" />
+<link rel="stylesheet" type="text/css" href="<?php echo get_stylesheet_directory_uri() . '/sell.css'; ?>" />
 <?php
 } # end display_theme_css()
 

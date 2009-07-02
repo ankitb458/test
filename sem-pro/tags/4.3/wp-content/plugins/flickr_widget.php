@@ -4,7 +4,7 @@ Plugin Name: Flickr Widget
 Plugin URI: http://donncha.wordpress.com/flickr-widget/
 Description: A widget which will display your latest Flickr photos.
 Author: Donncha O Caoimh
-Version: 0.3 (fork)
+Version: 0.3.1 (fork)
 Author URI: http://inphotos.org/
 
 Installing
@@ -18,11 +18,7 @@ Changelog
 */
 
 function widget_flickr($args) {
-	if( file_exists( ABSPATH . WPINC . '/rss.php') ) {
-		require_once(ABSPATH . WPINC . '/rss.php');
-	} else {
-		require_once(ABSPATH . WPINC . '/rss-functions.php');
-	}
+	require_once(ABSPATH . WPINC . '/rss.php');
 	extract($args);
 
 	$options = get_option('widget_flickr');

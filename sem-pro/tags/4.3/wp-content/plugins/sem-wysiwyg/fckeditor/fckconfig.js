@@ -49,7 +49,7 @@ FCKConfig.PluginsPath = FCKConfig.BasePath + 'plugins/' ;
 FCKConfig.Plugins.Add( 'wordpress', "en" ) ;
 FCKConfig.Plugins.Add('ImageManager');
 FCKConfig.Plugins.Add( 'Video','en' );
-FCKConfig.Plugins.Add( 'casechange','en' ) ;
+//FCKConfig.Plugins.Add( 'casechange','en' ) ;
 FCKConfig.Plugins.Add( 'GoogleSpellCheck' ) ;
 //FCKConfig.Plugins.Add( 'symbol','en' ) ;
 
@@ -100,6 +100,18 @@ FCKConfig.ToolbarLocation = 'In' ;
 
 
 wp_buttons = new Array();
+media_buttons = new Array();
+
+media_buttons.push('ImageManager');
+
+if ( window.parent.document.show_fck_media && window.parent.document.all_media.length )
+{
+	media_buttons.push('WordPressMedia');
+}
+
+media_buttons.push('Video');
+media_buttons.push('Flash');
+
 
 wp_buttons.push('WordPressMore');
 wp_buttons.push('WordPressNextPage');
@@ -126,6 +138,7 @@ if ( window.parent.document.show_fck_videocast )
 
 if ( window.parent.document.show_fck_adunit )
 {
+	wp_buttons.push('-');
 	wp_buttons.push('WordPressAdUnit');
 }
 
@@ -136,13 +149,15 @@ FCKConfig.ToolbarSets["Default"] = [
 	['Cut','Copy','Paste','PasteText','PasteWord'],
 	['Undo','Redo'],
 	['Find','Replace','SelectAll'],
-	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript','-','RemoveFormat','casechange'],
+	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript','-','RemoveFormat'],
 	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
 	['OrderedList','UnorderedList','-','Outdent','Indent'],
 	'/',
 	['Link','Unlink','Anchor'],
-	['ImageManager','Flash', 'Table','Rule','Smiley','SpecialChar','PageBreak','-','Video','GoogleSpellCheck'],
+	media_buttons,
+	['Table','Rule','Smiley','SpecialChar'],
 	wp_buttons,
+	['GoogleSpellCheck'],
 	'/',
 	['FontFormat','FontName','FontSize'],
 	['TextColor','BGColor'],

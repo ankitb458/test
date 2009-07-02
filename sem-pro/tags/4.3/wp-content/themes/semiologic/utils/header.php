@@ -1,12 +1,337 @@
 <?php
-#
-# get_active_header()
-#
 
-function get_active_header()
+class header
 {
-	return $GLOBALS['semiologic']['active_header'];
-} # end get_active_header()
+	#
+	# init()
+	#
+
+	function init()
+	{
+		add_action('wp_head', array('header', 'wire_header'));
+	} # init
+
+
+	#
+	# get_header()
+	#
+
+	function get_header()
+	{
+		if ( defined('sem_theme_header') )
+		{
+			return sem_theme_header;
+		}
+
+		global $semiologic;
+
+		if ( !isset($semiologic['header']['mode']) )
+		{
+			header::upgrade();
+		}
+
+		if ( $header = glob(TEMPLATEPATH . '/skins/' . get_active_skin() . '/{header,header-background,header-bg,logo}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		{
+			$header = end($header);
+
+			$header_name = basename($header);
+
+			preg_match("/(.+)\.[^\.]+/", $header_name, $header_type);
+			$header_type = end($header_type);
+
+			switch ( $header_type )
+			{
+			case 'header':
+			case 'header-background':
+				add_filter('header_mode', array('header', 'force_header_mode'));
+				break;
+
+			case 'header-bg':
+				add_filter('header_mode', array('header', 'force_background_mode'));
+				break;
+
+			case 'logo':
+				add_filter('header_mode', array('header', 'force_logo_mode'));
+				break;
+			}
+		}
+		elseif ( $header = glob(ABSPATH . 'wp-content/header/header.{jpg,png,gif,swf}', GLOB_BRACE) )
+		{
+			$header = end($header);
+		}
+		else
+		{
+			$header = false;
+		}
+
+		define('sem_theme_header', $header);
+
+		return $header;
+	} # get_header()
+
+
+	#
+	# get_class()
+	#
+
+	function get_class()
+	{
+		$class = '';
+
+		if ( header::get_header() )
+		{
+			switch ( apply_filters('header_mode', $GLOBALS['semiologic']['header']['mode']) )
+			{
+			case 'header':
+			case 'background':
+				$class = 'header_bg';
+				break;
+
+			case 'logo':
+				$class = 'header_img';
+				break;
+			}
+		}
+
+		return $class;
+	} # get_class()
+
+
+	#
+	# force_header_mode()
+	#
+
+	function force_header_mode($in)
+	{
+		return 'header';
+	} # force_header_mode()
+
+
+	#
+	# force_background_mode()
+	#
+
+	function force_background_mode($in)
+	{
+		return 'background';
+	} # force_background_mode()
+
+
+	#
+	# force_logo_mode()
+	#
+
+	function force_logo_mode($in)
+	{
+		return 'logo';
+	} # force_logo_mode()
+
+
+	#
+	# upgrade()
+	#
+
+	function upgrade()
+	{
+		global $semiologic;
+
+		$skin = get_active_skin();
+
+		if ( $header = glob(TEMPLATEPATH . '/skins/' . $skin . '/header{,-background,-bg}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		{
+			$header = end($header);
+		}
+		elseif ( $header = glob(TEMPLATEPATH . '/header{,-background,-bg}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		{
+			$header = end($header);
+		}
+		elseif ( $header = glob(TEMPLATEPATH . '/headers/header{,-background,-bg}.{jpg,png,gif,swf}', GLOB_BRACE) )
+		{
+			$header = end($header);
+		}
+		elseif ( $header = $semiologic['active_header'] )
+		{
+			$header = TEMPLATEPATH . '/headers/' . $semiologic['active_header'];
+		}
+
+		if ( $header )
+		{
+			$name = basename($header);
+
+			preg_match("/\.([^\.]+)$/", $name, $ext);
+			$ext = end($ext);
+
+			$name = str_replace('.' . $ext, '', $name);
+
+			@mkdir(ABSPATH . 'wp-content/header');
+			@chmod(ABSPATH . 'wp-content/header', 0777);
+
+			@rename($header, ABSPATH . 'wp-content/headers/header.' . $ext);
+
+			switch ( $name )
+			{
+			case 'header-background':
+				$semiologic['header']['mode'] = 'header';
+				break;
+
+			case 'header-bg':
+				$semiologic['header']['mode'] = 'background';
+				break;
+
+			case 'header':
+				switch ( $ext )
+				{
+				case 'swf':
+					$semiologic['header']['mode'] = 'background';
+					break;
+
+				default:
+					$semiologic['header']['mode'] = 'logo';
+					break;
+				}
+				break;
+
+			default:
+				$semiologic['header']['mode'] = 'background';
+				break;
+			}
+		}
+		else
+		{
+			$semiologic['header']['mode'] = 'header';
+		}
+
+		update_option('semiologic', $semiologic);
+	} # upgrade()
+
+
+	#
+	# display_script()
+	#
+
+	function display_script()
+	{
+		if ( !class_exists('mediacaster')
+			|| is_admin()
+			)
+		{
+			echo '<script type="text/javascript"'
+				. ' src="' . get_template_directory_uri() . '/swfobject.js"'
+				. '></script>' . "\n";
+		}
+	} # display_script()
+
+
+	#
+	# display_logo()
+	#
+
+	function display_logo($header = null)
+	{
+		if ( !$header )
+		{
+			$header = header::get_header();
+		}
+
+		if ( $header )
+		{
+			$site_url = trailingslashit(get_option('siteurl'));
+
+			list($width, $height) = getimagesize($header);
+
+			echo '<img src="'
+						. str_replace(ABSPATH, $site_url, $header)
+						. '"'
+					. ' alt="' . get_bloginfo('name') . '"'
+					. ' height="' . $height . '" width="' . $width . '"'
+					. ' />';
+		}
+	} # display_logo()
+
+
+	#
+	# display_flash()
+	#
+
+	function display_flash($header = null)
+	{
+		if ( !$header )
+		{
+			$header = header::get_header();
+		}
+
+		if ( $header )
+		{
+			$id = md5($header);
+			$site_url = trailingslashit(get_option('siteurl'));
+
+			list($width, $height) = getimagesize($header);
+
+			echo '<div id="' . $id . '">' . "\n"
+				. __('<a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.')
+				. '</div>'
+				. '<script type="text/javascript">' . "\n"
+				. 'var so = new SWFObject("'. str_replace(ABSPATH, $site_url, $header) . '","' . $id . '","' . $width . '","' . $height . '","7");' . "\n"
+				. 'so.write("' . $id . '");' . "\n"
+				. '</script>' . "\n";
+		}
+	} # display_flash()
+
+
+	#
+	# wire_header()
+	#
+
+	function wire_header()
+	{
+		$header = header::get_header();
+
+		if ( $header )
+		{
+			preg_match("/\.([^\.]+)$/", $header, $ext);
+			$ext = end($ext);
+
+			switch ( apply_filters('header_mode', $GLOBALS['semiologic']['header']['mode']) )
+			{
+			case 'logo':
+				remove_action('display_sitename', 'display_sitename');
+
+				if ( $ext == 'swf' )
+				{
+					add_action('display_sitename', array('header', 'display_flash'));
+					remove_action('enhance_header_div', 'enhance_header_div');
+				}
+				else
+				{
+					add_action('display_sitename', array('header', 'display_logo'));
+				}
+				break;
+
+			case 'header':
+				remove_action('display_sitename', 'display_sitename');
+				remove_action('display_tagline', 'display_tagline');
+				reset_plugin_hook('display_header_spacer');
+
+				if ( $ext == 'swf' )
+				{
+					remove_action('enhance_header_div', 'enhance_header_div');
+					add_action('display_sitename', array('header', 'display_flash'));
+				}
+				else
+				{
+					display_header_css($header);
+				}
+				break;
+
+			case 'background':
+					display_header_background_css($header);
+				break;
+			}
+		}
+	} # wire_header()
+} # header
+
+header::init();
 
 
 #
@@ -28,6 +353,67 @@ do_action('display_header_spacer');
 } # end display_header()
 
 add_action('display_header', 'display_header');
+
+
+#
+# display_sitename()
+#
+
+function display_sitename()
+{
+?><div id="sitename" class="sitename">
+<h1><a href="<?php bloginfo('url'); ?>"><?php bloginfo('sitename'); ?></a></h1>
+</div><!-- #sitename -->
+<?php
+} # end display_sitename()
+
+add_action('display_sitename', 'display_sitename');
+
+
+#
+# display_tagline()
+#
+
+function display_tagline()
+{
+?><div id="tagline" class="tagline">
+<h2><?php bloginfo('description'); ?></h2>
+</div><!-- #tagline -->
+<?php
+} # end display_tagline()
+
+add_action('display_tagline', 'display_tagline');
+
+
+#
+# enhance_header_div()
+#
+
+function enhance_header_div()
+{
+?>	style="cursor: pointer;"
+	onclick="top.location.href = '<?php bloginfo('url'); ?>'"
+<?php
+} # end enhance_header_div()
+
+add_action('enhance_header_div', 'enhance_header_div');
+
+
+#
+# function header_title_tag()
+#
+
+function header_title_tag()
+{
+	echo ' title="'
+		. htmlspecialchars(get_bloginfo('sitename'), ENT_QUOTES)
+		. ' &bull; '
+		. htmlspecialchars(get_bloginfo('description'), ENT_QUOTES)
+		. '"';
+} # header_title_tag()
+
+add_action('enhance_header_div', 'header_title_tag');
+
 
 
 #
@@ -76,45 +462,15 @@ function display_search_form()
 <input type="text"
 	id="s" class="s" name="s"
 	value="<?php echo htmlspecialchars(get_caption('search'), ENT_QUOTES); ?>"
-	onfocus="if ( this.value == '<?php echo addslashes(htmlspecialchars(get_caption('search'))); ?>' ) this.value = '';"
-	onblur="if ( this.value == '' ) this.value = '<?php echo addslashes(htmlspecialchars(get_caption('search'))); ?>';"
-	/><input type="submit" id="go" class="go" value="<?php echo htmlspecialchars(get_caption('go')); ?>" />
+	onfocus="if ( this.value == '<?php echo addslashes(htmlspecialchars(get_caption('search'), ENT_QUOTES)); ?>' ) this.value = '';"
+	onblur="if ( this.value == '' ) this.value = '<?php echo addslashes(htmlspecialchars(get_caption('search'), ENT_QUOTES)); ?>';"
+	/><input type="submit" id="go" class="go" value="<?php echo htmlspecialchars(get_caption('go'), ENT_QUOTES); ?>" />
 </form>
 </div><!-- #search_form -->
 <?php
 } # end display_search_form()
 
 add_action('display_search_form', 'display_search_form');
-
-
-#
-# display_sitename()
-#
-
-function display_sitename()
-{
-?><div id="sitename" class="sitename">
-<h1><a href="<?php bloginfo('url'); ?>"><?php bloginfo('sitename'); ?></a></h1>
-</div><!-- #sitename -->
-<?php
-} # end display_sitename()
-
-add_action('display_sitename', 'display_sitename');
-
-
-#
-# display_tagline()
-#
-
-function display_tagline()
-{
-?><div id="tagline" class="tagline">
-<h2><?php bloginfo('description'); ?></h2>
-</div><!-- #tagline -->
-<?php
-} # end display_tagline()
-
-add_action('display_tagline', 'display_tagline');
 
 
 #
@@ -134,56 +490,47 @@ function display_image_header()
 
 
 #
-# display_background_header_css()
+# display_header_css()
 #
 
-function display_background_header_css()
+function display_header_css($header)
 {
+	$site_url = trailingslashit(get_option('siteurl'));
+
+	list($width, $height) = getimagesize($header);
+
 ?><style type="text/css">
 .header_bg #header div.pad
 {
-	background-image: url(<?php echo get_template_directory_uri() . '/' . background_header; ?>);
+	background-image: url(<?php echo str_replace(ABSPATH, $site_url, $header); ?>);
 	background-repeat: no-repeat;
-	height: <?php echo background_header_height; ?>px;
+	height: <?php echo $height; ?>px;
 }
 </style>
 <?php
-} # end display_background_header_css()
+} # end display_header_css()
 
 
 #
-# display_header_bg_css()
+# display_header_background_css()
 #
 
-function display_header_bg_css()
+function display_header_background_css($header)
 {
+	$site_url = trailingslashit(get_option('siteurl'));
+
+	list($width, $height) = getimagesize($header);
+
 ?><style type="text/css">
 .header_bg #header div.pad
 {
-	background-image: url(<?php echo get_template_directory_uri() . '/' . header_bg; ?>);
+	background-image: url(<?php echo str_replace(ABSPATH, $site_url, $header); ?>);
 	background-repeat: repeat-x;
-	height: <?php echo header_bg_height; ?>px;
+	height: <?php echo $height; ?>px;
 }
 </style>
 <?php
-} # end display_header_bg_css()
-
-
-#
-# display_flash_header()
-#
-
-function display_flash_header()
-{
-?><object width="<?php echo flash_header_width; ?>" height="<?php echo flash_header_height; ?>">
-<param name="movie" value="<?php echo get_template_directory_uri() . '/' . flash_header; ?>">
-<embed src="<?php echo get_template_directory_uri() . '/' . flash_header; ?>" width="<?php echo flash_header_width; ?>" height="<?php echo flash_header_height; ?>">
-</embed>
-</object>
-<?php
-} # end display_flash_header()
-
-
+} # end display_header_background_css()
 
 
 #
@@ -200,6 +547,8 @@ function auto_remove_search_form()
 	{
 		if ( in_array('Search', (array) $sidebar)
 			|| in_array('Google Search', (array) $sidebar)
+			|| in_array('search', (array) $sidebar)
+			|| in_array('google-search', (array) $sidebar)
 			)
 		{
 			$show_search_form = false;
@@ -213,299 +562,5 @@ function auto_remove_search_form()
 	}
 } # end auto_remove_search_form()
 
-add_action('init', 'auto_remove_search_form');
-
-
-#
-# enhance_header_div()
-#
-
-function enhance_header_div()
-{
-?>	style="cursor: pointer;"
-	onclick="top.location.href = '<?php bloginfo('url'); ?>'"
-<?php
-} # end enhance_header_div()
-
-
-
-#
-# wire_header()
-#
-
-function wire_header()
-{
-
-#
-# check for entry-specific header
-#
-
-if ( is_single() || is_page() )
-{
-	if ( ( $image_file = get_post_meta($GLOBALS['post']->ID, 'image_header', true) )
-		&& ( file_exists(TEMPLATEPATH . '/headers/' . $image_file) )
-		)
-	{
-		define('image_header', 'headers/' . $image_file);
-
-		list($image_width, $image_height)
-			= getimagesize(TEMPLATEPATH . '/headers/' . $image_file);
-
-		define('image_header_width', $image_width);
-		define('image_header_height', $image_height);
-	}
-	elseif ( ( $image_file = get_post_meta($GLOBALS['post']->ID, 'header_background', true) )
-		&& ( file_exists(TEMPLATEPATH . '/headers/' .$image_file) )
-		)
-	{
-		define('background_header', 'headers/' . $image_file);
-
-		list($image_width, $image_height)
-			= getimagesize(TEMPLATEPATH . '/headers/' . $image_file);
-
-		define('background_header_width', $image_width);
-		define('background_header_height', $image_height);
-	}
-	elseif ( ( $movie_file = get_post_meta($GLOBALS['post']->ID, 'flash_header', true) )
-		&& ( file_exists(TEMPLATEPATH . '/headers/' . $movie_file) )
-		)
-	{
-		define('flash_header', 'headers/' . $movie_file);
-
-		list( $movie_width, $movie_height )
-			= getimagesize(TEMPLATEPATH . '/headers/' . $movie_file);
-
-		define('flash_header_width', $movie_width);
-		define('flash_header_height', $movie_height);
-	}
-	elseif ( ( $image_file = get_post_meta($GLOBALS['post']->ID, 'header_bg', true) )
-		&& ( file_exists(TEMPLATEPATH . '/headers/' . $image_file) )
-		)
-	{
-		define('header_bg', 'headers/' . $image_file);
-
-		list($image_width, $image_height)
-			= getimagesize(TEMPLATEPATH . '/headers/' . $image_file);
-
-		define('header_bg_width', $image_width);
-		define('header_bg_height', $image_height);
-	}
-}
-
-
-#
-# Check for image header
-#
-
-if ( !defined('image_header') )
-{
-	foreach ( array('skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header.jpg',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header.jpeg',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header.png',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header.gif',
-					'header.jpg',
-					'header.jpeg',
-					'header.png',
-					'header.gif',
-					'headers/header.jpg',
-					'headers/header.jpeg',
-					'headers/header.png',
-					'headers/header.gif'
-					)
-				as $image_file )
-	{
-		if ( file_exists(TEMPLATEPATH . '/' . $image_file) )
-		{
-			define('image_header', $image_file);
-
-			list($image_width, $image_height)
-				= getimagesize(TEMPLATEPATH . '/' . $image_file);
-
-			define('image_header_width', $image_width);
-			define('image_header_height', $image_height);
-
-			break;
-		}
-	}
-}
-
-if ( !defined('image_header') )
-{
-	define('image_header', false);
-}
-
-
-#
-# Check for image header background
-#
-
-if ( !image_header && !defined('background_header') )
-{
-	foreach ( array('skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-background.jpg',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-background.jpeg',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-background.png',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-background.gif',
-					'header-background.jpg',
-					'header-background.jpeg',
-					'header-background.png',
-					'header-background.gif',
-					'headers/header-background.jpg',
-					'headers/header-background.jpeg',
-					'headers/header-background.png',
-					'headers/header-background.gif'
-					)
-				as $image_file )
-	{
-		if ( file_exists(TEMPLATEPATH . '/' .$image_file) )
-		{
-			define('background_header', $image_file);
-
-			list($image_width, $image_height)
-				= getimagesize(TEMPLATEPATH . '/' . $image_file);
-
-			define('background_header_width', $image_width);
-			define('background_header_height', $image_height);
-
-			break;
-		}
-	}
-}
-
-if ( !defined('background_header') )
-{
-	define('background_header', false);
-}
-
-
-#
-# Check for flash header
-#
-
-if ( !image_header && !background_header && !defined('flash_header') )
-{
-	foreach ( array('skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header.swf',
-					'header.swf',
-					'headers/header.swf'
-					)
-				as $movie_file )
-	{
-		if ( file_exists(TEMPLATEPATH . '/' . $movie_file) )
-		{
-			define('flash_header', $movie_file);
-
-			list( $movie_width, $movie_height )
-				= getimagesize(TEMPLATEPATH . '/' . $movie_file);
-
-			define('flash_header_width', $movie_width);
-			define('flash_header_height', $movie_height);
-
-			break;
-		}
-	}
-}
-
-if ( !defined('flash_header') )
-{
-	define('flash_header', false);
-}
-
-
-#
-# Check for header background
-#
-
-if ( !image_header && !background_header && !flash_header && !defined('header_bg') )
-{
-	foreach ( array('skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-bg.jpg',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-bg.jpeg',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-bg.png',
-					'skins/' . $GLOBALS['semiologic']['active_skin']['skin'] . '/' . 'header-bg.gif',
-					'header-bg.jpg',
-					'header-bg.jpeg',
-					'header-bg.png',
-					'header-bg.gif',
-					'headers/header-bg.jpg',
-					'headers/header-bg.jpeg',
-					'headers/header-bg.png',
-					'headers/header-bg.gif'
-					)
-				as $image_file )
-	{
-		if ( file_exists(TEMPLATEPATH . '/' . $image_file) )
-		{
-			define('header_bg', $image_file);
-
-			list($image_width, $image_height)
-				= getimagesize(TEMPLATEPATH . '/' . $image_file);
-
-			define('header_bg_width', $image_width);
-			define('header_bg_height', $image_height);
-
-			break;
-		}
-	}
-
-	if ( !defined('header_bg') )
-	{
-		if ( isset($GLOBALS['semiologic']['active_header'])
-			&& $GLOBALS['semiologic']['active_header']
-			&& file_exists(TEMPLATEPATH . '/headers/' . $GLOBALS['semiologic']['active_header'])
-			)
-		{
-			define('header_bg', 'headers/' . $GLOBALS['semiologic']['active_header']);
-
-			list($image_width, $image_height)
-				= getimagesize(TEMPLATEPATH . '/headers/' . $GLOBALS['semiologic']['active_header']);
-
-			define('header_bg_width', $image_width);
-			define('header_bg_height', $image_height);
-		}
-	}
-}
-
-if ( !defined('header_bg') )
-{
-	define('header_bg', false);
-}
-
-if ( !flash_header )
-{
-	add_action('enhance_header_div', 'enhance_header_div');
-}
-
-
-#
-# wire_header()
-#
-
-if ( image_header )
-{
-	reset_plugin_hook('display_sitename', 'display_sitename');
-	reset_plugin_hook('display_tagline', 'display_tagline');
-
-	add_action('display_sitename', 'display_image_header');
-	add_action('display_tagline', 'display_tagline');
-}
-elseif ( background_header )
-{
-	reset_plugin_hook('display_sitename', 'display_sitename');
-	reset_plugin_hook('display_tagline', 'display_tagline');
-
-	display_background_header_css();
-}
-elseif ( flash_header )
-{
-	reset_plugin_hook('display_sitename', 'display_sitename');
-	reset_plugin_hook('display_tagline', 'display_tagline');
-
-	add_action('display_sitename', 'display_flash_header');
-}
-
-if ( header_bg )
-{
-	display_header_bg_css();
-}
-} # wire_header()
-
-add_action('wp_head', 'wire_header');
+add_action('wp_head', 'auto_remove_search_form');
 ?>

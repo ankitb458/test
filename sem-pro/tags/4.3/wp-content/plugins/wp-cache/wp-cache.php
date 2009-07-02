@@ -3,7 +3,7 @@
 Plugin Name: wp-cache
 Plugin URI: http://mnm.uib.es/gallir/wp-cache-2/
 Description: Very fast cache module. It's composed of several modules, this plugin can configure and manage the whole system. Once enabled, go to "Options" and select "WP-Cache".
-Version: 2.1.1
+Version: 2.1.3 (fork)
 Author: Ricardo Galli Granada
 Author URI: http://mnm.uib.es/gallir/
 */
@@ -26,7 +26,7 @@ Author URI: http://mnm.uib.es/gallir/
 
 /* Changelog
 	2007-03-23
-		- Version 2.1.1: Patch from Alex Concha: add control in admin pages to avoid 
+		- Version 2.1.1: Patch from Alex Concha: add control in admin pages to avoid
 		                possible XSS derived from CSRF attacks, if the users store
 						the form with the "injected" bad values.
 	2007-01-31
@@ -57,7 +57,7 @@ Author URI: http://mnm.uib.es/gallir/
 
 	2005-10-20: 2.0.16
 		- strlen($buffer) is a bug the that function, it's really not defined.
-		
+
 	2005-10-16: 2.0.15
 		- Changed "Content-Size" to "Content-Length". Obvious bug.
 
@@ -72,9 +72,9 @@ Author URI: http://mnm.uib.es/gallir/
 			- Patch from James (http://shreddies.org/) to delete individual cache files
 
 	2005-07-21: 2.0.11
-			- Check also for Last-Modified headers. Last WP version (1.5.3) does not 
+			- Check also for Last-Modified headers. Last WP version (1.5.3) does not
 			  it.
-			- Move the previous check to the ob_callback, so the aditional headers 
+			- Move the previous check to the ob_callback, so the aditional headers
 			  can be sent also when cache still does not exist.
 
 	2005-07-19: 2.0.10
@@ -85,7 +85,7 @@ Author URI: http://mnm.uib.es/gallir/
 			- Better control of post_id and comment_id by refactoring the code
 			  (inspired by a Brian Dupuis patch).
 			- Avoid cleaning cache twice due to WP bugs that wrongly calls two actions.
-			
+
 	2005-07-12: 2.0.8
 			- Add paranoic control to make sure it only caches files with
 			  closing "body" and "html" tags.
@@ -109,8 +109,8 @@ Author URI: http://mnm.uib.es/gallir/
 			- Avoid "fwrite() thrashing" at the begining of a connections storm
 			- Send Content-Size header when generated dynamically too
 			- Clean stats cache before deleting expired files
-			- Optimized phase1, EVEN MORE! :-): 
-				removed random and extrachecks that were not useful in the context 
+			- Optimized phase1, EVEN MORE! :-):
+				removed random and extrachecks that were not useful in the context
 				move checking for .meta at the begining
 
 	2005-05-27: 2.0.3
@@ -126,7 +126,7 @@ Author URI: http://mnm.uib.es/gallir/
 			- Remove header_list function verification, its result are not
 			  the same.
 			- wp-cache now verifies if gzipcompression is enabled
-			
+
 	2005-05-08: 2.0.1
 			sanitize function names to aovid namespace collisions
 
@@ -153,7 +153,7 @@ Author URI: http://mnm.uib.es/gallir/
 			change order of initial configuration to give better information
 			stop if global cache is not enabled
 			wp-cache-phase1 returns silently if no wp-cache-config.php is found
-				
+
 	2005-05-06:	2.0-beta2
 			removed paranoic chmod's
 			check for cache file consistency in Phase1 several times
@@ -173,14 +173,14 @@ if( !@include($wp_cache_config_file) ) {
 }
 
 function wp_cache_add_pages() {
-	add_options_page('WP-Cache Manager', 'WP-Cache', 5, __FILE__, 'wp_cache_manager');
+	add_options_page('WP-Cache Manager', 'WP-Cache', 'administrator', __FILE__, 'wp_cache_manager');
 }
 
 function wp_cache_manager() {
 	global $wp_cache_config_file, $valid_nonce;
 
 	$valid_nonce = wp_verify_nonce($_REQUEST['_wpnonce'], 'wp-cache');
-	
+
  	echo '<div class="wrap">';
 	echo "<h2>WP-Cache Manager</h2>\n";
 	if(isset($_REQUEST['wp_restore_config']) && $valid_nonce) {
@@ -293,7 +293,7 @@ function wp_cache_edit_rejected_ua() {
 
 
 	echo '<a name="user-agents"></a><fieldset class="options"><legend>Rejected User Agents</legend>';
-	echo "<p>Strings in the HTTP 'User Agent' header that prevent WP-Cache from 
+	echo "<p>Strings in the HTTP 'User Agent' header that prevent WP-Cache from
 		caching bot, spiders, and crawlers' requests.
 		Note that cached files are still sent to these request if they already exists.</p>\n";
 	echo '<form name="wp_edit_rejected_user_agent" action="'. $_SERVER["REQUEST_URI"] . '" method="post">';
@@ -369,7 +369,7 @@ function wp_cache_enable() {
 function wp_cache_disable() {
 	global $wp_cache_config_file, $cache_enabled;
 
-	if (wp_cache_replace_line('^ *\$cache_enabled', 
+	if (wp_cache_replace_line('^ *\$cache_enabled',
 			'$cache_enabled = false;', $wp_cache_config_file)) {
 		$cache_enabled = false;
 	}
@@ -511,7 +511,7 @@ function wp_cache_check_global_config() {
 			echo "<b>Error: WP_CACHE is not enabled</b> in your <code>wp-config.php</code> file and I couldn't modified it.<br />";
 			echo "Edit <code>$global</code> and add the following line: <br /><code>define('WP_CACHE', true);</code><br />Otherwise, <b>WP-Cache will not be executed</b> by Wordpress core. <br />";
 			return false;
-	} 
+	}
 	return true;
 }
 
@@ -536,7 +536,7 @@ function wp_cache_files() {
 	if(isset($_REQUEST['wp_list_cache'])) {
 		$list_files = true;
 		$list_mess = "Update list";
-	} else 
+	} else
 		$list_mess = "List files";
 
 	echo '<a name="list"></a><fieldset class="options"><legend>Cache contents</legend>';
@@ -548,14 +548,14 @@ function wp_cache_files() {
 	$count = 0;
 	$expired = 0;
 	$now = time();
-	if ( ($handle = opendir( $cache_path )) ) { 
+	if ( ($handle = opendir( $cache_path )) ) {
 		if ($list_files) echo "<table cellspacing=\"0\" cellpadding=\"5\">";
 		while ( false !== ($file = readdir($handle))) {
 			if ( preg_match("/^$file_prefix.*\.meta/", $file) ) {
 				$this_expired = false;
 				$content_file = preg_replace("/meta$/", "html", $file);
 				$mtime = filemtime($cache_path.$file);
-				if ( ! ($fsize = @filesize($cache_path.$content_file)) ) 
+				if ( ! ($fsize = @filesize($cache_path.$content_file)) )
 					continue; // .meta does not exists
 				$fsize = intval($fsize/1024);
 				$age = $now - $mtime;
@@ -614,7 +614,7 @@ function wp_cache_clean_cache($file_prefix) {
 		return wp_cache_phase2_clean_cache($file_prefix);
 
 	$expr = "/^$file_prefix/";
-	if ( ($handle = opendir( $cache_path )) ) { 
+	if ( ($handle = @opendir( $cache_path )) ) {
 		while ( false !== ($file = readdir($handle))) {
 			if ( preg_match($expr, $file) ) {
 				unlink($cache_path . $file);
@@ -633,7 +633,7 @@ function wp_cache_clean_expired($file_prefix) {
 
 	$expr = "/^$file_prefix/";
 	$now = time();
-	if ( ($handle = opendir( $cache_path )) ) { 
+	if ( ($handle = @opendir( $cache_path )) ) {
 		while ( false !== ($file = readdir($handle))) {
 			if ( preg_match($expr, $file)  &&
 				(filemtime($cache_path . $file) + $cache_max_time) <= $now) {

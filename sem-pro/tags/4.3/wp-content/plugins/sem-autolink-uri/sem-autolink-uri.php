@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Autolink uri
-Plugin URI: http://www.semiologic.com/software/autolink-uri/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/autolink-uri/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Automatically hyperlink uri
+Plugin URI: http://www.semiologic.com/software/publishing/autolink-uri/
+Description: Automatically wrap unhyperlinked uri with html anchors
 Author: Denis de Bernardy
-Version: 1.3
+Version: 1.4
 Author URI: http://www.semiologic.com
 */
 
@@ -27,6 +27,32 @@ function sem_autolink_uri($buffer)
 	global $escaped_anchors;
 
 	$escaped_anchors = array();
+
+	# escape scripts
+	$buffer = preg_replace_callback(
+		"/
+		<\s*script				# script tag
+			(?:\s[^>]*)?		# optional attributes
+			>
+		.*						# script code
+		<\s*\/\s*script\s*>		# end of script tag
+		/isUx",
+		'sem_autolink_uri_escape_anchors',
+		$buffer
+		);
+
+	# escape objects
+	$buffer = preg_replace_callback(
+		"/
+		<\s*object				# object tag
+			(?:\s[^>]*)?		# optional attributes
+			>
+		.*						# object code
+		<\s*\/\s*object\s*>		# end of object tag
+		/isUx",
+		'sem_autolink_uri_escape_anchors',
+		$buffer
+		);
 
 	# escape existing anchors
 	$buffer = preg_replace_callback(

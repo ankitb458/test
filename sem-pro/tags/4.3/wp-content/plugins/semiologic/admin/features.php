@@ -2,6 +2,8 @@
 
 function update_theme_features()
 {
+	check_admin_referer('sem_features');
+
 	$all_features = get_theme_features();
 	$theme_features = array();
 
@@ -10,9 +12,22 @@ function update_theme_features()
 		$theme_features = array_merge($theme_features, array_keys($feature_set));
 	}
 
-#	echo '<pre>';
-#	var_dump($_POST);
-#	echo '</pre>';
+	if ( in_array('feedburner', (array) $_POST['feature_id'])
+		&& !in_array('enforce_permalink', (array) $_POST['feature_id'])
+		)
+	{
+		$_POST['feature_id'][] = 'enforce_permalink';
+	}
+	elseif ( in_array('enforce_permalink', (array) $_POST['feature_id'])
+		&& !in_array('feedburner', (array) $_POST['feature_id'])
+		)
+	{
+		$_POST['feature_id'][] = 'feedburner';
+	}
+
+	#echo '<pre>';
+	#var_dump($_POST);
+	#echo '</pre>';
 
 	foreach ( $theme_features as $feature_id )
 	{
@@ -93,9 +108,6 @@ function theme_feature_is_active($feature_id)
 {
 	switch ( $feature_id )
 	{
-	case '404_handler':
-		return plugin_is_active('rjs-404.php');
-
 	case 'ad_spaces':
 		return plugin_is_active('sem-ad-space/sem-ad-space.php');
 
@@ -107,9 +119,6 @@ function theme_feature_is_active($feature_id)
 
 	case 'akismet':
 		return plugin_is_active('akismet/akismet.php');
-
-	case 'podcasting':
-		return plugin_is_active('audio-player.php');
 
 	case 'authenticate_subscribers':
 		return plugin_is_active('impostercide.php');
@@ -182,6 +191,14 @@ function theme_feature_is_active($feature_id)
 	case 'enforce_permalink':
 		return plugin_is_active('ylsy_permalink_redirect.php');
 
+	case 'enhance_comment_admin':
+		return plugin_is_active('commentcontrol.php');
+
+	case 'enhance_comment_workflow':
+		return plugin_is_active('impostercide.php')
+			|| plugin_is_active('sdm_moderate_authors.php')
+			|| plugin_is_active('not-to-me.php');
+
 	case 'exec_php':
 		return plugin_is_active('exec-php.php');
 
@@ -202,9 +219,6 @@ function theme_feature_is_active($feature_id)
 
 	case 'feedburner':
 		return plugin_is_active('ylsy_permalink_redirect.php');
-
-	case 'videocasting':
-		return plugin_is_active('wp-flv.php');
 
 	case 'flickr_album':
 		return plugin_is_active('falbum/wordpress-falbum-plugin.php');
@@ -234,17 +248,6 @@ function theme_feature_is_active($feature_id)
 	case 'hitslink':
 		return plugin_is_active('hitslink/hitslink.php');
 
-	case 'enhance_comment_admin':
-		return plugin_is_active('commentcontrol.php');
-
-	case 'enhance_comment_workflow':
-		return plugin_is_active('impostercide.php')
-			|| plugin_is_active('sdm_moderate_authors.php')
-			|| plugin_is_active('not-to-me.php');
-
-	case 'more_in_feeds':
-		return plugin_is_active('wp_ozh_betterfeed.php');
-
 	case 'improved_search':
 		return plugin_is_active('sem-search-reloaded/sem-search-reloaded.php');
 
@@ -256,6 +259,9 @@ function theme_feature_is_active($feature_id)
 
 	case 'moderate_subscribers':
 		return plugin_is_active('sdm_moderate_authors.php');
+
+	case 'more_in_feeds':
+		return plugin_is_active('wp_ozh_betterfeed.php') || !plugin_is_active('full_feed.php');
 
 	case 'newsletter_manager':
 		return plugin_is_active('sem-newsletter-manager/sem-newsletter-manager.php');
@@ -274,6 +280,9 @@ function theme_feature_is_active($feature_id)
 
 	case 'php_markdown':
 		return plugin_is_active('markdown.php');
+
+	case 'podcasting':
+		return plugin_is_active('mediacaster/mediacaster.php');
 
 	case 'poll_manager':
 		return plugin_is_active('democracy/democracy.php');
@@ -317,11 +326,17 @@ function theme_feature_is_active($feature_id)
 	case 'sem_affiliate':
 		return plugin_is_active('sem-semiologic-affiliate/sem-semiologic-affiliate.php');
 
+	case 'shopping_cart':
+		return plugin_is_active('wp-shopping-cart/wp-shopping-cart.php');
+
 	case 'sidebar_tile':
 		return plugin_is_active('sem-tile-sidebar/sem-tile-sidebar.php');
 
 	case 'sidebar_widgets':
 		return plugin_is_active('widgets/widgets.php');
+
+	case 'silo_site':
+		return plugin_is_active('silo/silo.php');
 
 	case 'site_unavailable':
 		return plugin_is_active('unavailable.php');
@@ -332,6 +347,9 @@ function theme_feature_is_active($feature_id)
 	case 'smart_pings':
 		return plugin_is_active('nopingwait2.php')
 			|| plugin_is_active('smart-update-pinger.php');
+
+	case 'social_poster':
+		return plugin_is_active('social-poster/mm_post.php');
 
 	case 'star_rating':
 		return plugin_is_active('star-rating/star-rating.php');
@@ -348,6 +366,9 @@ function theme_feature_is_active($feature_id)
 	case 'tag_cloud':
 		return plugin_is_active('category-cloud.php');
 
+	case 'tb_validator':
+		return plugin_is_active('TBValidator/trackback_validator.php');
+
 	case 'theme_archives':
 		return isset($GLOBALS['semiologic']['theme_archives'])
 				&& $GLOBALS['semiologic']['theme_archives'];
@@ -355,12 +376,8 @@ function theme_feature_is_active($feature_id)
 	case 'theme_credits':
 		return get_show_credits(true);
 
-	case 'theme_meta':
-		return isset($GLOBALS['semiologic']['theme_meta'])
-				&& $GLOBALS['semiologic']['theme_meta'];
-
-	case 'track_old_slugs':
-		return plugin_is_active('redirect-old-slugs.php');
+	case 'videocasting':
+		return plugin_is_active('wp-flv.php');
 
 	case 'wysiwyg_editor':
 		return plugin_is_active('sem-wysiwyg/sem-wysiwyg.php');
@@ -379,10 +396,6 @@ function theme_feature_activate($feature_id)
 {
 	switch ( $feature_id )
 	{
-	case '404_handler':
-		plugin_activate('rjs-404.php');
-		break;
-
 	case 'ad_spaces':
 		plugin_activate('sem-ad-space/sem-ad-space.php');
 		break;
@@ -397,10 +410,6 @@ function theme_feature_activate($feature_id)
 
 	case 'akismet':
 		plugin_activate('akismet/akismet.php');
-		break;
-
-	case 'podcasting':
-		plugin_activate('audio-player.php');
 		break;
 
 	case 'authenticate_subscribers':
@@ -503,6 +512,16 @@ function theme_feature_activate($feature_id)
 		plugin_activate('ylsy_permalink_redirect.php');
 		break;
 
+	case 'enhance_comment_admin':
+		plugin_activate('commentcontrol.php');
+		break;
+
+	case 'enhance_comment_workflow':
+		plugin_activate('impostercide.php');
+		plugin_activate('sdm_moderate_authors.php');
+		plugin_activate('not-to-me.php');
+		break;
+
 	case 'exec_php':
 		plugin_activate('exec-php.php');
 		break;
@@ -529,10 +548,6 @@ function theme_feature_activate($feature_id)
 
 	case 'feedburner':
 		plugin_activate('ylsy_permalink_redirect.php');
-		break;
-
-	case 'videocasting':
-		plugin_activate('wp-flv.php');
 		break;
 
 	case 'flickr_album':
@@ -574,20 +589,6 @@ function theme_feature_activate($feature_id)
 		plugin_activate('hitslink/hitslink.php');
 		break;
 
-	case 'enhance_comment_admin':
-		plugin_activate('commentcontrol.php');
-		break;
-
-	case 'enhance_comment_workflow':
-		plugin_activate('impostercide.php');
-		plugin_activate('sdm_moderate_authors.php');
-		plugin_activate('not-to-me.php');
-		break;
-
-	case 'more_in_feeds':
-		plugin_activate('wp_ozh_betterfeed.php');
-		break;
-
 	case 'improved_search':
 		plugin_activate('sem-search-reloaded/sem-search-reloaded.php');
 		break;
@@ -602,6 +603,11 @@ function theme_feature_activate($feature_id)
 
 	case 'moderate_subscribers':
 		plugin_activate('sdm_moderate_authors.php');
+		break;
+
+	case 'more_in_feeds':
+		plugin_deactivate('wp_ozh_betterfeed.php');
+		plugin_deactivate('full_feed.php');
 		break;
 
 	case 'newsletter_manager':
@@ -626,6 +632,10 @@ function theme_feature_activate($feature_id)
 
 	case 'php_markdown':
 		plugin_activate('markdown.php');
+		break;
+
+	case 'podcasting':
+		plugin_activate('mediacaster/mediacaster.php');
 		break;
 
 	case 'poll_manager':
@@ -689,6 +699,10 @@ function theme_feature_activate($feature_id)
 		plugin_activate('sem-semiologic-affiliate/sem-semiologic-affiliate.php');
 		break;
 
+	case 'shopping_cart':
+		plugin_activate('wp-shopping-cart/wp-shopping-cart.php');
+		break;
+
 	case 'sidebar_tile':
 		plugin_activate('sem-tile-sidebar/sem-tile-sidebar.php');
 		plugin_deactivate('widgets/widgets.php');
@@ -697,6 +711,10 @@ function theme_feature_activate($feature_id)
 	case 'sidebar_widgets':
 		plugin_deactivate('sem-tile-sidebar/sem-tile-sidebar.php');
 		plugin_activate('widgets/widgets.php');
+		break;
+
+	case 'silo_site':
+		plugin_activate('silo/silo.php');
 		break;
 
 	case 'site_unavailable':
@@ -710,6 +728,10 @@ function theme_feature_activate($feature_id)
 	case 'smart_pings':
 		plugin_activate('nopingwait2.php');
 		plugin_activate('smart-update-pinger.php');
+		break;
+
+	case 'social_poster':
+		plugin_activate('social-poster/mm_post.php');
 		break;
 
 	case 'star_rating':
@@ -732,36 +754,24 @@ function theme_feature_activate($feature_id)
 		plugin_activate('category-cloud.php');
 		break;
 
+	case 'tb_validator':
+		plugin_activate('TBValidator/trackback_validator.php');
+		break;
+
 	case 'theme_archives':
-		$GLOBALS['semiologic']['theme_archives'] = true;
-		update_option('semiologic', $GLOBALS['semiologic']);
+		$options = get_option('semiologic');
+		$options['theme_archives'] = true;
+		update_option('semiologic', $options);
 		break;
 
 	case 'theme_credits':
-		if ( function_exists('get_site_option') )
-		{
-			if ( is_site_admin() )
-			{
-				$semiologic = get_site_option('semiologic');
-				$semiologic['theme_credits'] = true;
-				update_site_option('semiologic', $semiologic);
-			}
-		}
-		else
-		{
-			global $semiologic;
-			$semiologic['theme_credits'] = true;
-			update_option('semiologic', $semiologic);
-		}
+		$options = get_option('semiologic');
+		$options['theme_credits'] = true;
+		update_option('semiologic', $options);
 		break;
 
-	case 'theme_meta':
-		$GLOBALS['semiologic']['theme_meta'] = true;
-		update_option('semiologic', $GLOBALS['semiologic']);
-		break;
-
-	case 'track_old_slugs':
-		plugin_activate('redirect-old-slugs.php');
+	case 'videocasting':
+		plugin_activate('wp-flv.php');
 		break;
 
 	case 'wysiwyg_editor':
@@ -779,10 +789,6 @@ function theme_feature_deactivate($feature_id)
 {
 	switch ( $feature_id )
 	{
-	case '404_handler':
-		plugin_deactivate('rjs-404.php');
-		break;
-
 	case 'ad_spaces':
 		plugin_deactivate('sem-ad-space/sem-ad-space.php');
 		break;
@@ -797,10 +803,6 @@ function theme_feature_deactivate($feature_id)
 
 	case 'akismet':
 		plugin_deactivate('akismet/akismet.php');
-		break;
-
-	case 'podcasting':
-		plugin_deactivate('audio-player.php');
 		break;
 
 	case 'authenticate_subscribers':
@@ -889,6 +891,16 @@ function theme_feature_deactivate($feature_id)
 		plugin_deactivate('ylsy_permalink_redirect.php');
 		break;
 
+	case 'enhance_comment_admin':
+		plugin_deactivate('commentcontrol.php');
+		break;
+
+	case 'enhance_comment_workflow':
+		plugin_deactivate('impostercide.php');
+		plugin_deactivate('sdm_moderate_authors.php');
+		plugin_deactivate('not-to-me.php');
+		break;
+
 	case 'exec_php':
 		plugin_deactivate('exec-php.php');
 		break;
@@ -915,10 +927,6 @@ function theme_feature_deactivate($feature_id)
 
 	case 'feedburner':
 		plugin_deactivate('ylsy_permalink_redirect.php');
-		break;
-
-	case 'videocasting':
-		plugin_deactivate('wp-flv.php');
 		break;
 
 	case 'flickr_album':
@@ -960,20 +968,6 @@ function theme_feature_deactivate($feature_id)
 		plugin_deactivate('hitslink/hitslink.php');
 		break;
 
-	case 'enhance_comment_admin':
-		plugin_deactivate('commentcontrol.php');
-		break;
-
-	case 'enhance_comment_workflow':
-		plugin_deactivate('impostercide.php');
-		plugin_deactivate('sdm_moderate_authors.php');
-		plugin_deactivate('not-to-me.php');
-		break;
-
-	case 'more_in_feeds':
-		plugin_deactivate('wp_ozh_betterfeed.php');
-		break;
-
 	case 'improved_search':
 		plugin_deactivate('sem-search-reloaded/sem-search-reloaded.php');
 		break;
@@ -988,6 +982,11 @@ function theme_feature_deactivate($feature_id)
 
 	case 'moderate_subscribers':
 		plugin_deactivate('sdm_moderate_authors.php');
+		break;
+
+	case 'more_in_feeds':
+		plugin_deactivate('wp_ozh_betterfeed.php');
+		plugin_activate('full_feed.php');
 		break;
 
 	case 'newsletter_manager':
@@ -1012,6 +1011,10 @@ function theme_feature_deactivate($feature_id)
 
 	case 'php_markdown':
 		plugin_deactivate('markdown.php');
+		break;
+
+	case 'podcasting':
+		plugin_deactivate('mediacaster/mediacaster.php');
 		break;
 
 	case 'poll_manager':
@@ -1070,12 +1073,20 @@ function theme_feature_deactivate($feature_id)
 		plugin_deactivate('sem-semiologic-affiliate/sem-semiologic-affiliate.php');
 		break;
 
+	case 'shopping_cart':
+		plugin_deactivate('wp-shopping-cart/wp-shopping-cart.php');
+		break;
+
 	case 'sidebar_tile':
 		plugin_deactivate('sem-tile-sidebar/sem-tile-sidebar.php');
 		break;
 
 	case 'sidebar_widgets':
 		plugin_deactivate('widgets/widgets.php');
+		break;
+
+	case 'silo_site':
+		plugin_deactivate('silo/silo.php');
 		break;
 
 	case 'site_unavailable':
@@ -1089,6 +1100,10 @@ function theme_feature_deactivate($feature_id)
 	case 'smart_pings':
 		plugin_deactivate('nopingwait2.php');
 		plugin_deactivate('smart-update-pinger.php');
+		break;
+
+	case 'social_poster':
+		plugin_deactivate('social-poster/mm_post.php');
 		break;
 
 	case 'star_rating':
@@ -1111,36 +1126,24 @@ function theme_feature_deactivate($feature_id)
 		plugin_deactivate('category-cloud.php');
 		break;
 
+	case 'tb_validator':
+		plugin_deactivate('TBValidator/trackback_validator.php');
+		break;
+
 	case 'theme_archives':
-		$GLOBALS['semiologic']['theme_archives'] = false;
-		update_option('semiologic', $GLOBALS['semiologic']);
+		$options = get_option('semiologic');
+		$options['theme_archives'] = false;
+		update_option('semiologic', $options);
 		break;
 
 	case 'theme_credits':
-		if ( function_exists('get_site_option') )
-		{
-			if ( is_site_admin() )
-			{
-				$semiologic = get_site_option('semiologic');
-				$semiologic['theme_credits'] = false;
-				update_site_option('semiologic', $semiologic);
-			}
-		}
-		else
-		{
-			global $semiologic;
-			$semiologic['theme_credits'] = false;
-			update_option('semiologic', $semiologic);
-		}
+		$options = get_option('semiologic');
+		$options['theme_credits'] = false;
+		update_option('semiologic', $options);
 		break;
 
-	case 'theme_meta':
-		$GLOBALS['semiologic']['theme_meta'] = false;
-		update_option('semiologic', $GLOBALS['semiologic']);
-		break;
-
-	case 'track_old_slugs':
-		plugin_deactivate('redirect-old-slugs.php');
+	case 'videocasting':
+		plugin_deactivate('wp-flv.php');
 		break;
 
 	case 'wysiwyg_editor':

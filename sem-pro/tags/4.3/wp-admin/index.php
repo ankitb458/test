@@ -15,6 +15,7 @@ function dashboard_init() {
 }
 add_action( 'admin_head', 'index_js' );
 wp_enqueue_script('prototype');
+wp_enqueue_script('interface');
 
 $title = __('Dashboard'); 
 $parent_file = 'index.php';
@@ -49,7 +50,7 @@ if ( $comments || $numcomments ) :
 <?php
 if ( $comments ) {
 foreach ($comments as $comment) {
-	echo '<li>' . sprintf(__('%1$s on %2$s'), get_comment_author_link(), '<a href="'. get_permalink($comment->comment_post_ID) . '#comment-' . $comment->comment_ID . '">' . get_the_title($comment->comment_post_ID) . '</a>');
+	echo '<li>' . sprintf(__('%1$s on %2$s'), get_comment_author_link(), '<a href="'. get_permalink($comment->comment_post_ID) . '#comment-' . $comment->comment_ID . '">' . apply_filters('the_title', get_the_title($comment->comment_post_ID)) . '</a>');
 	edit_comment_link(__("Edit"), ' <small>(', ')</small>');
 	echo '</li>';
 }
@@ -60,7 +61,7 @@ foreach ($comments as $comment) {
 <?php endif; ?>
 
 <?php
-if ( $recentposts = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish' AND post_date_gmt < '$today' ORDER BY post_date DESC LIMIT 5") ) :
+if ( $recentposts = $wpdb->get_results("SELECT ID, post_title FROM $wpdb->posts WHERE post_type = 'post' AND " . get_private_posts_cap_sql('post') . " AND post_date_gmt < '$today' ORDER BY post_date DESC LIMIT 5") ) :
 ?>
 <div>
 <h3><?php _e('Posts'); ?> <a href="edit.php" title="<?php _e('More posts...'); ?>">&raquo;</a></h3>
@@ -98,21 +99,16 @@ foreach ($scheduled as $post) {
 <div>
 <h3><?php _e('Blog Stats'); ?></h3>
 <?php
-$numposts = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish'");
-if (0 < $numposts) $numposts = number_format($numposts);
+$numposts = (int) $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'post' AND post_status = 'publish'");
+$numcomms = (int) $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = '1'");
+$numcats  = (int) $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->categories");
 
-$numcomms = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = '1'");
-if (0 < $numcomms) $numcomms = number_format($numcomms);
-
-$numcats = $wpdb->get_var("SELECT COUNT(*) FROM $wpdb->categories");
-if (0 < $numcats) $numcats = number_format($numcats);
+$post_str = sprintf(__ngettext('%1$s <a href="%2$s" title="Posts">post</a>', '%1$s <a href="%2$s" title="Posts">posts</a>', $numposts), number_format($numposts), 'edit.php');
+$comm_str = sprintf(__ngettext('%1$s <a href="%2$s" title="Comments">comment</a>', '%1$s <a href="%2$s" title="Comments">comments</a>', $numcomms), number_format($numcomms), 'edit-comments.php');
+$cat_str  = sprintf(__ngettext('%1$s <a href="%2$s" title="Categories">category</a>', '%1$s <a href="%2$s" title="Categories">categories</a>', $numcats), number_format($numcats), 'categories.php');
 ?>
-<p><?php
-$post_str = sprintf(__ngettext('%1$s <a href="%2$s" title="Posts">post</a>', '%1$s <a href="%2$s" title="Posts">posts</a>', $numposts), $numposts, 'edit.php');
-$comm_str = sprintf(__ngettext('%1$s <a href="%2$s" title="Comments">comment</a>', '%1$s <a href="%2$s" title="Comments">comments</a>', $numcomms), $numcomms, 'edit-comments.php');
-$cat_str = sprintf(__ngettext('%1$s <a href="%2$s" title="Categories">category</a>', '%1$s <a href="%2$s" title="Categories">categories</a>', $numcats), $numcats, 'categories.php');
 
-printf(__('There are currently %1$s and %2$s, contained within %3$s.'), $post_str, $comm_str, $cat_str); ?></p>
+<p><?php printf(__('There are currently %1$s and %2$s, contained within %3$s.'), $post_str, $comm_str, $cat_str); ?></p>
 </div>
 
 <?php do_action('activity_box_end'); ?>
@@ -126,7 +122,7 @@ printf(__('There are currently %1$s and %2$s, contained within %3$s.'), $post_st
 <?php endif; ?>
 	<li><a href="profile.php"><?php _e('Update your profile or change your password'); ?></a></li>
 <?php if ( current_user_can('manage_links') ) : ?>
-	<li><a href="link-add.php"><?php _e('Add a bookmark to your blogroll'); ?></a></li>
+	<li><a href="link-add.php"><?php _e('Add a link to your blogroll'); ?></a></li>
 <?php endif; ?>
 <?php if ( current_user_can('switch_themes') ) : ?>
 	<li><a href="themes.php"><?php _e('Change your site&#8217;s look or theme'); ?></a></li>

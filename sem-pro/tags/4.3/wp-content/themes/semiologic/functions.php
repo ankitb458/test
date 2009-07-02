@@ -14,7 +14,7 @@
 # initialize
 #
 
-$GLOBALS['semiologic'] = get_settings('semiologic');
+$GLOBALS['semiologic'] = get_option('semiologic');
 
 #echo '<pre>';
 #var_dump($GLOBALS['semiologic']);
@@ -22,11 +22,6 @@ $GLOBALS['semiologic'] = get_settings('semiologic');
 
 if ( !$GLOBALS['semiologic'] )
 {
-	include_once ABSPATH . 'wp-admin/admin-functions.php';
-	include_once dirname(__FILE__) . '/utils/wizards.php';
-	include_once dirname(__FILE__) . '/utils/skin.php';
-	include_once dirname(__FILE__) . '/admin/skin.php';
-
 	include_once dirname(__FILE__) . '/wizards/autoinstall/autoinstall.php';
 
 	install_semiologic();
@@ -64,13 +59,7 @@ function reset_plugin_hook($plugin_hook = null)
 {
 	if ( isset($plugin_hook) )
 	{
-		foreach ( (array) $GLOBALS['wp_filter'][$plugin_hook] as $priority => $plugins )
-		{
-			foreach ( (array) $plugins as $plugin )
-			{
-				remove_filter($plugin_hook, $plugin['function'], $priority, $plugin['accepted_args']);
-			}
-		}
+		unset($GLOBALS['wp_filter'][$plugin_hook]);
 	}
 } # end reset_plugin_hook()
 
@@ -81,11 +70,11 @@ function reset_plugin_hook($plugin_hook = null)
 
 foreach ( (array) glob(dirname(__FILE__) . '/utils/*.php') as $inc_file )
 {
-	if ( file_exists($inc_file) ) include_once $inc_file;
+	@include_once $inc_file;
 }
 foreach ( (array) glob(ABSPATH . 'wp-content/plugins/semiologic/utils/*.php') as $inc_file )
 {
-	if ( file_exists($inc_file) ) include_once $inc_file;
+	@include_once $inc_file;
 }
 
 
@@ -97,11 +86,11 @@ if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
 {
 	foreach ( (array) glob(dirname(__FILE__) . '/admin/*.php') as $inc_file )
 	{
-		if ( file_exists($inc_file) ) include_once $inc_file;
+		@include_once $inc_file;
 	}
 	foreach ( (array) glob(ABSPATH . 'wp-content/plugins/semiologic/admin/*.php') as $inc_file )
 	{
-		if ( file_exists($inc_file) ) include_once $inc_file;
+		@include_once $inc_file;
 	}
 }
 
@@ -112,24 +101,18 @@ if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
 
 $inc_file = TEMPLATEPATH . '/custom.php';
 
-if ( file_exists($inc_file) )
-{
-	include_once $inc_file;
-}
+@include_once $inc_file;
+
 
 $inc_file = TEMPLATEPATH . '/skins/' . get_active_skin() . '/skin.php';
 
-if ( file_exists($inc_file) )
-{
-	include_once $inc_file;
-}
+@include_once $inc_file;
+
 
 $inc_file = TEMPLATEPATH . '/skins/' . get_active_skin() . '/custom.php';
 
-if ( file_exists($inc_file) )
-{
-	include_once $inc_file;
-}
+@include_once $inc_file;
+
 
 
 #
@@ -139,5 +122,15 @@ if ( file_exists($inc_file) )
 if ( function_exists('register_sidebars') )
 {
 	register_sidebars(strlen($GLOBALS['semiologic']['active_layout']) - 1);
+}
+
+
+#
+# sem_pro
+#
+
+if ( !defined('sem_pro') )
+{
+	define('sem_pro', false);
 }
 ?>

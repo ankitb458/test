@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Fuzzy Recent Comments
-Plugin URI: http://www.semiologic.com/software/recent-comments/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/recent-comments/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; A WordPress widget that lists a fuzzy number of recently commented entries. To use, call the_recent_comments(); where you want the tile to appear. Alternatively, do nothing and the tile will display when wp_meta(); is called.
+Plugin URI: http://www.semiologic.com/software/widgets/recent-comments/
+Description: A WordPress widget that lists a fuzzy number of recently commented entries.
 Author: Denis de Bernardy
-Version: 4.13
+Version: 4.14
 Author URI: http://www.semiologic.com
 */
 
@@ -28,6 +28,13 @@ load_plugin_textdomain('sem-recent-comments');
 if ( !defined('sem_cache_path') )
 {
 	define('sem_cache_path', ABSPATH . 'wp-content/cache/'); # same as wp-cache
+
+	if ( !get_option('sem_cache_created') )
+	{
+		@mkdir(sem_cache_path, 0777);
+
+		update_option('sem_cache_created', 1);
+	}
 }
 if ( !defined('sem_cache_timeout') )
 {
@@ -175,7 +182,7 @@ class sem_recent_comments
 		add_options_page(
 				__('Fuzzy&nbsp;Comments', 'sem-recent-comments'),
 				__('Fuzzy&nbsp;Comments', 'sem-recent-comments'),
-				8,
+				'manage_options',
 				str_replace("\\", "/", __FILE__),
 				array(&$this, 'display_admin_page')
 				);
@@ -188,6 +195,8 @@ class sem_recent_comments
 
 	function update()
 	{
+		check_admin_referer('fuzzy_comments');
+
 		$this->params = array();
 
 		#echo '<pre>';
@@ -316,6 +325,8 @@ class sem_recent_comments
 			. "<h2>" . __('Recent Comments Options', 'sem-recent-comments') . "</h2>\n"
 			. "<form method=\"post\" action=\"\">\n"
 			. "<input type=\"hidden\" name=\"action\" value=\"update_sem_recent_comments\" />\n";
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('fuzzy_comments');
 
 		echo "<fieldset class=\"options\">\n"
 			. "<legend>" . __('Display Options', 'sem-recent-comments') . "</legend>\n";

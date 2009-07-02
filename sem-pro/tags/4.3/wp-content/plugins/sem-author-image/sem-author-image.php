@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Author Image
-Plugin URI: http://www.semiologic.com/software/author-image/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/author-image/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Adds the author's image where the_author_image(); is called within the loop. The [author's login].jpg files should be located in wp-content/authors: admin.jpg for admin, joe.jpg for joe, etc.
+Plugin URI: http://www.semiologic.com/software/publishing/author-image/
+Description: Adds the authors images to your site, which individual users can configure in their profile. Your wp-content folder needs to be writable by the server.
 Author: Denis de Bernardy
-Version: 1.1
+Version: 2.0
 Author URI: http://www.semiologic.com
 */
 
@@ -18,30 +18,35 @@ http://www.semiologic.com/legal/license/
 **/
 
 
-#
-# get_author_image()
-#
-
-function get_author_image()
+class author_image
 {
-	$author_id = get_the_author_login();
+	#
+	# get()
+	#
 
-	if ( file_exists(ABSPATH . 'wp-content/authors/' . $author_id . '.jpg') )
+	function get()
 	{
-		return '<div class="entry_author_image">'
-			. '<img src="'
-					. trailingslashit(get_settings('siteurl'))
-					. 'wp-content/authors/' . $author_id . '.jpg'
-					. '"'
-				. ' alt=""'
-				. ' />'
-			. '</div>';
-	}
-	else
-	{
-		return '';
-	}
-} # end get_author_image()
+		$author_id = get_the_author_login();
+
+		if ( $image = glob(ABSPATH . 'wp-content/authors/' . $author_id . '.{jpg,png}', GLOB_BRACE) )
+		{
+			$image = end($image);
+		}
+
+		if ( $image )
+		{
+			$site_url = trailingslashit(get_option('siteurl'));
+
+			return '<div class="entry_author_image">'
+				. '<img src="'
+						. str_replace(ABSPATH, $site_url, $image)
+						. '"'
+					. ' alt=""'
+					. ' />'
+				. '</div>';
+		}
+	} # get()
+} # author_image
 
 
 #
@@ -50,6 +55,15 @@ function get_author_image()
 
 function the_author_image()
 {
-	echo get_author_image();
+	echo author_image::get();
 } # end the_author_image()
+
+
+
+
+if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false
+	)
+{
+	include_once dirname(__FILE__) . '/sem-author-image-admin.php';
+}
 ?>

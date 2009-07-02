@@ -30,6 +30,13 @@ IMPORTANT
 if ( !defined('sem_cache_path') )
 {
 	define('sem_cache_path', ABSPATH . 'wp-content/cache/'); # same as wp-cache
+
+	if ( !get_option('sem_cache_created') )
+	{
+		@mkdir(sem_cache_path, 0777);
+
+		update_option('sem_cache_created', 1);
+	}
 }
 if ( !defined('sem_cache_long_timeout') )
 {

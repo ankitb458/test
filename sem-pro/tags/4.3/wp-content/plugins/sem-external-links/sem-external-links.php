@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: External Links
-Plugin URI: http://www.semiologic.com/software/external-links/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/external-links/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Adds a class=&quot;external&quot; to all outbound links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the feature.
+Plugin URI: http://www.semiologic.com/software/publishing/external-links/
+Description: Adds a class=&quot;external&quot; to all outbound links. Use &lt;a class=&quot;no_icon&quot; ...&gt; to disable the feature.
 Author: Denis de Bernardy
-Version: 2.5
+Version: 2.8
 Author URI: http://www.semiologic.com
 */
 
@@ -46,7 +46,8 @@ function sem_external_links_init()
 	$defaults = array(
 		'global' => true,
 		'add_css' => true,
-		'add_target' => false
+		'add_target' => false,
+		'add_nofollow' => false
 		);
 
 	$options = get_option('sem_external_links_params');
@@ -99,6 +100,45 @@ add_action('wp_head', 'sem_external_links_css');
 
 function sem_external_links($buffer)
 {
+	# escape head
+	$buffer = preg_replace_callback(
+		"/
+		<\s*head				# head tag
+			(?:\s[^>]*)?		# optional attributes
+			>
+		.*						# head code
+		<\s*\/\s*head\s*>		# end of head tag
+		/isUx",
+		'sem_external_links_escape_anchors',
+		$buffer
+		);
+
+	# escape scripts
+	$buffer = preg_replace_callback(
+		"/
+		<\s*script				# script tag
+			(?:\s[^>]*)?		# optional attributes
+			>
+		.*						# script code
+		<\s*\/\s*script\s*>		# end of script tag
+		/isUx",
+		'sem_external_links_escape_anchors',
+		$buffer
+		);
+
+	# escape objects
+	$buffer = preg_replace_callback(
+		"/
+		<\s*object				# object tag
+			(?:\s[^>]*)?		# optional attributes
+			>
+		.*						# object code
+		<\s*\/\s*object\s*>		# end of object tag
+		/isUx",
+		'sem_external_links_escape_anchors',
+		$buffer
+		);
+
 	global $site_host;
 
 	$site_host = trailingslashit(get_settings('home'));
@@ -125,11 +165,54 @@ function sem_external_links($buffer)
 		$buffer
 		);
 
+	# unescape anchors
+	$buffer = sem_external_links_unescape_anchors($buffer);
+
 	return $buffer;
 } # end sem_external_links()
 
 add_action('the_content', 'sem_external_links', 40);
 add_action('the_excerpt', 'sem_external_links', 40);
+
+
+#
+# sem_external_links_escape_anchors()
+#
+
+function sem_external_links_escape_anchors($input)
+{
+	global $escaped_external_links;
+
+#	echo '<pre>';
+#	var_dump($input);
+#	echo '</pre>';
+
+	$tag_id = '--escaped_external_link:' . md5($input[0]) . '--';
+	$escaped_external_links[$tag_id] = $input[0];
+
+	return $tag_id;
+} # end sem_external_links_escape_anchors()
+
+
+#
+# sem_external_links_unescape_anchors()
+#
+
+function sem_external_links_unescape_anchors($input)
+{
+	global $escaped_external_links;
+
+	$find = array();
+	$replace = array();
+
+	foreach ( $escaped_external_links as $key => $val )
+	{
+		$find[] = $key;
+		$replace[] = $val;
+	}
+
+	return str_replace($find, $replace, $input);
+} # end sem_external_links_unescape_anchors()
 
 
 #
@@ -253,6 +336,58 @@ function sem_external_links_callback($input)
 				$link = str_replace(
 					'>',
 					' target="_blank">',
+					$link
+					);
+			}
+		}
+
+		if ( $options['add_nofollow'] )
+		{
+			if ( preg_match(
+				"/
+					\b
+					rel\s*=\s*
+					(?:
+						\"([^\"]*)\"
+					|
+						'([^']*)'
+					|
+						([^\"'][^\s>]*)
+					)
+				/iUx",
+				$link,
+				$match
+				) )
+			{
+				#echo '<pre>';
+				#var_dump($match);
+				#echo '</pre>';
+
+				if ( !preg_match(
+					"/
+						\b
+						(?:
+							nofollow
+						|
+							follow
+						)
+						\b
+					/ix",
+					$match[1]
+					) )
+				{
+					$link = str_replace(
+						$match[0],
+						'rel="' . $match[1] . ' nofollow"',
+						$link
+						);
+				}
+			}
+			else
+			{
+				$link = str_replace(
+					'>',
+					' rel="nofollow">',
 					$link
 					);
 			}

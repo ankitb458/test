@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Related Searches
-Plugin URI: http://www.semiologic.com/software/terms2search/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/terms2search/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Requires the <a href="http://www.semiologic.com/software/extract-terms/">Extract terms plugin</a>. Returns Yahoo! terms as search queries. To use, call the_terms2search(); where you want the terms to appear. Please note that small sites using this plugin will get unindexed for having duplicate content.
-Version: 2.12
+Plugin URI: http://www.semiologic.com/software/widgets/terms2search/
+Description: Leverages Yahoo!'s term extraction web service to display related search queries. Please note that small sites using this plugin will quickly get unindexed for having duplicate content.
+Version: 2.14
 Author: Denis de Bernardy
 Author URI: http://www.semiologic.com
 */
@@ -99,6 +99,32 @@ function the_terms2search($post = null)
 
 	$sem_terms2search->display($post);
 } # end the_terms2search()
+
+
+#
+# display_entry_related_searches()()
+#
+
+function display_entry_related_searches()
+{
+	if ( apply_filters('show_entry_related_searches', is_single())
+		&& get_the_post_terms()
+		)
+	{
+		echo '<div class="entry_related_searches">'
+			. '<h2>'
+			. __('Related Searches')
+			. '</h2>'
+			. '<p>';
+
+		the_terms2search();
+
+		echo '</p>'
+			. '</div>';
+	}
+} # end display_entry_related_searches()
+
+add_filter('after_the_entry', 'display_entry_related_searches', 9);
 
 
 ########################

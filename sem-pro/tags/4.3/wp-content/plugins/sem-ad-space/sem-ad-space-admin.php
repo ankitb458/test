@@ -194,8 +194,10 @@ class sem_ad_space
 		add_action('admin_menu', array(&$this, 'add2admin_menu'));
 		add_action('admin_head', array(&$this, 'init_admin'), 500);
 		add_action('admin_head', array(&$this, 'display_admin_js'), 0);
-		add_action('edit_form_advanced', array(&$this, 'display_post_ad_selector'));
-		add_action('edit_page_form', array(&$this, 'display_page_ad_selector'));
+
+		add_action('dbx_post_advanced', array(&$this, 'display_page_ad_selector'));
+		add_action('dbx_page_advanced', array(&$this, 'display_page_ad_selector'));
+
 		/*
 		if ( ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
 			&& isset($_REQUEST['action'])
@@ -248,7 +250,7 @@ class sem_ad_space
 					");
 			}
 
-			$this->params['version'] = 3.16;
+			$this->params['version'] = 3.18;
 		}
 
 		if ( function_exists('get_site_option') )
@@ -276,7 +278,7 @@ class sem_ad_space
 				)
 			{
 				add_filter('mce_plugins', array(&$this, 'add_mce_plugin'));
-				add_filter('mce_buttons_2', array(&$this, 'add_mce_button'));
+				add_filter('mce_buttons', array(&$this, 'add_mce_button'));
 			}
 			else
 			{
@@ -521,7 +523,7 @@ class sem_ad_space
 				'themes.php',
 				__('Ad&nbsp;Spaces'),
 				__('Ad&nbsp;Spaces'),
-				7,
+				'manage_options',
 				str_replace("\\", "/", basename(__FILE__)),
 				array(&$this, 'display_admin_page')
 				);
@@ -752,12 +754,14 @@ function ad_block_defaults()
 		# case 'edit_max_ad_blocks'
 		#
 		case 'edit_max_ad_blocks':
+			check_admin_referer('ad_spaces');
 			$this->params['max_ad_blocks'] = intval($_POST['max_ad_blocks']);
 			break;
 		#
 		# case 'edit_sem_ad_block':
 		#
 		case 'edit_sem_ad_block':
+			check_admin_referer('ad_spaces');
 			if ( !$_POST['ad_block_id'] )
 			{
 				$wpdb->query("
@@ -855,6 +859,7 @@ function ad_block_defaults()
 		# case 'delete_sem_ad_block':
 		#
 		case 'delete_sem_ad_block':
+			//check_admin_referer('ad_spaces');
 			if ( $_POST['ad_block_id'] )
 			{
 				$wpdb->query("
@@ -890,12 +895,14 @@ function ad_block_defaults()
 		# case 'edit_default_sem_ad_block':
 		#
 		case 'edit_default_sem_ad_block':
+			check_admin_referer('ad_spaces');
 			$this->params['default_ad_block'] = $_POST['ad_distribution2tag'];
 			break;
 		#
 		# case 'edit_sem_ad_distribution':
 		#
 		case 'edit_sem_ad_distribution':
+			check_admin_referer('ad_spaces');
 			if ( !$_POST['ad_distribution_id'] )
 			{
 				$wpdb->query("
@@ -988,6 +995,7 @@ function ad_block_defaults()
 		# case 'delete_sem_ad_distribution':
 		#
 		case 'delete_sem_ad_distribution':
+			//check_admin_referer('ad_spaces');
 			if ( $_POST['ad_distribution_id'] )
 			{
 				$wpdb->query("
@@ -1017,6 +1025,7 @@ function ad_block_defaults()
 		# case 'edit_default_sem_ad_distribution':
 		#
 		case 'edit_default_sem_ad_distribution':
+			check_admin_referer('ad_spaces');
 			$this->params['default_ad_distribution'] = $_POST['default_ad_distribution'];
 			break;
 		}
@@ -1159,8 +1168,7 @@ function ad_block_defaults()
 		# Display admin page
 
 		echo "<div class=\"wrap\">\n"
-			. "<h2>" . __('Ad Spaces Options', 'sem-ad-space') . "</h2>\n"
-			. "<p>" . __('<b>&raquo;</b> <a href="http://www.semiologic.com/software/ad-space/">Ad Spaces Tutorial And Documentation</a>', 'sem-ad-space') . "</p>\n";
+			. "<h2>" . __('Ad Spaces Options', 'sem-ad-space') . "</h2>\n";
 
 		$ad_blocks = $wpdb->get_results("
 			SELECT
@@ -1373,6 +1381,8 @@ function ad_block_defaults()
 			. "<input type=\"hidden\" name=\"action\" value=\"edit_sem_ad_block\" />\n"
 			. "<input type=\"hidden\" name=\"ad_block_id\" value=\"\" />\n";
 
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('ad_spaces');
+
 		echo "<fieldset class=\"options\" style=\"margin-bottom: 2em;\">\n"
 			. "<legend>" . __('Edit Ad Unit', 'sem-ad-space')
 				. "</legend>\n";
@@ -1481,6 +1491,8 @@ function ad_block_defaults()
 
 		echo "<form method=\"post\" id=\"default_ad_block_editor\" action=\"\" style=\"display: none;\">\n"
 			. "<input type=\"hidden\" name=\"action\" value=\"edit_default_sem_ad_block\" />\n";
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('ad_spaces');
 
 		echo "<fieldset class=\"options\" style=\"margin-bottom: 2em;\">\n"
 			. "<legend>" . __('Default Ad Units', 'sem-ad-space')
@@ -1732,6 +1744,8 @@ function ad_block_defaults()
 			. "<input type=\"hidden\" name=\"action\" value=\"edit_sem_ad_distribution\" />\n"
 			. "<input type=\"hidden\" name=\"ad_distribution_id\" value=\"\" />\n";
 
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('ad_spaces');
+
 		echo "<fieldset class=\"options\" style=\"margin-bottom: 2em;\">\n"
 			. "<legend>" . __('Edit Ad Distribution', 'sem-ad-space')
 				. "</legend>\n";
@@ -1876,6 +1890,8 @@ function ad_block_defaults()
 		echo "<form method=\"post\" id=\"default_ad_distribution_editor\" action=\"\" style=\"display: none;\">\n"
 			. "<input type=\"hidden\" name=\"action\" value=\"edit_default_sem_ad_distribution\" />\n";
 
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('ad_spaces');
+
 		echo "<fieldset class=\"options\" style=\"margin-bottom: 2em;\">\n"
 			. "<legend>" . __('Default Ad Distributions', 'sem-ad-space')
 				. "</legend>\n";
@@ -1953,6 +1969,8 @@ function ad_block_defaults()
 
 		echo "<form method=\"post\" id=\"max_ad_blocks_editor\" action=\"\">\n"
 			. "<input type=\"hidden\" name=\"action\" value=\"edit_max_ad_blocks\" />\n";
+
+		if ( function_exists('wp_nonce_field') ) wp_nonce_field('ad_spaces');
 
 
 		echo '<fieldset class="options" id="max_number_of_ads" style=\"margin-bottom: 2em;\">'
@@ -2075,8 +2093,15 @@ function ad_block_defaults()
 			$sem_ad_distribution = '';
 		}
 
-		echo "<fieldset style=\"margin-bottom: 2em;\">\n"
-			. "<h3>" . __('Ad Distribution') . "</h3>\n";
+		echo '<div class="dbx-b-ox-wrapper">';
+
+		echo '<fieldset id="ad_distribution" class="dbx-box">'
+			. '<div class="dbx-h-andle-wrapper">'
+			. '<h3 class="dbx-handle">' . __('Ad Distribution') . '</h3>'
+			. '</div>';
+
+		echo '<div class="dbx-c-ontent-wrapper">'
+			. '<div id="ad_distributionstuff" class="dbx-content">';
 
 		echo "<table width=\"100%\" cellspacing=\"2\" cellpadding=\"5\" class=\"editform\">\n"
 			. "<tr>\n"
@@ -2135,7 +2160,12 @@ function ad_block_defaults()
 			. "</tr>\n"
 			. "</table>\n";
 
+		echo '</div>'
+			. '</div>';
+
 		echo "</fieldset>\n";
+
+		echo '</div>';
 	} # end display_ad_selector()
 
 

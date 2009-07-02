@@ -5,7 +5,7 @@ Plugin URI: http://chip.cuccio.us/projects/contact-form-II/
 Description: Contact Form ][ is a drop-in form that allows site visitors to contact you. It can be implemented easily (via QuickTags) within any post or page.  This version is *specifically* for WordPress 2.0 only.  Original code derived from Ryan Duff's WP-ContactForm plugin.
 Author: Chip Cuccio
 Author URI: http://chip.cuccio.us
-Version: 2.6 (fork)
+Version: 2.7 (fork)
 */
 
 load_plugin_textdomain('wpcf'); // NLS
@@ -28,6 +28,7 @@ This shows the quicktag on the write pages
 Based off Buttonsnap Template
 http://redalt.com/downloads
 */
+if ( false ) :
 #if(get_option('wpcf_show_quicktag') == true) {
     include(dirname(__FILE__) . '/buttonsnap.php');
 
@@ -56,11 +57,13 @@ http://redalt.com/downloads
         ";
     }
 #}
+endif;
 
 
 function wpcf_is_malicious($input) {
 	$is_malicious = false;
-	$bad_inputs = array("\r", "\n", "mime-version", "content-type", "cc:", "to:");
+	#$bad_inputs = array("\r", "\n", "mime-version", "content-type", "cc:", "to:");
+	$bad_inputs = array("<", ">", "&lt;", "&gt", "mime-version", "content-type", "cc:", "bcc:", "to:", "<a href", "</a>", "http://", "[/URL]", "[URL=");
 	foreach($bad_inputs as $bad_input) {
 		if(strpos(strtolower($input), strtolower($bad_input)) !== false) {
 			$is_malicious = true; break;
@@ -113,13 +116,37 @@ function wpcf_check_input()
 		$ok = false; $reason = 'malicious';
 	}
 
+	if(stristr($_POST['wpcf_your_name'], "\r")) {
+        $ok = false; $reason = 'malicious';
+    }
+    if(stristr($_POST['wpcf_your_name'], "\n")) {
+        $ok = false;
+        $reason = 'malicious';
+    }
+    if(stristr($_POST['wpcf_email'], "\r")) {
+        $ok = false;
+        $reason = 'malicious';
+    }
+    if(stristr($_POST['wpcf_email'], "\n")) {
+        $ok = false;
+        $reason = 'malicious';
+    }
+    if(stristr($_POST['wpcf_subject'], "\r")) {
+        $ok = false;
+        $reason = 'malicious';
+    }
+    if(stristr($_POST['wpcf_subject'], "\n")) {
+        $ok = false;
+        $reason = 'malicious';
+    }
+
 	if($ok == true)
 	{
 		return true;
 	}
 	else {
 		if($reason == 'malicious') {
-			$wpcf_strings['error'] = "<div style='font-weight: bold;'>You can not use any of the following in the Subject, Name or Email fields: a linebreak, or the phrases 'mime-version', 'content-type', 'cc:' or 'to:'.</div>";
+			$wpcf_strings['error'] = "<div style='font-weight: bold;'>Your email was not sent due to suspicious activity. Please do not use html or enter urls into your email.</div>";
 		} elseif($reason == 'empty') {
 			$wpcf_strings['error'] = '<div style="font-weight: bold;">' . stripslashes(get_option('wpcf_error_msg')) . '</div>';
 		}
@@ -227,33 +254,11 @@ function getip()
 {
 	if (isset($_SERVER))
 	{
- 		if (isset($_SERVER["HTTP_X_FORWARDED_FOR"]))
- 		{
-  			$ip_addr = $_SERVER["HTTP_X_FORWARDED_FOR"];
- 		}
- 		elseif (isset($_SERVER["HTTP_CLIENT_IP"]))
- 		{
-  			$ip_addr = $_SERVER["HTTP_CLIENT_IP"];
- 		}
- 		else
- 		{
- 			$ip_addr = $_SERVER["REMOTE_ADDR"];
- 		}
+ 	    $ip_addr = $_SERVER["REMOTE_ADDR"];
 	}
 	else
 	{
- 		if ( getenv( 'HTTP_X_FORWARDED_FOR' ) )
- 		{
-  			$ip_addr = getenv( 'HTTP_X_FORWARDED_FOR' );
- 		}
- 		elseif ( getenv( 'HTTP_CLIENT_IP' ) )
- 		{
-  			$ip_addr = getenv( 'HTTP_CLIENT_IP' );
- 		}
- 		else
- 		{
-  			$ip_addr = getenv( 'REMOTE_ADDR' );
- 		}
+  	    $ip_addr = getenv('REMOTE_ADDR');
 	}
 return $ip_addr;
 }
@@ -277,7 +282,7 @@ function wpcf_css()
 
 function wpcf_add_options_page()
 	{
-		add_options_page('Contact Form ][ Options', 'Contact Form ][', 9, 'wp-contact-form/options-contactform.php');
+		add_options_page('Contact&nbsp;Form', 'Contact&nbsp;Form', 'manage_options', 'wp-contact-form/options-contactform.php');
 	}
 
 /* Action calls for all functions */

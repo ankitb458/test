@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Google Analytics
-Plugin URI: http://www.semiologic.com/software/google-analytics/
-Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/google-analytics/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with all sorts of advanced tracking toys enabled.
+Plugin URI: http://www.semiologic.com/software/marketing/google-analytics/
+Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with all sorts of advanced tracking toys enabled.
 Author: Denis de Bernardy
-Version: 2.2
+Version: 2.4
 Author URI: http://www.semiologic.com
 */
 
@@ -70,9 +70,9 @@ class sem_google_analytics
 			$options = get_option('sem_google_analytics_params');
 		}
 
-		if ( strpos($options, '\\') !== false )
+		if ( strpos($options['script'], '\\') !== false )
 		{
-			$options = stripslashes($options);
+			$options['script'] = stripslashes($options['script']);
 		}
 
 		return $options;
@@ -91,17 +91,16 @@ class sem_google_analytics
 		}
 
 		global $user_ID;
-		global $user_level;
 
 		$options = sem_google_analytics::get_options();
 
 		if ( !$options['script'] )
 		{
-			echo __('<!-- You need to configure the Google Analytics plugin under Options / Google Analytics -->');
+			echo __('<!-- You need to configure the Google Analytics plugin under Options / Google Analytics -->') . "\n";
 		}
-		elseif ( $user_ID && intval($user_level) > 1 )
+		elseif ( current_user_can('publish_posts') )
 		{
-			echo __('<!-- The Google Analytics plugin does not track site authors, editors and admins when they are logged in -->');
+			echo __('<!-- The Google Analytics plugin does not track site authors, editors and admins when they are logged in -->') . "\n";
 		}
 		else
 		{

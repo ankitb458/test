@@ -1,6 +1,6 @@
 /*
 Skin name: Sky Gold
-Version: 1.2
+Version: 1.3
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 Description: The classic Semiologic skin
@@ -21,16 +21,6 @@ Description: The classic Semiologic skin
 body
 {
 	background-color: lavender;
-	color: black;
-}
-
-#header,
-#footer,
-#main,
-#sidebar,
-#sidebar2
-{
-	background-color: white;
 	color: black;
 }
 
