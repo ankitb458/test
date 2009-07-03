@@ -370,7 +370,7 @@ class entry_content extends WP_Widget {
 			return;
 		
 		global $post;
-		$instance = wp_parse_args($instance, entry_header::defaults());
+		$instance = wp_parse_args($instance, entry_content::defaults());
 		extract($args, EXTR_SKIP);
 		extract($instance, EXTR_SKIP);
 		
@@ -1754,7 +1754,7 @@ EOS;
 	 **/
 
 	function form($instance) {
-		$defaults = blog_footer::defaults();
+		$defaults = header::defaults();
 		$instance = wp_parse_args($instance, $defaults);
 		extract($instance, EXTR_SKIP);
 		
