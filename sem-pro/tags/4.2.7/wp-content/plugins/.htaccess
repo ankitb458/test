@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} wp-hashcash\.key$
+RewriteCond %{REQUEST_FILENAME} wp-hashcash\.lib$
+RewriteRule ^(.*)$ [F,L]
