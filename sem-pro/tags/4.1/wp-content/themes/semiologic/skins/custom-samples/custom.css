@@ -1,0 +1,501 @@
+/*
+custom.css sample file
+======================
+
+It is assumed that you are familiar with html and cascading stylesheets already. It is completely unreasonable for me to create a html and css tutorial here.
+
+If you are not familiar with either, I highly recommend that you start by reading a tutorial. The ones on w3schools.org are quite accessible to beginners.
+
+Before we go through examples, two points are worth a mention: how the theme works, and the document canvas.
+
+
+Outline of Semiologic
+---------------------
+
+Cascading stylesheets are all too often misunderstood as stylesheets. Semiologic makes advanced use of the 'cascading' aspect of css.
+
+The body tag has a few classes, and the bulk of the theme's features are managed from there. Let's go through a body tag:
+
+<body class="mse narrow3 bookman sky_gold skin custom">
+
+- 'mse' stands for 'main, sidebar, external' and allows to define the layout
+- 'narrow3' stands for '3 column narrow'  and allows to define the widths
+- 'bookman' refers to the 'bookman old style' font and defines the font scheme
+- 'sky_gold' is a normalized version of the skin's directory; its purpose is to let you create cross-skin custom.css files
+- 'skin' and 'custom' are generic classes that allow you to override context-sensitive defaults (see below)
+
+Three css files are included:
+
+- style.css (in the theme folder) defines a generic canvas and layout
+- skin.css (in the skin folder) defines skin specific skinning
+- custom.css (in the skin folder, when it exists) lets you override the two previous without needing to edit them
+
+If you go through them, you'll notice things like:
+
+.header h1
+{
+  ...
+}
+
+The above stands for "h1 in the context of the 'header' class". As a result:
+
+<div class="header">
+  <h1>this h1 tag is affected</h1>
+</div>
+<h1>this h1 tag is not affected</h1>
+
+Note that the stronger the context, the stickier the css. To override styling that seems a bit sticky, it is sometimes useful to precede your css declaration with a .custom:
+
+.header h1
+{
+  this applies to h1 tags in the header
+}
+
+h1
+{
+  this does not override what you just defined for the header
+}
+
+.custom h1
+{
+  this overrides what you just defined for the header
+}
+
+You're 80% proficient with Semiologic customization once you've understood the above. Familiarity with the document canvas ensures full proficiency.
+
+
+Document canvas
+---------------
+
+The hierarchical ids/classes defined by the canvas are the following:
+
+ids                            classes      notes
+----------------------------------------------------------------
+#ext_wrapper
+  #shadow_top                               empty div
+  #shadow
+    #wrapper
+      #header                 .header
+        #tagline
+          h2
+        #sitename
+          h1
+      #navbar                 .navbar
+        #header_nav
+        #search_form
+      #body                   .body
+        #main                 .main
+        #sidebar              .sidebar
+      #footer                 .footer
+        #copyright_notice
+        #footer_nav
+    #ext_sidebar              .sidebar
+  #shadow_bottom                            empty div
+#credits
+
+
+The hierarchical classes and tags used by entries are the following:
+
+class/tag                     notes
+----------------------------------------------------------------
+.entry
+  .entry_header
+    h2                        date
+    h1                        title
+  .entry_body
+  .entry_nav                  entry navigation
+  .entry_meta                 filed under...
+    .entry_tags
+    .entry_author
+    .entry_date               used in article template only
+  .entry_actions              permalink...
+    .action                   applied to each element
+    .link_entry
+    .print_entry
+    .email_entry
+    .entry_comments
+    .comment_entry
+    .admin_link
+  .entry_trackback_uri
+  .comments
+    h1                        number of comments
+    .comment
+      .comment_header
+        h2                    comment date
+        h3                    comment author
+      .comment_body
+      .comment_actions        permalink...
+  .comment_form
+
+
+Sidebars use the same structure as most WordPress themes:
+
+class/tag                     notes
+----------------------------------------------------------------
+ul
+  li
+    .widget
+    h2                        widget title
+    ul
+      li
+
+
+Other useful classes to know include:
+
+class/tag                     notes
+----------------------------------------------------------------
+.inline_menu                  used to style ul / li lists as
+                              inline lists
+
+.gallery                      image gallery style
+                              centered, with a 1px border
+
+.sell                         wraps the entry in the sell page
+                              template, for customizations
+
+.marker                       fluorescent marker style
+
+.order_form                   order form style for use in sell
+                              pages
+
+.testimonial,                 testimonial styles, for use
+.testimonials,                in sell pages
+.side_testimonials
+
+.ad                           ghost white ad style
+
+.spacer                       use this class to clear:both; in
+                              floating div layouts, i.e.:
+                              <div class="spacer"></div>
+
+.pad                          used to pad the content without
+                              bugs in FF in the header, the
+                              footer, the main content area and
+                              each sidebar
+
+
+Other classes and ids exist, e.g. #wp-calendar, .sem_subscribe_me. They are typically created by WordPress and/or the various plugins. They are not mentionned here because they have little or no importance when it comes to creating or customizing a skin.
+
+
+Time for an example... Drop this file into the sky gold skin folder to see it transform the skin.
+*/
+
+
+/*
+3-column widths
+*/
+
+.wide3 #ext_wrapper,
+.narrow3 #ext_wrapper
+{
+	width: 950px;
+}
+
+.wide3 #wrapper,
+.narrow3 #wrapper
+{
+	width: 750px;
+}
+
+.wide3 #main,
+.narrow3 #main
+{
+	width: 540px;
+}
+
+.wide3 #ext_sidebar,
+.wide3 #sidebar,
+.narrow3 #ext_sidebar,
+.narrow3 #sidebar
+{
+	width: 198px;
+}
+
+
+/*
+2-column widths with internal sidebar
+*/
+
+.wide2s #ext_wrapper,
+.narrow2s #ext_wrapper
+{
+	width: 750px;
+}
+
+.wide2s #main,
+.narrow2s #main
+{
+	width: 540px;
+}
+
+.wide2s #sidebar,
+.narrow2s #sidebar
+{
+	width: 198px;
+}
+
+
+/*
+2-column widths with external sidebar
+*/
+
+.wide2e #ext_wrapper,
+.narrow2e #ext_wrapper
+{
+	width: 950px;
+}
+
+.wide2e #wrapper,
+.narrow2e #wrapper
+{
+	width: 750px;
+}
+
+.wide2e #ext_sidebar,
+.narrow2e #ext_sidebar
+{
+	width: 198px;
+}
+
+
+/*
+1-column widths
+*/
+
+.wide1 #ext_wrapper,
+.narrow1 #ext_wrapper
+{
+	width: 750px;
+}
+
+
+
+/*
+The font family
+*/
+
+.custom,
+.custom h1,
+.custom h2,
+.custom h3,
+.custom p,
+.custom li,
+.custom dt,
+.custom dd,
+.custom th,
+.custom td,
+.custom input,
+.custom select,
+.custom button,
+.custom textarea
+{
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Helvetica, Arial, sans-serif;
+}
+
+
+/*
+The font size
+*/
+
+.custom h1
+{
+	font-size: large;
+}
+
+.custom h2,
+.custom #wp-calendar caption
+{
+	font-size: medium;
+}
+
+.custom body,
+.custom h3,
+.custom p,
+.custom li,
+.custom dt,
+.custom dd,
+.custom table,
+.custom th,
+.custom td,
+.custom input,
+.custom select,
+.custom button,
+.custom textarea,
+.custom pre,
+.custom code
+{
+	font-size: small;
+}
+
+
+
+/*
+The color and background colors
+*/
+
+body,
+#ext_wrapper,
+#wrapper,
+#header,
+#footer,
+#body,
+#main,
+#sidebar,
+#ext_sidebar
+{
+	color: #474E44;
+	background-color: #F3F4EC;
+}
+
+
+/*
+The navbar and calendar header colors
+*/
+
+#navbar,
+#wp-calendar thead th
+{
+	background-color: #CCCFBC;
+}
+
+
+/*
+The link styles
+*/
+
+a,
+h1 a
+{
+	color: steelblue;
+}
+
+a:hover,
+h1 a:hover
+{
+	color: saddlebrown;
+}
+
+
+/*
+The navbar link styles
+*/
+
+.navbar a
+{
+	color: #A37B45;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.navbar a:hover
+{
+	color: #A37B45;
+	text-decoration: underline;
+}
+
+
+/*
+Center the navbar
+*/
+
+#header_nav
+{
+	text-align: center;
+	float: none;		/* NB: many areas are floating divs */
+}
+
+#search_form			/* this hides the search form in all cases */
+{
+	display: none;
+}
+
+
+/*
+Header styles and colors
+*/
+
+#header div.pad
+{
+	margin: 0px;
+	padding: .5em 8px;
+	background-color: #CCCFBC;
+}
+
+#sitename
+{
+	text-align: center;
+}
+
+.header h1
+{
+	margin: 0px;
+	padding: 2em 0px 1em 0px;
+	text-transform: uppercase;
+}
+
+.header h2
+{
+	margin: 0px;
+	padding: .5em;
+	font-size: small;
+	text-transform: uppercase;
+}
+
+.header h1 a
+{
+	color: #474E44;
+}
+
+.header h1 a:hover
+{
+	color: firebrick;
+}
+
+.header h2
+{
+	color: #A37B45;
+}
+
+
+/*
+Body styles and colors
+*/
+
+.main h1
+{
+	text-transform: uppercase;
+}
+
+.main h1,
+.main h1 a
+{
+	color: #5B7B57;
+}
+
+.main h1 a:hover
+{
+	color: firebrick;
+}
+
+.main h2
+{
+	text-transform: uppercase;
+	color: #A37B45;
+	border-bottom: none;
+}
+
+
+/*
+Sidebar styles and colors
+*/
+
+.sidebar h2
+{
+	border-bottom: none;
+	color: #5B7B57;
+}
+
+.sidebar ul ul
+{
+	margin-left: .5em;
+}

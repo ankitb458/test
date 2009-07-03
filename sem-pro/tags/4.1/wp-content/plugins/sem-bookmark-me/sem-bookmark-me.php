@@ -1,0 +1,215 @@
+<?php
+/*
+Plugin Name: Bookmark Me
+Plugin URI: http://www.semiologic.com/software/bookmark-me/
+Description: <a href="http://www.semiologic.com/legal/license/">Terms of use</a> &bull; <a href="http://www.semiologic.com/software/bookmark-me/">Doc/FAQ</a> &bull; <a href="http://forum.semiologic.com">Support forum</a> &#8212; Lists links to common social bookmarking sites.
+Author: Denis de Bernardy
+Version: 1.3
+Author URI: http://www.semiologic.com
+*/
+
+/*
+Terms of use
+------------
+
+This software is copyright Mesoconcepts Ltd, and is distributed under the terms of the Mesoconcepts license. In a nutshell, you may freely use it for any purpose, but may not redistribute it without written permission.
+
+http://www.semiologic.com/legal/license/
+
+
+Hat Tips
+--------
+
+	* Mike Koepke <http://www.mikekoepke.com>
+**/
+
+$bookmark_sites = array(
+	'delicious' => array(
+		'name' => 'del.icio.us',
+		'url' => 'http://del.icio.us/post?title=%title%&amp;url=%permalink%'
+		),
+	'digg' => array(
+		'name' => 'Digg',
+		'url' => 'http://digg.com/submit?phase=2&amp;title=%title%&amp;url=%permalink%'
+		),
+	'furl' => array(
+		'name' => 'Furl',
+		'url' => 'http://www.furl.net/storeIt.jsp?t=%title%&amp;u=%permalink%'
+		),
+	'reddit' => array(
+		'name' => 'Reddit',
+		'url' => 'http://reddit.com/submit?title=%title%&amp;url=%permalink%'
+		),
+	'blinklist' => array(
+		'name' => 'BlinkList',
+		'url' => 'http://www.blinklist.com/index.php?Action=Blink/addblink.php&amp;Description=&amp;Url=%permalink%&amp;Title=%title%'
+		),
+	'blogmarks' => array(
+		'name' => 'blogmarks',
+		'url' => 'http://blogmarks.net/my/new.php?mini=1&amp;simple=1&amp;url=%permalink%&amp;title=%title%'
+		),
+	'magnolia' => array(
+		'name' => 'Ma.gnolia',
+		'url' => 'http://ma.gnolia.com/beta/bookmarklet/add?url=%permalink%&amp;title=%title%&amp;description=%title%'
+		),
+	'rawsugar' => array(
+		'name' => 'RawSugar',
+		'url' => 'http://www.rawsugar.com/tagger/?turl=%permalink%&amp;tttl=%title%'
+		),
+	'rojo' => array(
+		'name' => 'Rojo',
+		'url' => 'http://www.rojo.com/submit/?title=%title%&amp;url=%permalink%'
+		),
+	'simpy' => array(
+		'name' => 'Simpy',
+		'url' => 'http://www.simpy.com/simpy/LinkAdd.do?href=%permalink%&amp;title=%title%'
+		),
+	'spurl' => array(
+		'name' => 'Spurl',
+		'url' => 'http://www.spurl.net/spurl.php?url=%permalink%&amp;title=%title%'
+		),
+	'wists' => array(
+		'name' => 'Wists',
+		'url' => 'http://wists.com/r.php?c=&amp;r=%permalink%&amp;title=%title%'
+		),
+	'yahoo' => array(
+		'name' => 'Yahoo!',
+		'url' => 'http://myweb2.search.yahoo.com/myresults/bookmarklet?title=%title%&amp;u=%permalink%&amp;popup=true'
+		),
+	'help' => array(
+		'name' => 'Help',
+		'url' => 'http://www.semiologic.com/resources/help-with-social-bookmarking-sites/'
+		)
+	);
+
+$bookmark_services = array(
+	'delicious',
+	'digg',
+	'furl',
+	'reddit',
+	'help'
+	);
+
+
+#
+# the_bookmark_links()
+#
+
+function the_bookmark_links()
+{
+	$title = urlencode(the_title(null, null, false));
+	$permalink = urlencode(str_replace('&amp;', '&', apply_filters('the_permalink', get_permalink())));
+	$site_name = urlencode(get_bloginfo('sitename'));
+
+	$options = get_settings('sem_bookmark_me_params');
+
+	if ( !$options )
+	{
+		$options = array(
+			'services' => $GLOBALS['bookmark_services']
+			);
+
+		update_option('sem_bookmark_me_params', $options);
+	}
+
+	foreach ( $GLOBALS['bookmark_sites'] as $site_id => $site_info )
+	{
+		if ( in_array($site_id, (array) $options['services']) )
+		{
+			if ( !isset($options['show_names']) || $options['show_names'] )
+			{
+				echo '<a'
+					. ' href="'
+						. get_bookmark_link(
+							$site_info['url'],
+							$site_name,
+							$title,
+							$permalink
+							)
+						. '"'
+					. ' style="'
+						. 'padding-left: 20px;'
+						. ' background: url('
+							. trailingslashit(get_bloginfo('siteurl'))
+							. 'wp-content/plugins/sem-bookmark-me/img/'
+							. $site_id . '.gif'
+							. ') center left no-repeat;'
+							. '"'
+						. ' class="noicon"'
+					. '>'
+					. __($site_info['name'])
+					. '</a> ';
+			}
+			else
+			{
+				echo '<a'
+					. ' href="'
+						. get_bookmark_link(
+							$site_info['url'],
+							$site_name,
+							$title,
+							$permalink
+							)
+						. '"'
+						. ' class="noicon"'
+						. ' title="' . __($site_info['name']) . '"'
+					. '>'
+					. '<img src="'
+							. trailingslashit(get_bloginfo('siteurl'))
+							. 'wp-content/plugins/sem-bookmark-me/img/'
+							. $site_id . '.gif'
+							. '"'
+							. ' alt=' . __($site_info['name']) . '"'
+							. ' style="border: none; margin: 0px 1px;"'
+							. ' />'
+					. '</a> ';
+			}
+		}
+	}
+} # end the_bookmark_links()
+
+
+#
+# get_bookmark_link()
+#
+
+function get_bookmark_link($link_struct, $site_name = '', $title = '', $permalink = '')
+{
+	return str_replace(
+		array(
+			'%site_name%',
+			'%title%',
+			'%permalink%'
+			),
+		array(
+			$site_name,
+			$title,
+			$permalink
+			),
+		$link_struct
+		);
+} # end get_bookmark_link()
+
+
+#
+# spread_the_word()
+#
+
+function spread_the_word()
+{
+?>
+<div class="spread_the_word">
+<h2><?php echo __('Spread the word'); ?></h2>
+<p><?php the_bookmark_links(); ?></p>
+</div>
+<?php
+} # end spread_the_word()
+
+add_action('after_the_post', 'spread_the_word', 3);
+add_action('display_entry_meta', 'spread_the_word', 15);
+
+if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
+{
+	include_once dirname(__FILE__) . '/sem-bookmark-me-admin.php';
+}
+?>

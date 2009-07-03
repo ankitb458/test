@@ -1,0 +1,3 @@
+Please find Semiologic Pro Package installation and upgrade instructions at:
+
+http://wp-pro.semiologic.com/download/
