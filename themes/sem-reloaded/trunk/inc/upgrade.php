@@ -92,13 +92,13 @@ function upgrade_sem_6_0() {
 		$instance['show_excerpts'] = $sem_options['show_excerpts'];
 		$instance['one_comment'] = !empty($sem_captions['1_comment_link'])
 			? $sem_captions['1_comment_link']
-			: '1 Comment';
+			: __('1 Comment', 'sem-reloaded');
 		$instance['n_comments'] = !empty($sem_captions['n_comments_link'])
 			? str_replace(
 				'%num%',
 				'%d',
 				$sem_captions['n_comments_link'])
-			: '%d Comments';
+			: __('%d Comments', 'sem-reloaded');
 		$instance['more_link'] = str_replace(
 			'%title%',
 			'%s',
