@@ -1787,7 +1787,7 @@ EOS;
 
 <style type="text/css">
 .skin #header_img {
-	background: url(${header}) no-repeat top left;
+	background: url(${header}) no-repeat top center;
 	height: ${height}px;
 	border: 0px;
 	overflow: hidden;
