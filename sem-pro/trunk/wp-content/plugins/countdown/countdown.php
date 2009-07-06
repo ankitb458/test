@@ -390,7 +390,7 @@ class countdown_widget extends WP_Widget {
 
 	function countdown_widget() {
 		$widget_ops = array(
-			'classname' => 'countdown',
+			'classname' => 'countdown_widget',
 			'description' => __('Displays upcoming events, which you configure under Settings / Events.', 'countdown'),
 			);
 		
@@ -504,6 +504,9 @@ class countdown_widget extends WP_Widget {
 		$widget_contexts = class_exists('widget_contexts')
 			? get_option('widget_contexts')
 			: false;
+		
+		if ( empty($ops['number']) )
+			unset($ops['number']);
 		
 		if ( isset($widget_contexts['countdown']) ) {
 			$ops['widget_contexts'] = $widget_contexts['countdown'];
