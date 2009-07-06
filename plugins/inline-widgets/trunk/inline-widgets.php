@@ -170,7 +170,9 @@ class inline_widgets {
 			'before_widget' => '<div class="' . esc_attr($wp_registered_widgets[$id]['classname']) . '">' . "\n",
 			'after_widget' => '</div>' . "\n",
 			'before_title' => '%BEG_OF_TITLE%',
-			'after_title' => '%END_OF_TITLE%'
+			'after_title' => '%END_OF_TITLE%',
+			'id' => 'inline_widgets',
+			'widget_id' => $id,
 			);
 		
 		$params = array($args, (array) $wp_registered_widgets[$id]['params'][0]);
