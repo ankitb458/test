@@ -31,7 +31,6 @@ load_plugin_textdomain('feed-widgets', null, dirname(__FILE__) . '/lang');
 
 add_action('init', array('feed_widgets', 'panels'), -100);
 add_filter('the_content', array('feed_widgets', 'display'), 100);
-add_filter('the_content_rss', array('feed_widgets', 'display'), 100);
 
 class feed_widgets {
 	/**
