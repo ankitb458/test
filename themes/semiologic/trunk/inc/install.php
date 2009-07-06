@@ -18,11 +18,14 @@ $sem_options['credits'] = __('Made with %1$s &bull; %2$s skin by %3$s', 'sem-the
 # Version
 $sem_options['version'] = sem_version;
 
+add_option('init_sem_panels', '1');
+
 # Update
 if ( !defined('sem_install_test') )
 	update_option('sem5_options', $sem_options);
 
 
+if ( !empty($sem_pro_version) ) :
 #
 # Step 2
 # ------
@@ -183,4 +186,6 @@ if ( $plugin_page_backup ) {
 	$plugin_page = $plugin_page_backup;
 	unset($plugin_page_backup);
 }
+
+endif; # sem pro
 ?>

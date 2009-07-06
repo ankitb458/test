@@ -113,11 +113,14 @@ if ( !isset($sem_options['version']) ) {
 	
 	if ( $old_options ) {
 		$sem_options = array('version' => '4.0');
-		include sem_path . '/inc/upgrade.php';
+		if ( !defined('DOING_CRON') )
+			include sem_path . '/inc/upgrade.php';
 	} else {
-		include sem_path . '/inc/install.php';
+		if ( !defined('DOING_CRON') )
+			include sem_path . '/inc/install.php';
 	}
 } elseif ( $sem_options['version'] != sem_version ) {
-	include sem_path . '/inc/upgrade.php';
+	if ( !defined('DOING_CRON') )
+		include sem_path . '/inc/upgrade.php';
 }
 ?>
