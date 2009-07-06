@@ -54,8 +54,7 @@ class inline_widgets {
 				)
 			);
 		
-		if ( !is_active_sidebar('inline_widgets') )
-			add_filter('sidebars_widgets', array('inline_widgets', 'sidebars_widgets'));
+		add_filter('sidebars_widgets', array('inline_widgets', 'sidebars_widgets'));
 	} # panels()
 	
 	
@@ -67,13 +66,11 @@ class inline_widgets {
 	 **/
 
 	function sidebars_widgets($sidebars_widgets) {
+		if ( !empty($sidebars_widgets['inline_widgets']) )
+			return $sidebars_widgets;
+		
 		global $wp_widget_factory;
 		global $wp_registered_sidebars;
-		
-		# todo: remove
-		global $_wp_sidebars_widgets;
-		$_wp_sidebars_widgets = array();
-		# /todo
 		
 		$default_widgets = array(
 			'inline_widgets' => array(
