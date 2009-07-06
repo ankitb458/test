@@ -582,13 +582,13 @@ h2 a {
 
 .comment_header,
 .comment_label {
-	width: 160px;
+	width: 200px;
 	float: left;
 }
 
 .comment_content,
 .comment_field {
-	margin-left: 165px;
+	margin-left: 185px;
 }
 
 .comment_field input,
