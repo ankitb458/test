@@ -3,8 +3,7 @@ $wp_cache_config_file = WP_CONTENT_DIR . '/wp-cache-config.php';
 $wp_cache_link = WP_CONTENT_DIR . '/advanced-cache.php';
 $wp_config_file = ABSPATH . 'wp-config.php';
 
-if ( is_writable($wp_config_file) )
-{
+if ( is_writable($wp_config_file) ) {
 	$lines = file($wp_config_file);
 	foreach($lines as $line) {
 	 	if ( preg_match("/^ *define *\( *\'WP_CACHE\' *, *true *\) *;/", $line)) {
@@ -25,28 +24,13 @@ if ( is_writable($wp_config_file) )
 @unlink($wp_cache_config_file);
 @unlink($wp_cache_link);
 
-$active_plugins = get_option('active_plugins');
+$active_plugins = get_option('active_plugins', array());
 
-if ( !is_array($active_plugins) )
-{
-	$active_plugins = array();
-}
-
-foreach ( (array) $active_plugins as $key => $plugin )
-{
-	if ( $plugin == 'wp-cache/wp-cache.php' )
-	{
+foreach ( (array) $active_plugins as $key => $plugin ) {
+	if ( $plugin == 'wp-cache/wp-cache.php' ) {
 		unset($active_plugins[$key]);
 		break;
 	}
-}
-
-if ( !in_array('sem-cache/sem-cache.php', $active_plugins) )
-{
-	$active_plugins[] = 'sem-cache/sem-cache.php';
-	
-	include_once ABSPATH . PLUGINDIR . '/sem-cache/sem-cache.php';
-	do_action('activate_sem-cache/sem-cache.php');
 }
 
 sort($active_plugins);

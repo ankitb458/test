@@ -1,6 +1,5 @@
 <?php
 # obsolete file
-
 global $wpdb;
 
 # upgrade home page
@@ -12,8 +11,7 @@ $home_page = $wpdb->get_var("
 	AND		post_name = 'home'
 	");
 
-if ( $home_page = intval($home_page) )
-{
+if ( $home_page = intval($home_page) ) {
 	update_option('show_on_front', 'page');
 	update_option('page_on_front', $home_page);
 	
@@ -26,24 +24,16 @@ if ( $home_page = intval($home_page) )
 		AND		post_name = 'blog'
 		");
 
-	if ( $blog_page = intval($blog_page) )
-	{
+	if ( $blog_page = intval($blog_page) ) {
 		update_option('page_for_posts', $blog_page);
 	}
 }
 
 # deactivate plugin
-$active_plugins = get_option('active_plugins');
+$active_plugins = get_option('active_plugins', array());
 
-if ( !is_array($active_plugins) )
-{
-	$active_plugins = array();
-}
-
-foreach ( (array) $active_plugins as $key => $plugin )
-{
-	if ( $plugin == 'sem-static-front/sem-static-front.php' )
-	{
+foreach ( (array) $active_plugins as $key => $plugin ) {
+	if ( $plugin == 'sem-static-front/sem-static-front.php' ) {
 		unset($active_plugins[$key]);
 		break;
 	}

@@ -1,33 +1,26 @@
 <?php
 # obsolete plugin
-
-if ( get_option('posts_have_fulltext_index') )
-{
+if ( get_option('posts_have_fulltext_index') ) {
 	global $wpdb;
 	
 	$wpdb->query("ALTER TABLE `$wpdb->posts` DROP INDEX post_title");
 	delete_option('posts_have_fulltext_index');
 }
 
-$active_plugins = get_option('active_plugins');
+$active_plugins = get_option('active_plugins', array());
 
-if ( !is_array($active_plugins) )
-{
-	$active_plugins = array();
-}
-
-foreach ( (array) $active_plugins as $key => $plugin )
-{
-	if ( $plugin == 'sem-search-reloaded/sem-search-reloaded.php' )
-	{
+foreach ( (array) $active_plugins as $key => $plugin ) {
+	if ( $plugin == 'sem-search-reloaded/sem-search-reloaded.php' ) {
 		unset($active_plugins[$key]);
 		break;
 	}
 }
 
-if ( !in_array('search-reloaded/search-reloaded.php', $active_plugins) )
-{
-	$active_plugins[] = 'search-reloaded/search-reloaded.php';
+if ( !in_array('search-reloaded/search-reloaded.php', $active_plugins) ) {
+	$new_plugin = 'search-reloaded/search-reloaded.php';
+	$active_plugins[] = $new_plugin;
+	include_once WP_PLUGIN_DIR . '/' . $new_plugin;
+	do_action('activate_' . $new_plugin);
 }
 
 sort($active_plugins);

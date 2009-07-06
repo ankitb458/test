@@ -118,10 +118,7 @@ endif;
 # Activate Semiologic Pro plugins
 #
 
-$active_plugins = get_option('active_plugins');
-
-if ( $active_plugins === false )
-	$active_plugins = array();
+$active_plugins = get_option('active_plugins', array());
 
 $extra_plugins = array(
 	'ad-manager/ad-manager.php',

@@ -10,9 +10,10 @@ foreach ( (array) $active_plugins as $key => $plugin ) {
 }
 
 if ( !in_array('fuzzy-widgets/fuzzy-widgets.php', $active_plugins) ) {
-	$active_plugins[] = 'fuzzy-widgets/fuzzy-widgets.php';
-	include_once WP_PLUGIN_DIR . '/fuzzy-widgets/fuzzy-widgets.php';
-	fuzzy_widget::activate();
+	$new_plugin = 'fuzzy-widgets/fuzzy-widgets.php';
+	$active_plugins[] = $new_plugin;
+	include_once WP_PLUGIN_DIR . '/' . $new_plugin;
+	do_action('activate_' . $new_plugin);
 }
 
 sort($active_plugins);
