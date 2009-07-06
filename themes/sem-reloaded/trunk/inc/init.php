@@ -110,18 +110,14 @@ if ( !isset($sem_options['version']) ) {
 	# try sem5_options
 	$sem_options = get_option('sem5_options');
 	
-	# try sem4_options
-	$old_options = get_option('semiologic');
-	
 	if ( isset($sem_options['version']) ) {
-		include sem_path . '/inc/upgrade.php';
-	} elseif ( $old_options ) {
-		$sem_options = array('version' => '4.0');
-		include sem_path . '/inc/upgrade.php';
+		if ( !defined('DOING_CRON') )
+			include sem_path . '/inc/upgrade.php';
 	} else {
 		include sem_path . '/inc/install.php';
 	}
 } elseif ( $sem_options['version'] != sem_version ) {
-	include sem_path . '/inc/upgrade.php';
+	if ( !defined('DOING_CRON') )
+		include sem_path . '/inc/upgrade.php';
 }
 ?>
