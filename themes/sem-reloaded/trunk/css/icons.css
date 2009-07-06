@@ -6,7 +6,8 @@ http://creativecommons.org/licenses/by/2.5/
 To override these icons, create a copy of this file and drop it, as icons.css, into your skin's folder.
 */
 
-a.external_icon {
+#main a.external_icon,
+#credits a.external_icon {
 	background: url(../icons/world_go.gif) center right no-repeat;
 	padding-left: 0px;
 	padding-right: 14px;
