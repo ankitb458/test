@@ -78,7 +78,9 @@ a.entry_author
 }
 
 .sidebar ul ul,
-.fuzzy_widget ul
+.fuzzy_widget ul,
+.random_widget ul,
+.related_widget ul
 {
 	list-style-image: url(file.gif);
 }
