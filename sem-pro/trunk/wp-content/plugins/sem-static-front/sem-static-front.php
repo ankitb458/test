@@ -11,21 +11,35 @@ $home_page = $wpdb->get_var("
 	AND		post_name = 'home'
 	");
 
-if ( $home_page = intval($home_page) ) {
-	update_option('show_on_front', 'page');
-	update_option('page_on_front', $home_page);
-	
-	# upgrade blog page
-	$blog_page = $wpdb->get_var("
+if ( $home_page ) {
+	if ( $home_page = intval($home_page) ) {
+		update_option('show_on_front', 'page');
+		update_option('page_on_front', $home_page);
+
+		# upgrade blog page
+		$blog_page = $wpdb->get_var("
+			SELECT	ID
+			FROM	$wpdb->posts
+			WHERE	post_type = 'page'
+			AND		post_status = 'publish'
+			AND		post_name = 'blog'
+			");
+
+		if ( $blog_page = intval($blog_page) ) {
+			update_option('page_for_posts', $blog_page);
+		}
+	}
+} else {
+	$home_page = $wpdb->get_var("
 		SELECT	ID
 		FROM	$wpdb->posts
-		WHERE	post_type = 'page'
-		AND		post_status = 'publish'
-		AND		post_name = 'blog'
+		WHERE	post_status = 'static'
+		AND		post_name = 'home'
 		");
-
-	if ( $blog_page = intval($blog_page) ) {
-		update_option('page_for_posts', $blog_page);
+	
+	if ( $home_page = intval($home_page) ) {
+		update_option('show_on_front', 'page');
+		update_option('page_on_front', $home_page);
 	}
 }
 
