@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.2\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-06-23 17:16+0200\n"
+"POT-Creation-Date: 2009-07-07 23:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,23 +16,23 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: google-analytics-admin.php:37
+#: google-analytics-admin.php:36
 msgid "Settings saved."
 msgstr ""
 
-#: google-analytics-admin.php:55
+#: google-analytics-admin.php:53
 msgid "Your Account ID"
 msgstr ""
 
-#: google-analytics-admin.php:78
+#: google-analytics-admin.php:76
 msgid "Google Analytics Settings"
 msgstr ""
 
-#: google-analytics-admin.php:84
+#: google-analytics-admin.php:82
 msgid "GA Script"
 msgstr ""
 
-#: google-analytics-admin.php:88
+#: google-analytics-admin.php:86
 msgid ""
 "Paste the <b>ga.js</b> script from <a href=\"http://www.google.com/analytics/"
 "\">Google analytics</a> into the following textarea (<a href=\"http://www."
@@ -40,91 +40,91 @@ msgid ""
 "find it?</a>):"
 msgstr ""
 
-#: google-analytics-admin.php:97
+#: google-analytics-admin.php:95
 msgid ""
 "<strong>Important</strong>: Use the new <strong>ga.js</strong> script, not "
 "the legacy urchin.js script."
 msgstr ""
 
-#: google-analytics-admin.php:106
+#: google-analytics-admin.php:104
 msgid "Save Changes"
 msgstr ""
 
-#: google-analytics-admin.php:113
+#: google-analytics-admin.php:111
 msgid "Quick Reference"
 msgstr ""
 
-#: google-analytics-admin.php:119
+#: google-analytics-admin.php:117
 msgid "Special Users"
 msgstr ""
 
-#: google-analytics-admin.php:123
+#: google-analytics-admin.php:121
 msgid "Authors, editors and site admins are not tracked when logged in."
 msgstr ""
 
-#: google-analytics-admin.php:130
+#: google-analytics-admin.php:128
 msgid "Special Urls"
 msgstr ""
 
-#: google-analytics-admin.php:134
+#: google-analytics-admin.php:132
 msgid ""
 "The Google Analytics plugin tracks a few special use-cases differently, for "
 "quick reference:"
 msgstr ""
 
-#: google-analytics-admin.php:138
+#: google-analytics-admin.php:136
 msgid "File downloads get tracked as /file/[url]"
 msgstr ""
 
-#: google-analytics-admin.php:141
+#: google-analytics-admin.php:139
 msgid "Clicks on outbound links get tracked as /outbound/[url]"
 msgstr ""
 
-#: google-analytics-admin.php:149
+#: google-analytics-admin.php:147
 msgid "Site Usage Patterns"
 msgstr ""
 
-#: google-analytics-admin.php:153
+#: google-analytics-admin.php:151
 msgid ""
 "Make sure to spot Google Analytics's navigation summary and site overlay "
 "reports for individual urls. They're located to the right when you visit any "
 "url's statistics."
 msgstr ""
 
-#: google-analytics-admin.php:157
+#: google-analytics-admin.php:155
 msgid ""
 "The first is a concise report. It lets you know, at a glance, where users "
 "came from upon entering the page, and where they left upon leaving it."
 msgstr ""
 
-#: google-analytics-admin.php:160
+#: google-analytics-admin.php:158
 msgid ""
 "The second is more graphical. It outputs your page with an overlay that "
 "shows where visitors are clicking."
 msgstr ""
 
-#: google-analytics-admin.php:169
+#: google-analytics-admin.php:167
 msgid "Advanced Tracking With The Script Manager Plugin"
 msgstr ""
 
-#: google-analytics-admin.php:172
+#: google-analytics-admin.php:170
 msgid ""
 "To insert extra site-wide tracking code, activate the script manager plugin "
 "and, under <a href=\"?page=script-manager\">Settings / Scripts</a>, add the "
 "relevant lines that follow in the footer scripts."
 msgstr ""
 
-#: google-analytics-admin.php:176
+#: google-analytics-admin.php:174
 msgid ""
 "To insert post- or page-specific tracking, edit that post or page and insert "
 "the lines in its footer scripts."
 msgstr ""
 
-#: google-analytics-admin.php:190
+#: google-analytics-admin.php:188
 msgid "Sampling Rate"
 msgstr ""
 
-#: google-analytics-admin.php:194
+#: google-analytics-admin.php:192
 #, php-format
 msgid ""
 "To <a href=\"http://code.google.com/apis/analytics/docs/"
@@ -133,33 +133,33 @@ msgid ""
 "reports quite a bit):"
 msgstr ""
 
-#: google-analytics-admin.php:213
+#: google-analytics-admin.php:211
 msgid "Shared Stats"
 msgstr ""
 
-#: google-analytics-admin.php:217
+#: google-analytics-admin.php:215
 msgid ""
 "To <a href=\"http://code.google.com/apis/analytics/docs/gaTracking."
 "html#Multiple\">share your stats</a> with your sales team's Google Analytics "
 "account:"
 msgstr ""
 
-#: google-analytics-admin.php:234
+#: google-analytics-admin.php:232
 msgid "Visitor Segmentation"
 msgstr ""
 
-#: google-analytics-admin.php:238
+#: google-analytics-admin.php:236
 msgid ""
 "To <a href=\"http://code.google.com/apis/analytics/docs/"
 "gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setVar\">segment visitors</"
 "a> who visit your &quot;Thank you for subscribing&quot; page:"
 msgstr ""
 
-#: google-analytics-admin.php:255
+#: google-analytics-admin.php:253
 msgid "Session Timeout"
 msgstr ""
 
-#: google-analytics-admin.php:259
+#: google-analytics-admin.php:257
 msgid ""
 "To <a href=\"http://code.google.com/apis/analytics/docs/"
 "gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSessionTimeout"
@@ -167,14 +167,14 @@ msgid ""
 "actually read:"
 msgstr ""
 
-#: google-analytics.php:54
+#: google-analytics.php:76
 msgid "Configure Google Analytics under Settings / Google Analytics"
 msgstr ""
 
-#: google-analytics.php:75
+#: google-analytics.php:97
 msgid "You are a site author, editor or admin, and aren't tracked as a result"
 msgstr ""
 
-#: google-analytics.php:209 google-analytics.php:210
+#: google-analytics.php:231 google-analytics.php:232
 msgid "Google Analytics"
 msgstr ""
