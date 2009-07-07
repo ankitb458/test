@@ -437,7 +437,10 @@ class sem_panels {
 			}
 		}
 		
-		$sidebars_widgets['wp_inactive_widgets'] = array_merge($sidebars_widgets['wp_inactive_widgets']);
+		if ( isset($sidebars_widgets['array_version']) && $sidebars_widgets['array_version'] == 3 )
+			$sidebars_widgets['wp_inactive_widgets'] = array_merge($sidebars_widgets['wp_inactive_widgets']);
+		else
+			unset($sidebars_widgets['wp_inactive_widgets']);
 		
 		return $sidebars_widgets;
 	} # install()

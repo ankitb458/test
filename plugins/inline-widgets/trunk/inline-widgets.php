@@ -33,7 +33,7 @@ add_action('init', array('inline_widgets', 'panels'), -100);
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
 if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') )
-	add_action('init', array('inline_widgets', 'upgrade'), 1000);
+	add_action('init', array('inline_widgets', 'upgrade'), 3000);
 
 class inline_widgets {
 	/**
@@ -144,7 +144,10 @@ class inline_widgets {
 			}
 		}
 		
-		$sidebars_widgets['wp_inactive_widgets'] = array_merge($sidebars_widgets['wp_inactive_widgets']);
+		if ( isset($sidebars_widgets['array_version']) && $sidebars_widgets['array_version'] == 3 )
+			$sidebars_widgets['wp_inactive_widgets'] = array_merge($sidebars_widgets['wp_inactive_widgets']);
+		else
+			unset($sidebars_widgets['wp_inactive_widgets']);
 		
 		return $sidebars_widgets;
 	} # sidebars_widgets()

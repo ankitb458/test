@@ -48,7 +48,7 @@ function upgrade_sem_5_0() {
 	unset($sem_captions['filed_under']);
 	
 	# convert sidebars
-	$sidebars_widgets = get_option('sidebars_widgets');
+	$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
 	$changed = false;
 	
 	switch ( $sem_options['active_layout'] ) {
@@ -91,6 +91,29 @@ function upgrade_sem_5_0() {
 		unset($sidebars_widgets['sidebar-3']);
 		$changed = true;
 		break;
+	}
+	
+	if ( empty($sidebars_widgets['array_version']) ) {
+		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
+			foreach ( $widgets as $key => $widget ) {
+				if ( preg_match("/(Text|RSS) \d+/", $widget) ) {
+					$sidebars_widgets[$sidebar][$key] = sanitize_title($widget);
+				} elseif ( in_array($widget, array(
+						'Democracy',
+						'Countdown',
+						'Pages',
+						'Links',
+						'Recent Posts',
+						'Recent Comments',
+						'Archives',
+						'Categories',
+						'Calendar',
+						))
+					) {
+					$sidebars_widgets[$sidebar][$key] = sanitize_title($widget);
+				}
+			}
+		}
 	}
 	
 	if ( $changed ) {
