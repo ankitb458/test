@@ -24,6 +24,7 @@ if ( !defined('sem_install_test') )
 	update_option('sem5_options', $sem_options);
 
 wp_cache_flush();
+do_action('flush_cache');
 
 
 /**
@@ -269,8 +270,12 @@ function upgrade_sem_5_5() {
 		");
 	
 	# widget contexts
-	$widget_contexts = array();
-	$sem_widget_contexts = get_option('sem_widget_contexts', array());
+	$widget_contexts = get_option('widget_contexts');
+	
+	if ( !$widget_contexts )
+		$sem_widget_contexts = get_option('sem_widget_contexts', array());
+	else
+		$sem_widget_contexts = array();
 
 	foreach ( $sem_widget_contexts as $widget => $contexts ) {
 		switch ( $widget ) {
@@ -311,7 +316,7 @@ function upgrade_sem_5_5() {
 			break;
 
 		case 'silo-pages':
-			$widget = 'nav_menus-2';
+			$widget = 'nav_menu-2';
 			break;
 
 		case 'dealdotcom':
@@ -335,7 +340,7 @@ function upgrade_sem_5_5() {
 			break;
 
 		case 'archives':
-			$widget = 'archive-2';
+			$widget = 'archives-2';
 			break;
 
 		case 'tag_cloud':
@@ -386,7 +391,8 @@ function upgrade_sem_5_5() {
 		}
 	}
 	
-	update_option('widget_contexts', $widget_contexts);
+	if ( $sem_widget_contexts )
+		update_option('widget_contexts', $widget_contexts);
 	
 	# new plugins
 	$active_plugins = get_option('active_plugins', array());
@@ -770,7 +776,7 @@ function upgrade_sem_6_0() {
 	if ( $instance === false ) {
 		$instance = array();
 		if ( isset($sem_options['invert_header']) )
-			$instance['sep'] = $sem_options['invert_header'];
+			$instance['invert_header'] = $sem_options['invert_header'];
 		unset($sem_options['invert_header']);
 		if ( isset($widget_contexts['header']) ) {
 			$instance['widget_contexts'] = $widget_contexts['header'];

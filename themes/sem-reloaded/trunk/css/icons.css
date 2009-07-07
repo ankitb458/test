@@ -34,13 +34,17 @@ li.nav_leaf {
 	list-style-image: url(../icons/page_white_text.gif);
 }
 
-.widget_recent_comments ul {
+.widget_recent_comments ul,
+.fuzzy_comments ul,
+.random_comments ul {
 	list-style-image: url(../icons/comment.gif);
 }
 
 .pings_list ul,
 .widget_links ul,
 .widget_rss ul,
+.fuzzy_links ul,
+.random_links ul,
 li.nav_url {
 	list-style-image: url(../icons/world_link.gif);
 }

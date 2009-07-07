@@ -811,7 +811,7 @@ if (function_exists('add_action')) {
 				'classname' => 'widget_democracy',
 				'description' => __('Displays polls, which you configure under Settings / Events.', 'democracy'),
 				);
-
+			
 			$this->WP_Widget('democracy', __('Poll Widget', 'democracy'), $widget_ops);
 		} # democracy_widget()
 

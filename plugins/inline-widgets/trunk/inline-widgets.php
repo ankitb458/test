@@ -32,7 +32,7 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
 add_action('init', array('inline_widgets', 'panels'), -100);
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
-if ( get_option('inline_widgets_version') === false )
+if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') )
 	add_action('init', array('inline_widgets', 'upgrade'), 1000);
 
 class inline_widgets {
@@ -219,7 +219,7 @@ class inline_widgets {
 	
 	
 	/**
-	 * undocumented function
+	 * upgrade_callback()
 	 *
 	 * @return void
 	 **/

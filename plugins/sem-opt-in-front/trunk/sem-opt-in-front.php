@@ -28,7 +28,14 @@ http://www.opensource.org/licenses/gpl-2.0.php
 
 add_action('init', array('sem_opt_in_front', 'init'));
 
-foreach ( array('create_term', 'edit_term', 'delete_term') as $hook )
+foreach ( array(
+	'create_term',
+	'edit_term',
+	'delete_term',
+	
+	'flush_cache',
+	'update_option_db_version',
+	) as $hook )
 	add_action($hook, array('sem_opt_in_front', 'flush_cache'));
 
 class sem_opt_in_front {

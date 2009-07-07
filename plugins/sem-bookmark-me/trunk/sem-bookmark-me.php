@@ -49,6 +49,9 @@ foreach ( array(
 		'switch_theme',
 		'update_option_active_plugins',
 		'update_option_sidebars_widgets',
+		
+		'flush_cache',
+		'update_option_db_version',
 		) as $hook) {
 	add_action($hook, array('bookmark_me', 'flush_cache'));
 }
@@ -518,7 +521,32 @@ class bookmark_me extends WP_Widget {
 	 **/
 
 	function upgrade_2_x($ops) {
-		#$ops = bookmark_me::upgrade($ops);
+		$ops = !empty($ops['title']) ? array('title' => $ops['title']) : array();
+		
+		if ( is_admin() ) {
+			$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
+		} else {
+			global $_wp_sidebars_widgets;
+			if ( !$_wp_sidebars_widgets )
+				$_wp_sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
+			$sidebars_widgets =& $_wp_sidebars_widgets;
+		}
+		
+		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
+			if ( !is_array($widgets) )
+				continue;
+			$key = array_search('bookmark-me', $widgets);
+			if ( $key !== false ) {
+				$sidebars_widgets[$sidebar][$key] = 'bookmark_me';
+				$changed = true;
+				break;
+			}
+		}
+		
+		if ( $changed && is_admin() )
+			update_option('sidebars_widgets', $sidebars_widgets);
+		
+		return $ops;
 	} # upgrade_2_x()
 } # bookmark_me
 

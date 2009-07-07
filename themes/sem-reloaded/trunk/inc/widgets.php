@@ -26,6 +26,9 @@ foreach ( array(
 		'update_option_sem5_options',
 		'update_option_sem6_options',
 		'generate_rewrite_rules',
+		
+		'flush_cache',
+		'update_option_db_version',
 		) as $hook)
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
@@ -2042,7 +2045,8 @@ class sem_nav_menu extends WP_Widget {
 			$page_id = 0;
 		}
 		
-		$label = get_post_meta($page->ID, '_widgets_label', true);
+		if ( (string) $label === '' )
+			$label = get_post_meta($page->ID, '_widgets_label', true);
 		if ( (string) $label === '' )
 			$label = $page->post_title;
 		if ( (string) $label === '' )

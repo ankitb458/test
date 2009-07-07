@@ -390,7 +390,7 @@ class countdown_widget extends WP_Widget {
 
 	function countdown_widget() {
 		$widget_ops = array(
-			'classname' => 'countdown_widget',
+			'classname' => 'countdown',
 			'description' => __('Displays upcoming events, which you configure under Settings / Events.', 'countdown'),
 			);
 		

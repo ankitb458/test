@@ -27,6 +27,7 @@ if ( !defined('sem_install_test') )
 	update_option('sem6_options', $sem_options);
 
 wp_cache_flush();
+do_action('flush_cache');
 
 
 /**
@@ -360,7 +361,7 @@ function upgrade_sem_6_0() {
 	if ( $instance === false ) {
 		$instance = array();
 		if ( isset($sem_options['invert_header']) )
-			$instance['sep'] = $sem_options['invert_header'];
+			$instance['invert_header'] = $sem_options['invert_header'];
 		unset($sem_options['invert_header']);
 		if ( isset($widget_contexts['header']) ) {
 			$instance['widget_contexts'] = $widget_contexts['header'];
@@ -485,6 +486,13 @@ function upgrade_sem_6_0() {
 	
 	# clear corrupt cron job
 	wp_clear_scheduled_hook('dealdotcom');
+	
+	# dump ext_sidebar if set
+	$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
+	if ( isset($sidebars_widgets['ext_sidebar']) && !empty($sidebars_widgets['sidebar-2']) ) {
+		unset($sidebars_widgets['ext_sidebar']);
+		update_option('sidebars_widgets', $sidebars_widgets);
+	}
 	
 	if ( empty($sem_pro_version) )
 		return;

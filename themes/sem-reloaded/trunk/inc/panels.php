@@ -10,6 +10,14 @@ sem_panels::register();
 if ( !defined('DOING_CRON') && intval(get_option('init_sem_panels')) )
 	add_action('init', array('sem_panels', 'init_widgets'), 2000);
 
+function test() {
+	global $wp_filter;
+	ksort($wp_filter['init']);
+	dump($wp_filter['init'], $GLOBALS['_wp_sidebars_widgets']);
+}
+
+#add_action('init', 'test', 2);
+
 class sem_panels {
 	/**
 	 * register()
