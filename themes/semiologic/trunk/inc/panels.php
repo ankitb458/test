@@ -333,9 +333,6 @@ class sem_panels {
 		global $wp_widget_factory;
 		
 		if ( !is_active_widget(false, false, 'blog_header') ) {
-			if ( is_admin() ) {
-				dump($sidebars_widgets);die;
-			}
 			$sidebars_widgets['before_the_entries'] = (array) $sidebars_widgets['before_the_entries'];
 			$key = array_search('archives_header', $sidebars_widgets['before_the_entries']);
 			$widget_id = $wp_widget_factory->widgets['blog_header']->id;
