@@ -206,6 +206,8 @@ class inline_widgets {
 			");
 		
 		$current_user = wp_get_current_user();
+		$ignore_user_abort = ignore_user_abort(true);
+		set_time_limit(600);
 		
 		foreach ( $posts as $post ) {
 			$post->post_content = preg_replace_callback("/
@@ -217,6 +219,7 @@ class inline_widgets {
 		}
 		
 		wp_set_current_user($current_user->ID);
+		ignore_user_abort($ignore_user_abort);
 		update_option('inline_widgets_version', '2.0');
 	} # upgrade()
 	

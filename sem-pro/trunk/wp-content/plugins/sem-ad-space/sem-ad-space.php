@@ -42,6 +42,7 @@ function export_ad_spaces() {
 		return;
 	
 	$ignore_user_abort = ignore_user_abort(true);
+	set_time_limit(600);
 	
 	global $wpdb;
 	global $table_prefix;
