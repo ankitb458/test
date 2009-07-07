@@ -7,8 +7,13 @@
 
 sem_panels::register();
 
-if ( !defined('DOING_CRON') && intval(get_option('init_sem_panels')) )
+if ( !defined('DOING_CRON') )
 	add_action('init', array('sem_panels', 'init_widgets'), 2000);
+
+if ( !empty($_GET['preview']) && !empty($_GET['stylesheet']) )
+	sem_panels::switch_themes();
+else
+	add_action('switch_themes', array('sem_panels', 'switch_themes'));
 
 class sem_panels {
 	/**
@@ -74,8 +79,7 @@ class sem_panels {
 			else
 				add_action('404_error', array('sem_panels', $panel_id));
 			
-			switch ( $panel_id )
-			{
+			switch ( $panel_id ) {
 			case 'the_header':
 			case 'the_footer':
 				$before_widget = '<div class="%2$s"><div class="pad">' . "\n";
@@ -157,21 +161,28 @@ class sem_panels {
 	 **/
 
 	function init_widgets() {
+		if ( !intval(get_option('init_sem_panels')) )
+			return;
 		if ( is_admin() ) {
 			global $wp_filter;
 			$filter_backup = $wp_filter['sidebars_widgets'];
 			unset($wp_filter['sidebars_widgets']);
 			$sidebars_widgets = wp_get_sidebars_widgets(false);
 			$wp_filter['sidebars_widgets'] = $filter_backup;
+			$sidebars_widgets = sem_panels::convert($sidebars_widgets);
 			$sidebars_widgets = sem_panels::install($sidebars_widgets);
-			wp_set_sidebars_widgets($sidebars_widgets);
+			if ( empty($_GET['preview']) && empty($_GET['stylesheet']) )
+				wp_set_sidebars_widgets($sidebars_widgets);
 			$sidebars_widgets = sem_panels::upgrade($sidebars_widgets);
-			wp_set_sidebars_widgets($sidebars_widgets);
-			update_option('init_sem_panels', '0');
+			if ( empty($_GET['preview']) && empty($_GET['stylesheet']) ) {
+				wp_set_sidebars_widgets($sidebars_widgets);
+				update_option('init_sem_panels', '0');
+			}
 		} else {
 			global $_wp_sidebars_widgets;
 			if ( empty($_wp_sidebars_widgets) )
 				$_wp_sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
+			$_wp_sidebars_widgets = sem_panels::convert($_wp_sidebars_widgets);
 			$_wp_sidebars_widgets = sem_panels::install($_wp_sidebars_widgets);
 			$_wp_sidebars_widgets = sem_panels::upgrade($_wp_sidebars_widgets);
 		}
@@ -521,5 +532,40 @@ class sem_panels {
 	function the_footer() {
 		return sem_panels::display('the_footer');
 	} # the_footer()
+	
+	
+	/**
+	 * switch_themes()
+	 *
+	 * @return void
+	 **/
+
+	function switch_themes() {
+		update_option('init_sem_panels', '1');
+	} # switch_themes()
+	
+	
+	/**
+	 * convert()
+	 *
+	 * @param array $sidebars_widgets
+	 * @return array $sidebars_widgets
+	 **/
+
+	function convert($sidebars_widgets) {
+		if ( !empty($sidebars_widgets['ext_sidebar']) )
+			return $sidebars_widgets;
+		
+		global $sem_options;
+		if ( strpos($sem_options['active_layout'], 'e') === false || substr_count($sem_options['active_layout'], 's') == 2 )
+			return $sidebars_widgets;
+		
+		if ( !empty($sidebars_widgets['sidebar-2']) )
+			$sidebars_widgets['ext_sidebar'] = $sidebars_widgets['sidebar-2'];
+		
+		unset($sidebars_widgets['sidebar-2']);
+		
+		return $sidebars_widgets;
+	} # convert()
 } # sem_panels
 ?>

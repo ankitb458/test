@@ -7,16 +7,13 @@
 
 sem_panels::register();
 
-if ( !defined('DOING_CRON') && intval(get_option('init_sem_panels')) )
+if ( !defined('DOING_CRON') )
 	add_action('init', array('sem_panels', 'init_widgets'), 2000);
 
-function test() {
-	global $wp_filter;
-	ksort($wp_filter['init']);
-	dump($wp_filter['init'], $GLOBALS['_wp_sidebars_widgets']);
-}
-
-#add_action('init', 'test', 2);
+if ( !empty($_GET['preview']) && !empty($_GET['stylesheet']) )
+	sem_panels::switch_themes();
+else
+	add_action('switch_themes', array('sem_panels', 'switch_themes'));
 
 class sem_panels {
 	/**
@@ -269,6 +266,9 @@ class sem_panels {
 	 **/
 
 	function init_widgets() {
+		if ( !intval(get_option('init_sem_panels')) )
+			return;
+		
 		if ( is_admin() ) {
 			global $wp_filter;
 			$filter_backup = $wp_filter['sidebars_widgets'];
@@ -277,10 +277,13 @@ class sem_panels {
 			$wp_filter['sidebars_widgets'] = $filter_backup;
 			$sidebars_widgets = sem_panels::convert($sidebars_widgets);
 			$sidebars_widgets = sem_panels::install($sidebars_widgets);
-			wp_set_sidebars_widgets($sidebars_widgets);
+			if ( empty($_GET['preview']) && empty($_GET['stylesheet']) )
+				wp_set_sidebars_widgets($sidebars_widgets);
 			$sidebars_widgets = sem_panels::upgrade($sidebars_widgets);
-			wp_set_sidebars_widgets($sidebars_widgets);
-			update_option('init_sem_panels', '0');
+			if ( empty($_GET['preview']) && empty($_GET['stylesheet']) ) {
+				wp_set_sidebars_widgets($sidebars_widgets);
+				update_option('init_sem_panels', '0');
+			}
 		} else {
 			global $_wp_sidebars_widgets;
 			if ( empty($_wp_sidebars_widgets) )
@@ -505,13 +508,23 @@ class sem_panels {
 		if ( empty($sidebars_widgets['ext_sidebar']) )
 			return $sidebars_widgets;
 		
-		if ( empty($sidebars_widgets['sidebar-2']) ) {
+		if ( empty($sidebars_widgets['sidebar-2']) )
 			$sidebars_widgets['sidebar-2'] = $sidebars_widgets['ext_sidebar'];
-		}
 		
 		unset($sidebars_widgets['ext_sidebar']);
 		
 		return $sidebars_widgets;
 	} # convert()
+	
+	
+	/**
+	 * switch_themes()
+	 *
+	 * @return void
+	 **/
+
+	function switch_themes() {
+		update_option('init_sem_panels', '1');
+	} # switch_themes()
 } # sem_panels
 ?>

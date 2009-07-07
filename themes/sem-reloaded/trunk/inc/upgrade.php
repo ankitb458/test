@@ -488,10 +488,12 @@ function upgrade_sem_6_0() {
 	wp_clear_scheduled_hook('dealdotcom');
 	
 	# dump ext_sidebar if set
-	$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
-	if ( isset($sidebars_widgets['ext_sidebar']) && !empty($sidebars_widgets['sidebar-2']) ) {
-		unset($sidebars_widgets['ext_sidebar']);
-		update_option('sidebars_widgets', $sidebars_widgets);
+	if ( !is_preview() ) {
+		$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
+		if ( isset($sidebars_widgets['ext_sidebar']) && !empty($sidebars_widgets['sidebar-2']) ) {
+			unset($sidebars_widgets['ext_sidebar']);
+			update_option('sidebars_widgets', $sidebars_widgets);
+		}
 	}
 	
 	if ( empty($sem_pro_version) )

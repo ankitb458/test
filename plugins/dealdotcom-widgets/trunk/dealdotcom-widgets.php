@@ -43,6 +43,7 @@ class dealdotcom extends WP_Widget {
 		if ( get_option('widget_dealdotcom') === false ) {
 			foreach ( array(
 				'dealdotcom_widgets' => 'upgrade',
+				'dealdotcom' => 'upgrade_1_0',
 				) as $ops => $method ) {
 				if ( get_option($ops) !== false ) {
 					$this->alt_option_name = $ops;
@@ -251,5 +252,32 @@ class dealdotcom extends WP_Widget {
 		
 		return $ops;
 	} # upgrade()
+	
+	
+	/**
+	 * upgrade_1_0()
+	 *
+	 * @param array $ops
+	 * @return array $ops
+	 **/
+
+	function upgrade_1_0($ops) {
+		$widget_contexts = class_exists('widget_contexts')
+			? get_option('widget_contexts')
+			: false;
+		
+		if ( !empty($ops['aff_id']) ) {
+			$ops = array(
+				'aff_id' => $ops['aff_id']
+				);
+			if ( isset($widget_contexts['dealdotcom-2']) ) {
+				$ops['widget_contexts'] = $widget_contexts['dealdotcom-2'];
+			}
+		} else {
+			$ops = array();
+		}
+		
+		return $ops;
+	} # upgrade_1_0()
 } # dealdotcom
 ?>

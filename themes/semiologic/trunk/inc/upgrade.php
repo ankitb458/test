@@ -429,7 +429,6 @@ function upgrade_sem_5_5() {
 		'script-manager/script-manager.php',
 		'sem-fixes/sem-fixes.php',
 		'sem-seo/sem-seo.php',
-		'text-widgets/text-widgets.php',
 		'version-checker/version-checker.php',
 		'widget-contexts/widget-contexts.php',
 		);

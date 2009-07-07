@@ -700,3 +700,11 @@ div.media {
 .search_url {
 	color: #060;
 }
+
+/* footer scripts */
+
+div.scripts {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
