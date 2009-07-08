@@ -192,27 +192,9 @@ class autolink_uri {
 		if ( !$escape_autolink_uri )
 			return $text;
 		
-		$text = preg_replace_callback("/
-			----escape_autolink_uri:[a-f0-9]{32}----
-			/x", array('autolink_uri', 'unescape_callback'), $text);
+		$unescape = array_reverse($escape_autolink_uri);
 		
-		return $text;
+		return str_replace(array_keys($unescape), array_values($unescape), $text);
 	} # unescape()
-	
-	
-	/**
-	 * unescape_callback()
-	 *
-	 * @param array $match
-	 * @return string $text
-	 **/
-
-	function unescape_callback($match) {
-		global $escape_autolink_uri;
-		
-		return $escape_autolink_uri[$match[0]];
-		
-		return $match[0];
-	} # unescape_callback()
 } # autolink_uri
 ?>

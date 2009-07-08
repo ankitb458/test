@@ -145,25 +145,9 @@ class fancy_excerpt {
 		if ( !$escape_fancy_excerpt )
 			return $text;
 		
-		$text = preg_replace_callback("/
-			----escape_fancy_excerpt:[a-f0-9]{32}----
-			/x", array('fancy_excerpt', 'unescape_callback'), $text);
+		$unescape = array_reverse($escape_fancy_excerpt);
 		
-		return $text;
+		return str_replace(array_keys($unescape), array_values($unescape), $text);
 	} # unescape()
-	
-	
-	/**
-	 * unescape_callback()
-	 *
-	 * @param array $match
-	 * @return string $text
-	 **/
-
-	function unescape_callback($match) {
-		global $escape_fancy_excerpt;
-		
-		return $escape_fancy_excerpt[$match[0]];
-	} # unescape_callback()
 } # fancy_excerpt
 ?>
