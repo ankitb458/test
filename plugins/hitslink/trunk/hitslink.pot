@@ -1,0 +1,53 @@
+# HitsLink pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the HitsLink package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-07-08 21:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: hitslink-admin.php:49
+msgid "Settings Saved."
+msgstr ""
+
+#: hitslink-admin.php:99
+msgid "HitsLink Options"
+msgstr ""
+
+#: hitslink-admin.php:104
+msgid "HitsLink Script"
+msgstr ""
+
+#: hitslink-admin.php:114
+msgid ""
+"Paste the generic <a href=\"http://www.semiologic.com/go/hitslink"
+"\">HitsLink</a> script into the above textarea."
+msgstr ""
+
+#: hitslink-admin.php:122
+msgid "Save Changes"
+msgstr ""
+
+#: hitslink.php:45
+msgid "You need to configure the HitsLink plugin under Settings / HitsLink"
+msgstr ""
+
+#: hitslink.php:49
+msgid ""
+"The HitsLink plugin does not track site authors, editors and admins when "
+"they are logged in"
+msgstr ""
+
+#: hitslink.php:90 hitslink.php:91
+msgid "HitsLink"
+msgstr ""

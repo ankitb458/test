@@ -1,44 +1,27 @@
 <?php
-class hitslink_admin
-{
-	#
-	# init()
-	#
+/**
+ * hitslink_admin
+ *
+ * @package HitsLink
+ **/
 
-	function init()
-	{
-		add_action('admin_menu', array('hitslink_admin', 'add_option_page'));
-	} # init()
+add_action('settings_page_hitslink', array('hitslink_admin', 'save_options'), 0);
 
+class hitslink_admin {
+	/**
+	 * save_options()
+	 *
+	 * @return void
+	 **/
 
-	#
-	# add_option_page()
-	#
-
-	function add_option_page()
-	{
-		if ( !function_exists('is_site_admin') || is_site_admin() )
-		{
-			add_options_page(
-					__('HitsLink'),
-					__('HitsLink'),
-					'manage_options',
-					str_replace("\\", "/", __FILE__),
-					array('hitslink_admin', 'display_options')
-					);
-		}
-	} # add_option_page()
-
-
-	#
-	# update_options()
-	#
-
-	function update_options()
-	{
+	function save_options() {
+		if ( !$_POST )
+			return;
+		
 		check_admin_referer('hitslink');
-		$_POST['hitslink']['script'] = stripslashes($_POST['hitslink']['script']);
-
+		
+		$script = trim(stripslashes($_POST['hitslink_script']));
+		
 		if ( preg_match("/
 					\b
 					wa_account
@@ -51,53 +34,36 @@ class hitslink_admin
 					|
 					)
 					\"
-				/iux",
-				$_POST['hitslink']['script']
+				/ix",
+				$script
 				)
-			)
-		{
-			$_POST['hitslink']['script'] = false;
+			) {
+			$script = '';
 		}
+		
+		update_option('hitslink', $script);
+		
+		echo '<div class="updated fade">' . "\n"
+			. '<p>'
+				. '<strong>'
+				. __('Settings Saved.', 'hitslink')
+				. '</strong>'
+			. '</p>' . "\n"
+			. '</div>' . "\n";
+	} # save_options()
+	
+	
+	/**
+	 * edit_options()
+	 *
+	 * @return void
+	 **/
 
-		if ( function_exists('get_site_option') && is_site_admin() )
-		{
-			update_site_option('hitslink_params', $_POST['hitslink']);
-		}
-		elseif ( !function_exists('get_site_option') )
-		{
-			update_option('hitslink_params', $_POST['hitslink']);
-		}
-	} # update_options()
-
-
-	#
-	# display_options()
-	#
-
-	function display_options()
-	{
-		# Process updates, if any
-
-		if ( isset($_POST['action'])
-			&& ( $_POST['action'] == 'update_hitslink' )
-			)
-		{
-			hitslink_admin::update_options();
-
-			echo '<div class="updated">' . "\n"
-				. '<p>'
-					. '<strong>'
-					. __('Options saved.', 'hitslink')
-					. '</strong>'
-				. '</p>' . "\n"
-				. '</div>' . "\n";
-		}
-
-		$options = hitslink::get_options();
-
-		if ( !$options['script'] )
-		{
-			$options['script'] = <<<EOF
+	function edit_options() {
+		$script = hitslink::get_options();
+		
+		if ( !$script ) {
+			$script = <<<EOS
 <!-- www.hitslink.com/ web tools statistics hit counter code -->
 <script type="text/javascript" id="wa_u"></script>
 <script type="text/javascript">//<![CDATA[
@@ -119,43 +85,47 @@ wa_img=new Image();wa_img.src=wa_hp+'://counter.hitslink.com/statistics.asp'+
 document.getElementById('wa_u').src=wa_hp+'://counter.hitslink.com/track.js'; //]]>
 </script>
 <!-- End www.hitslink.com/ statistics web tools hit counter code -->
-EOF;
+EOS;
 		}
-
-		# Display admin page
-
-		echo '<div class="wrap">' . "\n"
-			. "<h2>" . __('HitsLink Options', 'hitslink') . "</h2>\n"
-			. '<form method="post" action="">' . "\n"
-			. '<input type="hidden" name="action" value="update_hitslink" />' . "\n";
-
-		if ( function_exists('wp_nonce_field') ) wp_nonce_field('hitslink');
-
-		echo '<fieldset class="options">' . "\n"
-			. "<legend>" . __('HitsLink script', 'hitslink') . "</legend>\n";
-
-		echo '<p style="padding-bottom: 6px;">'
-				. '<label for="script">'
-				. __('Paste the generic <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> script into the following textarea:', 'hitslink')
-				. '</label></p>' ."\n"
-				. '<textarea id="script" name="hitslink[script]"'
-					. ' style="width: 590px; height: 240px;">'
-				. htmlspecialchars($options['script'], ENT_QUOTES)
-				. "</textarea>\n";
-
-		echo "</fieldset>\n";
-
+		
+		echo '<div class="wrap">' . "\n";
+		
+		echo '<form method="post" action="">' . "\n";
+		
+		wp_nonce_field('hitslink');
+		
+		screen_icon();
+		
+		echo '<h2>' . __('HitsLink Options', 'hitslink') . '</h2>' . "\n";
+		
+		echo '<table class="form-table">' . "\n"
+			. '<tr valign="top">' . "\n"
+			. '<th scope="row"><label for="hitslink_script">'
+			. __('HitsLink Script', 'hitslink')
+			. '</label></th>' . "\n"
+			. '<td>'
+			. '<textarea class="widefat code" cols="58" rows="12"'
+				. ' onfocus="var this_val=eval(this); this_val.select();"'
+				. ' id="hitslink_script" name="hitslink_script"'
+				. '>'
+			. format_to_edit($script, ENT_QUOTES)
+			. '</textarea>' . "\n"
+			. '<p><label for="hitslink_script">'
+			. __('Paste the generic <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> script into the above textarea.', 'hitslink')
+			. '</label></p>' . "\n"
+			. '</td>' . "\n"
+			. '</tr>' . "\n"
+			. '</table>' . "\n";
+		
 		echo '<p class="submit">'
 			. '<input type="submit"'
-				. ' value="' . __('Update Options', 'hitslink') . '"'
+				. ' value="' . esc_attr(__('Save Changes', 'hitslink')) . '"'
 				. " />"
 			. "</p>\n";
+		
+		echo '</form>' . "\n";
 
-		echo "</form>\n";
-
-		echo "</div>\n";
-	} # display_options()
+		echo '</div>' . "\n";
+	} # edit_options()
 } # hitslink_admin
-
-hitslink_admin::init();
 ?>

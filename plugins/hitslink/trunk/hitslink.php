@@ -2,9 +2,9 @@
 /*
 Plugin Name: HitsLink
 Plugin URI: http://www.semiologic.com/software/hitslink/
-Description: Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> to your blog.
+Description: Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> tracking to your site.
 Author: Denis de Bernardy
-Version: 2.0 alpha
+Version: 2.0 RC
 Author URI: http://www.getsemiologic.com
 */
 
@@ -18,141 +18,87 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-# include admin stuff when relevant
-if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
-{
-	include_once dirname(__FILE__) . '/hitslink-admin.php';
-}
-
-
 load_plugin_textdomain('hitslink');
 
 
-class hitslink
-{
-	#
-	# init()
-	#
+/**
+ * hitslink
+ *
+ * @package HitsLink
+ **/
 
-	function init()
-	{
-		add_action('wp_head', array('hitslink', 'display_script'));
+add_action('wp_head', array('hitslink', 'display'));
+add_action('admin_menu', array('hitslink', 'admin_menu'));
 
-		# for testing
-		#add_action('the_content', array('hitslink', 'track_links'));
-	} # init()
+class hitslink {
+	/**
+	 * display()
+	 *
+	 * @return void
+	 **/
+	
+	function display() {
+		$script = hitslink::get_options();
 
-
-	#
-	# get_options()
-	#
-
-	function get_options()
-	{
-		if ( function_exists('get_site_option') )
-		{
-			$options = get_site_option('hitslink_params');
-		}
-		else
-		{
-			$options = get_option('hitslink_params');
-		}
-
-		return $options;
-	} # get_options()
-
-
-	#
-	# display_script()
-	#
-
-	function display_script()
-	{
-		if ( strpos($_SERVER['REQUEST_URI'], 'wp-admin') !== false )
-		{
-			return ;
-		}
-
-		$options = hitslink::get_options();
-
-		if ( !$options['script'] )
-		{
-			echo __('<!-- You need to configure the HitsLink plugin under Options / HitsLink -->') . "\n";
-		}
-		elseif ( current_user_can('publish_posts') )
-		{
-			echo __('<!-- The HitsLink plugin does not track site authors, editors and admins when they are logged in -->') . "\n";
-		}
-		else
-		{
-			$script = $options['script'];
-			$track = false;
-
-			if ( isset($_GET['subscribed']) )
-			{
-				$track = "subscription";
-				$data = preg_replace("/(?:\?|&)subscribed/", "", $_SERVER['REQUEST_URI']);
-				$ref = '';
-			}
-			elseif ( is_404() || ( is_singular() && !have_posts() ) )
-			{
-				$track = "404";
-				$data = $_SERVER['REQUEST_URI'];
-				$ref = $_SERVER['HTTP_REFERER'];
-			}
-			elseif ( is_search() )
-			{
-				$track = "search";
-				$data = $_REQUEST['s'];
-				$ref = $_SERVER['HTTP_REFERER'];
-			}
-			else
-			{
-				$data = $_SERVER['REQUEST_URI'];
-				$ref = $_SERVER['HTTP_REFERER'];
-			}
-
-			$site_url = ( $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'];
-
-			#echo '<pre>';
-			#var_dump($data, $ref);
-			#echo '</pre>';
-
-			foreach ( array('data', 'ref') as $var )
-			{
-				if ( strpos(strtolower($$var), strtolower($site_url)) === 0 )
-				{
-					$$var = substr($$var, strlen($site_url));
-				}
-			}
-
-			$data = preg_replace("/^https?:\/\/|^\/+/i", "", $data);
-
-			foreach ( array('data', 'ref') as $var )
-			{
-				$$var = preg_replace("/[^a-z0-9\.\/+\?=-]+/i", "_", $$var);
-				$$var = preg_replace("/^_+|_+$/i", "", $$var);
-			}
-
-			#echo '<pre>';
-			#var_dump($url, $ref);
-			#echo '</pre>';
-
-			$script = str_replace(
-				"wa_pageName=location.pathname;",
-				"wa_pageName='"
-					. $_SERVER['HTTP_HOST'] . "/"
-					. ( $track ? $track . "/" : '' )
-					. $data
-					. ( $ref ? ( strpos($data, '?') === false ? '?' : '&' ) . "ref=" . $ref : '' )
-					. "';",
-				$script
-				);
-
+		if ( !$script ) {
+			echo '<!-- '
+				. __('You need to configure the HitsLink plugin under Settings / HitsLink', 'hitslink')
+				. ' -->' . "\n";
+		} elseif ( current_user_can('publish_posts') || current_user_can('publish_pages') ) {
+			echo '<!-- '
+				. __('The HitsLink plugin does not track site authors, editors and admins when they are logged in', 'hitslink')
+				. ' -->' . "\n";
+		} else {
 			echo $script;
 		}
-	} # display_script()
+	} # display()
+	
+	
+	/**
+	 * get_options()
+	 *
+	 * @return void
+	 **/
+	
+	function get_options() {
+		$o = get_option('hitslink');
+		
+		if ( $o === false ) {
+			$o = get_option('hitslink_params');
+			if ( is_array($o) )
+				$o = $o['script'];
+			else
+				$o = '';
+			update_option('hitslink', $o);
+		}
+		
+		return $o;
+	} # get_options()
+	
+	
+	/**
+	 * admin_menu()
+	 *
+	 * @return void
+	 **/
+
+	function admin_menu() {
+		if ( !current_user_can('unfiltered_html') )
+			return;
+		
+		add_options_page(
+			__('HitsLink', 'hitslink'),
+			__('HitsLink', 'histlink'),
+			'manage_options',
+			'hitslink',
+			array('hitslink_admin', 'edit_options')
+			);
+	} # admin_menu()
 } # hitslink()
 
-hitslink::init();
+function hitslink_admin() {
+	include dirname(__FILE__) . '/hitslink-admin.php';
+}
+
+add_action('load-settings_page_hitslink', 'hitslink_admin');
 ?>
