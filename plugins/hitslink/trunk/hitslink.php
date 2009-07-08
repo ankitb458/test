@@ -27,7 +27,7 @@ load_plugin_textdomain('hitslink', null, dirname(__FILE__) . '/lang');
  * @package HitsLink
  **/
 
-add_action('wp_head', array('hitslink', 'display'));
+add_action('wp_head', array('hitslink', 'display'), 9);
 add_action('admin_menu', array('hitslink', 'admin_menu'));
 
 class hitslink {

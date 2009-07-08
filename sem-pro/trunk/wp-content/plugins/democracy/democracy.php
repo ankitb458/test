@@ -749,7 +749,7 @@ if (function_exists('register_activation_hook'))
 if (function_exists('add_action')) {
 
     // javascript for main blog
-	 add_action('wp_head', 'jal_add_js');
+	 add_action('wp_head', 'jal_add_js', 9);
 	 // add the management page to the admin nav bar
     add_action('admin_menu', 'jal_add_page');
     // add javascript to admin area, only on democracy admin page
