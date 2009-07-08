@@ -163,6 +163,7 @@ class sem_panels {
 	function init_widgets() {
 		if ( !intval(get_option('init_sem_panels')) )
 			return;
+		
 		if ( is_admin() ) {
 			global $wp_filter;
 			$filter_backup = $wp_filter['sidebars_widgets'];

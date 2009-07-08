@@ -1378,7 +1378,7 @@ class header_boxes extends WP_Widget {
 	 **/
 
 	function widget($args, $instance) {
-		if ( !$args['id'] != 'the_header' )
+		if ( $args['id'] != 'the_header' )
 			return;
 		
 		sem_panels::display('the_header_boxes');
