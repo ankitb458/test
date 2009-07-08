@@ -18,7 +18,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('hitslink');
+load_plugin_textdomain('hitslink', null, dirname(__FILE__) . '/lang');
 
 
 /**
