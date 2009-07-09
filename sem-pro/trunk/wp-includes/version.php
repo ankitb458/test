@@ -36,4 +36,4 @@ $manifest_version = '20090616';
  *
  * @global string $sem_pro_version
  **/
-$sem_pro_version = '6.0-beta';
+$sem_pro_version = '6.0-beta1';
