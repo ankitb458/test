@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: dofollow, nofollow, semiologic
 Requires at least: 2.0
-Tested up to: 2.8
+Tested up to: 2.8.1
 Stable tag: trunk
 
 The dofollow plugin for WordPress lets you remove the evil nofollow attribute from your comments. Because nofollow will not work.
@@ -13,6 +13,12 @@ The dofollow plugin for WordPress lets you remove the evil nofollow attribute fr
 
 The dofollow plugin for WordPress lets you remove the evil nofollow attribute from your comments. Because [nofollow will not work](http://www.semiologic.com/2005/02/05/prepare-for-more-comment-spam-not-less/).
 
+= Help Me! =
+
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+
+If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+
 
 == Installation ==
 
@@ -20,10 +26,8 @@ The dofollow plugin for WordPress lets you remove the evil nofollow attribute fr
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 
-== Frequently Asked Questions ==
+== Change Log ==
 
-= Help Me! =
+= 3.3 =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
-
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+- Fix a bug in the regexp for links with a rel= attribute already

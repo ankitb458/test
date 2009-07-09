@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: uploads, uploads-folder, uploads folder, cms, semiologic
 Requires at least: 2.6
-Tested up to: 2.8
+Tested up to: 2.8.1
 Stable tag: trunk
 
 The Uploads Folder plugin for WordPress changes your uploads subfolders to more natural paths that are unique to the post or page.
@@ -13,6 +13,12 @@ The Uploads Folder plugin for WordPress changes your uploads subfolders to more 
 
 The Uploads Folder plugin for WordPress changes your uploads subfolders to a more natural yyyy/mm/post-slug for posts (based on the post's date rather than the current date), and page-slug/subpage-slug for static pages (based on the page's position in the hierarchy).
 
+= Help Me! =
+
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+
+If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+
 
 == Installation ==
 
@@ -20,10 +26,9 @@ The Uploads Folder plugin for WordPress changes your uploads subfolders to a mor
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 
-== Frequently Asked Questions ==
+== Change Log ==
 
-= Help Me! =
+= 2.0 =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
-
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+- Complete rewrite / package the actual script as a library
+- Code enhancements and optimizations

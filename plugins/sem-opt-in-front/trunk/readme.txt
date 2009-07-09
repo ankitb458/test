@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: asides, opt-in-front-page, opt-in front page, opt-in, semiologic
 Requires at least: 2.8
-Tested up to: 2.8
+Tested up to: 2.8.1
 Stable tag: trunk
 
 The Opt-In Front Page plugin lets you add posts to your front page on an opt-in basis, rather than remove posts on an opt-out basis. This allows you to manage any number of asides categories.
@@ -19,6 +19,12 @@ It changes your main category's url as relevant, and it fallbacks to normal blog
 
 You can safely change your 'Blog' category's name after it is created: The opt-in front page plugin looks for the category with a slug of 'blog'.
 
+= Help Me! =
+
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+
+If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+
 
 == Installation ==
 
@@ -28,10 +34,9 @@ You can safely change your 'Blog' category's name after it is created: The opt-i
 1. At your option, click the link in the plugin's description to add the Blog category to every existing post.
 
 
-== Frequently Asked Questions ==
+== Change Log ==
 
-= Help Me! =
+= 3.2 =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
-
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+- Use the taxonomy API to fetch the main category
+- Code enhancements and optimizations
