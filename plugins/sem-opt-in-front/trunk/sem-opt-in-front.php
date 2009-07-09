@@ -34,7 +34,7 @@ foreach ( array(
 	'delete_term',
 	
 	'flush_cache',
-	'update_option_db_version',
+	'after_db_upgrade_version',
 	) as $hook )
 	add_action($hook, array('sem_opt_in_front', 'flush_cache'));
 

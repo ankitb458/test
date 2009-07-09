@@ -28,7 +28,7 @@ foreach ( array(
 		'generate_rewrite_rules',
 		
 		'flush_cache',
-		'update_option_db_version',
+		'after_db_upgrade_version',
 		) as $hook)
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
