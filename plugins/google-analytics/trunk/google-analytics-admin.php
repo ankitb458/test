@@ -114,6 +114,17 @@ EOF;
 
 		echo '<tr>'
 			. '<th scope="row">'
+			. __('AdSense Tracking', 'google-analytics')
+			. '</th>'
+			. '<td>'
+			. '<p>'
+			. __('To enable AdSense revenue tracking using Google Analytics, declare this site for AdSense tracking in <a href="http://www.google.com/analytics/">Google Analytics\'s administration panels</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
+			. '</p>' . "\n"
+			. '</td>'
+			. '</tr>' . "\n";
+		
+		echo '<tr>'
+			. '<th scope="row">'
 			. __('Special Users', 'google-analytics')
 			. '</th>'
 			. '<td>'
