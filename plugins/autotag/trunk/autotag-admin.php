@@ -40,7 +40,7 @@ class autotag_admin {
 						? ' checked="checked"'
 						: '' )
 					. ' />'
-				. '&nbsp;' . __('No. Do not autotag this entry.', 'autotag')
+				. '&nbsp;' . __('No. Do not autotag this entry yet.', 'autotag')
 				. '</label>' . '<br />' . "\n"
 				. '<label>'
 				. '<input type="radio" tabindex="4" name="autotag" value="now" />'
@@ -111,11 +111,9 @@ class autotag_admin {
 		$fetch_terms = false;
 		$user_pref = false;
 		
-		delete_post_meta($post_ID, '_yterms');
-		
 		$post = get_post($post_ID);
 		
-		switch ( isset($_POST['autotag']) ) {
+		switch ( !empty($_POST['autotag']) ) {
 		case 'publish':
 			if ( in_array($post->post_status, array('publish', 'future')) ) {
 				$fetch_terms = true;
@@ -139,13 +137,14 @@ class autotag_admin {
 		
 		if ( $fetch_terms ) {
 			load_yterms();
+			delete_post_meta($post_ID, '_yterms');
 			$terms = yterms::get($post);
 
 			if ( $terms ) {
 				foreach ( $terms as $key => $term )
 					$terms[$key] = $term->name;
 				
-				if ( isset($_POST['autotag_strip']) ) {
+				if ( !empty($_POST['autotag_strip']) ) {
 					foreach ( $terms as $key => $term ) {
 						if ( !is_term($term, 'post_tag') )
 							unset($terms[$key]);
@@ -158,14 +157,14 @@ class autotag_admin {
 			update_post_meta($post_ID, '_did_autotag', '1');
 		}
 		
-		if ( isset($_POST['autotag_sticky']) ) {
+		if ( !empty($_POST['autotag_sticky']) ) {
 			if ( $user_pref ) {
 				update_usermeta($user_ID, 'autotag', '1');
 			} else {
 				update_usermeta($user_ID, 'autotag', '0');
 			}
 			
-			if ( isset($_POST['autotag_strip']) )
+			if ( !empty($_POST['autotag_strip']) )
 				update_usermeta($user_ID, 'autotag_strip', '1');
 			else
 				update_usermeta($user_ID, 'autotag_strip', '0');
