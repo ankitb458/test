@@ -3,7 +3,7 @@
 Plugin Name: Admin Menu
 Plugin URI: http://www.semiologic.com/software/admin-menu/
 Description: Adds a convenient admin menu to your blog. Configure its visibility under <a href="options-general.php?page=admin-menu">Settings / Admin Menu</a>.
-Version: 5.2 RC
+Version: 5.2 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-admin-menu
@@ -89,9 +89,29 @@ class sem_admin_menu {
 		$user = wp_get_current_user();
 
 		$admin_url = trailingslashit(admin_url());
-
+		
 		$options = sem_admin_menu::get_options();
-
+		
+		global $wp_the_query;
+		$redirect = null;
+		
+		if ( is_home() && $wp_the_query->is_posts_page )
+			$redirect = apply_filters('the_permalink', get_permalink($wp_the_query->get_queried_object_id()));
+		elseif ( !is_front_page() && is_singular() )
+			$redirect = apply_filters('the_permalink', get_permalink($wp_the_query->get_queried_object_id()));
+		elseif ( is_category() )
+			$redirect = get_category_link($wp_the_query->get_queried_object_id());
+		elseif ( is_tag() )
+			$redirect = get_tag_link($wp_the_query->get_queried_object_id());
+		elseif ( is_author() )
+			$redirect = get_author_link(false, $wp_the_query->get_queried_object_id());
+		elseif ( is_day() && get_query_var('year') && get_query_var('monthnum') && get_query_var('day') )
+			$redirect = get_day_link(get_query_var('year'), get_query_var('monthnum'), get_query_var('day'));
+		elseif ( is_month() && get_query_var('year') && get_query_var('monthnum') )
+			$redirect = get_month_link(get_query_var('year'), get_query_var('monthnum'));
+		elseif ( is_year() && get_query_var('year') )
+			$redirect = get_year_link(get_query_var('year'));
+		
 		if ( !$user->ID && $options['always_on'] ) {
 			echo '<div id="am">' . "\n"
 				. '<div>' . "\n";
@@ -109,7 +129,7 @@ class sem_admin_menu {
 
 			echo '<span class="am_user">'
 					. apply_filters('loginout',
-						'<a href="' . wp_login_url() . '">'
+						'<a href="' . wp_login_url($redirect) . '">'
 							. __('Login', 'sem-admin-menu')
 							. "</a>"
 						)
@@ -174,15 +194,6 @@ class sem_admin_menu {
 					. ' ';
 			}
 				
-			if ( current_user_can('activate_plugins') ) {
-				echo '<span class="am_options">'
-					. '<a href="' . $admin_url . 'plugins.php">'
-						. __('Plugins', 'sem-admin-menu')
-						. '</a>'
-					. '</span>'
-					. ' ';
-			}
-			
 			if ( current_user_can('switch_themes') ) {
 				global $wp_registered_sidebars;
 				$using_widgets = !empty($wp_registered_sidebars)
@@ -192,13 +203,31 @@ class sem_admin_menu {
 					);
 				
 				echo '<span class="am_options">'
-					. '<a href="' . $admin_url . ( $using_widgets ? 'widgets.php' : 'themes.php' ) . '">'
-						. ( $using_widgets ? __('Widgets', 'sem-admin-menu') : __('Themes', 'sem-admin-menu') )
+					. '<a href="' . $admin_url . 'themes.php' . '">'
+						. __('Themes', 'sem-admin-menu')
+						. '</a>'
+					. '</span>'
+					. ' ';
+				
+				if ( $using_widgets ) {
+					echo '<span class="am_options">'
+						. '<a href="' . $admin_url . 'widgets.php' . '">'
+							. __('Widgets', 'sem-admin-menu')
+							. '</a>'
+						. '</span>'
+						. ' ';
+				}
+			}
+			
+			if ( current_user_can('activate_plugins') ) {
+				echo '<span class="am_options">'
+					. '<a href="' . $admin_url . 'plugins.php">'
+						. __('Plugins', 'sem-admin-menu')
 						. '</a>'
 					. '</span>'
 					. ' ';
 			}
-
+			
 			if ( current_user_can('manage_options') ) {
 				echo '<span class="am_options">'
 					. '<a href="' . $admin_url . 'options-general.php">'
@@ -207,6 +236,8 @@ class sem_admin_menu {
 					. '</span>'
 					. ' ';
 			}
+			
+			do_action('sem_admin_menu_settings');
 			
 			echo '<span class="am_dashboard">'
 				. '<a href="' . $admin_url . '">'
@@ -221,10 +252,12 @@ class sem_admin_menu {
 						. '</a>'
 					. '</span>'
 					. ' ';
-
+			
+			do_action('sem_admin_menu_user');
+			
 			echo '<span class="am_user">'
 					. apply_filters('loginout',
-						'<a href="' . wp_logout_url() . '">'
+						'<a href="' . wp_logout_url($redirect) . '">'
 							. __('Logout', 'sem-admin-menu')
 							. '</a>'
 						)

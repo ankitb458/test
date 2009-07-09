@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 5.2\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-07 23:05+0200\n"
+"POT-Creation-Date: 2009-07-09 12:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,58 +36,64 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: sem-admin-menu.php:103
+#: sem-admin-menu-info.php:2 sem-admin-menu.php:323 sem-admin-menu.php:324
+msgid "Admin Menu"
+msgstr ""
+
+#: sem-admin-menu-info.php:3
+msgid ""
+"Adds a convenient admin menu to your blog. Configure its visibility under <a "
+"href=\"options-general.php?page=admin-menu\">Settings / Admin Menu</a>."
+msgstr ""
+
+#: sem-admin-menu.php:123
 msgid "Register"
 msgstr ""
 
-#: sem-admin-menu.php:113
+#: sem-admin-menu.php:133
 msgid "Login"
 msgstr ""
 
-#: sem-admin-menu.php:127
+#: sem-admin-menu.php:147
 msgid "New Post"
 msgstr ""
 
-#: sem-admin-menu.php:146
+#: sem-admin-menu.php:166
 msgid "New Page"
 msgstr ""
 
-#: sem-admin-menu.php:155 sem-admin-menu.php:162
+#: sem-admin-menu.php:175 sem-admin-menu.php:182
 msgid "Manage"
 msgstr ""
 
-#: sem-admin-menu.php:171
+#: sem-admin-menu.php:191
 msgid "Comments"
 msgstr ""
 
-#: sem-admin-menu.php:180
+#: sem-admin-menu.php:200
 msgid "Plugins"
 msgstr ""
 
-#: sem-admin-menu.php:196
-msgid "Widgets"
-msgstr ""
-
-#: sem-admin-menu.php:196
+#: sem-admin-menu.php:216
 msgid "Themes"
 msgstr ""
 
-#: sem-admin-menu.php:205
+#: sem-admin-menu.php:224
+msgid "Widgets"
+msgstr ""
+
+#: sem-admin-menu.php:234
 msgid "Settings"
 msgstr ""
 
-#: sem-admin-menu.php:213
+#: sem-admin-menu.php:244
 msgid "Dashboard"
 msgstr ""
 
-#: sem-admin-menu.php:220
+#: sem-admin-menu.php:251
 msgid "Profile"
 msgstr ""
 
-#: sem-admin-menu.php:228
+#: sem-admin-menu.php:261
 msgid "Logout"
-msgstr ""
-
-#: sem-admin-menu.php:290 sem-admin-menu.php:291
-msgid "Admin Menu"
 msgstr ""

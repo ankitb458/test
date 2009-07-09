@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: admin-menu, admin, cms, semiologic
 Requires at least: 2.8
-Tested up to: 2.8
+Tested up to: 2.8.1
 Stable tag: trunk
 
 The admin menu plugin for WordPress sticks key admin menu links to the top of your blog's screen.
@@ -16,6 +16,12 @@ The admin menu plugin for WordPress sticks key admin menu links to the top of yo
 The menu will automatically appear to the top of your blog. Menu items will only be visible when relevant.
 
 It's quite useful for those who run their WP install as a CMS. When you create a static page using its New Page link, it will also set the new page's parent automatically, to the ongoing page.
+
+= Help Me! =
+
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+
+If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
 
 
 == Installation ==
@@ -45,8 +51,11 @@ The admin menu will not display to visitors unless you specifically want this to
 To configure the behavior, browse Settings / Admin Menu.
 
 
-= Help Me! =
+== Change Log ==
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+= 5.2 =
 
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+- login/logout now do their best to redirect you to where wherever you were
+- Drop broken WPMU support
+- Full localization
+- Code enhancements and optimizations
