@@ -668,7 +668,13 @@ div.media {
 	text-align: center;
 }
 
-/* entry_author_image */
+/* author image */
+
+.entry_author_image {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
 
 .entry .entry_author_image {
 	float: left;

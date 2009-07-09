@@ -633,10 +633,15 @@ div.announcement
 }
 
 
-/* entry_author_image */
+/* author image */
 
-.main .entry_author_image
-{
+.entry_author_image {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.main .entry_author_image {
 	float: left;
 	border: outset 1px;
 	margin: 1.2em 1.2em 0px .1em;

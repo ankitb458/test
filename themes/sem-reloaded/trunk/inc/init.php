@@ -74,7 +74,7 @@ if ( !function_exists('dump') ) :
  **/
 
 function dump($in = null) {
-	echo '<pre style="margin-left: 0px; margin-right: 0px; padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black;">';
+	echo '<pre style="margin-left: 0px; margin-right: 0px; padding: 10px; border: solid 1px black; background-color: ghostwhite; color: black; text-align: left;">';
 	foreach ( func_get_args() as $var ) {
 		echo "\n";
 		if ( is_string($var) ) {
