@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: autolink, link, auto-link, semiologic
 Requires at least: 2.8
-Tested up to: 2.8
+Tested up to: 2.8.1
 Stable tag: trunk
 
 The Autolink URI plugin for WordPress automatically converts urls to hyperlinked urls.
@@ -21,7 +21,11 @@ After:
 
 > [www.semiologic.com](http://www.semiologic.com)
 
-Note: Wordpress will normally catch links like the above, but will occasionally forget one.
+= Help Me! =
+
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+
+If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
 
 
 == Installation ==
@@ -30,10 +34,10 @@ Note: Wordpress will normally catch links like the above, but will occasionally 
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 
-== Frequently Asked Questions ==
+== Change Log ==
 
-= Help Me! =
+= 2.0 =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
-
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+- Enhance escape/unescape methods
+- Localization
+- Code enhancements and optimizations
