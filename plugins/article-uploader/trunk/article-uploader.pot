@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-07 23:04+0200\n"
+"POT-Creation-Date: 2009-07-09 13:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,36 +64,40 @@ msgstr ""
 
 #: article-uploader-admin.php:89
 msgid ""
-"Expanding on this, and as a tip... Prefer Dreamweaver to FrontPage if you're "
-"using the latter, consider checking your html document's syntax with an <a "
-"href=\"http://validator.w3.org\">html validator</a>, and, if all else fails, "
-"have someone from a site like eLance fix the html code."
+"Expanding on this, and as a tip... Prefer Dreamweaver to FrontPage. If "
+"you're using the latter, consider checking your original document's syntax "
+"with an <a href=\"http://validator.w3.org\">html validator</a>. If all else "
+"fails, have someone from a site like eLance fix the html code."
 msgstr ""
 
 #: article-uploader-admin.php:93
-msgid "The article uploader also works with plain text files."
+msgid ""
+"The article uploader also works with plain text files. If you upload such a "
+"file, paragraphs will be added automatically and the rich text editor will "
+"remain turned on."
 msgstr ""
 
 #: article-uploader-admin.php:97
 msgid ""
 "Uploading an html file using the above form will force off WordPress' rich "
-"text editor and content reformatting features on this entry."
+"text editor and content reformatting features on this entry. You can restore "
+"them later on."
 msgstr ""
 
 #: article-uploader-admin.php:101
 msgid ""
 "If you're not writing in English, make sure your document's character "
 "encoding matches that of your site (find it under <a href=\"options-general."
-"php\">Settings / General</a>). Because if it doesn't, you may end up with "
-"odd looking characters all over the place."
+"php\">Settings / General</a>). If it doesn't, you may end up with odd "
+"looking characters all over the place."
 msgstr ""
 
-#: article-uploader-admin.php:107
-msgid ""
-"The article uploader also works with plain text files. In this case, the "
-"rich text editor will remain turned on."
-msgstr ""
-
-#: article-uploader.php:45 article-uploader.php:46
+#: article-uploader-info.php:2 article-uploader.php:48 article-uploader.php:49
 msgid "Article Uploader"
+msgstr ""
+
+#: article-uploader-info.php:3
+msgid ""
+"Lets you upload files in place of using the WP editor when writing your "
+"entries."
 msgstr ""

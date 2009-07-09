@@ -86,26 +86,22 @@ class article_uploader_admin {
 			. '</li>' . "\n";
 		
 		echo '<li>'
-			. __('Expanding on this, and as a tip... Prefer Dreamweaver to FrontPage if you\'re using the latter, consider checking your html document\'s syntax with an <a href="http://validator.w3.org">html validator</a>, and, if all else fails, have someone from a site like eLance fix the html code.', 'article-uploader')
+			. __('Expanding on this, and as a tip... Prefer Dreamweaver to FrontPage. If you\'re using the latter, consider checking your original document\'s syntax with an <a href="http://validator.w3.org">html validator</a>. If all else fails, have someone from a site like eLance fix the html code.', 'article-uploader')
 			. '</li>' . "\n";
 		
 		echo '<li>'
-			. __('The article uploader also works with plain text files.', 'article-uploader')
+			. __('The article uploader also works with plain text files. If you upload such a file, paragraphs will be added automatically and the rich text editor will remain turned on.', 'article-uploader')
 			. '</li>' . "\n";
 		
 		echo '<li>'
-			. __('Uploading an html file using the above form will force off WordPress\' rich text editor and content reformatting features on this entry.', 'article-uploader')
+			. __('Uploading an html file using the above form will force off WordPress\' rich text editor and content reformatting features on this entry. You can restore them later on.', 'article-uploader')
 			. '</li>' . "\n";
 		
 		echo '<li>'
-			. __('If you\'re not writing in English, make sure your document\'s character encoding matches that of your site (find it under <a href="options-general.php">Settings / General</a>). Because if it doesn\'t, you may end up with odd looking characters all over the place.', 'article-uploader')
+			. __('If you\'re not writing in English, make sure your document\'s character encoding matches that of your site (find it under <a href="options-general.php">Settings / General</a>). If it doesn\'t, you may end up with odd looking characters all over the place.', 'article-uploader')
 			. '</li>' . "\n";
 		
 		echo '</ul>' . "\n";
-		
-		echo '<p>'
-			. __('The article uploader also works with plain text files. In this case, the rich text editor will remain turned on.', 'article-uploader')
-			. '</p>' . "\n";
 	} # entry_editor()
 	
 	
@@ -122,8 +118,10 @@ class article_uploader_admin {
 		
 		global $wpdb;
 		
-		if ( isset($_POST['kill_formatting']) )
+		if ( !empty($_POST['kill_formatting']) )
 			update_post_meta($post_ID, '_kill_formatting', '1');
+		else
+			delete_post_meta($post_ID, '_kill_formatting');
 		
 		if ( empty($_FILES['upload_article']['name']) )
 			return;
