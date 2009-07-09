@@ -1,3 +1,15 @@
+.bookmark_me_ruler {
+	height: 40px;
+}
+
+.entry .bookmark_me_ruler,
+#main .bookmark_me_ruler,
+.content .bookmark_me_ruler,
+#content .bookmark_me_ruler,
+.wide_sidebar .bookmark_me_ruler {
+	height: 20px;
+}
+
 .bookmark_me a {
 	display: block;
 	padding-left: 18px;
@@ -35,7 +47,7 @@
 }
 
 .bookmark_me_spacer {
-	clear: both;
+	clear: left;
 }
 
 .bookmark_me_extra {
@@ -154,7 +166,7 @@
 	background-position: 0px -340px;
 }
 
-.bookmark_me_sidebar a {
+.bookmark_me_narrow a {
 	width: 60px;
 	padding-right: 5px;
 }

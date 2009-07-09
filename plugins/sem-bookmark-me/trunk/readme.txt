@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: bookmark-me, social-bookmarking, social-media, buzzup, delicious, digg, facebook, mixx, reddit, stumbleupon, twitter, bookmarking, widget, semiologic
 Requires at least: 2.8
-Tested up to: 2.8
+Tested up to: 2.8.1
 Stable tag: trunk
 
 Adds buttons that let your visitors share your content on social media sites.
@@ -11,7 +11,7 @@ Adds buttons that let your visitors share your content on social media sites.
 
 == Description ==
 
-The Bookmark Me plugin will add buttons that let your visitors share your content on social media sites such as Buzz Up!, Delicious, Digg, Facebook, Mixx, Reddit and StumbleUpon.
+The Bookmark Me plugin will add buttons that let your visitors share your content on [social media sites](http://www.semiologic.com/resources/blogging/help-with-social-media-sites/) such as Buzz Up!, Delicious, Digg, Facebook, Mixx, Reddit and StumbleUpon.
 
 Share by Email and Print buttons are also added when the plugin is called within the loop.
 
@@ -25,6 +25,11 @@ Users of other themes can add the following call within the loop instead:
 
 The call accepts an optional argument, which sets the widget's title.
 
+= Help Me! =
+
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+
+If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
 
 
 == Installation ==
@@ -33,10 +38,16 @@ The call accepts an optional argument, which sets the widget's title.
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 
-== Frequently Asked Questions ==
+== Change Log ==
 
-= Help Me! =
+= 5.0 =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
-
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+- Complete rewrite
+- WP_Widget class
+- Drop all options except title (nofollow is always enabled)
+- Smaller, better list of services
+- Add Email and Print services
+- Smaller number of image depends
+- Use jQuery, insert script in footer
+- Localization
+- Code enhancements and optimizations

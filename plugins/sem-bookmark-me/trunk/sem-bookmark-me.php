@@ -3,7 +3,7 @@
 Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/bookmark-me/
 Description: Widgets that let your visitors share your webpages on social media sites such as Buzzup, Delicious and Digg.
-Version: 5.0 RC
+Version: 5.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: bookmark-me
@@ -40,9 +40,8 @@ add_action('widgets_init', array('bookmark_me', 'widgets_init'));
 if ( !is_admin() ) {
 	add_action('wp_print_scripts', array('bookmark_me', 'scripts'));
 	add_action('wp_print_styles', array('bookmark_me', 'styles'), 0);
+	add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
 }
-
-add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
 
 foreach ( array(
 		'generate_rewrite_rules',
@@ -147,7 +146,7 @@ class bookmark_me extends WP_Widget {
 	function bookmark_me() {
 		$widget_ops = array(
 			'classname' => 'bookmark_me',
-			'description' => __("Bookmark links to social media sites such as Buzzup, Delicious and Digg", 'bookmark-me'),
+			'description' => __('Bookmark links to social media sites such as Buzzup, Delicious and Digg', 'bookmark-me'),
 			);
 		
 		$this->init();
@@ -225,12 +224,12 @@ class bookmark_me extends WP_Widget {
 			ob_start();
 			
 			echo $before_widget;
-
+			
 			if ( $title )
 				echo $before_title . $title . $after_title;
-
-			echo '<div class="bookmark_me_services' . ( !$print_action ? ' bookmark_me_sidebar' : '' ) . '">' . "\n";
-
+			
+			echo '<div class="bookmark_me_services' . ( !$print_action ? ' bookmark_me_narrow' : '' ) . '">' . "\n";
+			
 			foreach ( bookmark_me::get_main_services() as $service_id =>  $service ) {
 				echo '<a href="' . esc_url($service['url'])  . '" class="' . $service_id . ' no_icon"'
 					. ' title="' . esc_attr($service['name']) . '"'
@@ -253,14 +252,14 @@ class bookmark_me extends WP_Widget {
 					. ' title="' . esc_attr(__('Print', 'bookmark-me')) .  '" class="print_entry no_icon">'
 					. __('Print', 'bookmark-me')
 					. '</a>' . "\n";
-
+				
 				echo '</div>' . "\n";
 			}
 
-			echo '<div class="bookmark_me_spacer bookmark_me_ruler"></div>' . "\n";
-
+			echo '<div class="bookmark_me_ruler"></div>' . "\n";
+			
 			echo '<div class="bookmark_me_extra" style="display: none;">' . "\n";
-
+			
 			foreach ( bookmark_me::get_extra_services() as $service_id =>  $service ) {
 				echo '<a href="' . esc_url($service['url'])  . '" class="' . $service_id . ' no_icon"'
 					. ' title="' . esc_attr($service['name']) . '"'
@@ -272,11 +271,11 @@ class bookmark_me extends WP_Widget {
 					. $service['name']
 					. '</a>' . "\n";
 			}
-
+			
 			echo '<div class="bookmark_me_spacer"></div>' . "\n";
-
+			
 			echo '</div>' . "\n";
-		
+			
 			echo $after_widget;
 
 			$o = ob_get_clean();

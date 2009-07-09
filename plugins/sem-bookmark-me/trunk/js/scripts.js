@@ -2,6 +2,7 @@ jQuery(document).ready(function() {
 	jQuery("div.bookmark_me, li.bookmark_me").hover(function() {
 		var p = jQuery(this);
 		var i = 0;
+		
 		do {
 			if ( p.children("div.bookmark_me_extra").size() ) {
 				p.children("div.bookmark_me_extra").each(function() {
