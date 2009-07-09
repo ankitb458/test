@@ -3,9 +3,11 @@
 Plugin Name: HitsLink
 Plugin URI: http://www.semiologic.com/software/hitslink/
 Description: Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> tracking to your site.
-Author: Denis de Bernardy
 Version: 2.0 RC
+Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
+Text Domain: hitslink
+Domain Path: /lang
 */
 
 /*

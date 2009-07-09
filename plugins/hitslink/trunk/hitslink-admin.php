@@ -108,7 +108,7 @@ EOS;
 				. ' onfocus="var this_val=eval(this); this_val.select();"'
 				. ' id="hitslink_script" name="hitslink_script"'
 				. '>'
-			. format_to_edit($script, ENT_QUOTES)
+			. esc_html($script, ENT_QUOTES)
 			. '</textarea>' . "\n"
 			. '<p><label for="hitslink_script">'
 			. __('Paste the generic <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> script into the above textarea.', 'hitslink')
