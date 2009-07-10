@@ -2,8 +2,8 @@
 /*
 Plugin Name: Inline Widgets
 Plugin URI: http://www.semiologic.com/software/inline-widgets/
-Description: Creates a special sidebar that lets you insert arbitrary widgets in posts' and pages' content. Configure these inline widgets under <a href="widgets.php">Appearance / Widgets</a>.
-Version: 2.0 RC
+Description: Creates a special sidebar that lets you insert arbitrary widgets in posts and pages. Configure these inline widgets under <a href="widgets.php">Appearance / Widgets</a>.
+Version: 2.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: inline-widgets
@@ -20,7 +20,7 @@ http://www.mesoconcepts.com/license/
 **/
 
 
-load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('inline-widgets', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -32,8 +32,12 @@ load_plugin_textdomain('inline-widgets', null, dirname(__FILE__) . '/lang');
 add_action('init', array('inline_widgets', 'panels'), -100);
 add_shortcode('widget', array('inline_widgets', 'shortcode'));
 
-if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') && is_admin() )
-	add_action('init', array('inline_widgets', 'upgrade'), 3000);
+if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') ) {
+	if ( is_admin() )
+		add_action('init', array('inline_widgets', 'upgrade'), 3000);
+	else
+		add_filter('the_content', array('inline_widgets', 'upgrade_filter'), 0);
+}
 
 class inline_widgets {
 	/**
@@ -200,28 +204,43 @@ class inline_widgets {
 		global $wpdb;
 		
 		$posts = $wpdb->get_results("
-			SELECT	*
+			SELECT	ID, post_content
 			FROM	$wpdb->posts
 			WHERE	post_content REGEXP '\\\\[widget:'
 			");
 		
-		$current_user = wp_get_current_user();
 		$ignore_user_abort = ignore_user_abort(true);
 		set_time_limit(600);
 		
 		foreach ( $posts as $post ) {
-			$post->post_content = preg_replace_callback("/
-				\[widget:\s*(.+?)\s*\]
-				/ix", array('inline_widgets', 'upgrade_callback'), $post->post_content);
+			$post->post_content = inline_widgets::upgrade_filter($post->post_content);
 			
-			wp_set_current_user($post->post_author);
-			wp_update_post($post);
+			$wpdb->query("
+				UPDATE	$wpdb->posts
+				SET		post_content = '" . $wpdb->escape($post->post_content) . "'
+				WHERE	ID = " . intval($post->ID)
+				);
 		}
 		
-		wp_set_current_user($current_user->ID);
 		ignore_user_abort($ignore_user_abort);
 		update_option('inline_widgets_version', '2.0');
 	} # upgrade()
+	
+	
+	/**
+	 * upgrade_filter()
+	 *
+	 * @param string $text
+	 * @return string $text
+	 **/
+
+	function upgrade_filter($text) {
+		return preg_replace_callback("/
+			\[widget:\s*(.+?)\s*\]
+			/ix",
+			array('inline_widgets', 'upgrade_callback'),
+			$text);
+	} # upgrade_filter()
 	
 	
 	/**
