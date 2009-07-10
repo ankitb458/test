@@ -2,8 +2,8 @@
 /*
 Plugin Name: HitsLink
 Plugin URI: http://www.semiologic.com/software/hitslink/
-Description: Adds <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> tracking to your site.
-Version: 2.0 RC
+Description: Adds <a href="http://go.semiologic.com/hitslink">HitsLink</a> tracking to your site.
+Version: 2.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: hitslink
@@ -20,7 +20,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('hitslink', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('hitslink', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -90,7 +90,7 @@ class hitslink {
 		
 		add_options_page(
 			__('HitsLink', 'hitslink'),
-			__('HitsLink', 'histlink'),
+			__('HitsLink', 'hitslink'),
 			'manage_options',
 			'hitslink',
 			array('hitslink_admin', 'edit_options')

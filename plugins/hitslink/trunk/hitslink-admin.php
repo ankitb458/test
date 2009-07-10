@@ -111,7 +111,7 @@ EOS;
 			. esc_html($script, ENT_QUOTES)
 			. '</textarea>' . "\n"
 			. '<p><label for="hitslink_script">'
-			. __('Paste the generic <a href="http://www.semiologic.com/go/hitslink">HitsLink</a> script into the above textarea.', 'hitslink')
+			. __('Paste the generic <a href="http://go.semiologic.com/hitslink">HitsLink</a> script into the above textarea.', 'hitslink')
 			. '</label></p>' . "\n"
 			. '</td>' . "\n"
 			. '</tr>' . "\n"
