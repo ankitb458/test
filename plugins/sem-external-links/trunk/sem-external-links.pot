@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-07 23:05+0200\n"
+"POT-Creation-Date: 2009-07-10 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,8 +22,8 @@ msgstr ""
 
 #: sem-external-links-admin.php:55
 msgid ""
-"Notice: Your rel=nofollow preferences will be ignored because the dofollow "
-"plugin is enabled on your site. "
+"Note: Your rel=nofollow preferences is being ignored because the dofollow "
+"plugin is enabled on your site."
 msgstr ""
 
 #: sem-external-links-admin.php:62
@@ -50,8 +50,8 @@ msgstr ""
 
 #: sem-external-links-admin.php:94
 msgid ""
-"Note: You can override this behavior to individual links by adding a no_icon "
-"class."
+"Note: You can override this behavior by adding a no_icon class to individual "
+"links."
 msgstr ""
 
 #: sem-external-links-admin.php:100
@@ -78,24 +78,8 @@ msgid ""
 "know how to use the back button and encourage the practice."
 msgstr ""
 
-#: sem-external-links-admin.php:134 sem-external-links-admin.php:183
+#: sem-external-links-admin.php:134
 msgid "Save Changes"
-msgstr ""
-
-#: sem-external-links-admin.php:161
-msgid ""
-"Process all outbound links as configured below. This means links in the "
-"sidebars, header, footer and so on in addition to those in posts' and pages' "
-"content. Note: If you add a nofollow attribute, be sure to turn this off if "
-"you wish to let your commenters to have some Google Juice. Note: In the <a "
-"href=\"http://www.semiologic.com/software/sem-reloaded/\">Semiologic "
-"Reloaded theme</a>, icons are not added outside of the main area."
-msgstr ""
-
-#: sem-external-links-admin.php:174
-msgid ""
-"Add rel=nofollow to outbound links. This is not very nice for those you're "
-"linking to."
 msgstr ""
 
 #: sem-external-links.php:227 sem-external-links.php:228

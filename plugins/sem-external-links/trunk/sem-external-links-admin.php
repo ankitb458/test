@@ -52,7 +52,7 @@ class external_links_admin {
 		if ( $options['nofollow'] && function_exists('strip_nofollow') ) {
 			echo "<div class=\"error\">\n"
 				. "<p>"
-					. __('Notice: Your rel=nofollow preferences will be ignored because the dofollow plugin is enabled on your site. ', 'external-links')
+					. __('Note: Your rel=nofollow preferences is being ignored because the dofollow plugin is enabled on your site.', 'external-links')
 				. "</p>\n"
 				. "</div>\n";
 		}
@@ -91,7 +91,7 @@ class external_links_admin {
 			. __('Mark outbound links with an icon.', 'external-links')
 			. '</label>'
 			. '<br />' . "\n"
-			. __('Note: You can override this behavior to individual links by adding a no_icon class.', 'external-links')
+			. __('Note: You can override this behavior by adding a no_icon class to individual links.', 'external-links')
 			. '</td>' . "\n"
 			. '</tr>' . "\n";
 		
@@ -139,54 +139,4 @@ class external_links_admin {
 			. '</div>' . "\n";
 	} # edit_options()
 } # external_links_admin
-
-
-
-class old_external_links_admin
-{
-	#
-	# admin_page()
-	#
-
-	function admin_page()
-	{
-		echo '<tr>'
-			. '<td>'
-			. '<label for="sem_external_links[global]">'
-			. '<input type="checkbox"'
-				. ' name="sem_external_links[global]" id="sem_external_links[global]"'
-				. ( $options['global'] ? ' checked="checked"' : '' )
-				. ' />'
-			. '&nbsp;'
-			. __('Process all outbound links as configured below. This means links in the sidebars, header, footer and so on in addition to those in posts\' and pages\' content. Note: If you add a nofollow attribute, be sure to turn this off if you wish to let your commenters to have some Google Juice. Note: In the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic Reloaded theme</a>, icons are not added outside of the main area.')
-			. '</label>'
-			. '</td>'
-			. '</tr>';
-		
-		echo '<tr>'
-			. '<td>'
-			. '<label for="sem_external_links[add_nofollow]">'
-			. '<input type="checkbox"'
-				. ' name="sem_external_links[add_nofollow]" id="sem_external_links[add_nofollow]"'
-				. ( $options['add_nofollow'] ? ' checked="checked"' : '' )
-				. ' />'
-			. '&nbsp;'
-			. __('Add rel=nofollow to outbound links. This is not very nice for those you\'re linking to.')
-			. '</label>'
-			. '</td>'
-			. '</tr>';
-
-		echo '</table>';
-
-		echo '<p class="submit">'
-			. '<input type="submit"'
-				. ' value="' . esc_attr(__('Save Changes')) . '"'
-				. ' />'
-			. '</p>';
-
-		echo '</form>'
-			. '</div>';
-	} # admin_page()
-} # external_links_admin
-
 ?>
