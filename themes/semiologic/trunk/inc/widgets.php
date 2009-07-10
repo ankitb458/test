@@ -28,7 +28,7 @@ foreach ( array(
 		'generate_rewrite_rules',
 		
 		'flush_cache',
-		'after_db_upgrade_version',
+		'after_db_upgrade',
 		) as $hook)
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
 
@@ -1820,11 +1820,11 @@ class sem_nav_menu extends WP_Widget {
 		} else {
 			$cache_id = "$widget_id";
 			if ( is_home() && !is_paged() ) {
-				$context = "home";
+				$context = 'home';
 			} elseif ( !is_search() && !is_404() ) {
-				$context = "blog";
+				$context = 'blog';
 			} else {
-				$context = "search";
+				$context = 'search';
 			}
 			$cache = get_transient($cache_id);
 			$o = isset($cache[$context]) ? $cache[$context] : false;
@@ -1893,6 +1893,12 @@ class sem_nav_menu extends WP_Widget {
 	 **/
 
 	function display_home($item) {
+		if ( get_option('show_on_front') == 'page' && get_option('page_on_front') ) {
+			$item['type'] = 'page';
+			$item['ref'] = get_option('page_on_front');
+			return sem_nav_menu::display_page($item);
+		}
+		
 		extract($item, EXTR_SKIP);
 		if ( (string) $label === '' )
 			$label = __('Home', 'sem-theme');
@@ -1901,21 +1907,12 @@ class sem_nav_menu extends WP_Widget {
 		$classes = array('nav_home');
 		$link = $label;
 		
-		if ( get_option('show_on_front') == 'page' ) {
-			$item = array(
-				'type' => 'page',
-				'ref' => get_option('page_on_front'),
-				'label' => $label,
-				);
-			return sem_nav_menu::display_page($item);
-		} else {
-			if ( !is_front_page() || is_front_page() && is_paged() )
-				$link = '<a href="' . $url . '" title="' . esc_attr(get_option('blogname')) . '">'
-					. $link
-					. '</a>';
-			if ( !is_search() && !is_404() && !is_page() )
-				$classes[] = 'nav_active';
-		}
+		if ( !is_front_page() || is_front_page() && is_paged() )
+			$link = '<a href="' . $url . '" title="' . esc_attr(get_option('blogname')) . '">'
+				. $link
+				. '</a>';
+		if ( !is_search() && !is_404() && !is_page() )
+			$classes[] = 'nav_active';
 		
 		echo '<span class="' . implode(' ', $classes) . '">'
 			. $link;
@@ -2134,7 +2131,6 @@ class sem_nav_menu extends WP_Widget {
 			AND		posts.post_parent IN ( " . implode(',', $parent_ids) . " )
 			ORDER BY posts.menu_order, posts.post_title
 			");
-		update_post_cache($pages);
 		
 		$children = array();
 		$to_cache = array();
@@ -2147,8 +2143,6 @@ class sem_nav_menu extends WP_Widget {
 			$to_cache[] = $page->ID;
 		}
 
-		update_postmeta_cache($to_cache);
-		
 		$all_ancestors = array();
 		
 		foreach ( $children as $parent => $child_ids ) {
@@ -2162,6 +2156,15 @@ class sem_nav_menu extends WP_Widget {
 				$parent_ids = array_merge($all_ancestors[$parent_ids[0]], $parent_ids);
 			wp_cache_set($child_id, $parent_ids, 'page_ancestors');
 		}
+		
+		foreach ( array_keys($pages) as $k ) {
+			$ancestors = wp_cache_get($pages[$k]->ID, 'page_ancestors');
+			array_shift($ancestors);
+			$pages[$k]->ancestors = $ancestors;
+		}
+
+		update_post_cache($pages);
+		update_postmeta_cache($to_cache);
 	} # cache_pages()
 	
 	
@@ -2297,8 +2300,7 @@ class sem_nav_menu extends WP_Widget {
 		if ( !isset($pages) ) {
 			global $wpdb;
 			$pages = $wpdb->get_results("
-				SELECT	posts.*,
-						post_title
+				SELECT	posts.*
 				FROM	$wpdb->posts as posts
 				WHERE	posts.post_type = 'page'
 				AND		posts.post_status = 'publish'
@@ -2330,7 +2332,7 @@ class sem_nav_menu extends WP_Widget {
 		echo '<h3>' . __('Menu Items', 'sem-theme') . '</h3>' . "\n";
 		
 		echo '<p>'
-			. 'Drag and drop menu items to rearrange them.'
+			. __('Drag and drop menu items to rearrange them.', 'sem-theme')
 			. '</p>' . "\n";
 		
 		echo '<div class="nav_menu_items">' . "\n";
@@ -2360,7 +2362,7 @@ class sem_nav_menu extends WP_Widget {
 			if ( $label === '' )
 				$label = $page->post_title;
 			if ( $label === '' )
-				$label = __('Untitled', 'nav-menus');
+				$label = __('Untitled', 'sem-theme');
 			echo '<option value="page-' . $page->ID . '">'
 				. esc_attr($label)
 				. '</option>' . "\n";
@@ -2558,39 +2560,27 @@ class sem_nav_menu extends WP_Widget {
 	 **/
 
 	function default_items() {
-		$items = array(
-			array(
-				'type' => 'home',
-				'label' => __('Home', 'sem-theme'),
-				),
-			);
+		$items = array(array('type' => 'home'));
 		
 		$roots = wp_cache_get(0, 'page_children');
 		
-		if ( $roots ) {
-			$front_page_id = get_option('show_on_front') == 'page'
-				? (int) get_option('page_on_front')
-				: 0;
+		if ( !$roots )
+			return $items;
+		
+		$front_page_id = get_option('show_on_front') == 'page'
+			? (int) get_option('page_on_front')
+			: 0;
+
+		foreach ( $roots as $root_id ) {
+			if ( $root_id == $front_page_id )
+				continue;
+			if ( get_post_meta($root_id, '_widgets_exclude', true) )
+				continue;
 			
-			foreach ( $roots as $root_id ) {
-				if ( $root_id == $front_page_id )
-					continue;
-				if ( get_post_meta($root_id, '_widgets_exclude', true) )
-					continue;
-				
-				$page = get_page($root_id);
-				$label = get_post_meta($page->ID, '_widgets_label', true);
-				if ( (string) $label === '' )
-					$label = $page->post_title;
-				if ( (string) $label === '' )
-					$label = __('Untitled', 'sem-theme');
-					
-				$items[] = array(
-					'type' => 'page',
-					'ref' => $root_id,
-					'label' => $label,
-					);
-			}
+			$items[] = array(
+				'type' => 'page',
+				'ref' => $root_id,
+				);
 		}
 		
 		return $items;

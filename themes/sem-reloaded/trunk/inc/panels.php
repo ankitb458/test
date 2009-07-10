@@ -334,16 +334,16 @@ class sem_panels {
 				'footer_boxes',
 				'footer',
 				),
+			'sidebar-2' => array(
+				'newsletter_manager',
+				'subscribe_me',
+				!class_exists('sem_admin_menu') ? 'WP_Widget_Meta' : null,
+				),
 			'sidebar-1' => array(
 				class_exists('nav_menu') ? 'nav_menu' : null,
 				class_exists('fuzzy_widget') ? 'fuzzy_widget' : null,
 				'WP_Widget_Categories',
 				'WP_Widget_Archives',
-				),
-			'sidebar-2' => array(
-				'newsletter_manager',
-				'subscribe_me',
-				!class_exists('sem_admin_menu') ? 'WP_Widget_Meta' : null,
 				),
 			'the_404' => array(
 				class_exists('fuzzy_widget') ? 'fuzzy_widget' : null,
@@ -385,6 +385,9 @@ class sem_panels {
 			if ( empty($sidebars_widgets[$panel]) )
 				$sidebars_widgets[$panel] = (array) $sidebars_widgets[$panel];
 			else
+				continue;
+			
+			if ( $panel == 'sidebar-2' && !empty($sidebars_widgets['sidebar-1']) )
 				continue;
 			
 			foreach ( $widgets as $widget ) {
