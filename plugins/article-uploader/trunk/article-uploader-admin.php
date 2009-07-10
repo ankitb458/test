@@ -7,6 +7,9 @@
 
 add_filter('get_user_option_rich_editing', array('article_uploader_admin', 'disable_tinymce'));
 
+if ( current_user_can('unfiltered_html') )
+	add_action('save_post', array('article_uploader_admin', 'save_entry'));
+
 class article_uploader_admin {
 	/**
 	 * disable_tinymce()

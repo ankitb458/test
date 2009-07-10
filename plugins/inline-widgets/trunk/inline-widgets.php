@@ -269,9 +269,6 @@ function inline_widgets_admin() {
 	include dirname(__FILE__) . '/inline-widgets-admin.php';
 }
 
-foreach ( array(
-	'page-new.php', 'page.php',
-	'post-new.php', 'post.php',
-	) as $hook )
+foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
 	add_action("load-$hook", 'inline_widgets_admin');
 ?>

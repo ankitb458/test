@@ -47,7 +47,6 @@ class article_uploader {
 		if ( current_user_can('unfiltered_html') ) {
 			add_meta_box('article_uploader', __('Article Uploader', 'article-uploader'), array('article_uploader_admin', 'entry_editor'), 'post');
 			add_meta_box('article_uploader', __('Article Uploader', 'article-uploader'), array('article_uploader_admin', 'entry_editor'), 'page');
-			add_action('save_post', array('article_uploader_admin', 'save_entry'));
 		}
 	} # meta_boxes()
 	
