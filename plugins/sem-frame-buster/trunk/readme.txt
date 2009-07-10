@@ -40,6 +40,10 @@ Make sure your theme has the following in between its `<body>` and `</body>` tag
 
 == Change Log ==
 
+= 5.0 =
+
+- Localization
+
 = 4.1 =
 
 - Code enhancements and optimizations
