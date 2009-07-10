@@ -20,7 +20,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('sem-admin-menu', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('sem-admin-menu', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**

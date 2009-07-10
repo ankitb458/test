@@ -26,7 +26,7 @@ Other icons are copyright their respective holders.
 **/
 
 
-load_plugin_textdomain('bookmark-me', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('bookmark-me', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -50,7 +50,7 @@ foreach ( array(
 		'update_option_sidebars_widgets',
 		
 		'flush_cache',
-		'after_db_upgrade_version',
+		'after_db_upgrade',
 		) as $hook) {
 	add_action($hook, array('bookmark_me', 'flush_cache'));
 }

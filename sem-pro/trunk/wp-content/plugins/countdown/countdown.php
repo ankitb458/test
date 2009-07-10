@@ -3,7 +3,7 @@
 Plugin Name: Events Widget
 Plugin URI: http://redalt.com/wiki/Countdown
 Description: Adds template tags to count down to a specified date. Browse Manage / Events to configure your events.
-Version: 2.3.1 RC fork
+Version: 2.3.1 RC2 fork
 Author: Owen Winkler &amp; Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 License: MIT License - http://www.opensource.org/licenses/mit-license.php

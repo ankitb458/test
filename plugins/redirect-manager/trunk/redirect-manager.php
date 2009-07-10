@@ -21,7 +21,7 @@ http://www.mesoconcepts.com/license/
 **/
 
 
-load_plugin_textdomain('redirect-manager', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('redirect-manager', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
