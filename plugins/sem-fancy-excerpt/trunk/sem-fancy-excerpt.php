@@ -3,7 +3,7 @@
 Plugin Name: Fancy Excerpt
 Plugin URI: http://www.semiologic.com/software/fancy-excerpt/
 Description: Enhances WordPress' default excerpt generator by generating paragraph aware excerpts followed by more... links.
-Version: 3.0 RC
+Version: 3.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-fancy-excerpt
@@ -20,7 +20,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('sem-fancy-excerpt', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('sem-fancy-excerpt', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -55,6 +55,9 @@ class fancy_excerpt {
 		if ( !preg_match("|$more</a>$|", $text)
 			&& count(preg_split("~\s+~", trim(strip_tags($text)))) > 30
 		) {
+			global $escape_fancy_excerpt;
+			$escape_fancy_excerpt = array();
+			
 			$text = fancy_excerpt::escape($text);
 			
 			$bits = preg_split("/(<(?:h[1-6]|p|ul|ol|li|dl|dd|table|tr|pre|blockquote)\b[^>]*>|\n{2,})/i", $text, null, PREG_SPLIT_DELIM_CAPTURE);
@@ -76,7 +79,7 @@ class fancy_excerpt {
 			$text .= "\n\n"
 				. '<p>'
 				. apply_filters('the_content_more_link',
-					'<a href="'. esc_url(get_permalink()) . '" class="more-link">'
+					'<a href="'. esc_url(apply_filters('the_permalink', get_permalink())) . '" class="more-link">'
 					. $more
 					. '</a>')
 				. '</p>' . "\n";
