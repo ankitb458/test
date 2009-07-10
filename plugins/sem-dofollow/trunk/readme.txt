@@ -28,6 +28,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
+= 4.0 =
+
+- Localization
+
 = 3.3 =
 
 - Fix a bug in the regexp for links with a rel= attribute already
