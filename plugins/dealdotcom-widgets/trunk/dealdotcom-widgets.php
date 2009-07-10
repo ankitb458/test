@@ -2,11 +2,11 @@
 /*
 Plugin Name: Dealdotcom Widgets
 Plugin URI: http://www.semiologic.com/software/dealdotcom/
-Description: Widgets to display <a href="http://go.semiologic.com/dealdotcom">dealdotcom</a>'s deal of the day.
-Version: 2.0 RC
+Description: Widgets that let you display <a href="http://go.semiologic.com/dealdotcom">Dealdotcom</a>'s deal of the day.
+Version: 2.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: deadotcom-widgets
+Text Domain: deadotcom
 Domain Path: /lang
 */
 
@@ -20,7 +20,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('dealdotcom', null, dirname(__FILE__) . '/lang');
+load_plugin_textdomain('dealdotcom', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -105,7 +105,7 @@ class dealdotcom extends WP_Widget {
 		if ( !$aff_id ) {
 			echo $before_widget
 				. '<div style="border: solid 2px firebrick; padding: 5px; background-color: AntiqueWhite; color: firebrick; font-weight: bold;">'
-				. sprintf(__('Your <a href="%s">dealdotcom</a> affiliate ID is not configured.'), 'http://go.semiologic.com/dealdotcom')
+				. sprintf(__('Your <a href="%s">dealdotcom</a> affiliate ID is not configured.', 'dealdotcom'), esc_url('http://go.semiologic.com/dealdotcom'))
 				. '</div>'
 				. $after_widget;
 			return;

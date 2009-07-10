@@ -11,11 +11,11 @@ Stable tag: trunk
 
 == Description ==
 
-The Dealdotcom plugin for WordPress introduces widgets that let you insert [dealdotcom](http://go.semiologic.com/dealdotcom)'s deal of the day on your site.
+The Dealdotcom plugin for WordPress introduces widgets that let you insert [Dealdotcom](http://go.semiologic.com/dealdotcom)'s deal of the day on your site.
 
 In the event you're unfamiliar with it, Dealdotcom is a great place to look for deals on internet marketing related materials, and this widget is a great way to collect commissions if you run a site related to the topic.
 
-After activating the plugin, browse Appearance / Widgets. Insert one or more Dealdotcom widget, configure your affiliate ID in each, and you're done.
+After activating the plugin, browse Appearance / Widgets. Insert one or more Dealdotcom widgets, configure your affiliate ID in each, and you're done.
 
 = Help Me! =
 
