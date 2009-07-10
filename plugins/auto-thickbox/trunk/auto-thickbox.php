@@ -33,7 +33,7 @@ if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === fal
 	add_action('wp_print_scripts', array('auto_thickbox', 'add_scripts'));
 	add_action('wp_print_styles', array('auto_thickbox', 'add_css'));
 	
-	add_action('wp_head', array('auto_thickbox', 'add_thickbox_images'), 20);
+	add_action('wp_footer', array('auto_thickbox', 'add_thickbox_images'), 20);
 	
 	add_filter('filter_anchor', array('auto_thickbox', 'add_thickbox'));
 }
