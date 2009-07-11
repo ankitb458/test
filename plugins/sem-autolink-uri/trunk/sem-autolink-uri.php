@@ -152,7 +152,7 @@ class autolink_uri {
 				<\s*a\s.+?>.+?<\s*\/\s*a\s*>
 				/isx",
 			'tags' => "/
-				<[^<>]+?(?:src|href|codebase|archive|usemap|data|value)=[^<>]+?>
+				<[^<>]+?(?:src|href|codebase|archive|usemap|data|value|action)=[^<>]+?>
 				/ix",
 			) as $regex ) {
 			$text = preg_replace_callback($regex, array('autolink_uri', 'escape_callback'), $text);
