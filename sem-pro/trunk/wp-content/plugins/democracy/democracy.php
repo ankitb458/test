@@ -3,7 +3,7 @@
 Plugin Name: Poll Widget / Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.15.1 RC fork
+Version: 1.16 RC2 fork
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
