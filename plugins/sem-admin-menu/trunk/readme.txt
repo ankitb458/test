@@ -53,7 +53,7 @@ To configure the behavior, browse Settings / Admin Menu.
 
 == Change Log ==
 
-= 5.2 =
+= 6.0 =
 
 - login/logout now do their best to redirect you to where wherever you were
 - Drop broken WPMU support
