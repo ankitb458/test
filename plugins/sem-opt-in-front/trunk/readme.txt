@@ -39,4 +39,5 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 3.2 =
 
 - Use the taxonomy API to fetch the main category
+- Localization
 - Code enhancements and optimizations
