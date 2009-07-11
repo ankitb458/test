@@ -143,9 +143,7 @@ $extra_plugins = array(
 	'sem-seo/sem-seo.php',
 	'sem-subscribe-me/sem-subscribe-me.php',
 	'silo/silo.php',
-	'uploads-folder/uploads-folder.php',
 	'version-checker/version-checker.php',
-	'widget-contexts/widget-contexts.php',
 	'wp-hashcash/wp-hashcash.php',
 	);
 
