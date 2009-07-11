@@ -3,7 +3,7 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 3.2 RC
+Version: 4.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: google-analytics
@@ -35,6 +35,7 @@ if ( !defined('sem_google_analytics_debug') )
 if ( !is_admin() ) {
 	add_action('wp_head', array('google_analytics', 'header_scripts'));
 	add_action('wp_footer', array('google_analytics', 'footer_scripts'));
+	add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
 } else {
 	add_action('admin_menu', array('google_analytics', 'admin_menu'));
 }
@@ -47,7 +48,7 @@ class google_analytics {
 	 **/
 
 	function header_scripts() {
-		extract(google_analytics::get_options(), EXTR_SKIP);
+		$uacct = google_analytics::get_options();
 		
 		if ( !$uacct )
 			return;
@@ -69,19 +70,20 @@ EOS;
 	 **/
 
 	function footer_scripts() {
-		extract(google_analytics::get_options(), EXTR_SKIP);
+		$uacct = google_analytics::get_options();
 
 		if ( !$uacct ) {
 			echo "\n" . '<!-- '
 				. __('Configure Google Analytics under Settings / Google Analytics', 'google-analytics')
 				. ' -->' . "\n";
 			return;
+		} elseif ( current_user_can('publish_posts') || current_user_can('publish_pages') ) {
+			echo "\n" . '<!-- '
+				. __('Google Analytics Notice: Authors, Editors and Admins are not tracked', 'google-analytics')
+				. ' -->' . "\n";
 		}
 		
-		$url = $_SERVER['REQUEST_URI'];
-		$url = preg_replace("/#.*$/", '', $url);
-		
-		$ga_script = <<<EOS
+		echo <<<EOS
 
 <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
@@ -89,86 +91,86 @@ document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.
 </script>
 <script type="text/javascript">
 try {
-var pageTracker = _gat._getTracker("$uacct");
-
-EOS;
-		if ( current_user_can('publish_posts') || current_user_can('publish_pages') ) {
-			echo "\n" . '<!-- '
-				. __('You are a site author, editor or admin, and aren\'t tracked as a result')
-				. '  -->' . "\n";
-			$ga_script .= '// ';
-		}
-
-		$ga_script .= <<<EOS
-pageTracker._trackPageview("$url");
+	var pageTracker = _gat._getTracker("$uacct");
 } catch(err) {}
 </script>
 
 EOS;
 
-		echo $ga_script;
-		
 		if ( !sem_google_analytics_debug && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
 		 	return;
 		
-		$evt_script = <<<EOS
+	} # footer_scripts()
+	
+	
+	/**
+	 * track_page()
+	 *
+	 * @return void
+	 **/
+
+	function track_page() {
+		if ( !sem_google_analytics_debug && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
+			return;
+		
+		$uacct = google_analytics::get_options();
+		
+		if ( !$uacct )
+			return;
+		
+		$ext2type = apply_filters('ext2type', array(
+			'audio' => array('aac','ac3','aif','aiff','mp1','mp2','mp3','m3a','m4a','m4b','ogg','ram','wav','wma'),
+			'video' => array('asf','avi','divx','dv','mov','mpg','mpeg','mp4','mpv','ogm','qt','rm','vob','wmv', 'm4v'),
+			'document' => array('doc','docx','pages','odt','rtf','pdf'),
+			'spreadsheet' => array('xls','xlsx','numbers','ods'),
+			'interactive' => array('ppt','pptx','key','odp','swf'),
+			'text' => array('txt'),
+			'archive' => array('tar','bz2','gz','cab','dmg','rar','sea','sit','sqx','zip'),
+			'code' => array('css','html','php','js'),
+		));
+		
+		unset($ext2type['code']);
+		
+		$file_regexp = array();
+		foreach ( $ext2type as $exts )
+			$file_regexp = array_merge($file_regexp, $exts);
+		
+		$file_regexp = '/\.(?:' . join('|', $file_regexp) . ')(?:\?.*)?$/';
+		
+		echo <<<EOS
 
 <script type="text/javascript">
+/* <![CDATA[ */
 //
 // GA Automated Event Tracking
 // ===========================
-// (c) 2008, Mesoconcepts
-// http://www.mesoconcepts.com/license/
+// (c) 2009, Mesoconcepts (http://www.mesoconcepts.com) - All rights reserved
 //
 
-var i = 0;
+try {
+	pageTracker._trackPageview();
+} catch(err) {}
 
-// this should catch stuff on the same domain
-var ga_base_url_regexp = new RegExp("^.+?://" + document.domain, "i");
+var i;
 
-// this should catch anything that looks more or less like a file
-var ga_file_regexp = new RegExp("\\\\.(?:phps|inc|js|css|exe|com|dll|reg|jpg|jpeg|gif|png|zip|tar\\.gz|tgz|mp3|wav|mpeg|avi|mov|swf|pdf|doc|rtf|xls|txt|csv)(?:\\\\?.*)?$", "i");
-
-// automatically track relevant anchors
-function ga_track_anchor() {
-	var url = new String(this.href);
-	url = url.replace(new RegExp("#.*$"), '');
-	
-	if ( !url.match(ga_base_url_regexp) ) {
-		url = url.replace(new RegExp("^.+?://(www\\\\.)?", "i"), '/');
-		url = "/outbound" + url;
-		//alert(url);
-		pageTracker._trackPageview(url);
-	} else if ( url.match(ga_file_regexp) ) {
-		url = url.replace(ga_base_url_regexp, '');
-		url = '/file' + url;
-		//alert(url);
-		pageTracker._trackPageview(url);
+for ( i = 0; i < document.getElementsByTagName('a').length; i++ ) {
+	if ( document.getElementsByTagName('a')[i].href.match($file_regexp) ) {
+		if ( typeof document.getElementsByTagName('a')[i].onclick == 'function' ) {
+			var fn = document.getElementsByTagName('a')[i].onclick;
+			document.getElementsByTagName('a')[i].onclick = function(event) {
+				try {
+					window.pageTracker._trackPageview(this.href);
+				} catch (err) {};
+				return fn(event);
+			}
+		}
 	}
 }
-
-// add the above method to every anchor
-for ( i = 0; i &lt; document.getElementsByTagName("a").length; i++ ) {
-	document.getElementsByTagName("a")[i].ga_track = ga_track_anchor;
-	
-	var oldonclick = document.getElementsByTagName("a")[i].onclick;	
-	if ( typeof document.getElementsByTagName("a")[i].onclick == 'function' ) {
-		document.getElementsByTagName("a")[i].onclick = function() { 
-			oldonclick(); 
-			this.ga_track(); 
-		}
-	} else {
-		document.getElementsByTagName("a")[i].onclick = function() { 
-			this.ga_track(); 
-		}
-	}	
-}
+/* ]]> */
 </script>
 
 EOS;
-		
-		echo $evt_script;
-	} # footer_scripts()
+	} # track_page()
 	
 	
 	/**
@@ -185,8 +187,12 @@ EOS;
 		
 		$o = get_option('google_analytics');
 		
-		if ( $o === false )
+		if ( is_array($o) ) {
+			$o = $o['uacct'];
+			update_option('google_analytics', $o);
+		} elseif ( $o === false ) {
 			$o = google_analytics::init_options();
+		}
 		
 		return $o;
 	} # get_options()
@@ -204,12 +210,10 @@ EOS;
 		if ( $o !== false && is_string($o['script'])
 			&& preg_match("/_uacct\s*=\s*\"([^\"]+)\"\s*;/", $o['script'], $match)
 			) {
-			$o = array(
-				'uacct' => $match[1],
-				);
+			$o = $match[1];
 			delete_option('sem_google_analytics_params');
 		} else {
-			$o = false;
+			$o = '';
 		}
 		
 		$o = wp_parse_args($o, array('uacct' => false));
