@@ -36,7 +36,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
-= 3.2 =
+= 4.0 =
 
 - Use the taxonomy API to fetch the main category
 - Localization
