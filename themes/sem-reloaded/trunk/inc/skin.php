@@ -218,7 +218,7 @@ EOS;
 			. '</span>';
 		
 		if ( $details['description'] ) {
-			echo wpautop($details['description']);
+			echo wpautop(apply_filters('widget_text', $details['description']));
 		}
 		
 		if ( $details['tags'] ) {

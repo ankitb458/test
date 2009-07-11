@@ -1133,7 +1133,7 @@ class blog_header extends WP_Widget {
 		echo '</h1>' . "\n";
 		
 		if ( $desc )
-			echo wpautop($desc);
+			echo wpautop(apply_filters('widget_text', $desc));
 		
 		echo $after_widget;
 	} # widget()

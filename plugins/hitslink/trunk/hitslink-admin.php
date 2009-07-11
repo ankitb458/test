@@ -123,9 +123,8 @@ EOS;
 				. " />"
 			. "</p>\n";
 		
-		echo '</form>' . "\n";
-
-		echo '</div>' . "\n";
+		echo '</form>' . "\n"
+			. '</div>' . "\n";
 	} # edit_options()
 } # hitslink_admin
 ?>

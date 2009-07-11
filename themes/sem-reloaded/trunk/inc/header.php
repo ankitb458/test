@@ -151,7 +151,7 @@ class sem_header {
 		echo '<h2>' . __('Manage Header', 'sem-reloaded') . '</h2>' . "\n";
 		
 		echo '<p>'
-			. __('The header\'s height will automatically adjust to fit your image or flash file. The width to use will depend on your <a href="?page=layout">layout</a>\'s canvas width, and on your <a href="?page=skin">skin</a> (strip 20px if you\'re using the Kubrick skin).', 'sem-reloaded')
+			. __('The header\'s height will automatically adjust to fit your image or flash file. The width to use will depend on your <a href="themes.php?page=layout">layout</a>\'s canvas width, and on your <a href="themes.php?page=skin">skin</a> (strip 20px if you\'re using the Kubrick skin).', 'sem-reloaded')
 			. '</p>' . "\n";
 		
 		if ( $header ) {
@@ -182,7 +182,7 @@ class sem_header {
 					. '</div>' . "\n";
 			} elseif ( strpos($header, "/skins/$active_skin/") !== false ) {
 				echo '<p>'
-					. sprintf(__('This header (%s) is hard-coded in your <a href="?page=skin">skin</a>. You cannot delete it, but you can override it.', 'sem-reloaded'), 'wp-content' . $header)
+					. sprintf(__('This header (%s) is hard-coded in your <a href="themes.php?page=skin">skin</a>. You cannot delete it, but you can override it.', 'sem-reloaded'), 'wp-content' . $header)
 					. '</p>' . "\n";
 			} else {
 				echo '<p>'
