@@ -13,7 +13,7 @@ if ( !is_admin() ) {
 	add_action('wp_head', array('sem_template' ,'trackback_rdf'), 100);
 	add_filter('body_class', array('sem_template', 'body_class'));
 	add_filter('widget_title', array('sem_template', 'widget_title'));
-	add_action('wp_footer', array('sem_template', 'display_credits'));
+	add_action('wp_footer', array('sem_template', 'display_credits'), 5);
 	remove_action('wp_print_styles', array('external_links', 'styles'), 5);
 } else {
 	add_action('admin_menu', array('sem_template', 'admin_menu'));
