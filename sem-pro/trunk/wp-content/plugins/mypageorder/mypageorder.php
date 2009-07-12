@@ -31,6 +31,7 @@ if($mode == "act_OrderPages")
 {
 	$idString = $_GET['idString'];
 	$IDs = explode(",", $idString);
+	$IDs = array_map('intval', $IDs);
 	$result = count($IDs);
 
 	for($i = 0; $i < $result; $i++)
@@ -38,6 +39,9 @@ if($mode == "act_OrderPages")
 		$j = $i + 1;
 		$wpdb->query("UPDATE $wpdb->posts SET menu_order = '$j' WHERE id ='$IDs[$i]'");
     }
+
+	wp_cache_flush();
+	do_action('flush_cache');
 }
 else
 {
