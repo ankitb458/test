@@ -201,6 +201,11 @@ class inline_widgets {
 	 **/
 
 	function upgrade() {
+		global $wp_db_version;
+		
+		if ( get_option('db_version') != $wp_db_version )
+			return;
+		
 		global $wpdb;
 		
 		$posts = $wpdb->get_results("
