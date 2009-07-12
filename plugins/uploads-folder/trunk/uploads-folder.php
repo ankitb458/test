@@ -22,4 +22,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 if ( !class_exists('uploads_folder') ) {
 	include dirname(__FILE__) . '/uploads-folder/uploads-folder.php';
 }
+
+register_activation_hook(__FILE__, array('uploads_folder', 'reset'));
+register_deactivation_hook(__FILE__, array('uploads_folder', 'reset'));
 ?>

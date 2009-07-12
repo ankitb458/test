@@ -31,4 +31,5 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 2.0 =
 
 - Complete rewrite / package the actual script as a library
+- Localization
 - Code enhancements and optimizations
