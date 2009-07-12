@@ -220,6 +220,7 @@ class inline_widgets {
 				SET		post_content = '" . $wpdb->escape($post->post_content) . "'
 				WHERE	ID = " . intval($post->ID)
 				);
+			wp_cache_delete($post->ID, 'posts');
 		}
 		
 		ignore_user_abort($ignore_user_abort);
