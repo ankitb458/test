@@ -67,7 +67,7 @@ class sem_widgets {
 	function admin_scripts() {
 		$folder = sem_url . '/js';
 		wp_enqueue_script('jquery-livequery', $folder . '/jquery.livequery.js', array('jquery'),  '1.1', true);
-		wp_enqueue_script( 'nav-menus', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090502', true);
+		wp_enqueue_script( 'nav-menus', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090712', true);
 	} # admin_scripts()
 	
 	
@@ -2447,7 +2447,9 @@ class sem_nav_menu extends WP_Widget {
 		
 		echo '</div>' . "\n"; # controller
 		
-		echo '<div class="nav_menu_item_defaults" style="display: none;">' . "\n";
+		echo '<div class="nav_menu_item_defaults"'
+			. ' style="display: none;"'
+			. '>' . "\n";
 		
 		echo '<div class="nav_menu_item_blank">' . "\n"
 			. '<p>' . __('Empty Navigation Menu. Leave it empty to populate it automatically.', 'sem-reloaded') . '</p>' . "\n"
