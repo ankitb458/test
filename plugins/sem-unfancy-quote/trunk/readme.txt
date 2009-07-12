@@ -15,6 +15,12 @@ The unfancy quote plugin for WordPress lets you override WordPress' quote fancif
 
 Note: This functionality has been mostly fixed since WordPress 2.7.
 
+= Help Me! =
+
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+
+If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+
 
 == Installation ==
 
@@ -22,10 +28,8 @@ Note: This functionality has been mostly fixed since WordPress 2.7.
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 
-== Frequently Asked Questions ==
+== Change Log ==
 
-= Help Me! =
+= 3.0 =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
-
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+- Localization
