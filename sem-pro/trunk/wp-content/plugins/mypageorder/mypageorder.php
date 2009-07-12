@@ -38,9 +38,9 @@ if($mode == "act_OrderPages")
 	{
 		$j = $i + 1;
 		$wpdb->query("UPDATE $wpdb->posts SET menu_order = '$j' WHERE id ='$IDs[$i]'");
+		wp_cache_delete($IDs[$i], 'posts');
     }
 
-	wp_cache_flush();
 	do_action('flush_cache');
 }
 else
