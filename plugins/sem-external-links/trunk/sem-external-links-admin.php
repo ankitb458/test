@@ -91,7 +91,7 @@ class external_links_admin {
 			. __('Mark outbound links with an icon.', 'external-links')
 			. '</label>'
 			. '<br />' . "\n"
-			. __('Note: You can override this behavior by adding a no_icon class to individual links.', 'external-links')
+			. __('Note: You can override this behavior by adding a class="no_icon" to individual links.', 'external-links')
 			. '</td>' . "\n"
 			. '</tr>' . "\n";
 		
@@ -108,7 +108,7 @@ class external_links_admin {
 			. __('Add a rel=nofollow attribute to outbound links.', 'external-links')
 			. '</label>'
 			. '<br />' . "\n"
-			. __('Note: You can override this behavior by adding a follow rel to individual links.', 'external-links')
+			. __('Note: You can override this behavior by adding a rel="follow" to individual links.', 'external-links')
 			. '</td>' . "\n"
 			. '</tr>' . "\n";
 		

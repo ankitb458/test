@@ -18,7 +18,7 @@ You can configure the plugin to:
 - Process all outgoing links, rather than only those within your entries' content.
 - Add an external link icon to outgoing links. You can use a class="no_icon" attribute on links to override this.
 - Open outgoing links in new windows. Note that this can damage your visitor's trust towards your site in that they can think your site used a pop-under.
-- Add rel=nofollow to the links. This is not very nice for those you're linking to, but useful to avoid PR leak.
+- Add rel=nofollow to the links. You can use a rel="nofollow" attribute on links to override this.
 
 = Help Me! =
 
