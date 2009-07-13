@@ -6,7 +6,7 @@ Description: Enhances WordPress' default excerpt generator by generating paragra
 Version: 3.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-fancy-excerpt
+Text Domain: fancy-excerpt
 Domain Path: /lang
 */
 
@@ -20,7 +20,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('sem-fancy-excerpt', false, dirname(plugin_basename(__FILE__)) . '/lang');
+load_plugin_textdomain('fancy-excerpt', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
