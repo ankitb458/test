@@ -6,7 +6,7 @@ Description: Automatically adds your affiliate ID to all links to Semiologic.
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: sem-semiologic-affiliate
+Text Domain: semiologic-affiliate
 Domain Path: /lang
 */
 
