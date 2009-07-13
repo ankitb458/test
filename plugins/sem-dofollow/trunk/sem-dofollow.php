@@ -27,9 +27,6 @@ Hat tips
 **/
 
 
-load_plugin_textdomain('sem-dofollow', false, dirname(plugin_basename(__FILE__)) . '/lang');
-
-
 add_filter('get_comment_author_link', 'strip_nofollow', 15);
 add_filter('comment_text', 'strip_nofollow', 15);
 remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
