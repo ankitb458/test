@@ -534,7 +534,7 @@ class bookmark_me extends WP_Widget {
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( !is_array($widgets) )
 				continue;
-			$key = array_search('sem-bookmark-me', $widgets);
+			$key = array_search('bookmark-me', $widgets);
 			if ( $key !== false ) {
 				$sidebars_widgets[$sidebar][$key] = 'bookmark_me';
 				$changed = true;
