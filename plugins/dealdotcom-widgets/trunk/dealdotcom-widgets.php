@@ -6,7 +6,7 @@ Description: Widgets that let you display <a href="http://go.semiologic.com/deal
 Version: 2.0 RC2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: deadotcom
+Text Domain: deadotcom-widgets
 Domain Path: /lang
 */
 
@@ -20,7 +20,7 @@ http://www.opensource.org/licenses/gpl-2.0.php
 **/
 
 
-load_plugin_textdomain('dealdotcom', false, dirname(plugin_basename(__FILE__)) . '/lang');
+load_plugin_textdomain('dealdotcom-widgets', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -75,14 +75,14 @@ class dealdotcom extends WP_Widget {
 	function dealdotcom() {
 		$widget_ops = array(
 			'classname' => 'dealdotcom',
-			'description' => __('Dealdotcom\'s deal of the day', 'dealdotcom'),
+			'description' => __('Dealdotcom\'s deal of the day', 'dealdotcom-widgets'),
 			);
 		$control_ops = array(
 			'width' => 330,
 			);
 		
 		$this->init();
-		$this->WP_Widget('dealdotcom', __('Dealdotcom Widget', 'dealdotcom'), $widget_ops, $control_ops);
+		$this->WP_Widget('dealdotcom', __('Dealdotcom Widget', 'dealdotcom-widgets'), $widget_ops, $control_ops);
 	} # dealdotcom()
 	
 	
@@ -105,7 +105,7 @@ class dealdotcom extends WP_Widget {
 		if ( !$aff_id ) {
 			echo $before_widget
 				. '<div style="border: solid 2px firebrick; padding: 5px; background-color: AntiqueWhite; color: firebrick; font-weight: bold;">'
-				. sprintf(__('Your <a href="%s">dealdotcom</a> affiliate ID is not configured.', 'dealdotcom'), esc_url('http://go.semiologic.com/dealdotcom'))
+				. sprintf(__('Your <a href="%s">dealdotcom</a> affiliate ID is not configured.', 'dealdotcom-widgets'), esc_url('http://go.semiologic.com/dealdotcom'))
 				. '</div>'
 				. $after_widget;
 			return;
@@ -203,7 +203,7 @@ class dealdotcom extends WP_Widget {
 		extract($instance, EXTR_SKIP);
 		
 		echo '<p>'
-			. sprintf(__('Your <a href="%s">DealDotCom</a> Affiliate ID:', 'dealdotcom'), esc_url('http://go.semiologic.com/dealdotcom'))
+			. sprintf(__('Your <a href="%s">DealDotCom</a> Affiliate ID:', 'dealdotcom-widgets'), esc_url('http://go.semiologic.com/dealdotcom'))
 				. '<br />'
 			. '<label>'
 			. 'http://www.dealdotcom.com/invite/'
