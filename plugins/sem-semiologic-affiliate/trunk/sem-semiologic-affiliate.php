@@ -6,7 +6,7 @@ Description: Automatically adds your affiliate ID to all links to Semiologic.
 Version: 2.0 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
-Text Domain: semiologic-affiliate
+Text Domain: sem-semiologic-affiliate
 Domain Path: /lang
 */
 
@@ -20,7 +20,7 @@ http://www.mesoconcepts.com/license/
 **/
 
 
-load_plugin_textdomain('semiologic-affiliate', false, dirname(plugin_basename(__FILE__)) . '/lang');
+load_plugin_textdomain('sem-semiologic-affiliate', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -54,8 +54,8 @@ class semiologic_affiliate {
 
 	function admin_menu() {
 		add_options_page(
-			__('Semiologic Affiliate', 'semiologic-affiliate'),
-			__('Semiologic Affiliate', 'semiologic-affiliate'),
+			__('Semiologic Affiliate', 'sem-semiologic-affiliate'),
+			__('Semiologic Affiliate', 'sem-semiologic-affiliate'),
 			'manage_options',
 			'semiologic_affiliate',
 			array('semiologic_affiliate_admin', 'edit_options')

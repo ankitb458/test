@@ -32,7 +32,7 @@ class semiologic_affiliate_admin {
 		echo "<div class=\"updated fade\">\n"
 			. "<p>"
 				. "<strong>"
-				. __('Settings saved.', 'semiologic-affiliate')
+				. __('Settings saved.', 'sem-semiologic-affiliate')
 				. "</strong>"
 			. "</p>\n"
 			. "</div>\n";
@@ -54,20 +54,20 @@ class semiologic_affiliate_admin {
 		
 		screen_icon();
 		
-		echo '<h2>' . __('Semiologic Affiliate Settings', 'semiologic-affiliate') . '</h2>' . "\n";
+		echo '<h2>' . __('Semiologic Affiliate Settings', 'sem-semiologic-affiliate') . '</h2>' . "\n";
 		
 		$aff_id = semiologic_affiliate::get_campaign();
 		
 		echo '<table class="form-table">' . "\n";
 		
 		echo '<p>'
-			. __('Filling the above field with one of your own campaign IDs will cause all links to semiologic.com and getsemiologic.com on the site to use that campaign ID automatically.', 'semiologic-affiliate')
+			. __('Filling the above field with one of your own campaign IDs will cause all links to semiologic.com and getsemiologic.com on the site to use that campaign ID automatically.', 'sem-semiologic-affiliate')
 			. '</p>' . "\n";
 
 		echo '<tr>' . "\n"
 			. '<th scope="row">'
 			. '<label for="campaign_key">'
-			. sprintf(__('Your <a href="%s">Campaign ID</a>', 'semiologic-affiliate'), 'http://oldbackend.semiologic.com')
+			. sprintf(__('Your <a href="%s">Campaign ID</a>', 'sem-semiologic-affiliate'), 'http://oldbackend.semiologic.com')
 			. '</label>'
 			. '</th>' . "\n"
 			. '<td>'
@@ -82,7 +82,7 @@ class semiologic_affiliate_admin {
 		echo '</table>' . "\n";
 		
 		echo '<div class="submit">'
-			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'semiologic-affiliate')) . '" />'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-semiologic-affiliate')) . '" />'
 			. '</div>' . "\n";
 		
 		echo '</form>' . "\n";
