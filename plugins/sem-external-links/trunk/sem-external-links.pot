@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-13 16:19+0200\n"
+"POT-Creation-Date: 2009-07-13 18:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,6 +88,14 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: sem-external-links.php:227 sem-external-links.php:228
+#: sem-external-links-info.php:2 sem-external-links.php:227
+#: sem-external-links.php:228
 msgid "External Links"
+msgstr ""
+
+#: sem-external-links-info.php:3
+msgid ""
+"Marks outbound links as such, with various effects that are configurable "
+"under <a href=\"options-general.php?page=external-links\">Settings / "
+"External Links</a>."
 msgstr ""
