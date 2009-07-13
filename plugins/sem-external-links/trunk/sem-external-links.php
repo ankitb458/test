@@ -84,7 +84,7 @@ class external_links {
 			$anchor['attr']['class'][] = 'external_icon';
 		
 		if ( $o['nofollow'] && !function_exists('strip_nofollow')
-			&& !in_array('nofollow', $anchor['attr']['rel']) )
+			&& !in_array('nofollow', $anchor['attr']['rel']) && !in_array('follow', $anchor['attr']['rel']) )
 			$anchor['attr']['rel'][] = 'nofollow';
 		
 		if ( $o['target'] ) {

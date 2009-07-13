@@ -37,6 +37,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 = 4.0 =
 
+- Allow to force a follow when the nofollow option is toggled
 - Enhance escape/unescape methods
 - Localization
 - Code enhancements and optimizations

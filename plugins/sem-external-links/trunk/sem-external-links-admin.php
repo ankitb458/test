@@ -107,6 +107,8 @@ class external_links_admin {
 			. '&nbsp;'
 			. __('Add a rel=nofollow attribute to outbound links.', 'external-links')
 			. '</label>'
+			. '<br />' . "\n"
+			. __('Note: You can override this behavior by adding a follow rel to individual links.', 'external-links')
 			. '</td>' . "\n"
 			. '</tr>' . "\n";
 		

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-10 14:18+0200\n"
+"POT-Creation-Date: 2009-07-13 13:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,15 +62,21 @@ msgstr ""
 msgid "Add a rel=nofollow attribute to outbound links."
 msgstr ""
 
-#: sem-external-links-admin.php:115
+#: sem-external-links-admin.php:111
+msgid ""
+"Note: You can override this behavior by adding a follow rel to individual "
+"links."
+msgstr ""
+
+#: sem-external-links-admin.php:117
 msgid "Open in New Windows"
 msgstr ""
 
-#: sem-external-links-admin.php:123
+#: sem-external-links-admin.php:125
 msgid "Open outbound links in new windows."
 msgstr ""
 
-#: sem-external-links-admin.php:126
+#: sem-external-links-admin.php:128
 msgid ""
 "Note: Some usability experts discourage this, claiming that <a href=\"http://"
 "www.useit.com/alertbox/9605.html\">this can damage your visitor's trust</a> "
@@ -78,7 +84,7 @@ msgid ""
 "know how to use the back button and encourage the practice."
 msgstr ""
 
-#: sem-external-links-admin.php:134
+#: sem-external-links-admin.php:136
 msgid "Save Changes"
 msgstr ""
 
