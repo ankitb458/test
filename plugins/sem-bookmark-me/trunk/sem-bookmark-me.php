@@ -26,7 +26,7 @@ Other icons are copyright their respective holders.
 **/
 
 
-load_plugin_textdomain('bookmark-me', false, dirname(plugin_basename(__FILE__)) . '/lang');
+load_plugin_textdomain('sem-bookmark-me', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 
 /**
@@ -146,11 +146,11 @@ class bookmark_me extends WP_Widget {
 	function bookmark_me() {
 		$widget_ops = array(
 			'classname' => 'bookmark_me',
-			'description' => __('Bookmark links to social media sites such as Buzzup, Delicious and Digg', 'bookmark-me'),
+			'description' => __('Bookmark links to social media sites such as Buzzup, Delicious and Digg', 'sem-bookmark-me'),
 			);
 		
 		$this->init();
-		$this->WP_Widget('bookmark_me', __('Bookmark Me', 'bookmark-me'), $widget_ops);
+		$this->WP_Widget('bookmark_me', __('Bookmark Me', 'sem-bookmark-me'), $widget_ops);
 	} # bookmark_me()
 	
 	
@@ -244,13 +244,13 @@ class bookmark_me extends WP_Widget {
 				echo '<div class="bookmark_me_actions">' . "\n";
 
 				echo '<a href="mailto:?subject=%email_title%&amp;body=%email_url%"'
-					. ' title="' . esc_attr(__('Email', 'bookmark-me')) .  '" class="email_entry no_icon">'
-					. __('Email', 'bookmark-me')
+					. ' title="' . esc_attr(__('Email', 'sem-bookmark-me')) .  '" class="email_entry no_icon">'
+					. __('Email', 'sem-bookmark-me')
 					. '</a>' . "\n";
 
 				echo '<a href="%print_url%"'
-					. ' title="' . esc_attr(__('Print', 'bookmark-me')) .  '" class="print_entry no_icon">'
-					. __('Print', 'bookmark-me')
+					. ' title="' . esc_attr(__('Print', 'sem-bookmark-me')) .  '" class="print_entry no_icon">'
+					. __('Print', 'sem-bookmark-me')
 					. '</a>' . "\n";
 				
 				echo '</div>' . "\n";
@@ -307,19 +307,19 @@ class bookmark_me extends WP_Widget {
 	function get_main_services() {
 		return array(
 			'buzzup' => array(
-			 	'name' => __('Buzz Up', 'bookmark-me'),
+			 	'name' => __('Buzz Up', 'sem-bookmark-me'),
 			 	'url' => 'http://buzz.yahoo.com/buzz?headline=%enc_title%&targetUrl=%enc_url%',
 			 	),
 			'digg' => array(
-				'name' => __('Digg', 'bookmark-me'),
+				'name' => __('Digg', 'sem-bookmark-me'),
 				'url' => 'http://digg.com/submit?phase=2&title=%enc_title%&url=%enc_url%',
 				),
 			'mixx' => array(
-				'name' => __('Mixx', 'bookmark-me'),
+				'name' => __('Mixx', 'sem-bookmark-me'),
 				'url' => 'http://www.mixx.com/submit?page_url=%enc_url%',
 				),
 			'twitter' => array(
-		        'name' => __('Twitter', 'bookmark-me'),
+		        'name' => __('Twitter', 'sem-bookmark-me'),
 				'url' => 'http://twitter.com/timeline/home/?status=%enc_url%',
 				),
 			);
@@ -335,75 +335,75 @@ class bookmark_me extends WP_Widget {
 	function get_extra_services() {
 		return array(
 			'current' => array(
-				'name' => __('Current', 'bookmark-me'),
+				'name' => __('Current', 'sem-bookmark-me'),
 				'url' => 'http://current.com/clipper.htm?src=st&title=%enc_title%&url=%enc_url%',
 				),
 			'delicious' => array(
-				'name' => __('Delicious', 'bookmark-me'),
+				'name' => __('Delicious', 'sem-bookmark-me'),
 				'url' => 'http://del.icio.us/post?title=%enc_title%&url=%enc_url%',
 				),
 			'diigo' => array(
-				'name' => __('Diigo', 'bookmark-me'),
+				'name' => __('Diigo', 'sem-bookmark-me'),
 				'url' => 'http://secure.diigo.com/post?title=%enc_title%&url=%enc_url%',
 				),
 			'facebook' => array(
-				'name' => __('Facebook', 'bookmark-me'),
+				'name' => __('Facebook', 'sem-bookmark-me'),
 				 'url' => 'http://www.facebook.com/share.php?t=%enc_title%&u=%enc_url%'
 				),
 			'fark' => array(
-				'name' => __('Fark', 'bookmark-me'),
+				'name' => __('Fark', 'sem-bookmark-me'),
 				'url' => 'http://cgi.fark.com/cgi/farkit.pl?h=%enc_title%&u=%enc_url%',
 				),
 			'google' => array(
-				'name' => __('Google', 'bookmark-me'),
+				'name' => __('Google', 'sem-bookmark-me'),
 				'url' => 'http://www.google.com/bookmarks/mark?op=add&title=%enc_title%&bkmk=%enc_url%',
 				),
 			'linkedin' => array(
-				'name' => __('LinkedIn', 'bookmark-me'),
+				'name' => __('LinkedIn', 'sem-bookmark-me'),
 				'url' => 'http://www.linkedin.com/shareArticle?mini=true&summary=&source=&title=%enc_title%&url=%enc_url%',
 				),
 			'live' => array(
-				'name' => __('Live', 'bookmark-me'),
+				'name' => __('Live', 'sem-bookmark-me'),
 				'url' => 'https://favorites.live.com/quickadd.aspx?marklet=1&mkt=en-us&top=1&title=%enc_title%&url=%enc_url%',
 				),
 			'myspace' => array(
-				'name' => __('MySpace', 'bookmark-me'),
+				'name' => __('MySpace', 'sem-bookmark-me'),
 				'url' => 'http://www.myspace.com/Modules/PostTo/Pages/?l=3&t=t=%enc_title%&u=%enc_url%',
 				),
 			'newsvine' => array(
-				'name' => __('Newsvine', 'bookmark-me'),
+				'name' => __('Newsvine', 'sem-bookmark-me'),
 				'url' => 'http://www.newsvine.com/_tools/seed&save?h=%enc_title%&u=%enc_url%',
 				),
 			'propeller' => array(
-				'name' => __('Propeller', 'bookmark-me'),
+				'name' => __('Propeller', 'sem-bookmark-me'),
 				'url' => 'http://www.propeller.com/submit/?T=%enc_title%&U=%enc_url%',
 				),
 			'reddit' => array(
-				'name' => __('Reddit', 'bookmark-me'),
+				'name' => __('Reddit', 'sem-bookmark-me'),
 				'url' => 'http://reddit.com/submit?title=%enc_title%&url=%enc_url%',
 				),
 			'slashdot' => array(
-				'name' => __('Slashdot', 'bookmark-me'),
+				'name' => __('Slashdot', 'sem-bookmark-me'),
 				'url' => 'http://slashdot.org/bookmark.pl?title=%enc_title%&url=%enc_url%',
 				),
 			'sphinn' => array(
-				'name' => __('Sphinn', 'bookmark-me'),
+				'name' => __('Sphinn', 'sem-bookmark-me'),
 				'url' => 'http://sphinn.com/submit.php?title=%enc_title%&url=%enc_url%',
 				),					
 			'stumbleupon' => array(
-				'name' => __('StumbleUpon', 'bookmark-me'),
+				'name' => __('StumbleUpon', 'sem-bookmark-me'),
 				'url' => 'http://www.stumbleupon.com/submit?title=%enc_title%&url=%enc_url%',
 				),
 		    'tipd' => array(
-				'name' => __('Tip\'d', 'bookmark-me'),
+				'name' => __('Tip\'d', 'sem-bookmark-me'),
 				'url' => 'http://tipd.com/submit.php?url=%enc_url%',
 				),
 			'yahoo' => array(
-				'name' => __('Yahoo!', 'bookmark-me'),
+				'name' => __('Yahoo!', 'sem-bookmark-me'),
 				'url' => 'http://bookmarks.yahoo.com/toolbar/savebm?opener=tb&t=%enc_title%&u=%enc_url%',
 				),
 			'help' => array(
-				'name' => __('What\'s This?', 'bookmark-me'),
+				'name' => __('What\'s This?', 'sem-bookmark-me'),
 				'url' => 'http://www.semiologic.com/resources/blogging/help-with-social-media-sites/',
 				),
 			);
@@ -439,7 +439,7 @@ class bookmark_me extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. __('Title:', 'bookmark-me')
+			. __('Title:', 'sem-bookmark-me')
 			. '<br />'
 			. '<input type="text" class="widefat"'
 				. ' id="' . $this->get_field_id('title') . '"'
@@ -534,7 +534,7 @@ class bookmark_me extends WP_Widget {
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
 			if ( !is_array($widgets) )
 				continue;
-			$key = array_search('bookmark-me', $widgets);
+			$key = array_search('sem-bookmark-me', $widgets);
 			if ( $key !== false ) {
 				$sidebars_widgets[$sidebar][$key] = 'bookmark_me';
 				$changed = true;

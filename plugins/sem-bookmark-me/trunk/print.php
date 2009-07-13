@@ -42,7 +42,7 @@ if ( have_posts() ) {
 		
 		if ( is_single() )
 			echo '<p>'
-				. sprintf(__('Filed under %s', 'bookmark-me'), get_the_category_list(', '))
+				. sprintf(__('Filed under %s', 'sem-bookmark-me'), get_the_category_list(', '))
 				. '</p>' . "\n";
 	}
 }
