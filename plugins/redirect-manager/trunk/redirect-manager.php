@@ -10,7 +10,6 @@ Text Domain: redirect-manager
 Domain Path: /lang
 */
 
-
 /*
 Terms of use
 ------------

@@ -2673,7 +2673,9 @@ class sem_nav_menu extends WP_Widget {
 			
 			if ( !$widgets )
 				continue;
+			
 			unset($widgets['_multiwidget']);
+			unset($widgets['number']);
 			
 			foreach ( array_keys($widgets) as $widget_id )
 				$cache_ids[] = "$type-$widget_id";
