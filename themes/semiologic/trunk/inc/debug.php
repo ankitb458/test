@@ -65,7 +65,7 @@ function dump_stops($in = null) {
 		foreach ( $wpdb->queries as $key => $data ) {
 			$query = rtrim($data[0]);
 			
-			$duration = number_format($data[1] * 1000, 3) . 'ms';
+			$duration = number_format($data[1] * 1000, 1) . 'ms';
 			
 			$loc = trim($data[2]);
 			$loc = preg_replace("/(require|include)(_once)?,\s*/ix", '', $loc);
