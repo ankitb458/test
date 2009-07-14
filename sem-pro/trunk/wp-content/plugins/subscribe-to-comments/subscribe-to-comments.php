@@ -768,6 +768,9 @@ class sg_subscribe {
 		if ( $update )
 			update_option('sg_subscribe_settings', $settings);
 
+		if ( get_option('sg_did_install') )
+			return;
+		
 		$column_name = 'comment_subscribe';
 		foreach ( (array) $wpdb->get_col("DESC $wpdb->comments", 0) as $column )
 			if ($column == $column_name)
@@ -775,6 +778,8 @@ class sg_subscribe {
 
 		// didn't find it... create it
 		$wpdb->query("ALTER TABLE $wpdb->comments ADD COLUMN comment_subscribe enum('Y','N') NOT NULL default 'N'");
+		
+		add_option('sg_did_install', 1);
 	}
 
 
