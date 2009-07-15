@@ -1493,7 +1493,7 @@ class header extends WP_Widget {
 		$ext = strtolower(end($ext));
 		
 		if ( $ext != 'swf' ) {
-			echo '<div id="header_img" class="pad">'
+			echo '<div id="header_img">'
 				. '<img src="' . sem_url . '/icons/pixel.gif" height="100%" width="100%" alt="'
 					. esc_attr(get_option('blogname'))
 					. ' &bull; '
@@ -1727,6 +1727,8 @@ EOS;
 	border: 0px;
 	overflow: hidden;
 	position: relative;
+	padding: 0px;
+	margin: 0px;
 }
 </style>
 

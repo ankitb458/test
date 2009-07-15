@@ -1795,6 +1795,8 @@ EOS;
 	border: 0px;
 	overflow: hidden;
 	position: relative;
+	padding: 0px;
+	margin: 0px;
 }
 </style>
 
