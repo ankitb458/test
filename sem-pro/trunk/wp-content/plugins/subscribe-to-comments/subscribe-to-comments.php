@@ -1203,7 +1203,7 @@ function checkAll(form) {
 	<?php endif; ?>
 
 
-<?php die(); // stop WP from loading ?>
+<?php if ( !function_exists('is_admin') || !is_admin() ) die(); // stop WP from loading ?>
 <?php }
 
 if ( is_admin() )
