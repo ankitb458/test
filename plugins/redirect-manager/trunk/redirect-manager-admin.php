@@ -41,7 +41,7 @@ class redirect_manager_admin {
 	 **/
 	
 	function save_entry($post_id) {
-		if ( wp_is_post_revision($post_id) )
+		if ( !$_POST || wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id) )
 			return;
 		
 		if ( current_user_can('edit_post', $post_id) ) {
