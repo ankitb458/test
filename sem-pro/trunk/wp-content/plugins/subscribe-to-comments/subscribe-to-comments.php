@@ -1077,7 +1077,7 @@ function sg_subscribe_admin($standalone = false) {
 				<p><a href="<?php echo $sg_subscribe->form_action; ?>"><?php _e('&laquo; Back'); ?></a></p>
 			<?php endif; ?>
 
-			<legend><?php _e('Find Subscriptions', 'subscribe-to-comments'); ?></legend>
+			<h2><?php _e('Find Subscriptions', 'subscribe-to-comments'); ?></h2>
 
 			<p>
 			<?php _e('Enter an e-mail address to view its subscriptions or undo a block.', 'subscribe-to-comments'); ?>
