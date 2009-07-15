@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-13 18:45+0200\n"
+"POT-Creation-Date: 2009-07-15 15:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,9 +26,8 @@ msgstr ""
 
 #: sem-semiologic-affiliate-admin.php:64
 msgid ""
-"Filling the above field with one of your own campaign IDs will cause all "
-"links to semiologic.com and getsemiologic.com on the site to use that "
-"campaign ID automatically."
+"Fill in the field that follows to make all links to semiologic.com and "
+"getsemiologic.com on the site use your campaign ID automatically."
 msgstr ""
 
 #: sem-semiologic-affiliate-admin.php:70
@@ -40,6 +39,11 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: sem-semiologic-affiliate.php:57 sem-semiologic-affiliate.php:58
+#: sem-semiologic-affiliate-info.php:2 sem-semiologic-affiliate.php:57
+#: sem-semiologic-affiliate.php:58
 msgid "Semiologic Affiliate"
+msgstr ""
+
+#: sem-semiologic-affiliate-info.php:3
+msgid "Automatically adds your affiliate ID to all links to Semiologic."
 msgstr ""

@@ -61,7 +61,7 @@ class semiologic_affiliate_admin {
 		echo '<table class="form-table">' . "\n";
 		
 		echo '<p>'
-			. __('Filling the above field with one of your own campaign IDs will cause all links to semiologic.com and getsemiologic.com on the site to use that campaign ID automatically.', 'sem-semiologic-affiliate')
+			. __('Fill in the field that follows to make all links to semiologic.com and getsemiologic.com on the site use your campaign ID automatically.', 'sem-semiologic-affiliate')
 			. '</p>' . "\n";
 
 		echo '<tr>' . "\n"
