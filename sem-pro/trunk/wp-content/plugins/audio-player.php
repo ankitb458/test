@@ -28,7 +28,7 @@ $to_upgrade = $wpdb->get_results("
 	");
 
 $ignore_user_abort = ignore_user_abort(true);
-set_time_limit(600);
+@set_time_limit(600);
 
 foreach ( $to_upgrade as $to_do ) {
 	$to_do->post_content = preg_replace(

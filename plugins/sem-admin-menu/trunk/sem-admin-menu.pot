@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 6.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-11 22:50+0200\n"
+"POT-Creation-Date: 2009-07-15 14:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: sem-admin-menu-info.php:2 sem-admin-menu.php:323 sem-admin-menu.php:324
+#: sem-admin-menu-info.php:2 sem-admin-menu.php:325 sem-admin-menu.php:326
 msgid "Admin Menu"
 msgstr ""
 
@@ -58,42 +58,42 @@ msgstr ""
 msgid "New Post"
 msgstr ""
 
-#: sem-admin-menu.php:166
+#: sem-admin-menu.php:168
 msgid "New Page"
 msgstr ""
 
-#: sem-admin-menu.php:175 sem-admin-menu.php:182
+#: sem-admin-menu.php:177 sem-admin-menu.php:184
 msgid "Manage"
 msgstr ""
 
-#: sem-admin-menu.php:191
+#: sem-admin-menu.php:193
 msgid "Comments"
 msgstr ""
 
-#: sem-admin-menu.php:207
+#: sem-admin-menu.php:209
 msgid "Themes"
 msgstr ""
 
-#: sem-admin-menu.php:215
+#: sem-admin-menu.php:217
 msgid "Widgets"
 msgstr ""
 
-#: sem-admin-menu.php:225
+#: sem-admin-menu.php:227
 msgid "Plugins"
 msgstr ""
 
-#: sem-admin-menu.php:234
+#: sem-admin-menu.php:236
 msgid "Settings"
 msgstr ""
 
-#: sem-admin-menu.php:244
+#: sem-admin-menu.php:246
 msgid "Dashboard"
 msgstr ""
 
-#: sem-admin-menu.php:251
+#: sem-admin-menu.php:253
 msgid "Profile"
 msgstr ""
 
-#: sem-admin-menu.php:261
+#: sem-admin-menu.php:263
 msgid "Logout"
 msgstr ""

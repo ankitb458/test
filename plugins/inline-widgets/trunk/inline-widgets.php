@@ -215,7 +215,7 @@ class inline_widgets {
 			");
 		
 		$ignore_user_abort = ignore_user_abort(true);
-		set_time_limit(600);
+		@set_time_limit(600);
 		
 		foreach ( $posts as $post ) {
 			$post->post_content = inline_widgets::upgrade_filter($post->post_content);

@@ -96,14 +96,17 @@ class autotag_admin {
 	/**
 	 * save_entry()
 	 *
-	 * @param int $post_ID
+	 * @param int $post_id
 	 * @return void
 	 **/
 
-	function save_entry($post_ID) {
-		$post = get_post($post_ID);
+	function save_entry($post_id) {
+		if ( !$_POST || wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id) )
+			return;
 		
-		if ( !in_array($post->post_type, array('post', 'page')) || !isset($_POST['autotag']) )
+		$post = get_post($post_id);
+		
+		if ( !isset($_POST['autotag']) || !in_array($post->post_type, array('post', 'page')) )
 			return;
 		
 		global $user_ID;
@@ -111,7 +114,7 @@ class autotag_admin {
 		$fetch_terms = false;
 		$user_pref = false;
 		
-		$post = get_post($post_ID);
+		$post = get_post($post_id);
 		
 		switch ( !empty($_POST['autotag']) ) {
 		case 'publish':
@@ -119,10 +122,10 @@ class autotag_admin {
 				$fetch_terms = true;
 				$user_pref = true;
 
-				delete_post_meta($post_ID, '_autotag');
+				delete_post_meta($post_id, '_autotag');
 			} else {
 				$user_pref = true;
-				update_post_meta($post_ID, '_autotag', '1');
+				update_post_meta($post_id, '_autotag', '1');
 			}
 			break;
 		
@@ -130,14 +133,14 @@ class autotag_admin {
 			$fetch_terms = true;
 		
 		default:
-			delete_post_meta($post_ID, '_autotag');
+			delete_post_meta($post_id, '_autotag');
 			$user_pref = false;
 			break;
 		}
 		
 		if ( $fetch_terms ) {
 			load_yterms();
-			delete_post_meta($post_ID, '_yterms');
+			delete_post_meta($post_id, '_yterms');
 			$terms = yterms::get($post);
 
 			if ( $terms ) {
@@ -151,10 +154,10 @@ class autotag_admin {
 					}
 				}
 				
-				wp_set_post_tags($post_ID, $terms, true);
+				wp_set_post_tags($post_id, $terms, true);
 			}
 			
-			update_post_meta($post_ID, '_did_autotag', '1');
+			update_post_meta($post_id, '_did_autotag', '1');
 		}
 		
 		if ( !empty($_POST['autotag_sticky']) ) {

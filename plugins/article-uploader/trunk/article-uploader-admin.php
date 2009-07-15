@@ -113,16 +113,16 @@ class article_uploader_admin {
 	 * @return void
 	 **/
 	
-	function save_entry($post_ID) {
-		if ( wp_is_post_revision($post_ID) || !current_user_can('unfiltered_html') )
+	function save_entry($post_id) {
+		if ( !$_POST || wp_is_post_revision($post_id) || !current_user_can('unfiltered_html') )
 			return;
 		
 		global $wpdb;
 		
 		if ( !empty($_POST['kill_formatting']) )
-			update_post_meta($post_ID, '_kill_formatting', '1');
+			update_post_meta($post_id, '_kill_formatting', '1');
 		else
-			delete_post_meta($post_ID, '_kill_formatting');
+			delete_post_meta($post_id, '_kill_formatting');
 		
 		if ( empty($_FILES['upload_article']['name']) )
 			return;
@@ -150,10 +150,10 @@ class article_uploader_admin {
 				$wpdb->query("
 					UPDATE	$wpdb->posts
 					SET		post_content = '" . $wpdb->escape($content) . "'
-					WHERE	ID = " . intval($post_ID)
+					WHERE	ID = " . intval($post_id)
 					);
 				
-				update_post_meta($post_ID, '_kill_formatting', '1');
+				update_post_meta($post_id, '_kill_formatting', '1');
 			}
 			
 			break;
@@ -168,7 +168,7 @@ class article_uploader_admin {
 				$wpdb->query("
 					UPDATE	$wpdb->posts
 					SET		post_content = '" . $wpdb->escape($content) . "'
-					WHERE	ID = " . intval($post_ID)
+					WHERE	ID = " . intval($post_id)
 					);
 			}
 			
