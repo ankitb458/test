@@ -25,9 +25,7 @@ include sem_path . '/header.php';
 
 					the_post();
 					
-					$class = function_exists('get_post_class')
-						? join(' ', get_post_class())
-						: '';
+					$class = get_post_class();
 					
 					echo '<div class="entry' . ( $class ? ( ' ' . $class ) : '' ) . '">' . "\n"
 						. '<div class="entry_top"><div class="hidden"></div></div>' . "\n";
