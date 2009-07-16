@@ -38,6 +38,9 @@ foreach ( array(
 	) as $hook )
 	add_action($hook, array('sem_opt_in_front', 'flush_cache'));
 
+register_activation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
+register_deactivation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
+
 class sem_opt_in_front {
 	/**
 	 * init()
