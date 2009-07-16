@@ -11,7 +11,7 @@ Template Name: Sales Letter
 */
 
 add_filter('active_layout', array('sem_template', 'force_letter'));
-remove_action('wp_footer', array('sem_template', 'display_credits'));
+remove_action('wp_footer', array('sem_template', 'display_credits'), 5);
 
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

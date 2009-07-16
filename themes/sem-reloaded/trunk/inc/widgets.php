@@ -536,7 +536,7 @@ class entry_content extends WP_Widget {
 			. checked($show_comment_box, true, false)
 			. ' />'
 			. '&nbsp;'
-			. __('Show comment box.', 'sem-reloaded')
+			. __('Display the box with the number of comments.', 'sem-reloaded')
 			. '</label>'
 			. '</p>' . "\n";
 		
@@ -814,7 +814,7 @@ class entry_tags extends WP_Widget {
 		if ( is_admin() ) {
 			return;
 		} elseif ( !in_the_loop() ) {
-			if ( $args['id'] != 'the_entry' )
+			if ( !is_singular() )
 				return;
 			
 			global $post, $wp_the_query;
@@ -830,7 +830,7 @@ class entry_tags extends WP_Widget {
 		extract($instance, EXTR_SKIP);
 		
 		$term_links = array();
-		$terms = get_the_terms(0, 'post_tag');
+		$terms = get_the_terms(get_the_ID(), 'post_tag');
 		
 		if ( $terms && !is_wp_error($terms) ) {
 			foreach ( $terms as $term ) {
@@ -1618,17 +1618,16 @@ class header extends WP_Widget {
 		
 		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
 		
-		$player = esc_url(content_url() . $header);
 		static $i = 0;
-		$i++;
-		$id = 'header_img_' . md5($i . $header);
+		$player = esc_url(content_url() . $header);
+		$player_id = 'header_img_' . md5($i++ . $header);
 		
 		return <<<EOS
 
-<div style="width: {$width}px; height: {$height}px;"><object id="$id" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$width" height="$height"><param name="movie" value="$player" /><param name="allowfullscreen" value="false" /><param name="allowscriptaccess" value="true" /><embed src="$player" pluginspage="http://www.macromedia.com/go/getflashplayer" width="$width" height="$height" allowfullscreen="false" allowscriptaccess="true" /></object></div>
+<div style="width: {$width}px; height: {$height}px;"><object id="$player_id" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="$width" height="$height"><param name="movie" value="$player" /><param name="allowfullscreen" value="false" /><param name="allowscriptaccess" value="true" /><embed src="$player" pluginspage="http://www.macromedia.com/go/getflashplayer" width="$width" height="$height" allowfullscreen="false" allowscriptaccess="true" /></object></div>
 
 <script type="text/javascript">
-swfobject.embedSWF("$player", "$id", "$width", "$height", "9.0.0");
+swfobject.embedSWF("$player", "$player_id", "$width", "$height", "9.0.0");
 </script>
 
 EOS;

@@ -22,8 +22,9 @@ if ( $title = trim(wp_title('&#8211;', false)) ) {
 <?php do_action('wp_head'); ?>
 </head>
 <body class="<?php echo implode(' ', get_body_class(array('skin', 'custom'))); ?>">
+<div style="width: 600px; margin-left: auto; margin-right: auto;">
 <?php
-do_action('before_the_entries');
+sem_panels::display('before_the_entries');
 
 # show posts
 if ( have_posts() ) :
@@ -43,10 +44,11 @@ elseif ( is_404() ) :
 	sem_panels::display('the_404');
 endif;
 
-do_action('after_the_entries');
+sem_panels::display('after_the_entries');
 
 # show footer
 do_action('wp_footer');
 ?>
+</div>
 </body>
 </html>

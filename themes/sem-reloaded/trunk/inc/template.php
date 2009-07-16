@@ -60,8 +60,8 @@ class sem_template {
 
 	function meta_boxes() {
 		if ( current_user_can('switch_themes') ) {
-			add_meta_box('sem_header', __('Post-Specific Header', 'sem-reloaded'), array('sem_header', 'edit_entry_header'), 'post');
-			add_meta_box('sem_header', __('Page-Specific Header', 'sem-reloaded'), array('sem_header', 'edit_entry_header'), 'page');
+			add_meta_box('sem_header', __('Post-Specific Header', 'sem-reloaded'), array('sem_header', 'edit_entry'), 'post');
+			add_meta_box('sem_header', __('Page-Specific Header', 'sem-reloaded'), array('sem_header', 'edit_entry'), 'page');
 		}
 	} # meta_boxes()
 	
@@ -251,7 +251,8 @@ class sem_template {
 		add_filter('option_blog_public', 'false');
 		add_filter('comments_open', 'false');
 		add_filter('pings_open', 'false');
-		remove_action('wp_footer', array('sem_template', 'display_credits'));
+		add_filter('active_layout', array('sem_template', 'strip_sidebars'));
+		remove_action('wp_footer', array('sem_template', 'display_credits'), 5);
 		
 		include_once sem_path . '/print.php';
 		die;

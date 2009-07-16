@@ -157,7 +157,7 @@ if ( $comments ) {
 				. '</span>'
 			. '<br/>' . "\n"
 			. '<span class="comment_time">'
-			. get_comment_date('g:i a')
+			. get_comment_date(__('g:i a', 'sem-reloaded'))
 			. '</span>' . "\n"
 			. '<span class="link_comment">'
 			. '<a href="#comment-' . get_comment_ID() . '" title="#">'
@@ -257,7 +257,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 	if ( get_option('comment_registration') && !$user_ID ) {
 		$login_url = '<span class="login">'
 			. apply_filters('loginout',
-				'<a href="' . wp_login_url(get_permalink()) . '">' . __('Login', 'sem-reloaded') . '</a>'
+				'<a href="' . esc_url(wp_login_url(apply_filters('the_permalink', get_permalink()))) . '">' . __('Login', 'sem-reloaded') . '</a>'
 				)
 			. '</span>';
 			
@@ -277,7 +277,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		if ( $user_ID ) {
 			$logout_url = '<span class="logout">'
 				. apply_filters('loginout',
-					'<a href="' . wp_logout_url(get_permalink()) . '">' . __('Logout', 'sem-reloaded') . '</a>'
+					'<a href="' . esc_url(wp_logout_url(apply_filters('the_permalink', get_permalink()))) . '">' . __('Logout', 'sem-reloaded') . '</a>'
 					)
 				. '</span>';
 
