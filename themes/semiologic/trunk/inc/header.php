@@ -7,7 +7,7 @@
 
 add_action('admin_print_scripts', array('sem_header', 'scripts'));
 add_action('appearance_page_header', array('sem_header', 'save_options'), 0);
-add_action('save_post', array('sem_header', 'save_entry_header'), 30);
+add_action('save_post', array('sem_header', 'save_entry'), 30);
 
 class sem_header {
 	/**
@@ -54,7 +54,7 @@ class sem_header {
 					echo '<div class="error">'
 						. "<p>"
 							. "<strong>"
-							. sprintf(__('%s is not writable.', 'sem-reloaded'), 'wp-content' . $header)
+							. sprintf(__('%s is not writable.', 'sem-theme'), 'wp-content' . $header)
 							. "</strong>"
 						. "</p>\n"
 						. "</div>\n";
@@ -63,7 +63,7 @@ class sem_header {
 					echo '<div class="error">'
 						. "<p>"
 							. "<strong>"
-							. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
+							. sprintf(__('Failed to delete %s.', 'sem-theme'), 'wp-content' . $header)
 							. "</strong>"
 						. "</p>\n"
 						. "</div>\n";
@@ -79,7 +79,7 @@ class sem_header {
 				echo '<div class="error">'
 					. "<p>"
 						. "<strong>"
-						. __('Invalid File Type.', 'sem-reloaded')
+						. __('Invalid File Type.', 'sem-theme')
 						. "</strong>"
 					. "</p>\n"
 					. "</div>\n";
@@ -101,7 +101,7 @@ class sem_header {
 				echo '<div class="error">'
 					. "<p>"
 						. "<strong>"
-						. sprintf(__('%s is not writable.', 'sem-reloaded'), 'wp-content' . $header)
+						. sprintf(__('%s is not writable.', 'sem-theme'), 'wp-content' . $header)
 						. "</strong>"
 					. "</p>\n"
 					. "</div>\n";
@@ -110,7 +110,7 @@ class sem_header {
 				echo '<div class="error">'
 					. "<p>"
 						. "<strong>"
-						. sprintf(__('Failed to delete %s.', 'sem-reloaded'), 'wp-content' . $header)
+						. sprintf(__('Failed to delete %s.', 'sem-theme'), 'wp-content' . $header)
 						. "</strong>"
 					. "</p>\n"
 					. "</div>\n";
@@ -122,7 +122,7 @@ class sem_header {
 		
 		echo '<div class="updated fade">'
 			. '<p><strong>'
-			. __('Settings saved.', 'sem-reloaded')
+			. __('Settings saved.', 'sem-theme')
 			. '</strong></p>'
 			. '</div>' . "\n";
 	} # save_options()
@@ -148,14 +148,14 @@ class sem_header {
 		
 		screen_icon();
 		
-		echo '<h2>' . __('Manage Header', 'sem-reloaded') . '</h2>' . "\n";
+		echo '<h2>' . __('Manage Header', 'sem-theme') . '</h2>' . "\n";
 		
 		echo '<p>'
-			. __('The header\'s height will automatically adjust to fit your image or flash file. The width to use will depend on your <a href="themes.php?page=layout">layout</a>\'s canvas width, and on your <a href="themes.php?page=skin">skin</a> (strip 20px if you\'re using the Kubrick skin).', 'sem-reloaded')
+			. __('The header\'s height will automatically adjust to fit your image or flash file. The width to use will depend on your <a href="themes.php?page=layout">layout</a>\'s canvas width, and on your <a href="themes.php?page=skin">skin</a> (strip 20px if you\'re using the Kubrick skin).', 'sem-theme')
 			. '</p>' . "\n";
 		
 		if ( $header ) {
-			echo '<h3>' . __('Current Header', 'sem-reloaded') . '</h3>';
+			echo '<h3>' . __('Current Header', 'sem-theme') . '</h3>';
 			
 			preg_match("/\.([^.]+)$/", $header, $ext);
 			$ext = strtolower(end($ext));
@@ -173,20 +173,20 @@ class sem_header {
 					. '<label>'
 					. '<input type="checkbox" name="delete_header" />'
 					. '&nbsp;'
-					. __('Delete header', 'sem-reloaded')
+					. __('Delete Header', 'sem-theme')
 					. '</label>'
 					. '</p>' . "\n";
 				
 				echo '<div class="submit">'
-					. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
+					. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-theme')) . '" />'
 					. '</div>' . "\n";
 			} elseif ( strpos($header, "/skins/$active_skin/") !== false ) {
 				echo '<p>'
-					. sprintf(__('This header (%s) is hard-coded in your <a href="themes.php?page=skin">skin</a>. You cannot delete it, but you can override it.', 'sem-reloaded'), 'wp-content' . $header)
+					. sprintf(__('This header (%s) is hard-coded in your <a href="themes.php?page=skin">skin</a>. You cannot delete it, but you can override it.', 'sem-theme'), 'wp-content' . $header)
 					. '</p>' . "\n";
 			} else {
 				echo '<p>'
-					. sprintf(__('This header (%s) is not writable by the server. Please delete it manually to change it.', 'sem-reloaded'), 'wp-content' . $header)
+					. sprintf(__('This header (%s) is not writable by the server. Please delete it manually to change it.', 'sem-theme'), 'wp-content' . $header)
 					. '</p>' . "\n";
 			}
 		}
@@ -198,8 +198,8 @@ class sem_header {
 				echo '<h3>'
 					. '<label for="header_file">'
 						. ( defined('GLOB_BRACE')
-							? __('Upload a New Header (jpg, png, gif, swf)', 'sem-reloaded')
-							: __('Upload a New Header (jpg)', 'sem-reloaded')
+							? __('Upload a New Header (jpg, png, gif, swf)', 'sem-theme')
+							: __('Upload a New Header (jpg)', 'sem-theme')
 							)
 						. '</label>'
 					. '</h3>' . "\n";
@@ -209,20 +209,20 @@ class sem_header {
 					. '</p>' . "\n";
 			} elseif ( !is_writable(WP_CONTENT_DIR) ) {
 				echo '<p>'
-					. __('Your wp-content folder is not writeable by the server', 'sem-reloaded')
+					. __('Your wp-content folder is not writeable by the server', 'sem-theme')
 					. '</p>' . "\n";
 			} else {
 				echo '<p>'
-					. __('Your wp-content/header folder is not writeable by the server', 'sem-reloaded')
+					. __('Your wp-content/header folder is not writeable by the server', 'sem-theme')
 					. '</p>' . "\n";
 			}
 			
 			echo '<p>'
-				. sprintf(__('Maximum file size is %s based on your server\'s configuration.', 'sem-reloaded'), wp_convert_bytes_to_hr(apply_filters('import_upload_size_limit', wp_max_upload_size())))
+				. sprintf(__('Maximum file size is %s based on your server\'s configuration.', 'sem-theme'), wp_convert_bytes_to_hr(apply_filters('import_upload_size_limit', wp_max_upload_size())))
 				. '</p>' . "\n";
 			
 			echo '<div class="submit">'
-				. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
+				. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-theme')) . '" />'
 				. '</div>' . "\n";
 		}
 		
@@ -233,13 +233,13 @@ class sem_header {
 	
 	
 	/**
-	 * edit_entry_header()
+	 * edit_entry()
 	 *
 	 * @param object $post
 	 * @return void
 	 **/
 	
-	function edit_entry_header($post)
+	function edit_entry($post)
 	{
 		$post_ID = $post->ID;
 		
@@ -262,7 +262,7 @@ class sem_header {
 		
 		if ( $header ) {
 			echo '<h4>'
-				. __('Current Header', 'sem-reloaded')
+				. __('Current Header', 'sem-theme')
 				. '</h4>' . "\n";
 			
 			preg_match("/\.([^.]+)$/", $header, $ext);
@@ -285,16 +285,16 @@ class sem_header {
 					. '<label>'
 					. '<input type="checkbox" name="delete_header" />'
 					. '&nbsp;'
-					. __('Delete header', 'sem-reloaded')
+					. __('Delete Header', 'sem-theme')
 					. '</label>'
 					. '</p>' . "\n";
 				
 				echo '<p>'
-					. '<input type="submit" name="save" class="button" tabindex="5" value="' . esc_attr(__('Save', 'sem-reloaded')) . '" />'
+					. '<input type="submit" name="save" class="button" tabindex="5" value="' . esc_attr(__('Save', 'sem-theme')) . '" />'
 					. '</p>' . "\n";
 			} else {
 				echo '<p>'
-					. sprintf(__('This header (%s) is not writable by the server. Please delete it manually to change it.', 'sem-reloaded'), 'wp-content' . $header)
+					. sprintf(__('This header (%s) is not writable by the server. Please delete it manually to change it.', 'sem-theme'), 'wp-content' . $header)
 					. '</p>' . "\n";
 			}
 		}
@@ -306,8 +306,8 @@ class sem_header {
 				echo '<h4>'
 					. '<label for="header_file">'
 						. ( defined('GLOB_BRACE')
-							? __('Upload a New Header (jpg, png, gif, swf)', 'sem-reloaded')
-							: __('Upload a New Header (jpg)', 'sem-reloaded')
+							? __('Upload a New Header (jpg, png, gif, swf)', 'sem-theme')
+							: __('Upload a New Header (jpg)', 'sem-theme')
 							)
 						. '</label>'
 					. '</h4>' . "\n";
@@ -315,36 +315,37 @@ class sem_header {
 				echo '<p>'
 					. '<input type="file" id="header_file" name="header_file" />'
 					. '&nbsp;'
-					. '<input type="submit" name="save" class="button" tabindex="5" value="' . esc_attr(__('Save', 'sem-reloaded')) . '" />'
+					. '<input type="submit" name="save" class="button" tabindex="5" value="' . esc_attr(__('Save', 'sem-theme')) . '" />'
 					. '</p>' . "\n";
 			} elseif ( !is_writable(WP_CONTENT_DIR) ) {
 				echo '<p>'
-					. __('Your wp-content folder is not writeable by the server', 'sem-reloaded')
+					. __('Your wp-content folder is not writeable by the server', 'sem-theme')
 					. '</p>' . "\n";
 			} else {
 				echo '<p>'
-					. __('Your wp-content/header folder is not writeable by the server', 'sem-reloaded')
+					. __('Your wp-content/header folder is not writeable by the server', 'sem-theme')
 					. '</p>' . "\n";
 			}
 			
 			echo '<p>'
-				. sprintf(__('Maximum file size is %s based on your server\'s configuration.', 'sem-reloaded'), wp_convert_bytes_to_hr(apply_filters('import_upload_size_limit', wp_max_upload_size())))
+				. sprintf(__('Maximum file size is %s based on your server\'s configuration.', 'sem-theme'), wp_convert_bytes_to_hr(apply_filters('import_upload_size_limit', wp_max_upload_size())))
 				. '</p>' . "\n";
 		}
-	} # edit_entry_header()
+	} # edit_entry()
 	
 	
 	/**
-	 * save_entry_header()
+	 * save_entry()
 	 *
 	 * @param int $post_ID
 	 * @return void
 	 **/
 	
-	function save_entry_header($post_ID) {
-		if ( wp_is_post_revision($post_ID) )
+	function save_entry($post_id) {
+		if ( !$_POST || wp_is_post_revision($post_id) || !current_user_can('edit_post', $post_id) )
 			return;
 		
+		$post_id = (int) $post_id;
 		
 		if ( defined('GLOB_BRACE') ) {
 			$header_scan = "header{,-*}.{jpg,jpeg,png,gif,swf}";
@@ -354,7 +355,7 @@ class sem_header {
 			$scan_type = false;
 		}
 		
-		$header = glob(WP_CONTENT_DIR . "/header/$post_ID/$header_scan", $scan_type);
+		$header = glob(WP_CONTENT_DIR . "/header/$post_id/$header_scan", $scan_type);
 		
 		if ( $header ) {
 			$header = current($header);
@@ -369,7 +370,7 @@ class sem_header {
 			
 			if ( !in_array($ext, defined('GLOB_BRACE') ? array('jpg', 'jpeg', 'png', 'gif', 'swf') : array('jpg')) ) {
 				return;
-			} elseif ( !wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_ID) ) {
+			} elseif ( !wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_id) ) {
 				return;
 			} elseif ( $header && !@unlink(WP_CONTENT_DIR . $header) ) {
 				return;
@@ -378,23 +379,23 @@ class sem_header {
 			$entropy = intval(get_option('sem_entropy')) + 1;
 			update_option('sem_entropy', $entropy);
 			
-			$name = WP_CONTENT_DIR . '/header/' . $post_ID . '/header-' . $entropy . '.' . $ext;
+			$name = WP_CONTENT_DIR . '/header/' . $post_id . '/header-' . $entropy . '.' . $ext;
 			
-			wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_ID);
+			wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_id);
 			@move_uploaded_file($_FILES['header_file']['tmp_name'], $name);
 			
 			$stat = stat(dirname($name));
 			$perms = $stat['mode'] & 0000666;
 			@chmod($name, $perms);
 			
-			delete_post_meta($post_ID, '_sem_header');
+			delete_post_meta($post_id, '_sem_header');
 		} elseif ( $header && isset($_POST['delete_header']) ) {
 			if ( !@unlink(WP_CONTENT_DIR . $header) ) {
 				return;
 			}
 			
-			delete_post_meta($post_ID, '_sem_header');
+			delete_post_meta($post_id, '_sem_header');
 		}
-	} # save_entry_header()
+	} # save_entry()
 } # sem_header
 ?>

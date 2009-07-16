@@ -26,7 +26,6 @@ do_action('display_sidebar2');
 </div><!-- #body -->
 
 <?php
-do_action('the_footer_boxes');
 do_action('the_footer');
 ?>
 

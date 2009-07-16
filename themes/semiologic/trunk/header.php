@@ -31,7 +31,6 @@ if ( $title = trim(wp_title('&#8211;', false)) ) {
 
 <?php
 do_action('the_header');
-do_action('the_header_boxes');
 ?>
 
 <div id="body" class="body">

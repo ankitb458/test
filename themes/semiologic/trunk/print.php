@@ -9,8 +9,6 @@
 # You'll find detailed sample files in the custom-samples folder
 #
 
-add_filter('option_blog_public', 'false');
-
 # show header
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"><head><title><?php
@@ -28,6 +26,7 @@ if ( $title = trim(wp_title('&#8211;', false)) ) {
 <?php do_action('wp_head'); ?>
 </head>
 <body class="<?php echo implode(' ', get_body_class(array('skin', 'custom'))); ?>">
+<div style="width: 600px; margin-left: auto; margin-right: auto;">
 <?php
 do_action('before_the_entries');
 
@@ -59,5 +58,6 @@ do_action('after_the_entries');
 # show footer
 do_action('wp_footer');
 ?>
+</div>
 </body>
 </html>

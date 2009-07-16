@@ -90,7 +90,7 @@ if ( $comments )
 				. '</span>'
 			. ' @ '
 			. '<span class="comment_time">'
-			. get_comment_date('g:i a')
+			. get_comment_date(__('g:i a', 'sem-theme'))
 			. '</span>'
 			. comment_type('', ' (' . __('Trackback', 'sem-theme') . ')', ' (' . __('Pingback', 'sem-theme') . ')')
 			. '</h3>' . "\n";
@@ -154,7 +154,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 	{
 		$login_url = '<span class="logout">'
 			. apply_filters('loginout',
-				'<a href="' . wp_login_url(get_permalink()) . '">' . __('Login', 'sem-theme') . '</a>'
+				'<a href="' . esc_url(wp_login_url(apply_filters('the_permalink', get_permalink()))) . '">' . __('Login', 'sem-theme') . '</a>'
 				)
 			. '</span>';
 
@@ -172,7 +172,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		{
 			$logout_url = '<span class="logout">'
 				. apply_filters('loginout',
-					'<a href="' . wp_logout_url(get_permalink()) . '">' . __('Logout', 'sem-theme') . '</a>'
+					'<a href="' . esc_url(wp_logout_url(apply_filters('the_permalink', get_permalink()))) . '">' . __('Logout', 'sem-theme') . '</a>'
 					)
 				. '</span>';
 			
@@ -192,7 +192,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '<label for="author">'
 				. $comments_captions['name_field']
 				. ( $req
-					? ( ' ' . $comments_captions['required_field'] )
+					? ( ' (*)' )
 					: ''
 					)
 				. '<br />'
@@ -205,7 +205,7 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '<label for="email">'
 				. $comments_captions['email_field']
 				. ( $req
-					? ( ' ' . $comments_captions['required_field'] )
+					? ( ' (*)' )
 					: ''
 					)
 				. '<br />'
@@ -224,10 +224,14 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '</label>'
 				. '</p>' . "\n";
 		} # if ( $user_ID )
-
-
+ 		
 		echo '<textarea name="comment" id="comment" cols="48" rows="10"></textarea>' . "\n";
 
+		if ( !$user_ID && $req )
+			echo '<p>'
+				.  $comments_captions['required_fields']
+				. '</p>' . "\n";
+		
 		echo '<p>'
 			. '<input name="submit" type="submit" id="submit"'
 				. ' value="' . esc_attr($comments_captions['submit_field']) . '"'

@@ -72,7 +72,7 @@ $wpdb->query("UPDATE $wpdb->term_taxonomy SET count = 0;");
 # Rename Uncategorized category as Blog
 $wpdb->query("
 	UPDATE	$wpdb->terms
-	SET		name = '" . $wpdb->escape(__('Blog', 'sem-reloaded')) . "',
+	SET		name = '" . $wpdb->escape(__('Blog', 'sem-theme')) . "',
 			slug = 'blog'
 	WHERE	slug = 'uncategorized'
 	");

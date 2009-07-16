@@ -80,7 +80,8 @@ a.entry_author
 .sidebar ul ul,
 .fuzzy_widget ul,
 .random_widget ul,
-.related_widget ul
+.related_widget ul,
+.widget_links ul
 {
 	list-style-image: url(file.gif);
 }

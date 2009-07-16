@@ -12,22 +12,19 @@
 include dirname(__FILE__) . '/inc/init.php';
 
 # set content width
-switch ( $sem_options['active_layout'] ) {
-case 'm':
-	$content_width = 560;
+switch ( $sem_options['active_width'] ) {
+case 'narrow':
+	$content_width = 400;
 	break;
-case 'mm':
-case 'mms':
-case 'smm':
-	$content_width = 690;
-	break;
-case 'mmm':
-	$content_width = 890;
-	break;
+case 'flex':
+case 'wide':
 default:
-	$content_width = 490;
+	$content_width = 550;
 	break;
 }
+
+# load textdomain
+load_theme_textdomain('sem-theme', sem_path . '/lang');
 
 # kill page comments
 if ( !is_admin() )
