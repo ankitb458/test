@@ -25,7 +25,7 @@ $mode = "";
 $mode = $_GET['mode'];
 $parentID = 0;
 if (isset($_GET['parentID']))
-	$parentID = $_GET['parentID'];
+	$parentID = (int) $_GET['parentID'];
 
 if($mode == "act_OrderPages")
 {
@@ -51,7 +51,7 @@ else
 	{
 		$postCount=$wpdb->get_row("SELECT count(*) as postsCount FROM $wpdb->posts WHERE post_parent = $row->ID and post_status='publish' and post_type = 'page' ", ARRAY_N);
 		if($postCount[0] > 0)
-	    	$subPageStr = $subPageStr."<option value='$row->ID'>$row->post_title</option>";
+	    	$subPageStr = $subPageStr."<option value='$row->ID'>" . strip_tags($row->post_title) . " . </option>";
 	}
 ?>
 <div class='wrap'>
@@ -77,7 +77,7 @@ else
 	<div id="order" style="width: 500px; margin:10px 10px 10px 0px; padding:10px; border:1px solid #B2B2B2;"><?php
 	foreach($results as $row)
 	{
-		echo "<div id='item_$row->ID' class='lineitem'>$row->post_title</div>";
+		echo "<div id='item_$row->ID' class='lineitem'>" . strip_tags($row->post_title) . "</div>";
 	}?>
 	</div>
 
