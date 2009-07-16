@@ -107,6 +107,7 @@ $wp_rewrite->flush_rules();
 update_option('default_comment_status', 'closed');
 update_option('default_ping_status', 'closed');
 update_option('use_balanceTags', '1');
+update_option('users_can_register', '0');
 
 
 endif;
