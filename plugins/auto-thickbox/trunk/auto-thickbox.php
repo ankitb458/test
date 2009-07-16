@@ -30,23 +30,23 @@ if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === fal
 	if ( !class_exists('anchor_utils') )
 		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
 	
-	add_action('wp_print_scripts', array('auto_thickbox', 'add_scripts'));
-	add_action('wp_print_styles', array('auto_thickbox', 'add_css'));
+	action('wp_print_scripts', array('auto_thickbox', 'scripts'));
+	action('wp_print_styles', array('auto_thickbox', 'styles'));
 	
-	add_action('wp_footer', array('auto_thickbox', 'add_thickbox_images'), 20);
+	action('wp_footer', array('auto_thickbox', 'thickbox_images'), 20);
 	
-	add_filter('filter_anchor', array('auto_thickbox', 'add_thickbox'));
+	filter('filter_anchor', array('auto_thickbox', 'thickbox'));
 }
 
 class auto_thickbox {
 	/**
-	 * add_thickbox()
+	 * thickbox()
 	 *
 	 * @param array $anchor
 	 * @return anchor $anchor
 	 **/
 
-	function add_thickbox($anchor) {
+	function thickbox($anchor) {
 		if ( !preg_match("/\.(?:jpe?g|gif|png)\b/i", $anchor['attr']['href']) )
 			return $anchor;
 		
@@ -66,41 +66,41 @@ class auto_thickbox {
 		}
 		
 		return $anchor;
-	} # add_thickbox()
+	} # thickbox()
 	
 	
 	/**
-	 * add_scripts()
+	 * scripts()
 	 *
 	 * @return void
 	 **/
 
-	function add_scripts() {
+	function scripts() {
 		wp_enqueue_script('thickbox');
-	} # add_scripts()
+	} # scripts()
 	
 	
 	/**
-	 * add_css()
+	 * styles()
 	 *
 	 * @return void
 	 **/
 
-	function add_css() {
+	function styles() {
 		wp_enqueue_style('thickbox');
-	} # add_css()
+	} # styles()
 	
 	
 	/**
-	 * add_thickbox_images()
+	 * thickbox_images()
 	 *
 	 * @return void
 	 **/
 
-	function add_thickbox_images() {
+	function thickbox_images() {
 		$includes_url = includes_url();
 		
-		$js = <<<EOS
+		echo <<<EOS
 
 <script type="text/javascript">
 var tb_pathToImage = "{$includes_url}js/thickbox/loadingAnimation.gif";
@@ -108,8 +108,6 @@ var tb_closeImage = "{$includes_url}js/thickbox/tb-close.png";
 </script>
 
 EOS;
-		
-		echo $js;
-	} # add_thickbox_images()
+	} # thickbox_images()
 } # auto_thickbox
 ?>

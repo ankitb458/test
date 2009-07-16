@@ -29,17 +29,17 @@ load_plugin_textdomain('hitslink', false, dirname(plugin_basename(__FILE__)) . '
  * @package HitsLink
  **/
 
-add_action('wp_head', array('hitslink', 'display'), 9);
+add_action('wp_head', array('hitslink', 'header_scripts'), 9);
 add_action('admin_menu', array('hitslink', 'admin_menu'));
 
 class hitslink {
 	/**
-	 * display()
+	 * header_scripts()
 	 *
 	 * @return void
 	 **/
 	
-	function display() {
+	function header_scripts() {
 		$script = hitslink::get_options();
 
 		if ( !$script ) {
@@ -53,7 +53,7 @@ class hitslink {
 		} else {
 			echo $script;
 		}
-	} # display()
+	} # header_scripts()
 	
 	
 	/**
