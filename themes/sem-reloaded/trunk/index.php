@@ -27,7 +27,7 @@ include sem_path . '/header.php';
 					
 					$class = get_post_class();
 					
-					echo '<div class="entry' . ( $class ? ( ' ' . $class ) : '' ) . '">' . "\n"
+					echo '<div class="entry' . ( $class ? ( ' ' . implode(' ', $class) ) : '' ) . '">' . "\n"
 						. '<div class="entry_top"><div class="hidden"></div></div>' . "\n";
 					
 					sem_panels::display('the_entry');
