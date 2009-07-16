@@ -849,6 +849,7 @@ div.media
     -moz-border-radius-topleft:3px;
     -moz-border-radius-topright:3px;
     background-color:#F3F3F3;
+	color: #000;
     border:1px solid #DDDDDD;
     margin:10px;
     padding-top:4px;
