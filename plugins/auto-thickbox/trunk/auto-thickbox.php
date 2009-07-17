@@ -35,26 +35,47 @@ if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === fal
 	
 	add_action('wp_footer', array('auto_thickbox', 'thickbox_images'), 20);
 	
-	add_filter('filter_anchor', array('auto_thickbox', 'thickbox'));
+	add_filter('filter_anchor', array('auto_thickbox', 'filter'));
 }
 
 class auto_thickbox {
 	/**
-	 * thickbox()
+	 * filter()
 	 *
 	 * @param array $anchor
 	 * @return anchor $anchor
 	 **/
 
-	function thickbox($anchor) {
-		if ( !preg_match("/\.(?:jpe?g|gif|png)\b/i", $anchor['attr']['href']) )
+	function filter($anchor) {
+		if ( preg_match("/\.(?:jpe?g|gif|png)\b/i", $anchor['attr']['href']) )
+			return auto_thickbox::image($anchor);
+		elseif ( !empty($anchor['attr']['class']) && in_array('thickbox', $anchor['attr']['class']) )
+			return auto_thickbox::iframe($anchor);
+		else
 			return $anchor;
-		
+	} # filter()
+	
+	
+	/**
+	 * image()
+	 *
+	 * @param array $anchor
+	 * @return anchor $anchor
+	 **/
+
+	function image($anchor) {
 		if ( !preg_match("/^\s*<\s*img\s.+?>\s*$/is", $anchor['body']) )
 			return $anchor;
 		
-		$anchor['attr']['class'][] = 'thickbox';
-		$anchor['attr']['class'][] = 'no_icon';
+		if ( !$anchor['attr']['class'] ) {
+			$anchor['attr']['class'][] = 'thickbox';
+			$anchor['attr']['class'][] = 'no_icon';
+		} else {
+			if ( !in_array('thickbox', $anchor['attr']['class']) )
+				$anchor['attr']['class'][] = 'thickbox';
+			if ( !in_array('no_icon', $anchor['attr']['class']) && !in_array('noicon', $anchor['attr']['class']) )
+				$anchor['attr']['class'][] = 'no_icon';
+		}
 		
 		if ( in_the_loop() && !$anchor['attr']['rel'] )
 			$anchor['attr']['rel'][] = 'gallery-' . get_the_ID();
@@ -66,7 +87,28 @@ class auto_thickbox {
 		}
 		
 		return $anchor;
-	} # thickbox()
+	} # image()
+	
+	
+	/**
+	 * iframe()
+	 *
+	 * @return void
+	 **/
+	
+	function iframe($anchor) {
+		if ( strpos($anchor['attr']['href'], 'TB_iframe=true') !== false )
+			return $anchor;
+		
+		# strip anchor ref
+		$href = explode('#', $anchor['attr']['href']);
+		$anchor['attr']['href'] = array_shift($href);
+		
+		$anchor['attr']['href'] .= ( ( strpos($anchor['attr']['href'], '?') === false ) ? '?' : '&' )
+			. 'TB_iframe=true&width=720&height=540';
+		
+		return $anchor;
+	} # iframe()
 	
 	
 	/**
