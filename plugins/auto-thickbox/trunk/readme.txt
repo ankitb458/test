@@ -47,5 +47,6 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 = 2.0 =
 
+- Full iFrame support
 - Code enhancements and optimizations
 - Localization support
