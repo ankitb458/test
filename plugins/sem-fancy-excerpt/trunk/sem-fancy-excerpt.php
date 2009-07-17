@@ -46,7 +46,7 @@ class fancy_excerpt {
 		if ( $text || !in_the_loop() )
 			return wp_trim_excerpt($text);
 
-		$more = sprintf(__('More on %s...', 'fancy-excerpt'), get_the_title());
+		$more = sprintf(__('Read more on %s...', 'fancy-excerpt'), get_the_title());
 
 		$text = get_the_content($more);
 		$text = str_replace(array("\r\n", "\r"), "\n", $text);

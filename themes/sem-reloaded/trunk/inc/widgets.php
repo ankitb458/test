@@ -577,7 +577,7 @@ class entry_content extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('More on %s...', 'sem-reloaded') . '</code>'
+			. '<code>' . __('Read more on %s...', 'sem-reloaded') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 			. ' name="' . $this->get_field_name('more_link') . '"'
@@ -611,7 +611,7 @@ class entry_content extends WP_Widget {
 			'show_excerpts' => false,
 			'one_comment' => __('1 Comment', 'sem-reloaded'),
 			'n_comments' => __('%d Comments', 'sem-reloaded'),
-			'more_link' => __('More on %s...', 'sem-reloaded'),
+			'more_link' => __('Read more on %s...', 'sem-reloaded'),
 			'paginate' => __('Pages:', 'sem-reloaded'),
 			);
 	} # defaults()

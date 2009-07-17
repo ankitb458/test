@@ -525,7 +525,7 @@ class entry_content extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('More on %s...', 'sem-theme') . '</code>'
+			. '<code>' . __('Read more on %s...', 'sem-theme') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 			. ' name="' . $this->get_field_name('more_link') . '"'
@@ -556,7 +556,7 @@ class entry_content extends WP_Widget {
 	function defaults() {
 		return array(
 			'show_excerpts' => false,
-			'more_link' => __('More on %s...', 'sem-theme'),
+			'more_link' => __('Read more on %s...', 'sem-theme'),
 			'paginate' => __('Pages:', 'sem-theme'),
 			);
 	} # defaults()

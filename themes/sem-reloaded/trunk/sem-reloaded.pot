@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.7\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-16 22:03+0200\n"
+"POT-Creation-Date: 2009-07-17 15:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -562,7 +562,7 @@ msgstr ""
 
 #: inc/widgets.php:580 inc/widgets.php:614
 #, php-format
-msgid "More on %s..."
+msgid "Read more on %s..."
 msgstr ""
 
 #: inc/widgets.php:591 inc/widgets.php:615
