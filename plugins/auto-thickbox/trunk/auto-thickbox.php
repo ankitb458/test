@@ -30,12 +30,12 @@ if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === fal
 	if ( !class_exists('anchor_utils') )
 		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
 	
-	action('wp_print_scripts', array('auto_thickbox', 'scripts'));
-	action('wp_print_styles', array('auto_thickbox', 'styles'));
+	add_action('wp_print_scripts', array('auto_thickbox', 'scripts'));
+	add_action('wp_print_styles', array('auto_thickbox', 'styles'));
 	
-	action('wp_footer', array('auto_thickbox', 'thickbox_images'), 20);
+	add_action('wp_footer', array('auto_thickbox', 'thickbox_images'), 20);
 	
-	filter('filter_anchor', array('auto_thickbox', 'thickbox'));
+	add_filter('filter_anchor', array('auto_thickbox', 'thickbox'));
 }
 
 class auto_thickbox {
