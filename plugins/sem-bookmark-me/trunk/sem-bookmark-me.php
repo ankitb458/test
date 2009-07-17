@@ -435,6 +435,7 @@ class bookmark_me extends WP_Widget {
 	 **/
 
 	function form($instance) {
+		$instance = wp_parse_args($instance, bookmark_me::defaults());
 		extract($instance, EXTR_SKIP);
 		
 		echo '<p>'
