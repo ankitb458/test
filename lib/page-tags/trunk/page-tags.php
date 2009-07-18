@@ -24,10 +24,10 @@ class page_tags {
 	function scripts() {
 		$plugin_path = plugin_dir_url(__FILE__);
 		
-		wp_enqueue_script( 'page_tags', $plugin_path . 'js/page-tags.js', array('suggest', 'jquery-ui-tabs', 'wp-lists'), '20090520' );
+		wp_enqueue_script('page_tags', $plugin_path . 'js/page-tags.js', array('suggest', 'jquery-ui-tabs', 'wp-lists'), '20090520', true);
 
-		wp_localize_script( 'page_tags', 'page_tagsL10n', array(
-			'tagsUsed' =>  __('Tags used on this page:', page_tags_textdomain),
+		wp_localize_script('page_tags', 'page_tagsL10n', array(
+			'tagsUsed' => __('Tags used on this page:', page_tags_textdomain),
 			'addTag' => esc_attr(__('Add new tag', page_tags_textdomain)),
 		));
 	} # scripts()
