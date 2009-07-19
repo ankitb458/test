@@ -85,8 +85,7 @@ $wpdb->query("
 $permalink_structure = '';
 
 if ( !function_exists('got_mod_rewrite') ) {
-	include_once ABSPATH . 'wp-admin/includes/file.php';
-	include_once ABSPATH . 'wp-admin/includes/misc.php';
+	include_once ABSPATH . 'wp-admin/includes/admin.php';
 }
 
 if ( got_mod_rewrite() && is_file(ABSPATH . '.htaccess') && is_writable(ABSPATH . '.htaccess') ) {

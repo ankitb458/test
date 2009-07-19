@@ -633,17 +633,23 @@ h2 a {
 /* WP Image Captions */
 
 .wp-caption {
-    -moz-border-radius-bottomleft:3px;
-    -moz-border-radius-bottomright:3px;
-    -moz-border-radius-topleft:3px;
-    -moz-border-radius-topright:3px;
+    -moz-border-radius-bottomleft: 3px;
+    -moz-border-radius-bottomright: 3px;
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
 	border-radius: 3px;
-    background-color:#F3F3F3;
+    background-color: #f3f3f3;
 	color: #000;
-    border:1px solid #DDDDDD;
-    margin:10px;
-    padding-top:4px;
-    text-align:center;
+    border: 1px solid #ddd;
+    margin: .5em;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: center;
+}
+
+p.wp-caption-text {
+	margin-top: .2em;
+	margin-bottom: .2em;
 }
 
 /* hidden class, used to fix IE6 problems */
