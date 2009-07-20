@@ -34,7 +34,7 @@ if ( !function_exists('add_max_file_size') ) :
  **/
 
 function add_max_file_size() {
-	$bytes = apply_filters( 'import_upload_size_limit', wp_max_upload_size() );
+	$bytes = apply_filters('import_upload_size_limit', wp_max_upload_size());
 	
 	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="' . esc_attr($bytes) .'" />' . "\n";
 } # add_max_file_size()
