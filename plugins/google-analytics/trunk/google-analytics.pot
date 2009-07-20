@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-11 19:39+0200\n"
+"POT-Creation-Date: 2009-07-20 15:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,15 +55,11 @@ msgid "Quick Reference"
 msgstr ""
 
 #: google-analytics-admin.php:129
-msgid "AdSense Tracking"
+msgid "Special Users"
 msgstr ""
 
 #: google-analytics-admin.php:133
-msgid ""
-"To enable AdSense revenue tracking using Google Analytics, declare this site "
-"for AdSense tracking in <a href=\"http://analytics.google.com\">Google "
-"Analytics's administration panels</a>. (The needed code is inserted "
-"automatically by the plugin.)"
+msgid "Authors, editors and site admins are not tracked when logged in."
 msgstr ""
 
 #: google-analytics-admin.php:140
@@ -74,16 +70,21 @@ msgstr ""
 #, php-format
 msgid ""
 "The Google Analytics plugin tracks a few special events. In particular file "
-"downloads, and media player usage when combined with <a href=\"%s"
-"\">Mediacaster</a>."
+"downloads, clicks on Ad Units that were inserted using the <a href=\"%1$s"
+"\">Ad Manager</a> plugin, and media player usage when combined with <a href="
+"\"%s\">Mediacaster</a>."
 msgstr ""
 
 #: google-analytics-admin.php:151
-msgid "Special Users"
+msgid "AdSense Revenue Tracking"
 msgstr ""
 
 #: google-analytics-admin.php:155
-msgid "Authors, editors and site admins are not tracked when logged in."
+msgid ""
+"To enable AdSense revenue tracking using Google Analytics, declare this site "
+"for AdSense tracking in <a href=\"http://analytics.google.com\">Google "
+"Analytics's administration panels</a>. (The needed code is inserted "
+"automatically by the plugin.)"
 msgstr ""
 
 #: google-analytics-admin.php:162
@@ -129,34 +130,10 @@ msgid ""
 msgstr ""
 
 #: google-analytics-admin.php:207
-msgid "Sampling Rate"
-msgstr ""
-
-#: google-analytics-admin.php:211
-#, php-format
-msgid ""
-"To <a href=\"http://code.google.com/apis/analytics/docs/"
-"gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSampleRate\">set the "
-"sampling rate</a> at 50% on a high traffic site or page (this can speed up "
-"GA reports quite a bit):"
-msgstr ""
-
-#: google-analytics-admin.php:232
-msgid "Shared Stats"
-msgstr ""
-
-#: google-analytics-admin.php:236
-msgid ""
-"To <a href=\"http://code.google.com/apis/analytics/docs/gaTracking."
-"html#Multiple\">share your stats</a> with your sales team's Google Analytics "
-"account:"
-msgstr ""
-
-#: google-analytics-admin.php:255
 msgid "Visitor Segmentation"
 msgstr ""
 
-#: google-analytics-admin.php:259
+#: google-analytics-admin.php:211
 msgid ""
 "To <a href=\"http://code.google.com/apis/analytics/docs/"
 "gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setVar\">segment visitors</"
@@ -164,11 +141,11 @@ msgid ""
 "following in that page's footer scripts:"
 msgstr ""
 
-#: google-analytics-admin.php:278
+#: google-analytics-admin.php:230
 msgid "Session Timeout"
 msgstr ""
 
-#: google-analytics-admin.php:282
+#: google-analytics-admin.php:234
 msgid ""
 "To <a href=\"http://code.google.com/apis/analytics/docs/"
 "gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSessionTimeout"
@@ -176,15 +153,26 @@ msgid ""
 "actually read:"
 msgstr ""
 
-#: google-analytics-info.php:2 google-analytics.php:235
-#: google-analytics.php:236
+#: google-analytics-admin.php:255
+msgid "Shared Stats"
+msgstr ""
+
+#: google-analytics-admin.php:259
+msgid ""
+"To <a href=\"http://code.google.com/apis/analytics/docs/gaTracking."
+"html#Multiple\">share your stats</a> with your sales team's Google Analytics "
+"account:"
+msgstr ""
+
+#: google-analytics-info.php:2 google-analytics.php:269
+#: google-analytics.php:270
 msgid "Google Analytics"
 msgstr ""
 
-#: google-analytics.php:77
+#: google-analytics.php:79
 msgid "Configure Google Analytics under Settings / Google Analytics"
 msgstr ""
 
-#: google-analytics.php:82
+#: google-analytics.php:84
 msgid "Google Analytics Notice: Authors, Editors and Admins are not tracked"
 msgstr ""

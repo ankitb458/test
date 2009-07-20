@@ -126,11 +126,11 @@ EOF;
 		
 		echo '<tr>'
 			. '<th scope="row">'
-			. __('AdSense Tracking', 'google-analytics')
+			. __('Special Users', 'google-analytics')
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('To enable AdSense revenue tracking using Google Analytics, declare this site for AdSense tracking in <a href="http://analytics.google.com">Google Analytics\'s administration panels</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
+			. __('Authors, editors and site admins are not tracked when logged in.', 'google-analytics')
 			. '</p>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";
@@ -141,18 +141,18 @@ EOF;
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. sprintf(__('The Google Analytics plugin tracks a few special events. In particular file downloads, and media player usage when combined with <a href="%s">Mediacaster</a>.', 'google-analytics'), 'http://www.semiologic.com/software/mediacaster')
+			. sprintf(__('The Google Analytics plugin tracks a few special events. In particular file downloads, clicks on Ad Units that were inserted using the <a href="%1$s">Ad Manager</a> plugin, and media player usage when combined with <a href="%s">Mediacaster</a>.', 'google-analytics'), 'http://www.semiologic.com/software/mediacaster')
 			. '</p>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";
 		
 		echo '<tr>'
 			. '<th scope="row">'
-			. __('Special Users', 'google-analytics')
+			. __('AdSense Revenue Tracking', 'google-analytics')
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('Authors, editors and site admins are not tracked when logged in.', 'google-analytics')
+			. __('To enable AdSense revenue tracking using Google Analytics, declare this site for AdSense tracking in <a href="http://analytics.google.com">Google Analytics\'s administration panels</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
 			. '</p>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";
@@ -192,54 +192,6 @@ EOF;
 			. '</p>' . "\n";
 		
 		echo '<table class="form-table">' . "\n";
-		
-		
-		$adv_js = <<<EOS
-<script type="text/javascript">
-try {
-	pageTracker._setSampleRate(50);
-} catch ( err ) {}
-</script>
-EOS;
-		
-		echo '<tr>'
-			. '<th scope="row">'
-			. __('Sampling Rate', 'google-analytics')
-			. '</th>' . "\n"
-			. '<td>'
-			. '<p>'
-			. __('To <a href="http://code.google.com/apis/analytics/docs/gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSampleRate">set the sampling rate</a> at 50% on a high traffic site or page (this can speed up GA reports quite a bit):', 'google-analytics')
-			. '</p>' . "\n"
-			. '<textarea cols="58" rows="5" class="widefat code" readonly="readonly" onfocus="var this_val=eval(this); this_val.select();">'
-			. esc_html($adv_js)
-			. '</textarea>' . "\n"
-			. '</td>' . "\n"
-			. '</tr>' . "\n";
-		
-		
-		$adv_js = <<<EOS
-<script type="text/javascript">
-try {
-	var trackerSalesDept = _gat.getTracker("UA-12345-1");
-	trackerSalesDept._initData();
-	trackerSalesDept._trackPageview();
-} catch ( err ) {}
-</script>
-EOS;
-		
-		echo '<tr>'
-			. '<th scope="row">'
-			. __('Shared Stats', 'google-analytics')
-			. '</th>' . "\n"
-			. '<td>'
-			. '<p>'
-			. __('To <a href="http://code.google.com/apis/analytics/docs/gaTracking.html#Multiple">share your stats</a> with your sales team\'s Google Analytics account:', 'google-analytics')
-			. '</p>' . "\n"
-			. '<textarea cols="58" rows="7" class="widefat code" readonly="readonly" onfocus="var this_val=eval(this); this_val.select();">'
-			. esc_html($adv_js)
-			. '</textarea>' . "\n"
-			. '</td>' . "\n"
-			. '</tr>' . "\n";
 		
 		
 		$adv_js = <<<EOS
@@ -286,6 +238,32 @@ EOS;
 			. '</textarea>' . "\n"
 			. '</td>' . "\n"
 			. '</tr>' . "\n";
+		
+		
+		$adv_js = <<<EOS
+<script type="text/javascript">
+try {
+	var trackerSalesDept = _gat.getTracker("UA-12345-1");
+	trackerSalesDept._initData();
+	trackerSalesDept._trackPageview();
+} catch ( err ) {}
+</script>
+EOS;
+		
+		echo '<tr>'
+			. '<th scope="row">'
+			. __('Shared Stats', 'google-analytics')
+			. '</th>' . "\n"
+			. '<td>'
+			. '<p>'
+			. __('To <a href="http://code.google.com/apis/analytics/docs/gaTracking.html#Multiple">share your stats</a> with your sales team\'s Google Analytics account:', 'google-analytics')
+			. '</p>' . "\n"
+			. '<textarea cols="58" rows="7" class="widefat code" readonly="readonly" onfocus="var this_val=eval(this); this_val.select();">'
+			. esc_html($adv_js)
+			. '</textarea>' . "\n"
+			. '</td>' . "\n"
+			. '</tr>' . "\n";
+		
 		
 		echo '</table>' . "\n";
 	} # crash_course()

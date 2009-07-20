@@ -33,7 +33,7 @@ if ( !defined('sem_google_analytics_debug') )
 	define('sem_google_analytics_debug', false);
 
 if ( !is_admin() ) {
-	add_action('wp_head', array('google_analytics', 'header_scripts'));
+	add_action('wp_print_scripts', array('google_analytics', 'header_scripts'));
 	add_action('wp_footer', array('google_analytics', 'footer_scripts'));
 	add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
 } else {
@@ -52,6 +52,8 @@ class google_analytics {
 		
 		if ( !$uacct )
 			return;
+		
+		wp_enqueue_script('jquery');
 		
 		echo <<<EOS
 
@@ -129,21 +131,23 @@ EOS;
 			'code' => array('css','html','php','js'),
 		));
 		
-		unset($ext2type['code']);
+		$ext2type['code'] = array_diff($ext2type['code'], array('css','html','php','js'));
 		
 		$file_regexp = array();
 		foreach ( $ext2type as $exts )
 			$file_regexp = array_merge($file_regexp, $exts);
 		
-		$file_regexp = '/\.(?:' . join('|', $file_regexp) . ')(?:\?.*)?$/';
+		$file_regexp = '/\.(?:' . join('|', array_map('preg_quote', $file_regexp)) . ')(?:\?.*)?$/';
+		
+		$home_url = untrailingslashit(get_option('home'));
 		
 		echo <<<EOS
 
 <script type="text/javascript">
 /* <![CDATA[ */
 //
-// GA Automated Event Tracking
-// ===========================
+// Advanced GA Tracking
+// ====================
 // (c) 2009, Mesoconcepts (http://www.mesoconcepts.com) - All rights reserved
 //
 
@@ -151,21 +155,51 @@ try {
 	pageTracker._trackPageview();
 } catch(err) {}
 
-var i;
 
-for ( i = 0; i < document.getElementsByTagName('a').length; i++ ) {
-	if ( document.getElementsByTagName('a')[i].href.match($file_regexp) ) {
-		if ( typeof document.getElementsByTagName('a')[i].onclick == 'function' ) {
-			var fn = document.getElementsByTagName('a')[i].onclick;
-			document.getElementsByTagName('a')[i].onclick = function(event) {
+jQuery(document).ready(function() {
+	jQuery('a').each(function() {
+		if ( this.href.match($file_regexp) ) {
+			var fn = this.onclick;
+			if ( typeof fn == 'function' ) {
+				this.onclick = function(event) {
+					try {
+						window.pageTracker._trackPageview(this.href);
+					} catch (err) {};
+					return fn(event);
+				}
+			} else {
+				this.onclick = function(event) {
+					try {
+						window.pageTracker._trackPageview(this.href);
+					} catch (err) {};
+				}
+			}
+		}
+	});
+	
+	jQuery('.ad_unit').each(function() {
+		var track_id = jQuery(this).find('input.track_id').val();
+		
+		if ( !track_id )
+			return;
+		
+		var fn = this.onclick;
+		if ( typeof fn == 'function' ) {
+			this.onclick = function(event) {
 				try {
-					window.pageTracker._trackPageview(this.href);
+					window.pageTracker._trackPageview('$home_url/ad-clicks/' + track_id);
 				} catch (err) {};
 				return fn(event);
 			}
+		} else {
+			this.onclick = function(event) {
+				try {
+					window.pageTracker._trackPageview('$home_url/ad-clicks/' + track_id);
+				} catch (err) {};
+			}
 		}
-	}
-}
+	});
+});
 /* ]]> */
 </script>
 
