@@ -834,8 +834,11 @@ if (function_exists('add_action')) {
 			echo $before_widget;
 			if ( $title )
 				echo $before_title . $title . $after_title;
-
+			
+			echo '<div class="form_event">' . "\n";
+			echo '<input type="hidden" class="event_label" value="' . esc_attr(sprintf(__('Poll: %s', 'democracy'), strip_tags($title))) . '" />' . "\n";
 			jal_democracy();
+			echo '</div>' . "\n";
 
 			echo $after_widget;
 		} # widget()
