@@ -171,9 +171,9 @@ EOF;
 			. __('Special Users', 'google-analytics')
 			. '</th>'
 			. '<td>'
-			. '<p>'
+			. '<p><strong>'
 			. __('Authors, editors and site admins are not tracked when logged in.', 'google-analytics')
-			. '</p>' . "\n"
+			. '</strong></p>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";
 		
