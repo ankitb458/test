@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-21 20:54+0200\n"
+"POT-Creation-Date: 2009-07-21 20:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,8 +76,8 @@ msgstr ""
 
 #: google-analytics-admin.php:147
 msgid ""
-"The Google Analytics plugin allows you track special events. Support for the "
-"following is built-in:"
+"The Google Analytics plugin allows you to track special events. Support for "
+"the following is built-in:"
 msgstr ""
 
 #: google-analytics-admin.php:151
@@ -94,7 +94,7 @@ msgid ""
 "Clicks on ad units that were inserted using the <a href=\"%s\">Ad Manager</"
 "a> plugin. It will additionally tell you the <strong>cumulative</strong> "
 "number of times each ad unit was clicked by that visitor. Note: This is "
-"still experimental; so be sure to report back in the forum if it's not "
+"still experimental, so be sure to report back in the forum if it's not "
 "working as expected."
 msgstr ""
 
