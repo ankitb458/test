@@ -32,10 +32,12 @@ load_plugin_textdomain('google-analytics', false, dirname(plugin_basename(__FILE
 if ( !defined('sem_google_analytics_debug') )
 	define('sem_google_analytics_debug', false);
 
+if ( !defined('GA_DOMAIN') )
+	define('GA_DOMAIN', false);
+
 if ( !is_admin() ) {
 	add_action('wp_print_scripts', array('google_analytics', 'header_scripts'));
-	add_action('wp_footer', array('google_analytics', 'footer_scripts'));
-	add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
+	add_action('wp_footer', array('google_analytics', 'footer_scripts'), 20);
 } else {
 	add_action('admin_menu', array('google_analytics', 'admin_menu'));
 }
@@ -53,8 +55,6 @@ class google_analytics {
 		if ( !$uacct )
 			return;
 		
-		wp_enqueue_script('jquery');
-		
 		echo <<<EOS
 
 <script type="text/javascript">
@@ -62,6 +62,27 @@ window.google_analytics_uacct = "$uacct";
 </script>
 
 EOS;
+		
+		if ( !sem_google_analytics_debug && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
+			return;
+		
+		$folder = plugin_dir_url(__FILE__);
+		wp_enqueue_script('google_analytics', $folder . 'js/scripts.js', array('jquery'), '4.0', true);
+		
+		wp_localize_script('google_analytics', 'google_analyticsL10n', array(
+			'ad_event' => __('Ad Unit', 'google-analytics'),
+			'file_event' => __('File', 'google-analytics'),
+			'audio_event' => __('Audio', 'google-analytics'),
+			'video_event' => __('Video', 'google-analytics'),
+			'signup_event' => __('Sign Up', 'google-analytics'),
+			'custom_event' => __('Custom', 'google-analytics'),
+			'click_event' => __('Click', 'google-analytics'),
+			'download_event' => __('Download', 'google-analytics'),
+			'submit_event' => __('Submit', 'google-analytics'),
+			'success_event' => __('Success', 'google-analytics'),
+		));
+		
+		add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
 	} # header_scripts()
 	
 	
@@ -85,6 +106,10 @@ EOS;
 				. ' -->' . "\n";
 		}
 		
+		$ga_domain = ''; # experimental
+		if ( GA_DOMAIN )
+			$ga_domain = 'pageTracker._setDomainName(\'' . addslashes(GA_DOMAIN) . '\'); ';
+		
 		echo <<<EOS
 
 <script type="text/javascript">
@@ -92,16 +117,12 @@ var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "htt
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
 <script type="text/javascript">
-try {
-	var pageTracker = _gat._getTracker("$uacct");
-} catch(err) {}
+try { var pageTracker = _gat._getTracker("$uacct"); $ga_domain} catch(err) {}
 </script>
 
 EOS;
-
-		if ( !sem_google_analytics_debug && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
-		 	return;
 		
+		do_action('google_analytics');
 	} # footer_scripts()
 	
 	
@@ -144,63 +165,7 @@ EOS;
 		echo <<<EOS
 
 <script type="text/javascript">
-/* <![CDATA[ */
-//
-// Advanced GA Tracking
-// ====================
-// (c) 2009, Mesoconcepts (http://www.mesoconcepts.com) - All rights reserved
-//
-
-try {
-	pageTracker._trackPageview();
-} catch(err) {}
-
-
-jQuery(document).ready(function() {
-	jQuery('a').each(function() {
-		if ( this.href.match($file_regexp) ) {
-			var fn = this.onclick;
-			if ( typeof fn == 'function' ) {
-				this.onclick = function(event) {
-					try {
-						window.pageTracker._trackPageview(this.href);
-					} catch (err) {};
-					return fn(event);
-				}
-			} else {
-				this.onclick = function(event) {
-					try {
-						window.pageTracker._trackPageview(this.href);
-					} catch (err) {};
-				}
-			}
-		}
-	});
-	
-	jQuery('.ad_unit').each(function() {
-		var track_id = jQuery(this).find('input.track_id').val();
-		
-		if ( !track_id )
-			return;
-		
-		var fn = this.onclick;
-		if ( typeof fn == 'function' ) {
-			this.onclick = function(event) {
-				try {
-					window.pageTracker._trackPageview('$home_url/ad-clicks/' + track_id);
-				} catch (err) {};
-				return fn(event);
-			}
-		} else {
-			this.onclick = function(event) {
-				try {
-					window.pageTracker._trackPageview('$home_url/ad-clicks/' + track_id);
-				} catch (err) {};
-			}
-		}
-	});
-});
-/* ]]> */
+try { pageTracker._trackPageview(); } catch(err) {}
 </script>
 
 EOS;

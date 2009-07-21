@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-20 15:21+0200\n"
+"POT-Creation-Date: 2009-07-21 20:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,15 +24,19 @@ msgstr ""
 msgid "Your Account ID"
 msgstr ""
 
-#: google-analytics-admin.php:76
+#: google-analytics-admin.php:75
 msgid "Google Analytics Settings"
 msgstr ""
 
-#: google-analytics-admin.php:82
+#: google-analytics-admin.php:78
+msgid "Google Analytics Script"
+msgstr ""
+
+#: google-analytics-admin.php:85
 msgid "GA Script"
 msgstr ""
 
-#: google-analytics-admin.php:86
+#: google-analytics-admin.php:89
 msgid ""
 "Paste the <b>ga.js</b> script from <a href=\"http://analytics.google.com"
 "\">Google analytics</a> into the following textarea (<a href=\"http://www."
@@ -40,139 +44,161 @@ msgid ""
 "find it?</a>):"
 msgstr ""
 
-#: google-analytics-admin.php:95
+#: google-analytics-admin.php:98
 msgid ""
 "<strong>Important</strong>: Use the new <strong>ga.js</strong> script, not "
 "the legacy urchin.js script."
 msgstr ""
 
-#: google-analytics-admin.php:104
+#: google-analytics-admin.php:107
 msgid "Save Changes"
 msgstr ""
 
-#: google-analytics-admin.php:123
+#: google-analytics-admin.php:126
 msgid "Quick Reference"
 msgstr ""
 
-#: google-analytics-admin.php:129
-msgid "Special Users"
-msgstr ""
-
-#: google-analytics-admin.php:133
-msgid "Authors, editors and site admins are not tracked when logged in."
-msgstr ""
-
-#: google-analytics-admin.php:140
-msgid "Event Tracking"
-msgstr ""
-
-#: google-analytics-admin.php:144
-#, php-format
-msgid ""
-"The Google Analytics plugin tracks a few special events. In particular file "
-"downloads, clicks on Ad Units that were inserted using the <a href=\"%1$s"
-"\">Ad Manager</a> plugin, and media player usage when combined with <a href="
-"\"%s\">Mediacaster</a>."
-msgstr ""
-
-#: google-analytics-admin.php:151
+#: google-analytics-admin.php:132
 msgid "AdSense Revenue Tracking"
 msgstr ""
 
-#: google-analytics-admin.php:155
+#: google-analytics-admin.php:136
 msgid ""
-"To enable AdSense revenue tracking using Google Analytics, declare this site "
-"for AdSense tracking in <a href=\"http://analytics.google.com\">Google "
-"Analytics's administration panels</a>. (The needed code is inserted "
-"automatically by the plugin.)"
+"To enable AdSense revenue tracking using Google Analytics, simply declare "
+"this site for AdSense tracking in <a href=\"http://analytics.google.com"
+"\">Google Analytics's administration panels</a>. (The needed code is "
+"inserted automatically by the plugin.)"
 msgstr ""
 
-#: google-analytics-admin.php:162
+#: google-analytics-admin.php:143
+msgid "Event Tracking"
+msgstr ""
+
+#: google-analytics-admin.php:147
+msgid ""
+"The Google Analytics plugin allows you track special events. Support for the "
+"following is built-in:"
+msgstr ""
+
+#: google-analytics-admin.php:151
+#, php-format
+msgid ""
+"Newsletter sign-ups when using the <a href=\"%s\">Newsletter Manager</a> "
+"plugin. Visitors are additionally segmented automatically on a successful "
+"signup if they're redirected on a page on this site."
+msgstr ""
+
+#: google-analytics-admin.php:154
+#, php-format
+msgid ""
+"Clicks on ad units that were inserted using the <a href=\"%s\">Ad Manager</"
+"a> plugin. It will additionally tell you the <strong>cumulative</strong> "
+"number of times each ad unit was clicked by that visitor. Note: This is "
+"still experimental; so be sure to report back in the forum if it's not "
+"working as expected."
+msgstr ""
+
+#: google-analytics-admin.php:157
+#, php-format
+msgid ""
+"Media player usage and file downloads that were inserted using the <a href="
+"\"%s\">Mediacaster</a> plugin."
+msgstr ""
+
+#: google-analytics-admin.php:160
+#, php-format
+msgid ""
+"Contact Form submissions when using the <a href=\"%s\">Contact Form</a> "
+"plugin."
+msgstr ""
+
+#: google-analytics-admin.php:163
+#, php-format
+msgid ""
+"Poll usage when using the Poll Widget plugin that comes with <a href=\"%s"
+"\">Semiologic Pro</a>."
+msgstr ""
+
+#: google-analytics-admin.php:171
+msgid "Special Users"
+msgstr ""
+
+#: google-analytics-admin.php:175
+msgid "Authors, editors and site admins are not tracked when logged in."
+msgstr ""
+
+#: google-analytics-admin.php:182
 msgid "Site Usage Patterns"
 msgstr ""
 
-#: google-analytics-admin.php:166
+#: google-analytics-admin.php:186
 msgid ""
 "Make sure to spot Google Analytics's navigation summary and site overlay "
 "reports for individual urls. They're located to the right when you visit any "
 "url's statistics."
 msgstr ""
 
-#: google-analytics-admin.php:170
+#: google-analytics-admin.php:190
 msgid ""
 "The first is a concise report. It lets you know, at a glance, where users "
 "came from upon entering the page, and where they left upon leaving it."
 msgstr ""
 
-#: google-analytics-admin.php:173
+#: google-analytics-admin.php:193
 msgid ""
 "The second is more graphical. It outputs your page with an overlay that "
 "shows where visitors are clicking."
 msgstr ""
 
-#: google-analytics-admin.php:183
-msgid "Advanced Tracking With The Script Manager Plugin"
-msgstr ""
-
-#: google-analytics-admin.php:187
-#, php-format
-msgid ""
-"To insert extra site-wide tracking code, activate the <a href=\"%s\">Script "
-"Manager</a> plugin and, under <a href=\"options-general.php?page=script-"
-"manager\">Settings / Scripts</a>, and insert the relevant lines as footer "
-"scripts."
-msgstr ""
-
-#: google-analytics-admin.php:191
-msgid ""
-"For post- or page-specific tracking, edit that post or page, and insert the "
-"relevant lines in its entry-specific footer scripts instead."
-msgstr ""
-
-#: google-analytics-admin.php:207
-msgid "Visitor Segmentation"
-msgstr ""
-
-#: google-analytics-admin.php:211
-msgid ""
-"To <a href=\"http://code.google.com/apis/analytics/docs/"
-"gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setVar\">segment visitors</"
-"a> who visit your &quot;Thank you for subscribing&quot; page, insert the "
-"following in that page's footer scripts:"
-msgstr ""
-
-#: google-analytics-admin.php:230
-msgid "Session Timeout"
-msgstr ""
-
-#: google-analytics-admin.php:234
-msgid ""
-"To <a href=\"http://code.google.com/apis/analytics/docs/"
-"gaJSApiBasicConfiguration.html#_gat.GA_Tracker_._setSessionTimeout"
-"\">increase the session duration</a> on a very long sales copy that visitors "
-"actually read:"
-msgstr ""
-
-#: google-analytics-admin.php:255
-msgid "Shared Stats"
-msgstr ""
-
-#: google-analytics-admin.php:259
-msgid ""
-"To <a href=\"http://code.google.com/apis/analytics/docs/gaTracking."
-"html#Multiple\">share your stats</a> with your sales team's Google Analytics "
-"account:"
-msgstr ""
-
-#: google-analytics-info.php:2 google-analytics.php:269
-#: google-analytics.php:270
+#: google-analytics-info.php:2 google-analytics.php:234
+#: google-analytics.php:235
 msgid "Google Analytics"
 msgstr ""
 
+#: google-analytics.php:73
+msgid "Ad Unit"
+msgstr ""
+
+#: google-analytics.php:74
+msgid "File"
+msgstr ""
+
+#: google-analytics.php:75
+msgid "Audio"
+msgstr ""
+
+#: google-analytics.php:76
+msgid "Video"
+msgstr ""
+
+#: google-analytics.php:77
+msgid "Sign Up"
+msgstr ""
+
+#: google-analytics.php:78
+msgid "Custom"
+msgstr ""
+
 #: google-analytics.php:79
+msgid "Click"
+msgstr ""
+
+#: google-analytics.php:80
+msgid "Download"
+msgstr ""
+
+#: google-analytics.php:81
+msgid "Submit"
+msgstr ""
+
+#: google-analytics.php:82
+msgid "Success"
+msgstr ""
+
+#: google-analytics.php:100
 msgid "Configure Google Analytics under Settings / Google Analytics"
 msgstr ""
 
-#: google-analytics.php:84
+#: google-analytics.php:105
 msgid "Google Analytics Notice: Authors, Editors and Admins are not tracked"
 msgstr ""
