@@ -388,7 +388,11 @@ class entry_content extends WP_Widget {
 		if ( $show_excerpts && !is_singular() ) {
 			$content = apply_filters('the_excerpt', get_the_excerpt());
 		} else {
-			$more_link = sprintf($more_link, $title);
+			/* hotfix #415 */
+			if (strpos($more_link, '%title%') === false)			
+				$more_link = sprintf($more_link, $title);
+			else
+				$more_link = str_replace('%title%', $title, $more_link);
 			
 			$content = get_the_content($more_link, 0, '');
 			
