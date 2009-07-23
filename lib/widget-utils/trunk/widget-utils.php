@@ -222,9 +222,9 @@ class widget_utils {
 			delete_post_meta($post_ID, '_widgets_label');
 		
 		if ( current_user_can('unfiltered_html') )
-			$desc = trim($_POST['widgets_desc']);
+			$desc = $_POST['widgets_desc'];
 		else
-			$desc = trim(wp_filter_post_kses(stripslashes($_POST['widgets_desc'])));
+			$desc = wp_filter_post_kses($_POST['widgets_desc']);
 		
 		if ( $desc )
 			update_post_meta($post_ID, '_widgets_desc', $desc);
