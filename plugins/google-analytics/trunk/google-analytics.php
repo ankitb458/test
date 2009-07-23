@@ -173,7 +173,18 @@ EOS;
 	
 	
 	/**
-	 * get_options
+	 * get_uacct()
+	 *
+	 * @return void
+	 **/
+
+	function get_uacct() {
+		return google_analytics::get_options();
+	} # get_uacct()
+	
+	
+	/**
+	 * get_options()
 	 *
 	 * @return array $options
 	 **/
