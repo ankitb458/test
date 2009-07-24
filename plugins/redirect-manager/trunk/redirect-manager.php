@@ -89,7 +89,7 @@ class redirect_manager {
 		
 		if ( $location ) {
 			$location = esc_url($location);
-			$caption = __('Redirects to <a href="%1$s">%2$s</a>', 'redirect-manager');
+			$caption = __('This page is redirecting visitors to <a href="%1$s">%2$s</a>. You\'re not being redirected because you can edit this entry.', 'redirect-manager');
 			$content = '<p>' . sprintf($caption, $location, $location) . '</p>';
 		}
 		
