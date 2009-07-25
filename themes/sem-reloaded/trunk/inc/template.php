@@ -174,6 +174,9 @@ class sem_template {
 	 **/
 
 	function strip_sidebars($layout) {
+		global $content_width;
+		
+		
 		return str_replace(array('s', 't'), 'm', $layout);
 	} # strip_sidebars()
 	
@@ -186,6 +189,9 @@ class sem_template {
 	 **/
 
 	function force_letter($layout) {
+		global $content_width;
+		$content_width = 620;
+		
 		return 'letter';
 	} # force_letter()
 	
