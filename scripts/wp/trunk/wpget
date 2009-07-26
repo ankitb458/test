@@ -92,7 +92,6 @@ touch ~/.wpget.$dir
 
 trap "cd $cwd; rm -Rf /tmp/$dir 2> /dev/null; rm -f ~/.wpget.$dir 2> /dev/null" EXIT
 
-
 # wp_core
 for package in $core;
 do
@@ -107,7 +106,10 @@ do
 			service=https://api.semiologic.com/version/0.2/core/$sem_key
 			response=`curl -s --connect-timeout 3 -f $service`
 			sleep .2
+			
+			#echo $response
 			sem_pro=`echo $response | cut -d , -f 3`
+			
 			if [ "$sem_pro" != '' ];
 			then
 				echo $response >> ~/.wpget.$dir
@@ -125,6 +127,8 @@ do
 				echo "Err: $service returned an invalid response."
 				exit 1
 			fi
+			
+			#echo $response
 			echo "wordpress,`echo $response | cut -d ' ' -f 4`,`echo $response | cut -d ' ' -f 3`" >> ~/.wpget.$dir
 			;;
 		* )
@@ -155,6 +159,7 @@ then
 	response=`echo '$themes =' "unserialize('$response');" 'foreach ( $themes as $theme_slug => $theme ) { echo preg_replace("|[^a-z0-9_-]|", "", $theme_slug) . "," . preg_replace("|[^0-9\.]|", "", $theme["new_version"]) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $theme["package"]) . " "; }'`
 	response=`php -r "$response"`
 	
+	#echo $response
 	for details in $response;
 	do
 		echo $details >> ~/.wpget.$dir
@@ -189,7 +194,8 @@ then
 		
 		response=`echo '$plugins =' "unserialize('$response');" 'foreach ( $plugins as $plugin ) { echo preg_replace("|[^a-z0-9_-]|", "", $plugin->slug) . "," . preg_replace("|[^0-9\.]|", "", $plugin->new_version) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $plugin->package) . " "; }'`
 		response=`php -r "$response"`
-
+		
+		#echo $response
 		for details in $response;
 		do
 			echo $details >> ~/.wpget.$dir
@@ -199,7 +205,7 @@ fi
 
 
 # Repackage if necessary
-cmp ~/.wpget ~/.wpget.$dir &> /dev/null
+diff ~/.wpget ~/.wpget.$dir > /dev/null
 
 if [ $? -eq 0 ];
 then
