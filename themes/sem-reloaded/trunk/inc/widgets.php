@@ -2088,7 +2088,7 @@ class sem_nav_menu extends WP_Widget {
 					. $link
 					. '</a>';
 			
-			$classes[] = sanitize_html_class('nav_page-' . $page->post_name, 'nav_page-' . $page->ID);
+			$classes[] = 'nav_page-' . sanitize_html_class($page->post_name, $page->ID);
 			if ( $page->ID == $page_id || in_array($page->ID, $ancestors) )
 				$classes[] = 'nav_active';
 		}
