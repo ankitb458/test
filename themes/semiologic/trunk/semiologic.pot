@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 6.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-17 15:00+0200\n"
+"POT-Creation-Date: 2009-07-28 13:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -506,7 +506,7 @@ msgid "The entry's title and date. Must be placed in the loop (each entry)."
 msgstr ""
 
 #: inc/widgets.php:307 inc/widgets.php:511 inc/widgets.php:1765
-#: inc/widgets.php:2321 inc/widgets.php:2786 inc/widgets.php:2953
+#: inc/widgets.php:2322 inc/widgets.php:2787 inc/widgets.php:2954
 msgid "Config"
 msgstr ""
 
@@ -528,7 +528,7 @@ msgstr ""
 
 #: inc/widgets.php:524 inc/widgets.php:677 inc/widgets.php:838
 #: inc/widgets.php:966 inc/widgets.php:1124 inc/widgets.php:1260
-#: inc/widgets.php:2771 inc/widgets.php:2932
+#: inc/widgets.php:2772 inc/widgets.php:2933
 msgid "Captions"
 msgstr ""
 
@@ -711,89 +711,89 @@ msgstr ""
 msgid "Output the site's name before the tagline."
 msgstr ""
 
-#: inc/widgets.php:1905 inc/widgets.php:2350 inc/widgets.php:2393
-#: inc/widgets.php:2993
+#: inc/widgets.php:1905 inc/widgets.php:2351 inc/widgets.php:2394
+#: inc/widgets.php:2994
 msgid "Home"
 msgstr ""
 
-#: inc/widgets.php:1935 inc/widgets.php:1985 inc/widgets.php:2366
-#: inc/widgets.php:2407 inc/widgets.php:2439 inc/widgets.php:2500
+#: inc/widgets.php:1935 inc/widgets.php:1986 inc/widgets.php:2367
+#: inc/widgets.php:2408 inc/widgets.php:2440 inc/widgets.php:2501
 msgid "Untitled"
 msgstr ""
 
-#: inc/widgets.php:2330
+#: inc/widgets.php:2331
 msgid "Split menu items with a separator (|)."
 msgstr ""
 
-#: inc/widgets.php:2333
+#: inc/widgets.php:2334
 msgid "Menu Items"
 msgstr ""
 
-#: inc/widgets.php:2336
+#: inc/widgets.php:2337
 msgid "Drag and drop menu items to rearrange them."
 msgstr ""
 
-#: inc/widgets.php:2346
+#: inc/widgets.php:2347
 msgid "- Select a menu item -"
 msgstr ""
 
-#: inc/widgets.php:2348
+#: inc/widgets.php:2349
 msgid "Special"
 msgstr ""
 
-#: inc/widgets.php:2353
+#: inc/widgets.php:2354
 msgid "Url"
 msgstr ""
 
-#: inc/widgets.php:2357
+#: inc/widgets.php:2358
 msgid "Pages"
 msgstr ""
 
-#: inc/widgets.php:2387 inc/widgets.php:2535
+#: inc/widgets.php:2388 inc/widgets.php:2536
 msgid "Empty Navigation Menu. Leave it empty to populate it automatically."
 msgstr ""
 
-#: inc/widgets.php:2398
+#: inc/widgets.php:2399
 msgid "Url Label"
 msgstr ""
 
-#: inc/widgets.php:2651
+#: inc/widgets.php:2652
 msgid "Header: Nav Menu"
 msgstr ""
 
-#: inc/widgets.php:2654
+#: inc/widgets.php:2655
 msgid ""
 "The header's navigation menu, with an optional search form. Must be placed "
 "in the header area."
 msgstr ""
 
-#: inc/widgets.php:2795
+#: inc/widgets.php:2796
 msgid "Show a search form in the navigation menu."
 msgstr ""
 
-#: inc/widgets.php:2811
+#: inc/widgets.php:2812
 msgid "Search"
 msgstr ""
 
-#: inc/widgets.php:2812
+#: inc/widgets.php:2813
 msgid "Go"
 msgstr ""
 
-#: inc/widgets.php:2833
+#: inc/widgets.php:2834
 msgid "Footer: Nav Menu"
 msgstr ""
 
-#: inc/widgets.php:2836
+#: inc/widgets.php:2837
 msgid ""
 "The footer's navigation menu, with an optional copyright notice. Must be "
 "placed in the footer area."
 msgstr ""
 
-#: inc/widgets.php:2962
+#: inc/widgets.php:2963
 msgid "Place the footer navigation menu and the copyright on a single line."
 msgstr ""
 
-#: inc/widgets.php:2978
+#: inc/widgets.php:2979
 #, php-format
 msgid "Copyright %1$s, %2$s"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.7\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-17 15:00+0200\n"
+"POT-Creation-Date: 2009-07-28 13:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -200,12 +200,12 @@ msgstr ""
 msgid "Content, Wide Sidebar"
 msgstr ""
 
-#: inc/layout.php:263 inc/layout.php:271 inc/layout.php:279 inc/layout.php:287
+#: inc/layout.php:263 inc/layout.php:271 inc/layout.php:295 inc/layout.php:303
 #: inc/layout.php:327 inc/layout.php:335
 msgid "950px"
 msgstr ""
 
-#: inc/layout.php:264 inc/layout.php:272 inc/layout.php:296 inc/layout.php:304
+#: inc/layout.php:264 inc/layout.php:272 inc/layout.php:280 inc/layout.php:288
 #: inc/layout.php:336
 msgid "550px (490px net)"
 msgstr ""
@@ -218,7 +218,7 @@ msgstr ""
 msgid "2 x 200px (170px net)"
 msgstr ""
 
-#: inc/layout.php:267 inc/layout.php:275 inc/layout.php:283 inc/layout.php:291
+#: inc/layout.php:267 inc/layout.php:275 inc/layout.php:299 inc/layout.php:307
 #: inc/layout.php:331 inc/layout.php:339
 msgid "4 x 237px (207px net)"
 msgstr ""
@@ -234,35 +234,35 @@ msgid "Not Available"
 msgstr ""
 
 #: inc/layout.php:278
-msgid "Wide Content, Sidebar"
+msgid "Content, Sidebar"
 msgstr ""
 
-#: inc/layout.php:280 inc/layout.php:288 inc/layout.php:312
-msgid "750px (690px net)"
+#: inc/layout.php:279 inc/layout.php:287 inc/layout.php:311
+msgid "750px"
 msgstr ""
 
 #: inc/layout.php:282 inc/layout.php:290 inc/layout.php:298 inc/layout.php:306
 msgid "1 x 200px (170px net)"
 msgstr ""
 
-#: inc/layout.php:286
-msgid "Sidebar, Wide Content"
-msgstr ""
-
-#: inc/layout.php:294
-msgid "Content, Sidebar"
-msgstr ""
-
-#: inc/layout.php:295 inc/layout.php:303 inc/layout.php:311
-msgid "750px"
-msgstr ""
-
-#: inc/layout.php:299 inc/layout.php:307 inc/layout.php:315
+#: inc/layout.php:283 inc/layout.php:291 inc/layout.php:315
 msgid "3 x 250px (220px net)"
 msgstr ""
 
-#: inc/layout.php:302
+#: inc/layout.php:286
 msgid "Sidebar, Content"
+msgstr ""
+
+#: inc/layout.php:294
+msgid "Wide Content, Sidebar"
+msgstr ""
+
+#: inc/layout.php:296 inc/layout.php:304 inc/layout.php:312
+msgid "750px (690px net)"
+msgstr ""
+
+#: inc/layout.php:302
+msgid "Sidebar, Wide Content"
 msgstr ""
 
 #: inc/layout.php:310
@@ -490,23 +490,23 @@ msgstr ""
 msgid "Page-Specific Header"
 msgstr ""
 
-#: inc/template.php:313
+#: inc/template.php:319
 msgid "Semiologic Pro"
 msgstr ""
 
-#: inc/template.php:317
+#: inc/template.php:323
 msgid ""
 "the <a href=\"http://www.semiologic.com/software/sem-reloaded/\">Semiologic "
 "Reloaded theme</a>"
 msgstr ""
 
-#: inc/template.php:318
+#: inc/template.php:324
 msgid ""
 "an <a href=\"http://www.semiologic.com/software/sem-reloaded/\">easy to use "
 "WordPress theme</a>"
 msgstr ""
 
-#: inc/template.php:319
+#: inc/template.php:325
 msgid ""
 "an <a href=\"http://www.semiologic.com/software/sem-reloaded/\">easy to "
 "customize WordPress theme</a>"
@@ -530,7 +530,7 @@ msgid "The entry's title and date. Must be placed in the loop (each entry)."
 msgstr ""
 
 #: inc/widgets.php:313 inc/widgets.php:530 inc/widgets.php:1833
-#: inc/widgets.php:2389 inc/widgets.php:2865 inc/widgets.php:3040
+#: inc/widgets.php:2390 inc/widgets.php:2866 inc/widgets.php:3041
 msgid "Config"
 msgstr ""
 
@@ -556,7 +556,7 @@ msgstr ""
 
 #: inc/widgets.php:554 inc/widgets.php:732 inc/widgets.php:893
 #: inc/widgets.php:1021 inc/widgets.php:1180 inc/widgets.php:1316
-#: inc/widgets.php:2850 inc/widgets.php:3019
+#: inc/widgets.php:2851 inc/widgets.php:3020
 msgid "Captions"
 msgstr ""
 
@@ -748,89 +748,89 @@ msgstr ""
 msgid "Output the site's name before the tagline."
 msgstr ""
 
-#: inc/widgets.php:1973 inc/widgets.php:2418 inc/widgets.php:2462
-#: inc/widgets.php:3080
+#: inc/widgets.php:1973 inc/widgets.php:2419 inc/widgets.php:2463
+#: inc/widgets.php:3081
 msgid "Home"
 msgstr ""
 
-#: inc/widgets.php:2003 inc/widgets.php:2053 inc/widgets.php:2434
-#: inc/widgets.php:2476 inc/widgets.php:2508 inc/widgets.php:2569
+#: inc/widgets.php:2003 inc/widgets.php:2054 inc/widgets.php:2435
+#: inc/widgets.php:2477 inc/widgets.php:2509 inc/widgets.php:2570
 msgid "Untitled"
 msgstr ""
 
-#: inc/widgets.php:2398
+#: inc/widgets.php:2399
 msgid "Split menu items with a separator (|)."
 msgstr ""
 
-#: inc/widgets.php:2401
+#: inc/widgets.php:2402
 msgid "Menu Items"
 msgstr ""
 
-#: inc/widgets.php:2404
+#: inc/widgets.php:2405
 msgid "Drag and drop menu items to rearrange them."
 msgstr ""
 
-#: inc/widgets.php:2414
+#: inc/widgets.php:2415
 msgid "- Select a menu item -"
 msgstr ""
 
-#: inc/widgets.php:2416
+#: inc/widgets.php:2417
 msgid "Special"
 msgstr ""
 
-#: inc/widgets.php:2421
+#: inc/widgets.php:2422
 msgid "Url"
 msgstr ""
 
-#: inc/widgets.php:2425
+#: inc/widgets.php:2426
 msgid "Pages"
 msgstr ""
 
-#: inc/widgets.php:2456 inc/widgets.php:2604
+#: inc/widgets.php:2457 inc/widgets.php:2605
 msgid "Empty Navigation Menu. Leave it empty to populate it automatically."
 msgstr ""
 
-#: inc/widgets.php:2467
+#: inc/widgets.php:2468
 msgid "Url Label"
 msgstr ""
 
-#: inc/widgets.php:2720
+#: inc/widgets.php:2721
 msgid "Header: Nav Menu"
 msgstr ""
 
-#: inc/widgets.php:2723
+#: inc/widgets.php:2724
 msgid ""
 "The header's navigation menu, with an optional search form. Must be placed "
 "in the header area."
 msgstr ""
 
-#: inc/widgets.php:2874
+#: inc/widgets.php:2875
 msgid "Show a search form in the navigation menu."
 msgstr ""
 
-#: inc/widgets.php:2890
+#: inc/widgets.php:2891
 msgid "Search"
 msgstr ""
 
-#: inc/widgets.php:2891
+#: inc/widgets.php:2892
 msgid "Go"
 msgstr ""
 
-#: inc/widgets.php:2912
+#: inc/widgets.php:2913
 msgid "Footer: Nav Menu"
 msgstr ""
 
-#: inc/widgets.php:2915
+#: inc/widgets.php:2916
 msgid ""
 "The footer's navigation menu, with an optional copyright notice. Must be "
 "placed in the footer area."
 msgstr ""
 
-#: inc/widgets.php:3049
+#: inc/widgets.php:3050
 msgid "Place the footer navigation menu and the copyright on a single line."
 msgstr ""
 
-#: inc/widgets.php:3065
+#: inc/widgets.php:3066
 #, php-format
 msgid "Copyright %1$s, %2$s"
 msgstr ""

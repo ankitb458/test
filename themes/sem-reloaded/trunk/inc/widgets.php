@@ -2005,11 +2005,12 @@ class sem_nav_menu extends WP_Widget {
 		if ( !$url || $url == 'http://' )
 			return;
 		
-		$classes = array('nav_url');
-		if ( sem_nav_menu::is_local_url($url) )
-			$classes[] = 'nav_branch';
+		if ( rtrim($url, '/') == rtrim(get_option('home')) )
+			return sem_nav_menu::display_home($item);
+		elseif ( nav_menu::is_local_url($url) )
+			$classes = array('nav_branch');
 		else
-			$classes[] = 'nav_leaf';
+			$classes = array('nav_url');
 		
 		$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
 			. $label
