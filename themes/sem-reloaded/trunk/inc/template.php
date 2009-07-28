@@ -157,12 +157,11 @@ class sem_template {
 				wp_enqueue_style('skin', sem_url . '/css/letter.css', null, sem_version);
 		} else {
 			wp_enqueue_style('skin', $skin_url . '/skin.css', null, sem_version);
+			if ( file_exists(sem_path . '/custom.css') )
+				wp_enqueue_style('custom', sem_url . '/custom.css', null, filemtime(sem_path . '/custom.css'));
+			if ( file_exists($skin_path . '/custom.css') )
+				wp_enqueue_style('custom-skin', $skin_url . '/custom.css', null,  filemtime($skin_path . '/custom.css'));
 		}
-		
-		if ( file_exists(sem_path . '/custom.css') )
-			wp_enqueue_style('custom', sem_url . '/custom.css', null, filemtime(sem_path . '/custom.css'));
-		if ( file_exists($skin_path . '/custom.css') )
-			wp_enqueue_style('custom-skin', $skin_url . '/custom.css', null,  filemtime($skin_path . '/custom.css'));
 	} # styles()
 	
 	
