@@ -132,25 +132,25 @@ class sem_template {
 
 	function styles() {
 		global $sem_options;
-		$skin_dir = sem_path . '/skins/' . $sem_options['active_skin'];
+		$skin_path = sem_path . '/skins/' . $sem_options['active_skin'];
 		$skin_url = sem_url . '/skins/' . $sem_options['active_skin'];
 		
 		wp_enqueue_style('style', sem_url . '/style.css', null, sem_version);
 		wp_enqueue_style('layout', sem_url . '/css/layout.css', null, sem_version);
 		wp_enqueue_style('font', sem_url . '/font.css', null, sem_version);
 		
-		if ( file_exists($skin_dir . '/icons.css') )
+		if ( file_exists($skin_path . '/icons.css') )
 			wp_enqueue_style('icons', $skin_url . '/icons.css', null, sem_version);
 		else
 			wp_enqueue_style('icons', sem_url . '/icons/icons.css', null, sem_version);
 		
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
-			if ( file_exists($skin_dir . '/print.css') )
+			if ( file_exists($skin_path . '/print.css') )
 				wp_enqueue_style('skin', $skin_url . '/print.css', null, sem_version);
 			else
 				wp_enqueue_style('skin', sem_url . '/css/print.css', null, sem_version);
 		} elseif ( apply_filters('active_width', $sem_options['active_width']) == 'letter' ) {
-			if ( file_exists($skin_dir . '/letter.css') )
+			if ( file_exists($skin_path . '/letter.css') )
 				wp_enqueue_style('skin', $skin_url . '/letter.css', null, sem_version);
 			else
 				wp_enqueue_style('skin', sem_url . '/css/letter.css', null, sem_version);
