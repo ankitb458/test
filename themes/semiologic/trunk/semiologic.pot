@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 6.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-28 13:51+0200\n"
+"POT-Creation-Date: 2009-07-29 20:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,7 +87,7 @@ msgid "Delete Header"
 msgstr ""
 
 #: inc/header.php:181 inc/header.php:225 inc/layout.php:234 inc/layout.php:313
-#: inc/skin.php:352 inc/skin.php:376 inc/skin.php:398 inc/skin.php:416
+#: inc/skin.php:360 inc/skin.php:384 inc/skin.php:406 inc/skin.php:424
 msgid "Save Changes"
 msgstr ""
 
@@ -158,7 +158,7 @@ msgstr ""
 msgid "Special Page"
 msgstr ""
 
-#: inc/install.php:16 inc/skin.php:406 inc/upgrade.php:894
+#: inc/install.php:16 inc/skin.php:414 inc/upgrade.php:894
 #, php-format
 msgid "Made with %1$s &bull; %2$s skin by %3$s"
 msgstr ""
@@ -340,109 +340,114 @@ msgstr ""
 msgid "Font Size: %s."
 msgstr ""
 
-#: inc/skin.php:263
+#: inc/skin.php:264
+#, php-format
+msgid "Credits: %s"
+msgstr ""
+
+#: inc/skin.php:271
 msgid "Available Skins"
 msgstr ""
 
-#: inc/skin.php:266
+#: inc/skin.php:274
 msgid "Click on a skin below to activate it."
 msgstr ""
 
-#: inc/skin.php:298
+#: inc/skin.php:306
 #, php-format
 msgid "%1$s v.%2$s"
 msgstr ""
 
-#: inc/skin.php:301
+#: inc/skin.php:309
 msgid "Visit the skin's page"
 msgstr ""
 
-#: inc/skin.php:307
+#: inc/skin.php:315
 msgid "Visit the skin author's site"
 msgstr ""
 
-#: inc/skin.php:324
+#: inc/skin.php:332
 #, php-format
 msgid "By %s"
 msgstr ""
 
-#: inc/skin.php:355
+#: inc/skin.php:363
 msgid "Font Settings"
 msgstr ""
 
-#: inc/skin.php:357
+#: inc/skin.php:365
 msgid "This will let you set the default font on your site."
 msgstr ""
 
-#: inc/skin.php:379
+#: inc/skin.php:387
 msgid "Font Size Settings"
 msgstr ""
 
-#: inc/skin.php:401
+#: inc/skin.php:409
 msgid "Designer Credits"
 msgstr ""
 
-#: inc/skin.php:460
+#: inc/skin.php:468
 msgid "The skin's default"
 msgstr ""
 
-#: inc/skin.php:461
+#: inc/skin.php:469
 msgid "Arial, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:462
+#: inc/skin.php:470
 msgid "Book Antica, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:463
+#: inc/skin.php:471
 msgid "Bookman Old Style, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:464
+#: inc/skin.php:472
 msgid "Comic Sans MS, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:465
+#: inc/skin.php:473
 msgid "Courier New, Courier, Monospace"
 msgstr ""
 
-#: inc/skin.php:466
+#: inc/skin.php:474
 msgid "Garamond, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:467
+#: inc/skin.php:475
 msgid "Georgia, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:468
+#: inc/skin.php:476
 msgid "Monotype Corsiva, Courier, Monospace"
 msgstr ""
 
-#: inc/skin.php:469
+#: inc/skin.php:477
 msgid "Tahoma, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:470
+#: inc/skin.php:478
 msgid "Times New Roman, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:471
+#: inc/skin.php:479
 msgid "Trebuchet MS, Tahoma, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:472
+#: inc/skin.php:480
 msgid "Verdana, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:485
+#: inc/skin.php:493
 msgid "Small Font"
 msgstr ""
 
-#: inc/skin.php:486
+#: inc/skin.php:494
 msgid "Medium Font"
 msgstr ""
 
-#: inc/skin.php:487
+#: inc/skin.php:495
 msgid "Large Font"
 msgstr ""
 
@@ -466,23 +471,23 @@ msgstr ""
 msgid "Page-Specific Header"
 msgstr ""
 
-#: inc/template.php:312
+#: inc/template.php:311
 msgid "Semiologic Pro"
 msgstr ""
 
-#: inc/template.php:316
+#: inc/template.php:315
 msgid ""
 "the <a href=\"http://www.semiologic.com/software/sem-theme/\">Semiologic "
 "theme</a>"
 msgstr ""
 
-#: inc/template.php:317
+#: inc/template.php:316
 msgid ""
 "an <a href=\"http://www.semiologic.com/software/sem-theme/\">easy to use "
 "WordPress theme</a>"
 msgstr ""
 
-#: inc/template.php:318
+#: inc/template.php:317
 msgid ""
 "an <a href=\"http://www.semiologic.com/software/sem-theme/\">easy to "
 "customize WordPress theme</a>"
