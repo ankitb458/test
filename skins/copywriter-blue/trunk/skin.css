@@ -289,21 +289,30 @@ blockquote {
 }
 
 .sms .sidebar,
-.mm1s .sidebar,
 .m1s .sidebar {
 	background: url(images/sidebar.jpg) center repeat-y;
 }
 
 .sms .sidebar_top,
-.mm1s .sidebar_top,
 .m1s .sidebar_top {
 	background: url(images/sidebar_top.jpg) bottom center no-repeat;
 }
 
 .sms .sidebar_bottom,
-.mm1s .sidebar_bottom,
 .m1s .sidebar_bottom {
 	background: url(images/sidebar_bottom.jpg) top center no-repeat;
+}
+
+.mm1s .sidebar {
+	background: url(images/mm1s-sidebar.jpg) center repeat-y;
+}
+
+.mm1s .sidebar_top {
+	background: url(images/mm1s-sidebar_top.jpg) bottom center no-repeat;
+}
+
+.mm1s .sidebar_bottom {
+	background: url(images/mm1s-sidebar_bottom.jpg) top center no-repeat;
 }
 
 .mts #sidebars_top,

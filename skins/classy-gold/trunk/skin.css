@@ -291,19 +291,28 @@ html {
 	background: url(images/mmm-main_bottom.jpg) top center no-repeat;
 }
 
-.mm #main,
-.mm1s #main {
+.mm #main {
 	background: url(images/mm-main.jpg) center repeat-y #fff;
 }
 
-.mm #main_top,
-.mm1s #main_top {
+.mm #main_top {
 	background: url(images/mm-main_top.jpg) bottom center no-repeat;
 }
 
-.mm #main_bottom,
-.mm1s #main_bottom {
+.mm #main_bottom {
 	background: url(images/mm-main_bottom.jpg) top center no-repeat;
+}
+
+.mm1s #main {
+	background: url(images/mm1s-main.jpg) center repeat-y #fff;
+}
+
+.mm1s #main_top {
+	background: url(images/mm1s-main_top.jpg) bottom center no-repeat;
+}
+
+.mm1s #main_bottom {
+	background: url(images/mm1s-main_bottom.jpg) top center no-repeat;
 }
 
 .m2s #main,

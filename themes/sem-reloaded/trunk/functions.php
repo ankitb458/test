@@ -17,12 +17,14 @@ case 'm':
 	$content_width = 550;
 	break;
 case 'mm':
-case 'mms':
-case 'smm':
 	$content_width = 680;
 	break;
 case 'mmm':
 	$content_width = 880;
+	break;
+case 'smm':
+case 'mms':
+	$content_width = 580;
 	break;
 default:
 	$content_width = 480;

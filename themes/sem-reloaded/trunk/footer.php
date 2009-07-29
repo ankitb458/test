@@ -55,7 +55,7 @@
 			
 			# left sidebar
 			
-			echo '<div id="sidebar" class="sidebar">' . "\n";
+			echo '<div id="sidebar" class="sidebar narrow_sidebar">' . "\n";
 			
 			echo '<div id="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
@@ -68,7 +68,7 @@
 			
 			# right sidebar
 			
-			echo '<div id="sidebar2" class="sidebar">' . "\n";
+			echo '<div id="sidebar2" class="sidebar narrow_sidebar">' . "\n";
 			
 			echo '<div id="sidebar2_top"><div class="hidden"></div></div>' . "\n";
 
@@ -126,7 +126,7 @@
 			
 			# left sidebar
 			
-			echo '<div id="sidebar" class="sidebar">' . "\n";
+			echo '<div id="sidebar" class="sidebar narrow_sidebar">' . "\n";
 
 			echo '<div id="sidebar_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
@@ -149,7 +149,7 @@
 			
 			# right sidebar
 			
-			echo '<div id="sidebar2" class="sidebar">' . "\n";
+			echo '<div id="sidebar2" class="sidebar narrow_sidebar">' . "\n";
 
 			echo '<div id="sidebar2_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 
@@ -169,13 +169,35 @@
 
 		case 'mms' :
 		case 'smm' :
+
+			
+			# left sidebar
+			
+			echo '<div id="sidebar" class="sidebar">' . "\n";
+
+			echo '<div id="sidebar_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
+
+			sem_panels::display('left_sidebar');
+
+			echo '<div id="sidebar_bottom" class="sidebar_bottom"><div class="hidden"></div></div>' . "\n";
+
+			echo '</div><!-- left sidebar -->' . "\n";
+			
+			
+			# spacer
+			
+			echo '<div class="spacer"></div>' . "\n";
+
+			break;
+
+
 		case 'ms' :
 		case 'sm' :
 
 			
 			# left sidebar
 			
-			echo '<div id="sidebar" class="sidebar">' . "\n";
+			echo '<div id="sidebar" class="sidebar narrow_sidebar">' . "\n";
 
 			echo '<div id="sidebar_top" class="sidebar_top"><div class="hidden"></div></div>' . "\n";
 

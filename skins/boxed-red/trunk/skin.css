@@ -258,19 +258,28 @@ html {
 	background: url(images/mmm-main_bottom.jpg) top center no-repeat;
 }
 
-.mm #main,
-.mm1s #main {
+.mm #main {
 	background: url(images/mm-main.jpg) center repeat-y;
 }
 
-.mm #main_top,
-.mm1s #main_top {
+.mm #main_top {
 	background: url(images/mm-main_top.jpg) bottom center no-repeat;
 }
 
-.mm #main_bottom,
-.mm1s #main_bottom {
+.mm #main_bottom {
 	background: url(images/mm-main_bottom.jpg) top center no-repeat;
+}
+
+.mm1s #main {
+	background: url(images/mm1s-main.jpg) center repeat-y;
+}
+
+.mm1s #main_top {
+	background: url(images/mm1s-main_top.jpg) bottom center no-repeat;
+}
+
+.mm1s #main_bottom {
+	background: url(images/mm1s-main_bottom.jpg) top center no-repeat;
 }
 
 .m2s #main,
@@ -395,6 +404,30 @@ blockquote {
 
 .widget_title_bottom {
 	background: url(images/widget_title_bottom.jpg) top center no-repeat;
+}
+
+.mm1s .widget {
+	background: url(images/mm1s-widget.jpg) center repeat-y;
+}
+
+.mm1s .widget_top {
+	background: url(images/mm1s-widget_top.jpg) bottom center no-repeat;
+}
+
+.mm1s .widget_bottom {
+	background: url(images/mm1s-widget_bottom.jpg) top center no-repeat;
+}
+
+.mm1s .widget_title {
+	background: url(images/mm1s-widget_title.jpg) center repeat-y;
+}
+
+.mm1s .widget_title_top {
+	background: url(images/mm1s-widget_title_top.jpg) bottom center no-repeat;
+}
+
+.mm1s .widget_title_bottom {
+	background: url(images/mm1s-widget_title_bottom.jpg) top center no-repeat;
 }
 
 .wide_sidebar .widget {
