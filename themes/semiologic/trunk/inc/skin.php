@@ -172,7 +172,7 @@ EOS;
 			: 'medium';
 		
 		if ( current_user_can('unfiltered_html') )
-			$sem_options['credits'] = $_POST['credits'];
+			$sem_options['credits'] = stripslashes($_POST['credits']);
 		
 		update_option('sem5_options', $sem_options);
 		delete_transient('sem_header');
@@ -254,6 +254,14 @@ EOS;
 		
 		echo '<p>'
 			. sprintf(__('Font Size: %s.', 'sem-theme'), $font_size)
+			. '</p>' . "\n";
+		
+		$theme_credits = sem_template::get_theme_credits();
+		$skin_credits = sem_template::get_skin_credits();
+		$credits = sprintf($sem_options['credits'], $theme_credits, $skin_credits['skin_name'], $skin_credits['skin_author']);
+		
+		echo '<p>'
+			. sprintf(__('Credits: %s', 'sem-theme'), $credits)
 			. '</p>' . "\n";
 		
 		echo '<div style="clear: both;"></div>' . "\n";
