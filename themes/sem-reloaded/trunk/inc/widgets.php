@@ -2007,7 +2007,7 @@ class sem_nav_menu extends WP_Widget {
 		
 		if ( rtrim($url, '/') == rtrim(get_option('home')) )
 			return sem_nav_menu::display_home($item);
-		elseif ( nav_menu::is_local_url($url) )
+		elseif ( sem_nav_menu::is_local_url($url) )
 			$classes = array('nav_branch');
 		else
 			$classes = array('nav_url');
