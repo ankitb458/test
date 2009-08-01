@@ -29,18 +29,18 @@ class sem_template {
 
 	function admin_menu() {
 		add_theme_page(
-			__('Header', 'sem-reloaded'),
+			__('Manage Custom', 'sem-reloaded'),
+			__('Custom CSS', 'sem-reloaded'),
+			'switch_themes',
+			'custom',
+			array('sem_custom', 'edit_options')
+			);
+		add_theme_page(
+			__('Manage Header', 'sem-reloaded'),
 			__('Header', 'sem-reloaded'),
 			'switch_themes',
 			'header',
 			array('sem_header', 'edit_options')
-			);
-		add_theme_page(
-			__('Skin', 'sem-reloaded'),
-			__('Skin', 'sem-reloaded'),
-			'switch_themes',
-			'skin',
-			array('sem_skin', 'edit_options')
 			);
 		add_theme_page(
 			__('Manage Layout', 'sem-reloaded'),
@@ -48,6 +48,13 @@ class sem_template {
 			'switch_themes',
 			'layout',
 			array('sem_layout', 'edit_options')
+			);
+		add_theme_page(
+			__('Manage Skin', 'sem-reloaded'),
+			__('Skin', 'sem-reloaded'),
+			'switch_themes',
+			'skin',
+			array('sem_skin', 'edit_options')
 			);
 	} # admin_menu()
 	

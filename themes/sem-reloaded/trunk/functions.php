@@ -44,7 +44,12 @@ remove_action('wp_head', 'parent_post_rel_link');
 remove_action('wp_head', 'start_post_rel_link');
 remove_action('wp_head', 'adjacent_posts_rel_link');
 
+# initialize options
+add_option('sem_api_key', '');
+add_option('sem_custom', array(), false, 'no');
+add_option('sem_custom_published', array(), false, 'no');
 
+# load depends
 include sem_path . '/inc/panels.php';
 include sem_path . '/inc/widgets.php';
 include sem_path . '/inc/template.php';
@@ -80,5 +85,13 @@ if ( is_admin() ) {
 	}
 	
 	add_action('load-appearance_page_skin', 'sem_skin_admin');
+	
+	function sem_custom_admin() {
+		include_once sem_path . '/inc/custom.php';
+	}
+	
+	add_action('load-appearance_page_custom', 'sem_custom_admin');
+} elseif ( isset($_GET['preview']) && $_GET['preview'] == 'custom-css' ) {
+	include_once dirname(__FILE__) . '/inc/custom.php';
 }
 ?>
