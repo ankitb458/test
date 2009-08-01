@@ -710,6 +710,35 @@ div.media {
 	margin-left: 0px;
 }
 
+
+p.attachment {
+	clear: both;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.gallery_nav {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	clear: both;
+}
+
+.gallery_nav .prev_image {
+	width: 45%;
+	margin-left: 3%;
+	float: left;
+	text-align: right;
+}
+
+.gallery_nav .next_image {
+	width: 45%;
+	margin-right: 3%;
+	float: right;
+	text-align: left;
+}
+
 /* search reloaded */
 
 .search_count {
