@@ -29,15 +29,6 @@ load_plugin_textdomain('sem-admin-menu', false, dirname(plugin_basename(__FILE__
  * @package Admin Menu
  **/
 
-if ( !is_admin() ) {
-	add_action('wp_print_styles', array('sem_admin_menu', 'styles'));
-	add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
-
-	add_filter('body_class', array('sem_admin_menu', 'body_class'));
-} else {
-	add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
-}
-
 class sem_admin_menu {
 	/**
 	 * styles()
@@ -332,16 +323,20 @@ class sem_admin_menu {
 } # sem_admin_menu
 
 
-/**
- * sem_admin_menu_admin()
- *
- * @return void
- **/
-
 function sem_admin_menu_admin() {
  	include dirname(__FILE__) . '/sem-admin-menu-admin.php';
 } # sem_admin_menu_admin()
 
 foreach ( array('load-page-new.php', 'load-settings_page_admin-menu') as $hook )
 	add_action($hook, 'sem_admin_menu_admin');
+
+
+if ( !is_admin() ) {
+	add_action('wp_print_styles', array('sem_admin_menu', 'styles'));
+	add_action('wp_footer', array('sem_admin_menu', 'display_menu'));
+
+	add_filter('body_class', array('sem_admin_menu', 'body_class'));
+} else {
+	add_action('admin_menu', array('sem_admin_menu', 'admin_menu'));
+}
 ?>

@@ -5,8 +5,6 @@
  * @package AutoTag
  **/
 
-add_action('save_post', array('autotag_admin', 'save_entry'));
-
 class autotag_admin {
 	/**
 	 * entry_editor()
@@ -174,4 +172,6 @@ class autotag_admin {
 		}
 	} # save_entry()
 } # autotag_admin
+
+add_action('save_post', array('autotag_admin', 'save_entry'));
 ?>

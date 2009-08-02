@@ -27,11 +27,6 @@ Hat tips
 **/
 
 
-add_filter('get_comment_author_link', 'strip_nofollow', 15);
-add_filter('comment_text', 'strip_nofollow', 15);
-remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
-
-
 /**
  * strip_nofollow()
  *
@@ -69,4 +64,9 @@ function strip_nofollow_callback($match) {
 	$attr = trim($attr);
 	return '<a ' . $attr . '>';
 } # strip_nofollow_callback()
+
+
+add_filter('get_comment_author_link', 'strip_nofollow', 15);
+add_filter('comment_text', 'strip_nofollow', 15);
+remove_filter('pre_comment_content', 'wp_rel_nofollow', 15);
 ?>

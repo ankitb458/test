@@ -26,21 +26,6 @@ http://www.opensource.org/licenses/gpl-2.0.php
  * @package Opt-in Front Page
  **/
 
-add_action('init', array('sem_opt_in_front', 'init'));
-
-foreach ( array(
-	'create_term',
-	'edit_term',
-	'delete_term',
-	
-	'flush_cache',
-	'after_db_upgrade',
-	) as $hook )
-	add_action($hook, array('sem_opt_in_front', 'flush_cache'));
-
-register_activation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
-register_deactivation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
-
 class sem_opt_in_front {
 	/**
 	 * init()
@@ -161,4 +146,19 @@ class sem_opt_in_front {
 		return $in;
 	} # flush_cache()
 } # sem_opt_in_front
+
+add_action('init', array('sem_opt_in_front', 'init'));
+
+foreach ( array(
+	'create_term',
+	'edit_term',
+	'delete_term',
+	
+	'flush_cache',
+	'after_db_upgrade',
+	) as $hook )
+	add_action($hook, array('sem_opt_in_front', 'flush_cache'));
+
+register_activation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
+register_deactivation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
 ?>

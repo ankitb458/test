@@ -22,25 +22,18 @@ http://www.mesoconcepts.com/license/
 
 load_plugin_textdomain('google-analytics', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
-
-/**
- * google_analytics
- *
- * @package Google Analytics
- **/
-
 if ( !defined('sem_google_analytics_debug') )
 	define('sem_google_analytics_debug', false);
 
 if ( !defined('GA_DOMAIN') )
 	define('GA_DOMAIN', false);
 
-if ( !is_admin() ) {
-	add_action('wp_print_scripts', array('google_analytics', 'header_scripts'));
-	add_action('wp_footer', array('google_analytics', 'footer_scripts'), 20);
-} else {
-	add_action('admin_menu', array('google_analytics', 'admin_menu'));
-}
+
+/**
+ * google_analytics
+ *
+ * @package Google Analytics
+ **/
 
 class google_analytics {
 	/**
@@ -251,9 +244,18 @@ EOS;
 	} # admin_menu()
 } # google_analytics
 
+
 function google_analytics_admin() {
 	include dirname(__FILE__) . '/google-analytics-admin.php';
 }
 
 add_action('load-settings_page_google-analytics', 'google_analytics_admin');
+
+
+if ( !is_admin() ) {
+	add_action('wp_print_scripts', array('google_analytics', 'header_scripts'));
+	add_action('wp_footer', array('google_analytics', 'footer_scripts'), 20);
+} else {
+	add_action('admin_menu', array('google_analytics', 'admin_menu'));
+}
 ?>

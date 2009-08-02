@@ -29,9 +29,6 @@ load_plugin_textdomain('hitslink', false, dirname(plugin_basename(__FILE__)) . '
  * @package HitsLink
  **/
 
-add_action('wp_head', array('hitslink', 'header_scripts'), 9);
-add_action('admin_menu', array('hitslink', 'admin_menu'));
-
 class hitslink {
 	/**
 	 * header_scripts()
@@ -98,9 +95,14 @@ class hitslink {
 	} # admin_menu()
 } # hitslink()
 
+
 function hitslink_admin() {
 	include dirname(__FILE__) . '/hitslink-admin.php';
 }
 
 add_action('load-settings_page_hitslink', 'hitslink_admin');
+
+
+add_action('wp_head', array('hitslink', 'header_scripts'), 9);
+add_action('admin_menu', array('hitslink', 'admin_menu'));
 ?>

@@ -5,8 +5,6 @@
  * @package Redirect Manager
  **/
 
-add_action('save_post', array('redirect_manager_admin', 'save_entry'));
-
 class redirect_manager_admin {
 	/**
 	 * edit_entry()
@@ -58,4 +56,6 @@ class redirect_manager_admin {
 		}
 	} # save_entry()
 } # redirect_manager_admin
+
+add_action('save_post', array('redirect_manager_admin', 'save_entry'));
 ?>

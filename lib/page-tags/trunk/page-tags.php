@@ -12,8 +12,6 @@
  * @package Page Tags
  **/
 
-add_action('admin_print_scripts', array('page_tags', 'scripts'));
-
 class page_tags {
 	/**
 	 * scripts()
@@ -87,4 +85,6 @@ class page_tags {
 		<?php
 	} # display_page_tags()
 } # page_tags
+
+add_action('admin_print_scripts', array('page_tags', 'scripts'));
 ?>

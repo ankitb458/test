@@ -29,16 +29,6 @@ load_plugin_textdomain('inline-widgets', false, dirname(plugin_basename(__FILE__
  * @package Inline Widgets
  **/
 
-add_action('init', array('inline_widgets', 'panels'), -100);
-add_shortcode('widget', array('inline_widgets', 'shortcode'));
-
-if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') ) {
-	if ( is_admin() )
-		add_action('init', array('inline_widgets', 'upgrade'), 3000);
-	else
-		add_filter('the_content', array('inline_widgets', 'upgrade_filter'), 0);
-}
-
 class inline_widgets {
 	/**
 	 * panels()
@@ -271,10 +261,22 @@ class inline_widgets {
 	} # upgrade_callback()
 } # inline_widgets
 
+
 function inline_widgets_admin() {
 	include dirname(__FILE__) . '/inline-widgets-admin.php';
 }
 
 foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
 	add_action("load-$hook", 'inline_widgets_admin');
+
+
+add_action('init', array('inline_widgets', 'panels'), -100);
+add_shortcode('widget', array('inline_widgets', 'shortcode'));
+
+if ( get_option('inline_widgets_version') === false && !defined('DOING_CRON') ) {
+	if ( is_admin() )
+		add_action('init', array('inline_widgets', 'upgrade'), 3000);
+	else
+		add_filter('the_content', array('inline_widgets', 'upgrade_filter'), 0);
+}
 ?>

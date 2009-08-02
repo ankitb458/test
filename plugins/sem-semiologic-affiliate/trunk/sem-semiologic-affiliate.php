@@ -22,28 +22,15 @@ http://www.opensource.org/licenses/gpl-2.0.php
 
 load_plugin_textdomain('sem-semiologic-affiliate', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
+if ( !defined('semiologic_affiliate_debug') )
+	define('semiologic_affiliate_debug', false);
+
 
 /**
  * semiologic_affiliate
  *
  * @package Semiologic Affiliate
  **/
-
-if ( !defined('semiologic_affiliate_debug') )
-	define('semiologic_affiliate_debug', false);
-
-add_action('admin_menu', array('semiologic_affiliate', 'admin_menu'));
-
-if ( !is_admin() && semiologic_affiliate::get_campaign() ) {
-	if ( !class_exists('anchor_utils') )
-		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
-	
-	if ( !semiologic_affiliate_debug ) {
-		add_filter('ob_filter_anchor', array('semiologic_affiliate', 'filter'));
-	} else {
-		add_filter('filter_anchor', array('semiologic_affiliate', 'filter'));
-	}
-}
 
 class semiologic_affiliate {
 	/**
@@ -125,4 +112,18 @@ function semiologic_affiliate_admin() {
 }
 
 add_action('load-settings_page_semiologic_affiliate', 'semiologic_affiliate_admin');
+
+
+add_action('admin_menu', array('semiologic_affiliate', 'admin_menu'));
+
+if ( !is_admin() && semiologic_affiliate::get_campaign() ) {
+	if ( !class_exists('anchor_utils') )
+		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
+	
+	if ( !semiologic_affiliate_debug ) {
+		add_filter('ob_filter_anchor', array('semiologic_affiliate', 'filter'));
+	} else {
+		add_filter('filter_anchor', array('semiologic_affiliate', 'filter'));
+	}
+}
 ?>

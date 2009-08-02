@@ -29,13 +29,6 @@ load_plugin_textdomain('autotag', false, dirname(plugin_basename(__FILE__)) . '/
  * @package AutoTag
  **/
 
-if ( is_admin() ) {
-	if ( extension_loaded('simplexml') )
-		add_action('admin_menu', array('autotag', 'meta_boxes'));
-	else
-		add_action('admin_notices', array('autotag', 'admin_notices'));
-}
-
 class autotag {
 	/**
 	 * meta_boxes()
@@ -77,4 +70,11 @@ function load_yterms() {
 		include dirname(__FILE__) . '/yterms/yterms.php';
 }
 endif;
+
+if ( is_admin() ) {
+	if ( extension_loaded('simplexml') )
+		add_action('admin_menu', array('autotag', 'meta_boxes'));
+	else
+		add_action('admin_notices', array('autotag', 'admin_notices'));
+}
 ?>

@@ -5,11 +5,6 @@
  * Version: 1.0
  */
 
-ob_start('ob_multipart_entry');
-
-add_action('edit_form_advanced', 'add_max_file_size');
-add_action('edit_page_form', 'add_max_file_size');
-
 /**
  * ob_multipart_entry()
  *
@@ -39,4 +34,9 @@ function add_max_file_size() {
 	echo  "\n" . '<input type="hidden" name="MAX_FILE_SIZE" value="' . esc_attr($bytes) .'" />' . "\n";
 } # add_max_file_size()
 endif;
+
+ob_start('ob_multipart_entry');
+
+add_action('edit_form_advanced', 'add_max_file_size');
+add_action('edit_page_form', 'add_max_file_size');
 ?>

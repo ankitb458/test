@@ -29,9 +29,6 @@ load_plugin_textdomain('dealdotcom-widgets', false, dirname(plugin_basename(__FI
  * @package DealDotCom Widgets
  **/
 
-add_action('widgets_init', array('dealdotcom', 'widgets_init'));
-add_action('dealdotcom_update', array('dealdotcom', 'update_deal'));
-
 class dealdotcom extends WP_Widget {
 	/**
 	 * init()
@@ -280,4 +277,7 @@ class dealdotcom extends WP_Widget {
 		return $ops;
 	} # upgrade_1_0()
 } # dealdotcom
+
+add_action('widgets_init', array('dealdotcom', 'widgets_init'));
+add_action('dealdotcom_update', array('dealdotcom', 'update_deal'));
 ?>

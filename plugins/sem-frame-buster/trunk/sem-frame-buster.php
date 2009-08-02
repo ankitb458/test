@@ -26,8 +26,6 @@ http://www.opensource.org/licenses/gpl-2.0.php
  * @return void
  **/
 
-add_action('wp_footer', 'kill_frame');
-
 function kill_frame() {
 	if ( is_preview() )
 		return;
@@ -56,4 +54,6 @@ try {
 
 EOS;
 } # kill_frame()
+
+add_action('wp_footer', 'kill_frame');
 ?>

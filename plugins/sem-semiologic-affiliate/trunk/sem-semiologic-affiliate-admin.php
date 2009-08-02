@@ -5,8 +5,6 @@
  * @package Semiologic Affiliate
  **/
 
-add_action('settings_page_semiologic_affiliate', array('semiologic_affiliate_admin', 'save_options'), 0);
-
 class semiologic_affiliate_admin {
 	/**
 	 * save_options()
@@ -90,4 +88,6 @@ class semiologic_affiliate_admin {
 		echo '</div>' . "\n";
 	} # edit_options()
 } # semiologic_affiliate_admin
+
+add_action('settings_page_semiologic_affiliate', array('semiologic_affiliate_admin', 'save_options'), 0);
 ?>

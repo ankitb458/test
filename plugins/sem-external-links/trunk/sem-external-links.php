@@ -29,22 +29,6 @@ load_plugin_textdomain('external-links', false, dirname(plugin_basename(__FILE__
  * @package External Links
  **/
 
-if ( !is_admin() ) {
-	if ( !class_exists('anchor_utils') )
-		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
-	
-	$o = external_links::get_options();
-	
-	if ( $o['icon'] )
-		add_action('wp_print_styles', array('external_links', 'styles'), 5);
-	
-	add_filter(($o['global'] ? 'ob_' : '' ) . 'filter_anchor', array('external_links', 'filter'));
-	
-	unset($o);
-} else {
-	add_action('admin_menu', array('external_links', 'admin_menu'));
-}
-
 class external_links {
 	/**
 	 * styles()
@@ -233,9 +217,27 @@ class external_links {
 	} # admin_menu()
 } # external_links
 
+
 function external_links_admin() {
 	include dirname(__FILE__) . '/sem-external-links-admin.php';
 }
 
 add_action('load-settings_page_external-links', 'external_links_admin');
+
+
+if ( !is_admin() ) {
+	if ( !class_exists('anchor_utils') )
+		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
+	
+	$o = external_links::get_options();
+	
+	if ( $o['icon'] )
+		add_action('wp_print_styles', array('external_links', 'styles'), 5);
+	
+	add_filter(($o['global'] ? 'ob_' : '' ) . 'filter_anchor', array('external_links', 'filter'));
+	
+	unset($o);
+} else {
+	add_action('admin_menu', array('external_links', 'admin_menu'));
+}
 ?>

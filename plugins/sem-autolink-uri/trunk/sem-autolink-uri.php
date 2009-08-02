@@ -26,10 +26,6 @@ http://www.opensource.org/licenses/gpl-2.0.php
  * @package Autolink URI
  **/
 
-// after shortcodes
-add_filter('the_content', array('autolink_uri', 'filter'), 12);
-add_filter('the_excerpt', array('autolink_uri', 'filter'), 12);
-
 class autolink_uri {
 	/**
 	 * filter()
@@ -197,4 +193,8 @@ class autolink_uri {
 		return str_replace(array_keys($unescape), array_values($unescape), $text);
 	} # unescape()
 } # autolink_uri
+
+// after shortcodes
+add_filter('the_content', array('autolink_uri', 'filter'), 12);
+add_filter('the_excerpt', array('autolink_uri', 'filter'), 12);
 ?>

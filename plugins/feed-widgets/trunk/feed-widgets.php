@@ -29,9 +29,6 @@ load_plugin_textdomain('feed-widgets', false, dirname(plugin_basename(__FILE__))
  * @package Feed Widgets
  **/
 
-add_action('init', array('feed_widgets', 'panels'), -100);
-add_filter('the_content', array('feed_widgets', 'display'), 100);
-
 class feed_widgets {
 	/**
 	 * panels()
@@ -72,4 +69,7 @@ class feed_widgets {
 		return $text;
 	} # display()
 } # feed_widgets
+
+add_action('init', array('feed_widgets', 'panels'), -100);
+add_filter('the_content', array('feed_widgets', 'display'), 100);
 ?>

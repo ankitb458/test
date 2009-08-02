@@ -5,8 +5,6 @@
  * @package Google Analytics
  **/
 
-add_action('settings_page_google-analytics', array('google_analytics_admin', 'save_options'), 0);
-
 class google_analytics_admin {
 	/**
 	 * save_options()
@@ -199,4 +197,6 @@ EOF;
 		echo '</table>' . "\n";
 	} # crash_course()
 } # google_analytics_admin
+
+add_action('settings_page_google-analytics', array('google_analytics_admin', 'save_options'), 0);
 ?>

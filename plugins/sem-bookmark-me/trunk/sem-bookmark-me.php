@@ -35,29 +35,6 @@ load_plugin_textdomain('sem-bookmark-me', false, dirname(plugin_basename(__FILE_
  * @package Bookmark Me
  **/
 
-add_action('widgets_init', array('bookmark_me', 'widgets_init'));
-
-if ( !is_admin() ) {
-	add_action('wp_print_scripts', array('bookmark_me', 'scripts'));
-	add_action('wp_print_styles', array('bookmark_me', 'styles'), 0);
-	add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
-}
-
-foreach ( array(
-		'generate_rewrite_rules',
-		'switch_theme',
-		'update_option_active_plugins',
-		'update_option_sidebars_widgets',
-		
-		'flush_cache',
-		'after_db_upgrade',
-		) as $hook) {
-	add_action($hook, array('bookmark_me', 'flush_cache'));
-}
-
-register_activation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
-register_deactivation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
-
 class bookmark_me extends WP_Widget {
 	/**
 	 * init()
@@ -572,4 +549,28 @@ function the_bookmark_links($instance = null, $args = null) {
 	
 	the_widget('bookmark_me', $instance, $args);
 } # the_bookmark_links()
+
+
+add_action('widgets_init', array('bookmark_me', 'widgets_init'));
+
+if ( !is_admin() ) {
+	add_action('wp_print_scripts', array('bookmark_me', 'scripts'));
+	add_action('wp_print_styles', array('bookmark_me', 'styles'), 0);
+	add_action('template_redirect', array('bookmark_me', 'template_redirect'), 5);
+}
+
+foreach ( array(
+		'generate_rewrite_rules',
+		'switch_theme',
+		'update_option_active_plugins',
+		'update_option_sidebars_widgets',
+		
+		'flush_cache',
+		'after_db_upgrade',
+		) as $hook) {
+	add_action($hook, array('bookmark_me', 'flush_cache'));
+}
+
+register_activation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
+register_deactivation_hook(__FILE__, array('bookmark_me', 'flush_cache'));
 ?>

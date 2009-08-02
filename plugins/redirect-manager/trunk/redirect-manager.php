@@ -29,9 +29,6 @@ load_plugin_textdomain('redirect-manager', false, dirname(plugin_basename(__FILE
  * @package Redirect Manager
  **/
 
-add_action('admin_menu', array('redirect_manager', 'meta_boxes'));
-add_action('template_redirect', array('redirect_manager', 'redirect'), -1000000);
-
 class redirect_manager {
 	/**
 	 * meta_boxes()
@@ -97,10 +94,15 @@ class redirect_manager {
 	} # display()
 } # redirect_manager
 
+
 function redirect_manager_admin() {
 	include dirname(__FILE__) . '/redirect-manager-admin.php';
 }
 
 foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
 	add_action("load-$hook", 'redirect_manager_admin');
+
+
+add_action('admin_menu', array('redirect_manager', 'meta_boxes'));
+add_action('template_redirect', array('redirect_manager', 'redirect'), -1000000);
 ?>

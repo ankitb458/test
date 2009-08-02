@@ -29,9 +29,6 @@ load_plugin_textdomain('fancy-excerpt', false, dirname(plugin_basename(__FILE__)
  * @package Fancy Excerpt
  **/
 
-remove_filter('get_the_excerpt', 'wp_trim_excerpt');
-add_filter('get_the_excerpt', array('fancy_excerpt', 'trim_excerpt'), 0);
-
 class fancy_excerpt {
 	/**
 	 * trim_excerpt()
@@ -153,4 +150,7 @@ class fancy_excerpt {
 		return str_replace(array_keys($unescape), array_values($unescape), $text);
 	} # unescape()
 } # fancy_excerpt
+
+remove_filter('get_the_excerpt', 'wp_trim_excerpt');
+add_filter('get_the_excerpt', array('fancy_excerpt', 'trim_excerpt'), 0);
 ?>

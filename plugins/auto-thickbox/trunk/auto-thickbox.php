@@ -26,18 +26,6 @@ http://www.opensource.org/licenses/gpl-2.0.php
  * @package Auto Thickbox
  **/
 
-if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === false ) {
-	if ( !class_exists('anchor_utils') )
-		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
-	
-	add_action('wp_print_scripts', array('auto_thickbox', 'scripts'));
-	add_action('wp_print_styles', array('auto_thickbox', 'styles'));
-	
-	add_action('wp_footer', array('auto_thickbox', 'thickbox_images'), 20);
-	
-	add_filter('filter_anchor', array('auto_thickbox', 'filter'));
-}
-
 class auto_thickbox {
 	/**
 	 * filter()
@@ -152,4 +140,16 @@ var tb_closeImage = "{$includes_url}js/thickbox/tb-close.png";
 EOS;
 	} # thickbox_images()
 } # auto_thickbox
+
+if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === false ) {
+	if ( !class_exists('anchor_utils') )
+		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
+	
+	add_action('wp_print_scripts', array('auto_thickbox', 'scripts'));
+	add_action('wp_print_styles', array('auto_thickbox', 'styles'));
+	
+	add_action('wp_footer', array('auto_thickbox', 'thickbox_images'), 20);
+	
+	add_filter('filter_anchor', array('auto_thickbox', 'filter'));
+}
 ?>

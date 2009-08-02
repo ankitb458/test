@@ -5,8 +5,6 @@
  * @package HitsLink
  **/
 
-add_action('settings_page_hitslink', array('hitslink_admin', 'save_options'), 0);
-
 class hitslink_admin {
 	/**
 	 * save_options()
@@ -127,4 +125,6 @@ EOS;
 			. '</div>' . "\n";
 	} # edit_options()
 } # hitslink_admin
+
+add_action('settings_page_hitslink', array('hitslink_admin', 'save_options'), 0);
 ?>

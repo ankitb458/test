@@ -29,13 +29,6 @@ load_plugin_textdomain('article-uploader', false, dirname(plugin_basename(__FILE
  * @package Article Uploader
  **/
 
-if ( !is_admin() ) {
-	add_action('the_post', array('article_uploader', 'the_post'));
-	add_action('loop_end', array('article_uploader', 'loop_end'));
-} else {
-	add_action('admin_menu', array('article_uploader', 'meta_boxes'), 30);
-}
-
 class article_uploader {
 	/**
 	 * meta_boxes()
@@ -140,5 +133,12 @@ function article_uploader_admin() {
 foreach ( array('post.php', 'post-new.php', 'page.php', 'page-new.php') as $hook ) {
 	add_action("load-$hook", 'article_uploader_admin');
 	add_action("load-$hook", 'load_multipart_entry');
+}
+
+if ( !is_admin() ) {
+	add_action('the_post', array('article_uploader', 'the_post'));
+	add_action('loop_end', array('article_uploader', 'loop_end'));
+} else {
+	add_action('admin_menu', array('article_uploader', 'meta_boxes'), 30);
 }
 ?>

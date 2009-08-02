@@ -5,9 +5,6 @@
  * @package Admin Menu
  **/
 
-add_action('settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'), 0);
-add_action('submitpage_box', array('sem_admin_menu_admin', 'set_parent_id'), 0);
-
 class sem_admin_menu_admin {
 	/**
 	 * set_parent_id()
@@ -102,4 +99,7 @@ class sem_admin_menu_admin {
 			. '</div>' . "\n";
 	} # edit_options()
 } # sem_admin_menu_admin
+
+add_action('settings_page_admin-menu', array('sem_admin_menu_admin', 'save_options'), 0);
+add_action('submitpage_box', array('sem_admin_menu_admin', 'set_parent_id'), 0);
 ?>
