@@ -199,17 +199,17 @@ li {
 
 pre {
 	font-size: 100%;
-	margin-left: .5em;
+	margin-left: 12px;
 }
 
 blockquote, q, ul, ol, dl {
-	margin-left: 1.7em;
+	margin-left: 24px;
 }
 
 ul ul,
 ol ol,
 dl dl {
-	margin-left: .8em;
+	margin-left: 8px;
 }
 
 strong, b {
