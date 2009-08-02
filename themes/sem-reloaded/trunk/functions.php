@@ -91,6 +91,12 @@ if ( is_admin() ) {
 	}
 	
 	add_action('load-appearance_page_custom', 'sem_custom_admin');
+	
+	function sem_update() {
+		include_once sem_path . '/inc/update.php';
+	}
+	
+	add_action('load-update.php', 'sem_update');
 } elseif ( isset($_GET['preview']) && $_GET['preview'] == 'custom-css' ) {
 	include_once dirname(__FILE__) . '/inc/custom.php';
 }
