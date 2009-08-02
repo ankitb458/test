@@ -6,6 +6,14 @@ http://creativecommons.org/licenses/by/2.5/
 To override these icons, create a copy of this file and drop it, as icons.css, into your skin's folder.
 */
 
+.sidebar ul {
+	margin-left: 2em;
+}
+
+.sidebar ul ul {
+	margin-left: .8em;
+}
+
 #main a.external_icon,
 #credits a.external_icon {
 	background: url(../icons/world_go.gif) center right no-repeat;
