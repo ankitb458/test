@@ -5,21 +5,6 @@
  * @package Semiologic Reloaded
  **/
 
-if ( !is_admin() ) {
-	add_action('wp', array('sem_template', 'wp'), 0);
-	add_action('template_redirect', array('sem_template' ,'template_redirect'), 0);
-	add_action('wp_print_scripts', array('sem_template', 'scripts'));
-	add_action('wp_print_styles', array('sem_template', 'styles'));
-	add_action('wp_head', array('sem_template' ,'trackback_rdf'), 100);
-	add_filter('body_class', array('sem_template', 'body_class'));
-	add_filter('widget_title', array('sem_template', 'widget_title'));
-	add_action('wp_footer', array('sem_template', 'display_credits'), 5);
-	remove_action('wp_print_styles', array('external_links', 'styles'), 5);
-} else {
-	add_action('admin_menu', array('sem_template', 'admin_menu'));
-	add_action('admin_menu', array('sem_template', 'meta_boxes'));
-}
-
 class sem_template {
 	/**
 	 * admin_menu()
@@ -452,4 +437,19 @@ class sem_template {
 		return compact($fields);
 	} # get_skin_data()
 } # sem_template
+
+if ( !is_admin() ) {
+	add_action('wp', array('sem_template', 'wp'), 0);
+	add_action('template_redirect', array('sem_template' ,'template_redirect'), 0);
+	add_action('wp_print_scripts', array('sem_template', 'scripts'));
+	add_action('wp_print_styles', array('sem_template', 'styles'));
+	add_action('wp_head', array('sem_template' ,'trackback_rdf'), 100);
+	add_filter('body_class', array('sem_template', 'body_class'));
+	add_filter('widget_title', array('sem_template', 'widget_title'));
+	add_action('wp_footer', array('sem_template', 'display_credits'), 5);
+	remove_action('wp_print_styles', array('external_links', 'styles'), 5);
+} else {
+	add_action('admin_menu', array('sem_template', 'admin_menu'));
+	add_action('admin_menu', array('sem_template', 'meta_boxes'));
+}
 ?>

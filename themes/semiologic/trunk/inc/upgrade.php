@@ -1,32 +1,4 @@
 <?php
-#$wpdb->show_errors();
-
-$sem_captions = get_option('sem5_captions');
-$sem_nav_menus = get_option('sem_nav_menus');
-
-if ( version_compare($sem_options['version'], '5.0', '<') )
-	upgrade_sem_5_0();
-
-if ( version_compare($sem_options['version'], '5.5', '<') )
-	upgrade_sem_5_5();
-
-if ( version_compare($sem_options['version'], '6.0', '<') ) {
-	upgrade_sem_6_0();
-	update_option('init_sem_panels', '1');
-}
-
-unset($sem_options['skin_details']);
-$sem_options['version'] = sem_version;
-
-#dump($sem_options);die;
-
-if ( !defined('sem_install_test') )
-	update_option('sem5_options', $sem_options);
-
-wp_cache_flush();
-do_action('flush_cache');
-
-
 /**
  * upgrade_sem_5_0()
  *
@@ -960,4 +932,32 @@ function upgrade_sem_6_0() {
 	$active_plugins = array_diff($active_plugins, $obsolete_plugins);
 	update_option('active_plugins', $active_plugins);
 } # upgrade_sem_6_0()
+
+
+#$wpdb->show_errors();
+
+$sem_captions = get_option('sem5_captions');
+$sem_nav_menus = get_option('sem_nav_menus');
+
+if ( version_compare($sem_options['version'], '5.0', '<') )
+	upgrade_sem_5_0();
+
+if ( version_compare($sem_options['version'], '5.5', '<') )
+	upgrade_sem_5_5();
+
+if ( version_compare($sem_options['version'], '6.0', '<') ) {
+	upgrade_sem_6_0();
+	update_option('init_sem_panels', '1');
+}
+
+unset($sem_options['skin_details']);
+$sem_options['version'] = sem_version;
+
+#dump($sem_options);die;
+
+if ( !defined('sem_install_test') )
+	update_option('sem5_options', $sem_options);
+
+wp_cache_flush();
+do_action('flush_cache');
 ?>

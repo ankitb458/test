@@ -5,10 +5,6 @@
  * @package Semiologic Theme
  **/
 
-add_action('appearance_page_layout', array('sem_layout', 'save_options'), 0);
-add_action('admin_head', array('sem_layout', 'admin_head'));
-wp_enqueue_script('jquery');
-
 class sem_layout {
 	/**
 	 * admin_head()
@@ -356,4 +352,8 @@ EOS;
 			);
 	} # get_widths()
 } # sem_layout
+
+add_action('appearance_page_layout', array('sem_layout', 'save_options'), 0);
+add_action('admin_head', array('sem_layout', 'admin_head'));
+wp_enqueue_script('jquery');
 ?>

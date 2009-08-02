@@ -5,16 +5,6 @@
  * @package Semiologic Reloaded
  **/
 
-sem_panels::register();
-
-if ( !defined('DOING_CRON') )
-	add_action('init', array('sem_panels', 'init_widgets'), 2000);
-
-if ( !empty($_GET['preview']) && !empty($_GET['stylesheet']) )
-	sem_panels::switch_themes();
-else
-	add_action('switch_themes', array('sem_panels', 'switch_themes'));
-
 class sem_panels {
 	/**
 	 * register()
@@ -530,4 +520,14 @@ class sem_panels {
 		update_option('init_sem_panels', '1');
 	} # switch_themes()
 } # sem_panels
+
+sem_panels::register();
+
+if ( !defined('DOING_CRON') )
+	add_action('init', array('sem_panels', 'init_widgets'), 2000);
+
+if ( !empty($_GET['preview']) && !empty($_GET['stylesheet']) )
+	sem_panels::switch_themes();
+else
+	add_action('switch_themes', array('sem_panels', 'switch_themes'));
 ?>

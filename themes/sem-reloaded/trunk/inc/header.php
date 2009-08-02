@@ -5,10 +5,6 @@
  * @package Semiologic Reloaded
  **/
 
-add_action('admin_print_scripts', array('sem_header', 'scripts'));
-add_action('appearance_page_header', array('sem_header', 'save_options'), 0);
-add_action('save_post', array('sem_header', 'save_entry'), 30);
-
 class sem_header {
 	/**
 	 * scripts()
@@ -398,4 +394,8 @@ class sem_header {
 		}
 	} # save_entry()
 } # sem_header
+
+add_action('admin_print_scripts', array('sem_header', 'scripts'));
+add_action('appearance_page_header', array('sem_header', 'save_options'), 0);
+add_action('save_post', array('sem_header', 'save_entry'), 30);
 ?>

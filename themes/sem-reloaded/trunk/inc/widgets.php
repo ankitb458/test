@@ -5,36 +5,6 @@
  * @package Semiologic Reloaded
  **/
 
-add_action('widgets_init', array('sem_widgets', 'register'));
-
-if ( !is_admin() ) {
-	add_action('wp', array('header', 'wire'), 20);
-} else {
-	add_action('admin_print_scripts-widgets.php', array('sem_widgets', 'admin_scripts'));
-	add_action('admin_print_styles-widgets.php', array('sem_widgets', 'admin_styles'));
-}
-
-foreach ( array(
-		'save_post',
-		'delete_post',
-		'switch_theme',
-		'update_option_active_plugins',
-		'update_option_show_on_front',
-		'update_option_page_on_front',
-		'update_option_page_for_posts',
-		'update_option_sidebars_widgets',
-		'update_option_sem5_options',
-		'update_option_sem6_options',
-		'generate_rewrite_rules',
-		
-		'flush_cache',
-		'after_db_upgrade',
-		) as $hook)
-	add_action($hook, array('sem_nav_menu', 'flush_cache'));
-
-add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
-add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), 10, 3);
-
 class sem_widgets {
 	/**
 	 * register()
@@ -3084,4 +3054,35 @@ class footer extends sem_nav_menu {
 			);
 	} # default_items()
 } # footer
+
+
+add_action('widgets_init', array('sem_widgets', 'register'));
+
+if ( !is_admin() ) {
+	add_action('wp', array('header', 'wire'), 20);
+} else {
+	add_action('admin_print_scripts-widgets.php', array('sem_widgets', 'admin_scripts'));
+	add_action('admin_print_styles-widgets.php', array('sem_widgets', 'admin_styles'));
+}
+
+foreach ( array(
+		'save_post',
+		'delete_post',
+		'switch_theme',
+		'update_option_active_plugins',
+		'update_option_show_on_front',
+		'update_option_page_on_front',
+		'update_option_page_for_posts',
+		'update_option_sidebars_widgets',
+		'update_option_sem5_options',
+		'update_option_sem6_options',
+		'generate_rewrite_rules',
+		
+		'flush_cache',
+		'after_db_upgrade',
+		) as $hook)
+	add_action($hook, array('sem_nav_menu', 'flush_cache'));
+
+add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
+add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), 10, 3);
 ?>

@@ -5,10 +5,6 @@
  * @package Semiologic Theme
  **/
 
-add_action('appearance_page_skin', array('sem_skin', 'save_options'), 0);
-add_action('admin_head', array('sem_skin', 'admin_head'));
-wp_enqueue_script('jquery');
-
 class sem_skin {
 	/**
 	 * admin_head()
@@ -496,4 +492,8 @@ EOS;
 			);
 	} # get_font_sizes()
 } # sem_skin
+
+add_action('appearance_page_skin', array('sem_skin', 'save_options'), 0);
+add_action('admin_head', array('sem_skin', 'admin_head'));
+wp_enqueue_script('jquery');
 ?>

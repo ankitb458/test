@@ -1,35 +1,4 @@
 <?php
-#$wpdb->show_errors();
-
-$sem_captions = get_option('sem6_captions');
-if ( $sem_captions === false )
-	$sem_captions = get_option('sem5_captions');
-$sem_nav_menus = get_option('sem_nav_menus');
-
-if ( version_compare($sem_options['version'], '6.0', '<') ) {
-	if ( empty($sem_options['active_width']) ) {
-		upgrade_sem_6_0();
-	} else {
-		upgrade_sem_theme();
-		upgrade_sem_6_0();
-	}
-	update_option('init_sem_panels', '1');
-} elseif ( empty($sem_options['active_width']) ) {
-	upgrade_sem_theme();
-}
-
-unset($sem_options['skin_details']);
-$sem_options['version'] = sem_version;
-
-#dump($sem_options);die;
-
-if ( !defined('sem_install_test') )
-	update_option('sem6_options', $sem_options);
-
-wp_cache_flush();
-do_action('flush_cache');
-
-
 /**
  * upgrade_sem_6_0()
  *
@@ -599,4 +568,35 @@ function upgrade_sem_theme() {
 	unset($sem_options['active_width']);
 	unset($sem_options['active_font_size']);
 } # upgrade_sem_theme()
+
+
+#$wpdb->show_errors();
+
+$sem_captions = get_option('sem6_captions');
+if ( $sem_captions === false )
+	$sem_captions = get_option('sem5_captions');
+$sem_nav_menus = get_option('sem_nav_menus');
+
+if ( version_compare($sem_options['version'], '6.0', '<') ) {
+	if ( empty($sem_options['active_width']) ) {
+		upgrade_sem_6_0();
+	} else {
+		upgrade_sem_theme();
+		upgrade_sem_6_0();
+	}
+	update_option('init_sem_panels', '1');
+} elseif ( empty($sem_options['active_width']) ) {
+	upgrade_sem_theme();
+}
+
+unset($sem_options['skin_details']);
+$sem_options['version'] = sem_version;
+
+#dump($sem_options);die;
+
+if ( !defined('sem_install_test') )
+	update_option('sem6_options', $sem_options);
+
+wp_cache_flush();
+do_action('flush_cache');
 ?>

@@ -5,18 +5,6 @@
  * @package Semiologic Reloaded
  **/
 
-if ( is_admin() ) {
-	add_action('admin_print_styles', array('sem_custom', 'styles'));
-	add_action('admin_print_scripts', array('sem_custom', 'scripts'));
-	add_action('admin_head', array('sem_custom', 'admin_head'));
-	add_action('admin_footer', array('sem_custom', 'admin_footer'));
-	add_action('appearance_page_custom', array('sem_custom', 'save_options'), 0);
-} else {
-	add_action('wp_print_scripts', array('sem_custom', 'wp_print_scripts'));
-	add_action('wp_head', array('sem_custom', 'wp_head'));
-	add_action('wp_footer', array('sem_custom', 'wp_footer'));
-}
-
 class sem_custom {
 	/**
 	 * styles()
@@ -1099,4 +1087,16 @@ jQuery(document).ready(function() {
 EOS;
 	} # wp_footer()
 } # sem_custom
+
+if ( is_admin() ) {
+	add_action('admin_print_styles', array('sem_custom', 'styles'));
+	add_action('admin_print_scripts', array('sem_custom', 'scripts'));
+	add_action('admin_head', array('sem_custom', 'admin_head'));
+	add_action('admin_footer', array('sem_custom', 'admin_footer'));
+	add_action('appearance_page_custom', array('sem_custom', 'save_options'), 0);
+} else {
+	add_action('wp_print_scripts', array('sem_custom', 'wp_print_scripts'));
+	add_action('wp_head', array('sem_custom', 'wp_head'));
+	add_action('wp_footer', array('sem_custom', 'wp_footer'));
+}
 ?>
