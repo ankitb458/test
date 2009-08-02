@@ -553,24 +553,41 @@ EOS;
 			'#main .entry_date' => __('Entry Dates', 'sem-reloaded'),
 			'#main .entry_categories' => __('Entry Categories', 'sem-reloaded'),
 			'#main .entry_tags' => __('Entry Tags', 'sem-reloaded'),
-			'#main .comment_header' => __('Comment Headers', 'sem-reloaded'),
-			'#main .comment_content' => __('Comment Bodies', 'sem-reloaded'),
+			'#main .comment_date' => __('Comment Dates', 'sem-reloaded'),
+			'#main .comment_header' => __('Comment Header', 'sem-reloaded'),
+			'#main .comment_content' => __('Comment Content', 'sem-reloaded'),
 			);
 		
 		$areas['sidebars'] = array(
-			'.sidebar' => __('Sidebars', 'sem-reloaded'),
-			'.sidebar h2, .sidebar .widget_calendar caption' => __('Sidebar Titles', 'sem-reloaded'),
-			'.sidebar h3' => __('Sidebar Subtitles', 'sem-reloaded'),
+			'.sidebar' => __('Sidebar Widgets', 'sem-reloaded'),
+			'.sidebar h2, .sidebar .widget_calendar caption' => __('Sidebar Widget Titles', 'sem-reloaded'),
+			'.sidebar h3' => __('Sidebar Widget Subtitles', 'sem-reloaded'),
+			'.sidebar .wp-calendar' => __('Sidebar Calendar', 'sem-reloaded'),
+			'.sidebar .wp-calendar thead' => __('Sidebar Calendar Header', 'sem-reloaded'),
+			'.sidebar .wp-calendar tfoot' => __('Sidebar Calendar Footer', 'sem-reloaded'),
 			);
 		
 		$areas['header'] = array(
 			'#sitename' => __('Site Name', 'sem-reloaded'),
 			'#tagline' => __('Tagline', 'sem-reloaded'),
 			'#navbar' => __('Navigation Menu', 'sem-reloaded'),
+			'.header_widget' => __('Header Widgets', 'sem-reloaded'),
+			'.header_widget h2, .header_widget .widget_calendar caption' => __('Header Widget Titles', 'sem-reloaded'),
+			'.header_widget h3' => __('Header Widget Subtitles', 'sem-reloaded'),
+			'#header_boxes' => __('Header Bar Widgets', 'sem-reloaded'),
+			'#header_boxes h2, #header_boxes .widget_calendar caption' => __('Header Bar Widget Titles', 'sem-reloaded'),
+			'#header_boxes h3' => __('Header Bar Widget Subtitles', 'sem-reloaded'),
 			);
 		
 		$areas['footer'] = array(
-			'#footer' => __('Footer', 'sem-reloaded'),
+			'#footer' => __('Footer Nav Menu &amp; Copyright Notice', 'sem-reloaded'),
+			'#credits, .footer_scripts' => __('Credits &amp; Footer Scripts', 'sem-reloaded'),
+			'.footer_widget' => __('Footer Widgets', 'sem-reloaded'),
+			'.footer_widget h2, .footer_widget .widget_calendar caption' => __('Footer Widget Titles', 'sem-reloaded'),
+			'.footer_widget h3' => __('Footer Widget Subtitles', 'sem-reloaded'),
+			'#footer_boxes' => __('Footer Bar Widgets', 'sem-reloaded'),
+			'#footer_boxes h2, #footer_boxes .widget_calendar caption' => __('Footer Bar Widget Titles', 'sem-reloaded'),
+			'#footer_boxes h3' => __('Footer Bar Widget Subtitles', 'sem-reloaded'),
 			);
 		
 		if ( $area ) {
