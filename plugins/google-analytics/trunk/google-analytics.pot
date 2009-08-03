@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-21 21:01+0200\n"
+"POT-Creation-Date: 2009-08-03 18:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,27 +16,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: google-analytics-admin.php:36
+#: google-analytics-admin.php:34
 msgid "Settings saved."
 msgstr ""
 
-#: google-analytics-admin.php:53
+#: google-analytics-admin.php:51
 msgid "Your Account ID"
 msgstr ""
 
-#: google-analytics-admin.php:75
+#: google-analytics-admin.php:73
 msgid "Google Analytics Settings"
 msgstr ""
 
-#: google-analytics-admin.php:78
+#: google-analytics-admin.php:76
 msgid "Google Analytics Script"
 msgstr ""
 
-#: google-analytics-admin.php:85
+#: google-analytics-admin.php:83
 msgid "GA Script"
 msgstr ""
 
-#: google-analytics-admin.php:89
+#: google-analytics-admin.php:87
 msgid ""
 "Paste the <b>ga.js</b> script from <a href=\"http://analytics.google.com"
 "\">Google analytics</a> into the following textarea (<a href=\"http://www."
@@ -44,25 +44,25 @@ msgid ""
 "find it?</a>):"
 msgstr ""
 
-#: google-analytics-admin.php:98
+#: google-analytics-admin.php:96
 msgid ""
 "<strong>Important</strong>: Use the new <strong>ga.js</strong> script, not "
 "the legacy urchin.js script."
 msgstr ""
 
-#: google-analytics-admin.php:107
+#: google-analytics-admin.php:105
 msgid "Save Changes"
 msgstr ""
 
-#: google-analytics-admin.php:126
+#: google-analytics-admin.php:124
 msgid "Quick Reference"
 msgstr ""
 
-#: google-analytics-admin.php:132
+#: google-analytics-admin.php:130
 msgid "AdSense Revenue Tracking"
 msgstr ""
 
-#: google-analytics-admin.php:136
+#: google-analytics-admin.php:134
 msgid ""
 "To enable AdSense revenue tracking using Google Analytics, simply declare "
 "this site for AdSense tracking in <a href=\"http://analytics.google.com"
@@ -70,17 +70,17 @@ msgid ""
 "inserted automatically by the plugin.)"
 msgstr ""
 
-#: google-analytics-admin.php:143
+#: google-analytics-admin.php:141
 msgid "Event Tracking"
 msgstr ""
 
-#: google-analytics-admin.php:147
+#: google-analytics-admin.php:145
 msgid ""
 "The Google Analytics plugin allows you to track special events. Support for "
 "the following is built-in:"
 msgstr ""
 
-#: google-analytics-admin.php:151
+#: google-analytics-admin.php:149
 #, php-format
 msgid ""
 "Newsletter sign-ups when using the <a href=\"%s\">Newsletter Manager</a> "
@@ -88,7 +88,7 @@ msgid ""
 "signup if they're redirected on a page on this site."
 msgstr ""
 
-#: google-analytics-admin.php:154
+#: google-analytics-admin.php:152
 #, php-format
 msgid ""
 "Clicks on ad units that were inserted using the <a href=\"%s\">Ad Manager</"
@@ -98,107 +98,107 @@ msgid ""
 "working as expected."
 msgstr ""
 
-#: google-analytics-admin.php:157
+#: google-analytics-admin.php:155
 #, php-format
 msgid ""
 "Media player usage and file downloads that were inserted using the <a href="
 "\"%s\">Mediacaster</a> plugin."
 msgstr ""
 
-#: google-analytics-admin.php:160
+#: google-analytics-admin.php:158
 #, php-format
 msgid ""
 "Contact Form submissions when using the <a href=\"%s\">Contact Form</a> "
 "plugin."
 msgstr ""
 
-#: google-analytics-admin.php:163
+#: google-analytics-admin.php:161
 #, php-format
 msgid ""
 "Poll usage when using the Poll Widget plugin that comes with <a href=\"%s"
 "\">Semiologic Pro</a>."
 msgstr ""
 
-#: google-analytics-admin.php:171
+#: google-analytics-admin.php:169
 msgid "Special Users"
 msgstr ""
 
-#: google-analytics-admin.php:175
+#: google-analytics-admin.php:173
 msgid "Authors, editors and site admins are not tracked when logged in."
 msgstr ""
 
-#: google-analytics-admin.php:182
+#: google-analytics-admin.php:180
 msgid "Site Usage Patterns"
 msgstr ""
 
-#: google-analytics-admin.php:186
+#: google-analytics-admin.php:184
 msgid ""
 "Make sure to spot Google Analytics's navigation summary and site overlay "
 "reports for individual urls. They're located to the right when you visit any "
 "url's statistics."
 msgstr ""
 
-#: google-analytics-admin.php:190
+#: google-analytics-admin.php:188
 msgid ""
 "The first is a concise report. It lets you know, at a glance, where users "
 "came from upon entering the page, and where they left upon leaving it."
 msgstr ""
 
-#: google-analytics-admin.php:193
+#: google-analytics-admin.php:191
 msgid ""
 "The second is more graphical. It outputs your page with an overlay that "
 "shows where visitors are clicking."
 msgstr ""
 
-#: google-analytics-info.php:2 google-analytics.php:234
-#: google-analytics.php:235
+#: google-analytics-info.php:2 google-analytics.php:258
+#: google-analytics.php:259
 msgid "Google Analytics"
 msgstr ""
 
-#: google-analytics.php:73
+#: google-analytics.php:66
 msgid "Ad Unit"
 msgstr ""
 
-#: google-analytics.php:74
+#: google-analytics.php:67
 msgid "File"
 msgstr ""
 
-#: google-analytics.php:75
+#: google-analytics.php:68
 msgid "Audio"
 msgstr ""
 
-#: google-analytics.php:76
+#: google-analytics.php:69
 msgid "Video"
 msgstr ""
 
-#: google-analytics.php:77
+#: google-analytics.php:70
 msgid "Sign Up"
 msgstr ""
 
-#: google-analytics.php:78
+#: google-analytics.php:71
 msgid "Custom"
 msgstr ""
 
-#: google-analytics.php:79
+#: google-analytics.php:72
 msgid "Click"
 msgstr ""
 
-#: google-analytics.php:80
+#: google-analytics.php:73
 msgid "Download"
 msgstr ""
 
-#: google-analytics.php:81
+#: google-analytics.php:74
 msgid "Submit"
 msgstr ""
 
-#: google-analytics.php:82
+#: google-analytics.php:75
 msgid "Success"
 msgstr ""
 
-#: google-analytics.php:100
+#: google-analytics.php:93
 msgid "Configure Google Analytics under Settings / Google Analytics"
 msgstr ""
 
-#: google-analytics.php:105
+#: google-analytics.php:98
 msgid "Google Analytics Notice: Authors, Editors and Admins are not tracked"
 msgstr ""
