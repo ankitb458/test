@@ -24,8 +24,10 @@ class sem_update {
 				$wp_filesystem->copy("$old/$file", "$new/$file");
 		}
 		
-		if ( is_dir("$old/custom") )
+		if ( is_dir("$old/custom") ) {
+			$wp_filesystem->mkdir("$new/custom");
 			copy_dir("$old/custom", "$new/custom");
+		}
 		
 		$handle = @opendir("$old/skins");
 		
@@ -37,6 +39,7 @@ class sem_update {
 				continue;
 			
 			if ( !is_dir("$new/skins/$skin") ) {
+				$wp_filesystem->mkdir("$new/skins/$skin");
 				copy_dir("$old/skins/$skin", "$new/skins/$skin");
 			} else {
 				foreach ( array('custom.css', 'letter.css', 'print.css') as $file ) {
@@ -44,8 +47,10 @@ class sem_update {
 						$wp_filesystem->copy("$old/skins/$skin/$file", "$new/skins/$skin/$file");
 				}
 				
-				if ( is_dir("$old/skins/$skin/custom") )
+				if ( is_dir("$old/skins/$skin/custom") ) {
+					$wp_filesystem->mkdir("$new/skins/$skin/custom");
 					copy_dir("$old/skins/$skin/custom", "$new/skins/$skin/custom");
+				}
 			}
 		}
 		
