@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: affiliate, marketing, internet-marketing, semiologic
 Requires at least: 2.8
-Tested up to: 2.8.1
+Tested up to: 2.8.3
 Stable tag: trunk
 
 Automatically adds your affiliate ID to all links to Semiologic.

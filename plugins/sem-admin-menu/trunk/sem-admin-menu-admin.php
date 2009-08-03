@@ -27,7 +27,7 @@ class sem_admin_menu_admin {
 	 **/
 
 	function save_options() {
-		if ( !$_POST )
+		if ( !$_POST || !current_user_can('manage_options') )
 			return;
 		
 		check_admin_referer('admin_menu');

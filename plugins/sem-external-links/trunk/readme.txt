@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: external-links, nofollow, link-target, link-icon, semiologic
 Requires at least: 2.8
-Tested up to: 2.8.1
+Tested up to: 2.8.3
 Stable tag: trunk
 
 The external links plugin for WordPress lets you process outgoing links differently from internal links.

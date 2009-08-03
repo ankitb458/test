@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: frames, frame-buster, semiologic
 Requires at least: 2.0
-Tested up to: 2.8.1
+Tested up to: 2.8.3
 Stable tag: trunk
 
 

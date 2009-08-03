@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://buy.semiologic.com/drink
 Tags: uploads, uploads-folder, uploads folder, cms, semiologic
 Requires at least: 2.6
-Tested up to: 2.8.1
+Tested up to: 2.8.3
 Stable tag: trunk
 
 The Uploads Folder plugin for WordPress changes your uploads subfolders to more natural paths that are unique to the post or page.

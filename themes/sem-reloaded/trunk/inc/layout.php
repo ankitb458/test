@@ -87,7 +87,7 @@ EOS;
 	 **/
 
 	function save_options() {
-		if ( !$_POST )
+		if ( !$_POST || !current_user_can('switch_themes') )
 			return;
 		
 		check_admin_referer('sem_layout');
