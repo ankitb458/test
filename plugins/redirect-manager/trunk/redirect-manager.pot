@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-24 11:03+0200\n"
+"POT-Creation-Date: 2009-08-03 18:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: redirect-manager-admin.php:31
+#: redirect-manager-admin.php:29
 msgid ""
 "Enter the url to which visitors of this entry should automatically be "
 "redirected."
@@ -32,11 +32,11 @@ msgid ""
 "files."
 msgstr ""
 
-#: redirect-manager.php:44 redirect-manager.php:47
+#: redirect-manager.php:41 redirect-manager.php:44
 msgid "Redirect"
 msgstr ""
 
-#: redirect-manager.php:92
+#: redirect-manager.php:89
 #, php-format
 msgid ""
 "This page is redirecting visitors to <a href=\"%1$s\">%2$s</a>. You're not "

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-13 18:47+0200\n"
+"POT-Creation-Date: 2009-08-03 18:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,20 +26,20 @@ msgid ""
 "\">Dealdotcom</a>'s deal of the day."
 msgstr ""
 
-#: dealdotcom-widgets.php:78
+#: dealdotcom-widgets.php:75
 msgid "Dealdotcom's deal of the day"
 msgstr ""
 
-#: dealdotcom-widgets.php:85
+#: dealdotcom-widgets.php:82
 msgid "Dealdotcom Widget"
 msgstr ""
 
-#: dealdotcom-widgets.php:108
+#: dealdotcom-widgets.php:105
 #, php-format
 msgid "Your <a href=\"%s\">dealdotcom</a> affiliate ID is not configured."
 msgstr ""
 
-#: dealdotcom-widgets.php:206
+#: dealdotcom-widgets.php:203
 #, php-format
 msgid "Your <a href=\"%s\">DealDotCom</a> Affiliate ID:"
 msgstr ""

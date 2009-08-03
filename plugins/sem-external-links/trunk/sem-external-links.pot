@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-13 18:36+0200\n"
+"POT-Creation-Date: 2009-08-03 18:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,67 +16,67 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: sem-external-links-admin.php:31
+#: sem-external-links-admin.php:29
 msgid "Settings saved."
 msgstr ""
 
-#: sem-external-links-admin.php:55
+#: sem-external-links-admin.php:53
 msgid ""
 "Note: Your rel=nofollow preferences is being ignored because the dofollow "
 "plugin is enabled on your site."
 msgstr ""
 
-#: sem-external-links-admin.php:62
+#: sem-external-links-admin.php:60
 msgid "External Links Settings"
 msgstr ""
 
-#: sem-external-links-admin.php:68
+#: sem-external-links-admin.php:66
 msgid "Apply Globally"
 msgstr ""
 
-#: sem-external-links-admin.php:76
+#: sem-external-links-admin.php:74
 msgid ""
 "Apply these settings to all outbound links, including those in sidebars, "
 "rather than to those in posts and comments."
 msgstr ""
 
-#: sem-external-links-admin.php:83
+#: sem-external-links-admin.php:81
 msgid "Add Icons"
 msgstr ""
 
-#: sem-external-links-admin.php:91
+#: sem-external-links-admin.php:89
 msgid "Mark outbound links with an icon."
 msgstr ""
 
-#: sem-external-links-admin.php:94
+#: sem-external-links-admin.php:92
 msgid ""
 "Note: You can override this behavior by adding a class=\"no_icon\" to "
 "individual links."
 msgstr ""
 
-#: sem-external-links-admin.php:100
+#: sem-external-links-admin.php:98
 msgid "Add No Follow"
 msgstr ""
 
-#: sem-external-links-admin.php:108
+#: sem-external-links-admin.php:106
 msgid "Add a rel=nofollow attribute to outbound links."
 msgstr ""
 
-#: sem-external-links-admin.php:111
+#: sem-external-links-admin.php:109
 msgid ""
 "Note: You can override this behavior by adding a rel=\"follow\" to "
 "individual links."
 msgstr ""
 
-#: sem-external-links-admin.php:117
+#: sem-external-links-admin.php:115
 msgid "Open in New Windows"
 msgstr ""
 
-#: sem-external-links-admin.php:125
+#: sem-external-links-admin.php:123
 msgid "Open outbound links in new windows."
 msgstr ""
 
-#: sem-external-links-admin.php:128
+#: sem-external-links-admin.php:126
 msgid ""
 "Note: Some usability experts discourage this, claiming that <a href=\"http://"
 "www.useit.com/alertbox/9605.html\">this can damage your visitor's trust</a> "
@@ -84,12 +84,12 @@ msgid ""
 "know how to use the back button and encourage the practice."
 msgstr ""
 
-#: sem-external-links-admin.php:136
+#: sem-external-links-admin.php:134
 msgid "Save Changes"
 msgstr ""
 
-#: sem-external-links-info.php:2 sem-external-links.php:227
-#: sem-external-links.php:228
+#: sem-external-links-info.php:2 sem-external-links.php:211
+#: sem-external-links.php:212
 msgid "External Links"
 msgstr ""
 

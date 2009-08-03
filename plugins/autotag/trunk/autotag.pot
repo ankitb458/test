@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-09 19:09+0200\n"
+"POT-Creation-Date: 2009-08-03 18:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,42 +16,42 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: autotag-admin.php:24
+#: autotag-admin.php:22
 msgid "Create tags automatically?"
 msgstr ""
 
-#: autotag-admin.php:43
+#: autotag-admin.php:41
 msgid "No. Do not autotag this entry yet."
 msgstr ""
 
-#: autotag-admin.php:47 autotag-admin.php:72
+#: autotag-admin.php:45 autotag-admin.php:70
 msgid "Yes. Fetch new tags immediately."
 msgstr ""
 
-#: autotag-admin.php:55
+#: autotag-admin.php:53
 msgid "Yes. Fetch new tags upon publishing."
 msgstr ""
 
-#: autotag-admin.php:66
+#: autotag-admin.php:64
 msgid "No. I did this already."
 msgstr ""
 
-#: autotag-admin.php:67
+#: autotag-admin.php:65
 msgid "No. This entry has been published already."
 msgstr ""
 
-#: autotag-admin.php:86
+#: autotag-admin.php:84
 msgid "Only keep terms that match existing tags."
 msgstr ""
 
-#: autotag-admin.php:91
+#: autotag-admin.php:89
 msgid ""
 "<b>Notice</b>: AutoTag will only work provided your server's IP address "
 "hasn't hit Yahoo's web services 5,000 times in the past 24h. If it stops "
 "working, give it a new try the next day."
 msgstr ""
 
-#: autotag-info.php:2 autotag.php:47
+#: autotag-info.php:2 autotag.php:40
 msgid "AutoTag"
 msgstr ""
 
@@ -61,7 +61,7 @@ msgid ""
 "posts."
 msgstr ""
 
-#: autotag.php:60
+#: autotag.php:53
 msgid ""
 "AutoTags requires the Simple XML extension to query Yahoo!'s web services. "
 "Please contact your host and request that your server be configured "

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 2.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-07-15 15:18+0200\n"
+"POT-Creation-Date: 2009-08-03 18:31+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,31 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: sem-semiologic-affiliate-admin.php:35
+#: sem-semiologic-affiliate-admin.php:33
 msgid "Settings saved."
 msgstr ""
 
-#: sem-semiologic-affiliate-admin.php:57
+#: sem-semiologic-affiliate-admin.php:55
 msgid "Semiologic Affiliate Settings"
 msgstr ""
 
-#: sem-semiologic-affiliate-admin.php:64
+#: sem-semiologic-affiliate-admin.php:62
 msgid ""
 "Fill in the field that follows to make all links to semiologic.com and "
 "getsemiologic.com on the site use your campaign ID automatically."
 msgstr ""
 
-#: sem-semiologic-affiliate-admin.php:70
+#: sem-semiologic-affiliate-admin.php:68
 #, php-format
 msgid "Your <a href=\"%s\">Campaign ID</a>"
 msgstr ""
 
-#: sem-semiologic-affiliate-admin.php:85
+#: sem-semiologic-affiliate-admin.php:83
 msgid "Save Changes"
 msgstr ""
 
-#: sem-semiologic-affiliate-info.php:2 sem-semiologic-affiliate.php:57
-#: sem-semiologic-affiliate.php:58
+#: sem-semiologic-affiliate-info.php:2 sem-semiologic-affiliate.php:44
+#: sem-semiologic-affiliate.php:45
 msgid "Semiologic Affiliate"
 msgstr ""
 
