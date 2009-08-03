@@ -18,6 +18,8 @@ class sem_update {
 		$old = sem_path;
 		$new = untrailingslashit($source);
 		
+		show_message(__('Importing Semiologic Reloaded Customizations', 'sem-reloaded'));
+		
 		# copy user customizations
 		foreach ( array('custom.css', 'custom.php') as $file ) {
 			if ( file_exists("$old/$file") )
