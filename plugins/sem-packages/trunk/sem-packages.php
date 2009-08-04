@@ -56,10 +56,10 @@ class sem_packages {
 		
 		if ( $args['src'] == $package->stable_package ) {
 			$version = $package->stable_version;
-			$last_mod = !empty($package->stable_modified) ? $package->stable_modified : false;
+			$last_mod = !empty($package->stable_modified) ? strtotime($package->stable_modified) : false;
 		} else {
 			$version = $package->bleeding_version;
-			$last_mod = !empty($package->bleeding_modified) ? $package->bleeding_modified : false;
+			$last_mod = !empty($package->bleeding_modified) ? strtotime($package->bleeding_modified) : false;
 		}
 		
 		$title = ( $version
