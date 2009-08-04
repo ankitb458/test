@@ -94,20 +94,20 @@ db::connect('mysql');
 
 if ( !$to_check ) {
 	$dbs = db::query("
-		SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
+		SELECT	package as slug, url, stable_version, stable_package, bleeding_version, bleeding_package
 		FROM	packages
 		WHERE	type = :type
-		ORDER BY slug
+		ORDER BY package
 		", array(
 			'type' => $type,
 		));
 } else {
 	$dbs = db::query("
-		SELECT	slug, url, stable_version, stable_package, bleeding_version, bleeding_package
+		SELECT	package as slug, url, stable_version, stable_package, bleeding_version, bleeding_package
 		FROM	packages
 		WHERE	type = :type
-		AND		slug IN (" . ( implode(',', array_map(array('db', 'escape'), array_keys($to_check))) ) . ")
-		ORDER BY slug
+		AND		package IN (" . ( implode(',', array_map(array('db', 'escape'), array_keys($to_check))) ) . ")
+		ORDER BY package
 		", array(
 			'type' => $type,
 		));
