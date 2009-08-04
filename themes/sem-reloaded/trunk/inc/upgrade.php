@@ -594,8 +594,10 @@ $sem_options['version'] = sem_version;
 
 #dump($sem_options);die;
 
-if ( !defined('sem_install_test') )
+if ( !defined('sem_install_test') ) {
+	unset($sem_options['skin_data']);
 	update_option('sem6_options', $sem_options);
+}
 
 wp_cache_flush();
 do_action('flush_cache');
