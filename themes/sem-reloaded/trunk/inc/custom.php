@@ -1113,6 +1113,9 @@ EOS;
 	} # wp_footer()
 } # sem_custom
 
+add_option('sem_custom', array(), false, 'no');
+add_option('sem_custom_published', array(), false, 'no');
+
 if ( is_admin() ) {
 	add_action('admin_print_styles', array('sem_custom', 'styles'));
 	add_action('admin_print_scripts', array('sem_custom', 'scripts'));

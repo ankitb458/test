@@ -46,8 +46,6 @@ remove_action('wp_head', 'adjacent_posts_rel_link');
 
 # initialize options
 add_option('sem_api_key', '');
-add_option('sem_custom', array(), false, 'no');
-add_option('sem_custom_published', array(), false, 'no');
 
 # load depends
 include sem_path . '/inc/panels.php';
