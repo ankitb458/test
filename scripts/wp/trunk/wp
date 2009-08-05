@@ -116,13 +116,13 @@ in
 			echo   '	Default: subdomain_domain_com for subdomain.domain.com'
 			echo
 			echo '-h	Database host'
-			echo   '	127.0.0.1'
+			echo   '	localhost'
 			echo
 			echo '-u	Database user'
 			echo   '	Default: root'
 			echo
 			echo '-p	Database pass'
-			echo   '	Default: empty string'
+			echo   '	Default: (empty string)'
 			;;
 			
 			'up' | 'upgrade' )
@@ -202,7 +202,7 @@ fi
 # process all
 if [ "$cmd" != 'install' -a $all -eq 1 ];
 then
-	touch cat ~/.wp
+	touch ~/.wp
 	
 	# dump non-valid installs
 	tmp=`uuidgen`
@@ -250,7 +250,7 @@ then
 		src=/usr/local/wordpress
 	else
 		zip_found=0
-		for package in $owner_home/wordpress.zip $owner_home/sem-pro.zip $owner_home/sem-pro-bleeding.zip  $owner_home/sem-pro-reloaded.zip;
+		for package in $owner_home/wordpress.zip $owner_home/sem-pro.zip $owner_home/sem-pro-dev.zip;
 		do
 			if [ -f $package ];
 			then
@@ -374,6 +374,11 @@ then
 	if [ "$dbp" = '' ];
 	then
 		dbp=''
+	fi
+	
+	if [ "$dbh" = 'localhost' -a -e /tmp/mysql.sock ];
+	then
+		mysqladmin -u root create $dbn 2> /dev/null
 	fi
 	
 	secret1=`uuidgen`
