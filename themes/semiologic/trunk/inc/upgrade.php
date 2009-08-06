@@ -67,7 +67,7 @@ function upgrade_sem_5_0() {
 	
 	if ( empty($sidebars_widgets['array_version']) ) {
 		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
-			foreach ( $widgets as $key => $widget ) {
+			foreach ( (array) $widgets as $key => $widget ) {
 				if ( preg_match("/(Text|RSS) \d+/", $widget) ) {
 					$sidebars_widgets[$sidebar][$key] = sanitize_title($widget);
 				} elseif ( in_array($widget, array(
@@ -89,6 +89,10 @@ function upgrade_sem_5_0() {
 	}
 	
 	if ( $changed ) {
+		foreach ( $sidebars_widgets as $sidebar => $widgets ) {
+			if ( empty($widgets) )
+				unset($sidebar_widgets[$sidebar]);
+		}
 		#dump($sidebars_widgets);die;
 		update_option('sidebars_widgets', $sidebars_widgets);
 		$GLOBALS['_wp_sidebars_widgets'] = array();
