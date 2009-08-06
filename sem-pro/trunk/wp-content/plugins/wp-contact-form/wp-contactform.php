@@ -29,8 +29,8 @@ if ( class_exists('contact_form') && class_exists('inline_widgets') && get_optio
 		$email = get_option('admin_email');
 	$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
 	$sidebars_widgets['inline_widgets'][] = 'contact_form-2';
-	if ( !is_admin() && $_wp_sidebars_widgets )
-		$_wp_sidebars_widgets['inline_widgets'][] = 'contact_form-2';
+	if ( !is_admin() && $GLOBALS['_wp_sidebars_widgets'] )
+		$GLOBALS['_wp_sidebars_widgets']['inline_widgets'][] = 'contact_form-2';
 	update_option('widget_contact_form', array('email' => $email));
 	update_option('sidebars_widgets', $sidebars_widgets);
 	

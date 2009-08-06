@@ -275,12 +275,11 @@ class sem_panels {
 				update_option('init_sem_panels', '0');
 			}
 		} else {
-			global $_wp_sidebars_widgets;
-			if ( empty($_wp_sidebars_widgets) )
-				$_wp_sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
-			$_wp_sidebars_widgets = sem_panels::convert($_wp_sidebars_widgets);
-			$_wp_sidebars_widgets = sem_panels::install($_wp_sidebars_widgets);
-			$_wp_sidebars_widgets = sem_panels::upgrade($_wp_sidebars_widgets);
+			if ( empty($GLOBALS['_wp_sidebars_widgets']) )
+				$GLOBALS['_wp_sidebars_widgets'] = get_option('sidebars_widgets', array('array_version' => 3));
+			$GLOBALS['_wp_sidebars_widgets'] = sem_panels::convert($GLOBALS['_wp_sidebars_widgets']);
+			$GLOBALS['_wp_sidebars_widgets'] = sem_panels::install($GLOBALS['_wp_sidebars_widgets']);
+			$GLOBALS['_wp_sidebars_widgets'] = sem_panels::upgrade($GLOBALS['_wp_sidebars_widgets']);
 		}
 	} # init_widgets()
 	

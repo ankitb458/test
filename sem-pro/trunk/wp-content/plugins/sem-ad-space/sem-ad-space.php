@@ -163,10 +163,9 @@ function export_ad_spaces() {
 		if ( is_admin() ) {
 			$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
 		} else {
-			global $_wp_sidebars_widgets;
-			if ( !$_wp_sidebars_widgets )
-				$_wp_sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
-			$sidebars_widgets =& $_wp_sidebars_widgets;
+			if ( !$GLOBALS['_wp_sidebars_widgets'] )
+				$GLOBALS['_wp_sidebars_widgets'] = get_option('sidebars_widgets', array('array_version' => 3));
+			$sidebars_widgets =& $GLOBALS['_wp_sidebars_widgets'];
 		}
 		
 		switch ( $area ) {
@@ -265,10 +264,9 @@ function ad_spaces_export_inline_ad($input) {
 		if ( is_admin() ) {
 			$sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
 		} else {
-			global $_wp_sidebars_widgets;
-			if ( !$_wp_sidebars_widgets )
-				$_wp_sidebars_widgets = get_option('sidebars_widgets', array('array_version' => 3));
-			$sidebars_widgets =& $_wp_sidebars_widgets;
+			if ( !$GLOBALS['_wp_sidebars_widgets'] )
+				$GLOBALS['_wp_sidebars_widgets'] = get_option('sidebars_widgets', array('array_version' => 3));
+			$sidebars_widgets =& $GLOBALS['_wp_sidebars_widgets'];
 		}
 		$sidebars_widgets['inline_widgets'][] = $widget_id;
 		update_option('sidebars_widgets', $sidebars_widgets);
