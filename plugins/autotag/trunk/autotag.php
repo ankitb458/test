@@ -58,6 +58,9 @@ class autotag {
 
 
 function load_autotag_admin() {
+	if ( !extension_loaded('simplexml') )
+		return;
+	
 	include dirname(__FILE__) . '/autotag-admin.php';
 }
 
