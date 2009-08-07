@@ -118,7 +118,9 @@ db::disconnect();
 if ( $type != 'core' ) {
 	$response = array();
 	while ( $row = $dbs->get_row() ) {
-		if ( !$to_check ) {
+		if ( empty($row->{$packages . '_version'}) ) {
+			continue;
+		} elseif ( !$to_check ) {
 			$response[$row->slug] = (object) array(
 				'slug' => $row->slug,
 				'new_version' => $row->{$packages . '_version'},
@@ -143,30 +145,33 @@ if ( $type != 'core' ) {
 		}
 	}
 } else {
-	$row = $dbs->get_row();
 	$response = new stdClass;
+	$response->current = null;
+	$response->package = null;
 	
-	if ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
-		$response->response = 'upgrade';
-		$response->url = $row->url;
-		if ( !$expired )
-			$response->package = $row->{$packages . '_package'};
-		$response->current = $row->{$packages . '_version'};
-		$response->locale = 'en_US';
-	} elseif ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->stable_version, '>') ) {
-		$response->response = 'development';
-		$response->url = $row->url;
-		if ( !$expired )
-			$response->package = $row->bleeding_package;
-		$response->current = $row->bleeding_version;
-		$response->locale = 'en_US';
-	} else {
-		$response->response = 'latest';
-		$response->url = $row->url;
-		if ( !$expired )
-			$response->package = $row->{$packages . '_package'};
-		$response->current = $row->{$packages . '_version'};
-		$response->locale = 'en_US';
+	if ( $row = $dbs->get_row() && !empty($row->{$packages . '_version'}) ) {
+		if ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
+			$response->response = 'upgrade';
+			$response->url = $row->url;
+			if ( !$expired )
+				$response->package = $row->{$packages . '_package'};
+			$response->current = $row->{$packages . '_version'};
+			$response->locale = 'en_US';
+		} elseif ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->stable_version, '>') ) {
+			$response->response = 'development';
+			$response->url = $row->url;
+			if ( !$expired )
+				$response->package = $row->bleeding_package;
+			$response->current = $row->bleeding_version;
+			$response->locale = 'en_US';
+		} else {
+			$response->response = 'latest';
+			$response->url = $row->url;
+			if ( !$expired )
+				$response->package = $row->{$packages . '_package'};
+			$response->current = $row->{$packages . '_version'};
+			$response->locale = 'en_US';
+		}
 	}
 }
 
