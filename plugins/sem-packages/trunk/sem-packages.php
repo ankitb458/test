@@ -44,15 +44,27 @@ class sem_packages {
 		
 		global $wpdb;
 		
-		$package = $wpdb->get_row("
-			SELECT	stable_version, stable_requires, stable_compat, stable_modified,
-					bleeding_version, bleeding_requires, bleeding_compat, bleeding_modified
-			FROM	$wpdb->packages
-			WHERE	stable_package = '" . $wpdb->escape($args['src']) . "'
-			OR		bleeding_package = '" . $wpdb->escape($args['src']) . "'
-			");
+		$package = wp_cache_get($args['src'], 'sem_packages');
 		
-		if ( !$package )
+		if ( $package === false ) {
+			$package = $wpdb->get_row("
+				SELECT	*
+				FROM	$wpdb->packages
+				WHERE	stable_package = '" . $wpdb->escape($args['src']) . "'
+				OR		bleeding_package = '" . $wpdb->escape($args['src']) . "'
+				");
+			
+			if ( $package ) {
+				wp_cache_set($package->stable_package, $package, 'sem_packages');
+				wp_cache_set($package->bleeding_package, $package, 'sem_packages');
+				wp_cache_set($package->package, $package, 'sem_packages');
+			} else {
+				$package = (object) $package;
+				wp_cache_set($args['src'], $package, 'sem_packages');
+			}
+		}
+		
+		if ( empty($package) )
 			return $title;
 		
 		if ( $args['src'] == $package->stable_package ) {
@@ -118,6 +130,78 @@ class sem_packages {
 		
 		return $title;
 	} # download()
+	
+	
+	/**
+	 * changelog()
+	 *
+	 * @param array $args
+	 * @param string $content
+	 * @return string $changelog
+	 **/
+
+	function changelog($args, $content = '') {
+		extract($args, EXTR_SKIP);
+		
+		if ( empty($package) )
+			return;
+		
+		global $wpdb;
+		
+		$readme = wp_cache_get($package, 'sem_packages');
+		
+		if ( $readme === false ) {
+			$readme = $wpdb->get_row("
+				SELECT	*
+				FROM	$wpdb->packages
+				WHERE	package = '" . $wpdb->escape($package) . "-'
+				");
+			
+			if ( $readme ) {
+				wp_cache_set($readme->stable_package, $readme, 'sem_packages');
+				wp_cache_set($readme->bleeding_package, $readme, 'sem_packages');
+				wp_cache_set($readme->package, $readme, 'sem_packages');
+			} else {
+				$readme = (object) $readme;
+				wp_cache_set($package, $readme, 'sem_packages');
+			}
+		}
+		
+		if ( empty($readme) )
+			return;
+		
+		if ( !function_exists('Markdown') )
+			include_once dirname(__FILE__) . '/markdown/markdown.php';
+		
+		$changelog = $readme->bleeding_readme
+			? $readme->bleeding_readme
+			: $readme->stable_readme;
+		
+		if ( !trim($changelog) )
+			return;
+		
+		$changelog = preg_split("/^\s*(==[^=].+?)\s*$/m", $changelog, null, PREG_SPLIT_DELIM_CAPTURE);
+		
+		# dump header
+		array_shift($changelog);
+		
+		if ( !$changelog )
+			return;
+		
+		do {
+			$section = array_shift($changelog);
+			$section = trim($section);
+			
+			if ( preg_match("/^==\s*Change\s*Log\s*(?:==)?$/i", $section) ) {
+				$changelog = array_shift($changelog);
+				$changelog = preg_replace("/^=([^=].+?)=?$/m", "### " . sprintf(__('Version %s', 'sem-packages'), "$1"), $changelog);
+				$changelog = markdown($changelog);
+				return $changelog;
+			}
+		} while ( $changelog );
+		
+		return;
+	} # changelog()
 } # sem_packages
 
 global $wpdb;
@@ -128,4 +212,7 @@ else
 	$wpdb->packages = 'packages';
 
 add_filter('mediacaster_file', array('sem_packages', 'download'), 10, 2);
+add_shortcode('changelog', array('sem_packages', 'changelog'));
+
+wp_cache_add_non_persistent_groups(array('sem_packages'));
 ?>
