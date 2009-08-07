@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-08-04 13:52+0200\n"
+"POT-Creation-Date: 2009-08-07 13:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,11 +26,36 @@ msgid ""
 "and bleeding edge downloads."
 msgstr ""
 
-#: sem-packages.php:66
+#: sem-packages.php:96
 #, php-format
 msgid "%1$s v.%2$s"
 msgstr ""
 
-#: sem-packages.php:72
-msgid "F jS, Y"
+#: sem-packages.php:106
+#, php-format
+msgid "%1$s %2$s"
+msgstr ""
+
+#: sem-packages.php:109
+msgid "(M jS, Y)"
+msgstr ""
+
+#: sem-packages.php:117
+#, php-format
+msgid "Requires WP %1$s. Tested up to %2$s."
+msgstr ""
+
+#: sem-packages.php:119
+#, php-format
+msgid "Requires WP %s."
+msgstr ""
+
+#: sem-packages.php:121
+#, php-format
+msgid "Tested up to WP %s."
+msgstr ""
+
+#: sem-packages.php:197
+#, php-format
+msgid "Version %s"
 msgstr ""
