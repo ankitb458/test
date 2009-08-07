@@ -1560,7 +1560,7 @@ class header extends WP_Widget {
 		if ( !$header )
 			return;
 		
-		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
+		list($width, $height) = wp_cache_get('sem_header', 'sem_header');
 		
 		$header = esc_url(content_url() . $header);
 		
@@ -1586,7 +1586,7 @@ class header extends WP_Widget {
 		if ( !$header )
 			return;
 		
-		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
+		list($width, $height) = wp_cache_get('sem_header', 'sem_header');
 		
 		static $i = 0;
 		$player = esc_url(content_url() . $header);
@@ -1661,8 +1661,13 @@ EOS;
 			$header = false;
 		}
 		
-		if ( $header !== false )
-			return $header;
+		if ( $header !== false ) {
+			$header_size = @getimagesize(WP_CONTENT_DIR . $header);
+			if ( $header_size ) {
+				wp_cache_set('sem_header', $header_size, 'sem_header');
+				return $header;
+			}
+		}
 		
 		if ( defined('GLOB_BRACE') ) {
 			$header_scan = "header{,-*}.{jpg,jpeg,png,gif,swf}";
@@ -1751,7 +1756,10 @@ EOS;
 	function css() {
 		$header = header::get();
 		
-		list($width, $height) = getimagesize(WP_CONTENT_DIR . $header);
+		list($width, $height) = wp_cache_get('sem_header', 'sem_header');
+		
+		if ( !$height )
+			return;
 		
 		$header = esc_url(content_url() . $header);
 		
@@ -3085,4 +3093,6 @@ foreach ( array(
 
 add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
 add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), 10, 3);
+
+wp_cache_add_non_persistent_groups(array('sem_header'));
 ?>
