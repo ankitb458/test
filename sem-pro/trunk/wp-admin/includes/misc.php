@@ -121,7 +121,7 @@ function insert_with_markers( $filename, $marker, $insertion ) {
  */
 function save_mod_rewrite_rules() {
 	global $wp_rewrite;
-var_dump($wp_rewrite);
+
 	$home_path = get_home_path();
 	$htaccess_file = $home_path.'.htaccess';
 
