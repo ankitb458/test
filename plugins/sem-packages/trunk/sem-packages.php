@@ -31,21 +31,22 @@ load_plugin_textdomain('sem-packages', false, dirname(plugin_basename(__FILE__))
 
 class sem_packages {
 	/**
-	 * filter()
+	 * download()
 	 *
 	 * @param string $title
 	 * @param array $args
 	 * @return void
 	 **/
 
-	function filter($title, $args) {
+	function download($title, $args) {
 		if ( empty($args['src']) )
 			return $title;
 		
 		global $wpdb;
 		
 		$package = $wpdb->get_row("
-			SELECT	*
+			SELECT	stable_version, stable_requires, stable_compat, stable_modified,
+					bleeding_version, bleeding_requires, bleeding_compat, bleeding_modified
 			FROM	$wpdb->packages
 			WHERE	stable_package = '" . $wpdb->escape($args['src']) . "'
 			OR		bleeding_package = '" . $wpdb->escape($args['src']) . "'
@@ -56,26 +57,67 @@ class sem_packages {
 		
 		if ( $args['src'] == $package->stable_package ) {
 			$version = $package->stable_version;
-			$last_mod = !empty($package->stable_modified) ? strtotime($package->stable_modified) : false;
+			$last_mod = !empty($package->stable_modified)
+				? strtotime($package->stable_modified)
+				: false;
+			$requires = !empty($package->stable_requires)
+				? $package->stable_requires
+				: false;
+			$compat = !empty($package->stable_compat)
+				? $package->stable_compat
+				: false;
 		} else {
 			$version = $package->bleeding_version;
-			$last_mod = !empty($package->bleeding_modified) ? strtotime($package->bleeding_modified) : false;
+			$last_mod = !empty($package->bleeding_modified)
+				? strtotime($package->bleeding_modified)
+				: false;
+			$requires = !empty($package->bleeding_requires)
+				? $package->stable_requires
+				: false;
+			$compat = !empty($package->bleeding_compat)
+				? $package->bleeding_compat
+				: false;
 		}
 		
-		$title = ( $version
-				? sprintf(__('%1$s v.%2$s', 'sem-packages'), $title, $version)
-				: $title
-				)
-			. ( $last_mod
-				? ( '<br />' . "\n"
-					. '<span class="media_info">'
-					. date_i18n(__('F jS, Y', 'sem-packages'), $last_mod)
-					. '</span>' )
-				: ''
+		if ( $version ) {
+			$title = sprintf(
+				__('%1$s v.%2$s', 'sem-packages'),
+				$title,
+				$version
 				);
+		}
+		
+		$title = '<strong>' . $title . '</strong>';
+		
+		if ( $last_mod ) {
+			$title = sprintf(
+				__('%1$s %2$s', 'sem-packages'),
+				$title,
+				'<span class="media_info">'
+					. date_i18n(__('(M jS, Y)', 'sem-packages'), $last_mod)
+					. '</span>'
+				);
+		}
+		
+		$extra = '';
+		
+		if ( $requires && $compat ) {
+			$extra = sprintf(__('Requires WP %1$s. Tested up to %2$s.', 'sem-packages'), $requires, $compat);
+		} elseif ( $requires ) {
+			$extra = sprintf(__('Requires WP %s.', 'sem-packages'), $requires);
+		} elseif ( $compat ) {
+			$extra = sprintf(__('Tested up to WP %s.', 'sem-packages'), $compat);
+		}
+		
+		if ( $extra ) {
+			$title .= '<br />' . "\n"
+				. '<span class="media_info">'
+				. $extra
+				. '</span>';
+		}
 		
 		return $title;
-	} # filter()
+	} # download()
 } # sem_packages
 
 global $wpdb;
@@ -85,5 +127,5 @@ if ( defined('SEM_PACKAGES') )
 else
 	$wpdb->packages = 'packages';
 
-add_filter('mediacaster_file', array('sem_packages', 'filter'), 10, 2);
+add_filter('mediacaster_file', array('sem_packages', 'download'), 10, 2);
 ?>
