@@ -14,7 +14,8 @@ CREATE TABLE packages (
 	bleeding_modified	date NOT NULL,
 	bleeding_requires	varchar(32) NOT NULL DEFAULT '',
 	bleeding_compat		varchar(32) NOT NULL DEFAULT '',
-	readme				text NOT NULL DEFAULT '',
+	stable_readme		text NOT NULL DEFAULT '',
+	bleeding_readme		text NOT NULL DEFAULT '',
 	PRIMARY KEY ( type, package ),
 	UNIQUE INDEX stable_packages ( stable_package ),
 	UNIQUE INDEX bleeding_packages ( bleeding_package )
