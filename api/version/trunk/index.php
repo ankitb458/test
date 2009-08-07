@@ -149,28 +149,30 @@ if ( $type != 'core' ) {
 	$response->current = null;
 	$response->package = null;
 	
-	if ( $row = $dbs->get_row() && !empty($row->{$packages . '_version'}) ) {
-		if ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
-			$response->response = 'upgrade';
-			$response->url = $row->url;
-			if ( !$expired )
-				$response->package = $row->{$packages . '_package'};
-			$response->current = $row->{$packages . '_version'};
-			$response->locale = 'en_US';
-		} elseif ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->stable_version, '>') ) {
-			$response->response = 'development';
-			$response->url = $row->url;
-			if ( !$expired )
-				$response->package = $row->bleeding_package;
-			$response->current = $row->bleeding_version;
-			$response->locale = 'en_US';
-		} else {
-			$response->response = 'latest';
-			$response->url = $row->url;
-			if ( !$expired )
-				$response->package = $row->{$packages . '_package'};
-			$response->current = $row->{$packages . '_version'};
-			$response->locale = 'en_US';
+	if ( $row = $dbs->get_row() ) {
+		if ( !empty($row->{$packages . '_version'}) ) {
+			if ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
+				$response->response = 'upgrade';
+				$response->url = $row->url;
+				if ( !$expired )
+					$response->package = $row->{$packages . '_package'};
+				$response->current = $row->{$packages . '_version'};
+				$response->locale = 'en_US';
+			} elseif ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->stable_version, '>') ) {
+				$response->response = 'development';
+				$response->url = $row->url;
+				if ( !$expired )
+					$response->package = $row->bleeding_package;
+				$response->current = $row->bleeding_version;
+				$response->locale = 'en_US';
+			} else {
+				$response->response = 'latest';
+				$response->url = $row->url;
+				if ( !$expired )
+					$response->package = $row->{$packages . '_package'};
+				$response->current = $row->{$packages . '_version'};
+				$response->locale = 'en_US';
+			}
 		}
 	}
 }
