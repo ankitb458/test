@@ -30,17 +30,18 @@ SQL
 
 if [[ "$sql" != '' ]];
 then
-	mysql $db -u root < $sql
+	if [ -f $sql ];
+	then
+			mysql $db -u root < $sql
 
-	mysql $db -u root -t <<SQL
+			mysql $db -u root -t <<SQL
 UPDATE	wp_users
 SET		user_login = 'admin',
 		user_pass = md5('admin')
 ORDER BY ID
 LIMIT 1
 SQL
-
-	#statements
+	fi
 fi
 
 echo 'DB reset complete'
