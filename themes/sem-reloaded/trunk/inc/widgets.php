@@ -37,7 +37,7 @@ class sem_widgets {
 	function admin_scripts() {
 		$folder = sem_url . '/js';
 		wp_enqueue_script('jquery-livequery', $folder . '/jquery.livequery.js', array('jquery'),  '1.1', true);
-		wp_enqueue_script( 'nav-menus', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090712', true);
+		wp_enqueue_script( 'nav-menus', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090808', true);
 	} # admin_scripts()
 	
 	
