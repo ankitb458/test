@@ -30,7 +30,7 @@ jQuery.dumpLogs = function() {
 	for ( i = 0; i < jQuery.logs.length; i++ ) {
 		ret.push(jQuery.logs[i].elapsed + 'ms\t' + jQuery.logs[i].completed + 'ms\t' + jQuery.logs[i].size + '\t' + jQuery.logs[i].name);
 	}
-	jQuery('#jsdump').html(jQuery.trim(ret.join('\n')));
+	jQuery('#jsdump').html(jQuery.trim(ret.join('\r\n')));
 }
 
 jQuery.logs = new Array;
