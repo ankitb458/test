@@ -57,7 +57,7 @@ function dump_stops($in = null) {
 	$stops = '';
 	foreach ( $sem_stops as $where => $stop )
 		$stops .= "$where: $stop\n";
-	dump($stops);
+	dump(trim($stops));
 	
 	# only show queries to admin users
 	if ( defined('SAVEQUERIES') && $_GET['debug'] == 'sql' ) {
@@ -96,7 +96,24 @@ function dump_stops($in = null) {
 			}
 		}
 	}
+	
+	if ( $_GET['debug'] == 'js' ) {
+		$js = <<<EOS
+<div id='jsdump'></div>
+<script type="text/javascript">
+jQuery.log('rendering - done');
+jQuery(document).ready(function() {
+	jQuery.log('scripts - done');
+	jQuery.dumpLogs();
+})
+jQuery.initLogs();
+jQuery.log('scripts - start');
+</script>
+EOS;
 
+		dump($js);
+	}
+	
 	return $in;
 } # dump_stops()
 
@@ -117,6 +134,37 @@ add_action('admin_footer', create_function('$in', '
 	return add_stop($in, "Display");
 	'), 10000000);
 
-add_action('wp_footer', 'dump_stops', 10000000);
-add_action('admin_footer', 'dump_stops', 10000000);
+/**
+ * init_dump()
+ *
+ * @return void
+ **/
+
+function init_dump() {
+	global $hook_suffix;
+	if ( !is_admin() || empty($hook_suffix) ) {
+		add_action('wp_footer', 'dump_stops', 10000000);
+		add_action('admin_footer', 'dump_stops', 10000000);
+	} else {
+		add_action('wp_footer', 'dump_stops', 10000000);
+		add_action("admin_footer-$hook_suffix", 'dump_stops', 10000000);
+	}
+} # init_dump()
+
+add_action('wp_print_scripts', 'init_dump');
+
+
+/**
+ * dump_js()
+ *
+ * @return void
+ **/
+
+function dump_js() {
+	$folder = sem_url . '/js';
+	wp_enqueue_script('jquery-logger', $folder . '/jquery.logger.js', array('jquery'),  '1.0');
+} # dump_js()
+
+if ( $_GET['debug'] == 'js' )
+	add_action('wp_print_scripts', 'dump_js');
 ?>
