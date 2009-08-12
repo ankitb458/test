@@ -69,8 +69,7 @@ class sem_skin {
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#available_options label').click(function() {
-		jQuery(this).closest('td').find('input:checkbox').attr('checked', 'checked');
+	jQuery('#available_options input:radio').change(function() {
 		jQuery('#option_picker').trigger('submit');
 	});
 });

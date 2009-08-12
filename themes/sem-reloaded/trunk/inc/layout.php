@@ -69,8 +69,7 @@ class sem_layout {
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery('#available_options label').click(function() {
-		jQuery(this).closest('td').find('input:checkbox').attr('checked', 'checked');
+	jQuery('#available_options input:radio').change(function() {
 		jQuery('#option_picker').trigger('submit');
 	});
 });
@@ -93,7 +92,6 @@ EOS;
 		check_admin_referer('sem_layout');
 		
 		global $sem_options;
-		
 		$sem_options['active_layout'] = preg_replace("/[^mst]/", "", $_POST['layout']);
 		
 		update_option('sem6_options', $sem_options);

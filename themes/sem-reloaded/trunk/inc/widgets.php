@@ -35,9 +35,12 @@ class sem_widgets {
 	 **/
 
 	function admin_scripts() {
-		$folder = sem_url . '/js';
-		wp_enqueue_script('jquery-livequery', $folder . '/jquery.livequery.js', array('jquery'),  '1.1', true);
-		wp_enqueue_script( 'nav-menus', $folder . '/admin.js', array('jquery-ui-sortable', 'jquery-livequery'),  '20090808', true);
+		if ( !class_exists('nav_menu') ) {
+			$folder = sem_url . '/js';
+			wp_enqueue_script('nav-menus', $folder . '/admin.js', array('jquery-ui-sortable'),  '20090812', true);
+
+			add_action('admin_footer', array('sem_nav_menu', 'admin_footer'));
+		}
 	} # admin_scripts()
 	
 	
@@ -1157,7 +1160,7 @@ class blog_header extends WP_Widget {
 					. '<code>' . htmlspecialchars($default, ENT_QUOTES, get_option('blog_charset')) . '</code>'
 					. '</label>'
 					. '<br />' . "\n"
-					. '<textarea type="text" class="widefat" cols="20" rows="3"'
+					. '<textarea class="widefat" cols="20" rows="3"'
 						. ' id="' . $this->get_field_id($field) . '"'
 						. ' name="' . $this->get_field_name($field) . '"'
 						. ' >'
@@ -1888,6 +1891,8 @@ class sem_nav_menu extends WP_Widget {
 			$items = call_user_func(array(get_class($this), 'default_items'));
 		}
 		
+		$root_pages = wp_cache_get(0, 'page_children');
+		
 		ob_start();
 		
 		echo '<div>' . "\n";
@@ -1895,22 +1900,23 @@ class sem_nav_menu extends WP_Widget {
 		$did_first = false;
 		
 		foreach ( $items as $item ) {
-			if ( $sep ) {
-				if ( $did_first )
-					echo '<span>|</span>' . "\n";
-				else
-					$did_first = true;
-			}
+			if ( $sep && $did_first )
+				echo '<span>|</span>' . "\n";
 			
 			switch ( $item['type'] ) {
 			case 'home':
 				sem_nav_menu::display_home($item);
+				$did_first = true;
 				break;
 			case 'url':
 				sem_nav_menu::display_url($item);
+				$did_first = true;
 				break;
 			case 'page':
-				sem_nav_menu::display_page($item);
+				if ( in_array($item['ref'], $root_pages) ) {
+					sem_nav_menu::display_page($item);
+					$did_first = true;
+				}
 				break;
 			}
 		}
@@ -2343,9 +2349,9 @@ class sem_nav_menu extends WP_Widget {
 
 	function form($instance) {
 		$instance = wp_parse_args($instance, sem_nav_menu::defaults());
-		static $pages;
+		$pages = wp_cache_get('nav_menu_roots', 'nav_menu_roots');
 		
-		if ( !isset($pages) ) {
+		if ( $pages === false ) {
 			global $wpdb;
 			$pages = $wpdb->get_results("
 				SELECT	posts.*
@@ -2360,35 +2366,49 @@ class sem_nav_menu extends WP_Widget {
 			foreach ( $pages as $page )
 				$to_cache[] = $page->ID;
 			update_postmeta_cache($to_cache);
+			wp_cache_set('nav_menu_roots', $pages, 'nav_menu_roots');
 		}
 		
 		extract($instance, EXTR_SKIP);
 		
-		if ( get_class($this) == 'sem_nav_menu' )
-			echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		echo '<h3>' . __('Config', 'sem-reloaded') . '</h3>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. __('Title:', 'sem-reloaded') . '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+				. ' id="' . $this->get_field_id('title') . '"'
+				. ' name="' . $this->get_field_name('title') . '"'
+				. ' value="' . esc_attr($title) . '"'
+				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
 		
 		echo '<p>'
 			. '<label>'
 			. '<input type="checkbox"'
-				. ' name="' . $this->get_field_name('sep') . '"'
-				. checked($sep, true, false)
+				. ' name="' . $this->get_field_name('desc') . '"'
+				. checked($desc, true, false)
 				. ' />'
 			. '&nbsp;'
-			. __('Split menu items with a separator (|).', 'sem-reloaded') . "\n"
+			. __('Show Descriptions', 'sem-reloaded') . "\n"
+			. '</label>'
 			. '</p>' . "\n";
+		
+		echo '<div class="hide-if-no-js">' . "\n";
 		
 		echo '<h3>' . __('Menu Items', 'sem-reloaded') . '</h3>' . "\n";
 		
-		echo '<p>'
-			. __('Drag and drop menu items to rearrange them.', 'sem-reloaded')
-			. '</p>' . "\n";
 		
 		echo '<div class="nav_menu_items">' . "\n";
 		
+		echo '<input type="hidden" class="nav_menu_base"'
+			. ' value="' . $this->get_field_name('items') . '" />' . "\n";
+		
+		
 		echo '<div class="nav_menu_items_controller">' . "\n";
 		
-		echo '<select class="nav_menu_item_select"'
-			. ' name="' . $this->get_field_name('dropdown') . '">' . "\n"
+		echo '<select class="nav_menu_item_select">' . "\n"
 			. '<option value="">'
 				. esc_attr(__('- Select a menu item -', 'sem-reloaded'))
 				. '</option>' . "\n"
@@ -2427,9 +2447,113 @@ class sem_nav_menu extends WP_Widget {
 		
 		echo '</div>' . "\n"; # controller
 		
-		echo '<div class="nav_menu_item_defaults"'
-			. ' style="display: none;"'
-			. '>' . "\n";
+		echo '<p>'
+			. __('Drag and drop menu items to rearrange them.', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		
+		echo '<div class="nav_menu_item_sortables">' . "\n";
+		
+		foreach ( $items as $item ) {
+			$label = $item['label'];
+			$type = $item['type'];
+			switch ( $type ) {
+			case 'home':
+				$ref = 'home';
+				$url = user_trailingslashit(get_option('home'));
+				$handle = 'home';
+				break;
+			case 'url':
+				$ref = $item['ref'];
+				$url = $ref;
+				$handle = 'url';
+				break;
+			case 'page':
+				$ref = $item['ref'];
+				$page = get_post($ref);
+				if ( !$page )
+					continue 2;
+				$url = get_permalink($ref);
+				$handle = 'page-' . $ref;
+				$label = get_post_meta($page->ID, '_widgets_label', true);
+				if ( $label === '' )
+					$label = $page->post_title;
+				if ( $label === '' )
+					$label = __('Untitled', 'sem-reloaded');
+				break;
+			}
+			
+			echo '<div class="nav_menu_item nav_menu_item-' . $handle . ' button">' . "\n"
+				. '<div class="nav_menu_item_data">' ."\n"
+				. '<input type="text" class="nav_menu_item_label"'
+					. ' onchange="navMenus.onLabelChange(this);"'
+					. ' name="' . $this->get_field_name('items') . '[label][]"'
+					. ' value="' . esc_attr($label) . '"'
+					. ' />' . "\n"
+				. '&nbsp;'
+				. '<input type="button" class="nav_menu_item_remove" value="&nbsp;-&nbsp;" />' . "\n"
+					. '<input type="hidden"'
+						. ' name="' . $this->get_field_name('items') . '[type][]"'
+						. ' value="' . $type . '"'
+						. ' />' . "\n"
+				. '<input type="' . ( $handle == 'url' ? 'text' : 'hidden' ) . '"'
+					. ' class="nav_menu_item_ref"'
+					. ( $handle == 'url' ? ' onchange="navMenus.onRefChange(this);"' : '' )
+					. ' name="' . $this->get_field_name('items') . '[ref][]"'
+					. ' value="' . $ref . '"'
+					. ' />' . "\n"
+				. '</div>' . "\n" # data
+				. '<div class="nav_menu_item_preview">' . "\n"
+				. '&rarr;&nbsp;<a href="' . esc_url($url) . '"'
+					. ' onclick="window.open(this.href); return false;">'
+					. $label
+					. '</a>'
+				. '</div>' . "\n" # preview
+				. '</div>' . "\n"; # item
+		}
+		
+		if ( !$items ) {
+			echo '<div class="nav_menu_item_blank">' . "\n"
+				. '<p>' . __('Empty Navigation Menu. Leave it empty to populate it automatically.', 'sem-reloaded') . '</p>' . "\n"
+				. '</div>' . "\n";
+		}
+		
+		echo '</div>' . "\n"; # sortables
+		
+		echo '</div>' . "\n"; # items
+		
+		echo '</div>' . "\n"; # hide-if-no-js
+	} # form()
+	
+	
+	/**
+	 * admin_footer()
+	 *
+	 * @return void
+	 **/
+
+	function admin_footer() {
+		$pages = wp_cache_get('nav_menu_roots', 'nav_menu_roots');
+		
+		if ( $pages === false ) {
+			global $wpdb;
+			$pages = $wpdb->get_results("
+				SELECT	posts.*
+				FROM	$wpdb->posts as posts
+				WHERE	posts.post_type = 'page'
+				AND		posts.post_status = 'publish'
+				AND		posts.post_parent = 0
+				ORDER BY posts.menu_order, posts.post_title
+				");
+			update_post_cache($pages);
+			$to_cache = array();
+			foreach ( $pages as $page )
+				$to_cache[] = $page->ID;
+			update_postmeta_cache($to_cache);
+			wp_cache_set('nav_menu_roots', $pages, 'nav_menu_roots');
+		}
+		
+		echo '<div id="nav_menu_item_defaults" style="display: none;">' . "\n";
 		
 		echo '<div class="nav_menu_item_blank">' . "\n"
 			. '<p>' . __('Empty Navigation Menu. Leave it empty to populate it automatically.', 'sem-reloaded') . '</p>' . "\n"
@@ -2491,21 +2615,22 @@ class sem_nav_menu extends WP_Widget {
 			
 			echo '<div class="nav_menu_item nav_menu_item-' . $handle . ' button">' . "\n"
 				. '<div class="nav_menu_item_data">' ."\n"
-				. '<input type="text" class="nav_menu_item_label" disabled="disabled"'
-					. ' name="' . $this->get_field_name('items') . '[label][]"'
+				. '<input type="text" class="nav_menu_item_label"'
+					. ' onchange="navMenus.onLabelChange(this)"'
+					. ' name="[label][]"'
 					. ' value="' . esc_attr($label) . '"'
 					. ' />' . "\n"
 				. '&nbsp;'
-				. '<input type="button" class="nav_menu_item_remove" disabled="disabled"'
+				. '<input type="button" class="nav_menu_item_remove"'
 					. ' value="&nbsp;-&nbsp;" />' . "\n"
-				. '<input type="hidden" disabled="disabled"'
-					. ' class="nav_menu_item_type"'
-					. ' name="' . $this->get_field_name('items') . '[type][]"'
+				. '<input type="hidden"'
+					. ' name="[type][]"'
 					. ' value="' . $type . '"'
 					. ' />' . "\n"
-				. '<input type="' . ( $handle == 'url' ? 'text' : 'hidden' ) . '" disabled="disabled"'
+				. '<input type="' . ( $handle == 'url' ? 'text' : 'hidden' ) . '"'
 					. ' class="nav_menu_item_ref"'
-					. ' name="' . $this->get_field_name('items') . '[ref][]"'
+					. ( $handle == 'url' ? ' onchange="navMenus.onRefChange(this)"' : '' )
+					. ' name="[ref][]"'
 					. ' value="' . $ref . '"'
 					. ' />' . "\n"
 				. '</div>' . "\n" # data
@@ -2519,75 +2644,7 @@ class sem_nav_menu extends WP_Widget {
 		}
 		
 		echo '</div>' . "\n"; # defaults
-		
-		echo '<div class="nav_menu_item_sortables">' . "\n";
-		
-		foreach ( $items as $item ) {
-			$label = $item['label'];
-			$type = $item['type'];
-			switch ( $type ) {
-			case 'home':
-				$ref = 'home';
-				$url = user_trailingslashit(get_option('home'));
-				$handle = 'home';
-				break;
-			case 'url':
-				$ref = $item['ref'];
-				$url = $ref;
-				$handle = 'url';
-				break;
-			case 'page':
-				$ref = $item['ref'];
-				$url = get_permalink($ref);
-				$handle = 'page-' . $ref;
-				$page = get_post($ref);
-				$label = get_post_meta($page->ID, '_widgets_label', true);
-				if ( $label === '' )
-					$label = $page->post_title;
-				if ( $label === '' )
-					$label = __('Untitled', 'sem-reloaded');
-				$label = strip_tags($label);
-				break;
-			}
-			
-			echo '<div class="nav_menu_item nav_menu_item-' . $handle . ' button">' . "\n"
-				. '<div class="nav_menu_item_data">' ."\n"
-				. '<input type="text" class="nav_menu_item_label"'
-					. ' name="' . $this->get_field_name('items') . '[label][]"'
-					. ' value="' . esc_attr($label) . '"'
-					. ' />' . "\n"
-				. '&nbsp;'
-				. '<input type="button" class="nav_menu_item_remove" value="&nbsp;-&nbsp;" />' . "\n"
-					. '<input type="hidden"'
-						. ' class="nav_menu_item_type"'
-						. ' name="' . $this->get_field_name('items') . '[type][]"'
-						. ' value="' . $type . '"'
-						. ' />' . "\n"
-				. '<input type="' . ( $handle == 'url' ? 'text' : 'hidden' ) . '"'
-					. ' class="nav_menu_item_ref"'
-					. ' name="' . $this->get_field_name('items') . '[ref][]"'
-					. ' value="' . $ref . '"'
-					. ' />' . "\n"
-				. '</div>' . "\n" # data
-				. '<div class="nav_menu_item_preview">' . "\n"
-				. '&rarr;&nbsp;<a href="' . esc_url($url) . '"'
-					. ' onclick="window.open(this.href); return false;">'
-					. $label
-					. '</a>'
-				. '</div>' . "\n" # preview
-				. '</div>' . "\n"; # item
-		}
-		
-		if ( !$items ) {
-			echo '<div class="nav_menu_item_blank">' . "\n"
-				. '<p>' . __('Empty Navigation Menu. Leave it empty to populate it automatically.', 'sem-reloaded') . '</p>' . "\n"
-				. '</div>' . "\n";
-		}
-		
-		echo '</div>' . "\n"; # sortables
-		
-		echo '</div>' . "\n"; # items
-	} # form()
+	} # admin_footer()
 	
 	
 	/**
@@ -3095,4 +3152,5 @@ add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
 add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), 10, 3);
 
 wp_cache_add_non_persistent_groups(array('sem_header'));
+wp_cache_add_non_persistent_groups(array('nav_menu_roots'));
 ?>

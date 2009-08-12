@@ -384,7 +384,7 @@ function upgrade_sem_5_5() {
 
 			case 'search':
 				$widget_contexts[$widget]['search'] = $active;
-				$widget_contexts[$widget]['404_error'] = $active;
+				$widget_contexts[$widget]['error_404'] = $active;
 				break;
 			}
 		}

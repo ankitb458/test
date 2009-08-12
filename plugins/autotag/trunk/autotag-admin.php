@@ -80,10 +80,10 @@ class autotag_admin {
 					: ''
 					)
 				. ' />'
-				. '&nbsp;'
-				. __('Only keep terms that match existing tags.', 'autotag')
-				. '</label>'
-				. '</p>' . "\n";
+			. '&nbsp;'
+			. __('Only keep terms that match existing tags.', 'autotag')
+			. '</label>'
+			. '</p>' . "\n";
 		
 		echo '<p>'
 			. __('<b>Notice</b>: AutoTag will only work provided your server\'s IP address hasn\'t hit Yahoo\'s web services 5,000 times in the past 24h. If it stops working, give it a new try the next day.', 'autotag')
