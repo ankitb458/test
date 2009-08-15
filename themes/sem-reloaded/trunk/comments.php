@@ -339,6 +339,12 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			echo '<div class="spacer"></div>' . "\n";
 		} # if ( $user_ID )
 		
+		# WP Review Site support
+		
+		if ( function_exists('ratings_input_table') && has_filter('comment_form', 'ratings_input_table') ) {
+			remove_action('comment_form', 'ratings_input_table');
+			ratings_input_table();
+		}	
 		
 		echo '<textarea name="comment" id="comment" cols="48" rows="10"></textarea>' . "\n";
 		
