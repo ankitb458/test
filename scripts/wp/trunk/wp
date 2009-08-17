@@ -360,10 +360,18 @@ then
 		dbn=${dbn#/usr/local/www/}
 		dbn=${dbn#/home/}
 		dbn=${dbn##/}
-		dbn=${dbn/\/www/}
-		dbn=${dbn/\/public_html/}
-		dbn=${dbn/\/htdocs/}
-		dbn=${dbn//[!a-zA-Z]/_}
+		dbn=`echo $dbn | sed -E 's|/www/|/|g'`
+		dbn=${dbn#*/public_html/}
+		dbn=${dbn#*/htdocs/}
+		dbn=`echo $dbn | sed -E 's|[^a-zA-Z]+|_|g'`
+		dbn=${dbn#_}
+		dbn=${dbn%_}
+	fi
+	
+	if [ "$dbn" = '' ];
+	then
+		echo 'Err: Failed to automatically generate a database name'
+		exit 1
 	fi
 	
 	if [ "$dbu" = '' ];
