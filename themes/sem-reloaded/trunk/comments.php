@@ -273,7 +273,10 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. ' action="' . trailingslashit(site_url()) . 'wp-comments-post.php"'
 			. '>' . "\n"
 			. '<div class="pad">' . "\n";
-
+		
+		if ( $policy )
+			echo apply_filters('widget_text', wpautop($policy));
+		
 		if ( $user_ID ) {
 			$logout_url = '<span class="logout">'
 				. apply_filters('loginout',

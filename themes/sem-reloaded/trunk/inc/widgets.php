@@ -972,8 +972,20 @@ class entry_comments extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		foreach ( array_keys(entry_comments::defaults()) as $field )
-			$instance[$field] = trim(strip_tags($new_instance[$field]));
+		foreach ( array_keys(entry_comments::defaults()) as $field ) {
+			switch ( $field ) {
+			case 'policy':
+				if ( current_user_can('unfiltered_html') )
+					$instance[$field] = $new_instance[$field];
+				else
+					$instance[$field] = $old_instance[$field];
+				break;
+				
+			default:
+				$instance[$field] = trim(strip_tags($new_instance[$field]));
+				break;
+			}
+		}
 		
 		return $instance;
 	} # update()
@@ -994,16 +1006,34 @@ class entry_comments extends WP_Widget {
 		echo '<h3>' . __('Captions', 'sem-reloaded') . '</h3>' . "\n";
 		
 		foreach ( $defaults as $field => $default ) {
-			echo '<p>'
-				. '<label>'
-				. '<code>' . $default . '</code>'
-				. '<br />' . "\n"
-				. '<input type="text" class="widefat"'
-					. ' name="' . $this->get_field_name($field) . '"'
-					. ' value="' . esc_attr($$field) . '"'
-					. ' />'
-				. '</label>'
-				. '</p>' . "\n";
+			switch ( $field ) {
+			case 'policy':
+				echo '<p>'
+					. '<label>'
+					. __('Comment Policy', 'sem-reloaded')
+					. '<br />' . "\n"
+					. '<textarea class="widefat"'
+						. ' name="' . $this->get_field_name($field) . '"'
+						. ' >'
+						. esc_html($$field)
+						. '</textarea>'
+					. '</label>'
+					. '</p>' . "\n";
+				break;
+			
+			default:
+				echo '<p>'
+					. '<label>'
+					. '<code>' . $default . '</code>'
+					. '<br />' . "\n"
+					. '<input type="text" class="widefat"'
+						. ' name="' . $this->get_field_name($field) . '"'
+						. ' value="' . esc_attr($$field) . '"'
+						. ' />'
+					. '</label>'
+					. '</p>' . "\n";
+				break;
+			}
 		}
 	} # form()
 	
@@ -1020,6 +1050,7 @@ class entry_comments extends WP_Widget {
 			'comments_on' => __('Comments on %s', 'sem-reloaded'),
 			'leave_comment' => __('Leave a Comment', 'sem-reloaded'),
 			'reply_link' => __('Reply', 'sem-reloaded'),
+			'policy' => '',
 			'login_required' => __('You must be logged in to post a comment. %s.', 'sem-reloaded'),
 			'logged_in_as' => __('You are logged in as %1$s. %2$s.', 'sem-reloaded'),
 			'name_field' => __('Name:', 'sem-reloaded'),
