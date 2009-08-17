@@ -287,6 +287,13 @@ class sem_template {
 			
 			$credits = sprintf($sem_options['credits'], $theme_credits, $skin_credits['skin_name'], $skin_credits['skin_author']);
 			
+			if ( current_user_can('manage_options') ) {
+				$credits .= ' - '
+					. '<a href="' . esc_url(admin_url() . 'themes.php?page=skin') . '">'
+					. __('Edit', 'sem-reloaded')
+					. '</a>';
+			}
+			
 			echo '<div class="pad">'
 				. $credits
 				. '</div>' . "\n";
