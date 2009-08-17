@@ -276,7 +276,7 @@ class sem_template {
 			if ( current_user_can('manage_options') ) {
 				$credits .= ' - '
 					. '<a href="' . esc_url(admin_url() . 'themes.php?page=skin') . '">'
-					. __('Edit', 'sem-reloaded')
+					. __('Edit', 'sem-theme')
 					. '</a>';
 			}
 			
