@@ -1497,8 +1497,10 @@ class header extends WP_Widget {
 		$ext = strtolower(end($ext));
 		
 		if ( $ext != 'swf' ) {
+			list($width, $height) = wp_cache_get('sem_header', 'sem_header');
+			
 			echo '<div id="header_img">'
-				. '<img src="' . sem_url . '/icons/pixel.gif" height="100%" width="100%" alt="'
+				. '<img src="' . sem_url . '/icons/pixel.gif" height="' . intval($height) . '" width="100%" alt="'
 					. esc_attr(get_option('blogname'))
 					. ' &bull; '
 					. esc_attr(get_option('blogdescription'))
@@ -1651,8 +1653,12 @@ EOS;
 			if ( $header ) {
 				$header = current($header);
 				$header = str_replace(WP_CONTENT_DIR, '', $header);
-				update_post_meta($post_ID, '_sem_header', $header);
-				return $header;
+				$header_size = @getimagesize(WP_CONTENT_DIR . $header);
+				if ( $header_size ) {
+					update_post_meta($post_ID, '_sem_header', $header);
+					wp_cache_set('sem_header', $header_size, 'sem_header');
+					return $header;
+				}
 			}
 		}
 		
@@ -1680,12 +1686,16 @@ EOS;
 		if ( $header ) {
 			$header = current($header);
 			$header = str_replace(WP_CONTENT_DIR, '', $header);
-			set_transient('sem_header', $header);
-		} else {
-			set_transient('sem_header', '0');
+			$header_size = @getimagesize(WP_CONTENT_DIR . $header);
+			if ( $header_size ) {
+				wp_cache_set('sem_header', $header_size, 'sem_header');
+				set_transient('sem_header', $header);
+				return $header;
+			}
 		}
 		
-		return $header;
+		set_transient('sem_header', '0');
+		return false;
 	} # get()
 	
 	

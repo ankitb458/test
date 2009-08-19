@@ -864,3 +864,8 @@ div.media
 	display: none;
 }
 
+/* bookmark me, subscribe me */
+
+.subscribe_me_ruler {
+	clear: both;
+}
