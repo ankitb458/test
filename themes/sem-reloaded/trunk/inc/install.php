@@ -144,6 +144,7 @@ $extra_plugins = array(
 	'sem-subscribe-me/sem-subscribe-me.php',
 	'silo/silo.php',
 	'version-checker/version-checker.php',
+	'widget-contexts/widget-contexts.php',
 	'wp-hashcash/wp-hashcash.php',
 	);
 
