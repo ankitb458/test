@@ -1827,7 +1827,7 @@ class sem_nav_menu extends WP_Widget {
 
 	function widget($args, $instance) {
 		extract($args, EXTR_SKIP);
-		$instance = wp_parse_args($instance, sem_sem_nav_menu::defaults());
+		$instance = wp_parse_args($instance, sem_nav_menu::defaults());
 		extract($instance, EXTR_SKIP);
 		if ( is_admin() )
 			return;
@@ -1855,7 +1855,7 @@ class sem_nav_menu extends WP_Widget {
 			return;
 		}
 		
-		sem_sem_nav_menu::cache_pages();
+		sem_nav_menu::cache_pages();
 		
 		if ( !$items ) {
 			$items = call_user_func(array(get_class($this), 'default_items'));
@@ -1875,16 +1875,16 @@ class sem_nav_menu extends WP_Widget {
 			
 			switch ( $item['type'] ) {
 			case 'home':
-				sem_sem_nav_menu::display_home($item);
+				sem_nav_menu::display_home($item);
 				$did_first = true;
 				break;
 			case 'url':
-				sem_sem_nav_menu::display_url($item);
+				sem_nav_menu::display_url($item);
 				$did_first = true;
 				break;
 			case 'page':
 				if ( in_array($item['ref'], $root_pages) ) {
-					sem_sem_nav_menu::display_page($item);
+					sem_nav_menu::display_page($item);
 					$did_first = true;
 				}
 				break;
@@ -1919,7 +1919,7 @@ class sem_nav_menu extends WP_Widget {
 		if ( get_option('show_on_front') == 'page' && get_option('page_on_front') ) {
 			$item['type'] = 'page';
 			$item['ref'] = get_option('page_on_front');
-			return sem_sem_nav_menu::display_page($item);
+			return sem_nav_menu::display_page($item);
 		}
 		
 		extract($item, EXTR_SKIP);
@@ -1960,8 +1960,8 @@ class sem_nav_menu extends WP_Widget {
 			return;
 		
 		if ( rtrim($url, '/') == rtrim(get_option('home')) )
-			return sem_sem_nav_menu::display_home($item);
-		elseif ( sem_sem_nav_menu::is_local_url($url) )
+			return sem_nav_menu::display_home($item);
+		elseif ( sem_nav_menu::is_local_url($url) )
 			$classes = array('nav_branch');
 		else
 			$classes = array('nav_url');
@@ -2270,7 +2270,7 @@ class sem_nav_menu extends WP_Widget {
 	 **/
 
 	function update($new_instance, $old_instance) {
-		$instance = sem_sem_nav_menu::defaults();
+		$instance = sem_nav_menu::defaults();
 		$instance['sep'] = isset($new_instance['sep']);
 		foreach ( array_keys((array) $new_instance['items']['type']) as $key ) {
 			$item = array();
@@ -2304,7 +2304,7 @@ class sem_nav_menu extends WP_Widget {
 			$instance['items'][] = $item;
 		}
 		
-		sem_sem_nav_menu::flush_cache();
+		sem_nav_menu::flush_cache();
 		
 		return $instance;
 	} # update()
@@ -2949,7 +2949,7 @@ class footer extends sem_nav_menu {
 		
 		echo '<div id="footer_nav" class="inline_menu">';
 		
-		sem_sem_nav_menu::widget($args, $instance);
+		sem_nav_menu::widget($args, $instance);
 		
 		echo '</div><!-- footer_nav -->' . "\n";
 		
