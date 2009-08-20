@@ -188,7 +188,7 @@ EOS;
 		
 		$details = $skins[$sem_options['active_skin']];
 		$screenshot = sem_url . '/skins/' . $sem_options['active_skin'] . '/screenshot.png';
-		$title = __('%1$s v.%2$s, by %3$s', 'sem-reloaded');
+		$title = __('%1$s v.%2$s by %3$s', 'sem-reloaded');
 		$name = $details['uri']
 			? ( '<a href="' . esc_url($details['uri']) . '"'
 				. ' title="' . esc_attr(__('Visit the skin\' page', 'sem-reloaded')) . '">'

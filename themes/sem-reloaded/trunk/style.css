@@ -1,7 +1,7 @@
 /*
-Theme Name: Semiologic, Reloaded
+Theme Name: Semiologic
 Theme URI: http://www.semiologic.com/software/sem-reloaded/
-Description: The Semiologic theme, reloaded.
+Description: The Semiologic theme, Reloaded.
 Version: 0.8 RC
 Author: Denis de Bernardy
 Author URI: http://www.mesoconcepts.com
@@ -449,8 +449,8 @@ img.avatar {
 	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
 	font-weight: normal;
 	text-align: center;
-	padding-top: 12px;
-	padding-bottom: 16px;
+	padding-top: 10px;
+	padding-bottom: 18px;
 	font-size: 42px;
 	line-height: 50px;
 }
@@ -759,4 +759,10 @@ div.scripts {
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+/* bookmark me, subscribe me */
+
+.subscribe_me_ruler {
+	clear: both;
 }

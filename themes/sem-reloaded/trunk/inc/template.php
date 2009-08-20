@@ -318,7 +318,7 @@ class sem_template {
 				. '</a>';
 		} else {
 			$theme_descriptions = array(
-				__('the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic Reloaded theme</a>', 'sem-reloaded'),
+				__('the <a href="http://www.semiologic.com/software/sem-reloaded/">Semiologic theme</a>', 'sem-reloaded'),
 				__('an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to use WordPress theme</a>', 'sem-reloaded'),
 				__('an <a href="http://www.semiologic.com/software/sem-reloaded/">easy to customize WordPress theme</a>', 'sem-reloaded'),
 				);
@@ -339,7 +339,7 @@ class sem_template {
 	function get_skin_credits() {
 		global $sem_options;
 		
-		if ( !isset($sem_options['skin_data']) || !is_array($sem_options['skin_data']) ) {
+		if ( is_admin() || !is_array($sem_options['skin_data']) ) {
 			$details = sem_template::get_skin_data($sem_options['active_skin']);
 			$sem_options['skin_data'] = $details;
 			if ( !defined('sem_install_test') )

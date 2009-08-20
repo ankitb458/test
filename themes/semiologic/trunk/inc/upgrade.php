@@ -949,7 +949,7 @@ if ( version_compare($sem_options['version'], '5.0', '<') )
 if ( version_compare($sem_options['version'], '5.5', '<') )
 	upgrade_sem_5_5();
 
-if ( version_compare($sem_options['version'], '6.0', '<') ) {
+if ( version_compare($sem_options['version'], '6.0-rc1', '<') ) {
 	upgrade_sem_6_0();
 	update_option('init_sem_panels', '1');
 }
@@ -959,8 +959,12 @@ $sem_options['version'] = sem_version;
 
 #dump($sem_options);die;
 
-if ( !defined('sem_install_test') )
+if ( !defined('sem_install_test') ) {
+	unset($sem_options['skin_data']);
 	update_option('sem5_options', $sem_options);
+	delete_option('current_theme');
+}
+	
 
 wp_cache_flush();
 do_action('flush_cache');
