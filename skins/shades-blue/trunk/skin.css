@@ -1,7 +1,7 @@
 /*
 Skin name: Shades (Blue)
 Skin uri: http://skins.semiologic.com/shades/
-Version: 0.6 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,8 +12,8 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #181e2e;
-	color: #eee;
+	background: #1a2033;
+	color: #fff;
 }
 
 .sem_admin_menu #wrapper {
@@ -21,7 +21,7 @@ html {
 }
 
 body {
-	background: #2e3d61;
+	background: #334066;
 }
 
 .skin #wrapper,
@@ -33,19 +33,15 @@ body {
 }
 
 h1, h2, .widget_calendar caption {
-	color: #ecb931;
+	color: #ffecb2;
 }
 
 a {
-	color: #fc9;
+	color: #b2ffff;
 }
 
 a:hover {
-	color: #fc0;
-}
-
-a em {
-	color: #fc0;
+	color: #b3b2ff;
 }
 
 
@@ -54,11 +50,11 @@ a em {
  */
 
 #header_wrapper {
-	background: #2e3d61;
+	background: #334066;
 }
 
 #sitename {
-	color: #ecb931;
+	color: #ffecb2;
 }
 
 
@@ -67,7 +63,7 @@ a em {
  */
 
 #navbar {
-	background: #181e2e;
+	background: #1a2033;
 	border-top: solid 1px #666;
 	border-bottom: solid 1px #666;
 }
@@ -82,11 +78,11 @@ a em {
 	border-bottom: solid 1px #666;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	background: #2e3d61;
+	background: #334066;
 }
 
 #footer_wrapper {
-	background: #181e2e;
+	background: #1a2033;
 }
 
 
@@ -296,7 +292,7 @@ a em {
  */
 
 #body {
-	background: url(images/body.jpg) bottom center repeat-x #2e3d61;
+	background: url(images/body.jpg) bottom center repeat-x #334066;
 }
 
 
@@ -305,7 +301,7 @@ a em {
  */
 
 #credits {
-	background: #181e2e;
+	background: #1a2033;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -358,21 +354,16 @@ blockquote {
 
 .widget_calendar table {
 	border: solid 1px #666;
-	background: #2e3d61;
+	background: #334066;
+	color: #fff;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #181e2e;
+	background: #1a2033;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #5974a8;
-}
-
-.widget_calendar tfoot a {
-}
-
-.widget_calendar tfoot a:hover {
+	background: #5368a6;
 }
