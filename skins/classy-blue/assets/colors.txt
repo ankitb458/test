@@ -1,0 +1,11 @@
+page					210,15,95 (#cee0f2)
+canvas					210,100,70 (#0059b3)
+boxes					210,25,85 (#a3bed9)
+borders					0,0,20 (#333)
+navbar					0,0,0 (#000) -> 0,0,30 (#4c4c4c)
+navbar:hover			30,40,100 (#fc9)
+sidebar a				60,50,100 (#ffff80)
+sidebar:hover			30,40,100 (#fc9)
+footer a:hover			30,35,100 (#ffd2a6)
+h1						0,85,80 (#cc1f1f)
+
