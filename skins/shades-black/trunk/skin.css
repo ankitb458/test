@@ -1,7 +1,7 @@
 /*
-Skin name: Shades (Black)
+Skin name: Shades, Black
 Skin uri: http://skins.semiologic.com/shades/
-Version: 0.6 RC
+Version: 1.0 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -13,7 +13,7 @@ Author uri: http://www.mesoconcepts.com
 
 html {
 	background: #000;
-	color: #eee;
+	color: #fff;
 }
 
 .sem_admin_menu #wrapper {
@@ -33,19 +33,15 @@ body {
 }
 
 h1, h2, .widget_calendar caption {
-	color: #999;
+	color: #ffecb2;
 }
 
 a {
-	color: #2b6eb6;
+	color: #80bfff;
 }
 
 a:hover {
-	color: #c22;
-}
-
-a em {
-	color: #c22;
+	color: #b3b2ff;
 }
 
 
@@ -58,7 +54,7 @@ a em {
 }
 
 #sitename {
-	color: #999;
+	color: #ffecb2;
 }
 
 
@@ -68,8 +64,8 @@ a em {
 
 #navbar {
 	background: #000;
-	border-top: solid 1px #444;
-	border-bottom: solid 1px #444;
+	border-top: solid 1px #666;
+	border-bottom: solid 1px #666;
 }
 
 
@@ -78,8 +74,8 @@ a em {
  */
 
 #footer {
-	border-top: solid 1px #444;
-	border-bottom: solid 1px #444;
+	border-top: solid 1px #666;
+	border-bottom: solid 1px #666;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	background: #222;
@@ -357,22 +353,17 @@ blockquote {
  */
 
 .widget_calendar table {
-	border: solid 1px #444;
+	border: solid 1px #666;
 	background: #222;
+	color: #fff;
 }
 
 .widget_calendar thead {
-	border-bottom: solid 1px #444;
+	border-bottom: solid 1px #666;
 	background: #000;
 }
 
 .widget_calendar tfoot {
-	border-top: solid 1px #444;
-	background: #333;
-}
-
-.widget_calendar tfoot a {
-}
-
-.widget_calendar tfoot a:hover {
+	border-top: solid 1px #666;
+	background: #444;
 }

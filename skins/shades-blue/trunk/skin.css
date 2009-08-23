@@ -1,7 +1,7 @@
 /*
-Skin name: Shades (Blue)
+Skin name: Shades, Blue
 Skin uri: http://skins.semiologic.com/shades/
-Version: 0.8 RC
+Version: 1.0 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -37,7 +37,7 @@ h1, h2, .widget_calendar caption {
 }
 
 a {
-	color: #b2ffff;
+	color: #80bfff;
 }
 
 a:hover {

@@ -1,7 +1,7 @@
 /*
 Skin name: Light, Blue
 Skin uri: http://skins.semiologic.com/light/
-Version: 0.8 RC
+Version: 1.0 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -419,7 +419,7 @@ blockquote {
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #dae6f2;
+	background: #cee0f2;
 }
 
 .widget_calendar tfoot a {

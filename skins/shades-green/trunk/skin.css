@@ -1,7 +1,7 @@
 /*
-Skin name: Shades (Green)
+Skin name: Shades, Green
 Skin uri: http://skins.semiologic.com/shades/
-Version: 0.6 RC
+Version: 1.0 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,8 +12,8 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #162b01;
-	color: #eee;
+	background: #1a3300;
+	color: #fff;
 }
 
 .sem_admin_menu #wrapper {
@@ -21,7 +21,7 @@ html {
 }
 
 body {
-	background: #224202;
+	background: #204000;
 }
 
 .skin #wrapper,
@@ -33,19 +33,15 @@ body {
 }
 
 h1, h2, .widget_calendar caption {
-	color: #ecb931;
+	color: #ffecb2;
 }
 
 a {
-	color: #fc9;
+	color: #80bfff;
 }
 
 a:hover {
-	color: #fc0;
-}
-
-a em {
-	color: #fc0;
+	color: #b3b2ff;
 }
 
 
@@ -54,11 +50,11 @@ a em {
  */
 
 #header_wrapper {
-	background: #224202;
+	background: #204000;
 }
 
 #sitename {
-	color: #ecb931;
+	color: #ffecb2;
 }
 
 
@@ -67,7 +63,7 @@ a em {
  */
 
 #navbar {
-	background: #162b01;
+	background: #1a3300;
 	border-top: solid 1px #666;
 	border-bottom: solid 1px #666;
 }
@@ -82,11 +78,11 @@ a em {
 	border-bottom: solid 1px #666;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	background: #224202;
+	background: #204000;
 }
 
 #footer_wrapper {
-	background: #162b01;
+	background: #1a3300;
 }
 
 
@@ -296,7 +292,7 @@ a em {
  */
 
 #body {
-	background: url(images/body.jpg) bottom center repeat-x #224202;
+	background: url(images/body.jpg) bottom center repeat-x #204000;
 }
 
 
@@ -305,7 +301,7 @@ a em {
  */
 
 #credits {
-	background: #162b01;
+	background: #1a3300;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -358,21 +354,16 @@ blockquote {
 
 .widget_calendar table {
 	border: solid 1px #666;
-	background: #224202;
+	background: #204000;
+	color: #fff;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #162b01;
+	background: #1a3300;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #2d5703;
-}
-
-.widget_calendar tfoot a {
-}
-
-.widget_calendar tfoot a:hover {
+	background: #2d5900;
 }

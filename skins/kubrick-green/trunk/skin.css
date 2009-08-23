@@ -1,7 +1,7 @@
 /*
-Skin name: Kubrick (Green)
+Skin name: Kubrick, Green
 Skin uri: http://skins.semiologic.com/kubrick/
-Version: 0.6 RC
+Version: 1.0 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -72,24 +72,24 @@ html {
 }
 
 .mmm #header_img {
-	background: url(images/mmm-header.jpg) center no-repeat #224202;
+	background: url(images/mmm-header.jpg) center no-repeat #1a6600;
 }
 
 .mm #header_img {
-	background: url(images/mm-header.jpg) center no-repeat #224202;
+	background: url(images/mm-header.jpg) center no-repeat #1a6600;
 }
 
 .m #header_img {
-	background: url(images/m-header.jpg) center no-repeat #224202;
+	background: url(images/m-header.jpg) center no-repeat #1a6600;
 }
 
 #tagline {
-	color: #639530;
+	color: #e2ffd9;
 }
 
 #sitename {
-	padding-top: 28px;
-	padding-bottom: 30px;
+	padding-top: 20px;
+	padding-bottom: 38px;
 }
 
 #tagline {
@@ -395,12 +395,7 @@ h2,
 }
 
 h1 {
-	color: #224202;
-}
-
-.entry_date,
-.comment_date,
-.pings_date {
+	color: #cc1f1f;
 }
 
 blockquote {
@@ -417,7 +412,7 @@ blockquote {
 
 .widget_title h2 {
 	padding-bottom: 1px;
-	border-bottom: solid 1px #639530;
+	border-bottom: solid 1px #1a6600;
 }
 
 
@@ -427,17 +422,27 @@ blockquote {
 
 .widget_calendar table {
 	border: solid 1px #666;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22e;
+}
+
+.widget_calendar a:hover {
+	color: #c22;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #224202;
-	color: #eee;
+	background: #1a6600;
+	color: #fff;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #639530;
+	background: #e2ffd9;
 }
 
 .widget_calendar tfoot a {

@@ -1,7 +1,7 @@
 /*
-Skin name: Semiologic Classic (Purple)
+Skin name: Classic, Purple
 Skin uri: http://skins.semiologic.com/classic/
-Version: 0.6 RC
+Version: 1.0 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,8 +12,7 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #b6cf6f;
-	color: #000;
+	background: #ddd;
 }
 
 #wrapper {
@@ -73,7 +72,7 @@ html {
 }
 
 #sitename {
-	color: #6d1245;
+	color: #800d63;
 }
 
 
@@ -82,17 +81,17 @@ html {
  */
 
 #navbar {
-	background: url(images/navbar.jpg) top center repeat #6d1245;
-	color: #ffe;
+	background: url(images/navbar.jpg) top center repeat #800d63;
+	color: #fff;
 	border-bottom: solid 1px #666;
 }
 
 #navbar a {
-	color: #ffe;
+	color: #fff;
 }
 
 #navbar a:hover {
-	color: #fdb;
+	color: #ffffd9;
 }
 
 
@@ -101,7 +100,7 @@ html {
  */
 
 #footer {
-	background: #e0a6dd;
+	background: #ffd9d9;
 	color: #000;
 	border-top: solid 1px #666;
 }
@@ -149,7 +148,7 @@ html {
 
 .mmm #header_boxes,
 .mmm #footer_boxes {
-	background: url(images/mmm-inline_boxes.jpg) center repeat-y #fffdcf;
+	background: url(images/mmm-inline_boxes.jpg) center repeat-y #ffffd9;
 }
 
 .mmm #header_boxes_top,
@@ -164,7 +163,7 @@ html {
 
 .mm #header_boxes,
 .mm #footer_boxes {
-	background: url(images/mm-inline_boxes.jpg) center repeat-y #fffdcf;
+	background: url(images/mm-inline_boxes.jpg) center repeat-y #ffffd9;
 }
 
 .mm #header_boxes_top,
@@ -179,7 +178,7 @@ html {
 
 .m #header_boxes,
 .m #footer_boxes {
-	background: url(images/m-inline_boxes.jpg) center repeat-y #fffdcf;
+	background: url(images/m-inline_boxes.jpg) center repeat-y #ffffd9;
 }
 
 .m #header_boxes_top,
@@ -199,7 +198,7 @@ html {
 
 .header_widget,
 .footer_widget {
-	background: #fffdcf;
+	background: #ffffd9;
 }
 
 .header_widget {
@@ -293,13 +292,7 @@ h2,
 }
 
 h1 {
-	color: #6d1245;
-}
-
-.entry_date,
-.comment_date,
-.pings_date {
-	color: #444;
+	color: #cc1f1f;
 }
 
 blockquote {
@@ -316,7 +309,7 @@ blockquote {
 
 .widget_title h2 {
 	padding-bottom: 1px;
-	border-bottom: solid 1px #e0a6dd;
+	border-bottom: solid 1px #800d63;
 }
 
 
@@ -327,17 +320,26 @@ blockquote {
 .widget_calendar table {
 	border: solid 1px #666;
 	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22e;
+}
+
+.widget_calendar a:hover {
+	color: #c22;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #6d1245;
-	color: #ffe;
+	background: #800d63;
+	color: #fff;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #e0a6dd;
+	background: #ffd9d9;
 }
 
 .widget_calendar tfoot a {
