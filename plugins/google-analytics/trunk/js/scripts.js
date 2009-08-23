@@ -63,7 +63,7 @@ jQuery(document).ready(function() {
 				return true;
 			});
 		} else {
-			t.live('click', function(e) {
+			t.click(function(e) {
 				if ( !label ) {
 					window.pageTracker._trackEvent(category, action);
 				} else {
