@@ -52,6 +52,7 @@ if($mode == "act_OrderPages")
 	{
 		$wpdb->query("UPDATE $wpdb->posts SET menu_order = '$i' WHERE id ='$IDs[$i]'");
     }
+	do_action('flush_cache');
 	$success = '<div id="message" class="updated fade"><p>'. __('Page order updated successfully.', 'mypageorder').'</p></div>';
 }
 
