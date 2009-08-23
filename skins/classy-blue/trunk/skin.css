@@ -1,7 +1,7 @@
 /*
 Skin name: Classy, Blue
 Skin uri: http://skins.semiologic.com/classy/
-Version: 1.0 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -270,7 +270,7 @@ html {
 }
 
 #main a {
-	color: #22e;
+	color: #22d;
 }
 
 #main .entry_header a {
@@ -278,11 +278,11 @@ html {
 }
 
 #main a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 #main a em {
-	color: #c22;
+	color: #b22;
 }
 
 #main_top,
@@ -382,7 +382,7 @@ h2,
 }
 
 h1 {
-	color: #cc1f1f;
+	color: #b31212;
 }
 
 .entry_date,
@@ -442,11 +442,11 @@ blockquote {
 }
 
 .widget_calendar a {
-	color: #22e;
+	color: #22d;
 }
 
 .widget_calendar a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 .widget_calendar thead {
@@ -465,6 +465,6 @@ blockquote {
 }
 
 .widget_calendar tfoot a:hover {
-	color: #c22;
+	color: #b22;
 }
 

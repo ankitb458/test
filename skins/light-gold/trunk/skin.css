@@ -1,7 +1,7 @@
 /*
-Skin name: Light (Gold)
+Skin name: Light, Gold
 Skin uri: http://skins.semiologic.com/light/
-Version: 0.6 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,7 +12,7 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #eee;
+	background: #fff;
 }
 
 .sem_admin_menu #wrapper {
@@ -25,7 +25,7 @@ html {
  */
 
 #sitename {
-	color: #c22;
+	color: #b31212;
 }
 
 
@@ -35,6 +35,7 @@ html {
 
 #navbar {
 	line-height: 40px;
+	color: #000;
 }
 
 * html #s {
@@ -52,19 +53,19 @@ html {
 }
 
 #navbar a:hover {
-	color: #c22;
+	color: #334066;
 }
 
 .mmm #navbar {
-	background: url(images/mmm-navbar.jpg) top center repeat-y #ffc102;
+	background: url(images/mmm-navbar.jpg) top center repeat-y #ffbf00;
 }
 
 .mm #navbar {
-	background: url(images/mm-navbar.jpg) top center repeat-y #ffc102;
+	background: url(images/mm-navbar.jpg) top center repeat-y #ffbf00;
 }
 
 .m #navbar {
-	background: url(images/m-navbar.jpg) top center repeat-y #ffc102;
+	background: url(images/m-navbar.jpg) top center repeat-y #ffbf00;
 }
 
 
@@ -366,7 +367,7 @@ h2,
 }
 
 h1 {
-	color: #c22;
+	color: #b31212;
 }
 
 .entry_date,
@@ -388,7 +389,7 @@ blockquote {
 
 .widget_title h2 {
 	padding-bottom: 1px;
-	border-bottom: solid 1px #b4b4b4;
+	border-bottom: solid 1px #b31212;
 }
 
 
@@ -397,21 +398,34 @@ blockquote {
  */
 
 .widget_calendar table {
-	border: solid 1px #b4b4b4;
+	border: solid 1px #666;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22d;
+}
+
+.widget_calendar a:hover {
+	color: #b22;
 }
 
 .widget_calendar thead {
-	border-bottom: solid 1px #b4b4b4;
-	background: #ffc102;
+	border-bottom: solid 1px #666;
+	background: #ffbf00;
+	color: #000;
 }
 
 .widget_calendar tfoot {
-	border-top: solid 1px #b4b4b4;
-	background: #eee;
+	border-top: solid 1px #666;
+	background: #ffffcc;
 }
 
 .widget_calendar tfoot a {
+	color: #000;
 }
 
 .widget_calendar tfoot a:hover {
+	color: #b22;
 }

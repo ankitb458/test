@@ -1,7 +1,7 @@
 /*
 Skin name: Classic, Purple
 Skin uri: http://skins.semiologic.com/classic/
-Version: 1.0 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -123,7 +123,7 @@ html {
 }
 
 #footer a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 
@@ -292,7 +292,7 @@ h2,
 }
 
 h1 {
-	color: #cc1f1f;
+	color: #b31212;
 }
 
 blockquote {
@@ -324,11 +324,11 @@ blockquote {
 }
 
 .widget_calendar a {
-	color: #22e;
+	color: #22d;
 }
 
 .widget_calendar a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 .widget_calendar thead {
@@ -347,5 +347,5 @@ blockquote {
 }
 
 .widget_calendar tfoot a:hover {
-	color: #c22;
+	color: #b22;
 }

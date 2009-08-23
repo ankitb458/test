@@ -1,7 +1,7 @@
 /*
 Skin name: Boxed, Blue
 Skin uri: http://skins.semiologic.com/boxed/
-Version: 1.0 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -78,7 +78,7 @@ html {
 }
 
 #footer a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 #footer_top,
@@ -337,7 +337,7 @@ h2,
 }
 
 h1 {
-	color: #cc1f1f;
+	color: #b31212;
 }
 
 .entry_date,
@@ -482,5 +482,5 @@ blockquote {
 }
 
 .widget_calendar tfoot a:hover {
-	color: #c22;
+	color: #b22;
 }

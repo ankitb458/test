@@ -1,7 +1,7 @@
 /*
-Skin name: Copywriter (Gold)
+Skin name: Copywriter, Gold
 Skin uri: http://skins.semiologic.com/copywriter/
-Version: 0.6 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,8 +12,8 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #4d4736;
-	color: #eee;
+	background: #403d30;
+	color: #fff;
 }
 
 .sem_admin_menu #wrapper {
@@ -37,12 +37,12 @@ html {
  */
 
 #header {
-	background: url(images/header.jpg) bottom center repeat-x #e5ac00;
-	color: #b30909;
+	background: url(images/header.jpg) bottom center repeat-x #ffbf00;
+	color: #000;
 }
 
-#tagline {
-	color: #000;
+#sitename {
+	color: #b31212;
 }
 
 
@@ -51,7 +51,7 @@ html {
  */
 
 #navbar {
-	background: #b30909;
+	background: #b31212;
 	color: #fff;
 	margin-bottom: 5px;
 }
@@ -59,8 +59,8 @@ html {
 #navbar_bottom {
 	height: 1px;
 	background: #fff;
-	border-top: solid 10px #ffd966;
-	border-bottom: solid 4px #4d4736;
+	border-top: solid 10px #ffe14d;
+	border-bottom: solid 4px #403d30;
 }
 
 #navbar a {
@@ -68,7 +68,7 @@ html {
 }
 
 #navbar a:hover {
-	color: #fdb;
+	color: #ffffd9;
 }
 
 
@@ -77,7 +77,7 @@ html {
  */
 
 #footer {
-	background: #4d4736;
+	background: #403d30;
 	color: #fff;
 	border-top: solid 1px #666;
 	padding-top: 5px;
@@ -90,7 +90,7 @@ html {
 }
 
 #footer a:hover {
-	color: #fc9;
+	color: #ffd2a6;
 }
 
 
@@ -231,7 +231,7 @@ html {
 }
 
 #credits a:hover {
-	color: #fc9;
+	color: #ffd2a6;
 }
 
 
@@ -253,13 +253,7 @@ h2,
 }
 
 h1 {
-	color: #b30909;
-}
-
-.entry_date,
-.comment_date,
-.pings_date {
-	color: #444;
+	color: #b31212;
 }
 
 blockquote {
@@ -276,7 +270,7 @@ blockquote {
 
 .widget_title h2 {
 	padding-bottom: 1px;
-	border-bottom: solid 1px #bf7373;
+	border-bottom: solid 1px #b31212;
 }
 
 .sms .sidebar_top,
@@ -345,17 +339,26 @@ blockquote {
 .widget_calendar table {
 	border: solid 1px #666;
 	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22d;
+}
+
+.widget_calendar a:hover {
+	color: #b22;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #b30909;
-	color: #ffe;
+	background: #b31212;
+	color: #fff;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #ffecb2;
+	background: #ffffd9;
 }
 
 .widget_calendar tfoot a {
@@ -363,5 +366,5 @@ blockquote {
 }
 
 .widget_calendar tfoot a:hover {
-	color: #c22;
+	color: #b22;
 }

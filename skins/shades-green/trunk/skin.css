@@ -1,7 +1,7 @@
 /*
 Skin name: Shades, Green
 Skin uri: http://skins.semiologic.com/shades/
-Version: 1.0 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,7 +12,7 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #1a3300;
+	background: #132600;
 	color: #fff;
 }
 
@@ -63,7 +63,7 @@ a:hover {
  */
 
 #navbar {
-	background: #1a3300;
+	background: #132600;
 	border-top: solid 1px #666;
 	border-bottom: solid 1px #666;
 }
@@ -82,7 +82,7 @@ a:hover {
 }
 
 #footer_wrapper {
-	background: #1a3300;
+	background: #132600;
 }
 
 
@@ -301,7 +301,7 @@ a:hover {
  */
 
 #credits {
-	background: #1a3300;
+	background: #132600;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -360,7 +360,7 @@ blockquote {
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #1a3300;
+	background: #132600;
 }
 
 .widget_calendar tfoot {

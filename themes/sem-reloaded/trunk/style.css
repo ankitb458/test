@@ -229,16 +229,16 @@ ins, u {
 }
 
 a {
-	color: #22e;
+	color: #22d;
 }
 
 a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 a em {
 	font-style: normal;
-	color: #c22;
+	color: #b22;
 }
 
 .align_center {

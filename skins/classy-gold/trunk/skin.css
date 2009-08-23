@@ -1,7 +1,7 @@
 /*
-Skin name: Classy (Gold)
+Skin name: Classy, Gold
 Skin uri: http://skins.semiologic.com/classy/
-Version: 0.6 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,7 +12,7 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #f3edda;
+	background: #ffffd9;
 }
 
 .sem_admin_menu #wrapper {
@@ -61,7 +61,7 @@ html {
  */
 
 #sitename {
-	color: #c22;
+	color: #b31212;
 }
 
 
@@ -113,6 +113,17 @@ html {
 	margin-top: 5px;
 }
 
+#footer {
+	color: #000;
+}
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #b22;
+}
 
 /*
  * Header & Footer Boxes
@@ -259,7 +270,7 @@ html {
 }
 
 #main a {
-	color: #22e;
+	color: #22d;
 }
 
 #main .entry_header a {
@@ -267,11 +278,11 @@ html {
 }
 
 #main a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 #main a em {
-	color: #c22;
+	color: #b22;
 }
 
 #main_top,
@@ -371,7 +382,7 @@ h2,
 }
 
 h1 {
-	color: #c22;
+	color: #b31212;
 }
 
 .entry_date,
@@ -391,30 +402,69 @@ blockquote {
  * Sidebars
  */
 
+.sidebar {
+	color: #000;
+}
+
+.sidebar a {
+	color: #1d1dbf;
+}
+
+.sidebar a:hover {
+	color: #b22;
+}
+
 
 /*
  * Calendar
  */
 
+.sidebar .widget_calendar caption {
+	color: #000;
+}
+
+.sidebar .widget_calendar table {
+	border: solid 1px #333;
+} 
+
+.sidebar .widget_calendar thead {
+	border-bottom: solid 1px #333;
+}
+
+.sidebar .widget_calendar tfoot {
+	border-top: solid 1px #333;
+}
+
 .widget_calendar table {
 	border: solid 1px #666;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22d;
+}
+
+.widget_calendar a:hover {
+	color: #b22;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #c22;
+	background: #b31212;
 	color: #fff;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #ffe9a6;
+	background: #ffffd9;
 }
 
 .widget_calendar tfoot a {
-	color: #22e;
+	color: #000;
 }
 
 .widget_calendar tfoot a:hover {
-	color: #c22;
+	color: #b22;
 }
+

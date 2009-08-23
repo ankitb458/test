@@ -1,7 +1,7 @@
 /*
 Skin name: Shades, Brown
 Skin uri: http://skins.semiologic.com/shades/
-Version: 1.0 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,7 +12,7 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #261300;
+	background: #261200;
 	color: #fff;
 }
 
@@ -21,7 +21,7 @@ html {
 }
 
 body {
-	background: #331a00;
+	background: #402000;
 }
 
 .skin #wrapper,
@@ -50,7 +50,7 @@ a:hover {
  */
 
 #header_wrapper {
-	background: #331a00;
+	background: #402000;
 }
 
 #sitename {
@@ -63,7 +63,7 @@ a:hover {
  */
 
 #navbar {
-	background: #261300;
+	background: #261200;
 	border-top: solid 1px #666;
 	border-bottom: solid 1px #666;
 }
@@ -78,11 +78,11 @@ a:hover {
 	border-bottom: solid 1px #666;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	background: #331a00;
+	background: #402000;
 }
 
 #footer_wrapper {
-	background: #261300;
+	background: #261200;
 }
 
 
@@ -292,7 +292,7 @@ a:hover {
  */
 
 #body {
-	background: url(images/body.jpg) bottom center repeat-x #331a00;
+	background: url(images/body.jpg) bottom center repeat-x #402000;
 }
 
 
@@ -301,7 +301,7 @@ a:hover {
  */
 
 #credits {
-	background: #261300;
+	background: #261200;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -354,16 +354,16 @@ blockquote {
 
 .widget_calendar table {
 	border: solid 1px #666;
-	background: #331a00;
+	background: #402000;
 	color: #fff;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #261300;
+	background: #261200;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #4d2600;
+	background: #592d00;
 }

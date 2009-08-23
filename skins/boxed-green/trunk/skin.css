@@ -1,7 +1,7 @@
 /*
-Skin name: Boxed (Green)
+Skin name: Boxed, Green
 Skin uri: http://skins.semiologic.com/boxed/
-Version: 0.6 RC
+Version: 0.8 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,7 +12,7 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #ddd;
+	background: #fff;
 }
 
 .sem_admin_menu #wrapper {
@@ -25,7 +25,7 @@ html {
  */
 
 #sitename {
-	color: #224202;
+	color: #1a6600;
 }
 
 
@@ -35,7 +35,7 @@ html {
 
 #navbar {
 	line-height: 40px;
-	color: #eee;
+	color: #fff;
 }
 
 * html #s {
@@ -49,23 +49,23 @@ html {
 }
 
 #navbar a {
-	color: #ffe;
+	color: #fff;
 }
 
 #navbar a:hover {
-	color: #fc9;
+	color: #fff2cc;
 }
 
 .mmm #navbar {
-	background: url(images/mmm-navbar.jpg) top center repeat-y #224202;
+	background: url(images/mmm-navbar.jpg) top center repeat-y #1a6600;
 }
 
 .mm #navbar {
-	background: url(images/mm-navbar.jpg) top center repeat-y #224202;
+	background: url(images/mm-navbar.jpg) top center repeat-y #1a6600;
 }
 
 .m #navbar {
-	background: url(images/m-navbar.jpg) top center repeat-y #224202;
+	background: url(images/m-navbar.jpg) top center repeat-y #1a6600;
 }
 
 
@@ -78,7 +78,7 @@ html {
 }
 
 #footer a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 #footer_top,
@@ -87,7 +87,7 @@ html {
 }
 
 .mmm #footer {
-	background: url(images/mmm-footer.jpg) center repeat-y #83a362;
+	background: url(images/mmm-footer.jpg) center repeat-y #8fb6cc;
 }
 
 .mmm #footer_top {
@@ -99,7 +99,7 @@ html {
 }
 
 .mm #footer {
-	background: url(images/mm-footer.jpg) center repeat-y #83a362;
+	background: url(images/mm-footer.jpg) center repeat-y #8fb6cc;
 }
 
 .mm #footer_top {
@@ -111,7 +111,7 @@ html {
 }
 
 .m #footer {
-	background: url(images/m-footer.jpg) center repeat-y #83a362;
+	background: url(images/m-footer.jpg) center repeat-y #8fb6cc;
 }
 
 .m #footer_top {
@@ -337,7 +337,7 @@ h2,
 }
 
 h1 {
-	color: #224202;
+	color: #b31212;
 }
 
 .entry_date,
@@ -360,7 +360,7 @@ blockquote {
 .widget_title h2 {
 	margin-top: 0px;
 	margin-bottom: 0px;
-	color: #eee;
+	color: #fff;
 }
 
 .widget {
@@ -462,17 +462,19 @@ blockquote {
 
 .widget_calendar table {
 	border: solid 1px #666;
+	background: #fff;
+	color: #000;
 }
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #224202;
-	color: #eee;
+	background: #1a6600;
+	color: #fff;
 }
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #83a362;
+	background: #e2ffd9;
 }
 
 .widget_calendar tfoot a {
@@ -480,5 +482,5 @@ blockquote {
 }
 
 .widget_calendar tfoot a:hover {
-	color: #c22;
+	color: #b22;
 }

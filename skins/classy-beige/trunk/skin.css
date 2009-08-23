@@ -258,7 +258,7 @@ html {
 }
 
 #main a {
-	color: #22e;
+	color: #22d;
 }
 
 #main .entry_header a {
@@ -266,11 +266,11 @@ html {
 }
 
 #main a:hover {
-	color: #c22;
+	color: #b22;
 }
 
 #main a em {
-	color: #c22;
+	color: #b22;
 }
 
 #main_top,
