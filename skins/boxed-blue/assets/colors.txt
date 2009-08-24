@@ -1,6 +1,0 @@
-borders					0,0,40 (#666)
-navbar					210,90,70 (#1262b2)
-navbar:hover			30,35,100 (#ffd2a6)
-footer					210,15,95 (#cee0f2)
-widget title			210,90,70 (#1262b2)
-h1						0,85,80 (#cc1f1f)
