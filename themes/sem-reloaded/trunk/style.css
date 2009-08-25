@@ -766,3 +766,24 @@ div.scripts {
 .subscribe_me_ruler {
 	clear: both;
 }
+
+/* banner ad widgets */
+
+#header_wrapper .ad_unit,
+#footer_wrapper .ad_unit {
+	background: none;
+}
+
+#header_wrapper .ad_unit .header_widget_top,
+#header_wrapper .ad_unit .header_widget_bottom,
+#footer_wrapper .ad_unit .footer_widget_top,
+#footer_wrapper .ad_unit .footer_widget_bottom {
+	height: 0px;
+	background: none;
+}
+
+#header_wrapper .ad_unit .wrapper_item .pad,
+#footer_wrapper .ad_unit .wrapper_item .pad {
+	padding: 0px;
+}
+
