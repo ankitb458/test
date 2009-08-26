@@ -2413,17 +2413,6 @@ class sem_nav_menu extends WP_Widget {
 		
 		extract($instance, EXTR_SKIP);
 		
-		echo '<p>'
-			. '<label>'
-			. '<input type="checkbox"'
-				. ' name="' . $this->get_field_name('desc') . '"'
-				. checked($desc, true, false)
-				. ' />'
-			. '&nbsp;'
-			. __('Show Descriptions', 'sem-reloaded') . "\n"
-			. '</label>'
-			. '</p>' . "\n";
-		
 		echo '<div class="hide-if-no-js">' . "\n";
 		
 		echo '<h3>' . __('Menu Items', 'sem-reloaded') . '</h3>' . "\n";
