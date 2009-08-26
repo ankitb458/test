@@ -289,11 +289,11 @@ h2 {
 	font-weight: bold;
 }
 
-h3 {
+#main h3 {
 	font-size: 15px;
-	font-weight: bold;
 }
 
+h3,
 th,
 .entry_date,
 .comment_date,
