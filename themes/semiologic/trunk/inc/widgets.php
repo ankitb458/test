@@ -2341,19 +2341,6 @@ class sem_nav_menu extends WP_Widget {
 		
 		extract($instance, EXTR_SKIP);
 		
-		echo '<h3>' . __('Config', 'sem-theme') . '</h3>' . "\n";
-		
-		echo '<p>'
-			. '<label>'
-			. __('Title:', 'sem-theme') . '<br />' . "\n"
-			. '<input type="text" class="widefat"'
-				. ' id="' . $this->get_field_id('title') . '"'
-				. ' name="' . $this->get_field_name('title') . '"'
-				. ' value="' . esc_attr($title) . '"'
-				. ' />'
-			. '</label>'
-			. '</p>' . "\n";
-		
 		echo '<p>'
 			. '<label>'
 			. '<input type="checkbox"'
