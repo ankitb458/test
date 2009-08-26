@@ -3042,7 +3042,7 @@ class footer extends sem_nav_menu {
 		$year = date('Y');
 		$site_name = strip_tags(get_option('blogname'));
 		
-		$copyright = sprintf($copyright, $site_name, $year);
+		$copyright = sprintf($copyright, $year, $site_name);
 		
 		if ( $copyright ) {
 			echo '<div id="copyright_notice">';
