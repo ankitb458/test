@@ -715,7 +715,7 @@ if (isset($_GET['jal_nojs'])) {
 
     $x = (strstr($_SERVER['HTTP_REFERER'], '?')) ? "&" : "?";
 
-    header("location: ".$_SERVER['HTTP_REFERER'].$x."jal_no_js=true");
+    wp_redirect($_SERVER['HTTP_REFERER'].$x."jal_no_js=true");
 }
 
 // When the poll sends the vote
