@@ -2032,10 +2032,20 @@ class sem_nav_menu extends WP_Widget {
 		
 		if ( rtrim($url, '/') == rtrim(get_option('home')) )
 			return sem_nav_menu::display_home($item);
-		elseif ( sem_nav_menu::is_local_url($url) )
-			$classes = array('nav_branch');
-		else
+		
+		if ( !nav_menu::is_local_url($url) ) {
 			$classes = array('nav_url');
+		} else {
+			$bits = parse_url($url);
+			if ( !empty($bits['query']) )
+				$classes = array('nav_leaf');
+			elseif ( empty($bits['path']) || substr($bits['path'], -1) == '/' )
+				$classes = array('nav_branch');
+			elseif ( strpos(basename($bits['path']), '.') !== false )
+				$classes = array('nav_leaf');
+			else
+				$classes = array('nav_branch');
+		}
 		
 		$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
 			. $label
