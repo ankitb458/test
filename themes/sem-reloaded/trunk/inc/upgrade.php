@@ -417,7 +417,7 @@ function upgrade_sem_6_0() {
 		if ( isset($sem_options['show_credits']) && !$sem_options['show_credits'] )
 			$sem_options['credits'] = '';
 		else
-			$sem_options['credits'] = __('Made with %1$s &bull; %2$s skin by %3$s', 'sem-theme');
+			$sem_options['credits'] = __('Made with %1$s &bull; %2$s skin by %3$s', 'sem-reloaded');
 	} else {
 		$sem_options['credits'] = str_replace(
 			array('%semiologic%', '%skin_name%', '%skin_author%'),
