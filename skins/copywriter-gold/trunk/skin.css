@@ -37,7 +37,7 @@ html {
  */
 
 #header {
-	background: url(images/header.jpg) bottom center repeat-x #ffbf00;
+	background: url(images/header.jpg) bottom center repeat-x #ffcc33;
 	color: #000;
 }
 
@@ -59,7 +59,7 @@ html {
 #navbar_bottom {
 	height: 1px;
 	background: #fff;
-	border-top: solid 10px #ffe14d;
+	border-top: solid 10px #ffe97f;
 	border-bottom: solid 4px #403d30;
 }
 
