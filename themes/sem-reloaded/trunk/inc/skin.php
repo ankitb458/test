@@ -400,9 +400,24 @@ EOS;
 			
 			$skins[$skin] = sem_template::get_skin_data($skin);
 		}
-
+		
+		uasort($skins, array('sem_skin', 'sort'));
+		
 		return $skins;		
 	} # get_skins()
+	
+	
+	/**
+	 * sort()
+	 *
+	 * @param array $a
+	 * @param array $b
+	 * @return int
+	 **/
+
+	function sort($a, $b) {
+		return strnatcasecmp($a['name'], $b['name']);
+	} # sort()
 	
 	
 	/**
