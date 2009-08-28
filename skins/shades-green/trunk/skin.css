@@ -21,7 +21,7 @@ html {
 }
 
 body {
-	background: #204000;
+	background: #2d5900;
 }
 
 .skin #wrapper,
@@ -50,7 +50,7 @@ a:hover {
  */
 
 #header_wrapper {
-	background: #204000;
+	background: #2d5900;
 }
 
 #sitename {
@@ -78,7 +78,7 @@ a:hover {
 	border-bottom: solid 1px #666;
 	padding-top: 5px;
 	padding-bottom: 5px;
-	background: #204000;
+	background: #2d5900;
 }
 
 #footer_wrapper {
@@ -292,7 +292,7 @@ a:hover {
  */
 
 #body {
-	background: url(images/body.jpg) bottom center repeat-x #204000;
+	background: url(images/body.jpg) bottom center repeat-x #2d5900;
 }
 
 
@@ -354,7 +354,7 @@ blockquote {
 
 .widget_calendar table {
 	border: solid 1px #666;
-	background: #204000;
+	background: #2d5900;
 	color: #fff;
 }
 
