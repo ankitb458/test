@@ -72,7 +72,7 @@ html {
 }
 
 #sitename {
-	color: #1262b2;
+	color: #0059b3;
 }
 
 
@@ -309,7 +309,7 @@ blockquote {
 
 .widget_title h2 {
 	padding-bottom: 1px;
-	border-bottom: solid 1px #1262b2;
+	border-bottom: solid 1px #0059b3;
 }
 
 
@@ -339,7 +339,7 @@ blockquote {
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #cee0f2;
+	background: #fff2cc;
 }
 
 .widget_calendar tfoot a {

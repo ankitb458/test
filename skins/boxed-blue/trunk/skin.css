@@ -87,7 +87,7 @@ html {
 }
 
 .mmm #footer {
-	background: url(images/mmm-footer.jpg) center repeat-y #8fb6cc;
+	background: url(images/mmm-footer.jpg) center repeat-y #fff2cc;
 }
 
 .mmm #footer_top {
@@ -99,7 +99,7 @@ html {
 }
 
 .mm #footer {
-	background: url(images/mm-footer.jpg) center repeat-y #8fb6cc;
+	background: url(images/mm-footer.jpg) center repeat-y #fff2cc;
 }
 
 .mm #footer_top {
@@ -111,7 +111,7 @@ html {
 }
 
 .m #footer {
-	background: url(images/m-footer.jpg) center repeat-y #8fb6cc;
+	background: url(images/m-footer.jpg) center repeat-y #fff2cc;
 }
 
 .m #footer_top {
@@ -474,7 +474,7 @@ blockquote {
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #cee0f2;
+	background: #fff2cc;
 }
 
 .widget_calendar tfoot a {
