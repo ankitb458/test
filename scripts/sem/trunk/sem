@@ -17,7 +17,7 @@ if [[ "$HOME" == "/Users/denis" ]]; then
 else
 	readonly debug=0
 	readonly svn_root=https://svn.semiologic.com
-	readonly dbs=semiologic
+	readonly dbn=semiologic
 fi
 
 
@@ -407,10 +407,12 @@ function sem_pub() {
 	
 	local path=$zip
 	local file=${zip##*/}
+	local assets
 	
 	touch $hash.readme
 	
 	if [[ "$zip" != '' ]]; then
+		eval "`sem_info $*`"
 		if [[ $debug -ne 0 ]]; then
 			path=~/Desktop/media
 		else
@@ -437,17 +439,34 @@ function sem_pub() {
 		rm -Rf $package || return 1
 		
 		if [[ ! -f $path/$file || `diff -q $file $path/$file &> /dev/null` ]]; then
-			echo "Publishing $file"
+			echo "Publishing $file v.$version"
 			
 			mkdir -p $path \
 			&& mv $file $path/$file \
 			&& updated=1 \
 			|| return 1
 		fi
+		
+		if [[ "$type" = 'skins' ]]; then
+			svn $v export $svn_root/$type/$package/assets $package-assets \
+			&& zip $v -r $package-assets.zip $package-assets || return 1
+			
+			cp $package-assets/screenshot.jpg $package-screenshot.jpg || return 1
+			
+			rm -Rf $package-assets || return 1
+			
+			mkdir -p $path || return 1
+			
+			for file in $package-assets.zip $package-screenshot.jpg; do
+				if [[ ! -f $path/$file || `diff -q $file $path/$file &> /dev/null` ]]; then
+					echo "Publishing $file v.$version"
+					mv $file $path/$file || return 1
+				fi
+			done
+		fi
 	fi
 	
 	if [[ $updated -ne 0 && "$zip" != '' ]]; then
-		eval "`sem_info $*`"
 		local stable_zip=$zip
 		local bleeding_zip=${zip%.zip}-dev.zip
 		
@@ -582,6 +601,14 @@ SQL
 			if [[ $? -ne 0 ]]; then
 				return 1
 			fi
+			
+			if [[ "$method" = 'bleeding' ]]; then
+				sem_pub stable $* || return 1
+			fi			
+		fi
+		
+		if [[ "$method" = 'stable' ]]; then
+			sem_pub bleeding $* || return 1
 		fi
 	fi
 	
