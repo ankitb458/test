@@ -1,0 +1,431 @@
+/*
+Skin name: Light, Silver
+Skin uri: http://skins.semiologic.com/mc/light/
+Version: 0.8
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+html {
+	background: #fff;
+}
+
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
+
+/*
+ * Header
+ */
+
+#sitename {
+	color: #000;
+}
+
+
+/*
+ * Navbar
+ */
+
+#navbar {
+	line-height: 40px;
+	color: #fff;
+}
+
+* html #s {
+	margin: 8px 0px 6px;
+	vertical-align: center;
+}
+
+* html #go {
+	margin: 8px 0px 4px;
+	vertical-align: center;
+}
+
+#navbar a {
+	color: #fff;
+}
+
+#navbar a:hover {
+	color: #ffffd9;
+}
+
+.mmm #navbar {
+	background: url(images/mmm-navbar.jpg) top center repeat-y #666;
+}
+
+.mm #navbar {
+	background: url(images/mm-navbar.jpg) top center repeat-y #666;
+}
+
+.m #navbar {
+	background: url(images/m-navbar.jpg) top center repeat-y #666;
+}
+
+
+/*
+ * Footer
+ */
+
+#footer {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+
+/*
+ * Header & Footer Boxes
+ */
+
+#header_boxes_top,
+#header_boxes_bottom,
+#footer_boxes_top,
+#footer_boxes_bottom {
+	height: 10px;
+}
+
+.mmm #header_boxes,
+.mmm #footer_boxes {
+	background: url(images/mmm-inline_boxes.jpg) center repeat-y;
+}
+
+.mmm #header_boxes_top,
+.mmm #footer_boxes_top {
+	background: url(images/mmm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom,
+.mmm #footer_boxes_bottom {
+	background: url(images/mmm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mmm #header_boxes_bg,
+.mmm #footer_boxes_bg {
+	background: url(images/mmm-inline_boxes_bg.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes,
+.mm #footer_boxes {
+	background: url(images/mm-inline_boxes.jpg) center repeat-y;
+}
+
+.mm #header_boxes_top,
+.mm #footer_boxes_top {
+	background: url(images/mm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom,
+.mm #footer_boxes_bottom {
+	background: url(images/mm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #header_boxes_bg,
+.mm #footer_boxes_bg {
+	background: url(images/mm-inline_boxes_bg.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes,
+.m #footer_boxes {
+	background: url(images/m-inline_boxes.jpg) center repeat-y;
+}
+
+.m #header_boxes_top,
+.m #footer_boxes_top {
+	background: url(images/m-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom,
+.m #footer_boxes_bottom {
+	background: url(images/m-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #header_boxes_bg,
+.m #footer_boxes_bg {
+	background: url(images/m-inline_boxes_bg.jpg) bottom center no-repeat;
+}
+
+
+/*
+ * Header & Footer Widgets
+ */
+
+.header_widget_top,
+.header_widget_bottom,
+.footer_widget_top,
+.footer_widget_bottom {
+	height: 10px;
+}
+
+.mmm .header_widget,
+.mmm .footer_widget {
+	background: url(images/mmm-body.jpg) center repeat-y;
+}
+
+.mmm .header_widget_top,
+.mmm .footer_widget_top {
+	background: url(images/mmm-body_top.jpg) bottom center no-repeat;
+}
+
+.mmm .header_widget_bottom,
+.mmm .footer_widget_bottom {
+	background: url(images/mmm-body_bottom.jpg) top center no-repeat;
+}
+
+.mm .header_widget,
+.mm .footer_widget {
+	background: url(images/mm-body.jpg) center repeat-y;
+}
+
+.mm .header_widget_top,
+.mm .footer_widget_top {
+	background: url(images/mm-body_top.jpg) bottom center no-repeat;
+}
+
+.mm .header_widget_bottom,
+.mm .footer_widget_bottom {
+	background: url(images/mm-body_bottom.jpg) top center no-repeat;
+}
+
+.m .header_widget,
+.m .footer_widget {
+	background: url(images/m-body.jpg) center repeat-y;
+}
+
+.m .header_widget_top,
+.m .footer_widget_top {
+	background: url(images/m-body_top.jpg) bottom center no-repeat;
+}
+
+.m .header_widget_bottom,
+.m .footer_widget_bottom {
+	background: url(images/m-body_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Body
+ */
+
+#body_top,
+#body_bottom {
+	height: 10px;
+}
+
+.mmm #body {
+	background: url(images/mmm-body.jpg) center repeat-y;
+}
+
+.mmm #body_top {
+	background: url(images/mmm-body_top.jpg) bottom center no-repeat;
+}
+
+.mmm #body_bottom {
+	background: url(images/mmm-body_bottom.jpg) top center no-repeat;
+}
+
+.mts #body {
+	background: url(images/mts-body.jpg) center repeat-y;
+}
+
+.mts #body_top {
+	background: url(images/mts-body_top.jpg) bottom center no-repeat;
+}
+
+.mts #body_bottom {
+	background: url(images/mts-body_bottom.jpg) top center no-repeat;
+}
+
+.sms #body {
+	background: url(images/sms-body.jpg) center repeat-y;
+}
+
+.sms #body_top {
+	background: url(images/sms-body_top.jpg) bottom center no-repeat;
+}
+
+.sms #body_bottom {
+	background: url(images/sms-body_bottom.jpg) top center no-repeat;
+}
+
+.tsm #body {
+	background: url(images/tsm-body.jpg) center repeat-y;
+}
+
+.tsm #body_top {
+	background: url(images/tsm-body_top.jpg) bottom center no-repeat;
+}
+
+.tsm #body_bottom {
+	background: url(images/tsm-body_bottom.jpg) top center no-repeat;
+}
+
+.mms #body {
+	background: url(images/mms-body.jpg) center repeat-y;
+}
+
+.mms #body_top {
+	background: url(images/mms-body_top.jpg) bottom center no-repeat;
+}
+
+.mms #body_bottom {
+	background: url(images/mms-body_bottom.jpg) top center no-repeat;
+}
+
+.smm #body {
+	background: url(images/smm-body.jpg) center repeat-y;
+}
+
+.smm #body_top {
+	background: url(images/smm-body_top.jpg) bottom center no-repeat;
+}
+
+.smm #body_bottom {
+	background: url(images/smm-body_bottom.jpg) top center no-repeat;
+}
+
+.mm #body {
+	background: url(images/mm-body.jpg) center repeat-y;
+}
+
+.mm #body_top {
+	background: url(images/mm-body_top.jpg) bottom center no-repeat;
+}
+
+.mm #body_bottom {
+	background: url(images/mm-body_bottom.jpg) top center no-repeat;
+}
+
+.ms #body {
+	background: url(images/ms-body.jpg) center repeat-y;
+}
+
+.ms #body_top {
+	background: url(images/ms-body_top.jpg) bottom center no-repeat;
+}
+
+.ms #body_bottom {
+	background: url(images/ms-body_bottom.jpg) top center no-repeat;
+}
+
+.sm #body {
+	background: url(images/sm-body.jpg) center repeat-y;
+}
+
+.sm #body_top {
+	background: url(images/sm-body_top.jpg) bottom center no-repeat;
+}
+
+.sm #body_bottom {
+	background: url(images/sm-body_bottom.jpg) top center no-repeat;
+}
+
+.m #body {
+	background: url(images/m-body.jpg) center repeat-y;
+}
+
+.m #body_top {
+	background: url(images/m-body_top.jpg) bottom center no-repeat;
+}
+
+.m #body_bottom {
+	background: url(images/m-body_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Credits
+ */
+
+#credits {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-top: solid 1px #b4b4b4;
+}
+
+
+/*
+ * Content
+ */
+
+h1 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+h2,
+.widget_calendar caption {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 18px;
+}
+
+h1 {
+	color: #b31212;
+}
+
+.entry_date,
+.comment_date,
+.pings_date {
+}
+
+blockquote {
+	background: url(../../icons/blockquote.gif) top left no-repeat;
+	padding: 5px 10px 5px 50px;
+	margin-left: 0px;
+	min-height: 50px;
+}
+
+
+/*
+ * Sidebars
+ */
+
+.widget_title h2 {
+	padding-bottom: 1px;
+	border-bottom: solid 1px #666;
+}
+
+
+/*
+ * Calendar
+ */
+
+.widget_calendar table {
+	border: solid 1px #666;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22d;
+}
+
+.widget_calendar a:hover {
+	color: #b22;
+}
+
+.widget_calendar thead {
+	border-bottom: solid 1px #666;
+	background: #666;
+	color: #fff;
+}
+
+.widget_calendar tfoot {
+	border-top: solid 1px #666;
+	background: #ddd;
+}
+
+.widget_calendar tfoot a {
+	color: #000;
+}
+
+.widget_calendar tfoot a:hover {
+	color: #b22;
+}
