@@ -1,0 +1,470 @@
+/*
+Skin name: Classy, Gold
+Skin uri: http://skins.semiologic.com/mc/classy/
+Version: 0.8
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+html {
+	background: #ffffd9;
+}
+
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
+.skin #navbar {
+	width: 100%;
+}
+
+#wrapper {
+	margin-bottom: 10px;
+}
+
+#wrapper_bottom {
+	height: 15px;
+}
+
+.mmm #wrapper {
+	background: url(images/mmm-wrapper.jpg) center repeat-y;
+}
+
+.mmm #wrapper_bottom {
+	background: url(images/mmm-wrapper_bottom.jpg) top center no-repeat;
+}
+
+.mm #wrapper {
+	background: url(images/mm-wrapper.jpg) center repeat-y;
+}
+
+.mm #wrapper_bottom {
+	background: url(images/mm-wrapper_bottom.jpg) top center no-repeat;
+}
+
+.m #wrapper {
+	background: url(images/m-wrapper.jpg) center repeat-y;
+}
+
+.m #wrapper_bottom {
+	background: url(images/m-wrapper_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header
+ */
+
+#sitename {
+	color: #b31212;
+}
+
+
+/*
+ * Navbar
+ */
+
+#navbar {
+	line-height: 40px;
+	color: #fff;
+}
+
+* html #s {
+	margin: 8px 0px 6px;
+	vertical-align: center;
+}
+
+* html #go {
+	margin: 8px 0px 4px;
+	vertical-align: center;
+}
+
+#navbar a {
+	color: #fff;
+}
+
+#navbar a:hover {
+	color: #fc9;
+}
+
+.mmm #navbar {
+	background: url(images/mmm-navbar.jpg) top center repeat;
+}
+
+.mm #navbar {
+	background: url(images/mm-navbar.jpg) top center repeat;
+}
+
+.m #navbar {
+	background: url(images/m-navbar.jpg) top center repeat;
+}
+
+
+/*
+ * Footer
+ */
+
+#footer {
+	margin-top: 5px;
+}
+
+#footer {
+	color: #000;
+}
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #b22;
+}
+
+/*
+ * Header & Footer Boxes
+ */
+
+.mmm #header_boxes .wrapper_item,
+.mmm #footer_boxes .wrapper_item {
+	width: 940px;
+}
+
+.mm #header_boxes .wrapper_item,
+.mm #footer_boxes .wrapper_item {
+	width: 740px;
+}
+
+.m #header_boxes .wrapper_item,
+.m #footer_boxes .wrapper_item {
+	width: 610px;
+}
+
+#header_boxes_top,
+#header_boxes_bottom,
+#footer_boxes_top,
+#footer_boxes_bottom {
+	height: 15px;
+}
+
+.mmm #header_boxes,
+.mmm #footer_boxes {
+	background: url(images/mmm-inline_boxes.jpg) center repeat-y;
+}
+
+.mmm #header_boxes_top,
+.mmm #footer_boxes_top {
+	background: url(images/mmm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom,
+.mmm #footer_boxes_bottom {
+	background: url(images/mmm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #header_boxes,
+.mm #footer_boxes {
+	background: url(images/mm-inline_boxes.jpg) center repeat-y;
+}
+
+.mm #header_boxes_top,
+.mm #footer_boxes_top {
+	background: url(images/mm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom,
+.mm #footer_boxes_bottom {
+	background: url(images/mm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #header_boxes,
+.m #footer_boxes {
+	background: url(images/m-inline_boxes.jpg) center repeat-y;
+}
+
+.m #header_boxes_top,
+.m #footer_boxes_top {
+	background: url(images/m-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom,
+.m #footer_boxes_bottom {
+	background: url(images/m-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header & Footer Widgets
+ */
+
+.header_widget .pad,
+.footer_widget .pad {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.header_widget_top,
+.header_widget_bottom,
+.footer_widget_top,
+.footer_widget_bottom {
+	height: 15px;
+}
+
+.mmm .header_widget,
+.mmm .footer_widget {
+	background: url(images/mmm-wrapper_widget.jpg) center repeat-y;
+}
+
+.mmm .header_widget_top,
+.mmm .footer_widget_top {
+	background: url(images/mmm-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.mmm .header_widget_bottom,
+.mmm .footer_widget_bottom {
+	background: url(images/mmm-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+.mm .header_widget,
+.mm .footer_widget {
+	background: url(images/mm-wrapper_widget.jpg) center repeat-y;
+}
+
+.mm .header_widget_top,
+.mm .footer_widget_top {
+	background: url(images/mm-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.mm .header_widget_bottom,
+.mm .footer_widget_bottom {
+	background: url(images/mm-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+.m .header_widget,
+.m .footer_widget {
+	background: url(images/m-wrapper_widget.jpg) center repeat-y;
+}
+
+.m .header_widget_top,
+.m .footer_widget_top {
+	background: url(images/m-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.m .header_widget_bottom,
+.m .footer_widget_bottom {
+	background: url(images/m-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Body
+ */
+
+#main {
+	background: #fff;
+	color: #000;
+}
+
+#main a {
+	color: #22d;
+}
+
+#main .entry_header a {
+	color: inherit;
+}
+
+#main a:hover {
+	color: #b22;
+}
+
+#main a em {
+	color: #b22;
+}
+
+#main_top,
+#main_bottom {
+	height: 15px;
+}
+
+.mmm #main {
+	background: url(images/mmm-main.jpg) center repeat-y #fff;
+}
+
+.mmm #main_top {
+	background: url(images/mmm-main_top.jpg) bottom center no-repeat;
+}
+
+.mmm #main_bottom {
+	background: url(images/mmm-main_bottom.jpg) top center no-repeat;
+}
+
+.mm #main {
+	background: url(images/mm-main.jpg) center repeat-y #fff;
+}
+
+.mm #main_top {
+	background: url(images/mm-main_top.jpg) bottom center no-repeat;
+}
+
+.mm #main_bottom {
+	background: url(images/mm-main_bottom.jpg) top center no-repeat;
+}
+
+.mm1s #main {
+	background: url(images/mm1s-main.jpg) center repeat-y #fff;
+}
+
+.mm1s #main_top {
+	background: url(images/mm1s-main_top.jpg) bottom center no-repeat;
+}
+
+.mm1s #main_bottom {
+	background: url(images/mm1s-main_bottom.jpg) top center no-repeat;
+}
+
+.m2s #main,
+.m1s #main {
+	background: url(images/main.jpg) center repeat-y #fff;
+}
+
+.m2s #main_top,
+.m1s #main_top {
+	background: url(images/main_top.jpg) bottom center no-repeat;
+}
+
+.m2s #main_bottom,
+.m1s #main_bottom {
+	background: url(images/main_bottom.jpg) top center no-repeat;
+}
+
+.m #main {
+	background: url(images/m-main.jpg) center repeat-y #fff;
+}
+
+.m #main_top {
+	background: url(images/m-main_top.jpg) bottom center no-repeat;
+}
+
+.m #main_bottom {
+	background: url(images/m-main_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Credits
+ */
+
+#credits {
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+
+/*
+ * Content
+ */
+
+h1 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+h2,
+.widget_calendar caption {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 18px;
+}
+
+h1 {
+	color: #b31212;
+}
+
+.entry_date,
+.comment_date,
+.pings_date {
+}
+
+blockquote {
+	background: url(../../icons/blockquote.gif) top left no-repeat;
+	padding: 5px 10px 5px 50px;
+	margin-left: 0px;
+	min-height: 50px;
+}
+
+
+/*
+ * Sidebars
+ */
+
+.sidebar {
+	color: #000;
+}
+
+.sidebar a {
+	color: #1d1dbf;
+}
+
+.sidebar a:hover {
+	color: #b22;
+}
+
+
+/*
+ * Calendar
+ */
+
+.sidebar .widget_calendar caption {
+	color: #000;
+}
+
+.sidebar .widget_calendar table {
+	border: solid 1px #333;
+} 
+
+.sidebar .widget_calendar thead {
+	border-bottom: solid 1px #333;
+}
+
+.sidebar .widget_calendar tfoot {
+	border-top: solid 1px #333;
+}
+
+.widget_calendar table {
+	border: solid 1px #666;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22d;
+}
+
+.widget_calendar a:hover {
+	color: #b22;
+}
+
+.widget_calendar thead {
+	border-bottom: solid 1px #666;
+	background: #b31212;
+	color: #fff;
+}
+
+.widget_calendar tfoot {
+	border-top: solid 1px #666;
+	background: #ffffd9;
+}
+
+.widget_calendar tfoot a {
+	color: #000;
+}
+
+.widget_calendar tfoot a:hover {
+	color: #b22;
+}
+
