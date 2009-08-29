@@ -1,0 +1,454 @@
+/*
+Skin name: Kubrick, Red
+Skin uri: http://skins.semiologic.com/mc/kubrick/
+Version: 0.8
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+html {
+	background: #ddd;
+}
+
+#wrapper {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#wrapper_top,
+#wrapper_bottom {
+	height: 10px;
+}
+
+.mmm #wrapper {
+	background: url(images/mmm-wrapper.jpg) center repeat-y #fff;
+}
+
+.mmm #wrapper_top {
+	background: url(images/mmm-wrapper_top.jpg) bottom center no-repeat;
+}
+
+.mmm #wrapper_bottom {
+	background: url(images/mmm-wrapper_bottom.jpg) top center no-repeat;
+}
+
+.mm #wrapper {
+	background: url(images/mm-wrapper.jpg) center repeat-y #fff;
+}
+
+.mm #wrapper_top {
+	background: url(images/mm-wrapper_top.jpg) bottom center no-repeat;
+}
+
+.mm #wrapper_bottom {
+	background: url(images/mm-wrapper_bottom.jpg) top center no-repeat;
+}
+
+.m #wrapper {
+	background: url(images/m-wrapper.jpg) center repeat-y #fff;
+}
+
+.m #wrapper_top {
+	background: url(images/m-wrapper_top.jpg) bottom center no-repeat;
+}
+
+.m #wrapper_bottom {
+	background: url(images/m-wrapper_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header
+ */
+
+#header_img {
+	margin: 5px 10px;
+	color: #fff;
+}
+
+.mmm #header_img {
+	background: url(images/mmm-header.jpg) center no-repeat #b31212;
+}
+
+.mm #header_img {
+	background: url(images/mm-header.jpg) center no-repeat #b31212;
+}
+
+.m #header_img {
+	background: url(images/m-header.jpg) center no-repeat #b31212;
+}
+
+#tagline {
+	color: #ffd9d9;
+}
+
+#sitename {
+	padding-top: 20px;
+	padding-bottom: 38px;
+}
+
+#tagline {
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+
+.invert_header #sitename {
+	padding-top: 49px;
+	padding-bottom: 1px;
+}
+
+.invert_header #tagline {
+	padding-top: 1px;
+	padding-bottom: 32px;
+}
+
+
+/*
+ * Navbar
+ */
+
+#navbar {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+
+/*
+ * Footer
+ */
+
+.mmm #footer_wrapper {
+	background: url(images/mmm-footer.jpg) center repeat-y;
+}
+
+.mm #footer_wrapper {
+	background: url(images/mm-footer.jpg) center repeat-y;
+}
+
+.m #footer_wrapper {
+	background: url(images/m-footer.jpg) center repeat-y;
+}
+
+
+/*
+ * Header Boxes
+ */
+
+.mmm #header_boxes .wrapper_item {
+	width: 940px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.mm #header_boxes .wrapper_item {
+	width: 740px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.m #header_boxes .wrapper_item {
+	width: 610px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+#header_boxes_top,
+#header_boxes_bottom {
+	height: 10px;
+}
+
+.mmm #header_boxes {
+	background: url(images/mmm-header_boxes.jpg) center repeat-y;
+}
+
+.mmm #header_boxes_top {
+	background: url(images/mmm-header_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom {
+	background: url(images/mmm-header_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #header_boxes {
+	background: url(images/mm-header_boxes.jpg) center repeat-y;
+}
+
+.mm #header_boxes_top {
+	background: url(images/mm-header_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom {
+	background: url(images/mm-header_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #header_boxes {
+	background: url(images/m-header_boxes.jpg) center repeat-y;
+}
+
+.m #header_boxes_top {
+	background: url(images/m-header_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom {
+	background: url(images/m-header_boxes_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Footer Boxes
+ */
+
+.mmm #footer_boxes .wrapper_item {
+	width: 940px;
+}
+
+.mm #footer_boxes .wrapper_item {
+	width: 740px;
+}
+
+.m #footer_boxes .wrapper_item {
+	width: 610px;
+}
+
+#footer_boxes_top,
+#footer_boxes_bottom {
+	height: 10px;
+}
+
+.mmm #footer_boxes {
+	background: url(images/mmm-footer_boxes.jpg) center repeat-y;
+}
+
+.mmm #footer_boxes_top {
+	background: url(images/mmm-footer_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #footer_boxes_bottom {
+	background: url(images/mmm-footer_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #footer_boxes {
+	background: url(images/mm-footer_boxes.jpg) center repeat-y;
+}
+
+.mm #footer_boxes_top {
+	background: url(images/mm-footer_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #footer_boxes_bottom {
+	background: url(images/mm-footer_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #footer_boxes {
+	background: url(images/m-footer_boxes.jpg) center repeat-y;
+}
+
+.m #footer_boxes_top {
+	background: url(images/m-footer_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #footer_boxes_bottom {
+	background: url(images/m-footer_boxes_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header Widgets
+ */
+
+.header_widget .pad {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.header_widget_top,
+.header_widget_bottom {
+	height: 10px;
+}
+
+.mmm .header_widget {
+	background: url(images/mmm-header_widget.jpg) center repeat-y;
+}
+
+.mmm .header_widget_top {
+	background: url(images/mmm-header_widget_top.jpg) bottom center no-repeat;
+}
+
+.mmm .header_widget_bottom {
+	background: url(images/mmm-header_widget_bottom.jpg) top center no-repeat;
+}
+
+.mm .header_widget {
+	background: url(images/mm-header_widget.jpg) center repeat-y;
+}
+
+.mm .header_widget_top {
+	background: url(images/mm-header_widget_top.jpg) bottom center no-repeat;
+}
+
+.mm .header_widget_bottom {
+	background: url(images/mm-header_widget_bottom.jpg) top center no-repeat;
+}
+
+.m .header_widget {
+	background: url(images/m-header_widget.jpg) center repeat-y;
+}
+
+.m .header_widget_top {
+	background: url(images/m-header_widget_top.jpg) bottom center no-repeat;
+}
+
+.m .header_widget_bottom {
+	background: url(images/m-header_widget_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Footer Widgets
+ */
+
+.footer_widget .pad {
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.footer_widget_top,
+.footer_widget_bottom {
+	height: 10px;
+}
+
+.mmm .footer_widget {
+	background: url(images/mmm-footer_widget.jpg) center repeat-y;
+}
+
+.mmm .footer_widget_top {
+	background: url(images/mmm-footer_widget_top.jpg) bottom center no-repeat;
+}
+
+.mmm .footer_widget_bottom {
+	background: url(images/mmm-footer_widget_bottom.jpg) top center no-repeat;
+}
+
+.mm .footer_widget {
+	background: url(images/mm-footer_widget.jpg) center repeat-y;
+}
+
+.mm .footer_widget_top {
+	background: url(images/mm-footer_widget_top.jpg) bottom center no-repeat;
+}
+
+.mm .footer_widget_bottom {
+	background: url(images/mm-footer_widget_bottom.jpg) top center no-repeat;
+}
+
+.m .footer_widget {
+	background: url(images/m-footer_widget.jpg) center repeat-y;
+}
+
+.m .footer_widget_top {
+	background: url(images/m-footer_widget_top.jpg) bottom center no-repeat;
+}
+
+.m .footer_widget_bottom {
+	background: url(images/m-footer_widget_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Body
+ */
+
+#body {
+	background: url(images/body.jpg) bottom center repeat-x;
+}
+
+
+/*
+ * Credits
+ */
+
+#credits {
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+/*
+ * Content
+ */
+
+h1 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+h2,
+.widget_calendar caption {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 18px;
+}
+
+h1 {
+	color: #b31212;
+}
+
+blockquote {
+	background: url(../../icons/blockquote.gif) top left no-repeat;
+	padding: 5px 10px 5px 50px;
+	margin-left: 0px;
+	min-height: 50px;
+}
+
+
+/*
+ * Sidebars
+ */
+
+.widget_title h2 {
+	padding-bottom: 1px;
+	border-bottom: solid 1px #b31212;
+}
+
+
+/*
+ * Calendar
+ */
+
+.widget_calendar table {
+	border: solid 1px #666;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar a {
+	color: #22d;
+}
+
+.widget_calendar a:hover {
+	color: #b22;
+}
+
+.widget_calendar thead {
+	border-bottom: solid 1px #666;
+	background: #b31212;
+	color: #fff;
+}
+
+.widget_calendar tfoot {
+	border-top: solid 1px #666;
+	background: #ffd9d9;
+}
+
+.widget_calendar tfoot a {
+	color: #000;
+}
+
+.widget_calendar tfoot a:hover {
+	color: #b22;
+}
