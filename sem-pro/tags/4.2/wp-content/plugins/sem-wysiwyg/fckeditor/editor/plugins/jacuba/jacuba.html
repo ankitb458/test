@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>Jacuba Spell Checker</title>
+
+<script type="text/javascript" src="http://www.jacuba.com/service/checker/-/-/">
+	/* The script is not deferred b/c the TinyMCE integration below will fail in IE if
+	   the script isn't already loaded. */
+</script>
+<script type="text/javascript">
+	// Detect the Browser
+	var ie4 = (document.all) ? 1:0;
+	var gecko=(navigator.userAgent.indexOf('Gecko') > -1) ? 1:0;
+	var sf=(navigator.userAgent.indexOf('Safari') > -1) ? 1:0;
+	if (sf) {ie4 = 0;gecko = 1;	}
+	
+	// A global for the reset
+	var spellingContent = "";
+	var firstEscaped = false;
+
+	// Retrieve the post content, then load jacuba
+	function lockandload() {
+		// Retrieve the post content
+		if (ie4) { spellingContent = parent.opener.FCK.GetXHTML(true); }
+		if (gecko) { spellingContent = top.opener.FCK.GetXHTML(true); }
+
+		document.getElementById("spellcontent").value = spellingContent;
+			
+		// Load jacuba
+		if (window.Jacuba) Jacuba.applyTo('id: spellcontent');
+	}
+	
+	function resetContent() {
+		document.getElementById("spellcontent").value = spellingContent;
+	}
+	
+	// Send data back to the post editor and close this window
+	function finish() {
+		var spellChecked = document.getElementById("spellcontent").value;
+		
+		if (ie4) { 
+			opener.FCK.SetHTML( spellChecked );
+		}
+		if (gecko) {
+			top.opener.FCK.SetHTML( spellChecked );
+		}
+		
+		// Leave, and never return!
+		window.close();
+	}
+	
+	// Because tags are our friends
+	window.Jacuba.escapeHTML = function(str) {
+		if(str==null){ return null; }
+		
+		var strReturn = str.replace(/</g,"&lt;");
+		strReturn = strReturn.replace(/>/g,"&gt;");
+	return strReturn;
+	}
+	
+	// Because the original function gets rid of the non-breaking spaces that we want to keep
+	window.Jacuba.unescapeHTML = function(str){
+		if(str==null){ return null; }
+		
+		var strReturn = str.replace(/&lt;/g,"<");
+		strReturn = strReturn.replace(/&gt;/g,">");
+		strReturn = strReturn.replace(/&amp;lt;/g,"&lt;");
+		strReturn = strReturn.replace(/&amp;gt;/g,"&gt;");
+		strReturn = strReturn.replace(/&amp;/g,"&");
+	return strReturn;
+	}
+
+</script>
+
+<style type="text/css">
+	body { 
+		background-color:#88bbdd;
+		margin: 0px;
+		padding: 0px;
+	}
+	input {
+		font-size: 15px;
+		height: 25px;
+	}
+		.right { float: right; }
+		.left { float: left;  } 
+	#label {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 14px;
+	}
+	#spellcontent {
+		height: 300px;
+		width: 450px; 
+	}
+</style>
+
+</head>
+
+<body onload="lockandload();">
+<form id="jacubaspell" name="jacubaspell" method="post" action="">
+<table align="center">
+	<tr>
+		<td>
+			<div name="label" id="label">Post Content:</div>
+			<textarea name="spellcontent" id="spellcontent"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td height="15">&nbsp;</td>
+	</tr>
+	<tr>
+		<td>
+			<input type="button" value="Finish" class="right" onclick="finish();" />
+			<input type="button" value="Undo All Changes" class="left" onclick="resetContent();"/>
+		</td>
+	</tr>
+</table>
+</form>
+</body>
+</html>

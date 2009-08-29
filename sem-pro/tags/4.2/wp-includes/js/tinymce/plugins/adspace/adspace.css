@@ -1,0 +1,10 @@
+.mce_plugin_adspace {
+	/*border: 0px;*/
+	border: 1px dotted #cccccc;
+	display:inline;
+	background-color: #ffffff;
+	/*margin-top:5px;*/
+	background-image: url(images/ad-block.gif);
+	background-repeat: no-repeat;
+	background-position: center center;
+}

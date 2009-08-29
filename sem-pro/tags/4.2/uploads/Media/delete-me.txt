@@ -1,0 +1,1 @@
+This file's only purpose is to force some zip file handlers to create folders that would otherwise be empty.
