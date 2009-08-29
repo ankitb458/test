@@ -1,0 +1,486 @@
+/*
+Skin name: Boxed, Red
+Skin uri: http://skins.semiologic.com/mc/boxed/
+Version: 0.8
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+html {
+	background: #fff;
+}
+
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
+
+/*
+ * Header
+ */
+
+#sitename {
+	color: #b31212;
+}
+
+
+/*
+ * Navbar
+ */
+
+#navbar {
+	line-height: 40px;
+	color: #fff;
+}
+
+* html #s {
+	margin: 8px 0px 6px;
+	vertical-align: center;
+}
+
+* html #go {
+	margin: 8px 0px 4px;
+	vertical-align: center;
+}
+
+#navbar a {
+	color: #fff;
+}
+
+#navbar a:hover {
+	color: #ffffd9;
+}
+
+.mmm #navbar {
+	background: url(images/mmm-navbar.jpg) top center repeat-y #b31212;
+}
+
+.mm #navbar {
+	background: url(images/mm-navbar.jpg) top center repeat-y #b31212;
+}
+
+.m #navbar {
+	background: url(images/m-navbar.jpg) top center repeat-y #b31212;
+}
+
+
+/*
+ * Footer
+ */
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #b22;
+}
+
+#footer_top,
+#footer_bottom {
+	height: 10px;
+}
+
+.mmm #footer {
+	background: url(images/mmm-footer.jpg) center repeat-y #8fb6cc;
+}
+
+.mmm #footer_top {
+	background: url(images/mmm-footer_top.jpg) bottom center no-repeat;
+}
+
+.mmm #footer_bottom {
+	background: url(images/mmm-footer_bottom.jpg) top center no-repeat;
+}
+
+.mm #footer {
+	background: url(images/mm-footer.jpg) center repeat-y #8fb6cc;
+}
+
+.mm #footer_top {
+	background: url(images/mm-footer_top.jpg) bottom center no-repeat;
+}
+
+.mm #footer_bottom {
+	background: url(images/mm-footer_bottom.jpg) top center no-repeat;
+}
+
+.m #footer {
+	background: url(images/m-footer.jpg) center repeat-y #8fb6cc;
+}
+
+.m #footer_top {
+	background: url(images/m-footer_top.jpg) bottom center no-repeat;
+}
+
+.m #footer_bottom {
+	background: url(images/m-footer_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header & Footer Boxes
+ */
+
+#header_boxes_top,
+#header_boxes_bottom,
+#footer_boxes_top,
+#footer_boxes_bottom {
+	height: 10px;
+}
+
+.mmm #header_boxes,
+.mmm #footer_boxes {
+	background: url(images/mmm-inline_boxes.jpg) center repeat-y;
+}
+
+.mmm #header_boxes_top,
+.mmm #footer_boxes_top {
+	background: url(images/mmm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom,
+.mmm #footer_boxes_bottom {
+	background: url(images/mmm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.mm #header_boxes,
+.mm #footer_boxes {
+	background: url(images/mm-inline_boxes.jpg) center repeat-y;
+}
+
+.mm #header_boxes_top,
+.mm #footer_boxes_top {
+	background: url(images/mm-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom,
+.mm #footer_boxes_bottom {
+	background: url(images/mm-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+.m #header_boxes,
+.m #footer_boxes {
+	background: url(images/m-inline_boxes.jpg) center repeat-y;
+}
+
+.m #header_boxes_top,
+.m #footer_boxes_top {
+	background: url(images/m-inline_boxes_top.jpg) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom,
+.m #footer_boxes_bottom {
+	background: url(images/m-inline_boxes_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Header & Footer Widgets
+ */
+
+.header_widget_top,
+.header_widget_bottom,
+.footer_widget_top,
+.footer_widget_bottom {
+	height: 10px;
+}
+
+.mmm .header_widget,
+.mmm .footer_widget {
+	background: url(images/mmm-wrapper_widget.jpg) center repeat-y;
+}
+
+.mmm .header_widget_top,
+.mmm .footer_widget_top {
+	background: url(images/mmm-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.mmm .header_widget_bottom,
+.mmm .footer_widget_bottom {
+	background: url(images/mmm-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+.mm .header_widget,
+.mm .footer_widget {
+	background: url(images/mm-wrapper_widget.jpg) center repeat-y;
+}
+
+.mm .header_widget_top,
+.mm .footer_widget_top {
+	background: url(images/mm-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.mm .header_widget_bottom,
+.mm .footer_widget_bottom {
+	background: url(images/mm-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+.m .header_widget,
+.m .footer_widget {
+	background: url(images/m-wrapper_widget.jpg) center repeat-y;
+}
+
+.m .header_widget_top,
+.m .footer_widget_top {
+	background: url(images/m-wrapper_widget_top.jpg) bottom center no-repeat;
+}
+
+.m .header_widget_bottom,
+.m .footer_widget_bottom {
+	background: url(images/m-wrapper_widget_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Body
+ */
+
+#main_top,
+#main_bottom {
+	height: 10px;
+}
+
+.mmm #main {
+	background: url(images/mmm-main.jpg) center repeat-y;
+}
+
+.mmm #main_top {
+	background: url(images/mmm-main_top.jpg) bottom center no-repeat;
+}
+
+.mmm #main_bottom {
+	background: url(images/mmm-main_bottom.jpg) top center no-repeat;
+}
+
+.mm #main {
+	background: url(images/mm-main.jpg) center repeat-y;
+}
+
+.mm #main_top {
+	background: url(images/mm-main_top.jpg) bottom center no-repeat;
+}
+
+.mm #main_bottom {
+	background: url(images/mm-main_bottom.jpg) top center no-repeat;
+}
+
+.mm1s #main {
+	background: url(images/mm1s-main.jpg) center repeat-y;
+}
+
+.mm1s #main_top {
+	background: url(images/mm1s-main_top.jpg) bottom center no-repeat;
+}
+
+.mm1s #main_bottom {
+	background: url(images/mm1s-main_bottom.jpg) top center no-repeat;
+}
+
+.m2s #main,
+.m1s #main {
+	background: url(images/main.jpg) center repeat-y;
+}
+
+.m2s #main_top,
+.m1s #main_top {
+	background: url(images/main_top.jpg) bottom center no-repeat;
+}
+
+.m2s #main_bottom,
+.m1s #main_bottom {
+	background: url(images/main_bottom.jpg) top center no-repeat;
+}
+
+.m #main {
+	background: url(images/m-main.jpg) center repeat-y;
+}
+
+.m #main_top {
+	background: url(images/m-main_top.jpg) bottom center no-repeat;
+}
+
+.m #main_bottom {
+	background: url(images/m-main_bottom.jpg) top center no-repeat;
+}
+
+
+/*
+ * Credits
+ */
+
+#credits {
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+/*
+ * Content
+ */
+
+h1 {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 22px;
+}
+
+h2,
+.widget_calendar caption {
+	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+	font-weight: normal;
+	font-size: 18px;
+}
+
+h1 {
+	color: #b31212;
+}
+
+.entry_date,
+.comment_date,
+.pings_date {
+}
+
+blockquote {
+	background: url(../../icons/blockquote.gif) top left no-repeat;
+	padding: 5px 10px 5px 50px;
+	margin-left: 0px;
+	min-height: 50px;
+}
+
+
+/*
+ * Sidebars
+ */
+
+.widget_title h2 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	color: #fff;
+}
+
+.widget {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.widget_top,
+.widget_bottom {
+	height: 10px;
+}
+
+.widget_title_top {
+	margin-top: -10px;
+	height: 10px;
+}
+
+.widget_title_bottom {
+	height: 5px;
+}
+
+.widget {
+	background: url(images/widget.jpg) center repeat-y;
+}
+
+.widget_top {
+	background: url(images/widget_top.jpg) bottom center no-repeat;
+}
+
+.widget_bottom {
+	background: url(images/widget_bottom.jpg) top center no-repeat;
+}
+
+.widget_title {
+	background: url(images/widget_title.jpg) center repeat-y;
+}
+
+.widget_title_top {
+	background: url(images/widget_title_top.jpg) bottom center no-repeat;
+}
+
+.widget_title_bottom {
+	background: url(images/widget_title_bottom.jpg) top center no-repeat;
+}
+
+.mm1s .widget {
+	background: url(images/mm1s-widget.jpg) center repeat-y;
+}
+
+.mm1s .widget_top {
+	background: url(images/mm1s-widget_top.jpg) bottom center no-repeat;
+}
+
+.mm1s .widget_bottom {
+	background: url(images/mm1s-widget_bottom.jpg) top center no-repeat;
+}
+
+.mm1s .widget_title {
+	background: url(images/mm1s-widget_title.jpg) center repeat-y;
+}
+
+.mm1s .widget_title_top {
+	background: url(images/mm1s-widget_title_top.jpg) bottom center no-repeat;
+}
+
+.mm1s .widget_title_bottom {
+	background: url(images/mm1s-widget_title_bottom.jpg) top center no-repeat;
+}
+
+.wide_sidebar .widget {
+	background: url(images/wide_widget.jpg) center repeat-y;
+}
+
+.wide_sidebar .widget_top {
+	background: url(images/wide_widget_top.jpg) bottom center no-repeat;
+}
+
+.wide_sidebar .widget_bottom {
+	background: url(images/wide_widget_bottom.jpg) top center no-repeat;
+}
+
+.wide_sidebar .widget_title {
+	background: url(images/wide_widget_title.jpg) center repeat-y;
+}
+
+.wide_sidebar .widget_title_top {
+	background: url(images/wide_widget_title_top.jpg) bottom center no-repeat;
+}
+
+.wide_sidebar .widget_title_bottom {
+	background: url(images/wide_widget_title_bottom.jpg) top center no-repeat;
+}
+
+
+
+/*
+ * Calendar
+ */
+
+.widget_calendar table {
+	border: solid 1px #666;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar thead {
+	border-bottom: solid 1px #666;
+	background: #b31212;
+	color: #fff;
+}
+
+.widget_calendar tfoot {
+	border-top: solid 1px #666;
+	background: #ffd9d9;
+}
+
+.widget_calendar tfoot a {
+	color: #000;
+}
+
+.widget_calendar tfoot a:hover {
+	color: #b22;
+}
