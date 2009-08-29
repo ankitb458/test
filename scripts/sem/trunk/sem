@@ -422,7 +422,7 @@ function sem_pub() {
 			
 			local domain=${path%%/*}
 			
-			path=/usl/local/www/$domain/www/${path#*/}
+			path=/usr/local/www/$domain/www/${path#*/}
 		fi
 		
 		if [[ "$method" = 'bleeding' ]]; then
