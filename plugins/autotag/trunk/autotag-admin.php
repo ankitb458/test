@@ -114,7 +114,7 @@ class autotag_admin {
 		
 		$post = get_post($post_id);
 		
-		switch ( !empty($_POST['autotag']) ) {
+		switch ( $_POST['autotag'] ) {
 		case 'publish':
 			if ( in_array($post->post_status, array('publish', 'future')) ) {
 				$fetch_terms = true;
