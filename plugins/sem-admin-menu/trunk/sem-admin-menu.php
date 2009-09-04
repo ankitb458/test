@@ -40,7 +40,7 @@ class sem_admin_menu {
 		$folder = plugin_dir_url(__FILE__);
 		$css = $folder . 'css/sem-admin-menu.css';
 		
-		wp_enqueue_style('sem_admin_menu', $css, null, '5.2');
+		wp_enqueue_style('sem_admin_menu', $css, null, '20090903');
 	} # styles()
 	
 	

@@ -38,7 +38,7 @@ class external_links {
 
 	function styles() {
 		$folder = plugin_dir_url(__FILE__);
-		wp_enqueue_style('external-links', $folder . 'sem-external-links.css', null, '3.1');
+		wp_enqueue_style('external-links', $folder . 'sem-external-links.css', null, '20090903');
 	} # styles()
 	
 	

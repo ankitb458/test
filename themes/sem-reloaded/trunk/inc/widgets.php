@@ -37,7 +37,7 @@ class sem_widgets {
 	function admin_scripts() {
 		if ( !class_exists('nav_menu') ) {
 			$folder = sem_url . '/js';
-			wp_enqueue_script('nav-menus', $folder . '/admin.js', array('jquery-ui-sortable'),  '20090812', true);
+			wp_enqueue_script('nav-menus', $folder . '/admin.js', array('jquery-ui-sortable'),  '20090903', true);
 
 			add_action('admin_footer', array('sem_nav_menu', 'admin_footer'));
 		}
@@ -52,7 +52,7 @@ class sem_widgets {
 
 	function admin_styles() {
 		$folder = sem_url . '/css';
-		wp_enqueue_style('nav-menus', $folder . '/admin.css', null, '20090422');
+		wp_enqueue_style('nav-menus', $folder . '/admin.css', null, '20090903');
 	} # admin_styles()
 	
 	

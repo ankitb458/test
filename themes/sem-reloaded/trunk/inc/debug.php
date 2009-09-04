@@ -162,7 +162,7 @@ add_action('wp_print_scripts', 'init_dump');
 
 function dump_js() {
 	$folder = sem_url . '/js';
-	wp_enqueue_script('jquery-logger', $folder . '/jquery.logger.js', array('jquery'),  '1.0');
+	wp_enqueue_script('jquery-logger', $folder . '/jquery.logger.js', array('jquery'),  '20090903');
 } # dump_js()
 
 if ( $_GET['debug'] == 'js' )
