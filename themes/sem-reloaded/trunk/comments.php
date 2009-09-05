@@ -274,8 +274,8 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 			. '>' . "\n"
 			. '<div class="pad">' . "\n";
 		
-		if ( $policy )
-			echo apply_filters('widget_text', wpautop($policy));
+		if ( $comments_captions['policy'] )
+			echo apply_filters('widget_text', wpautop($comments_captions['policy']));
 		
 		if ( $user_ID ) {
 			$logout_url = '<span class="logout">'
