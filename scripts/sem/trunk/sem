@@ -90,6 +90,10 @@ function sem_exec() {
 			sem_check $svn $* || return 1
 			;;
 		
+		ext )
+			sem_ext $svn $* || return 1
+			;;
+		
 		tag )
 			sem_tag $svn $* || return 1
 			;;
@@ -125,6 +129,7 @@ function sem_help() {
 	echo '  sem info package: outputs the package'"'"'s version'
 	echo '  sem deps package: output a packages'"'"' depends'
 	echo '  sem check package: ok if a package is publishable'
+	echo '  sem ext package: publish to a 3rd party repository'
 	echo '  sem tag package [version]: tag a package'
 	echo '  sem zip package [version]: publish a stable zip'
 	echo '  sem dev package [version]: publish a bleeding edge zip'
