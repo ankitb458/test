@@ -493,8 +493,6 @@ function sem_pub() {
 			
 			rm -Rf $package-assets || return 1
 		fi
-		
-		echo
 	fi
 	
 	if [[ $updated -ne 0 && "$zip" != '' ]]; then
