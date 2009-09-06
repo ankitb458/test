@@ -30,7 +30,7 @@ jQuery(document).ready(function() {
 							t.css('top', '');
 							t.css('left', '');
 							
-							if ( r.offset().top - w.scrollTop() + t.height() > w.height() ) {
+							if ( r.offset().top + t.height() + 12 > w.height() + w.scrollTop() ) {
 								t.css('top', p.children("div.bookmark_me_services").offset().top - t.height() - 12);
 							}
 					
