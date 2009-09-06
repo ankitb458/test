@@ -1,9 +1,9 @@
 === Fancy Excerpt ===
 Contributors: Denis-de-Bernardy
-Donate link: http://buy.semiologic.com/drink
+Donate link: http://www.semiologic.com/partners/
 Tags: fancy excerpt, fancy-excerpt, excerpt, semiologic
 Requires at least: 2.8
-Tested up to: 2.8.3
+Tested up to: 2.8.4
 Stable tag: trunk
 
 The fancy excerpt plugin for WordPress replaces the default automatic excerpt generator with a sentence aware excerpt generator.

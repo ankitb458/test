@@ -1,9 +1,9 @@
 === Autolink URI ===
 Contributors: Denis-de-Bernardy
-Donate link: http://buy.semiologic.com/drink
+Donate link: http://www.semiologic.com/partners/
 Tags: autolink, link, auto-link, semiologic
 Requires at least: 2.8
-Tested up to: 2.8.3
+Tested up to: 2.8.4
 Stable tag: trunk
 
 The Autolink URI plugin for WordPress automatically converts urls to hyperlinked urls.

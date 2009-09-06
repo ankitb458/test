@@ -1,9 +1,9 @@
 === Admin Menu ===
 Contributors: Denis-de-Bernardy
-Donate link: http://buy.semiologic.com/drink
+Donate link: http://www.semiologic.com/partners/
 Tags: admin-menu, admin, cms, semiologic
 Requires at least: 2.8
-Tested up to: 2.8.3
+Tested up to: 2.8.4
 Stable tag: trunk
 
 The admin menu plugin for WordPress sticks key admin menu links to the top of your blog's screen.

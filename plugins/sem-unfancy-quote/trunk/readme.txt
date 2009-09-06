@@ -1,6 +1,6 @@
 === Unfancy Quote ===
 Contributors: Denis-de-Bernardy
-Donate link: http://buy.semiologic.com/drink
+Donate link: http://www.semiologic.com/partners/
 Tags: code, quote, fancy-quote, fancy quote, unfancy-quote, unfancy quote, semiologic
 Requires at least: 2.0
 Tested up to: 2.8
