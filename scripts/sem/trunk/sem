@@ -663,20 +663,14 @@ function sem_ext() {
 	
 	eval "`sem_info $*`"
 	
-	local svn_tag=$package/tags/$version
-	
-	if [[ "$type" != '' ]]; then
-		svn_tag=$type/$svn_tag
-	fi
-	
 	if [[ $debug -ne 0 ]]; then
 		cp -R ~/Desktop/$package $package.ext || return 1
 	else
-		svn $v export $ext $package.ext || return 1
+		svn $v co $ext $package.ext || return 1
 	fi
 	
 	svn $v rm $package.ext/* \
-	&& svn $v export $svn_root/$svn_tag $package.ext --force \
+	&& svn $v export $svn_root/$svn $package.ext --force \
 	&& svn $v add $package.ext/* \
 	&& svn $v ps svn:eol-style native -R $package.ext \
 	|| return 1
