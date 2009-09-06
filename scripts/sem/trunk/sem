@@ -457,7 +457,7 @@ function sem_pub() {
 			
 			for file in $package-assets.zip $package-screenshot.jpg; do
 				if [[ ! -f $path/$file || ! `diff -q $file $path/$file &> /dev/null` ]]; then
-					echo "Publishing $file v.$version"
+					echo "Publishing $file"
 					
 					mkdir -p $path \
 					&& mv $file $path/$file || return 1
