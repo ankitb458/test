@@ -438,7 +438,7 @@ function sem_pub() {
 		
 		rm -Rf $package || return 1
 		
-		if [[ ! -f $path/$file || `diff -q $file $path/$file &> /dev/null` ]]; then
+		if [[ ! -f $path/$file || ! `diff -q $file $path/$file &> /dev/null` ]]; then
 			echo "Publishing $file v.$version"
 			
 			mkdir -p $path \
@@ -449,18 +449,18 @@ function sem_pub() {
 		
 		if [[ "$type" = 'skins' ]]; then
 			svn $v export $svn_root/$type/$package/assets $package-assets \
-			&& zip $v -r $package-assets.zip $package-assets || return 1
-			
-			cp $package-assets/screenshot.jpg $package-screenshot.jpg || return 1
+			&& zip $v -r $package-assets.zip $package-assets \
+			&& cp $package-assets/screenshot.jpg $package-screenshot.jpg \
+			|| return 1
 			
 			rm -Rf $package-assets || return 1
 			
-			mkdir -p $path || return 1
-			
 			for file in $package-assets.zip $package-screenshot.jpg; do
-				if [[ ! -f $path/$file || `diff -q $file $path/$file &> /dev/null` ]]; then
+				if [[ ! -f $path/$file || ! `diff -q $file $path/$file &> /dev/null` ]]; then
 					echo "Publishing $file v.$version"
-					mv $file $path/$file || return 1
+					
+					mkdir -p $path \
+					&& mv $file $path/$file || return 1
 				fi
 			done
 		fi
