@@ -429,41 +429,67 @@ function sem_pub() {
 			file=${file%.zip}-dev.zip
 		fi
 		
-		svn $v export $svn_root/$svn $package \
-		&& zip $v -r $file $package || return 1
+		if [[ -f $path/$file && ! -f $hash.old ]]; then
+			cp $path/$file $file \
+			&& unzip -q $file \
+			&& mv $package $hash.old \
+			&& rm $file \
+			|| return 1
+		fi
+		
+		svn $v export $svn_root/$svn $package || return 1
 		
 		if [[ "$type" != '' && -f $package/readme.txt ]]; then
 			cp $package/readme.txt $hash.readme
 		fi
 		
-		rm -Rf $package || return 1
-		
-		if [[ ! -f $path/$file || ! `diff -q $file $path/$file &> /dev/null` ]]; then
+		if [[ ! -f $path/$file || `diff -rq $package $hash.old > /dev/null` ]]; then
 			echo "Publishing $file v.$version"
 			
 			mkdir -p $path \
+			&& zip $v -r $file $package \
 			&& mv $file $path/$file \
 			&& updated=1 \
 			|| return 1
+		else
+			echo "Skipping $file v.$version"
 		fi
 		
+		rm -Rf $package || return 1
+		
 		if [[ "$type" = 'skins' ]]; then
+			if [[ -f $path/$package-assets.zip && ! -f $hash.old ]]; then
+				cp $path/$package-assets.zip $package-assets.zip \
+				&& unzip -q $package-assets.zip \
+				&& mv $package-assets $hash.assets \
+				&& rm $package-assets.zip \
+				|| return 1
+			fi
+			
 			svn $v export $svn_root/$type/$package/assets $package-assets \
-			&& zip $v -r $package-assets.zip $package-assets \
 			&& cp $package-assets/screenshot.jpg $package-screenshot.jpg \
 			|| return 1
 			
-			rm -Rf $package-assets || return 1
-			
-			for file in $package-assets.zip $package-screenshot.jpg; do
-				if [[ ! -f $path/$file || ! `diff -q $file $path/$file &> /dev/null` ]]; then
-					echo "Publishing $file"
-					
-					mkdir -p $path \
-					&& mv $file $path/$file || return 1
+			if [[ ! -f $path/$package-assets.zip || `diff -rq $package-assets $hash.assets > /dev/null` ]]; then
+				echo "Publishing $package assets"
+				
+				mkdir -p $path \
+				&& zip $v -r $package-assets.zip $package-assets \
+				&& mv $package-assets.zip $path/$package-assets.zip \
+				|| return 1
+				
+				if [[ -f $package-assets/screenshot.jpg ]]; then
+					mv $package-assets/screenshot.jpg $path/$package-screenshot.jpg \
+					|| return 1
 				fi
-			done
+			else
+				echo "Skipping $package assets"
+			fi
+			
+			rm -Rf $package-assets || return 1
 		fi
+		
+		echo
 	fi
 	
 	if [[ $updated -ne 0 && "$zip" != '' ]]; then
