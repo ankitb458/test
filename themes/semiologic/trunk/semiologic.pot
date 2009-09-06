@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 6.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-08-03 18:34+0200\n"
+"POT-Creation-Date: 2009-09-06 10:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,7 +32,8 @@ msgstr ""
 msgid "Pingback"
 msgstr ""
 
-#: comments.php:129 inc/widgets.php:416 inc/widgets.php:417
+#: comments.php:129 inc/template.php:279 inc/widgets.php:419
+#: inc/widgets.php:420
 msgid "Edit"
 msgstr ""
 
@@ -40,7 +41,7 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: comments.php:175
+#: comments.php:178
 msgid "Logout"
 msgstr ""
 
@@ -62,7 +63,7 @@ msgstr ""
 msgid "Invalid File Type."
 msgstr ""
 
-#: inc/header.php:121 inc/layout.php:106 inc/skin.php:178
+#: inc/header.php:121 inc/layout.php:105 inc/skin.php:177
 msgid "Settings saved."
 msgstr ""
 
@@ -86,8 +87,8 @@ msgstr ""
 msgid "Delete Header"
 msgstr ""
 
-#: inc/header.php:177 inc/header.php:221 inc/layout.php:230 inc/layout.php:309
-#: inc/skin.php:356 inc/skin.php:380 inc/skin.php:402 inc/skin.php:420
+#: inc/header.php:177 inc/header.php:221 inc/layout.php:229 inc/layout.php:308
+#: inc/skin.php:355 inc/skin.php:379 inc/skin.php:401 inc/skin.php:419
 msgid "Save Changes"
 msgstr ""
 
@@ -138,7 +139,7 @@ msgstr ""
 msgid "The Semiologic theme (obsolete)."
 msgstr ""
 
-#: inc/info.php:4 inc/widgets.php:1138
+#: inc/info.php:4 inc/widgets.php:1172
 msgid "Archives"
 msgstr ""
 
@@ -158,7 +159,7 @@ msgstr ""
 msgid "Special Page"
 msgstr ""
 
-#: inc/install.php:16 inc/skin.php:410 inc/upgrade.php:866
+#: inc/install.php:16 inc/skin.php:409 inc/upgrade.php:870
 #, php-format
 msgid "Made with %1$s &bull; %2$s skin by %3$s"
 msgstr ""
@@ -167,92 +168,92 @@ msgstr ""
 msgid "Blog"
 msgstr ""
 
-#: inc/layout.php:130 inc/template.php:24
+#: inc/layout.php:129 inc/template.php:24
 msgid "Manage Layout"
 msgstr ""
 
-#: inc/layout.php:132
+#: inc/layout.php:131
 msgid "Current Layout and Width"
 msgstr ""
 
-#: inc/layout.php:135
+#: inc/layout.php:134
 #, php-format
 msgid "%1$s / %2$s"
 msgstr ""
 
-#: inc/layout.php:154
+#: inc/layout.php:153
 msgid "Available Layouts"
 msgstr ""
 
-#: inc/layout.php:157
+#: inc/layout.php:156
 msgid "Click on a layout below to activate it."
 msgstr ""
 
-#: inc/layout.php:233
+#: inc/layout.php:232
 msgid "Available Widths"
 msgstr ""
 
-#: inc/layout.php:236
+#: inc/layout.php:235
 msgid "Click on a width below to activate it."
 msgstr ""
 
-#: inc/layout.php:325
+#: inc/layout.php:324
 msgid "Content, Sidebar, Ext Sidebar"
 msgstr ""
 
-#: inc/layout.php:326
+#: inc/layout.php:325
 msgid "Sidebar, Content, Ext Sidebar"
 msgstr ""
 
-#: inc/layout.php:327
+#: inc/layout.php:326
 msgid "Content, Sidebar, Sidebar"
 msgstr ""
 
-#: inc/layout.php:328
+#: inc/layout.php:327
 msgid "Sidebar, Content, Sidebar"
 msgstr ""
 
-#: inc/layout.php:329
+#: inc/layout.php:328
 msgid "Content, Ext Sidebar"
 msgstr ""
 
-#: inc/layout.php:330
+#: inc/layout.php:329
 msgid "Ext Sidebar, Content"
 msgstr ""
 
-#: inc/layout.php:331
+#: inc/layout.php:330
 msgid "Content, Sidebar"
 msgstr ""
 
-#: inc/layout.php:332
+#: inc/layout.php:331
 msgid "Sidebar, Content"
 msgstr ""
 
-#: inc/layout.php:333
+#: inc/layout.php:332
 msgid "Content"
 msgstr ""
 
-#: inc/layout.php:334
+#: inc/layout.php:333
 msgid "Sidebar, Sidebar, Content"
 msgstr ""
 
-#: inc/layout.php:335
+#: inc/layout.php:334
 msgid "Ext Sidebar, Content, Sidebar"
 msgstr ""
 
-#: inc/layout.php:336
+#: inc/layout.php:335
 msgid "Ext Sidebar, Sidebar, Content"
 msgstr ""
 
-#: inc/layout.php:349
+#: inc/layout.php:348
 msgid "Narrow"
 msgstr ""
 
-#: inc/layout.php:350
+#: inc/layout.php:349
 msgid "Wide"
 msgstr ""
 
-#: inc/layout.php:351
+#: inc/layout.php:350
 msgid "Flexible"
 msgstr ""
 
@@ -304,150 +305,150 @@ msgstr ""
 msgid "Not Found Error (404)"
 msgstr ""
 
-#: inc/skin.php:203
+#: inc/skin.php:202
 msgid "Manage Skin &amp; Font"
 msgstr ""
 
-#: inc/skin.php:205
+#: inc/skin.php:204
 msgid "Current Skin &amp; Font"
 msgstr ""
 
-#: inc/skin.php:209
+#: inc/skin.php:208
 #, php-format
-msgid "%1$s v.%2$s, by %3$s"
+msgid "%1$s v.%2$s by %3$s"
 msgstr ""
 
-#: inc/skin.php:212
+#: inc/skin.php:211
 msgid "Visit the skin' page"
 msgstr ""
 
-#: inc/skin.php:218
+#: inc/skin.php:217
 msgid "Visit the skin authors' site"
 msgstr ""
 
-#: inc/skin.php:243
+#: inc/skin.php:242
 #, php-format
 msgid "Tags: %s"
 msgstr ""
 
-#: inc/skin.php:248
+#: inc/skin.php:247
 #, php-format
 msgid "Font Family: %s."
 msgstr ""
 
-#: inc/skin.php:252
+#: inc/skin.php:251
 #, php-format
 msgid "Font Size: %s."
 msgstr ""
 
-#: inc/skin.php:260
+#: inc/skin.php:259
 #, php-format
 msgid "Credits: %s"
 msgstr ""
 
-#: inc/skin.php:267
+#: inc/skin.php:266
 msgid "Available Skins"
 msgstr ""
 
-#: inc/skin.php:270
+#: inc/skin.php:269
 msgid "Click on a skin below to activate it."
 msgstr ""
 
-#: inc/skin.php:302
+#: inc/skin.php:301
 #, php-format
 msgid "%1$s v.%2$s"
 msgstr ""
 
-#: inc/skin.php:305
+#: inc/skin.php:304
 msgid "Visit the skin's page"
 msgstr ""
 
-#: inc/skin.php:311
+#: inc/skin.php:310
 msgid "Visit the skin author's site"
 msgstr ""
 
-#: inc/skin.php:328
+#: inc/skin.php:327
 #, php-format
 msgid "By %s"
 msgstr ""
 
-#: inc/skin.php:359
+#: inc/skin.php:358
 msgid "Font Settings"
 msgstr ""
 
-#: inc/skin.php:361
+#: inc/skin.php:360
 msgid "This will let you set the default font on your site."
 msgstr ""
 
-#: inc/skin.php:383
+#: inc/skin.php:382
 msgid "Font Size Settings"
 msgstr ""
 
-#: inc/skin.php:405
+#: inc/skin.php:404
 msgid "Designer Credits"
 msgstr ""
 
-#: inc/skin.php:464
+#: inc/skin.php:478
 msgid "The skin's default"
 msgstr ""
 
-#: inc/skin.php:465
+#: inc/skin.php:479
 msgid "Arial, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:466
+#: inc/skin.php:480
 msgid "Book Antica, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:467
+#: inc/skin.php:481
 msgid "Bookman Old Style, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:468
+#: inc/skin.php:482
 msgid "Comic Sans MS, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:469
+#: inc/skin.php:483
 msgid "Courier New, Courier, Monospace"
 msgstr ""
 
-#: inc/skin.php:470
+#: inc/skin.php:484
 msgid "Garamond, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:471
+#: inc/skin.php:485
 msgid "Georgia, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:472
+#: inc/skin.php:486
 msgid "Monotype Corsiva, Courier, Monospace"
 msgstr ""
 
-#: inc/skin.php:473
+#: inc/skin.php:487
 msgid "Tahoma, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:474
+#: inc/skin.php:488
 msgid "Times New Roman, Times, Serif"
 msgstr ""
 
-#: inc/skin.php:475
+#: inc/skin.php:489
 msgid "Trebuchet MS, Tahoma, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:476
+#: inc/skin.php:490
 msgid "Verdana, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/skin.php:489
+#: inc/skin.php:503
 msgid "Small Font"
 msgstr ""
 
-#: inc/skin.php:490
+#: inc/skin.php:504
 msgid "Medium Font"
 msgstr ""
 
-#: inc/skin.php:491
+#: inc/skin.php:505
 msgid "Large Font"
 msgstr ""
 
@@ -475,334 +476,334 @@ msgstr ""
 msgid "Page-Specific Header"
 msgstr ""
 
-#: inc/template.php:296
+#: inc/template.php:303
 msgid "Semiologic Pro"
 msgstr ""
 
-#: inc/template.php:300
+#: inc/template.php:307
 msgid ""
 "the <a href=\"http://www.semiologic.com/software/sem-theme/\">Semiologic "
 "theme</a>"
 msgstr ""
 
-#: inc/template.php:301
+#: inc/template.php:308
 msgid ""
 "an <a href=\"http://www.semiologic.com/software/sem-theme/\">easy to use "
 "WordPress theme</a>"
 msgstr ""
 
-#: inc/template.php:302
+#: inc/template.php:309
 msgid ""
 "an <a href=\"http://www.semiologic.com/software/sem-theme/\">easy to "
 "customize WordPress theme</a>"
 msgstr ""
 
-#: inc/upgrade.php:499
+#: inc/upgrade.php:503
 msgid "1 Comment"
 msgstr ""
 
-#: inc/upgrade.php:505
+#: inc/upgrade.php:509
 #, php-format
 msgid "%d Comments"
 msgstr ""
 
-#: inc/widgets.php:185
+#: inc/widgets.php:188
 msgid "Entry: Header"
 msgstr ""
 
-#: inc/widgets.php:188
+#: inc/widgets.php:191
 msgid "The entry's title and date. Must be placed in the loop (each entry)."
 msgstr ""
 
-#: inc/widgets.php:277 inc/widgets.php:481 inc/widgets.php:1735
-#: inc/widgets.php:2292 inc/widgets.php:2757 inc/widgets.php:2924
+#: inc/widgets.php:280 inc/widgets.php:484 inc/widgets.php:1784
+#: inc/widgets.php:2853 inc/widgets.php:3020
 msgid "Config"
 msgstr ""
 
-#: inc/widgets.php:286
+#: inc/widgets.php:289
 msgid "Show post dates."
 msgstr ""
 
-#: inc/widgets.php:320
+#: inc/widgets.php:323
 msgid "Entry: Content"
 msgstr ""
 
-#: inc/widgets.php:323
+#: inc/widgets.php:326
 msgid "The entry's content. Must be placed in the loop (each entry)."
 msgstr ""
 
-#: inc/widgets.php:490
+#: inc/widgets.php:493
 msgid "Use the post's excerpt on blog and archive pages."
 msgstr ""
 
-#: inc/widgets.php:494 inc/widgets.php:647 inc/widgets.php:808
-#: inc/widgets.php:936 inc/widgets.php:1094 inc/widgets.php:1230
-#: inc/widgets.php:2742 inc/widgets.php:2903
+#: inc/widgets.php:497 inc/widgets.php:650 inc/widgets.php:811
+#: inc/widgets.php:951 inc/widgets.php:1128 inc/widgets.php:1264
+#: inc/widgets.php:2838 inc/widgets.php:2999
 msgid "Captions"
 msgstr ""
 
-#: inc/widgets.php:498 inc/widgets.php:529
+#: inc/widgets.php:501 inc/widgets.php:532
 #, php-format
 msgid "Read more on %s..."
 msgstr ""
 
-#: inc/widgets.php:509 inc/widgets.php:530
+#: inc/widgets.php:512 inc/widgets.php:533
 msgid "Pages:"
 msgstr ""
 
-#: inc/widgets.php:550
+#: inc/widgets.php:553
 msgid "Entry: Categories"
 msgstr ""
 
-#: inc/widgets.php:553
+#: inc/widgets.php:556
 msgid ""
 "The entry's categories. Will only display on individual posts if placed "
 "outside of the loop (each entry)."
 msgstr ""
 
-#: inc/widgets.php:651 inc/widgets.php:812
+#: inc/widgets.php:654 inc/widgets.php:815
 msgid "Title:"
 msgstr ""
 
-#: inc/widgets.php:662 inc/widgets.php:823
+#: inc/widgets.php:665 inc/widgets.php:826
 msgid ""
 "This widget's title is displayed only when this widget is placed out of the "
 "loop (each entry)."
 msgstr ""
 
-#: inc/widgets.php:667 inc/widgets.php:687
+#: inc/widgets.php:670 inc/widgets.php:690
 #, php-format
 msgid "Filed under %1$s by %2$s."
 msgstr ""
 
-#: inc/widgets.php:686
+#: inc/widgets.php:689
 msgid "Categories"
 msgstr ""
 
-#: inc/widgets.php:707
+#: inc/widgets.php:710
 msgid "Entry: Tags"
 msgstr ""
 
-#: inc/widgets.php:710
+#: inc/widgets.php:713
 msgid ""
 "The entry's tags. Will only display on individual entries if placed outside "
 "of the loop (each entry)."
 msgstr ""
 
-#: inc/widgets.php:828 inc/widgets.php:848
+#: inc/widgets.php:831 inc/widgets.php:851
 #, php-format
 msgid "Tags: %s."
 msgstr ""
 
-#: inc/widgets.php:847
+#: inc/widgets.php:850
 msgid "Tags"
 msgstr ""
 
-#: inc/widgets.php:868
+#: inc/widgets.php:871
 msgid "Entry: Comments"
 msgstr ""
 
-#: inc/widgets.php:871
+#: inc/widgets.php:874
 msgid "The entry's comments. Must be placed in the loop (each entry)."
 msgstr ""
 
-#: inc/widgets.php:961
+#: inc/widgets.php:958
+msgid "Comment Policy"
+msgstr ""
+
+#: inc/widgets.php:994
 #, php-format
 msgid "Comments on %s"
 msgstr ""
 
-#: inc/widgets.php:962
+#: inc/widgets.php:995
 msgid "Leave a Comment"
 msgstr ""
 
-#: inc/widgets.php:963
+#: inc/widgets.php:996
 msgid "Reply"
 msgstr ""
 
-#: inc/widgets.php:964
+#: inc/widgets.php:998
 #, php-format
 msgid "You must be logged in to post a comment. %s."
 msgstr ""
 
-#: inc/widgets.php:965
+#: inc/widgets.php:999
 #, php-format
 msgid "You are logged in as %1$s. %2$s."
 msgstr ""
 
-#: inc/widgets.php:966
+#: inc/widgets.php:1000
 msgid "Name:"
 msgstr ""
 
-#: inc/widgets.php:967
+#: inc/widgets.php:1001
 msgid "Email:"
 msgstr ""
 
-#: inc/widgets.php:968
+#: inc/widgets.php:1002
 msgid "Url:"
 msgstr ""
 
-#: inc/widgets.php:969
+#: inc/widgets.php:1003
 msgid "Fields marked by an asterisk (*) are required."
 msgstr ""
 
-#: inc/widgets.php:970
+#: inc/widgets.php:1004
 msgid "Submit Comment"
 msgstr ""
 
-#: inc/widgets.php:990
+#: inc/widgets.php:1024
 msgid "Blog: Header"
 msgstr ""
 
-#: inc/widgets.php:993
+#: inc/widgets.php:1027
 msgid ""
 "The title and description that appear on category, tag, search, 404 and date "
 "archive pages. Must be placed before each entry."
 msgstr ""
 
-#: inc/widgets.php:1136
+#: inc/widgets.php:1170
 msgid "404: Not Found"
 msgstr ""
 
-#: inc/widgets.php:1137
+#: inc/widgets.php:1171
 msgid "The page you've requested was not found."
 msgstr ""
 
-#: inc/widgets.php:1139
+#: inc/widgets.php:1173
 #, php-format
 msgid "Search: %s"
 msgstr ""
 
-#: inc/widgets.php:1159
+#: inc/widgets.php:1193
 msgid "Blog: Footer"
 msgstr ""
 
-#: inc/widgets.php:1162
+#: inc/widgets.php:1196
 msgid "The next/previous blog posts links. Must be placed after each entry."
 msgstr ""
 
-#: inc/widgets.php:1255
+#: inc/widgets.php:1289
 msgid "Next Page"
 msgstr ""
 
-#: inc/widgets.php:1256
+#: inc/widgets.php:1290
 msgid "Previous Page"
 msgstr ""
 
-#: inc/widgets.php:1276
+#: inc/widgets.php:1310
 msgid "Header: Boxes Bar"
 msgstr ""
 
-#: inc/widgets.php:1279
+#: inc/widgets.php:1313
 msgid ""
 "Lets you decide where the Footer Boxes Bar panel goes. Must be placed in the "
 "header area."
 msgstr ""
 
-#: inc/widgets.php:1317
+#: inc/widgets.php:1351
 msgid "Footer: Boxes Bar"
 msgstr ""
 
-#: inc/widgets.php:1320
+#: inc/widgets.php:1354
 msgid ""
 "Lets you decide where the Footer Boxes Bar panel goes. Must be placed in the "
 "footer area."
 msgstr ""
 
-#: inc/widgets.php:1358
+#: inc/widgets.php:1392
 msgid "Header: Site Header"
 msgstr ""
 
-#: inc/widgets.php:1361
+#: inc/widgets.php:1395
 msgid "The site's header. Must be placed in the header area."
 msgstr ""
 
-#: inc/widgets.php:1744
+#: inc/widgets.php:1793
 msgid "Output the site's name before the tagline."
 msgstr ""
 
-#: inc/widgets.php:1875 inc/widgets.php:2321 inc/widgets.php:2364
-#: inc/widgets.php:2964
+#: inc/widgets.php:1927 inc/widgets.php:2373 inc/widgets.php:2527
+#: inc/widgets.php:3060
 msgid "Home"
 msgstr ""
 
-#: inc/widgets.php:1905 inc/widgets.php:1956 inc/widgets.php:2337
-#: inc/widgets.php:2378 inc/widgets.php:2410 inc/widgets.php:2471
+#: inc/widgets.php:1957 inc/widgets.php:2018 inc/widgets.php:2389
+#: inc/widgets.php:2438 inc/widgets.php:2541 inc/widgets.php:2573
 msgid "Untitled"
 msgstr ""
 
-#: inc/widgets.php:2301
-msgid "Split menu items with a separator (|)."
-msgstr ""
-
-#: inc/widgets.php:2304
+#: inc/widgets.php:2356
 msgid "Menu Items"
 msgstr ""
 
-#: inc/widgets.php:2307
-msgid "Drag and drop menu items to rearrange them."
-msgstr ""
-
-#: inc/widgets.php:2317
+#: inc/widgets.php:2369
 msgid "- Select a menu item -"
 msgstr ""
 
-#: inc/widgets.php:2319
+#: inc/widgets.php:2371
 msgid "Special"
 msgstr ""
 
-#: inc/widgets.php:2324
+#: inc/widgets.php:2376
 msgid "Url"
 msgstr ""
 
-#: inc/widgets.php:2328
+#: inc/widgets.php:2380
 msgid "Pages"
 msgstr ""
 
-#: inc/widgets.php:2358 inc/widgets.php:2506
+#: inc/widgets.php:2407
+msgid "Drag and drop menu items to rearrange them."
+msgstr ""
+
+#: inc/widgets.php:2473 inc/widgets.php:2521
 msgid "Empty Navigation Menu. Leave it empty to populate it automatically."
 msgstr ""
 
-#: inc/widgets.php:2369
+#: inc/widgets.php:2532
 msgid "Url Label"
 msgstr ""
 
-#: inc/widgets.php:2622
+#: inc/widgets.php:2718
 msgid "Header: Nav Menu"
 msgstr ""
 
-#: inc/widgets.php:2625
+#: inc/widgets.php:2721
 msgid ""
 "The header's navigation menu, with an optional search form. Must be placed "
 "in the header area."
 msgstr ""
 
-#: inc/widgets.php:2766
+#: inc/widgets.php:2862
 msgid "Show a search form in the navigation menu."
 msgstr ""
 
-#: inc/widgets.php:2782
+#: inc/widgets.php:2878
 msgid "Search"
 msgstr ""
 
-#: inc/widgets.php:2783
+#: inc/widgets.php:2879
 msgid "Go"
 msgstr ""
 
-#: inc/widgets.php:2804
+#: inc/widgets.php:2900
 msgid "Footer: Nav Menu"
 msgstr ""
 
-#: inc/widgets.php:2807
+#: inc/widgets.php:2903
 msgid ""
 "The footer's navigation menu, with an optional copyright notice. Must be "
 "placed in the footer area."
 msgstr ""
 
-#: inc/widgets.php:2933
+#: inc/widgets.php:3029
 msgid "Place the footer navigation menu and the copyright on a single line."
 msgstr ""
 
-#: inc/widgets.php:2949
+#: inc/widgets.php:3045
 #, php-format
 msgid "Copyright %1$s, %2$s"
 msgstr ""
