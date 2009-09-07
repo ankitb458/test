@@ -434,7 +434,7 @@ function sem_pub() {
 			file=${file%.zip}-dev.zip
 		fi
 		
-		if [[ -f $path/$file && ! -f $hash.old ]]; then
+		if [[ -f $path/$file && ! -d $hash.old ]]; then
 			cp $path/$file $file \
 			&& unzip -q $file \
 			&& mv $package $hash.old \
@@ -463,7 +463,7 @@ function sem_pub() {
 		rm -Rf $package || return 1
 		
 		if [[ "$type" = 'skins' ]]; then
-			if [[ -f $path/$package-assets.zip && ! -f $hash.old ]]; then
+			if [[ -f $path/$package-assets.zip && ! -d $hash.assets ]]; then
 				cp $path/$package-assets.zip $package-assets.zip \
 				&& unzip -q $package-assets.zip \
 				&& mv $package-assets $hash.assets \
