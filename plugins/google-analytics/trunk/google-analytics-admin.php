@@ -131,7 +131,7 @@ EOF;
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('To enable AdSense revenue tracking using Google Analytics, simply declare this site for AdSense tracking in <a href="http://analytics.google.com">Google Analytics\'s administration panels</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
+			. __('To enable AdSense revenue tracking using Google Analytics, simply <a href="http://www.google.com/support/googleanalytics/bin/answer.py?hl=en&answer=55507">declare this site for AdSense tracking</a> in <a href="http://analytics.google.com">Google Analytics\'s administration panels</a>. (The needed code is inserted automatically by the plugin.)', 'google-analytics')
 			. '</p>' . "\n"
 			. '</td>'
 			. '</tr>' . "\n";
