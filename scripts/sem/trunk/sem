@@ -448,7 +448,7 @@ function sem_pub() {
 			cp $package/readme.txt $hash.readme
 		fi
 		
-		if [[ -f $path/$file && `diff -rq $package $hash.old > /dev/null` ]]; then
+		if [[ -f $path/$file && `diff -rq $package $hash.old` == '' ]]; then
 			echo "Skipping $file v.$version"
 		else
 			echo "Publishing $file v.$version"
@@ -475,7 +475,7 @@ function sem_pub() {
 			&& cp $package-assets/screenshot.jpg $package-screenshot.jpg \
 			|| return 1
 			
-			if [[ -f $path/$package-assets.zip && `diff -rq $package-assets $hash.assets > /dev/null` ]]; then
+			if [[ -f $path/$package-assets.zip && `diff -rq $package-assets $hash.assets` == '' ]]; then
 				echo "Skipping $package assets"
 			else
 				echo "Publishing $package assets"
