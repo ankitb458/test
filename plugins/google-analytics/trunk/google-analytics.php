@@ -112,6 +112,12 @@ EOS;
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
+EOS;
+		if ( !sem_google_analytics_debug && !$uacct )
+			return;
+		
+echo <<<EOS
+
 <script type="text/javascript">
 try { var pageTracker = _gat._getTracker("$uacct"); $ga_domain} catch(err) {}
 </script>
@@ -135,14 +141,13 @@ EOS;
 			echo "\n" . '<!-- '
 				. __('Configure Google Analytics under Settings / Google Analytics', 'google-analytics')
 				. ' -->' . "\n";
+			return;
 		} elseif ( current_user_can('publish_posts') || current_user_can('publish_pages') ) {
 			echo "\n" . '<!-- '
 				. __('Google Analytics Notice: Authors, Editors and Admins are not tracked', 'google-analytics')
 				. ' -->' . "\n";
-		}
-		
-		if ( !$uacct && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
 			return;
+		}
 		
 		echo <<<EOS
 

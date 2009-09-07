@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-09-07 11:12+0200\n"
+"POT-Creation-Date: 2009-09-07 15:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,10 +64,11 @@ msgstr ""
 
 #: google-analytics-admin.php:134
 msgid ""
-"To enable AdSense revenue tracking using Google Analytics, simply declare "
-"this site for AdSense tracking in <a href=\"http://analytics.google.com"
-"\">Google Analytics's administration panels</a>. (The needed code is "
-"inserted automatically by the plugin.)"
+"To enable AdSense revenue tracking using Google Analytics, simply <a href="
+"\"http://www.google.com/support/googleanalytics/bin/answer.py?"
+"hl=en&answer=55507\">declare this site for AdSense tracking</a> in <a href="
+"\"http://analytics.google.com\">Google Analytics's administration panels</"
+"a>. (The needed code is inserted automatically by the plugin.)"
 msgstr ""
 
 #: google-analytics-admin.php:141
@@ -149,8 +150,8 @@ msgid ""
 "shows where visitors are clicking."
 msgstr ""
 
-#: google-analytics-info.php:2 google-analytics.php:247
-#: google-analytics.php:248
+#: google-analytics-info.php:2 google-analytics.php:252
+#: google-analytics.php:253
 msgid "Google Analytics"
 msgstr ""
 
@@ -194,10 +195,10 @@ msgstr ""
 msgid "Success"
 msgstr ""
 
-#: google-analytics.php:136
+#: google-analytics.php:142
 msgid "Configure Google Analytics under Settings / Google Analytics"
 msgstr ""
 
-#: google-analytics.php:140
+#: google-analytics.php:147
 msgid "Google Analytics Notice: Authors, Editors and Admins are not tracked"
 msgstr ""
