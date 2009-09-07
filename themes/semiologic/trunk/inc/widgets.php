@@ -2351,6 +2351,18 @@ class sem_nav_menu extends WP_Widget {
 		
 		extract($instance, EXTR_SKIP);
 		
+		echo '<p>'
+			. '<label>'
+			. '<input type="checkbox"'
+				. ' name="' . $this->get_field_name('sep') . '"'
+				. checked($sep, true, false)
+				. ' />'
+			. '&nbsp;'
+			. __('Split navigation menu items with a |.', 'sem-theme')
+			. '</label>'
+			. '</p>' . "\n";
+		
+		
 		echo '<div class="hide-if-no-js">' . "\n";
 		
 		echo '<h3>' . __('Menu Items', 'sem-theme') . '</h3>' . "\n";
