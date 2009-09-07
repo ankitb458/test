@@ -130,15 +130,13 @@ class sem_template {
 			wp_enqueue_style('icons', sem_url . '/icons/icons.css', null, sem_version);
 		
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
+			wp_enqueue_style('skin', sem_url . '/css/print.css', null, sem_version);
 			if ( file_exists($skin_path . '/print.css') )
-				wp_enqueue_style('skin', $skin_url . '/print.css', null, sem_version);
-			else
-				wp_enqueue_style('skin', sem_url . '/css/print.css', null, sem_version);
+				wp_enqueue_style('custom', $skin_url . '/print.css', null, sem_version);
 		} elseif ( apply_filters('active_width', $sem_options['active_width']) == 'letter' ) {
+			wp_enqueue_style('skin', sem_url . '/css/letter.css', null, sem_version);
 			if ( file_exists($skin_path . '/letter.css') )
-				wp_enqueue_style('skin', $skin_url . '/letter.css', null, sem_version);
-			else
-				wp_enqueue_style('skin', sem_url . '/css/letter.css', null, sem_version);
+				wp_enqueue_style('custom', $skin_url . '/letter.css', null, sem_version);
 		} else {
 			wp_enqueue_style('skin', $skin_url . '/skin.css', null, sem_version);
 			if ( file_exists(sem_path . '/custom.css') )
