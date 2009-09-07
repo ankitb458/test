@@ -45,18 +45,34 @@ class google_analytics {
 	function header_scripts() {
 		$uacct = google_analytics::get_options();
 		
-		if ( !$uacct )
-			return;
+		$domain = GA_DOMAIN ? GA_DOMAIN : get_option('home');
+		$domain = parse_url($domain);
+		$domain = $domain['host'];
+		$domain = preg_replace("/^www\./i", '', $domain);
+		$domain = explode('.', $domain);
+		if ( count($domain) > 2 ) {
+			$_domain = $domain;
+			$domain = array();
+			do {
+				$tail = array_pop($_domain);
+				array_unshift($domain, $tail);
+				if ( strlen($tail) > 4 )
+					break;
+			} while ( $_domain );
+		}
+		
+		$domain = '[^/]+://[^/]*' . implode('\\.', array_map('addslashes', $domain)) . '(/|$)';
 		
 		echo <<<EOS
 
 <script type="text/javascript">
 window.google_analytics_uacct = "$uacct";
+window.google_analytics_regexp = new RegExp("$domain", 'i');
 </script>
 
 EOS;
 		
-		if ( !sem_google_analytics_debug && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
+		if ( !sem_google_analytics_debug && ( !$uacct || current_user_can('publish_posts') || current_user_can('publish_pages') ) )
 			return;
 		
 		$folder = plugin_dir_url(__FILE__);
@@ -74,8 +90,6 @@ EOS;
 			'submit_event' => __('Submit', 'google-analytics'),
 			'success_event' => __('Success', 'google-analytics'),
 		));
-		
-		add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
 	} # header_scripts()
 	
 	
@@ -87,17 +101,6 @@ EOS;
 
 	function footer_scripts() {
 		$uacct = google_analytics::get_options();
-
-		if ( !$uacct ) {
-			echo "\n" . '<!-- '
-				. __('Configure Google Analytics under Settings / Google Analytics', 'google-analytics')
-				. ' -->' . "\n";
-			return;
-		} elseif ( current_user_can('publish_posts') || current_user_can('publish_pages') ) {
-			echo "\n" . '<!-- '
-				. __('Google Analytics Notice: Authors, Editors and Admins are not tracked', 'google-analytics')
-				. ' -->' . "\n";
-		}
 		
 		$ga_domain = ''; # experimental
 		if ( GA_DOMAIN )
@@ -126,34 +129,20 @@ EOS;
 	 **/
 
 	function track_page() {
-		if ( !sem_google_analytics_debug && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
-			return;
-		
 		$uacct = google_analytics::get_options();
 		
-		if ( !$uacct )
+		if ( !$uacct ) {
+			echo "\n" . '<!-- '
+				. __('Configure Google Analytics under Settings / Google Analytics', 'google-analytics')
+				. ' -->' . "\n";
+		} elseif ( current_user_can('publish_posts') || current_user_can('publish_pages') ) {
+			echo "\n" . '<!-- '
+				. __('Google Analytics Notice: Authors, Editors and Admins are not tracked', 'google-analytics')
+				. ' -->' . "\n";
+		}
+		
+		if ( !$uacct && ( current_user_can('publish_posts') || current_user_can('publish_pages') ) )
 			return;
-		
-		$ext2type = apply_filters('ext2type', array(
-			'audio' => array('aac','ac3','aif','aiff','mp1','mp2','mp3','m3a','m4a','m4b','ogg','ram','wav','wma'),
-			'video' => array('asf','avi','divx','dv','mov','mpg','mpeg','mp4','mpv','ogm','qt','rm','vob','wmv', 'm4v'),
-			'document' => array('doc','docx','pages','odt','rtf','pdf'),
-			'spreadsheet' => array('xls','xlsx','numbers','ods'),
-			'interactive' => array('ppt','pptx','key','odp','swf'),
-			'text' => array('txt'),
-			'archive' => array('tar','bz2','gz','cab','dmg','rar','sea','sit','sqx','zip'),
-			'code' => array('css','html','php','js'),
-		));
-		
-		$ext2type['code'] = array_diff($ext2type['code'], array('css','html','php','js'));
-		
-		$file_regexp = array();
-		foreach ( $ext2type as $exts )
-			$file_regexp = array_merge($file_regexp, $exts);
-		
-		$file_regexp = '/\.(?:' . join('|', array_map('preg_quote', $file_regexp)) . ')(?:\?.*)?$/';
-		
-		$home_url = untrailingslashit(get_option('home'));
 		
 		echo <<<EOS
 
@@ -275,6 +264,7 @@ add_action('load-settings_page_google-analytics', 'google_analytics_admin');
 if ( !is_admin() ) {
 	add_action('wp_print_scripts', array('google_analytics', 'header_scripts'));
 	add_action('wp_footer', array('google_analytics', 'footer_scripts'), 20);
+	add_action('wp_footer', array('google_analytics', 'track_page'), 1000); // after script manager
 	add_action('mediacaster_audio', array('google_analytics', 'track_media'));
 	add_action('mediacaster_video', array('google_analytics', 'track_media'));
 } else {

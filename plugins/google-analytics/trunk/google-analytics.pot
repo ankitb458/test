@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-08-03 18:31+0200\n"
+"POT-Creation-Date: 2009-09-07 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,9 +93,8 @@ msgstr ""
 msgid ""
 "Clicks on ad units that were inserted using the <a href=\"%s\">Ad Manager</"
 "a> plugin. It will additionally tell you the <strong>cumulative</strong> "
-"number of times each ad unit was clicked by that visitor. Note: This is "
-"still experimental, so be sure to report back in the forum if it's not "
-"working as expected."
+"number of times each ad unit was clicked by that visitor. Note: This only "
+"works with ads that do not rely on iFrames."
 msgstr ""
 
 #: google-analytics-admin.php:155
@@ -150,55 +149,55 @@ msgid ""
 "shows where visitors are clicking."
 msgstr ""
 
-#: google-analytics-info.php:2 google-analytics.php:258
-#: google-analytics.php:259
+#: google-analytics-info.php:2 google-analytics.php:247
+#: google-analytics.php:248
 msgid "Google Analytics"
 msgstr ""
 
-#: google-analytics.php:66
+#: google-analytics.php:82
 msgid "Ad Unit"
 msgstr ""
 
-#: google-analytics.php:67
+#: google-analytics.php:83
 msgid "File"
 msgstr ""
 
-#: google-analytics.php:68
+#: google-analytics.php:84
 msgid "Audio"
 msgstr ""
 
-#: google-analytics.php:69
+#: google-analytics.php:85
 msgid "Video"
 msgstr ""
 
-#: google-analytics.php:70
+#: google-analytics.php:86
 msgid "Sign Up"
 msgstr ""
 
-#: google-analytics.php:71
+#: google-analytics.php:87
 msgid "Custom"
 msgstr ""
 
-#: google-analytics.php:72
+#: google-analytics.php:88
 msgid "Click"
 msgstr ""
 
-#: google-analytics.php:73
+#: google-analytics.php:89
 msgid "Download"
 msgstr ""
 
-#: google-analytics.php:74
+#: google-analytics.php:90
 msgid "Submit"
 msgstr ""
 
-#: google-analytics.php:75
+#: google-analytics.php:91
 msgid "Success"
 msgstr ""
 
-#: google-analytics.php:93
+#: google-analytics.php:136
 msgid "Configure Google Analytics under Settings / Google Analytics"
 msgstr ""
 
-#: google-analytics.php:98
+#: google-analytics.php:140
 msgid "Google Analytics Notice: Authors, Editors and Admins are not tracked"
 msgstr ""

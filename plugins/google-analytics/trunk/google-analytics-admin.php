@@ -149,7 +149,7 @@ EOF;
 			. sprintf(__('Newsletter sign-ups when using the <a href="%s">Newsletter Manager</a> plugin. Visitors are additionally segmented automatically on a successful signup if they\'re redirected on a page on this site.', 'google-analytics'), 'http://www.semiologic.com/software/newsletter-manager/')
 			. '</li>' . "\n"
 			. '<li>'
-			. sprintf(__('Clicks on ad units that were inserted using the <a href="%s">Ad Manager</a> plugin. It will additionally tell you the <strong>cumulative</strong> number of times each ad unit was clicked by that visitor. Note: This is still experimental, so be sure to report back in the forum if it\'s not working as expected.', 'google-analytics'), 'http://www.semiologic.com/software/ad-manager/')
+			. sprintf(__('Clicks on ad units that were inserted using the <a href="%s">Ad Manager</a> plugin. It will additionally tell you the <strong>cumulative</strong> number of times each ad unit was clicked by that visitor. Note: This only works with ads that do not rely on iFrames.', 'google-analytics'), 'http://www.semiologic.com/software/ad-manager/')
 			. '</li>' . "\n"
 			. '<li>'
 			. sprintf(__('Media player usage and file downloads that were inserted using the <a href="%s">Mediacaster</a> plugin.', 'google-analytics'), 'http://www.semiologic.com/software/mediacaster/')
