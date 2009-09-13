@@ -92,7 +92,7 @@ jQuery(document).ready(function() {
 			var href = jQuery(this).attr('href');
 			if ( href && !href.match(/^#/) && !href.match(window.google_analytics_regexp) ) {
 				try {
-					window.pageTracker._trackPageview(href);
+					window.pageTracker._trackPageview('/outbound/' + href);
 				} catch ( err ) {}
 			}
 		}
