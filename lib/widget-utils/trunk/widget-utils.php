@@ -140,7 +140,7 @@ class widget_utils {
 			. __('Description', widget_utils_textdomain)
 			. '</th>' . "\n"
 			. '<td>'
-			. '<textarea size="58" class="widefat" tabindex="5" name="widgets_desc" />'
+			. '<textarea size="58" class="widefat" tabindex="5" name="widgets_desc">'
 			. esc_html(get_post_meta($post_ID, '_widgets_desc', true))
 			. '</textarea>'
 			. '</td>' . "\n"
