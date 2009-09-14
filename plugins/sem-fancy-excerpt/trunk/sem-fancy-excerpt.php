@@ -49,7 +49,7 @@ class fancy_excerpt {
 		$text = str_replace(array("\r\n", "\r"), "\n", $text);
 		#dump(esc_html($text));
 
-		if ( !preg_match("|$more</a>$|", $text)
+		if ( !preg_match("|" . preg_quote($more, '|') . "</a>$|", $text)
 			&& count(preg_split("~\s+~", trim(strip_tags($text)))) > 30
 		) {
 			global $escape_fancy_excerpt;
