@@ -127,7 +127,7 @@ if ( $type != 'core' ) {
 				'url' => $row->url,
 				'package' => $row->{$packages . '_package'},
 				);
-		} elseif ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
+		} elseif ( version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') && !preg_match("|^http://downloads.wordpress.org|i", $row->{$packages . '_package'}) ) {
 			if ( !$expired ) {
 				$response[$to_check[$row->slug]->key] = (object) array(
 					'slug' => $row->slug,
