@@ -13,7 +13,7 @@ The external links plugin for WordPress lets you process outgoing links differen
 
 The external links plugin for WordPress lets you process outgoing links differently from internal links.
 
-You can configure the plugin to:
+Under Settings / External Links, you can configure the plugin to:
 
 - Process all outgoing links, rather than only those within your entries' content.
 - Add an external link icon to outgoing links. You can use a class="no_icon" attribute on links to override this.
