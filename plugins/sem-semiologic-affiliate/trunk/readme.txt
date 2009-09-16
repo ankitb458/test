@@ -11,9 +11,13 @@ Automatically adds your affiliate ID to all links to Semiologic.
 
 == Description ==
 
-The [Semiologic Affiliate](http://www.semiologic.com/partners/) plugin for WordPress automatically adds your affiliate ID to all links to Semiologic and [Semiologic Pro](http://www.getsemiologic.com).
+The Semiologic affiliate plugin will add your [Semiologic affiliate ID](http://www.semiologic.com/partners/) to links on your site that point to [semiologic.com](http://www.semiologic.com) or [getsemiologic.com](http://www.getsemiologic.com).
 
-To sign up and create an affiliate campaign, hop to the [Semiologic backend](http://oldbackend.semiologic.com).
+Start by signing up with the [Semiologic Affiliate Program](http://www.semiologic.com/partners/), and creating an affiliate campaign.
+
+Then, configure the plugin under Settings / Semiologic Affiliate, by entering your affiliate campaign.
+
+From that point onwards, any link to semiologic.com or getsemiologic.com will now have that ID attached to it.
 
 = Help Me! =
 
