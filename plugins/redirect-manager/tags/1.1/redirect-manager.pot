@@ -1,0 +1,44 @@
+# Redirect Manager pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Redirect Manager package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.1\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-09-16 16:46+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: redirect-manager-admin.php:29
+msgid ""
+"Enter the url to which visitors of this entry should automatically be "
+"redirected."
+msgstr ""
+
+#: redirect-manager-info.php:2
+msgid "Redirect Manager"
+msgstr ""
+
+#: redirect-manager-info.php:3
+msgid ""
+"Lets you manage redirects on your site without messing around with .htaccess "
+"files."
+msgstr ""
+
+#: redirect-manager.php:41 redirect-manager.php:44
+msgid "Redirect"
+msgstr ""
+
+#: redirect-manager.php:89
+#, php-format
+msgid ""
+"This page is redirecting visitors to <a href=\"%1$s\">%2$s</a>. You're not "
+"being redirected because you can edit this entry."
+msgstr ""
