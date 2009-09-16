@@ -13,7 +13,10 @@ Lets you insert any widget in RSS feeds.
 
 The Feed Widgets plugin for WordPress lets you insert any widget after each post in your RSS feed.
 
+To make the best of this plugin, be sure to configure the full text feed setting, under Settings / Reading.
+
 You may also find its child project, the Inline Widgets plugin, of interest for non-feeds.
+
 
 = Placing a widget after your post in your feeds =
 

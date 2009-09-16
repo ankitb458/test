@@ -3,7 +3,7 @@
 Plugin Name: Feed Widgets
 Plugin URI: http://www.semiologic.com/software/feed-widgets/
 Description: Creates a special sidebar that lets you insert widgets at the end of each post in your RSS feeds. Configure these widgets under <a href="widgets.php">Design / Widgets</a>, by selecting the Feed Widgets sidebar.
-Version: 2.0 RC2
+Version: 2.0
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: feed-widgets
