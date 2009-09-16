@@ -17,9 +17,9 @@ To sign up and create an affiliate campaign, hop to the [Semiologic backend](htt
 
 = Help Me! =
 
-The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
+The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues.
 
-If you require more dedicated assistance, consider using [Semiologic Pro](http://www.getsemiologic.com).
+Alternatively, email sales at semiologic dot com.
 
 
 == Installation ==
