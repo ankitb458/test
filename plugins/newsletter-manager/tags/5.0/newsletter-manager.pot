@@ -1,0 +1,103 @@
+# Newsletter Manager pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Newsletter Manager package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 5.0\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-09-14 19:25+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: newsletter-manager-info.php:2
+msgid "Newsletter Manager"
+msgstr ""
+
+#: newsletter-manager-info.php:3
+msgid ""
+"Lets you readily add a newsletter subscription form to your WordPress "
+"installation. Use the Inline Widgets plugin to insert newsletter "
+"subscription forms into your posts and pages."
+msgstr ""
+
+#: newsletter-manager.php:103
+msgid "A newsletter subscription form."
+msgstr ""
+
+#: newsletter-manager.php:110
+msgid "Newsletter Widget"
+msgstr ""
+
+#: newsletter-manager.php:146
+msgid "Your mailing list is not configured."
+msgstr ""
+
+#: newsletter-manager.php:439
+msgid "Title:"
+msgstr ""
+
+#: newsletter-manager.php:451
+msgid "Mailing List, e.g. <code>mylist@aweber.com</code>:"
+msgstr ""
+
+#: newsletter-manager.php:459
+#, php-format
+msgid ""
+"(Works with <a href=\"%1$s\" onclick=\"window.open(this.href); return false;"
+"\">AWeber</a> (recommended), <a href=\"%2$s\" onclick=\"window.open(this."
+"href); return false;\">GetResponse</a> and <a href=\"%3$s\" onclick=\"window."
+"open(this.href); return false;\">1ShoppingCart</a>.)"
+msgstr ""
+
+#: newsletter-manager.php:464
+msgid "Teaser Message:"
+msgstr ""
+
+#: newsletter-manager.php:476
+msgid ""
+"Form Labels (<code>Your Name</code>, <code>Your Email</code>, <code>Sign Up</"
+"code>):"
+msgstr ""
+
+#: newsletter-manager.php:495
+msgid "Privacy Policy:"
+msgstr ""
+
+#: newsletter-manager.php:507
+msgid "Thank You Page URL, e.g. <code>http://domain.com/thank-you/</code>:"
+msgstr ""
+
+#: newsletter-manager.php:518
+msgid "Thank You Message (used if no thank you page is configured):"
+msgstr ""
+
+#: newsletter-manager.php:638
+msgid "Newsletter"
+msgstr ""
+
+#: newsletter-manager.php:641
+msgid ""
+"Sign up to receive an occasional newsletter with insider tips and "
+"irresistible offers."
+msgstr ""
+
+#: newsletter-manager.php:643
+msgid ""
+"Thank you for subscribing! You'll receive a confirmation email in a few "
+"moments."
+msgstr ""
+
+#: newsletter-manager.php:645
+msgid "Your Email"
+msgstr ""
+
+#: newsletter-manager.php:646
+msgid "Sign Up"
+msgstr ""

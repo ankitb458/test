@@ -1,0 +1,29 @@
+form.newsletter_manager {
+	padding: 0px;
+	margin: 0px;
+}
+
+.newsletter_manager p {
+	margin-top: .3em;
+	margin-bottom: .3em;
+}
+
+.newsletter_block input {
+	width: 96%;
+	max-width: 250px;
+	margin-top: .1em;
+	margin-bottom: .1em;
+}
+
+.newsletter_inline input.from {
+	width: 240px;
+}
+
+.newsletter_inline input.button {
+	margin-left: 2px;
+}
+
+.newsletter_fields,
+.newsletter_submit {
+	text-align: center;
+}
