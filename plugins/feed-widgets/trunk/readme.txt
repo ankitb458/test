@@ -26,7 +26,7 @@ It's short and simple:
 2. Open the Feed Widgets panel ("sidebar", in the WP jargon)
 3. Place whichever widgets you want in that panel
 
-Widgets in this panel will be appended after each post. Note that not all widgets work here: anything javascript based -- ads in particular -- are stripped from feed readers. To insert ads in your feed, use FeedBurner or an equivalent service.
+Widgets in this panel will be appended to each post. Note that not all widgets work here: anything javascript based -- ads in particular -- are stripped from feed readers. To insert ads in your feed, use FeedBurner or an equivalent service.
 
 Common uses for this plugin include:
 
