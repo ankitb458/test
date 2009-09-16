@@ -6,18 +6,18 @@ Requires at least: 2.8
 Tested up to: 2.8.4
 Stable tag: trunk
 
-The Opt-In Front Page plugin lets you add posts to your front page on an opt-in basis, rather than remove posts on an opt-out basis. This allows you to manage any number of asides categories.
+Lets you add posts to your front page on an opt-in basis.
 
 
 == Description ==
 
 The Opt-In Front Page plugin lets you add posts to your front page on an opt-in basis, rather than remove posts on an opt-out basis. This allows you to manage any number of asides categories.
 
-In short, only posts in your "Blog" category will appear on your front page and its RSS feed when you use this plugin.
+In short, only posts in your "Blog" (or "News") category will appear on your front page and its RSS feed when you use this plugin.
 
-It changes your main category's url as relevant, and it fallbacks to normal blog mode when no 'blog' category exists or when the latter is empty.
+It changes your main category's url as relevant, and it fallbacks to normal blog mode when no 'blog' (or 'news') category exists or when the latter is empty.
 
-You can safely change your 'Blog' category's name after it is created: The opt-in front page plugin looks for the category with a slug of 'blog'.
+You can safely change your "Blog" or "News" category's name after it is created: The opt-in front page plugin looks for the category with a slug of "blog" or "news".
 
 = Help Me! =
 
@@ -30,7 +30,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Create a WordPress Category called 'Blog'. You can safely rename it afterwards -- what really counts is a slug of 'blog'.
+1. Create a WordPress Category called 'Blog' or 'News'. You can safely rename it afterwards -- what really counts is a slug of 'blog' or 'news'.
 1. At your option, click the link in the plugin's description to add the Blog category to every existing post.
 
 
@@ -39,5 +39,6 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 4.0 =
 
 - Use the taxonomy API to fetch the main category
+- Support the use of "News" in addition to "Blog"
 - Localization
 - Code enhancements and optimizations
