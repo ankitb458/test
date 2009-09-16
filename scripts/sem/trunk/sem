@@ -537,6 +537,12 @@ function sem_pub() {
 		url=${url%/*}/
 		url=${url/media\//}
 		
+		if [[ "$type" == 'themes' ]]; then
+			url=${url/members.semiologic.com\/themes/www.semiologic.com\/software}
+		elif [[ "$type" == 'plugins' ]]; then
+			url=${url/members.semiologic.com\/plugins/www.semiologic.com\/software}
+		fi
+		
 		local check="SELECT EXISTS ( SELECT 1 FROM packages WHERE type = '$type' AND package = '$package' )"
 		
 		if [[ 1 -eq `mysql -u root $dbn -sN -e "$check"` ]]; then
