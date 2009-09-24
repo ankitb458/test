@@ -93,10 +93,23 @@ li.nav_url {
 }
 
 .entry_date span,
+.entry_date a,
 .comment_date span,
 .pings_date span,
 h3.post_list_date {
 	background: url(../icons/calendar.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_replies a {
+	background: url(../icons/comment.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.leave_reply a {
+	background: url(../icons/comment_add.gif) center left no-repeat;
 	padding-left: 18px;
 	padding-right: 0px;
 }
@@ -119,9 +132,15 @@ h3.post_list_date {
 	padding-right: 0px;
 }
 
+.link_entry a,
+.link_comment a {
+	padding: 0px;
+	background: none;
+}
+
+.link_entry img,
 .link_comment img {
 	background: url(../icons/anchor.gif) bottom center no-repeat;
-	vertical-align: middle;
 }
 
 .s {
