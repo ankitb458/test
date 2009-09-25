@@ -67,6 +67,16 @@ class sem_layout {
 }
 </style>
 
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	jQuery("#available_options label").click(function() {
+		jQuery(this).closest('td').find('input:radio').attr('checked', '
+checked');
+		jQuery('#option_picker').trigger('submit');
+	});
+});
+</script>
+
 EOS;
 	} # admin_head()
 	
@@ -198,7 +208,6 @@ EOS;
 				. '<span class="hide-if-js">'
 				. '<input type="radio" name="layout" value="' . $layout . '" id="layout-' . $layout . '"'
 					. checked($sem_options['active_layout'], $layout, false)
-					. ' onchange="this.form.submit();"'
 					. ' />' . '&nbsp;' . "\n"
 				. '</span>'
 				. $details['name']
