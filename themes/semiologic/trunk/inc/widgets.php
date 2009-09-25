@@ -609,7 +609,7 @@ class entry_categories extends WP_Widget {
 		
 		$date = '<span class="entry_date">'
 			. '<a href="' . esc_url(get_month_link(get_the_time('Y'), get_the_time('m'))) . '">'
-			. apply_filters('the_time', get_the_time(__('M jS, Y', 'sem-reloaded')), __('M jS, Y', 'sem-reloaded'))
+			. apply_filters('the_time', get_the_time(__('M jS, Y', 'sem-theme')), __('M jS, Y', 'sem-theme'))
 			. '</a>'
 			. '</span>';
 		
