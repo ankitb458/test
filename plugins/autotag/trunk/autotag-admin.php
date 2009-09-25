@@ -34,7 +34,7 @@ class autotag_admin {
 			echo '<p>'
 				. '<label>'
 				. '<input type="radio" name="autotag" value=""'
-					. ( $default == ''
+					. ( $default != 'publish'
 						? ' checked="checked"'
 						: '' )
 					. ' />'
