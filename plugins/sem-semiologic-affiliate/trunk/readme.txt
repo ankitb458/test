@@ -11,7 +11,7 @@ Automatically adds your affiliate ID to all links to Semiologic.
 
 == Description ==
 
-The Semiologic affiliate plugin will add your [Semiologic affiliate ID](http://www.semiologic.com/partners/) to links on your site that point to [semiologic.com](http://www.semiologic.com) or [getsemiologic.com](http://www.getsemiologic.com).
+The Semiologic Affiliate plugin will add your [Semiologic affiliate ID](http://www.semiologic.com/partners/) to links on your site that point to [semiologic.com](http://www.semiologic.com) or [getsemiologic.com](http://www.getsemiologic.com).
 
 Start by signing up with the [Semiologic Affiliate Program](http://www.semiologic.com/partners/), and creating an affiliate campaign.
 
