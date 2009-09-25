@@ -1066,6 +1066,12 @@ EOS;
 		if ( empty($_GET['preview']) || $_GET['preview'] != 'custom-css' || !current_user_can('switch_themes') )
 			return;
 		
+		global $cache_enabled;
+		global $super_cache_enabled;
+		
+		$cache_enabled = false;
+		$super_cache_enabled = false;
+		
 		echo '<style type="text/css">' . "\n";
 		
 		echo sem_custom::get_css() . "\n";
