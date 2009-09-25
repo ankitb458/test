@@ -490,6 +490,32 @@ function upgrade_sem_6_0() {
 
 
 /**
+ * upgrade_sem_6_0_plugins()
+ *
+ * @return void
+ **/
+
+function upgrade_sem_6_0_plugins() {
+	foreach ( array(
+		'widget_bookmark_me',
+		'widget_subscribe_me',
+		'widget_fuzzy_widget',
+		'widget_random_widget',
+		'widget_related_widget',
+		'widget_text',
+		'widget_links',
+		) as $key ) {
+		$ops = get_option($key);
+		if ( !isset($ops['number']) )
+			continue;
+		unset($ops['number']);
+		update_option($key, $ops);
+	}
+	
+} # upgrade_sem_6_0_plugins()
+
+
+/**
  * upgrade_sem_theme()
  *
  * @return void
@@ -577,19 +603,19 @@ if ( $sem_captions === false )
 	$sem_captions = get_option('sem5_captions');
 $sem_nav_menus = get_option('sem_nav_menus');
 
-if ( version_compare($sem_options['version'], '6.0-rc1', '<') ) {
-	if ( empty($sem_options['active_width']) ) {
-		upgrade_sem_6_0();
-	} else {
-		upgrade_sem_theme();
-		upgrade_sem_6_0();
-	}
-	update_option('init_sem_panels', '1');
-} elseif ( empty($sem_options['active_width']) ) {
+if ( !empty($sem_options['active_width']) ) {
 	upgrade_sem_theme();
 }
 
-unset($sem_options['skin_details']);
+if ( version_compare($sem_options['version'], '6.0-rc1', '<') ) {
+	upgrade_sem_6_0();
+	update_option('init_sem_panels', '1');
+}
+
+if ( version_compare($sem_options['version'], '6.0', '<') )
+	upgrade_sem_6_0_plugins();
+
+unset($sem_options['skin_data']);
 $sem_options['version'] = sem_version;
 
 #dump($sem_options);die;

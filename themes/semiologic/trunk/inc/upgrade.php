@@ -938,6 +938,32 @@ function upgrade_sem_6_0() {
 } # upgrade_sem_6_0()
 
 
+/**
+ * upgrade_sem_6_0_plugins()
+ *
+ * @return void
+ **/
+
+function upgrade_sem_6_0_plugins() {
+	foreach ( array(
+		'widget_bookmark_me',
+		'widget_subscribe_me',
+		'widget_fuzzy_widget',
+		'widget_random_widget',
+		'widget_related_widget',
+		'widget_text',
+		'widget_links',
+		) as $key ) {
+		$ops = get_option($key);
+		if ( !isset($ops['number']) )
+			continue;
+		unset($ops['number']);
+		update_option($key, $ops);
+	}
+	
+} # upgrade_sem_6_0_plugins()
+
+
 #$wpdb->show_errors();
 
 $sem_captions = get_option('sem5_captions');
@@ -954,7 +980,10 @@ if ( version_compare($sem_options['version'], '6.0-rc1', '<') ) {
 	update_option('init_sem_panels', '1');
 }
 
-unset($sem_options['skin_details']);
+if ( version_compare($sem_options['version'], '6.0', '<') )
+	upgrade_sem_6_0_plugins();
+
+unset($sem_options['skin_data']);
 $sem_options['version'] = sem_version;
 
 #dump($sem_options);die;
