@@ -65,17 +65,7 @@ class sem_skin {
 #available_options td.right {
 	border-right: none;
 }
-</style>
 
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	jQuery('#available_options input:radio').change(function() {
-		jQuery('#option_picker').trigger('submit');
-	});
-});
-</script>
-
-<style type="text/css">
 .skin {
 	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
 }
@@ -296,6 +286,7 @@ EOS;
 				. '<span class="hide-if-js">'
 				. '<input type="radio" name="skin" value="' . $skin . '" id="skin-' . $skin . '"'
 					. checked($sem_options['active_skin'], $skin, false)
+					. ' onchange="this.form.submit();"'
 					. ' />' . '&nbsp;' . "\n"
 				. '</span>'
 				. sprintf($title, $name, $details['version']) . '<br />'
