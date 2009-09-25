@@ -587,6 +587,9 @@ class entry_categories extends WP_Widget {
 		extract($args, EXTR_SKIP);
 		extract($instance, EXTR_SKIP);
 		
+		if ( !$filed_under_by )
+			return;
+		
 		$categories = get_the_category_list(', ');
 		
 		$author = get_the_author();
@@ -604,19 +607,53 @@ class entry_categories extends WP_Widget {
 				. '</span>';
 		}
 		
-		if ( $filed_under_by ) {
-			$title = apply_filters('widget_title', $title);
-				
-			echo $before_widget
-				. ( $args['id'] != 'the_entry' && $title
-					? $before_title . $title . $after_title
-					: ''
-					)
-				. '<p>'
-				. sprintf($filed_under_by, $categories, $author)
-				. '</p>' . "\n"
-				. $after_widget;
+		$date = '<span class="entry_date">'
+			. '<a href="' . esc_url(get_month_link(get_the_time('Y'), get_the_time('m'))) . '">'
+			. apply_filters('the_time', get_the_time(__('M jS, Y', 'sem-reloaded')), __('M jS, Y', 'sem-reloaded'))
+			. '</a>'
+			. '</span>';
+		
+		$comments = '';
+		$num = get_comments_number();
+		if ( $num && !is_single() ) {
+			if ( $num > 1 ) {
+				$comments = sprintf('%s', __('%s Comments', 'sem-theme'), number_format_i18n($num));
+				$anchor = '#comments';
+				$class = 'entry_replies';
+			} elseif ( $num ) {
+				$comments = __('1 Comment', 'sem-theme');
+				$anchor = '#comments';
+				$class = 'entry_replies';
+			}
+		} elseif ( comments_open() && ( $num && is_single() || !is_single() ) ) {
+			$comments = __('Comment', 'sem-theme');
+			$anchor = '#respond';
+			$class = 'leave_reply';
 		}
+		
+		if ( $comments ) {
+			$comments = ' '
+				. '<span class="' . $class . '">'
+				. '<a href="' . esc_url(apply_filters('the_permalink', get_permalink()) . $anchor) . '">'
+				. $comments
+				. '</a>'
+				. '</span>.';
+		}
+		
+		$title = $args['id'] != 'the_entry' && $title
+			? apply_filters('widget_title', $title)
+			: false;
+			
+		echo $before_widget
+			. ( $title
+				? $before_title . $title . $after_title
+				: ''
+				)
+			. '<p>'
+			. sprintf($filed_under_by, $categories, $author, $date)
+			. $comments
+			. '</p>' . "\n"
+			. $after_widget;
 	} # widget()
 	
 	
@@ -667,7 +704,7 @@ class entry_categories extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('Filed under %1$s by %2$s.', 'sem-theme') . '</code>'
+			. '<code>' . __('Filed under %1$s by %2$s on %3$s.', 'sem-theme') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 				. ' name="' . $this->get_field_name('filed_under_by') . '"'
@@ -687,7 +724,7 @@ class entry_categories extends WP_Widget {
 	function defaults() {
 		return array(
 			'title' => __('Categories', 'sem-theme'),
-			'filed_under_by' => __('Filed under %1$s by %2$s.', 'sem-theme'),
+			'filed_under_by' => __('Filed under %1$s by %2$s on %3$s.', 'sem-theme'),
 			);
 	} # defaults()
 } # entry_categories
