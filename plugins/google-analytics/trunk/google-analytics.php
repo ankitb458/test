@@ -149,10 +149,16 @@ EOS;
 			return;
 		}
 		
+		if ( is_404() ) {
+			$tracker = 'pageTracker._trackPageview("/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);';
+		} else {
+			$tracker = 'pageTracker._trackPageview();';
+		}
+		
 		echo <<<EOS
 
 <script type="text/javascript">
-try { pageTracker._trackPageview(); } catch(err) {}
+try { $tracker } catch(err) {}
 </script>
 
 EOS;
