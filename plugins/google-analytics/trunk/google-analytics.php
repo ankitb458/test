@@ -150,7 +150,7 @@ EOS;
 		}
 		
 		if ( is_404() ) {
-			$tracker = 'pageTracker._trackPageview(' . get_option('home') . '"/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);';
+			$tracker = 'pageTracker._trackPageview("' . get_option('home') . '/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);';
 		} else {
 			$tracker = 'pageTracker._trackPageview();';
 		}
