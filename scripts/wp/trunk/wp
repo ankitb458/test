@@ -424,6 +424,9 @@ fi
 
 chown -R $owner $path
 
+find $path -type d -exec chmod 0755 {} \;
+find $path -type f -exec chmod 0644 {} \;
+
 chmod ugo+w $path/.htaccess
 chmod ugo+w $path/wp-config.php
 chmod ugo+w $path/wp-content
