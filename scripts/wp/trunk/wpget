@@ -13,12 +13,9 @@ sem_pro=''
 sem_key=''
 
 # extract args
-while [ $# -gt 0 ];
-do
-	if [ $1 != ${1#-} ];
-	then
-		case $1
-		in
+while [ $# -gt 0 ]; do
+	if [ $1 != ${1#-} ]; then
+		case $1 in
 			'-k' )
 				shift
 				sem_key=$1
@@ -59,16 +56,14 @@ path=${path%/}
 
 
 # validate path
-if [ ! -w $path ];
-then
+if [ ! -w $path ]; then
 	echo "Err: $path is not writable"
 	exit 1
 fi
 
 
 # fetch unzip method
-if [ -x /usr/bin/unzip -o -x /usr/local/bin/unzip ];
-then
+if [ -x /usr/bin/unzip -o -x /usr/local/bin/unzip ]; then
 	cmd=unzip
 else
 	cmd='tar -xf'
@@ -76,19 +71,27 @@ fi
 
 
 # inititialize
-core='sem-pro wordpress'
-wp_themes='p2'
-wp_plugins='auto-thickbox core-control sem-admin-menu sem-autolink-uri sem-author-image sem-external-links sem-dofollow sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
-sem_themes=''
-sem_plugins=''
+if [ "$sem_key" = '' ]; then
+	core='wordpress'
+	wp_themes='p2'
+	sem_themes=''
+	wp_plugins='auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-external-links sem-dofollow sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
+	sem_plugins=''
+else
+	core='sem-pro wordpress'
+	wp_themes='p2'
+	sem_themes='semiologic sem-reloaded'
+	wp_plugins='auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-dofollow sem-external-links sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
+	sem_plugins='ad-manager article-uploader autotag contact-form feed-widgets fuzzy-widgets google-analytics hitslink inline-widgets mediacaster nav-menus newsletter-manager random-widgets redirect-manager related-widgets script-manager search-reloaded sem-cache sem-cloner sem-fixes sem-semiologic-affiliate sem-seo silo smart-links version-checker widget-contexts'
+fi
+
 
 
 cwd=$PWD
 
 dir=`uuidgen`
 
-if [ "$sem_key" = '' ];
-then
+if [ "$sem_key" = '' ]; then
 	sem_key=`cat /etc/semiologic 2> /dev/null`
 fi
 
@@ -98,25 +101,21 @@ touch ~/.wpget.$dir
 trap "cd $cwd; rm -Rf /tmp/$dir 2> /dev/null; rm -f ~/.wpget.$dir 2> /dev/null" EXIT
 
 # wp_core
-for package in $core;
-do
+for package in $core; do
 	# debug
-	case $package
-	in
+	case $package in
 		"sem-pro" )
-			if [ "$sem_key" = '' ];
-			then
+			if [ "$sem_key" = '' ]; then
 				continue
 			fi
 			service=https://api.semiologic.com/version/0.2/core/$sem_key
 			response=`curl -s --connect-timeout 3 -f $service`
-			sleep .2
+			sleep .1
 			
 			#echo $response
 			sem_pro=`echo $response | cut -d , -f 3`
 			
-			if [ "$sem_pro" != '' ];
-			then
+			if [ "$sem_pro" != '' ]; then
 				echo $response >> ~/.wpget.$dir
 				break
 			fi
@@ -125,10 +124,9 @@ do
 		wordpress )
 			service=http://api.wordpress.org/core/version-check/1.3/
 			response=`curl -s --connect-timeout 3 -f $service`
-			sleep .2
+			sleep .1
 			
-			if [ "$response" = '' ];
-			then
+			if [ "$response" = '' ]; then
 				echo "Err: $service returned an invalid response."
 				exit 1
 			fi
@@ -147,80 +145,88 @@ done
 args=
 service=http://api.wordpress.org/themes/update-check/1.0/
 
-for package in $wp_themes;
-do
+for package in $wp_themes; do
 	args=`echo $args "'$package' => array('Name' => '$package', 'Title' => '$package', 'Template' => '$package', 'Stylesheet' => '$package'), "`
 done
 
-if [ "$args" != '' ];
-then
+if [ "$args" != '' ]; then
 	args=`echo '$send =' "array($args);" '$send["current_theme"] = (object) null; echo "themes=" . urlencode(serialize($send));'`
 	
 	args=`php -r "$args"`
 	
 	response=`curl -s --connect-timeout 3 -f $service -d "$args"`
-	sleep .2
+	sleep .1
 	
 	response=`echo '$themes =' "unserialize('$response');" 'foreach ( $themes as $theme_slug => $theme ) { echo preg_replace("|[^a-z0-9_-]|", "", $theme_slug) . "," . preg_replace("|[^0-9\.]|", "", $theme["new_version"]) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $theme["package"]) . " "; }'`
 	response=`php -r "$response"`
 	
 	#echo $response
-	for details in $response;
-	do
+	for details in $response; do
 		echo $details >> ~/.wpget.$dir
 	done
 fi
 
 
-if [ "$sem_pro" = '' ];
-then
-	# wp_plugins
-	args=
-	service=http://api.wordpress.org/plugins/update-check/1.0/
+# sem_themes
+args=
+service=https://api.semiologic.com/version/0.2/themes/$sem_key
+
+if [ "$sem_key" != '' ]; then
+	curl -s --connect-timeout 3 -f $service >> ~/.wpget.$dir
+	sleep .1
+fi
+
+
+# wp_plugins
+args=
+service=http://api.wordpress.org/plugins/update-check/1.0/
+
+for package in $wp_plugins; do
+	args=`echo $args "'$package/$package.php' => array('Name' => '$package'), "`
+done
+
+if [ "$args" != '' ]; then
+	args=`echo '$plugins =' "array($args);" '$send = (object) null; $send->plugins=$plugins; $send->active=array(); echo "plugins=" . urlencode(serialize($send));'`
+	args=`php -r "$args"`
 	
-	for package in $wp_plugins;
-	do
-		args=`echo $args "'$package/$package.php' => array('Name' => '$package'), "`
-	done
+	response=`curl -s --connect-timeout 3 -f $service -d "$args"`
+	sleep .1
 	
-	if [ "$args" != '' ];
-	then
-		args=`echo '$plugins =' "array($args);" '$send = (object) null; $send->plugins=$plugins; $send->active=array(); echo "plugins=" . urlencode(serialize($send));'`
-		args=`php -r "$args"`
-		
-		response=`curl -s --connect-timeout 3 -f $service -d "$args"`
-		sleep .2
-		
-		if [ "$response" = '' ];
-		then
-			echo "Err: $service returned an invalid response."
-			exit 1
-		fi
-		
-		response=`echo '$plugins =' "unserialize('$response');" 'foreach ( $plugins as $plugin ) { echo preg_replace("|[^a-z0-9_-]|", "", $plugin->slug) . "," . preg_replace("|[^0-9\.]|", "", $plugin->new_version) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $plugin->package) . " "; }'`
-		response=`php -r "$response"`
-		
-		#echo $response
-		for details in $response;
-		do
-			echo $details >> ~/.wpget.$dir
-		done
+	if [ "$response" = '' ]; then
+		echo "Err: $service returned an invalid response."
+		exit 1
 	fi
+	
+	response=`echo '$plugins =' "unserialize('$response');" 'foreach ( $plugins as $plugin ) { echo preg_replace("|[^a-z0-9_-]|", "", $plugin->slug) . "," . preg_replace("|[^0-9\.]|", "", $plugin->new_version) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $plugin->package) . " "; }'`
+	response=`php -r "$response"`
+	
+	#echo $response
+	for details in $response; do
+		echo $details >> ~/.wpget.$dir
+	done
+fi
+
+
+# sem_plugins
+args=
+service=https://api.semiologic.com/version/0.2/plugins/$sem_key
+
+if [ "$sem_key" != '' ]; then
+	curl -s --connect-timeout 3 -f $service >> ~/.wpget.$dir
+	sleep .1
 fi
 
 
 # Repackage if necessary
 diff -q ~/.wpget ~/.wpget.$dir > /dev/null
 
-if [ $? -eq 0 -a $force -eq 0 ];
-then
+if [ $? -eq 0 -a $force -eq 0 ]; then
 	# no diff
 	exit 0
 fi
 
 
-if [ $quiet -eq 0 ];
-then
+if [ $quiet -eq 0 ]; then
 	echo "Repackaging $path/wordpress ..."
 fi
 
@@ -228,19 +234,25 @@ fi
 mkdir -p /tmp/$dir
 cd /tmp/$dir
 
+if [ "$sem_key" != '' ]; then
+	cookies=`curl -s --connect-timeout 3 -f https://api.semiologic.com/auth/0.1/$sem_key`
+	sleep .1
+else
+	cookies=''
+fi
 
 # wp_core
-for package in $core;
-do
+for package in $core; do
 	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
-	if [ "$url" = '' ];
-	then
+	if [ "$url" = '' ]; then
 		continue
 	fi
 	
-	if [ "$sem_pro" != '' ];
-	then
-		cookies=`curl -s --connect-timeout 3 -f https://api.semiologic.com/auth/0.1/$sem_key`
+	if [ $quiet -eq 0 ]; then
+		echo "Fetching $package"
+	fi
+	
+	if [ "$sem_pro" != '' ]; then
 		curl -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
 	else
 		curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
@@ -252,13 +264,16 @@ done
 
 
 # wp_themes
-for package in $wp_themes;
-do
+for package in $wp_themes; do
 	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
-	if [ "$url" = '' ];
-	then
+	if [ "$url" = '' ]; then
 		continue
 	fi
+	
+	if [ $quiet -eq 0 ]; then
+		echo "Fetching $package"
+	fi
+	
 	curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
 	$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
 	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
@@ -266,19 +281,60 @@ do
 done
 
 
-# wp_plugins
-for package in $wp_plugins;
-do
-	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
-	if [ "$url" = '' ];
-	then
-		continue
-	fi
-	curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
-	$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
-	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/plugins/$package 2> /dev/null
-	rm -f /tmp/$dir/$package.zip 2> /dev/null
-done
+if [ "$sem_pro" = '' ]; then
+	# sem_themes
+	for package in $sem_themes; do
+		url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+		if [ "$url" = '' ]; then
+			continue
+		fi
+		
+		if [ $quiet -eq 0 ]; then
+			echo "Fetching $package"
+		fi
+		
+		curl -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
+		rm -f /tmp/$dir/$package.zip 2> /dev/null
+	done
+	
+	
+	# wp_plugins
+	for package in $wp_plugins; do
+		url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+		if [ "$url" = '' ]; then
+			continue
+		fi
+		
+		if [ $quiet -eq 0 ]; then
+			echo "Fetching $package"
+		fi
+		
+		curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/plugins/$package 2> /dev/null
+		rm -f /tmp/$dir/$package.zip 2> /dev/null
+	done
+	
+	
+	# sem_plugins
+	for package in $sem_plugins; do
+		url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+		if [ "$url" = '' ]; then
+			continue
+		fi
+		
+		if [ $quiet -eq 0 ]; then
+			echo "Fetching $package"
+		fi
+		
+		curl -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
+		rm -f /tmp/$dir/$package.zip 2> /dev/null
+	done
+fi
 
 
 # overwrite existing package
