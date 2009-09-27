@@ -175,25 +175,6 @@ EOF;
 			. '</td>'
 			. '</tr>' . "\n";
 		
-		echo '<tr>'
-			. '<th scope="row">'
-			. __('Site Usage Patterns', 'google-analytics')
-			. '</th>'
-			. '<td>'
-			. '<p>'
-			. __('Make sure to spot Google Analytics\'s navigation summary and site overlay reports for individual urls. They\'re located to the right when you visit any url\'s statistics.', 'google-analytics')
-			. '</p>' . "\n"
-			. '<ul class="ul-square">' . "\n"
-			. '<li>'
-			. __('The first is a concise report. It lets you know, at a glance, where users came from upon entering the page, and where they left upon leaving it.', 'google-analytics')
-			. '</li>' . "\n"
-			. '<li>'
-			. __('The second is more graphical. It outputs your page with an overlay that shows where visitors are clicking.', 'google-analytics')
-			. '</li>' . "\n"
-			. '</ul>' . "\n"
-			. '</td>'
-			. '</tr>' . "\n";
-		
 		echo '</table>' . "\n";
 	} # crash_course()
 } # google_analytics_admin

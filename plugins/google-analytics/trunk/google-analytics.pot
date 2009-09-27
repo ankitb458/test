@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-09-07 15:40+0200\n"
+"POT-Creation-Date: 2009-09-27 08:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -127,31 +127,8 @@ msgstr ""
 msgid "Authors, editors and site admins are not tracked when logged in."
 msgstr ""
 
-#: google-analytics-admin.php:180
-msgid "Site Usage Patterns"
-msgstr ""
-
-#: google-analytics-admin.php:184
-msgid ""
-"Make sure to spot Google Analytics's navigation summary and site overlay "
-"reports for individual urls. They're located to the right when you visit any "
-"url's statistics."
-msgstr ""
-
-#: google-analytics-admin.php:188
-msgid ""
-"The first is a concise report. It lets you know, at a glance, where users "
-"came from upon entering the page, and where they left upon leaving it."
-msgstr ""
-
-#: google-analytics-admin.php:191
-msgid ""
-"The second is more graphical. It outputs your page with an overlay that "
-"shows where visitors are clicking."
-msgstr ""
-
-#: google-analytics-info.php:2 google-analytics.php:252
-#: google-analytics.php:253
+#: google-analytics-info.php:2 google-analytics.php:258
+#: google-analytics.php:259
 msgid "Google Analytics"
 msgstr ""
 
