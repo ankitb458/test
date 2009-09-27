@@ -36,6 +36,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
+= 2.0.1 =
+
+- Also catch urls with a parameter and no trailing slash
+
 = 2.0 =
 
 - Enhance escape/unescape methods
