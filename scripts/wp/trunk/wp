@@ -396,7 +396,7 @@ then
 	if [ "$dbh" = 'localhost' -a -e /tmp/mysql.sock ];
 	then
 		mysqladmin -u root create $dbn 2> /dev/null
-		if [ "$dbu" = 'root' -a "$dbp" = '' ]; then
+		if [ "$dbu" = 'root' -a "$dbp" = '' -a -f /root/.my.cnf ]; then
 			dbp=`grep password /root/.my.cnf | awk -F= '{print $2}'`
 		fi
 	fi
