@@ -2,7 +2,7 @@
 #
 # hub.org WP/Sem Pro utils
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.7
+# Version: 0.8 alpha
 # http://www.mesoconcepts.com/license/
 #
 
@@ -202,6 +202,16 @@ fi
 # process all
 if [ "$cmd" != 'install' -a $all -eq 1 ];
 then
+	which wp &> /dev/null
+	if [ $? -eq 0 ]; then
+		wp_cmd=wp
+	elif [ -f /usr/local/abin/wp ]; then
+		wp_cmd=/usr/local/abin/wp
+	else
+		echo 'Err: failed to locate wp in $PATH'
+		exit 1
+	fi
+	
 	touch ~/.wp
 	
 	# dump non-valid installs
@@ -221,7 +231,7 @@ then
 	
 	for path in `cat ~/.wp 2> /dev/null`
 	do
-		wp $cmd $path -s $src || exit 1
+		$wp_cmd $cmd $path -s $src || exit 1
 	done
 	
 	exit 0
