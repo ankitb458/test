@@ -72,6 +72,10 @@ fi
 
 # inititialize
 if [ "$sem_key" = '' ]; then
+	sem_key=`cat /etc/semiologic 2> /dev/null`
+fi
+
+if [ "$sem_key" = '' ]; then
 	core='wordpress'
 	wp_themes='p2'
 	sem_themes=''
@@ -90,10 +94,6 @@ fi
 cwd=$PWD
 
 dir=`uuidgen`
-
-if [ "$sem_key" = '' ]; then
-	sem_key=`cat /etc/semiologic 2> /dev/null`
-fi
 
 touch ~/.wpget
 touch ~/.wpget.$dir
