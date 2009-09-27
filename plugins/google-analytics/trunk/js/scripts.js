@@ -90,9 +90,9 @@ jQuery(document).ready(function() {
 		var t = jQuery(this);
 		if ( !t.hasClass('ga_event') && !t.hasClass('download_event') ) {
 			var href = jQuery(this).attr('href');
-			if ( href && !href.match(/^#/) && !href.match(window.google_analytics_regexp) ) {
+			if ( href && href.match(/^https?:/i) && !href.match(window.google_analytics_regexp) ) {
 				try {
-					window.pageTracker._trackPageview('/outbound/' + href);
+					window.pageTracker._trackPageview('/outbound/?to=' + href);
 				} catch ( err ) {}
 			}
 		}

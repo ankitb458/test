@@ -76,7 +76,7 @@ EOS;
 			return;
 		
 		$folder = plugin_dir_url(__FILE__);
-		wp_enqueue_script('google_analytics', $folder . 'js/scripts.js', array('jquery'), '20090913', true);
+		wp_enqueue_script('google_analytics', $folder . 'js/scripts.js', array('jquery'), '20090927', true);
 		
 		wp_localize_script('google_analytics', 'google_analyticsL10n', array(
 			'ad_event' => __('Ad Unit', 'google-analytics'),
@@ -150,7 +150,7 @@ EOS;
 		}
 		
 		if ( is_404() ) {
-			$tracker = 'pageTracker._trackPageview("' . get_option('home') . '/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);';
+			$tracker = 'pageTracker._trackPageview("/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);';
 		} else {
 			$tracker = 'pageTracker._trackPageview();';
 		}
