@@ -2,11 +2,12 @@
 #
 # WP/Sem Pro packager
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.7
+# Version: 0.8 alpha
 # http://www.mesoconcepts.com/license/
 #
 
 # init args
+force=0
 quiet=0
 sem_pro=''
 sem_key=''
@@ -21,6 +22,10 @@ do
 			'-k' )
 				shift
 				sem_key=$1
+				;;
+			
+			'--force' )
+				force=1
 				;;
 			
 			'--quiet' )
@@ -207,7 +212,7 @@ fi
 # Repackage if necessary
 diff -q ~/.wpget ~/.wpget.$dir > /dev/null
 
-if [ $? -eq 0 ];
+if [ $? -eq 0 -a $force -eq 0 ];
 then
 	# no diff
 	exit 0
