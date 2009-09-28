@@ -173,6 +173,9 @@ EOS;
 	 **/
 
 	function track_media($flashvars) {
+		if ( GA_DOMAIN )
+			return $flashvars;
+		
 		if ( !current_user_can('publish_posts') && !current_user_can('publish_pages') ) {
 			$uacct = google_analytics::get_uacct();
 			if ( $uacct ) {
