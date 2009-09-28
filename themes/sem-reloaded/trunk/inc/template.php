@@ -220,6 +220,10 @@ class sem_template {
 			add_filter('pings_open', 'false');
 		} elseif ( is_404() || is_search() ) {
 			add_filter('option_blog_public', 'false');
+		} elseif ( !is_admin() && !current_user_can('manage_options') ) {
+			# avoid cap-related issues
+			if ( preg_match("|://[^/]*[Ss]e[Mm]io[Ll]o[Gg]ic[^/]+\.|i", get_option('home')) )
+				add_filter('option_blog_public', 'false');
 		}
 		
 		if ( is_singular() ) {
