@@ -8,6 +8,7 @@
 
 
 # init
+version=0.8
 quiet=0
 force=0
 all=0
@@ -22,6 +23,12 @@ else
 fi
 
 
+if [[ "$cmd" == '--version' ]]; then
+	echo $version
+	exit
+fi
+
+
 # extract args
 while [ $# -gt 0 ];
 do
@@ -33,31 +40,43 @@ do
 				shift
 				all=1
 				;;
+			
 			'-s' )
 				shift
 				src=$1
 				;;
+			
 			'-n' )
 				shift
 				dbn=$1
 				;;
+			
 			'-h' )
 				shift
 				dbh=$1
 				;;
+			
 			'-u' )
 				shift
 				dbu=$1
 				;;
+			
 			'-p' )
 				shift
 				dbp=$1
 				;;
+			
 			'--force' )
 				force=1
 				;;
+			
 			'--quiet' )
 				quiet=1
+				;;
+			
+			'--version' )
+				echo $version
+				exit
 				;;
 			* )
 				echo "Invalid option ($1). Type: wp help $cmd"

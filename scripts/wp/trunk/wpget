@@ -7,6 +7,7 @@
 #
 
 # init args
+version=0.8
 force=0
 quiet=0
 sem_pro=''
@@ -27,6 +28,11 @@ while [ $# -gt 0 ]; do
 			
 			'--quiet' )
 				quiet=1
+				;;
+			
+			'--version' )
+				echo $version
+				exit
 				;;
 			
 			* )
