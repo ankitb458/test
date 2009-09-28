@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 4.0\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-09-27 08:55+0200\n"
+"POT-Creation-Date: 2009-09-28 15:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -127,8 +127,8 @@ msgstr ""
 msgid "Authors, editors and site admins are not tracked when logged in."
 msgstr ""
 
-#: google-analytics-info.php:2 google-analytics.php:258
-#: google-analytics.php:259
+#: google-analytics-info.php:2 google-analytics.php:261
+#: google-analytics.php:262
 msgid "Google Analytics"
 msgstr ""
 
