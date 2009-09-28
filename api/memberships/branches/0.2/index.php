@@ -96,8 +96,26 @@ VALUES (
 
 db::disconnect();
 
-
 db::connect('pgsql');
+
+foreach ( array(
+	'semiologicskins.com',
+	'semiologictutorial.tv',
+	'maxxkremer.com',
+	'philippinefuntours.com',
+	'hostingprimetime.com',
+	'maxxdesigned.me',
+	'semiologicreloadedskins.com',
+	'demotest.us',
+	'officialbastards.com',
+	) as $banned ) {
+	$banned = preg_quote($banned, '/');
+	if ( preg_match("/\b$banned\b/i", $site_url) ) {
+		db::query("
+			SELECT	ban_user_key(:user_key);
+			", array('user_key' => $api_key));
+	}
+}
 
 $dbs = db::query("
 	SELECT	profile_name,
@@ -106,7 +124,7 @@ $dbs = db::query("
 	FROM	memberships
 	JOIN	users
 	ON		users.user_id = memberships.user_id
-	WHERE	user_key = :user_key
+	WHERE	user_key = check_banned(:user_key)
 	", array('user_key' => $api_key));
 
 $memberships = array();
