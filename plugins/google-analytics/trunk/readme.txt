@@ -13,7 +13,7 @@ Integrates Google Analytics on your site.
 
 The Google Analytics (GA) plugin for WordPress lets you easily add Google's web tracking script to your site.
 
-Google Analytics is a truly amazing service for marketers: it generates comprehensive site statistics for your site —- at no cost -- that are entirely geared towards website optimization. The only downside is that Google ends up knowing your stats. If you do not wish it to, look into the Hitslink plugin.
+Google Analytics is a truly amazing service for marketers: it generates comprehensive site statistics for your site -- at no cost -- that are entirely geared towards website optimization. The only downside is that Google ends up knowing your stats. If you do not wish it to, look into the Hitslink plugin.
 
 To make use of the plugin, browse Settings / Google Analytics and follow the instructions.
 
@@ -65,7 +65,7 @@ To make the best of the resulting reports, customize the way your reports are di
 
 = Custom event tracking =
 
-The GA lastly allows to track custom-defined events, in case the need arises. Doing so is relatively easy, too: simply add a ga_event class to <a>, <div> or <form> tags of interest.
+The GA lastly allows to track custom-defined events, in case the need arises. Doing so is relatively easy, too: simply add a ga_event class to your <a>, <div> or <form> tag of interest.
 
 = Help Me! =
 
