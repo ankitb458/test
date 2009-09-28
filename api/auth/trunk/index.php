@@ -2,6 +2,9 @@
 # Parse Request
 define('mc_path', dirname(__FILE__));
 
+if ( function_exists('date_default_timezone_set') )
+	date_default_timezone_set('UTC');
+
 include mc_path . '/config.php';
 include mc_path . '/inc/utils.php';
 
