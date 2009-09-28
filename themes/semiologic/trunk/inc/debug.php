@@ -3,7 +3,7 @@
 # Debug tools
 #
 
-if ( !defined('SAVEQUERIES') && isset($_GET['debug']) && $_GET['debug'] = 'sql' )
+if ( !defined('SAVEQUERIES') && isset($_GET['debug']) && $_GET['debug'] == 'sql' )
 	define('SAVEQUERIES', true);
 
 
