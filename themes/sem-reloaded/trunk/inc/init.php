@@ -8,6 +8,8 @@ if ( !defined('sem_version') )
 
 if ( !defined('sem_debug') )
 	define('sem_debug', isset($_GET['debug']) );
+elseif ( !isset($_GET['debug']) && !$_POST )
+	$_GET['debug'] = sem_debug;
 
 if ( !defined('sem_widget_cache_debug') )
 	define('sem_widget_cache_debug', false);
