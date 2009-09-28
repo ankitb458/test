@@ -1761,7 +1761,8 @@ EOS;
 				$header = str_replace(WP_CONTENT_DIR, '', $header);
 				$header_size = @getimagesize(WP_CONTENT_DIR . $header);
 				if ( $header_size ) {
-					update_post_meta($post_ID, '_sem_header', $header);
+					if ( get_post_meta($post_ID, '_sem_header', true) != $header )
+						update_post_meta($post_ID, '_sem_header', $header);
 					wp_cache_set('sem_header', $header_size, 'sem_header');
 					return $header;
 				}
@@ -1786,7 +1787,7 @@ EOS;
 			break;
 		}
 		
-		if ( is_singular() )
+		if ( is_singular() && get_post_meta($post_ID, '_sem_header', true) != 'default' )
 			update_post_meta($post_ID, '_sem_header', 'default');
 		
 		if ( $header ) {
