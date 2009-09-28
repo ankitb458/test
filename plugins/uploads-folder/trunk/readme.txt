@@ -6,7 +6,7 @@ Requires at least: 2.6
 Tested up to: 2.8.4
 Stable tag: trunk
 
-The Uploads Folder plugin for WordPress changes your uploads subfolders to more natural paths that are unique to the post or page.
+Changes your uploads subfolders to more natural paths that are unique to posts and pages.
 
 
 == Description ==
@@ -30,6 +30,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 = 2.0 =
 
-- Complete rewrite / package the actual script as a library
+- Complete rewrite
+- Repackage the actual script as a library, for use in other plugins
 - Localization
 - Code enhancements and optimizations
