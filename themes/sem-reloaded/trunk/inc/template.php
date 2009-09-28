@@ -223,7 +223,7 @@ class sem_template {
 		} elseif ( !is_admin() && !current_user_can('manage_options') ) {
 			# avoid cap-related issues
 			if ( preg_match("|://[^/]*[Ss]e[Mm]io[Ll]o[Gg]ic[^/]+\.|i", get_option('home')) )
-				add_filter('option_blog_public', 'false');
+				add_filter('option_blog_public', 'false', 1000);
 		}
 		
 		if ( is_singular() ) {
