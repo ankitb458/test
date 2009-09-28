@@ -43,7 +43,7 @@ $success = active_user::login(
 	new user("
 	SELECT	*
 	FROM	users
-	WHERE	user_key = :user_key
+	WHERE	user_key = check_banned(:user_key)
 	", array('user_key' => $api_key)));
 
 if ( !$success ) {
