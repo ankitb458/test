@@ -23,7 +23,7 @@ else
 fi
 
 
-if [[ "$cmd" == '--version' ]]; then
+if [ "$cmd" == '--version' ]; then
 	echo $version
 	exit
 fi
