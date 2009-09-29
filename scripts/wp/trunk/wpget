@@ -68,13 +68,28 @@ if [ ! -w $path ]; then
 fi
 
 
-# fetch unzip method
-if [ -x /usr/bin/unzip -o -x /usr/local/bin/unzip ]; then
-	cmd=unzip
+# find unzip method
+which unzip
+echo $?
+if [ `which unzip &> /dev/null` ]; then
+	unzip_cmd=unzip
+elif [ `which tar &> /dev/null` ]; then
+	unzip_cmd='tar -xf'
 else
-	cmd='tar -xf'
+	echo 'Err: failed to find unzip or tar'
+	exit 1
 fi
 
+# find curl
+if [ `which curl &> /dev/null` ]; then
+	curl_cmd=curl
+elif [ -f /usr/local/bin/curl ]; then
+	curl_cmd=/usr/local/bin/curl
+else
+	echo 'Err: failed to locate wp in $PATH'
+	exit 1
+fi
+exit
 
 # inititialize
 if [ "$sem_key" = '' ]; then
@@ -115,7 +130,7 @@ for package in $core; do
 				continue
 			fi
 			service=https://api.semiologic.com/version/0.2/core/$sem_key
-			response=`curl -s --connect-timeout 3 -f $service`
+			response=`$curl_cmd -s --connect-timeout 3 -f $service`
 			sleep .1
 			
 			#echo $response
@@ -129,7 +144,7 @@ for package in $core; do
 		
 		wordpress )
 			service=http://api.wordpress.org/core/version-check/1.3/
-			response=`curl -s --connect-timeout 3 -f $service`
+			response=`$curl_cmd -s --connect-timeout 3 -f $service`
 			sleep .1
 			
 			if [ "$response" = '' ]; then
@@ -160,7 +175,7 @@ if [ "$args" != '' ]; then
 	
 	args=`php -r "$args"`
 	
-	response=`curl -s --connect-timeout 3 -f $service -d "$args"`
+	response=`$curl_cmd -s --connect-timeout 3 -f $service -d "$args"`
 	sleep .1
 	
 	response=`echo '$themes =' "unserialize('$response');" 'foreach ( $themes as $theme_slug => $theme ) { echo preg_replace("|[^a-z0-9_-]|", "", $theme_slug) . "," . preg_replace("|[^0-9\.]|", "", $theme["new_version"]) . "," . preg_replace("|[^a-z0-9.:/_-]|", "", $theme["package"]) . " "; }'`
@@ -178,7 +193,7 @@ args=
 service=https://api.semiologic.com/version/0.2/themes/$sem_key
 
 if [ "$sem_key" != '' ]; then
-	curl -s --connect-timeout 3 -f $service >> ~/.wpget.$dir
+	$curl_cmd -s --connect-timeout 3 -f $service >> ~/.wpget.$dir
 	sleep .1
 fi
 
@@ -195,7 +210,7 @@ if [ "$args" != '' ]; then
 	args=`echo '$plugins =' "array($args);" '$send = (object) null; $send->plugins=$plugins; $send->active=array(); echo "plugins=" . urlencode(serialize($send));'`
 	args=`php -r "$args"`
 	
-	response=`curl -s --connect-timeout 3 -f $service -d "$args"`
+	response=`$curl_cmd -s --connect-timeout 3 -f $service -d "$args"`
 	sleep .1
 	
 	if [ "$response" = '' ]; then
@@ -218,7 +233,7 @@ args=
 service=https://api.semiologic.com/version/0.2/plugins/$sem_key
 
 if [ "$sem_key" != '' ]; then
-	curl -s --connect-timeout 3 -f $service >> ~/.wpget.$dir
+	$curl_cmd -s --connect-timeout 3 -f $service >> ~/.wpget.$dir
 	sleep .1
 fi
 
@@ -241,7 +256,7 @@ mkdir -p /tmp/$dir
 cd /tmp/$dir
 
 if [ "$sem_key" != '' ]; then
-	cookies=`curl -s --connect-timeout 3 -f https://api.semiologic.com/auth/0.1/$sem_key`
+	cookies=`$curl_cmd -s --connect-timeout 3 -f https://api.semiologic.com/auth/0.1/$sem_key`
 	sleep .1
 else
 	cookies=''
@@ -259,12 +274,12 @@ for package in $core; do
 	fi
 	
 	if [ "$sem_pro" != '' ]; then
-		curl -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$curl_cmd -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
 	else
-		curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
 	fi
 	
-	$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+	$unzip_cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
 	rm -f /tmp/$dir/$package.zip 2> /dev/null
 done
 
@@ -280,8 +295,8 @@ for package in $wp_themes; do
 		echo "Fetching $package"
 	fi
 	
-	curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
-	$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+	$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
+	$unzip_cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
 	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
 	rm -f /tmp/$dir/$package.zip 2> /dev/null
 done
@@ -299,8 +314,8 @@ if [ "$sem_pro" = '' ]; then
 			echo "Fetching $package"
 		fi
 		
-		curl -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
-		$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+		$curl_cmd -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$unzip_cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
 		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
 		rm -f /tmp/$dir/$package.zip 2> /dev/null
 	done
@@ -317,8 +332,8 @@ if [ "$sem_pro" = '' ]; then
 			echo "Fetching $package"
 		fi
 		
-		curl -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
-		$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+		$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$unzip_cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
 		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/plugins/$package 2> /dev/null
 		rm -f /tmp/$dir/$package.zip 2> /dev/null
 	done
@@ -335,8 +350,8 @@ if [ "$sem_pro" = '' ]; then
 			echo "Fetching $package"
 		fi
 		
-		curl -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
-		$cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
+		$curl_cmd -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
+		$unzip_cmd /tmp/$dir/$package.zip 1> /dev/null							|| exit 1
 		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
 		rm -f /tmp/$dir/$package.zip 2> /dev/null
 	done
