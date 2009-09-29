@@ -588,6 +588,11 @@ h2 a {
 	float: left;
 }
 
+p.comment_label {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
 .comment_content,
 .comment_field {
 	margin-left: 165px;
