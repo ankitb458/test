@@ -181,7 +181,7 @@ function VSI_dash_report() {
   		WHERE	comment_subscribe = 'Y'
   		");
     if ($VSI_sub_auth_counter != '') {
-        echo "<h3>Subscriber Stats <a href=\"" . trailingslashit(site_url()) . "wp-admin/edit.php?page=wp-subscribed.php\" title=\"More...\" /> &raquo;</a></h3>";
+        echo "<p><strong>Subscriber Stats</strong></p>";
         echo "<p>There are <strong>" . $VSI_sub_auth_counter . "</strong> people subscribed to <strong>" . $VSI_sub_counter ."</strong> different posts.</p>";
     }
 }
