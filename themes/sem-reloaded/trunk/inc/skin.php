@@ -68,54 +68,67 @@ class sem_skin {
 
 .skin {
 	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
+	font-size: 14px;
 }
 
 .antica {
 	font-family: "Book Antica", Times, Serif;
+	font-size: 14px;
 }
 
 .arial {
 	font-family: Arial, Helvetica, Sans-Serif;
+	font-size: 14px;
 }
 
 .bookman {
 	font-family: "Bookman Old Style", Times, Serif;
+	font-size: 14px;
 }
 
 .comic {
 	font-family: "Comic Sans MS", Helvetica, Sans-Serif;
+	font-size: 14px;
 }
 
 .corsiva {
 	font-family: "Monotype Corsiva", Courier, Monospace;
+	font-size: 14px;
 }
 
 .courier {
 	font-family: "Courier New", Courier, Monospace;
+	font-size: 14px;
 }
 
 .garamond {
 	font-family: Garamond, Times, Serif;
+	font-size: 14px;
 }
 
 .georgia {
 	font-family: Georgia, Times, Serif;
+	font-size: 14px;
 }
 
 .tahoma {
 	font-family: Tahoma, Helvetica, Sans-Serif;
+	font-size: 14px;
 }
 
 .times {
 	font-family: "Times New Roman", Times, Serif;
+	font-size: 14px;
 }
 
 .trebuchet {
 	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
+	font-size: 14px;
 }
 
 .verdana {
 	font-family: Verdana, Helvetica, Sans-Serif;
+	font-size: 14px;
 }
 </style>
 
