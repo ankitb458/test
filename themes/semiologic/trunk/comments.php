@@ -228,6 +228,19 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 				. '</p>' . "\n";
 		} # if ( $user_ID )
  		
+		if ( !$user_ID && $req ) {
+			echo '<p>'
+				.  $comments_captions['required_fields']
+				. '</p>' . "\n";
+		}
+		
+		# Subscribe to comments
+		
+		if ( function_exists('show_subscription_checkbox') && has_filter('comment_form', 'show_subscription_checkbox') ) {
+			remove_action('comment_form', 'show_subscription_checkbox');
+			show_subscription_checkbox();
+		}
+		
 		# WP Review Site support
 		
 		if ( function_exists('ratings_input_table') && has_filter('comment_form', 'ratings_input_table') ) {
@@ -236,11 +249,6 @@ if ( comments_open() && !( isset($_GET['action']) && $_GET['action'] == 'print' 
 		}	
 		
 		echo '<textarea name="comment" id="comment" cols="48" rows="10"></textarea>' . "\n";
-
-		if ( !$user_ID && $req )
-			echo '<p>'
-				.  $comments_captions['required_fields']
-				. '</p>' . "\n";
 		
 		echo '<p>'
 			. '<input name="submit" type="submit" id="submit"'
