@@ -266,7 +266,7 @@ img.align_center {
 }
 
 body {
-	font-size: 14px;
+	font-size: 15px;
 }
 
 h1 {
@@ -275,12 +275,16 @@ h1 {
 }
 
 h2 {
-	font-size: 17px;
+	font-size: 18px;
 	font-weight: bold;
 }
 
 #main h3 {
-	font-size: 15px;
+	font-size: 16px;
+}
+
+.wp-calendar tbody {
+	font-size: 14px;
 }
 
 h3,
