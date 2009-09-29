@@ -617,27 +617,26 @@ class entry_categories extends WP_Widget {
 		$num = get_comments_number();
 		if ( $num && !is_single() ) {
 			if ( $num > 1 ) {
-				$comments = sprintf(__('%s Comments', 'sem-theme'), number_format_i18n($num));
+				$comments = sprintf($n_comments, number_format_i18n($num));
 				$anchor = '#comments';
 				$class = 'entry_replies';
 			} elseif ( $num ) {
-				$comments = __('1 Comment', 'sem-theme');
+				$comments = $one_comment;
 				$anchor = '#comments';
 				$class = 'entry_replies';
 			}
 		} elseif ( comments_open() && ( $num && is_single() || !is_single() ) ) {
-			$comments = __('Comment', 'sem-theme');
+			$comments = $add_comment;
 			$anchor = '#respond';
 			$class = 'leave_reply';
 		}
 		
 		if ( $comments ) {
-			$comments = ' '
-				. '<span class="' . $class . '">'
+			$comments = '<span class="' . $class . '">'
 				. '<a href="' . esc_url(apply_filters('the_permalink', get_permalink()) . $anchor) . '">'
 				. $comments
 				. '</a>'
-				. '</span>.';
+				. '</span>';
 		}
 		
 		$title = $args['id'] != 'the_entry' && $title
@@ -650,8 +649,7 @@ class entry_categories extends WP_Widget {
 				: ''
 				)
 			. '<p>'
-			. sprintf($filed_under_by, $categories, $author, $date)
-			. $comments
+			. str_replace('. .', '.', sprintf($filed_under_by, $categories, $author, $date, $comments))
 			. '</p>' . "\n"
 			. $after_widget;
 	} # widget()
@@ -704,12 +702,45 @@ class entry_categories extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('Filed under %1$s by %2$s on %3$s.', 'sem-theme') . '</code>'
+			. '<code>' . __('Filed under %1$s by %2$s on %3$s. %4$s.', 'sem-theme') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 				. ' name="' . $this->get_field_name('filed_under_by') . '"'
 				. ' value="' . esc_attr($filed_under_by) . '"'
 				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('1 Comment', 'sem-theme') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('one_comment') . '"'
+			. ' value="' . esc_attr($one_comment) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('%d Comments', 'sem-theme') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('n_comments') . '"'
+			. ' value="' . esc_attr($n_comments) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('Comment', 'sem-theme') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('add_comment') . '"'
+			. ' value="' . esc_attr($add_comment) . '"'
+			. ' />'
 			. '</label>'
 			. '</p>' . "\n";
 	} # form()
@@ -724,7 +755,10 @@ class entry_categories extends WP_Widget {
 	function defaults() {
 		return array(
 			'title' => __('Categories', 'sem-theme'),
-			'filed_under_by' => __('Filed under %1$s by %2$s on %3$s.', 'sem-theme'),
+			'filed_under_by' => __('Filed under %1$s by %2$s on %3$s. %4$s.', 'sem-theme'),
+			'one_comment' => __('1 Comment', 'sem-theme'),
+			'n_comments' => __('%d Comments', 'sem-theme'),
+			'add_comment' => __('Comment', 'sem-theme'),
 			);
 	} # defaults()
 } # entry_categories

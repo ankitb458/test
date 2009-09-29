@@ -473,8 +473,6 @@ class entry_content extends WP_Widget {
 	function update($new_instance, $old_instance) {
 		$instance['show_comment_box'] = isset($new_instance['show_comment_box']);
 		$instance['show_excerpts'] = isset($new_instance['show_excerpts']);
-		$instance['one_comment'] = trim(strip_tags($new_instance['one_comment']));
-		$instance['n_comments'] = trim(strip_tags($new_instance['n_comments']));
 		$instance['more_link'] = trim(strip_tags($new_instance['more_link']));
 		$instance['paginate'] = trim(strip_tags($new_instance['paginate']));
 		
@@ -521,28 +519,6 @@ class entry_content extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('1 Comment', 'sem-reloaded') . '</code>'
-			. '<br />' . "\n"
-			. '<input type="text" class="widefat"'
-			. ' name="' . $this->get_field_name('one_comment') . '"'
-			. ' value="' . esc_attr($one_comment) . '"'
-			. ' />'
-			. '</label>'
-			. '</p>' . "\n";
-		
-		echo '<p>'
-			. '<label>'
-			. '<code>' . __('%d Comments', 'sem-reloaded') . '</code>'
-			. '<br />' . "\n"
-			. '<input type="text" class="widefat"'
-			. ' name="' . $this->get_field_name('n_comments') . '"'
-			. ' value="' . esc_attr($n_comments) . '"'
-			. ' />'
-			. '</label>'
-			. '</p>' . "\n";
-		
-		echo '<p>'
-			. '<label>'
 			. '<code>' . __('Read more on %s...', 'sem-reloaded') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
@@ -575,8 +551,6 @@ class entry_content extends WP_Widget {
 		return array(
 			'show_comment_box' => true,
 			'show_excerpts' => false,
-			'one_comment' => __('1 Comment', 'sem-reloaded'),
-			'n_comments' => __('%d Comments', 'sem-reloaded'),
 			'more_link' => __('Read more on %s...', 'sem-reloaded'),
 			'paginate' => __('Pages:', 'sem-reloaded'),
 			);
@@ -665,27 +639,26 @@ class entry_categories extends WP_Widget {
 		$num = get_comments_number();
 		if ( $num && !is_single() ) {
 			if ( $num > 1 ) {
-				$comments = sprintf(__('%s Comments', 'sem-reloaded'), number_format_i18n($num));
+				$comments = sprintf($n_comments, number_format_i18n($num));
 				$anchor = '#comments';
 				$class = 'entry_replies';
 			} elseif ( $num ) {
-				$comments = __('1 Comment', 'sem-reloaded');
+				$comments = $one_comment;
 				$anchor = '#comments';
 				$class = 'entry_replies';
 			}
 		} elseif ( comments_open() && ( $num && is_single() || !is_single() ) ) {
-			$comments = __('Comment', 'sem-reloaded');
+			$comments = $add_comment;
 			$anchor = '#respond';
 			$class = 'leave_reply';
 		}
 		
 		if ( $comments ) {
-			$comments = ' '
-				. '<span class="' . $class . '">'
+			$comments = '<span class="' . $class . '">'
 				. '<a href="' . esc_url(apply_filters('the_permalink', get_permalink()) . $anchor) . '">'
 				. $comments
 				. '</a>'
-				. '</span>.';
+				. '</span>';
 		}
 		
 		$link = ' '
@@ -705,8 +678,7 @@ class entry_categories extends WP_Widget {
 				: ''
 				)
 			. '<p>'
-			. sprintf($filed_under_by, $categories, $author, $date)
-			. $comments
+			. str_replace('. .', '.', sprintf($filed_under_by, $categories, $author, $date, $comments))
 			. $link
 			. '</p>' . "\n"
 			. $after_widget;
@@ -760,12 +732,45 @@ class entry_categories extends WP_Widget {
 		
 		echo '<p>'
 			. '<label>'
-			. '<code>' . __('Filed under %1$s by %2$s on %3$s.', 'sem-reloaded') . '</code>'
+			. '<code>' . __('Filed under %1$s by %2$s on %3$s. %4$s.', 'sem-reloaded') . '</code>'
 			. '<br />' . "\n"
 			. '<input type="text" class="widefat"'
 				. ' name="' . $this->get_field_name('filed_under_by') . '"'
 				. ' value="' . esc_attr($filed_under_by) . '"'
 				. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('1 Comment', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('one_comment') . '"'
+			. ' value="' . esc_attr($one_comment) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('%d Comments', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('n_comments') . '"'
+			. ' value="' . esc_attr($n_comments) . '"'
+			. ' />'
+			. '</label>'
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. '<label>'
+			. '<code>' . __('Comment', 'sem-reloaded') . '</code>'
+			. '<br />' . "\n"
+			. '<input type="text" class="widefat"'
+			. ' name="' . $this->get_field_name('add_comment') . '"'
+			. ' value="' . esc_attr($add_comment) . '"'
+			. ' />'
 			. '</label>'
 			. '</p>' . "\n";
 	} # form()
@@ -780,7 +785,10 @@ class entry_categories extends WP_Widget {
 	function defaults() {
 		return array(
 			'title' => __('Categories', 'sem-reloaded'),
-			'filed_under_by' => __('Filed under %1$s by %2$s on %3$s.', 'sem-reloaded'),
+			'filed_under_by' => __('Filed under %1$s by %2$s on %3$s. %4$s.', 'sem-reloaded'),
+			'one_comment' => __('1 Comment', 'sem-reloaded'),
+			'n_comments' => __('%d Comments', 'sem-reloaded'),
+			'add_comment' => __('Comment', 'sem-reloaded'),
 			);
 	} # defaults()
 } # entry_categories

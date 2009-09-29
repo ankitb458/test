@@ -57,15 +57,6 @@ function upgrade_sem_6_0() {
 		$instance = array();
 		if ( isset($sem_options['show_excerpts']) )
 			$instance['show_excerpts'] = $sem_options['show_excerpts'];
-		$instance['one_comment'] = !empty($sem_captions['1_comment_link'])
-			? $sem_captions['1_comment_link']
-			: __('1 Comment', 'sem-reloaded');
-		$instance['n_comments'] = !empty($sem_captions['n_comments_link'])
-			? str_replace(
-				'%num%',
-				'%d',
-				$sem_captions['n_comments_link'])
-			: __('%d Comments', 'sem-reloaded');
 		if ( isset($sem_captions['more_link']) ) {
 			$instance['more_link'] = str_replace(
 				'%title%',
@@ -77,11 +68,6 @@ function upgrade_sem_6_0() {
 		elseif ( isset($sem_captions['page']) )
 			$instance['paginate'] = $sem_captions['page'];
 		unset($sem_options['show_excerpts']);
-		unset($sem_captions['no_comments']);
-		unset($sem_captions['1_comment_link']);
-		unset($sem_captions['1_comment']);
-		unset($sem_captions['n_comments_link']);
-		unset($sem_captions['n_comments']);
 		unset($sem_captions['more']);
 		unset($sem_captions['more_link']);
 		unset($sem_captions['edit']);
@@ -95,12 +81,6 @@ function upgrade_sem_6_0() {
 		if ( !isset($instance['widget_contexts']) && isset($widget_contexts['entry_content']) ) {
 			$instance['widget_contexts'] = $widget_contexts['entry_content'];
 			unset($widget_contexts['entry_content']);
-		}
-		if ( isset($instance['n_comments']) ) {
-			$instance['n_comments'] = str_replace(
-				'%num%',
-				'%d',
-				$instance['n_comments']);
 		}
 		if ( isset($instance['more_link']) ) {
 			$instance['more_link'] = str_replace(
@@ -124,9 +104,23 @@ function upgrade_sem_6_0() {
 				array('%1$s', '%1$s', '%2$s'),
 				$sem_captions['filed_under']);
 		}
+		$instance['one_comment'] = !empty($sem_captions['1_comment_link'])
+			? $sem_captions['1_comment_link']
+			: __('1 Comment', 'sem-reloaded');
+		$instance['n_comments'] = !empty($sem_captions['n_comments_link'])
+			? str_replace(
+				'%num%',
+				'%d',
+				$sem_captions['n_comments_link'])
+			: __('%d Comments', 'sem-reloaded');
 		unset($sem_captions['cats_title']);
 		unset($sem_captions['filed_under']);
 		unset($sem_captions['by']);
+		unset($sem_captions['no_comments']);
+		unset($sem_captions['1_comment_link']);
+		unset($sem_captions['1_comment']);
+		unset($sem_captions['n_comments_link']);
+		unset($sem_captions['n_comments']);
 		if ( isset($widget_contexts['entry_categories']) ) {
 			$instance['widget_contexts'] = $widget_contexts['entry_categories'];
 			unset($widget_contexts['entry_categories']);
