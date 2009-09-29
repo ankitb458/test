@@ -665,7 +665,7 @@ class entry_categories extends WP_Widget {
 		$num = get_comments_number();
 		if ( $num && !is_single() ) {
 			if ( $num > 1 ) {
-				$comments = sprintf('%s', __('%s Comments', 'sem-reloaded'), number_format_i18n($num));
+				$comments = sprintf(__('%s Comments', 'sem-reloaded'), number_format_i18n($num));
 				$anchor = '#comments';
 				$class = 'entry_replies';
 			} elseif ( $num ) {
