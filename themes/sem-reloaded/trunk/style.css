@@ -120,67 +120,54 @@ Theme Fonts
 
 .skin {
 	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
-	font-size: .9em;
 }
 
 .antica {
 	font-family: "Book Antica", Times, Serif;
-	font-size: 1em;
 }
 
 .arial {
 	font-family: Arial, Helvetica, Sans-Serif;
-	font-size: .9em;
 }
 
 .bookman {
 	font-family: "Bookman Old Style", Times, Serif;
-	font-size: .9em;
 }
 
 .comic {
 	font-family: "Comic Sans MS", Helvetica, Sans-Serif;
-	font-size: .9em;
 }
 
 .corsiva {
 	font-family: "Monotype Corsiva", Courier, Monospace;
-	font-size: 1.1em;
 }
 
 .courier {
 	font-family: "Courier New", Courier, Monospace;
-	font-size: .9em;
 }
 
 .garamond {
 	font-family: Garamond, Times, Serif;
-	font-size: 1em;
 }
 
 .georgia {
 	font-family: Georgia, Times, Serif;
-	font-size: .9em;
 }
 
 .tahoma {
 	font-family: Tahoma, Helvetica, Sans-Serif;
-	font-size: .9em;
 }
 
 .times {
 	font-family: "Times New Roman", Times, Serif;
-	font-size: 1em;
 }
 
 .trebuchet {
 	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
-	font-size: .9em;
 }
 
 .verdana {
 	font-family: Verdana, Helvetica, Sans-Serif;
-	font-size: .85em;
 }
 
 
@@ -198,8 +185,11 @@ li, dt, dd {
 }
 
 pre {
-	font-size: 100%;
 	margin-left: 12px;
+}
+
+pre, code, kbd, samp, tt {
+	font-size: 10pt;
 }
 
 blockquote, q, ul, ol, dl {
