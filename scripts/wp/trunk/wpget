@@ -68,28 +68,29 @@ if [ ! -w $path ]; then
 fi
 
 
-# find unzip method
-which unzip
-echo $?
-if [ `which unzip &> /dev/null` ]; then
-	unzip_cmd=unzip
-elif [ `which tar &> /dev/null` ]; then
-	unzip_cmd='tar -xf'
-else
-	echo 'Err: failed to find unzip or tar'
-	exit 1
+# find unzip
+unzip_cmd=`which unzip 2> /dev/null`
+if [ "$unzip_cmd" = '' ]; then
+	unzip_cmd=`which tar 2> /dev/null`
+	if [ "$unzip_cmd" != '' ]; then
+		unzip_cmd="$unzip_cmd -xf"
+	else
+		echo 'Err: failed to find unzip or tar'
+		exit 1
+	fi
 fi
 
 # find curl
-if [ `which curl &> /dev/null` ]; then
-	curl_cmd=curl
-elif [ -f /usr/local/bin/curl ]; then
-	curl_cmd=/usr/local/bin/curl
-else
-	echo 'Err: failed to locate wp in $PATH'
-	exit 1
+curl_cmd=`which curl 2> /dev/null`
+if [ "$curl_cmd" = '' ]; then
+	if [ -f /usr/local/bin/curl ]; then
+		curl_cmd=/usr/local/bin/curl
+	else
+		echo 'Err: failed to find curl'
+		exit 1
+	fi
 fi
-exit
+
 
 # inititialize
 if [ "$sem_key" = '' ]; then

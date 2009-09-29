@@ -221,13 +221,15 @@ fi
 # process all
 if [ "$cmd" != 'install' -a $all -eq 1 ];
 then
-	if [ `which wp &> /dev/null` ]; then
-		wp_cmd=wp
-	elif [ -f /usr/local/abin/wp ]; then
-		wp_cmd=/usr/local/abin/wp
-	else
-		echo 'Err: failed to locate wp in $PATH'
-		exit 1
+	# find wp
+	wp_cmd=`which wp 2> /dev/null`
+	if [ "$wp_cmd" = '' ]; then
+		if [ -f /usr/local/abin/wp ]; then
+			wp_cmd=/usr/local/abin/wp
+		else
+			echo 'Err: failed to locate wp in $PATH'
+			exit 1
+		fi
 	fi
 	
 	touch ~/.wp
