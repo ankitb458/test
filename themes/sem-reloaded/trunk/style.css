@@ -587,7 +587,7 @@ h2 a {
 }
 
 .comment_label {
-	width: 160px;
+	width: 120px;
 	float: left;
 }
 
@@ -597,7 +597,7 @@ p.comment_label {
 }
 
 .comment_field {
-	margin-left: 165px;
+	margin-left: 130px;
 }
 
 .comment_field input,
