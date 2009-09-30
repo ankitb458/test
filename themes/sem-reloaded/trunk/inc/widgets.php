@@ -632,7 +632,7 @@ class entry_categories extends WP_Widget {
 		$date = apply_filters('the_time', get_the_time(__('M jS, Y', 'sem-reloaded')), __('M jS, Y', 'sem-reloaded'));
 		
 		if ( !is_day() )
-			$date = '<a href="' . esc_url(get_day_link(get_the_time('Y'), get_the_time('m'), get_the_time('d'))) . '">' . $date . '</a>';
+			$date = '<a href="' . esc_url(get_month_link(get_the_time('Y'), get_the_time('m'))) . '">' . $date . '</a>';
 		
 		$date = '<span class="entry_date">' . $date . '</span>';
 		
@@ -1463,10 +1463,6 @@ class blog_footer extends WP_Widget {
 		if ( $d ) {
 			$dates[] = '<a href="' . get_month_link($y, $m) . '">'
 				. date_i18n(__('M, Y', 'sem-reloaded'), strtotime("$y-$m-$d GMT"), true)
-				. '</a>';
-		} elseif ( $m ) {
-			$dates[] = '<a href="' . get_year_link($y) . '">'
-				. date_i18n(__('Y', 'sem-reloaded'), strtotime("$y-$m-01 GMT"), true)
 				. '</a>';
 		}
 		
