@@ -1101,7 +1101,7 @@ class entry_comments extends WP_Widget {
 			'logged_in_as' => __('You are logged in as %1$s. %2$s.', 'sem-reloaded'),
 			'name_field' => __('Name:', 'sem-reloaded'),
 			'email_field' => __('Email:', 'sem-reloaded'),
-			'url_field' => __('Url:', 'sem-reloaded'),
+			'url_field' => __('Website:', 'sem-reloaded'),
 			'required_fields' => __('Fields marked by an asterisk (*) are required.', 'sem-reloaded'),
 			'submit_field' => __('Submit Comment', 'sem-reloaded'),
 			);
