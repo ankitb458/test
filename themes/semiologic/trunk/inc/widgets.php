@@ -607,11 +607,12 @@ class entry_categories extends WP_Widget {
 				. '</span>';
 		}
 		
-		$date = '<span class="entry_date">'
-			. '<a href="' . esc_url(get_month_link(get_the_time('Y'), get_the_time('m'))) . '">'
-			. apply_filters('the_time', get_the_time(__('M jS, Y', 'sem-theme')), __('M jS, Y', 'sem-theme'))
-			. '</a>'
-			. '</span>';
+		$date = apply_filters('the_time', get_the_time(__('M jS, Y', 'sem-theme')), __('M jS, Y', 'sem-theme'));
+		
+		if ( !is_day() )
+			$date = '<a href="' . esc_url(get_day_link(get_the_time('Y'), get_the_time('m'), get_the_time('d'))) . '">' . $date . '</a>';
+		
+		$date = '<span class="entry_date">' . $date . '</span>';
 		
 		$comments = '';
 		$num = get_comments_number();
@@ -1133,8 +1134,18 @@ class blog_header extends WP_Widget {
 		} elseif ( is_tag() ) {
 			single_tag_title();
 			$desc = trim(tag_description());
-		} elseif ( is_month() ) {
-			single_month_title(' ');
+		} elseif ( is_date() ) {
+			if ( is_year() )
+				$date = date_i18n(__('Y', 'sem-theme'), strtotime(get_query_var('year') . '-01-01 GMT'), true);
+			elseif ( is_month() )
+				$date = single_month_title(' ', false);
+			else
+				$date = date_i18n(__('M jS, Y', 'sem-theme'), strtotime(get_query_var('year') . '-' . zeroise(get_query_var('monthnum'), 2) . '-' . zeroise(get_query_var('day'), 2) . ' GMT'), true);
+			
+			echo sprintf(trim($archives_title), $date);
+			$desc = '<div class="posts_nav">'
+				. blog_footer::date_nav()
+				. '</div>' . "\n";
 		} elseif ( is_author() ) {
 			global $wp_the_query;
 			$user = new WP_User($wp_the_query->get_queried_object_id());
@@ -1145,8 +1156,6 @@ class blog_header extends WP_Widget {
 		} elseif ( is_404() ) {
 			echo $title_404;
 			$desc = $desc_404;
-		} else {
-			echo trim($archives_title);
 		}
 
 		echo '</h1>' . "\n";
@@ -1240,7 +1249,7 @@ class blog_header extends WP_Widget {
 		return array(
 			'title_404' => __('404: Not Found', 'sem-theme'),
 			'desc_404' => __('The page you\'ve requested was not found.', 'sem-theme'),
-			'archives_title' => __('Archives', 'sem-theme'),
+			'archives_title' => __('%s Archives', 'sem-theme'),
 			'search_title' => __('Search: %s', 'sem-theme'),
 			);
 	} # defaults()
@@ -1284,24 +1293,189 @@ class blog_footer extends WP_Widget {
 
 	function widget($args, $instance) {
 		global $wp_the_query;
+		$max_num_pages = (int) $wp_the_query->max_num_pages;
 		
-		if ( $args['id'] != 'after_the_entries' || is_singular() || $wp_the_query->max_num_pages <= 1 )
+		if ( $args['id'] != 'after_the_entries' || is_singular() || ( !is_date() && $max_num_pages <= 1 ) )
 			return;
 		
 		extract($args, EXTR_SKIP);
 		$instance = wp_parse_args($instance, blog_footer::defaults());
 		extract($instance, EXTR_SKIP);
 		
-		echo $before_widget;
+		$paged = (int) get_query_var('paged');
+		if ( !$paged )
+			$paged = 1;
 		
-		posts_nav_link(
-			' &bull; ',
-			'&laquo;&nbsp;' . $previous_page,
-			$next_page . '&nbsp;&raquo;'
-			);
+		$pages = array();
 		
-		echo $after_widget;
+		if ( $max_num_pages > 1 ) {
+			if ( $paged >= 2 )
+				$pages[] = get_previous_posts_link(trim('&laquo; ' . $previous));
+
+			$range = array($paged);
+
+			for ( $i = 1; $i <= 3; $i++ ) {
+				array_unshift($range, $paged - $i);
+				array_push($range, $paged + $i);
+			}
+
+			while ( end($range) > $max_num_pages ) {
+				reset($range);
+				$i = current($range) - 1;
+				array_unshift($range, $i);
+				array_pop($range);
+			}
+
+			reset($range);
+			while ( current($range) < 1 ) {
+				$i = end($range) + 1;
+				if ( $i <= $max_num_pages )
+					array_push($range, $i);
+				array_shift($range);
+				reset($range);
+			}
+
+			if ( current($range) != 1 )
+				$pages[] = '...';
+			
+			foreach ( $range as $i ) {
+				if ( $i == $paged ) {
+					$pages[] = '<strong>' . $i . '</strong>';
+				} else {
+					$pages[] = '<a href="' . get_pagenum_link($i) . '">'
+						. $i
+						. '</a>';
+				}
+			}
+
+			if ( end($range) != $max_num_pages )
+				$pages[] = '...';
+
+			if ( $paged < $max_num_pages ) {
+				$pages[] = get_next_posts_link(trim($next . ' &raquo;'));
+			}
+		}
+		
+		$pages = implode(' ', $pages);
+		
+		$dates = blog_footer::date_nav();
+		
+		$o = array();
+		
+		foreach ( array('pages', 'dates') as $var ) {
+			if ( $$var )
+				$o[] = $$var;
+		}
+		
+		$o = "<p>" . implode("</p>\n<p>", $o) . "</p>\n";
+		
+		echo $before_widget
+			. $o
+			. $after_widget;
 	} # widget()
+	
+	
+	/**
+	 * date_nav()
+	 *
+	 * @return string $nav
+	 **/
+
+	function date_nav() {
+		if ( !is_date() )
+			return false;
+		
+		$dates = array();
+		
+		global $wpdb;
+		
+		$y = get_query_var('year');
+		$m = get_query_var('monthnum');
+		$d = get_query_var('day');
+		
+		$m = $m ? zeroise($m, 2) : false;
+		$d = $d ? zeroise($d, 2) : false;
+		
+		if ( $d )
+			$stop = "$y-$m-$d";
+		elseif ( $m )
+			$stop = "$y-$m-01";
+		else
+			$stop = "$y-01-01";
+		
+		$date = $wpdb->get_var("
+			SELECT	MAX(post_date)
+			FROM	$wpdb->posts
+			WHERE	post_date < '$stop'
+			AND		post_type = 'post'
+			AND		post_status = 'publish'
+			");
+		
+		if ( $date ) {
+			$date = strtotime("$date GMT");
+			
+			if ( $d ) {
+				$dates[] = '<a href="' . get_day_link(gmdate('Y', $date), gmdate('m', $date), gmdate('d', $date)) . '">'
+					. '&laquo; ' . date_i18n(__('M jS, Y', 'sem-theme'), $date, true)
+					. '</a>';
+			} elseif ( $m ) {
+				$dates[] = '<a href="' . get_month_link(gmdate('Y', $date), gmdate('m', $date)) . '">'
+					. '&laquo; ' . date_i18n(__('M, Y', 'sem-theme'), $date, true)
+					. '</a>';
+			} else {
+				$dates[] = '<a href="' . get_year_link(gmdate('Y', $date)) . '">'
+					. '&laquo; ' . date_i18n(__('Y', 'sem-theme'), $date, true)
+					. '</a>';
+			}
+		}
+		
+		if ( $d ) {
+			$dates[] = '<a href="' . get_month_link($y, $m) . '">'
+				. date_i18n(__('M, Y', 'sem-theme'), strtotime("$y-$m-$d GMT"), true)
+				. '</a>';
+		} elseif ( $m ) {
+			$dates[] = '<a href="' . get_year_link($y) . '">'
+				. date_i18n(__('Y', 'sem-theme'), strtotime("$y-$m-01 GMT"), true)
+				. '</a>';
+		}
+		
+		if ( $d )
+			$stop = gmdate('Y-m-d', strtotime("$y-$m-$d GMT + 1 day"));
+		elseif ( $m )
+			$stop = gmdate('Y-m-d', strtotime("$y-$m-01 GMT + 1 month"));
+		else
+			$stop = gmdate('Y-m-d', strtotime("$y-01-01 GMT + 1 year"));
+		
+		$date = $wpdb->get_var("
+			SELECT	MIN(post_date)
+			FROM	$wpdb->posts
+			WHERE	post_date >= '$stop'
+			AND		post_type = 'post'
+			AND		post_status = 'publish'
+			");
+		
+		if ( $date ) {
+			$date = strtotime("$date GMT");
+			
+			if ( $d ) {
+				$dates[] = '<a href="' . get_day_link(gmdate('Y', $date), gmdate('m', $date), gmdate('d', $date)) . '">'
+					. date_i18n(__('M jS, Y', 'sem-theme'), $date, true) . ' &raquo;'
+					. '</a>';
+			} elseif ( $m ) {
+				$dates[] = '<a href="' . get_month_link(gmdate('Y', $date), gmdate('m', $date)) . '">'
+					. date_i18n(__('M, Y', 'sem-theme'), $date, true) . ' &raquo;'
+					. '</a>';
+			} else {
+				$dates[] = '<a href="' . get_year_link(gmdate('Y', $date)) . '">'
+					. date_i18n(__('Y', 'sem-theme'), $date, true) . ' &raquo;'
+					. '</a>';
+			}
+		}
+		
+		$dates = implode(' &bull; ', $dates);
+		
+		return $dates;
+	} # date_nav()
 	
 	
 	/**
@@ -1357,8 +1531,8 @@ class blog_footer extends WP_Widget {
 	
 	function defaults() {
 		return array(
-			'next_page' => __('Next Page', 'sem-theme'),
-			'previous_page' => __('Previous Page', 'sem-theme'),
+			'next' => __('Next', 'sem-theme'),
+			'previous' => __('Previous', 'sem-theme'),
 			);
 	} # defaults()
 } # blog_footer

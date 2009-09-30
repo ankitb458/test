@@ -445,6 +445,51 @@ class sem_template {
 		
 		return compact($fields);
 	} # get_skin_data()
+	
+	
+	/**
+	 * archive_query_string()
+	 *
+	 * @param array $query_string
+	 * @return array $query_string
+	 **/
+
+	function archive_query_string($query_string) {
+		parse_str($query_string, $qv);
+		unset($qv['paged'], $qv['debug']);
+		
+		if ( empty($qv) )
+			return $query_string;
+		
+		foreach ( array(
+			'order',
+			'pagename',
+			'feed',
+			'p',
+			'page_id',
+			'attachment_id',
+			's',
+			) as $bail ) {
+			if ( !empty($qv[$bail]) )
+				return $query_string;
+		}
+		
+		global $wp_the_query;
+		
+		$wp_the_query->parse_query($query_string);
+		
+		if ( is_feed() || !is_date() )
+			return $query_string;
+		
+		parse_str($query_string, $args);
+		
+		if ( !isset($args['order']) )
+			$args['order'] = 'asc';
+		
+		$query_string = http_build_query($args);
+		
+		return $query_string;
+	} # archive_query_string()
 } # sem_template
 
 if ( !is_admin() ) {
@@ -456,6 +501,7 @@ if ( !is_admin() ) {
 	add_filter('body_class', array('sem_template', 'body_class'));
 	add_filter('widget_title', array('sem_template', 'widget_title'));
 	add_action('wp_footer', array('sem_template', 'display_credits'), 5);
+	add_filter('query_string', array('sem_template', 'archive_query_string'), 20);
 	remove_action('wp_print_styles', array('external_links', 'styles'), 5);
 } else {
 	add_action('admin_menu', array('sem_template', 'admin_menu'));

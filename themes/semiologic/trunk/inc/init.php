@@ -24,6 +24,14 @@ define('sem_path', dirname(dirname(__FILE__)));
 define('sem_url', get_stylesheet_directory_uri());
 
 
+# fix calendar, see http://core.trac.wordpress.org/ticket/9588
+if ( !class_exists('sem_fixes') ) {
+	if ( function_exists('date_default_timezone_set') )
+		date_default_timezone_set('UTC');
+	wp_timezone_override_offset();
+}
+
+
 #
 # extra functions
 #
