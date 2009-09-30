@@ -352,7 +352,7 @@ div.pings_date {
 
 img.avatar {
 	float: left;
-	margin-left: 10px;
+	margin-left: 0px;
 	margin-right: 10px;
 	margin-bottom: .1em;
 }
@@ -583,7 +583,7 @@ h2 a {
 }
 
 .comment_content {
-	margin-left: 100px;
+	margin-left: 90px;
 }
 
 .comment_label {
