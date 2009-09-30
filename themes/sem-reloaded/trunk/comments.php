@@ -149,14 +149,14 @@ if ( $comments ) {
 		
 		echo '<h3>'
 			. '<span class="comment_author" id="comment_author-' . get_comment_ID() . '">'
-				. get_avatar($comment, 48)
+				. get_avatar($comment, 80)
 				. ( $comment->user_id == $post->post_author
 					? ( '<em>' . get_comment_author_link() . '</em>' )
 					: get_comment_author_link()
 					)
 				. '</span>'
-			. '<br/>' . "\n"
 			. '<span class="comment_time">'
+			. ' @ ' . "\n"
 			. get_comment_date(__('g:i a', 'sem-reloaded'))
 			. '</span>' . "\n"
 			. '<span class="link_comment">'
