@@ -52,6 +52,10 @@ I'm aware. Last I checked, there wasn't anything I could do about it.
 
 == Change Log ==
 
+= 3.0.1 =
+
+- Improve list handling
+
 = 3.0 =
 
 - Split on paragraphs *and* sentences
