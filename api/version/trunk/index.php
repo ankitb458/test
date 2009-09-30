@@ -168,6 +168,8 @@ if ( $type != 'core' ) {
 				if ( !$expired )
 					$response->package = 'http://www.semiologic.com/media/members/sem-pro/download/sem-pro.zip';
 				$response->current = $row->{$packages . '_version'};
+				if ( version_compare($response->current, '6.0', '>') )
+					$response->current = '6.0';
 				$response->locale = 'en_US';
 			} elseif ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
 				$response->response = 'upgrade';
