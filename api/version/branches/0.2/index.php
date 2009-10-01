@@ -89,7 +89,7 @@ if ( $expires === false ) {
 	$expired = true;
 } elseif ( is_null($expires) ) {
 	$expired = false;
-} else {
+} elseif ( $type != 'themes' ) {
 	$expired = time() > strtotime($expires);
 }
 
