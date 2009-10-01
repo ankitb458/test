@@ -1,0 +1,181 @@
+# Google Analytics pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Google Analytics package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 4.0\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-09-28 15:50+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: google-analytics-admin.php:34
+msgid "Settings saved."
+msgstr ""
+
+#: google-analytics-admin.php:51
+msgid "Your Account ID"
+msgstr ""
+
+#: google-analytics-admin.php:73
+msgid "Google Analytics Settings"
+msgstr ""
+
+#: google-analytics-admin.php:76
+msgid "Google Analytics Script"
+msgstr ""
+
+#: google-analytics-admin.php:83
+msgid "GA Script"
+msgstr ""
+
+#: google-analytics-admin.php:87
+msgid ""
+"Paste the <b>ga.js</b> script from <a href=\"http://analytics.google.com"
+"\">Google analytics</a> into the following textarea (<a href=\"http://www."
+"google.com/support/googleanalytics/bin/answer.py?answer=55603\">where do I "
+"find it?</a>):"
+msgstr ""
+
+#: google-analytics-admin.php:96
+msgid ""
+"<strong>Important</strong>: Use the new <strong>ga.js</strong> script, not "
+"the legacy urchin.js script."
+msgstr ""
+
+#: google-analytics-admin.php:105
+msgid "Save Changes"
+msgstr ""
+
+#: google-analytics-admin.php:124
+msgid "Quick Reference"
+msgstr ""
+
+#: google-analytics-admin.php:130
+msgid "AdSense Revenue Tracking"
+msgstr ""
+
+#: google-analytics-admin.php:134
+msgid ""
+"To enable AdSense revenue tracking using Google Analytics, simply <a href="
+"\"http://www.google.com/support/googleanalytics/bin/answer.py?"
+"hl=en&answer=55507\">declare this site for AdSense tracking</a> in <a href="
+"\"http://analytics.google.com\">Google Analytics's administration panels</"
+"a>. (The needed code is inserted automatically by the plugin.)"
+msgstr ""
+
+#: google-analytics-admin.php:141
+msgid "Event Tracking"
+msgstr ""
+
+#: google-analytics-admin.php:145
+msgid ""
+"The Google Analytics plugin allows you to track special events. Support for "
+"the following is built-in:"
+msgstr ""
+
+#: google-analytics-admin.php:149
+#, php-format
+msgid ""
+"Newsletter sign-ups when using the <a href=\"%s\">Newsletter Manager</a> "
+"plugin. Visitors are additionally segmented automatically on a successful "
+"signup if they're redirected on a page on this site."
+msgstr ""
+
+#: google-analytics-admin.php:152
+#, php-format
+msgid ""
+"Clicks on ad units that were inserted using the <a href=\"%s\">Ad Manager</"
+"a> plugin. It will additionally tell you the <strong>cumulative</strong> "
+"number of times each ad unit was clicked by that visitor. Note: This only "
+"works with ads that do not rely on iFrames."
+msgstr ""
+
+#: google-analytics-admin.php:155
+#, php-format
+msgid ""
+"Media player usage and file downloads that were inserted using the <a href="
+"\"%s\">Mediacaster</a> plugin."
+msgstr ""
+
+#: google-analytics-admin.php:158
+#, php-format
+msgid ""
+"Contact Form submissions when using the <a href=\"%s\">Contact Form</a> "
+"plugin."
+msgstr ""
+
+#: google-analytics-admin.php:161
+#, php-format
+msgid ""
+"Poll usage when using the Poll Widget plugin that comes with <a href=\"%s"
+"\">Semiologic Pro</a>."
+msgstr ""
+
+#: google-analytics-admin.php:169
+msgid "Special Users"
+msgstr ""
+
+#: google-analytics-admin.php:173
+msgid "Authors, editors and site admins are not tracked when logged in."
+msgstr ""
+
+#: google-analytics-info.php:2 google-analytics.php:261
+#: google-analytics.php:262
+msgid "Google Analytics"
+msgstr ""
+
+#: google-analytics.php:82
+msgid "Ad Unit"
+msgstr ""
+
+#: google-analytics.php:83
+msgid "File"
+msgstr ""
+
+#: google-analytics.php:84
+msgid "Audio"
+msgstr ""
+
+#: google-analytics.php:85
+msgid "Video"
+msgstr ""
+
+#: google-analytics.php:86
+msgid "Sign Up"
+msgstr ""
+
+#: google-analytics.php:87
+msgid "Custom"
+msgstr ""
+
+#: google-analytics.php:88
+msgid "Click"
+msgstr ""
+
+#: google-analytics.php:89
+msgid "Download"
+msgstr ""
+
+#: google-analytics.php:90
+msgid "Submit"
+msgstr ""
+
+#: google-analytics.php:91
+msgid "Success"
+msgstr ""
+
+#: google-analytics.php:142
+msgid "Configure Google Analytics under Settings / Google Analytics"
+msgstr ""
+
+#: google-analytics.php:147
+msgid "Google Analytics Notice: Authors, Editors and Admins are not tracked"
+msgstr ""
