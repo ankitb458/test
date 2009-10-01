@@ -2259,7 +2259,7 @@ class sem_nav_menu extends WP_Widget {
 		if ( rtrim($url, '/') == rtrim(get_option('home'), '/') )
 			return sem_nav_menu::display_home($item);
 		
-		if ( !nav_menu::is_local_url($url) ) {
+		if ( !sem_nav_menu::is_local_url($url) ) {
 			$classes = array('nav_url');
 		} else {
 			$bits = parse_url($url);
