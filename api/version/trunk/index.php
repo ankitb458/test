@@ -152,26 +152,9 @@ if ( $type != 'core' ) {
 	$response->current = null;
 	$response->package = null;
 	
-	if ( isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/^WordPress\/(.*);/", $_SERVER['HTTP_USER_AGENT'], $match) ) {
-		$wp_version = $match[1];
-		if ( !preg_match("/^\d*\.\d+(?:\.\d+)(?: [a-z0-9]+)?$/i", $wp_version) )
-			$wp_version = '';
-	} else {
-		$wp_version = '';
-	}
-
 	if ( $row = $dbs->get_row() ) {
 		if ( !empty($row->{$packages . '_version'}) ) {
-			if ( $wp_version && $_SERVER['REQUEST_METHOD'] == 'POST' && isset($to_check[$row->slug]) && !$to_check[$row->slug]->version && version_compare($wp_version, '2.8', '<') ) {
-				$response->response = 'upgrade';
-				$response->url = $row->url;
-				if ( !$expired )
-					$response->package = 'http://www.semiologic.com/media/members/sem-pro/download/sem-pro.zip';
-				$response->current = $row->{$packages . '_version'};
-				if ( version_compare($response->current, '6.0', '>') )
-					$response->current = '6.0';
-				$response->locale = 'en_US';
-			} elseif ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
+			if ( isset($to_check[$row->slug]) && version_compare($to_check[$row->slug]->version, $row->{$packages . '_version'}, '<') ) {
 				$response->response = 'upgrade';
 				$response->url = $row->url;
 				if ( !$expired )
