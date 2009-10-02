@@ -446,11 +446,11 @@ EOS;
 		echo '<div id="good_reasons" style="display: none;">';
 		
 		echo '<p>'
-			. sprintf(__('The Semiologic Theme\'s canvas and its key cosmetic elements are image-driven. End-users wanted rounded corners and sexy gradients. They got it, and we\'re happen we moved forward with the idea. But the only means to do so while ensuring IE compatibility is through the use of background images. The recommended method to change your site\'s background colors, and general look and feel, would be to change your skin &#8212; there are <a href="%s">plentiful choices</a>.', 'sem-reloaded'), 'http://skins.semiologic.com')
+			. sprintf(__('The Semiologic Theme\'s canvas and its key cosmetic elements are image-driven. End-users wanted rounded corners and sexy gradients. They got it. But the only means to do so while ensuring IE compatibility is through the use of background images. The recommended method to change your site\'s background colors, and general look and feel, would be to change your skin &#8212; there are <a href="%s">plentiful choices</a>, and more to come.', 'sem-reloaded'), 'http://skins.semiologic.com')
 			. '</p>' . "\n";
 		
 		echo '<p>'
-			. __('At least for now, adding an interface to manage background images is not an option. We know users are craving for it, but coming up with an interface to create the needed images that fit all of the layout options and potential look and feels using php and javascript is much about impossible. If someone ever writes a free equivalent of photoshop in javascript, we\'ll definitely give it a go. In the meanwhile, we\'ll stick to the manual approach.', 'sem-reloaded')
+			. __('At least for now, adding an interface to manage background images is not an option. We know users are craving for it. But coming up with an interface to create the needed images that fit all of the layout options and potential look and feels, using php and javascript, is much about impossible. If someone ever writes a free equivalent of photoshop in javascript, we\'ll definitely give it a go. In the meanwhile, we\'ll stick to the manual approach.', 'sem-reloaded')
 			. '</p>' . "\n";
 		
 		echo '<p>'
@@ -463,7 +463,7 @@ EOS;
 			. '<li>' . __('Create a copy of (or rename) your favorite skin, in <code>wp-content/themes/sem-reloaded/skins</code>. This will allow you to edit it as much as you want without needing to worry about losing your changes during upgrades.', 'sem-reloaded') . '</li>' . "\n"
 			. '<li>' . __('Edit the images in Photoshop. Save for the web. (The psd files are pre-sliced for your convenience.) ', 'sem-reloaded') . '</li>' . "\n"
 			. '<li>' . __('Upload the resulting images into your new skin\'s images folder.', 'sem-reloaded') . '</li>' . "\n"
-			. '<li>' . __('We\'re dead serious about the fact that you\'re on your own if you try the above. If you do not understand it all, please stick to the existing skins; or prepare yourself to spend long hours learning Photoshop; or get in touch with a <a href="http://www.semiologic.com/members/services/">virtual assistant</a>.', 'sem-reloaded')
+			. '<li>' . __('We\'re dead serious about the fact that you\'re on your own if you try the above. If you do not understand it all, please stick to the existing skins; or prepare yourself to spend long hours learning Photoshop. We can also put you in touch with a <a href="http://www.semiologic.com/services/">virtual assistant</a>.', 'sem-reloaded')
 			. '</ul>' . "\n";
 		
 		echo '</div>' . "\n";
