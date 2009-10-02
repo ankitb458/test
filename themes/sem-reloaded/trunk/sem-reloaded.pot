@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-10-02 09:36+0200\n"
+"POT-Creation-Date: 2009-10-02 10:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,36 +72,37 @@ msgid ""
 "check its permissions and try again."
 msgstr ""
 
-#: inc/custom.php:374
+#: inc/custom.php:378
 #, php-format
 msgid ""
-"Publish Failed: A WP filesystem error occurred while trying to edit <code>%"
-"s</code>."
+"Publish Failed: A WP filesystem error occurred (probably related to <a href="
+"\"%1$s\">this WP bug</a>) occurred. Paste the following code in %2$s:<pre>%3"
+"$s</pre>"
 msgstr ""
 
-#: inc/custom.php:385
+#: inc/custom.php:389
 msgid "Settings Restored."
 msgstr ""
 
-#: inc/custom.php:391
+#: inc/custom.php:395
 #, php-format
 msgid "Settings Saved. <a href=\"%s\">Preview Changes</a>."
 msgstr ""
 
-#: inc/custom.php:398 inc/custom.php:417
+#: inc/custom.php:402 inc/custom.php:421
 msgid "Settings Saved."
 msgstr ""
 
-#: inc/custom.php:411
+#: inc/custom.php:415
 #, php-format
 msgid "Settings Saved and Published. <a href=\"%s\">View Changes</a>."
 msgstr ""
 
-#: inc/custom.php:444
+#: inc/custom.php:448
 msgid "Manage Custom CSS"
 msgstr ""
 
-#: inc/custom.php:450
+#: inc/custom.php:454
 #, php-format
 msgid ""
 "This screen allows to customize your skin. Up to a certain point, anyway: "
@@ -111,14 +112,14 @@ msgid ""
 "and customize it to your liking."
 msgstr ""
 
-#: inc/custom.php:454
+#: inc/custom.php:458
 #, php-format
 msgid ""
 "Your changes will not appear on your site until you publish them. You can <a "
 "href=\"%s\">preview your changes</a> if you save without publishing."
 msgstr ""
 
-#: inc/custom.php:460
+#: inc/custom.php:464
 #, php-format
 msgid ""
 "The Semiologic Theme's canvas and its key cosmetic elements are image-"
@@ -129,7 +130,7 @@ msgid ""
 "&#8212; there are <a href=\"%s\">plentiful choices</a>, and more to come."
 msgstr ""
 
-#: inc/custom.php:464
+#: inc/custom.php:468
 msgid ""
 "At least for now, adding an interface to manage background images is not an "
 "option. We know users are craving for it. But coming up with an interface to "
@@ -140,13 +141,13 @@ msgid ""
 "approach."
 msgstr ""
 
-#: inc/custom.php:468
+#: inc/custom.php:472
 msgid ""
 "That being said, it definitely <em>is</em> possible to customize the images. "
 "Here's how:"
 msgstr ""
 
-#: inc/custom.php:472
+#: inc/custom.php:476
 msgid ""
 "Please keep in mind, at all times, that you're doing this on your own, and "
 "that you should expect no support when trying to change these images. As "
@@ -154,30 +155,30 @@ msgid ""
 "it, you're familiar with Photoshop masks, layer effects, etc."
 msgstr ""
 
-#: inc/custom.php:473
+#: inc/custom.php:477
 msgid ""
 "Grab the assets of your favorite skin on <a href=\"http://skins.semiologic."
 "com\">skins.semiologic.com</a>."
 msgstr ""
 
-#: inc/custom.php:474
+#: inc/custom.php:478
 msgid ""
 "Create a copy of (or rename) your favorite skin, in <code>wp-content/themes/"
 "sem-reloaded/skins</code>. This will allow you to edit it as much as you "
 "want without needing to worry about losing your changes during upgrades."
 msgstr ""
 
-#: inc/custom.php:475
+#: inc/custom.php:479
 msgid ""
 "Edit the images in Photoshop. Save for the web. (The psd files are pre-"
 "sliced for your convenience.) "
 msgstr ""
 
-#: inc/custom.php:476
+#: inc/custom.php:480
 msgid "Upload the resulting images into your new skin's images folder."
 msgstr ""
 
-#: inc/custom.php:477
+#: inc/custom.php:481
 msgid ""
 "We're dead serious about the fact that you're on your own if you try the "
 "above. If you do not understand it all, please stick to the existing skins; "
@@ -186,289 +187,289 @@ msgid ""
 "assistant</a>."
 msgstr ""
 
-#: inc/custom.php:486 inc/layout.php:142
+#: inc/custom.php:490 inc/layout.php:142
 msgid "Content"
 msgstr ""
 
-#: inc/custom.php:489 inc/layout.php:144
+#: inc/custom.php:493 inc/layout.php:144
 msgid "Sidebars"
 msgstr ""
 
-#: inc/custom.php:492 inc/template.php:25
+#: inc/custom.php:496 inc/template.php:25
 msgid "Header"
 msgstr ""
 
-#: inc/custom.php:495
+#: inc/custom.php:499
 msgid "Footer"
 msgstr ""
 
-#: inc/custom.php:505
+#: inc/custom.php:509
 msgid ""
 "You are about to delete all changes you've done since the last time you've "
 "published. Please confirm to continue."
 msgstr ""
 
-#: inc/custom.php:505
+#: inc/custom.php:509
 msgid "Restore"
 msgstr ""
 
-#: inc/custom.php:509
+#: inc/custom.php:513
 msgid ""
 "You are about to reset all of your custom.css declarations without "
 "publishing. Please confirm to continue."
 msgstr ""
 
-#: inc/custom.php:509
+#: inc/custom.php:513
 msgid "Reset"
 msgstr ""
 
-#: inc/custom.php:514 inc/custom.php:818 inc/header.php:177 inc/header.php:221
+#: inc/custom.php:518 inc/custom.php:822 inc/header.php:177 inc/header.php:221
 #: inc/layout.php:240 inc/skin.php:342 inc/skin.php:366 inc/skin.php:384
 msgid "Save Changes"
 msgstr ""
 
-#: inc/custom.php:517
+#: inc/custom.php:521
 msgid "Publish"
 msgstr ""
 
-#: inc/custom.php:523
+#: inc/custom.php:527
 msgid "Content Area"
 msgstr ""
 
-#: inc/custom.php:532
+#: inc/custom.php:536
 msgid "Sidebar Areas"
 msgstr ""
 
-#: inc/custom.php:541 inc/panels.php:116
+#: inc/custom.php:545 inc/panels.php:116
 msgid "Header Area"
 msgstr ""
 
-#: inc/custom.php:550 inc/panels.php:122
+#: inc/custom.php:554 inc/panels.php:122
 msgid "Footer Area"
 msgstr ""
 
-#: inc/custom.php:574
+#: inc/custom.php:578
 msgid "Entries"
 msgstr ""
 
-#: inc/custom.php:575
+#: inc/custom.php:579
 msgid "Entry Titles"
 msgstr ""
 
-#: inc/custom.php:576
+#: inc/custom.php:580
 msgid "Entry Subtitles"
 msgstr ""
 
-#: inc/custom.php:577
+#: inc/custom.php:581
 msgid "Entry Dates"
 msgstr ""
 
-#: inc/custom.php:578
+#: inc/custom.php:582
 msgid "Entry Categories"
 msgstr ""
 
-#: inc/custom.php:579
+#: inc/custom.php:583
 msgid "Entry Tags"
 msgstr ""
 
-#: inc/custom.php:580
+#: inc/custom.php:584
 msgid "Comment Dates"
 msgstr ""
 
-#: inc/custom.php:581
+#: inc/custom.php:585
 msgid "Comment Header"
 msgstr ""
 
-#: inc/custom.php:582
+#: inc/custom.php:586
 msgid "Comment Content"
 msgstr ""
 
-#: inc/custom.php:586
+#: inc/custom.php:590
 msgid "Sidebar Widgets"
 msgstr ""
 
-#: inc/custom.php:587
+#: inc/custom.php:591
 msgid "Sidebar Widget Titles"
 msgstr ""
 
-#: inc/custom.php:588
+#: inc/custom.php:592
 msgid "Sidebar Widget Subtitles"
 msgstr ""
 
-#: inc/custom.php:589
+#: inc/custom.php:593
 msgid "Sidebar Calendar"
 msgstr ""
 
-#: inc/custom.php:590
+#: inc/custom.php:594
 msgid "Sidebar Calendar Header"
 msgstr ""
 
-#: inc/custom.php:591
+#: inc/custom.php:595
 msgid "Sidebar Calendar Footer"
 msgstr ""
 
-#: inc/custom.php:595
+#: inc/custom.php:599
 msgid "Site Name"
 msgstr ""
 
-#: inc/custom.php:596
+#: inc/custom.php:600
 msgid "Tagline"
 msgstr ""
 
-#: inc/custom.php:597
+#: inc/custom.php:601
 msgid "Navigation Menu"
 msgstr ""
 
-#: inc/custom.php:598
+#: inc/custom.php:602
 msgid "Header Widgets"
 msgstr ""
 
-#: inc/custom.php:599
+#: inc/custom.php:603
 msgid "Header Widget Titles"
 msgstr ""
 
-#: inc/custom.php:600
+#: inc/custom.php:604
 msgid "Header Widget Subtitles"
 msgstr ""
 
-#: inc/custom.php:601
+#: inc/custom.php:605
 msgid "Header Bar Widgets"
 msgstr ""
 
-#: inc/custom.php:602
+#: inc/custom.php:606
 msgid "Header Bar Widget Titles"
 msgstr ""
 
-#: inc/custom.php:603
+#: inc/custom.php:607
 msgid "Header Bar Widget Subtitles"
 msgstr ""
 
-#: inc/custom.php:607
+#: inc/custom.php:611
 msgid "Footer Nav Menu &amp; Copyright Notice"
 msgstr ""
 
-#: inc/custom.php:608
+#: inc/custom.php:612
 msgid "Credits &amp; Footer Scripts"
 msgstr ""
 
-#: inc/custom.php:609
+#: inc/custom.php:613
 msgid "Footer Widgets"
 msgstr ""
 
-#: inc/custom.php:610
+#: inc/custom.php:614
 msgid "Footer Widget Titles"
 msgstr ""
 
-#: inc/custom.php:611
+#: inc/custom.php:615
 msgid "Footer Widget Subtitles"
 msgstr ""
 
-#: inc/custom.php:612
+#: inc/custom.php:616
 msgid "Footer Bar Widgets"
 msgstr ""
 
-#: inc/custom.php:613
+#: inc/custom.php:617
 msgid "Footer Bar Widget Titles"
 msgstr ""
 
-#: inc/custom.php:614
+#: inc/custom.php:618
 msgid "Footer Bar Widget Subtitles"
 msgstr ""
 
-#: inc/custom.php:644
+#: inc/custom.php:648
 msgid "Font"
 msgstr ""
 
-#: inc/custom.php:683
+#: inc/custom.php:687
 #, php-format
 msgid "%dpt"
 msgstr ""
 
-#: inc/custom.php:700
+#: inc/custom.php:704
 msgid "Font Style"
 msgstr ""
 
-#: inc/custom.php:738
+#: inc/custom.php:742
 msgid "Links"
 msgstr ""
 
-#: inc/custom.php:777
+#: inc/custom.php:781
 msgid "Hovered Links"
 msgstr ""
 
-#: inc/custom.php:837
+#: inc/custom.php:841
 msgid "- Default Font Family -"
 msgstr ""
 
-#: inc/custom.php:838 inc/skin.php:444
+#: inc/custom.php:842 inc/skin.php:444
 msgid "Arial, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/custom.php:839 inc/skin.php:445
+#: inc/custom.php:843 inc/skin.php:445
 msgid "Book Antica, Times, Serif"
 msgstr ""
 
-#: inc/custom.php:840 inc/skin.php:446
+#: inc/custom.php:844 inc/skin.php:446
 msgid "Bookman Old Style, Times, Serif"
 msgstr ""
 
-#: inc/custom.php:841 inc/skin.php:447
+#: inc/custom.php:845 inc/skin.php:447
 msgid "Comic Sans MS, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/custom.php:842 inc/skin.php:448
+#: inc/custom.php:846 inc/skin.php:448
 msgid "Courier New, Courier, Monospace"
 msgstr ""
 
-#: inc/custom.php:843 inc/skin.php:449
+#: inc/custom.php:847 inc/skin.php:449
 msgid "Garamond, Times, Serif"
 msgstr ""
 
-#: inc/custom.php:844 inc/skin.php:450
+#: inc/custom.php:848 inc/skin.php:450
 msgid "Georgia, Times, Serif"
 msgstr ""
 
-#: inc/custom.php:845 inc/skin.php:451
+#: inc/custom.php:849 inc/skin.php:451
 msgid "Monotype Corsiva, Courier, Monospace"
 msgstr ""
 
-#: inc/custom.php:846 inc/skin.php:452
+#: inc/custom.php:850 inc/skin.php:452
 msgid "Tahoma, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/custom.php:847 inc/skin.php:453
+#: inc/custom.php:851 inc/skin.php:453
 msgid "Times New Roman, Times, Serif"
 msgstr ""
 
-#: inc/custom.php:848 inc/skin.php:454
+#: inc/custom.php:852 inc/skin.php:454
 msgid "Trebuchet MS, Tahoma, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/custom.php:849 inc/skin.php:455
+#: inc/custom.php:853 inc/skin.php:455
 msgid "Verdana, Helvetica, Sans-Serif"
 msgstr ""
 
-#: inc/custom.php:862 inc/custom.php:877 inc/custom.php:892
+#: inc/custom.php:866 inc/custom.php:881 inc/custom.php:896
 msgid "- Default -"
 msgstr ""
 
-#: inc/custom.php:863
+#: inc/custom.php:867
 msgid "Bold"
 msgstr ""
 
-#: inc/custom.php:864 inc/custom.php:879
+#: inc/custom.php:868 inc/custom.php:883
 msgid "Normal"
 msgstr ""
 
-#: inc/custom.php:878
+#: inc/custom.php:882
 msgid "Italic"
 msgstr ""
 
-#: inc/custom.php:893
+#: inc/custom.php:897
 msgid "None"
 msgstr ""
 
-#: inc/custom.php:894
+#: inc/custom.php:898
 msgid "Underline"
 msgstr ""
 

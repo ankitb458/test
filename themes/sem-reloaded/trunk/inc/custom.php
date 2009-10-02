@@ -361,8 +361,12 @@ EOS;
 						if ( !$published ) {
 							$_dir = dirname($file);
 							$_file = basename($file);
-							$wp_filesystem->chdir($_dir);
-							$published = $wp_filesystem->put_contents($_file, $new_css);
+							$dir = $wp_filesystem->find_folder($_dir);
+							$chdir = $wp_filesystem->chdir($_dir);
+							if ( !$chdir && is_a($wp_filesystem, 'WP_Filesystem_FTPext') )
+								$chdir = ftp_chdir($wp_filesystem->link, $_dir);
+							if ( $chdir )
+								$published = $wp_filesystem->put_contents($_file, $new_css);
 						}
 						
 						if ( $published ) {
@@ -371,7 +375,7 @@ EOS;
 							$published_css[$sem_options['active_skin']] = get_option('sem_custom');
 							update_option('sem_custom_published', $published_css);
 						} else {
-							$fs_error = sprintf(__('Publish Failed: A WP filesystem error occurred while trying to edit <code>%s</code>.', 'sem-reloaded'), 'wp-content/themes/sem-reloaded/skins/' . $sem_options['active_skin'] . '/custom.css');
+							$fs_error = sprintf(__('Publish Failed: A WP filesystem error occurred (probably related to <a href="%1$s">this WP bug</a>) occurred. Paste the following code in %2$s:<pre>%3$s</pre>', 'sem-reloaded'), 'http://core.trac.wordpress.org/ticket/10889', 'wp-content/themes/sem-reloaded/skins/' . $sem_options['active_skin'] . '/custom.css',  $new_css);
 							break;
 						}
 					}
