@@ -4,7 +4,7 @@
 #
 
 if ( !defined('sem_version') )
-	define('sem_version', '6.0-rc2');
+	define('sem_version', '6.0');
 
 if ( !defined('sem_debug') )
 	define('sem_debug', isset($_GET['debug']) );
