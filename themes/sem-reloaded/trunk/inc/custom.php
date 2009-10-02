@@ -356,13 +356,24 @@ EOS;
 							. sem_custom::get_css();
 						
 						$wp_filesystem->delete($file);
-						$wp_filesystem->put_contents($file, $new_css, FS_CHMOD_FILE);
-						$published = true;
+						$published = $wp_filesystem->put_contents($file, $new_css);
 						
-						# store latest revision
-						$published_css = get_option('sem_custom_published');
-						$published_css[$sem_options['active_skin']] = get_option('sem_custom');
-						update_option('sem_custom_published', $published_css);
+						if ( !$published ) {
+							$_dir = dirname($file);
+							$_file = basename($file);
+							$wp_filesystem->chdir($_dir);
+							$published = $wp_filesystem->put_contents($_file, $new_css);
+						}
+						
+						if ( $published ) {
+							# store latest revision
+							$published_css = get_option('sem_custom_published');
+							$published_css[$sem_options['active_skin']] = get_option('sem_custom');
+							update_option('sem_custom_published', $published_css);
+						} else {
+							$fs_error = sprintf(__('Publish Failed: A WP filesystem error occurred while trying to edit <code>%s</code>.', 'sem-reloaded'), 'wp-content/themes/sem-reloaded/skins/' . $sem_options['active_skin'] . '/custom.css');
+							break;
+						}
 					}
 				}
 			}
