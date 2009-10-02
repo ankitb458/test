@@ -361,7 +361,7 @@ EOS;
 						if ( !$published ) {
 							$_dir = dirname($file);
 							$_file = basename($file);
-							$dir = $wp_filesystem->find_folder($_dir);
+							$_dir = $wp_filesystem->find_folder($_dir);
 							$chdir = $wp_filesystem->chdir($_dir);
 							if ( !$chdir && is_a($wp_filesystem, 'WP_Filesystem_FTPext') )
 								$chdir = ftp_chdir($wp_filesystem->link, $_dir);
