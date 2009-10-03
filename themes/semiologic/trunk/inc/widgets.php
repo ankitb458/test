@@ -330,6 +330,9 @@ class entry_content extends WP_Widget {
 			);
 		
 		$this->WP_Widget('entry_content', $widget_name, $widget_ops, $control_ops);
+		
+		if ( class_exists('fancy_excerpt') )
+			add_filter('the_content_more_link', array(&$this, 'more_link'), 0);
 	} # entry_content()
 	
 	
@@ -451,6 +454,29 @@ class entry_content extends WP_Widget {
 			}
 		}
 	} # widget()
+	
+	
+	/**
+	 * more_link()
+	 *
+	 * @param string $more
+	 * @return string $more
+	 **/
+
+	function more_link($more) {
+		if ( !$this->number )
+			return $more;
+		
+		$instance = $this->get_settings();
+		$instance = $instance[$this->number];
+		$instance = wp_parse_args($instance, entry_content::defaults());
+		
+		$more = '<a href="' . apply_filters('the_permalink', get_permalink()) . '#more-' . get_the_ID() . '" class="more-link">'
+			. sprintf($instance['more_link'], get_the_title())
+			. '</a>';
+		
+		return $more;
+	} # more_link()
 	
 	
 	/**
