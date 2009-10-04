@@ -448,6 +448,17 @@ then
 fi
 
 
+# clear the cache
+if [ -d wp-content/cache ]; then
+	if [ $quiet -eq 0 ];
+	then
+		echo "Clearing $path/wp-content/cache"
+	fi
+	
+	rm -Rf wp-content/cache/* 2> /dev/null
+fi
+
+
 # change perms
 if [ $quiet -eq 0 ];
 then
@@ -473,6 +484,18 @@ for dir in	media \
 do
 	chmod -R ugo+w $path/$dir 2> /dev/null
 done
+
+
+# upgrade db
+if [ "$path" != "${path#/usr/local/www/}" ]; then
+	if [ $quiet -eq 0 ];
+	then
+		echo "Upgrading $path database"
+	fi
+	#statements
+else
+	echo $path
+fi
 
 
 # register folder
