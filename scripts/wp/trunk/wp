@@ -263,18 +263,18 @@ fi
 
 # find realpath cmd
 realpath_cmd=`which realpath 2> /dev/null`
-if [ "$realpath_cmd" != '' ]; then
-	path=$realpath_cmd $path
-fi
 
 # sanitize path
 path=`cd $path && pwd`
+if [ "$realpath_cmd" != '' ]; then
+	path=`$realpath_cmd $path`
+fi
 
 # owner and owner_home
 owner=`stat --format '%U' $path 2> /dev/null || stat -f '%Su' $path 2> /dev/null`
 owner_home=`eval "cd ~$owner && pwd"`
 if [ "$realpath_cmd" != '' ]; then
-	owner_home=$realpath_cmd $owner_home
+	owner_home=`$realpath_cmd $owner_home`
 fi
 
 path=${path%/}
@@ -499,6 +499,11 @@ if [ "$path" != "${path#/usr/local/www/}" ]; then
 	if [ $quiet -eq 0 ];
 	then
 		echo "Upgrading $path database"
+		url=$path
+		url=${url#/usr/local/www/}
+		url=`echo $url | sed -E 's|/www/|/|g'`
+		url="$url/wp-admin/upgrade.php?step=ugrade_db"
+		echo $url
 	fi
 fi
 
