@@ -295,15 +295,19 @@ then
 		
 		if [ $zip_found -eq 1 ];
 		then
-			# fetch unzip method
-			if [ -x /usr/bin/unzip -o -x /usr/local/bin/unzip ];
-			then
-				cmd=unzip
-			else
-				cmd='tar -xf'
+			# find unzip
+			unzip_cmd=`which unzip 2> /dev/null`
+			if [ "$unzip_cmd" = '' ]; then
+				unzip_cmd=`which tar 2> /dev/null`
+				if [ "$unzip_cmd" != '' ]; then
+					unzip_cmd="$unzip_cmd -xf"
+				else
+					echo 'Err: failed to find unzip or tar'
+					exit 1
+				fi
 			fi
 			
-			$cmd $package 1> /dev/null							|| exit 1
+			$unzip_cmd $package 1> /dev/null							|| exit 1
 		fi
 		
 		if [ -d $owner_home/wordpress ];
