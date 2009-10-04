@@ -365,7 +365,7 @@ fi
 
 # create maintenance file
 echo '<?php $upgrading = time(); ?>' > $path/.maintenance
-trap "rm $path/.maintenance" EXIT
+trap "if [ -f $path/.maintenance ]; then rm $path/.maintenance fi" EXIT
 
 
 # copy files
@@ -490,30 +490,37 @@ do
 done
 
 
+# delete maintenance file
+if [ -f $path/.maintenance ]; then
+	rm $path/.maintenance
+fi
+
+
 # upgrade db
-if [ "$path" != "${path#/usr/local/www/}" ]; then
+if [ "$cmd" = 'upgrade' -a "$path" != "${path#/usr/local/www/}" ]; then
 	if [ $quiet -eq 0 ];
 	then
 		echo "Upgrading $path database"
-		url=$path
-		url=${url#/usr/local/www/}
-		url=`echo $url | sed -E 's|/www/|/|g'`
-		url="http://$url/wp-admin/upgrade.php?step=ugrade_db"
-		
-		# find curl
-		curl_cmd=`which curl 2> /dev/null`
-		if [ "$curl_cmd" = '' ]; then
-			if [ -f /usr/local/bin/curl ]; then
-				curl_cmd=/usr/local/bin/curl
-			else
-				echo 'Err: failed to find curl'
-				exit 1
-			fi
-		fi
-		
-		$curl_cmd -s --connect-timeout 3 -I $url # 2> /dev/null
-		sleep .1
 	fi
+	
+	url=$path
+	url=${url#/usr/local/www/}
+	url=`echo $url | sed -E 's|/www/|/|g'`
+	url="http://$url/wp-admin/upgrade.php?step=ugrade_db"
+	
+	# find curl
+	curl_cmd=`which curl 2> /dev/null`
+	if [ "$curl_cmd" = '' ]; then
+		if [ -f /usr/local/bin/curl ]; then
+			curl_cmd=/usr/local/bin/curl
+		else
+			echo 'Err: failed to find curl'
+			exit 1
+		fi
+	fi
+	
+	$curl_cmd -s --connect-timeout 3 -I $url # 2> /dev/null
+	sleep .1
 fi
 
 
