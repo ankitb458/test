@@ -521,7 +521,7 @@ if [ "$cmd" = 'upgrade' -a "$path" != "${path#/usr/local/www/}" ]; then
 		fi
 	fi
 	
-	$curl_cmd -s --connect-timeout 3 -I $url 2> /dev/null
+	$curl_cmd -s --connect-timeout 3 -I $url > /dev/null
 	sleep .1
 fi
 
