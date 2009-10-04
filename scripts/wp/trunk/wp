@@ -261,17 +261,21 @@ then
 	exit 0
 fi
 
-
-# sanitize path
-path=`cd $path && pwd`
+# find realpath cmd
 realpath_cmd=`which realpath 2> /dev/null`
 if [ "$realpath_cmd" != '' ]; then
 	path=$realpath_cmd $path
 fi
 
+# sanitize path
+path=`cd $path && pwd`
+
 # owner and owner_home
 owner=`stat --format '%U' $path 2> /dev/null || stat -f '%Su' $path 2> /dev/null`
 owner_home=`eval "cd ~$owner && pwd"`
+if [ "$realpath_cmd" != '' ]; then
+	owner_home=$realpath_cmd $owner_home
+fi
 
 path=${path%/}
 owner_home=${owner_home%/}
