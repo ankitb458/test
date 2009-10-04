@@ -363,6 +363,11 @@ then
 fi
 
 
+# create maintenance file
+echo '<?php $upgrading = time(); ?>' > $path/.maintenance
+trap "rm $path/.maintenance" EXIT
+
+
 # copy files
 if [ "$cmd" != 'perms' ];
 then
@@ -473,10 +478,10 @@ then
 	echo "Setting $path permissions"
 fi
 
-chown -R $owner $path
+chown -R $owner $path 2> /dev/null
 
-find $path -type d -exec chmod 0755 {} \;
-find $path -type f -exec chmod 0644 {} \;
+find $path -type d -exec chmod 0755 {} \; 2> /dev/null
+find $path -type f -exec chmod 0644 {} \; 2> /dev/null
 
 chmod ugo+w $path/.htaccess
 chmod ugo+w $path/wp-config.php
@@ -490,7 +495,9 @@ for dir in	media \
 			wp-content/sitemaps \
 			wp-content/uploads
 do
-	chmod -R ugo+w $path/$dir 2> /dev/null
+	if [ -d $path/$dir ]; then
+		chmod -R ugo+w $path/$dir 2> /dev/null
+	fi
 done
 
 
@@ -502,8 +509,21 @@ if [ "$path" != "${path#/usr/local/www/}" ]; then
 		url=$path
 		url=${url#/usr/local/www/}
 		url=`echo $url | sed -E 's|/www/|/|g'`
-		url="$url/wp-admin/upgrade.php?step=ugrade_db"
-		echo $url
+		url="http://$url/wp-admin/upgrade.php?step=ugrade_db"
+		
+		# find curl
+		curl_cmd=`which curl 2> /dev/null`
+		if [ "$curl_cmd" = '' ]; then
+			if [ -f /usr/local/bin/curl ]; then
+				curl_cmd=/usr/local/bin/curl
+			else
+				echo 'Err: failed to find curl'
+				exit 1
+			fi
+		fi
+		
+		$curl_cmd -s --connect-timeout 3 -I $url # 2> /dev/null
+		sleep .1
 	fi
 fi
 
