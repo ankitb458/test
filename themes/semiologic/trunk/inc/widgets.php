@@ -1055,7 +1055,7 @@ class entry_comments extends WP_Widget {
 					. '<label>'
 					. __('Comment Policy', 'sem-theme')
 					. '<br />' . "\n"
-					. '<textarea class="widefat"'
+					. '<textarea class="widefat" rows="4"'
 						. ' name="' . $this->get_field_name($field) . '"'
 						. ' >'
 						. esc_html($$field)
