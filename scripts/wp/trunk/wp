@@ -411,9 +411,9 @@ then
 		dbn=${dbn#/usr/local/www/}
 		dbn=${dbn#/home/}
 		dbn=${dbn##/}
-		dbn=`echo $dbn | sed -E 's|/www/|/|g'`
-		dbn=${dbn#*/public_html/}
-		dbn=${dbn#*/htdocs/}
+		dbn=`echo $dbn | sed -E 's|/www||g'`
+		dbn=`echo $dbn | sed -E 's|/public_html||g'`
+		dbn=`echo $dbn | sed -E 's|/htdocs||g'`
 		dbn=`echo $dbn | sed -E 's|[^a-zA-Z]+|_|g'`
 		dbn=${dbn#_}
 		dbn=${dbn%_}
@@ -498,15 +498,17 @@ fi
 
 # upgrade db
 if [ "$cmd" = 'upgrade' -a "$path" != "${path#/usr/local/www/}" ]; then
-	if [ $quiet -eq 0 ];
-	then
-		echo "Upgrading $path database"
-	fi
-	
 	url=$path
 	url=${url#/usr/local/www/}
-	url=`echo $url | sed -E 's|/www/|/|g'`
-	url="http://$url/wp-admin/upgrade.php?step=ugrade_db"
+	url=`echo $url | sed -E 's|/www||g'`
+	url=http://$url
+	
+	if [ $quiet -eq 0 ];
+	then
+		echo "Upgrading $url database"
+	fi
+	
+	url="$url/wp-admin/upgrade.php?step=ugrade_db"
 	
 	# find curl
 	curl_cmd=`which curl 2> /dev/null`
