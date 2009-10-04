@@ -2,13 +2,13 @@
 #
 # hub.org WP/Sem Pro utils
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.8
+# Version: 0.9
 # http://www.mesoconcepts.com/license/
 #
 
 
 # init
-version=0.8
+version=0.9
 quiet=0
 force=0
 all=0
@@ -521,7 +521,7 @@ if [ "$cmd" = 'upgrade' -a "$path" != "${path#/usr/local/www/}" ]; then
 		fi
 	fi
 	
-	$curl_cmd -s --connect-timeout 3 -I $url # 2> /dev/null
+	$curl_cmd -s --connect-timeout 3 -I $url 2> /dev/null
 	sleep .1
 fi
 
