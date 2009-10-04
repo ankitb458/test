@@ -264,6 +264,10 @@ fi
 
 # sanitize path
 path=`cd $path && pwd`
+realpath_cmd=`which realpath 2> /dev/null`
+if [ "$realpath_cmd" != '' ]; then
+	path=$realpath_cmd $path
+fi
 
 # owner and owner_home
 owner=`stat --format '%U' $path 2> /dev/null || stat -f '%Su' $path 2> /dev/null`
@@ -492,9 +496,6 @@ if [ "$path" != "${path#/usr/local/www/}" ]; then
 	then
 		echo "Upgrading $path database"
 	fi
-	#statements
-else
-	echo $path
 fi
 
 
