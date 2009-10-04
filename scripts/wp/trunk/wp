@@ -461,17 +461,6 @@ then
 fi
 
 
-# clear the cache
-if [ -d wp-content/cache ]; then
-	if [ $quiet -eq 0 ];
-	then
-		echo "Clearing $path/wp-content/cache"
-	fi
-	
-	rm -Rf wp-content/cache/* 2> /dev/null
-fi
-
-
 # change perms
 if [ $quiet -eq 0 ];
 then
@@ -525,6 +514,17 @@ if [ "$path" != "${path#/usr/local/www/}" ]; then
 		$curl_cmd -s --connect-timeout 3 -I $url # 2> /dev/null
 		sleep .1
 	fi
+fi
+
+
+# clear the cache
+if [ -d wp-content/cache ]; then
+	if [ $quiet -eq 0 ];
+	then
+		echo "Clearing $path/wp-content/cache"
+	fi
+	
+	rm -Rf wp-content/cache/* 2> /dev/null
 fi
 
 
