@@ -365,7 +365,7 @@ fi
 
 # create maintenance file
 echo '<?php $upgrading = time(); ?>' > $path/.maintenance
-trap "if [ -f $path/.maintenance ]; then rm $path/.maintenance fi" EXIT
+trap "if [ -f $path/.maintenance ]; then rm $path/.maintenance; fi" EXIT
 
 
 # copy files
