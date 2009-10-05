@@ -356,12 +356,13 @@ EOS;
 							. sem_custom::get_css();
 						
 						$wp_filesystem->delete($file);
+						$_dir = dirname($file);
+						$_file = basename($file);
+						$_dir = $wp_filesystem->find_folder($_dir);
+						$file = $_dir . '/' . $_file;
 						$published = $wp_filesystem->put_contents($file, $new_css);
 						
 						if ( !$published ) {
-							$_dir = dirname($file);
-							$_file = basename($file);
-							$_dir = $wp_filesystem->find_folder($_dir);
 							$chdir = $wp_filesystem->chdir($_dir);
 							if ( !$chdir && is_a($wp_filesystem, 'WP_Filesystem_FTPext') )
 								$chdir = ftp_chdir($wp_filesystem->link, $_dir);
