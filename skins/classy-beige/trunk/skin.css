@@ -129,18 +129,15 @@ html {
  * Header & Footer Boxes
  */
 
-.mmm #header_boxes .wrapper_item,
-.mmm #footer_boxes .wrapper_item {
+.mmm .inline_boxes .wrapper_item {
 	width: 940px;
 }
 
-.mm #header_boxes .wrapper_item,
-.mm #footer_boxes .wrapper_item {
+.mm .inline_boxes .wrapper_item {
 	width: 740px;
 }
 
-.m #header_boxes .wrapper_item,
-.m #footer_boxes .wrapper_item {
+.m .inline_boxes .wrapper_item {
 	width: 610px;
 }
 

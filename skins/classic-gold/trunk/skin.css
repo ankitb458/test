@@ -100,7 +100,7 @@ html {
  */
 
 #footer {
-	background: #d9e2ff;
+	background: #ffdfbf;
 	color: #000;
 	border-top: solid 1px #666;
 }
@@ -198,6 +198,7 @@ html {
 
 .header_widget,
 .footer_widget {
+	background: #ffffd9;
 	background: #ffffd9;
 }
 
@@ -339,7 +340,7 @@ blockquote {
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #ffffd9;
+	background: #ffdfbf;
 }
 
 .widget_calendar tfoot a {

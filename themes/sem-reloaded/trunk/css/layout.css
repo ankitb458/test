@@ -254,8 +254,7 @@ To customize this file, create a custom.css file in the theme's folder, and past
 }
 
 /* IE fix */
-.mmm #header_boxes .wrapper_item,
-.mmm #footer_boxes .wrapper_item {
+.mmm .inline_boxes .wrapper_item {
 	width: 949px;
 }
 

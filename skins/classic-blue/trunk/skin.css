@@ -100,7 +100,7 @@ html {
  */
 
 #footer {
-	background: #cee0f2;
+	background: #ffdfbf;
 	color: #000;
 	border-top: solid 1px #666;
 }
@@ -148,7 +148,7 @@ html {
 
 .mmm #header_boxes,
 .mmm #footer_boxes {
-	background: url(images/mmm-inline_boxes.jpg?ver=0.9) center repeat-y #ffe5cc;
+	background: url(images/mmm-inline_boxes.jpg?ver=0.9) center repeat-y #ffffd9;
 }
 
 .mmm #header_boxes_top,
@@ -163,7 +163,7 @@ html {
 
 .mm #header_boxes,
 .mm #footer_boxes {
-	background: url(images/mm-inline_boxes.jpg?ver=0.9) center repeat-y #ffe5cc;
+	background: url(images/mm-inline_boxes.jpg?ver=0.9) center repeat-y #ffffd9;
 }
 
 .mm #header_boxes_top,
@@ -178,7 +178,7 @@ html {
 
 .m #header_boxes,
 .m #footer_boxes {
-	background: url(images/m-inline_boxes.jpg?ver=0.9) center repeat-y #ffe5cc;
+	background: url(images/m-inline_boxes.jpg?ver=0.9) center repeat-y #ffffd9;
 }
 
 .m #header_boxes_top,
@@ -198,7 +198,7 @@ html {
 
 .header_widget,
 .footer_widget {
-	background: #ffe5cc;
+	background: #ffffd9;
 }
 
 .header_widget {
@@ -339,7 +339,7 @@ blockquote {
 
 .widget_calendar tfoot {
 	border-top: solid 1px #666;
-	background: #fff2cc;
+	background: #ffdfbf;
 }
 
 .widget_calendar tfoot a {

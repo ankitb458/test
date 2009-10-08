@@ -159,10 +159,8 @@ class sem_panels {
 			case 'the_header_boxes':
 			case 'the_footer_boxes':
 				$before_widget = '<div class="inline_box %2$s">' . "\n"
-					. '<div class="inline_box_top"><div class="hidden"></div></div>' . "\n"
 					. '<div class="pad">' . "\n";
 				$after_widget = '</div>' . "\n"
-					. '<div class="inline_box_bottom"><div class="hidden"></div></div>' . "\n"
 					. '</div><!-- inline_box -->' . "\n";
 				break;
 			
@@ -234,15 +232,15 @@ class sem_panels {
 			$class = ( $panel_id == 'the_header_boxes' ) ? 'header_boxes' : 'footer_boxes';
 
 			echo '<div class="spacer"></div>' . "\n"
-				. '<div id="' . $class . '" class="wrapper">' . "\n"
-				. '<div id="' . $class . '_top"><div class="hidden"></div></div>' . "\n"
-				. '<div id="' . $class . '_bg">' . "\n"
+				. '<div id="' . $class . '" class="wrapper inline_boxes">' . "\n"
+				. '<div id="' . $class . '_top" class="inline_boxes_top"><div class="hidden"></div></div>' . "\n"
+				. '<div id="' . $class . '_bg" class="inline_boxes_gb">' . "\n"
 				. '<div class="wrapper_item">' . "\n";
 			dynamic_sidebar($panel_id);
 			echo '<div class="spacer"></div>' . "\n"
 				. '</div>' . "\n"
 				. '</div>' . "\n"
-				. '<div id="' . $class . '_bottom"><div class="hidden"></div></div>' . "\n"
+				. '<div id="' . $class . '_bottom" class="inline_boxes_bottom"><div class="hidden"></div></div>' . "\n"
 				. '</div><!-- ' . $class . ' -->' . "\n";
 			break;
 		}
