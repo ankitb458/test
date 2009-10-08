@@ -129,24 +129,24 @@ class sem_template {
 		$skin_path = sem_path . '/skins/' . $sem_options['active_skin'];
 		$skin_url = sem_url . '/skins/' . $sem_options['active_skin'];
 		
-		wp_enqueue_style('style', sem_url . '/style.css', null, sem_version);
-		wp_enqueue_style('layout', sem_url . '/css/layout.css', null, sem_version);
+		wp_enqueue_style('style', sem_url . '/style.css', null, '20091005');
+		wp_enqueue_style('layout', sem_url . '/css/layout.css', null, '20091005');
 		
 		if ( file_exists($skin_path . '/icons.css') )
-			wp_enqueue_style('icons', $skin_url . '/icons.css', null, sem_version);
+			wp_enqueue_style('icons', $skin_url . '/icons.css', null, '20091005');
 		else
-			wp_enqueue_style('icons', sem_url . '/css/icons.css', null, sem_version);
+			wp_enqueue_style('icons', sem_url . '/css/icons.css', null, '20091005');
 		
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
-			wp_enqueue_style('skin', sem_url . '/css/print.css', null, sem_version);
+			wp_enqueue_style('skin', sem_url . '/css/print.css', null, '20091005');
 			if ( file_exists($skin_path . '/print.css') )
-				wp_enqueue_style('custom', $skin_url . '/print.css', null, sem_version);
+				wp_enqueue_style('custom', $skin_url . '/print.css', null, '20091005');
 		} elseif ( apply_filters('active_layout', $sem_options['active_layout']) == 'letter' ) {
-			wp_enqueue_style('skin', sem_url . '/css/letter.css', null, sem_version);
+			wp_enqueue_style('skin', sem_url . '/css/letter.css', null, '20091005');
 			if ( file_exists($skin_dir . '/letter.css') )
-				wp_enqueue_style('custom', $skin_url . '/letter.css', null, sem_version);
+				wp_enqueue_style('custom', $skin_url . '/letter.css', null, '20091005');
 		} else {
-			wp_enqueue_style('skin', $skin_url . '/skin.css', null, sem_version);
+			wp_enqueue_style('skin', $skin_url . '/skin.css', null, '20091005');
 			if ( file_exists(sem_path . '/custom.css') )
 				wp_enqueue_style('custom', sem_url . '/custom.css', null, filemtime(sem_path . '/custom.css'));
 			if ( file_exists($skin_path . '/custom.css') )

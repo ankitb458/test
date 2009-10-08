@@ -1,7 +1,7 @@
 /*
 Skin name: Kubrick, Blue
 Skin uri: http://skins.semiologic.com/mc/kubrick/
-Version: 0.8
+Version: 0.9
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -26,39 +26,39 @@ html {
 }
 
 .mmm #wrapper {
-	background: url(images/mmm-wrapper.jpg) center repeat-y #fff;
+	background: url(images/mmm-wrapper.jpg?ver=0.9) center repeat-y #fff;
 }
 
 .mmm #wrapper_top {
-	background: url(images/mmm-wrapper_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-wrapper_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mmm #wrapper_bottom {
-	background: url(images/mmm-wrapper_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-wrapper_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mm #wrapper {
-	background: url(images/mm-wrapper.jpg) center repeat-y #fff;
+	background: url(images/mm-wrapper.jpg?ver=0.9) center repeat-y #fff;
 }
 
 .mm #wrapper_top {
-	background: url(images/mm-wrapper_top.jpg) bottom center no-repeat;
+	background: url(images/mm-wrapper_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mm #wrapper_bottom {
-	background: url(images/mm-wrapper_bottom.jpg) top center no-repeat;
+	background: url(images/mm-wrapper_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .m #wrapper {
-	background: url(images/m-wrapper.jpg) center repeat-y #fff;
+	background: url(images/m-wrapper.jpg?ver=0.9) center repeat-y #fff;
 }
 
 .m #wrapper_top {
-	background: url(images/m-wrapper_top.jpg) bottom center no-repeat;
+	background: url(images/m-wrapper_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .m #wrapper_bottom {
-	background: url(images/m-wrapper_bottom.jpg) top center no-repeat;
+	background: url(images/m-wrapper_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 
@@ -72,15 +72,15 @@ html {
 }
 
 .mmm #header_img {
-	background: url(images/mmm-header.jpg) center no-repeat #175899;
+	background: url(images/mmm-header.jpg?ver=0.9) center no-repeat #175899;
 }
 
 .mm #header_img {
-	background: url(images/mm-header.jpg) center no-repeat #175899;
+	background: url(images/mm-header.jpg?ver=0.9) center no-repeat #175899;
 }
 
 .m #header_img {
-	background: url(images/m-header.jpg) center no-repeat #175899;
+	background: url(images/m-header.jpg?ver=0.9) center no-repeat #175899;
 }
 
 #tagline {
@@ -123,15 +123,15 @@ html {
  */
 
 .mmm #footer_wrapper {
-	background: url(images/mmm-footer.jpg) center repeat-y;
+	background: url(images/mmm-footer.jpg?ver=0.9) center repeat-y;
 }
 
 .mm #footer_wrapper {
-	background: url(images/mm-footer.jpg) center repeat-y;
+	background: url(images/mm-footer.jpg?ver=0.9) center repeat-y;
 }
 
 .m #footer_wrapper {
-	background: url(images/m-footer.jpg) center repeat-y;
+	background: url(images/m-footer.jpg?ver=0.9) center repeat-y;
 }
 
 
@@ -163,39 +163,39 @@ html {
 }
 
 .mmm #header_boxes {
-	background: url(images/mmm-header_boxes.jpg) center repeat-y;
+	background: url(images/mmm-header_boxes.jpg?ver=0.9) center repeat-y;
 }
 
 .mmm #header_boxes_top {
-	background: url(images/mmm-header_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mmm #header_boxes_bottom {
-	background: url(images/mmm-header_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mm #header_boxes {
-	background: url(images/mm-header_boxes.jpg) center repeat-y;
+	background: url(images/mm-header_boxes.jpg?ver=0.9) center repeat-y;
 }
 
 .mm #header_boxes_top {
-	background: url(images/mm-header_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/mm-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mm #header_boxes_bottom {
-	background: url(images/mm-header_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/mm-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .m #header_boxes {
-	background: url(images/m-header_boxes.jpg) center repeat-y;
+	background: url(images/m-header_boxes.jpg?ver=0.9) center repeat-y;
 }
 
 .m #header_boxes_top {
-	background: url(images/m-header_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/m-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .m #header_boxes_bottom {
-	background: url(images/m-header_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/m-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 
@@ -221,39 +221,39 @@ html {
 }
 
 .mmm #footer_boxes {
-	background: url(images/mmm-footer_boxes.jpg) center repeat-y;
+	background: url(images/mmm-footer_boxes.jpg?ver=0.9) center repeat-y;
 }
 
 .mmm #footer_boxes_top {
-	background: url(images/mmm-footer_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mmm #footer_boxes_bottom {
-	background: url(images/mmm-footer_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mm #footer_boxes {
-	background: url(images/mm-footer_boxes.jpg) center repeat-y;
+	background: url(images/mm-footer_boxes.jpg?ver=0.9) center repeat-y;
 }
 
 .mm #footer_boxes_top {
-	background: url(images/mm-footer_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/mm-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mm #footer_boxes_bottom {
-	background: url(images/mm-footer_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/mm-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .m #footer_boxes {
-	background: url(images/m-footer_boxes.jpg) center repeat-y;
+	background: url(images/m-footer_boxes.jpg?ver=0.9) center repeat-y;
 }
 
 .m #footer_boxes_top {
-	background: url(images/m-footer_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/m-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .m #footer_boxes_bottom {
-	background: url(images/m-footer_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/m-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 
@@ -272,39 +272,39 @@ html {
 }
 
 .mmm .header_widget {
-	background: url(images/mmm-header_widget.jpg) center repeat-y;
+	background: url(images/mmm-header_widget.jpg?ver=0.9) center repeat-y;
 }
 
 .mmm .header_widget_top {
-	background: url(images/mmm-header_widget_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-header_widget_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mmm .header_widget_bottom {
-	background: url(images/mmm-header_widget_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-header_widget_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mm .header_widget {
-	background: url(images/mm-header_widget.jpg) center repeat-y;
+	background: url(images/mm-header_widget.jpg?ver=0.9) center repeat-y;
 }
 
 .mm .header_widget_top {
-	background: url(images/mm-header_widget_top.jpg) bottom center no-repeat;
+	background: url(images/mm-header_widget_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mm .header_widget_bottom {
-	background: url(images/mm-header_widget_bottom.jpg) top center no-repeat;
+	background: url(images/mm-header_widget_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .m .header_widget {
-	background: url(images/m-header_widget.jpg) center repeat-y;
+	background: url(images/m-header_widget.jpg?ver=0.9) center repeat-y;
 }
 
 .m .header_widget_top {
-	background: url(images/m-header_widget_top.jpg) bottom center no-repeat;
+	background: url(images/m-header_widget_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .m .header_widget_bottom {
-	background: url(images/m-header_widget_bottom.jpg) top center no-repeat;
+	background: url(images/m-header_widget_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 
@@ -323,39 +323,39 @@ html {
 }
 
 .mmm .footer_widget {
-	background: url(images/mmm-footer_widget.jpg) center repeat-y;
+	background: url(images/mmm-footer_widget.jpg?ver=0.9) center repeat-y;
 }
 
 .mmm .footer_widget_top {
-	background: url(images/mmm-footer_widget_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-footer_widget_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mmm .footer_widget_bottom {
-	background: url(images/mmm-footer_widget_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-footer_widget_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mm .footer_widget {
-	background: url(images/mm-footer_widget.jpg) center repeat-y;
+	background: url(images/mm-footer_widget.jpg?ver=0.9) center repeat-y;
 }
 
 .mm .footer_widget_top {
-	background: url(images/mm-footer_widget_top.jpg) bottom center no-repeat;
+	background: url(images/mm-footer_widget_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mm .footer_widget_bottom {
-	background: url(images/mm-footer_widget_bottom.jpg) top center no-repeat;
+	background: url(images/mm-footer_widget_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .m .footer_widget {
-	background: url(images/m-footer_widget.jpg) center repeat-y;
+	background: url(images/m-footer_widget.jpg?ver=0.9) center repeat-y;
 }
 
 .m .footer_widget_top {
-	background: url(images/m-footer_widget_top.jpg) bottom center no-repeat;
+	background: url(images/m-footer_widget_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .m .footer_widget_bottom {
-	background: url(images/m-footer_widget_bottom.jpg) top center no-repeat;
+	background: url(images/m-footer_widget_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 
@@ -364,7 +364,7 @@ html {
  */
 
 #body {
-	background: url(images/body.jpg) bottom center repeat-x;
+	background: url(images/body.jpg?ver=0.9) bottom center repeat-x;
 }
 
 

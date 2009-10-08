@@ -6,11 +6,11 @@ To customize this file, create a copy of it, called letter.css, and place it int
 */
 
 html {
-	background: url(images/body.jpg) top center repeat-x #5281cc;
+	background: url(images/body.jpg?ver=0.9) top center repeat-x #5281cc;
 }
 
 #wrapper {
-	background: url(images/letter.jpg) center repeat-y #fff;
+	background: url(images/letter.jpg?ver=0.9) center repeat-y #fff;
 	color: #000;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -18,17 +18,17 @@ html {
 }
 
 #wrapper_top {
-	background: url(images/letter_top.jpg) top center no-repeat;
+	background: url(images/letter_top.jpg?ver=0.9) top center no-repeat;
 	height: 15px;
 }
 
 #wrapper_bottom {
-	background: url(images/letter_bottom.jpg) top center no-repeat;
+	background: url(images/letter_bottom.jpg?ver=0.9) top center no-repeat;
 	height: 25px;
 }
 
 #wrapper_bg {
-	background: url(images/letter_bg.jpg) top center no-repeat;
+	background: url(images/letter_bg.jpg?ver=0.9) top center no-repeat;
 }
 
 .pad {

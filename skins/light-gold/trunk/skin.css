@@ -1,7 +1,7 @@
 /*
 Skin name: Light, Gold
 Skin uri: http://skins.semiologic.com/mc/light/
-Version: 0.8
+Version: 0.9
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -57,15 +57,15 @@ html {
 }
 
 .mmm #navbar {
-	background: url(images/mmm-navbar.jpg) top center repeat-y #ffbf00;
+	background: url(images/mmm-navbar.jpg?ver=0.9) top center repeat-y #ffbf00;
 }
 
 .mm #navbar {
-	background: url(images/mm-navbar.jpg) top center repeat-y #ffbf00;
+	background: url(images/mm-navbar.jpg?ver=0.9) top center repeat-y #ffbf00;
 }
 
 .m #navbar {
-	background: url(images/m-navbar.jpg) top center repeat-y #ffbf00;
+	background: url(images/m-navbar.jpg?ver=0.9) top center repeat-y #ffbf00;
 }
 
 
@@ -90,64 +90,88 @@ html {
 	height: 10px;
 }
 
-.mmm #header_boxes,
+.mmm #header_boxes {
+	background: url(images/mmm-header_boxes.jpg?ver=0.9) center repeat-y;
+}
+
+.mmm #header_boxes_top {
+	background: url(images/mmm-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
+}
+
+.mmm #header_boxes_bottom {
+	background: url(images/mmm-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
+}
+
+.mm #header_boxes {
+	background: url(images/mm-header_boxes.jpg?ver=0.9) center repeat-y;
+}
+
+.mm #header_boxes_top {
+	background: url(images/mm-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
+}
+
+.mm #header_boxes_bottom {
+	background: url(images/mm-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
+}
+
+.m #header_boxes {
+	background: url(images/m-header_boxes.jpg?ver=0.9) center repeat-y;
+}
+
+.m #header_boxes_top {
+	background: url(images/m-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
+}
+
+.m #header_boxes_bottom {
+	background: url(images/m-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
+}
+
 .mmm #footer_boxes {
-	background: url(images/mmm-inline_boxes.jpg) center repeat-y;
+	background: url(images/mmm-footer_boxes.jpg?ver=0.9) center repeat-y;
 }
 
-.mmm #header_boxes_top,
 .mmm #footer_boxes_top {
-	background: url(images/mmm-inline_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
-.mmm #header_boxes_bottom,
 .mmm #footer_boxes_bottom {
-	background: url(images/mmm-inline_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
-.mmm #header_boxes_bg,
 .mmm #footer_boxes_bg {
-	background: url(images/mmm-inline_boxes_bg.jpg) bottom center no-repeat;
+	background: url(images/mmm-footer_boxes_bg.jpg?ver=0.9) bottom center no-repeat;
 }
 
-.mm #header_boxes,
 .mm #footer_boxes {
-	background: url(images/mm-inline_boxes.jpg) center repeat-y;
+	background: url(images/mm-footer_boxes.jpg?ver=0.9) center repeat-y;
 }
 
-.mm #header_boxes_top,
 .mm #footer_boxes_top {
-	background: url(images/mm-inline_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/mm-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
-.mm #header_boxes_bottom,
 .mm #footer_boxes_bottom {
-	background: url(images/mm-inline_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/mm-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
-.mm #header_boxes_bg,
 .mm #footer_boxes_bg {
-	background: url(images/mm-inline_boxes_bg.jpg) bottom center no-repeat;
+	background: url(images/mm-footer_boxes_bg.jpg?ver=0.9) bottom center no-repeat;
 }
 
-.m #header_boxes,
 .m #footer_boxes {
-	background: url(images/m-inline_boxes.jpg) center repeat-y;
+	background: url(images/m-footer_boxes.jpg?ver=0.9) center repeat-y;
 }
 
-.m #header_boxes_top,
 .m #footer_boxes_top {
-	background: url(images/m-inline_boxes_top.jpg) bottom center no-repeat;
+	background: url(images/m-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
-.m #header_boxes_bottom,
 .m #footer_boxes_bottom {
-	background: url(images/m-inline_boxes_bottom.jpg) top center no-repeat;
+	background: url(images/m-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
-.m #header_boxes_bg,
 .m #footer_boxes_bg {
-	background: url(images/m-inline_boxes_bg.jpg) bottom center no-repeat;
+	background: url(images/m-footer_boxes_bg.jpg?ver=0.9) bottom center no-repeat;
 }
 
 
@@ -164,47 +188,47 @@ html {
 
 .mmm .header_widget,
 .mmm .footer_widget {
-	background: url(images/mmm-body.jpg) center repeat-y;
+	background: url(images/mmm-body.jpg?ver=0.9) center repeat-y;
 }
 
 .mmm .header_widget_top,
 .mmm .footer_widget_top {
-	background: url(images/mmm-body_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mmm .header_widget_bottom,
 .mmm .footer_widget_bottom {
-	background: url(images/mmm-body_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mm .header_widget,
 .mm .footer_widget {
-	background: url(images/mm-body.jpg) center repeat-y;
+	background: url(images/mm-body.jpg?ver=0.9) center repeat-y;
 }
 
 .mm .header_widget_top,
 .mm .footer_widget_top {
-	background: url(images/mm-body_top.jpg) bottom center no-repeat;
+	background: url(images/mm-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mm .header_widget_bottom,
 .mm .footer_widget_bottom {
-	background: url(images/mm-body_bottom.jpg) top center no-repeat;
+	background: url(images/mm-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .m .header_widget,
 .m .footer_widget {
-	background: url(images/m-body.jpg) center repeat-y;
+	background: url(images/m-body.jpg?ver=0.9) center repeat-y;
 }
 
 .m .header_widget_top,
 .m .footer_widget_top {
-	background: url(images/m-body_top.jpg) bottom center no-repeat;
+	background: url(images/m-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .m .header_widget_bottom,
 .m .footer_widget_bottom {
-	background: url(images/m-body_bottom.jpg) top center no-repeat;
+	background: url(images/m-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 
@@ -218,123 +242,123 @@ html {
 }
 
 .mmm #body {
-	background: url(images/mmm-body.jpg) center repeat-y;
+	background: url(images/mmm-body.jpg?ver=0.9) center repeat-y;
 }
 
 .mmm #body_top {
-	background: url(images/mmm-body_top.jpg) bottom center no-repeat;
+	background: url(images/mmm-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mmm #body_bottom {
-	background: url(images/mmm-body_bottom.jpg) top center no-repeat;
+	background: url(images/mmm-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mts #body {
-	background: url(images/mts-body.jpg) center repeat-y;
+	background: url(images/mts-body.jpg?ver=0.9) center repeat-y;
 }
 
 .mts #body_top {
-	background: url(images/mts-body_top.jpg) bottom center no-repeat;
+	background: url(images/mts-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mts #body_bottom {
-	background: url(images/mts-body_bottom.jpg) top center no-repeat;
+	background: url(images/mts-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .sms #body {
-	background: url(images/sms-body.jpg) center repeat-y;
+	background: url(images/sms-body.jpg?ver=0.9) center repeat-y;
 }
 
 .sms #body_top {
-	background: url(images/sms-body_top.jpg) bottom center no-repeat;
+	background: url(images/sms-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .sms #body_bottom {
-	background: url(images/sms-body_bottom.jpg) top center no-repeat;
+	background: url(images/sms-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .tsm #body {
-	background: url(images/tsm-body.jpg) center repeat-y;
+	background: url(images/tsm-body.jpg?ver=0.9) center repeat-y;
 }
 
 .tsm #body_top {
-	background: url(images/tsm-body_top.jpg) bottom center no-repeat;
+	background: url(images/tsm-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .tsm #body_bottom {
-	background: url(images/tsm-body_bottom.jpg) top center no-repeat;
+	background: url(images/tsm-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mms #body {
-	background: url(images/mms-body.jpg) center repeat-y;
+	background: url(images/mms-body.jpg?ver=0.9) center repeat-y;
 }
 
 .mms #body_top {
-	background: url(images/mms-body_top.jpg) bottom center no-repeat;
+	background: url(images/mms-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mms #body_bottom {
-	background: url(images/mms-body_bottom.jpg) top center no-repeat;
+	background: url(images/mms-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .smm #body {
-	background: url(images/smm-body.jpg) center repeat-y;
+	background: url(images/smm-body.jpg?ver=0.9) center repeat-y;
 }
 
 .smm #body_top {
-	background: url(images/smm-body_top.jpg) bottom center no-repeat;
+	background: url(images/smm-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .smm #body_bottom {
-	background: url(images/smm-body_bottom.jpg) top center no-repeat;
+	background: url(images/smm-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .mm #body {
-	background: url(images/mm-body.jpg) center repeat-y;
+	background: url(images/mm-body.jpg?ver=0.9) center repeat-y;
 }
 
 .mm #body_top {
-	background: url(images/mm-body_top.jpg) bottom center no-repeat;
+	background: url(images/mm-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .mm #body_bottom {
-	background: url(images/mm-body_bottom.jpg) top center no-repeat;
+	background: url(images/mm-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .ms #body {
-	background: url(images/ms-body.jpg) center repeat-y;
+	background: url(images/ms-body.jpg?ver=0.9) center repeat-y;
 }
 
 .ms #body_top {
-	background: url(images/ms-body_top.jpg) bottom center no-repeat;
+	background: url(images/ms-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .ms #body_bottom {
-	background: url(images/ms-body_bottom.jpg) top center no-repeat;
+	background: url(images/ms-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .sm #body {
-	background: url(images/sm-body.jpg) center repeat-y;
+	background: url(images/sm-body.jpg?ver=0.9) center repeat-y;
 }
 
 .sm #body_top {
-	background: url(images/sm-body_top.jpg) bottom center no-repeat;
+	background: url(images/sm-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .sm #body_bottom {
-	background: url(images/sm-body_bottom.jpg) top center no-repeat;
+	background: url(images/sm-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 .m #body {
-	background: url(images/m-body.jpg) center repeat-y;
+	background: url(images/m-body.jpg?ver=0.9) center repeat-y;
 }
 
 .m #body_top {
-	background: url(images/m-body_top.jpg) bottom center no-repeat;
+	background: url(images/m-body_top.jpg?ver=0.9) bottom center no-repeat;
 }
 
 .m #body_bottom {
-	background: url(images/m-body_bottom.jpg) top center no-repeat;
+	background: url(images/m-body_bottom.jpg?ver=0.9) top center no-repeat;
 }
 
 

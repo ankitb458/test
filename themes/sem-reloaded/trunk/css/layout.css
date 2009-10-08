@@ -22,6 +22,10 @@ To customize this file, create a custom.css file in the theme's folder, and past
 	margin: 0px auto;
 }
 
+.wrapper_item {
+	overflow: hidden;
+}
+
 
 /*
  * mts, tsm, and sms layouts
@@ -193,6 +197,8 @@ To customize this file, create a custom.css file in the theme's folder, and past
 
 #go {
 	margin-right: 0px;
+	padding-left: 2px;
+	padding-right: 2px;
 }
 
 * html #s {
@@ -240,27 +246,11 @@ To customize this file, create a custom.css file in the theme's folder, and past
 }
 
 .mm .inline_box {
-	width: 33.33%;
+	width: 50%;
 }
 
 .mmm .inline_box {
-	width: 25%;
-}
-
-.mmm #header_boxes .wrapper_item,
-.mmm #footer_boxes .wrapper_item
-{
-	width: 949px;
-}
-
-.mm #header_boxes .wrapper_item,
-.mm #footer_boxes .wrapper_item {
-	width: 749px;
-}
-
-.m #header_boxes .wrapper_item,
-.m #footer_boxes .wrapper_item {
-	width: 619px;
+	width: 33.33%;
 }
 
 
