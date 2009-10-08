@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9\n"
 "Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
-"POT-Creation-Date: 2009-10-08 11:13+0200\n"
+"POT-Creation-Date: 2009-10-08 12:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -636,7 +636,7 @@ msgstr ""
 
 #: inc/layout.php:262 inc/layout.php:270 inc/layout.php:278 inc/layout.php:286
 #: inc/layout.php:326 inc/layout.php:334
-msgid "3 x 317px (187px net)"
+msgid "3 x 317px (287px net)"
 msgstr ""
 
 #: inc/layout.php:265
@@ -678,7 +678,7 @@ msgid "1 x 200px (170px net)"
 msgstr ""
 
 #: inc/layout.php:294 inc/layout.php:302 inc/layout.php:318
-msgid "3 x 250px (220px net)"
+msgid "2 x 375px (345px net)"
 msgstr ""
 
 #: inc/layout.php:297
