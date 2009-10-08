@@ -82,19 +82,16 @@ $wpdb->query("
 # Set permalink structure
 #
 
-$permalink_structure = '';
-
 if ( !function_exists('got_mod_rewrite') ) {
 	include_once ABSPATH . 'wp-admin/includes/admin.php';
 }
 
 if ( got_mod_rewrite() && is_file(ABSPATH . '.htaccess') && is_writable(ABSPATH . '.htaccess') ) {
-	$permalink_structure = '/%year%/%monthnum%/%postname%/';
-	update_option('permalink_structure', $permalink_structure);
+	update_option('permalink_structure', '/%year%/%monthnum%/%postname%/');
+	update_option('category_base', 'topics');
+	$wp_rewrite =& new WP_Rewrite;
+	$wp_rewrite->flush_rules();
 }
-
-$wp_rewrite =& new WP_Rewrite;
-$wp_rewrite->flush_rules();
 
 
 #
@@ -103,8 +100,6 @@ $wp_rewrite->flush_rules();
 # Override default options
 #
 
-update_option('default_comment_status', 'closed');
-update_option('default_ping_status', 'closed');
 update_option('use_balanceTags', '1');
 update_option('users_can_register', '0');
 
