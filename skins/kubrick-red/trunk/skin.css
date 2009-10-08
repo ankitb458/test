@@ -139,22 +139,19 @@ html {
  * Header Boxes
  */
 
-.mmm #header_boxes .wrapper_item {
+.mmm #header_boxes .wrapper_item,
+.mmm #footer_boxes .wrapper_item {
 	width: 940px;
-	padding-left: 5px;
-	padding-right: 5px;
 }
 
-.mm #header_boxes .wrapper_item {
+.mm #header_boxes .wrapper_item,
+.mm #footer_boxes .wrapper_item {
 	width: 740px;
-	padding-left: 5px;
-	padding-right: 5px;
 }
 
-.m #header_boxes .wrapper_item {
+.m #header_boxes .wrapper_item,
+.m #footer_boxes .wrapper_item {
 	width: 610px;
-	padding-left: 5px;
-	padding-right: 5px;
 }
 
 #header_boxes_top,
@@ -202,18 +199,6 @@ html {
 /*
  * Footer Boxes
  */
-
-.mmm #footer_boxes .wrapper_item {
-	width: 940px;
-}
-
-.mm #footer_boxes .wrapper_item {
-	width: 740px;
-}
-
-.m #footer_boxes .wrapper_item {
-	width: 610px;
-}
 
 #footer_boxes_top,
 #footer_boxes_bottom {
