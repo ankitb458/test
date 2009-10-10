@@ -311,7 +311,8 @@ html /* credits bottom */ {
 }
 
 .mmm .entry_bg,
-.mmm .main_widget_bg {
+.mmm .main_widget_bg,
+.mmm .post_list {
 	background: url(images/mmm-main_bg.jpg) top center no-repeat;
 }
 
@@ -331,7 +332,8 @@ html /* credits bottom */ {
 }
 
 .mm .entry_bg,
-.mm .main_widget_bg {
+.mm .main_widget_bg,
+.mm .post_list {
 	background: url(images/mm-main_bg.jpg) top center no-repeat;
 }
 
@@ -351,7 +353,8 @@ html /* credits bottom */ {
 }
 
 .m .entry_bg,
-.m .main_widget_bg {
+.m .main_widget_bg,
+.m .post_list {
 	background: url(images/m-main_bg.jpg) top center no-repeat;
 }
 
@@ -371,7 +374,8 @@ html /* credits bottom */ {
 }
 
 .mm1s .entry_bg,
-.mm1s .main_widget_bg {
+.mm1s .main_widget_bg,
+.mm1s .post_list {
 	background: url(images/wide_main_bg.jpg) top center no-repeat;
 }
 
@@ -395,7 +399,9 @@ html /* credits bottom */ {
 .m2s .entry_bg,
 .m1s .entry_bg,
 .m2s .main_widget_bg,
-.m1s .main_widget_bg {
+.m1s .main_widget_bg,
+.m2s .post_list,
+.m1s .post_list {
 	background: url(images/main_bg.jpg) top center no-repeat;
 }
 
@@ -417,7 +423,8 @@ html /* credits bottom */ {
 	padding-top: 11px;
 }
 
-.main_widget_bg {
+.main_widget_bg,
+.post_list {
 	padding-top: 1px;
 }
 
