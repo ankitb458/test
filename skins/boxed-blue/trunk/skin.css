@@ -50,7 +50,7 @@ body,
 #footer,
 #credits,
 html /* credits bottom */ {
-	background: #0053a6;
+	background: #004d99;
 	color: #fff;
 }
 
@@ -74,18 +74,19 @@ html /* credits bottom */ {
 #body_bottom {
 	margin-top: 10px;
 	height: 8px;
-	border-top: solid 1px #bbb;
 	background: #ddd;
-	border-bottom: solid 1px #004d99;
+	border-top: solid 1px #bbb;
+	border-bottom: solid 1px #bbb;
 }
 
 #footer_wrapper {
-	background: #0066cc;
-	border-top: solid 1px #8fadcc;
+	background: #000;
 	color: #fff;
+	padding-top: 1px;
 }
 
 #footer {
+	border-top: solid 1px #ddd;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -140,14 +141,22 @@ html /* credits bottom */ {
 	font-weight: normal;
 }
 
+#footer_wrapper a {
+	color: #61aaf2;
+}
+
+#footer_wrapper a:hover {
+	color: #bfdfff;
+}
+
 #navbar a,
-#footer_wrapper a,
+#footer a,
 #credits a {
 	color: #fff;
 }
 
 #navbar a:hover,
-#footer_wrapper a:hover,
+#footer a:hover,
 #credits a:hover {
 	color: #bfdfff;
 }
