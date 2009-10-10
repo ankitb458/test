@@ -74,14 +74,14 @@ html /* credits bottom */ {
 #body_bottom {
 	margin-top: 10px;
 	height: 8px;
-	border-top: solid 1px #ccc;
+	border-top: solid 1px #bbb;
 	background: #ddd;
 	border-bottom: solid 1px #004d99;
 }
 
 #footer_wrapper {
 	background: #0066cc;
-	border-top: solid 1px #a3b8cc;
+	border-top: solid 1px #8fadcc;
 	color: #fff;
 }
 
@@ -490,22 +490,19 @@ html /* credits bottom */ {
 	background: url(images/wide_sidebar_bottom.jpg) top center no-repeat;
 }
 
-#top_sidebar .widget {
+.wide_sidebar .widget {
 	background: url(images/xwide_sidebar.jpg) center repeat-y;
 }
 
-#top_sidebar .widget_top,
-#bottom_sidebar .widget_top {
+.wide_sidebar .widget_top {
 	background: url(images/xwide_sidebar_top.jpg) bottom center no-repeat;
 }
 
-#top_sidebar .widget_bg,
-#bottom_sidebar .widget_bg {
+.wide_sidebar .widget_bg {
 	background: url(images/xwide_sidebar_bg.jpg) top center no-repeat;
 }
 
-#top_sidebar .widget_bottom,
-#bottom_sidebar .widget_bottom {
+.wide_sidebar .widget_bottom {
 	background: url(images/xwide_sidebar_bottom.jpg) top center no-repeat;
 }
 
