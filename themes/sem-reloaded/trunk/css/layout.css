@@ -17,9 +17,17 @@ To customize this file, create a custom.css file in the theme's folder, and past
 #credits,
 .wrapper,
 .wrapper_item,
+#header_bg,
+#navbar_bg,
+#credits_bg,
 .pad,
 .post_list {
 	margin: 0px auto;
+}
+
+#credits_bg {
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 .wrapper_item {

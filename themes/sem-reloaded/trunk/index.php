@@ -28,11 +28,13 @@ include sem_path . '/header.php';
 					$class = get_post_class();
 					
 					echo '<div class="entry' . ( $class ? ( ' ' . implode(' ', $class) ) : '' ) . '">' . "\n"
-						. '<div class="entry_top"><div class="hidden"></div></div>' . "\n";
+						. '<div class="entry_top"><div class="hidden"></div></div>' . "\n"
+						. '<div class="entry_bg">' . "\n";
 					
 					sem_panels::display('the_entry');
 					
-					echo '<div class="entry_bottom"><div class="hidden"></div></div>' . "\n"
+					echo '</div>' . "\n"
+						. '<div class="entry_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . '<!-- entry -->' . "\n";
 
 				endwhile; # have_posts()

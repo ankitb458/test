@@ -307,13 +307,24 @@ div.pings_date {
 
 .widget_calendar table {
 	border-collapse: collapse;
-	margin: 0px auto;
-	width: 160px;
+	margin: 0px auto .4em;
+	width: 158px;
+	border: solid 1px #bbb;
+	background: #fff;
+	color: #000;
+}
+
+.widget_calendar thead th {
+	border-bottom: solid 1px #bbb;
+}
+
+.widget_calendar tfoot td {
+	border-top: solid 1px #bbb;
 }
 
 .widget_calendar caption {
 	margin: 0 auto 3px auto;
-	font-size: 16px;
+	font-size: 18px;
 	font-weight: bold;
 	text-align: center;
 }
@@ -433,7 +444,7 @@ img.avatar {
 }
 
 #credits {
-	font-size: .8em;
+	font-size: 11px;
 }
 
 #sitename {
@@ -511,8 +522,12 @@ h2 a {
 
 .pad,
 .post_list {
-	padding: 0px 15px;
+	padding: 0px 20px;
 	margin: 0px auto;
+}
+
+.pad .pad {
+	padding: 0px;
 }
 
 .post_list h3 {

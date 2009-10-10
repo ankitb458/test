@@ -17,8 +17,10 @@ class sem_panels {
 		
 		$before_widget = '<div class="widget %2$s">' . "\n"
 						. '<div class="widget_top"><div class="hidden"></div></div>' . "\n"
+						. '<div class="widget_bg">' . "\n"
 						. '<div class="pad">';
 		$after_widget = '</div>' . "\n"
+						. '</div>' . "\n"
 						. '<div class="widget_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . "\n";
 		
@@ -168,8 +170,10 @@ class sem_panels {
 			case 'after_the_entries':
 				$before_widget = '<div class="%2$s main_widget">' . "\n"
 					. '<div class="main_widget_top"><div class="hidden"></div></div>' . "\n"
+					. '<div class="main_widget_bg">' . "\n"
 					. '<div class="pad">' . "\n";
 				$after_widget = '</div>' . "\n"
+					. '</div>' . "\n"
 					. '<div class="main_widget_bottom"><div class="hidden"></div></div>' . "\n"
 					. '</div><!-- main_widget -->' . "\n";
 				break;
