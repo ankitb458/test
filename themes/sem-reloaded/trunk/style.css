@@ -777,8 +777,10 @@ div.scripts {
 
 /* bookmark me, subscribe me */
 
+.bookmark_me_ruler,
 .subscribe_me_ruler {
 	clear: both;
+	height: 0px !important;
 }
 
 /* banner ad widgets */
