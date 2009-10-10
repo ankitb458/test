@@ -47,13 +47,6 @@ body,
 	color: #000;
 }
 
-#footer,
-#credits,
-html /* credits bottom */ {
-	background: #004d99;
-	color: #fff;
-}
-
 #header {
 	background: #fff;
 }
@@ -80,9 +73,16 @@ html /* credits bottom */ {
 }
 
 #footer_wrapper {
-	background: #000;
+	background: #0d4680;
 	color: #fff;
 	padding-top: 1px;
+}
+
+#footer,
+#credits,
+html /* credits bottom */ {
+	background: #000;
+	color: #fff;
 }
 
 #footer {
@@ -141,24 +141,31 @@ html /* credits bottom */ {
 	font-weight: normal;
 }
 
-#footer_wrapper a {
-	color: #61aaf2;
-}
 
-#footer_wrapper a:hover {
-	color: #99ccff;
-}
-
-#navbar a,
-#footer a,
-#credits a {
+#navbar a {
 	color: #fff;
 }
 
-#navbar a:hover,
+#navbar a:hover {
+	color: #bfdfff;
+}
+
+#footer_wrapper a {
+	color: #bfdfff;
+}
+
+#footer_wrapper a:hover {
+	color: #ffe5cc;
+}
+
+#footer a,
+#credits a {
+	color: #99ccff;
+}
+
 #footer a:hover,
 #credits a:hover {
-	color: #bfdfff;
+	color: #ffe5cc;
 }
 
 
