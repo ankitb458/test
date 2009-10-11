@@ -274,3 +274,94 @@ To customize this file, create a custom.css file in the theme's folder, and past
 #body_bottom {
 	height: 1px; /* to avoid margin-related issues */
 }
+
+/*
+ * Default Background Handling
+ */
+
+#wrapper,
+#header,
+#header_boxes,
+.header_widget,
+#body,
+#main,
+.entry,
+.main_widget,
+.sidebar,
+.widget,
+.footer_widget,
+#footer_boxes,
+#footer {
+	background-position: center;
+	background-repeat: repeat-y;
+}
+
+#wrapper_bg,
+#header_bg,
+#header_boxes_bg,
+.header_widget_bg,
+#body_bg,
+#main_bg,
+.entry_bg,
+.post_list,
+.main_widget_bg,
+.sidebar_bg,
+.widget_bg,
+.footer_widget_bg,
+#footer_boxes_bg,
+#footer_bg {
+	background-position: top center;
+	background-repeat: no-repeat;
+}
+
+#wrapper_top,
+#header_top,
+#navbar_top,
+#header_boxes_top,
+.header_widget_top,
+#body_top,
+#main_top,
+.entry_top,
+.main_widget_top,
+.sidebar_top,
+.widget_top,
+.footer_widget_top,
+#footer_boxes_top,
+#footer_top {
+	background-position: bottom center;
+	background-repeat: no-repeat;
+}
+
+#wrapper_bottom,
+#header_bottom,
+#navbar_bottom,
+#header_boxes_bottom,
+.header_widget_bottom,
+#body_bg_bottom,
+#main_bg_bottom,
+.entry_bottom,
+.main_widget_bottom,
+.sidebar_bottom,
+.widget_bottom,
+.footer_widget_bottom,
+#footer_boxes_bottom,
+#footer_bottom {
+	background-position: top center;
+	background-repeat: no-repeat;
+}
+
+#navbar {
+	background-position: top left;
+	background-repeat: repeat;
+}
+
+#navbar_bg {
+	background-position: top left;
+	background-repeat: no-repeat;
+}
+
+#navbar span,
+#navbar a {
+	background-position: top right;
+	background-repeat: no-repeat;
+}
