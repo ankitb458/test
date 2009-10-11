@@ -309,17 +309,17 @@ div.pings_date {
 	border-collapse: collapse;
 	margin: 0px auto .4em;
 	width: 158px;
-	border: solid 1px #bbb;
+	border: solid 1px #aaa;
 	background: #fff;
 	color: #000;
 }
 
 .widget_calendar thead th {
-	border-bottom: solid 1px #bbb;
+	border-bottom: solid 1px #aaa;
 }
 
 .widget_calendar tfoot td {
-	border-top: solid 1px #bbb;
+	border-top: solid 1px #aaa;
 }
 
 .widget_calendar caption {
