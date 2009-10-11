@@ -666,11 +666,11 @@ class entry_categories extends WP_Widget {
 		$num = get_comments_number();
 		if ( $num && !is_single() ) {
 			if ( $num > 1 ) {
-				$comments = sprintf($n_comments, number_format_i18n($num));
+				$comments = str_replace(' ', '&nbsp;', sprintf($n_comments, number_format_i18n($num)));
 				$anchor = '#comments';
 				$class = 'entry_replies';
 			} elseif ( $num ) {
-				$comments = $one_comment;
+				$comments = str_replace(' ', '&nbsp;', $one_comment);
 				$anchor = '#comments';
 				$class = 'entry_replies';
 			}
@@ -688,7 +688,7 @@ class entry_categories extends WP_Widget {
 				. '</span>';
 		}
 		
-		$link = ' '
+		$link = '&nbsp;'
 			. '<span class="link_entry">'
 			. '<a href="' . esc_url(apply_filters('the_permalink', get_permalink())) . '" title="#">'
 			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="12" class="no_icon" alt="#" />'
