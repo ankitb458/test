@@ -55,7 +55,7 @@ body,
 	border-top: solid 1px #004d99;
 	border-bottom: solid 1px #004d99;
 	line-height: 32px;
-	background: url(images/navbar.jpg) top center repeat #0066cc;
+	background: url(images/navbar.jpg) top center repeat #0059b3;
 	color: #fff;
 	margin-bottom: 5px;
 }
@@ -89,14 +89,6 @@ html /* credits bottom */ {
 	padding-bottom: 10px;
 }
 
-.main .pad {
-	padding: 0px;
-}
-
-.pad .pad {
-	padding: 0px 20px;
-}
-
 
 /*
  * Header, Navbar, Body, Footer
@@ -122,7 +114,7 @@ html /* credits bottom */ {
 }
 
 #header_nav a {
-	background: url(images/navbar_item.jpg) top right no-repeat;
+	background: url(images/navbar_bg.jpg) top right no-repeat;
 	display: block;
 	float: left;
 	padding-left: 15px;
@@ -556,7 +548,7 @@ html /* credits bottom */ {
  */
 
 .widget_calendar thead {
-	background: #0066cc;
+	background: #0059b3;
 	color: #fff;
 }
 
