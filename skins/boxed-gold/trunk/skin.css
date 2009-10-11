@@ -72,7 +72,7 @@ body,
 }
 
 #footer_wrapper {
-	background: #fffcf2;
+	background: #f5fff2;
 	color: #000;
 	border-top: solid 1px #aaa;
 }
@@ -187,7 +187,7 @@ html /* credits bottom */ {
 }
 
 .mmm #header_boxes {
-	background: url(images/mmm-header_boxes.jpg) center repeat-y #fff5f2;
+	background: url(images/mmm-header_boxes.jpg) center repeat-y #fff9f2;
 }
 
 .mmm #header_boxes_bg {
@@ -203,7 +203,7 @@ html /* credits bottom */ {
 }
 
 .mm #header_boxes {
-	background: url(images/mm-header_boxes.jpg) center repeat-y #fff5f2;
+	background: url(images/mm-header_boxes.jpg) center repeat-y #fff9f2;
 }
 
 .mm #header_boxes_bg {
@@ -219,7 +219,7 @@ html /* credits bottom */ {
 }
 
 .m #header_boxes {
-	background: url(images/m-header_boxes.jpg) center repeat-y #fff5f2;
+	background: url(images/m-header_boxes.jpg) center repeat-y #fff9f2;
 }
 
 .m #header_boxes_bg {
@@ -235,7 +235,7 @@ html /* credits bottom */ {
 }
 
 .mmm .header_widget {
-	background: url(images/mmm-header_widget.jpg) center repeat-y #fff5f2;
+	background: url(images/mmm-header_widget.jpg) center repeat-y #fff9f2;
 }
 
 .mmm .header_widget_bg {
@@ -251,7 +251,7 @@ html /* credits bottom */ {
 }
 
 .mm .header_widget {
-	background: url(images/mm-header_widget.jpg) center repeat-y #fff5f2;
+	background: url(images/mm-header_widget.jpg) center repeat-y #fff9f2;
 }
 
 .mm .header_widget_bg {
@@ -267,7 +267,7 @@ html /* credits bottom */ {
 }
 
 .m .header_widget {
-	background: url(images/m-header_widget.jpg) center repeat-y #fff5f2;
+	background: url(images/m-header_widget.jpg) center repeat-y #fff9f2;
 }
 
 .m .header_widget_bg {
@@ -283,15 +283,15 @@ html /* credits bottom */ {
 }
 
 .mmm #footer_boxes {
-	background: url(images/mmm-footer_boxes.jpg) center no-repeat #fffcf2;
+	background: url(images/mmm-footer_boxes.jpg) center no-repeat #f5fff2;
 }
 
 .mm #footer_boxes {
-	background: url(images/mm-footer_boxes.jpg) center no-repeat #fffcf2;
+	background: url(images/mm-footer_boxes.jpg) center no-repeat #f5fff2;
 }
 
 .m #footer_boxes {
-	background: url(images/m-footer_boxes.jpg) center no-repeat #fffcf2;
+	background: url(images/m-footer_boxes.jpg) center no-repeat #f5fff2;
 }
 
 #header_boxes_bg {
@@ -553,5 +553,5 @@ html /* credits bottom */ {
 }
 
 .widget_calendar tfoot {
-	background: #fff5f2;
+	background: #fff9f2;
 }
