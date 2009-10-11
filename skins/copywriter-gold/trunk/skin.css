@@ -12,8 +12,8 @@ Author uri: http://www.mesoconcepts.com
  */
 
 html {
-	background: #403d30;
-	color: #fff;
+	background: #ffffd9;
+	color: #000;
 }
 
 .sem_admin_menu #wrapper {
@@ -36,11 +36,6 @@ html {
  * Header
  */
 
-#header {
-	background: url(images/header.jpg?ver=0.9) bottom center repeat-x #ffcc33;
-	color: #000;
-}
-
 #sitename {
 	color: #b31212;
 }
@@ -54,13 +49,8 @@ html {
 	background: #b31212;
 	color: #fff;
 	margin-bottom: 5px;
-}
-
-#navbar_bottom {
-	height: 1px;
-	background: #fff;
-	border-top: solid 10px #ffe97f;
-	border-bottom: solid 4px #403d30;
+	border-top: solid 1px #666;
+	border-bottom: solid 1px #666;
 }
 
 #navbar a {
@@ -77,8 +67,8 @@ html {
  */
 
 #footer {
-	background: #403d30;
-	color: #fff;
+	background: #ffffd9;
+	color: #000;
 	border-top: solid 1px #666;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -86,11 +76,11 @@ html {
 }
 
 #footer a {
-	color: #fff;
+	color: #000;
 }
 
 #footer a:hover {
-	color: #ffd2a6;
+	color: #b22;
 }
 
 
@@ -227,11 +217,11 @@ html {
 }
 
 #credits a {
-	color: #fff;
+	color: #000;
 }
 
 #credits a:hover {
-	color: #ffd2a6;
+	color: #b22;
 }
 
 
@@ -268,7 +258,7 @@ blockquote {
  * Sidebars
  */
 
-.widget_title h2 {
+h2.widget_title {
 	padding-bottom: 1px;
 	border-bottom: solid 1px #b31212;
 }

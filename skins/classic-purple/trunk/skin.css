@@ -81,7 +81,7 @@ html {
  */
 
 #navbar {
-	background: url(images/navbar.jpg?ver=0.9) top center repeat #800d63;
+	background: url(images/navbar.jpg?ver=0.9) top center repeat #990f77;
 	color: #fff;
 	border-bottom: solid 1px #666;
 }
@@ -307,7 +307,7 @@ blockquote {
  * Sidebars
  */
 
-.widget_title h2 {
+h2.widget_title {
 	padding-bottom: 1px;
 	border-bottom: solid 1px #800d63;
 }
@@ -333,7 +333,7 @@ blockquote {
 
 .widget_calendar thead {
 	border-bottom: solid 1px #666;
-	background: #800d63;
+	background: #990f77;
 	color: #fff;
 }
 

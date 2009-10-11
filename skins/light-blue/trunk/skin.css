@@ -411,7 +411,7 @@ blockquote {
  * Sidebars
  */
 
-.widget_title h2 {
+h2.widget_title {
 	padding-bottom: 1px;
 	border-bottom: solid 1px #1262b2;
 }
