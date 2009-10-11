@@ -67,15 +67,14 @@ body,
 #body_bottom {
 	margin-top: 10px;
 	height: 8px;
-	background: #ccc;
+	background: #ddd;
 	border-top: solid 1px #aaa;
-	border-bottom: solid 1px #aaa;
 }
 
 #footer_wrapper {
 	background: #0059b3;
 	color: #fff;
-	padding-top: 1px;
+	border-top: solid 1px #aaa;
 }
 
 #footer,
@@ -86,7 +85,6 @@ html /* credits bottom */ {
 }
 
 #footer {
-	border-top: solid 1px #ccc;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
@@ -196,7 +194,7 @@ html /* credits bottom */ {
 }
 
 .mmm #header_boxes {
-	background: url(images/mmm-header_boxes.jpg) center repeat-y;
+	background: url(images/mmm-header_boxes.jpg) center repeat-y #f2f9ff;
 }
 
 .mmm #header_boxes_bg {
@@ -212,7 +210,7 @@ html /* credits bottom */ {
 }
 
 .mm #header_boxes {
-	background: url(images/mm-header_boxes.jpg) center repeat-y;
+	background: url(images/mm-header_boxes.jpg) center repeat-y #f2f9ff;
 }
 
 .mm #header_boxes_bg {
@@ -228,7 +226,7 @@ html /* credits bottom */ {
 }
 
 .m #header_boxes {
-	background: url(images/m-header_boxes.jpg) center repeat-y;
+	background: url(images/m-header_boxes.jpg) center repeat-y #f2f9ff;
 }
 
 .m #header_boxes_bg {
@@ -244,7 +242,7 @@ html /* credits bottom */ {
 }
 
 .mmm .header_widget {
-	background: url(images/mmm-header_widget.jpg) center repeat-y;
+	background: url(images/mmm-header_widget.jpg) center repeat-y #f2f9ff;
 }
 
 .mmm .header_widget_bg {
@@ -260,7 +258,7 @@ html /* credits bottom */ {
 }
 
 .mm .header_widget {
-	background: url(images/mm-header_widget.jpg) center repeat-y;
+	background: url(images/mm-header_widget.jpg) center repeat-y #f2f9ff;
 }
 
 .mm .header_widget_bg {
@@ -276,7 +274,7 @@ html /* credits bottom */ {
 }
 
 .m .header_widget {
-	background: url(images/m-header_widget.jpg) center repeat-y;
+	background: url(images/m-header_widget.jpg) center repeat-y #f2f9ff;
 }
 
 .m .header_widget_bg {
@@ -292,15 +290,15 @@ html /* credits bottom */ {
 }
 
 .mmm #footer_boxes {
-	background: url(images/mmm-footer_boxes.jpg) center no-repeat;
+	background: url(images/mmm-footer_boxes.jpg) center no-repeat #0059b3;
 }
 
 .mm #footer_boxes {
-	background: url(images/mm-footer_boxes.jpg) center no-repeat;
+	background: url(images/mm-footer_boxes.jpg) center no-repeat #0059b3;
 }
 
 .m #footer_boxes {
-	background: url(images/m-footer_boxes.jpg) center no-repeat;
+	background: url(images/m-footer_boxes.jpg) center no-repeat #0059b3;
 }
 
 #header_boxes_bg {
@@ -337,7 +335,7 @@ html /* credits bottom */ {
 
 .mmm .entry,
 .mmm .main_widget {
-	background: url(images/mmm-main.jpg) center repeat-y;
+	background: url(images/mmm-main.jpg) center repeat-y #fff;
 }
 
 .mmm .entry_bg,
@@ -358,7 +356,7 @@ html /* credits bottom */ {
 
 .mm .entry,
 .mm .main_widget {
-	background: url(images/mm-main.jpg) center repeat-y;
+	background: url(images/mm-main.jpg) center repeat-y #fff;
 }
 
 .mm .entry_bg,
@@ -379,7 +377,7 @@ html /* credits bottom */ {
 
 .m .entry,
 .m .main_widget {
-	background: url(images/m-main.jpg) center repeat-y;
+	background: url(images/m-main.jpg) center repeat-y #fff;
 }
 
 .m .entry_bg,
@@ -400,7 +398,7 @@ html /* credits bottom */ {
 
 .mm1s .entry,
 .mm1s .main_widget {
-	background: url(images/wide_main.jpg) center repeat-y;
+	background: url(images/wide_main.jpg) center repeat-y #fff;
 }
 
 .mm1s .entry_bg,
@@ -423,7 +421,7 @@ html /* credits bottom */ {
 .m1s .entry,
 .m2s .main_widget,
 .m1s .main_widget {
-	background: url(images/main.jpg) center repeat-y;
+	background: url(images/main.jpg) center repeat-y #fff;
 }
 
 .m2s .entry_bg,
@@ -489,7 +487,7 @@ html /* credits bottom */ {
 }
 
 .widget {
-	background: url(images/sidebar.jpg) center repeat-y;
+	background: url(images/sidebar.jpg) center repeat-y #fff;
 }
 
 .widget_bg {
@@ -505,7 +503,7 @@ html /* credits bottom */ {
 }
 
 .mm1s .widget {
-	background: url(images/wide_sidebar.jpg) center repeat-y;
+	background: url(images/wide_sidebar.jpg) center repeat-y #fff;
 }
 
 .mm1s .widget_bg {
@@ -521,7 +519,7 @@ html /* credits bottom */ {
 }
 
 .wide_sidebar .widget {
-	background: url(images/xwide_sidebar.jpg) center repeat-y;
+	background: url(images/xwide_sidebar.jpg) center repeat-y #fff;
 }
 
 .wide_sidebar .widget_top {
