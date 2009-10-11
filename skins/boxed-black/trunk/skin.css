@@ -1,10 +1,11 @@
 /*
 Skin name: Boxed, Black
 Skin uri: http://skins.semiologic.com/mc/boxed/
-Version: 0.9
+Version: 0.9 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
+
 
 /*
  * Canvas
@@ -42,14 +43,12 @@ Author uri: http://www.mesoconcepts.com
 	line-height: 32px;
 	background-image: url(images/navbar.jpg);
 	margin-bottom: 5px;
-}
-
-#body_top {
-	height: 0px;
+	border-top: solid 1px;
+	border-bottom: solid 1px;
 }
 
 #body_bottom {
-	margin-top: 10px;
+	margin-top: 5px;
 	height: 8px;
 }
 
@@ -106,6 +105,7 @@ Author uri: http://www.mesoconcepts.com
 	-khtml-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
+	border: solid 1px;
 }
 
 #header_boxes_top,
@@ -462,8 +462,13 @@ h2.widget_title {
 
 
 /*
- * Colors
+ * Skin Colors
  */
+
+#header {
+	background-color: #fff;
+	color: #000;
+}
 
 body,
 #body,
@@ -472,27 +477,46 @@ body,
 	color: #000;
 }
 
-#header {
-	background-color: #fff;
-	color: #000;
-}
-
-#navbar {
-	border-top: solid 1px #000;
-	border-bottom: solid 1px #000;
-	background-color: #222;
-	color: #fff;
-}
-
 #body_bottom {
 	background-color: #ddd;
 	border-top: solid 1px #aaa;
 }
 
 #footer_wrapper {
+	border-top: solid 1px #aaa;
+}
+
+#go {
+	background-color: #ddd;
+	color: #000;
+}
+
+.entry,
+.main_widget,
+.widget {
+	background-color: #fff;
+	color: #000;
+}
+
+h2.widget_title {
+	border-bottom: solid 1px #bbb;
+}
+
+
+/*
+ * Scheme Colors
+ */
+
+#navbar,
+.widget_calendar thead {
+	background-color: #222;
+	color: #fff;
+}
+
+#footer_wrapper,
+#footer_boxes {
 	background-color: #600;
 	color: #fff;
-	border-top: solid 1px #aaa;
 }
 
 #footer,
@@ -502,14 +526,20 @@ html /* credits bottom */ {
 	color: #fff;
 }
 
-#sitename {
-	color: #b30000;
+#navbar,
+#go {
+	border-color: #000;
 }
 
-#go {
-	background-color: #ddd;
-	border: solid 1px #000;
+#header_boxes,
+.header_widget,
+.widget_calendar tfoot {
+	background-color: #fff9f2;
 	color: #000;
+}
+
+#sitename {
+	color: #b30000;
 }
 
 #navbar a {
@@ -533,36 +563,3 @@ html /* credits bottom */ {
 #credits a:hover {
 	color: #ffe5e5;
 }
-
-#header_boxes {
-	background-color: #fff9f2;
-}
-
-#footer_boxes {
-	background-color: #660000;
-}
-
-.entry,
-.main_widget {
-	background-color: #fff;
-}
-
-.widget {
-	background-color: #fff;
-}
-
-h2.widget_title {
-	border-bottom: solid 1px #bbb;
-}
-
-.widget_calendar thead {
-	background-color: #222;
-	color: #fff;
-}
-
-.widget_calendar tfoot {
-	background-color: #fff9f2;
-}
-
-
-
