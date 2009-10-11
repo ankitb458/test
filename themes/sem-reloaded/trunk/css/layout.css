@@ -270,9 +270,9 @@ To customize this file, create a custom.css file in the theme's folder, and past
  * Padding & Margins
  */
 
-#body_top,
-#body_bottom {
-	height: 1px; /* to avoid margin-related issues */
+#body_bg {
+	padding-top: 1px;
+	padding-bottom: 1px;
 }
 
 /*
