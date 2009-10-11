@@ -24,14 +24,8 @@ class sem_panels {
 						. '<div class="widget_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . "\n";
 		
-		$before_title = '</div>' . "\n"			# close <div class="pad">, due to the funky WP API
-						. '<div class="widget_title_top"><div class="hidden"></div></div>' . "\n"
-						. '<div class="widget_title pad">' . "\n"
-						. '<h2>';
-		$after_title = '</h2>' . "\n"
-						. '</div>' . "\n"
-						. '<div class="widget_title_bottom"><div class="hidden"></div></div>' . "\n"
-						. '<div class="pad">';
+		$before_title = '<h2 class="widget_title">';
+		$after_title = '</h2>' . "\n";
 		
 		if ( strpos($sem_options['active_layout'], 't') !== false ) {
 			register_sidebar(
