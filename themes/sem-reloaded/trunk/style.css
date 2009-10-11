@@ -526,8 +526,12 @@ h2 a {
 	margin: 0px auto;
 }
 
-.pad .pad {
+.main .pad {
 	padding: 0px;
+}
+
+.pad .pad {
+	padding: 0px 20px;
 }
 
 .post_list h3 {
