@@ -43,7 +43,7 @@ Author uri: http://www.mesoconcepts.com
 body,
 #body,
 #header_wrapper {
-	background: #f7f7f7;
+	background: #eee;
 	color: #000;
 }
 
@@ -67,9 +67,9 @@ body,
 #body_bottom {
 	margin-top: 10px;
 	height: 8px;
-	background: #ddd;
-	border-top: solid 1px #bbb;
-	border-bottom: solid 1px #bbb;
+	background: #ccc;
+	border-top: solid 1px #aaa;
+	border-bottom: solid 1px #aaa;
 }
 
 #footer_wrapper {
@@ -86,7 +86,7 @@ html /* credits bottom */ {
 }
 
 #footer {
-	border-top: solid 1px #ddd;
+	border-top: solid 1px #ccc;
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
