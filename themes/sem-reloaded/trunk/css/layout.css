@@ -267,15 +267,6 @@ To customize this file, create a custom.css file in the theme's folder, and past
 }
 
 /*
- * Padding & Margins
- */
-
-#body_bg {
-	padding-top: 1px;
-	padding-bottom: 1px;
-}
-
-/*
  * Default Background Handling
  */
 
