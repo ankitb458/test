@@ -521,29 +521,22 @@ h2.widget_title {
  * Scheme Colors
  */
 
+#sitename {
+	color: #b30000;
+}
+
 #navbar,
 .widget_calendar thead {
 	background-color: #b31212;
 	color: #fff;
 }
 
-#footer_wrapper,
-#footer_boxes {
-	background-color: #ffffe5;
-	color: #000;
-}
-
-#footer,
-#credits,
-html /* credits bottom */ {
-	background-color: #800000;
+#navbar a {
 	color: #fff;
 }
 
-#wrapper,
-#navbar,
-#go {
-	border-color: #800000;
+#navbar a:hover {
+	color: #fff;
 }
 
 #header_boxes,
@@ -553,12 +546,10 @@ html /* credits bottom */ {
 	color: #000;
 }
 
-#sitename {
-	color: #b30000;
-}
-
-#navbar a {
-	color: #fff;
+#footer_wrapper,
+#footer_boxes {
+	background-color: #ffffe5;
+	color: #000;
 }
 
 #footer_wrapper a {
@@ -567,6 +558,18 @@ html /* credits bottom */ {
 
 #footer_wrapper a:hover {
 	color: #b22;
+}
+
+#footer,
+#credits,
+html /* credits bottom */ {
+	background-color: #800000;
+	color: #fff;
+}
+
+#navbar,
+#go {
+	border-color: #800000;
 }
 
 #footer a,

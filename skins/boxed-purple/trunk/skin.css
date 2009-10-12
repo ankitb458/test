@@ -521,16 +521,43 @@ h2.widget_title {
  * Scheme Colors
  */
 
+#sitename {
+	color: #660066;
+}
+
 #navbar,
 .widget_calendar thead {
 	background-color: #800080;
 	color: #fff;
 }
 
+#navbar a {
+	color: #fff;
+}
+
+#navbar a:hover {
+	color: #fff;
+}
+
+#header_boxes,
+.header_widget,
+.widget_calendar tfoot {
+	background-color: #fff2ff;
+	color: #000;
+}
+
 #footer_wrapper,
 #footer_boxes {
 	background-color: #fff2f9;
 	color: #000;
+}
+
+#footer_wrapper a {
+	color: #000;
+}
+
+#footer_wrapper a:hover {
+	color: #b22;
 }
 
 #footer,
@@ -543,29 +570,6 @@ html /* credits bottom */ {
 #navbar,
 #go {
 	border-color: #4d0f4d;
-}
-
-#header_boxes,
-.header_widget,
-.widget_calendar tfoot {
-	background-color: #fff2ff;
-	color: #000;
-}
-
-#sitename {
-	color: #660066;
-}
-
-#navbar a {
-	color: #fff;
-}
-
-#footer_wrapper a {
-	color: #000;
-}
-
-#footer_wrapper a:hover {
-	color: #b22;
 }
 
 #footer a,
