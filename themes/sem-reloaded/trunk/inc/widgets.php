@@ -1779,6 +1779,14 @@ class header extends WP_Widget {
 		echo '<div id="header_bottom"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div><!-- header -->' . "\n";
+		
+		global $did_header;
+		global $did_navbar;
+		if ( empty($did_header) ) {
+			$did_header = true;
+			if ( !empty($did_navbar) )
+				echo '<div id="header_split"><div class="hidden"></div></div>' . "\n";
+		}
 	} # widget()
 	
 	
@@ -3148,6 +3156,14 @@ class navbar extends sem_nav_menu {
 		echo '<div id="navbar_bottom"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div><!-- navbar -->' . "\n";
+				
+		global $did_header;
+		global $did_navbar;
+		if ( empty($did_navbar) ) {
+			$did_navbar = true;
+			if ( !empty($did_header) )
+				echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
+		}
 	} # widget()
 	
 	

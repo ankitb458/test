@@ -1,7 +1,7 @@
 /*
 Skin name: Boxed, Blue
 Skin uri: http://skins.semiologic.com/mc/boxed/
-Version: 0.9
+Version: 0.9 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -39,17 +39,29 @@ Author uri: http://www.mesoconcepts.com
 	width: 620px;
 }
 
+#header_split {
+	height: 8px;
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+	margin-bottom: 5px;
+}
+
+#navbar_split {
+	margin-bottom: 5px;
+}
+
 #navbar {
 	line-height: 32px;
 	background-image: url(images/navbar.jpg);
-	margin-bottom: 5px;
 	border-top: solid 1px;
 	border-bottom: solid 1px;
 }
 
-#body_bottom {
-	margin-top: 5px;
+#footer_split {
 	height: 8px;
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+	margin-top: 5px;
 }
 
 #footer {
@@ -458,6 +470,7 @@ h2.widget_title {
 	margin: 0px;
 	padding-top: 10px;
 	padding-bottom: 5px;
+	border-bottom: solid 1px;
 }
 
 
@@ -477,13 +490,14 @@ body,
 	color: #000;
 }
 
-#body_bottom {
+#header_split,
+#footer_split {
 	background-color: #ddd;
-	border-top: solid 1px #aaa;
 }
 
-#footer_wrapper {
-	border-top: solid 1px #aaa;
+#header_split,
+#footer_split {
+	border-color: #aaa;
 }
 
 #go {
@@ -499,7 +513,7 @@ body,
 }
 
 h2.widget_title {
-	border-bottom: solid 1px #bbb;
+	border-color: #bbb;
 }
 
 

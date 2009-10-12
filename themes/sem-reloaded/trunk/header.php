@@ -43,6 +43,8 @@ echo '<div id="wrapper_bg">' . "\n";
 		
 		sem_panels::display('the_header');
 		
+		echo '<div id="body_split"><div class="hidden"></div></div>' . "\n";
+
 		echo '</div>' . "\n";
 		
 	endif;
