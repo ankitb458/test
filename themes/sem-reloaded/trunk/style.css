@@ -789,21 +789,34 @@ div.scripts {
 
 /* banner ad widgets */
 
-#header_wrapper .ad_unit,
-#footer_wrapper .ad_unit {
-	background: none;
+.ad_unit,
+.ad_unit .header_widget_bg,
+.ad_unit .footer_widget_bg,
+.ad_unit .main_widget_bg,
+.ad_unit .widget_bg {
+	background: none !important;
 }
 
-#header_wrapper .ad_unit .header_widget_top,
-#header_wrapper .ad_unit .header_widget_bottom,
-#footer_wrapper .ad_unit .footer_widget_top,
-#footer_wrapper .ad_unit .footer_widget_bottom {
+.ad_unit .header_widget_top,
+.ad_unit .header_widget_bottom,
+.ad_unit .footer_widget_top,
+.ad_unit .footer_widget_bottom,
+.ad_unit .main_widget_top,
+.ad_unit .main_widget_bottom,
+.ad_unit .widget_top,
+.ad_unit .widget_bottom {
+	background: none !important;
 	height: 0px;
-	background: none;
 }
 
-#header_wrapper .ad_unit .wrapper_item .pad,
-#footer_wrapper .ad_unit .wrapper_item .pad {
+.ad_unit .pad,
+.ad_unit .pad,
+.ad_unit .pad,
+.ad_unit .pad {
 	padding: 0px;
+	margin: 5px;
 }
 
+.entry .ad_unit .pad {
+	padding: 0px 15px;
+}
