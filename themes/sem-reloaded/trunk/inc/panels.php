@@ -162,6 +162,7 @@ class sem_panels {
 			
 			case 'before_the_entries':
 			case 'after_the_entries':
+			case 'the_404':
 				$before_widget = '<div class="%2$s main_widget">' . "\n"
 					. '<div class="main_widget_top"><div class="hidden"></div></div>' . "\n"
 					. '<div class="main_widget_bg">' . "\n"
