@@ -348,7 +348,7 @@ To customize this file, create a custom.css file in the theme's folder, and past
 
 #navbar_bg {
 	background-position: top left;
-	background-repeat: no-repeat;
+	background-repeat: repeat-y;
 }
 
 #navbar span,
