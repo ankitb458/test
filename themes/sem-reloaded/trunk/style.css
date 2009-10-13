@@ -452,31 +452,31 @@ img.avatar {
 	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
 	font-weight: normal;
 	text-align: center;
-	padding-top: 10px;
-	padding-bottom: 18px;
-	font-size: 42px;
-	line-height: 50px;
+	padding-top: 5px;
+	padding-bottom: 8px;
+	font-size: 45px;
+	line-height: 52px;
 }
 
 #tagline {
 	margin: 0px;
 	font-weight: bold;
-	padding-top: 20px;
+	padding-top: 15px;
 	padding-bottom: 5px;
 	text-align: right;
-	font-size: 14px;
-	line-height: 17px;
+	font-size: 15px;
+	line-height: 15px;
 }
 
 .invert_header #sitename {
-	padding-top: 34px;
-	padding-bottom: 1px;
+	padding-top: 23px;
+	padding-bottom: 0px;
 	text-align: center;
 }
 
 .invert_header #tagline {
-	padding-top: 1px;
-	padding-bottom: 17px;
+	padding-top: 0px;
+	padding-bottom: 10px;
 	text-align: center;
 }
 
