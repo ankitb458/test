@@ -223,16 +223,13 @@ Author uri: http://www.mesoconcepts.com
 	background-image: url(images/m-header_widget_bottom.jpg);
 }
 
+#footer_boxes {
+	background-image: url(images/footer_boxes.jpg);
+	background-repeat: no-repeat;
+}
+
 .mmm #footer_boxes {
 	background-image: url(images/mmm-footer_boxes.jpg);
-}
-
-.mm #footer_boxes {
-	background-image: url(images/mm-footer_boxes.jpg);
-}
-
-.m #footer_boxes {
-	background-image: url(images/m-footer_boxes.jpg);
 }
 
 #header_boxes_bg {
@@ -478,26 +475,26 @@ h2.widget_title {
  * Skin Colors
  */
 
-#header {
-	background-color: #fff;
-	color: #000;
-}
-
 body,
 #body,
 #header_wrapper {
-	background-color: #eee;
+	background-color: #f7f7f7;
 	color: #000;
 }
 
 #header_split,
 #footer_split {
 	background-color: #ddd;
+	color: #000;
+	border-color: #aaa;
 }
 
-#header_split,
+#header_split {
+	border-top-color: #999;
+}
+
 #footer_split {
-	border-color: #aaa;
+	border-bottom-color: #999;
 }
 
 #go {
@@ -519,15 +516,21 @@ h2.widget_title {
 
 /*
  * Scheme Colors
+ * H210 S90 L40
  */
 
+#header {
+	background-color: #e5f2ff; /* S10 L95 */
+	color: #000;
+}
+
 #sitename {
-	color: #0053a6;
+	color: #003c78; /* S100 L25 */
 }
 
 #navbar,
 .widget_calendar thead {
-	background-color: #0059b3;
+	background-color: #1261b0; /* - */
 	color: #fff;
 }
 
@@ -535,41 +538,29 @@ h2.widget_title {
 	color: #fff;
 }
 
-#navbar a:hover {
-	color: #fff;
+#navbar,
+#go {
+	border-color: #09325c; /* L/2 */
 }
 
 #header_boxes,
 .header_widget,
 .widget_calendar tfoot {
-	background-color: #f2f9ff;
+	background-color: #edf7fa; /* A-S5 L97 */
 	color: #000;
 }
 
 #footer_wrapper,
 #footer_boxes {
-	background-color: #0059b3;
-	color: #fff;
-}
-
-#footer_wrapper a {
-	color: #fff;
-}
-
-#footer_wrapper a:hover {
-	color: #ffd9ec;
+	background-color: #e0e8ff; /* A-S15 L92 */
+	color: #000;
 }
 
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #051c33;
+	background-color: #003263; /* S+10 L/2 */
 	color: #fff;
-}
-
-#navbar,
-#go {
-	border-color: #051c33;
 }
 
 #footer a,
@@ -579,5 +570,5 @@ html /* credits bottom */ {
 
 #footer a:hover,
 #credits a:hover {
-	color: #d9ecff;
+	color: #d2e6f7; /* S15 L90 */
 }

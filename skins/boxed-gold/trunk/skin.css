@@ -223,16 +223,13 @@ Author uri: http://www.mesoconcepts.com
 	background-image: url(images/m-header_widget_bottom.jpg);
 }
 
+#footer_boxes {
+	background-image: url(images/footer_boxes.jpg);
+	background-repeat: no-repeat;
+}
+
 .mmm #footer_boxes {
 	background-image: url(images/mmm-footer_boxes.jpg);
-}
-
-.mm #footer_boxes {
-	background-image: url(images/mm-footer_boxes.jpg);
-}
-
-.m #footer_boxes {
-	background-image: url(images/m-footer_boxes.jpg);
 }
 
 #header_boxes_bg {
@@ -478,26 +475,26 @@ h2.widget_title {
  * Skin Colors
  */
 
-#header {
-	background-color: #fff;
-	color: #000;
-}
-
 body,
 #body,
 #header_wrapper {
-	background-color: #eee;
+	background-color: #f7f7f7;
 	color: #000;
 }
 
 #header_split,
 #footer_split {
 	background-color: #ddd;
+	color: #000;
+	border-color: #aaa;
 }
 
-#header_split,
+#header_split {
+	border-top-color: #999;
+}
+
 #footer_split {
-	border-color: #aaa;
+	border-bottom-color: #999;
 }
 
 #go {
@@ -519,15 +516,21 @@ h2.widget_title {
 
 /*
  * Scheme Colors
+ * H45 S90 L80
  */
 
+#header {
+	background-color: #f7f1df; /* S10 L95 */
+	color: #000;
+}
+
 #sitename {
-	color: #b30000;
+	color: #4a3700; /* S100 L25 */
 }
 
 #navbar,
 .widget_calendar thead {
-	background-color: #ffc20d;
+	background-color: #f2bc18; /* - */
 	color: #000;
 }
 
@@ -535,49 +538,37 @@ h2.widget_title {
 	color: #000;
 }
 
-#navbar a:hover {
-	color: #000;
+#navbar,
+#go {
+	border-color: #73590b; /* L/2 */
 }
 
 #header_boxes,
 .header_widget,
 .widget_calendar tfoot {
-	background-color: #fff9f2;
+	background-color: #fcf6f0; /* A-S5 L97 */
 	color: #000;
 }
 
 #footer_wrapper,
 #footer_boxes {
-	background-color: #f5fff2;
+	background-color: #ebebc7; /* A-S15 L92 */
 	color: #000;
-}
-
-#footer_wrapper a {
-	color: #000;
-}
-
-#footer_wrapper a:hover {
-	color: #b22;
 }
 
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #ccad52;
-	color: #000;
-}
-
-#navbar,
-#go {
-	border-color: #ccad52;
+	background-color: #755800; /* S+10 L/2 */
+	color: #fff;
 }
 
 #footer a,
 #credits a {
-	color: #000;
+	color: #fff;
 }
 
 #footer a:hover,
 #credits a:hover {
-	color: #222;
+	color: #ebe2c7; /* S15 L90 */
 }
