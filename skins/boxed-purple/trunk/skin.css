@@ -475,6 +475,11 @@ h2.widget_title {
  * Skin Colors
  */
 
+#header {
+	background-color: #fff;
+	color: #000;
+}
+
 body,
 #body,
 #header_wrapper {
@@ -518,11 +523,6 @@ h2.widget_title {
  * Scheme Colors
  * H300 S90 L30
  */
-
-#header {
-	background-color: #ffebff; /* S10 L95 */
-	color: #000;
-}
 
 #sitename {
 	color: #6e006e; /* S100 L25 */
