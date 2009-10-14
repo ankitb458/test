@@ -69,7 +69,7 @@ class sem_layout {
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
-	jQuery("#available_options label").click(function() {
+	jQuery(".available_options label").click(function() {
 		jQuery(this).closest('td').find('input:radio').attr('checked', 'checked');
 		jQuery('#option_picker').trigger('submit');
 	});
