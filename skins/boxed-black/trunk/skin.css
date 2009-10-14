@@ -521,7 +521,7 @@ h2.widget_title {
 
 /*
  * Scheme Colors
- * H- S0 L20
+ * H- S0 L10
  */
 
 #sitename {
@@ -559,7 +559,7 @@ h2.widget_title {
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #111111; /* S+10 L/2 */
+	background-color: #000; /* S+10 L/2 */
 	color: #fff;
 }
 
