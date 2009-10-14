@@ -27,6 +27,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 6.0.1 =
+
+- Fix the layout switcher
+
 = 6.0 =
 
 - WP 2.8 compat
