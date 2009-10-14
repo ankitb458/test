@@ -506,6 +506,11 @@ body,
 	color: #000;
 }
 
+#go:hover {
+	background-color: #e6e6e6;
+	border-color: #000;
+}
+
 .entry,
 .main_widget,
 .widget {
