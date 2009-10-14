@@ -10,6 +10,8 @@
 		
 		echo '</div>' . "\n";
 		
+		echo '</div>' . "\n";
+		
 		echo '<div id="main_bottom"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div><!-- main -->' . "\n";

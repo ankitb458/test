@@ -80,5 +80,7 @@ echo '<div id="wrapper_bg">' . "\n";
 
 		echo '<div id="main_top"><div class="hidden"></div></div>' . "\n";
 		
+		echo '<div id="main_bg">' . "\n";
+		
 		echo '<div class="pad">' . "\n";
 ?>
