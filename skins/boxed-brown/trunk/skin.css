@@ -520,7 +520,7 @@ h2.widget_title {
 
 /*
  * Scheme Colors
- * H30 S80 L45
+ * H30 S80 L40
  */
 
 #sitename {
@@ -529,12 +529,12 @@ h2.widget_title {
 
 #navbar,
 .widget_calendar thead {
-	background-color: #965a1e; /* - */
+	background-color: #87511b; /* - */
 	color: #fff;
 }
 
 #go {
-	background-color: #a86522; /* L+5 */
+	background-color: #965a1e; /* L+5 */
 	color: #fff;
 }
 
@@ -545,7 +545,7 @@ h2.widget_title {
 #navbar,
 #go,
 #go:hover {
-	border-color: #4f2f10; /* L/2 */
+	border-color: #45290e; /* L/2 */
 }
 
 #header_boxes,
@@ -564,7 +564,7 @@ h2.widget_title {
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #522d08; /* S+10 L/2 */
+	background-color: #472707; /* S+10 L/2 */
 	color: #fff;
 }
 
