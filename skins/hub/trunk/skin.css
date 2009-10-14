@@ -1,0 +1,231 @@
+/*
+Skin name: Hub.org
+Skin uri: http://hub.org
+Version: 0.9 RC
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
+.skin #wrapper {
+	width: 100%;
+}
+
+body {
+	background: url(images/background.jpg) top center repeat-y #0c2029;
+	color: #fff;
+}
+
+#navbar {
+	line-height: 32px;
+	background-image: url(images/navbar.jpg);
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+}
+
+#navbar .pad {
+	padding: 0px;
+}
+
+#footer {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#navbar_bg {
+	background-image: url(images/navbar_bg.jpg);
+}
+
+#navbar span {
+	display: block;
+	float: left;
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar a {
+	background-image: url(images/navbar_bg.jpg);
+	opacity: 1;
+	display: block;
+	float: left;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin: 0px;
+}
+
+#navbar a:hover,
+#navbar span.nav_active {
+	background-image: url(images/navbar_active.jpg);
+	opacity: 1;
+}
+
+#navbar span.nav_active {
+	font-weight: normal;
+	padding-left: 20px;
+	padding-right: 20px;
+	margin: 0px;
+}
+
+#navbar span.nav_active a {
+	margin-left: -20px;
+	margin-right: -20px;
+	background: none;
+}
+
+#go {
+	padding: 1px 6px;
+	-moz-border-radius: 6px;
+	-khtml-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	border: solid 1px;
+	font-weight: normal;
+}
+
+#go:hover {
+	border: outset 1px;
+}
+
+#footer_boxes {
+	background-image: url(images/footer_boxes.jpg);
+	background-repeat: no-repeat;
+}
+
+.mmm #footer_boxes {
+	background-image: url(images/mmm-footer_boxes.jpg);
+}
+
+#footer_boxes,
+.footer_widget {
+	margin-top: .8em;
+	margin-bottom: .8em;
+}
+
+#body {
+	padding-top: 1px;
+}
+
+.mts #sidebar .pad,
+.tsm #sidebar .pad {
+	padding-right: 8px;
+}
+
+.mts #sidebar2 .pad,
+.tsm #sidebar2 .pad {
+	padding-left: 8px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+#header {
+	color: #fff;
+	
+	height: 120px;
+}
+
+#sitename, #tagline {
+	display: none;
+}
+
+#body {
+	background-color: #fff;
+	color: #000;
+}
+
+#header_split,
+#footer_split {
+	background-color: #ddd;
+	color: #000;
+	border-color: #aaa;
+}
+
+#header_split {
+	border-top-color: #999;
+}
+
+#footer_split {
+	border-bottom-color: #999;
+}
+
+#main,
+.m1s .sidebar,
+.sms .sidebar,
+.mm1s .sidebar,
+#sidebars {
+	background-color: #fff;
+	color: #000;
+}
+
+h2.widget_title {
+	border-color: #bbb;
+}
+
+
+/*
+ * Scheme Colors
+ * H180 S90 L50
+ */
+
+#sitename {
+	color: #053636; /* S100 L20 */
+}
+
+#navbar,
+.widget_calendar thead {
+	background-color: #0d8585; /* - */
+	color: #fff;
+}
+
+#go {
+	background-color: #0f9494; /* L+5 */
+	color: #fff;
+}
+
+#navbar a {
+	color: #fff;
+}
+
+#navbar,
+#go,
+#go:hover {
+	border-color: #074242; /* L/2 */
+}
+
+#header_boxes,
+.header_widget,
+.widget_calendar tfoot {
+	background-color: #edfaf7; /* A-S5 L97 */
+	color: #000;
+}
+
+.footer_wrapper,
+#footer_boxes {
+	background-color: #d7edf5; /* A-S15 L92 */
+	color: #000;
+}
+
+#footer {
+	background-color: #004242; /* S+10 L/2 */
+	color: #fff;
+}
+
+#footer a,
+#credits a {
+	color: #fff;
+}
+
+#footer a:hover,
+#credits a:hover {
+	color: #c5e8e8; /* S15 L90 */
+}
