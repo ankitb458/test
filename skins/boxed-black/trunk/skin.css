@@ -530,7 +530,7 @@ h2.widget_title {
 
 #navbar,
 .widget_calendar thead {
-	background-color: #303030; /* - */
+	background-color: #1b1b1b; /* - */
 	color: #fff;
 }
 
@@ -540,7 +540,7 @@ h2.widget_title {
 
 #navbar,
 #go {
-	border-color: #1b1b1b; /* L/2 */
+	border-color: #111111; /* L/2 */
 }
 
 #header_boxes,
@@ -559,7 +559,7 @@ h2.widget_title {
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #1b1b1b; /* S+10 L/2 */
+	background-color: #111111; /* S+10 L/2 */
 	color: #fff;
 }
 
