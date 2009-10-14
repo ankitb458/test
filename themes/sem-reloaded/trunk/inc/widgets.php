@@ -691,7 +691,7 @@ class entry_categories extends WP_Widget {
 		$link = '&nbsp;'
 			. '<span class="link_entry">'
 			. '<a href="' . esc_url(apply_filters('the_permalink', get_permalink())) . '" title="#">'
-			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="12" class="no_icon" alt="#" />'
+			. '<img src="' . sem_url . '/icons/pixel.gif' . '" width="14" height="12" class="no_icon" alt="#" />'
 			. '</a>'
 			. '</span>' . "\n";
 		

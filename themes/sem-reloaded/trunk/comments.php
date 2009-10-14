@@ -161,7 +161,7 @@ if ( $comments ) {
 			. '</span>' . "\n"
 			. '<span class="link_comment">'
 			. '<a href="#comment-' . get_comment_ID() . '" title="#">'
-			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="12" class="no_icon" alt="#" />'
+			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="14" class="no_icon" alt="#" />'
 			. '</a>'
 			. '</span>' . "\n"
 			. '</h3>' . "\n";
