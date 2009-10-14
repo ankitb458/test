@@ -113,16 +113,16 @@ Author uri: http://www.mesoconcepts.com
 
 #go {
 	padding: 1px 6px;
-	-moz-border-radius: 8px;
-	-khtml-border-radius: 8px;
-	-webkit-border-radius: 8px;
-	border-radius: 8px;
-	border: outset 1px;
+	-moz-border-radius: 6px;
+	-khtml-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	border: solid 1px;
 	font-weight: normal;
 }
 
 #go:hover {
-	border: solid 1px;
+	border: outset 1px;
 }
 
 #header_boxes_top,
@@ -485,9 +485,13 @@ h2.widget_title {
 }
 
 #navbar,
-.widget_calendar thead,
-#go {
+.widget_calendar thead {
 	background-color: #0d8585; /* - */
+	color: #fff;
+}
+
+#go {
+	background-color: #0f9494; /* L+5 */
 	color: #fff;
 }
 
