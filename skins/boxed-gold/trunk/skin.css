@@ -534,7 +534,8 @@ h2.widget_title {
 	color: #000;
 }
 
-#navbar {
+#navbar,
+#go {
 	border-color: #73590b; /* L/2 */
 }
 

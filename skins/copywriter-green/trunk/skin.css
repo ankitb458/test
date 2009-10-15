@@ -493,7 +493,8 @@ h2.widget_title,
 	color: #fff;
 }
 
-#navbar {
+#navbar,
+#go {
 	border-color: #063806; /* L/2 */
 }
 
