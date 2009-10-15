@@ -304,12 +304,10 @@ div.pings_date {
 
 .button:hover {
 	background-image: url(icons/gray-grad.png);
-	text-shadow: #f7f7f7 0 1px 0;
 }
 
 .button:active {
 	background-image: url(icons/gray-grad-rev.png);
-	text-shadow: #f7f7f7 0 1px 0;
 }
 
 
