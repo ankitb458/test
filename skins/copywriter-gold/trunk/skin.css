@@ -355,7 +355,11 @@ Author uri: http://www.mesoconcepts.com
 .entry_bottom {
 	width: 40%;
 	border-top: solid 1px;
-	margin: 1em auto;
+	margin: 1.5em auto;
+}
+
+.entry {
+	margin-bottom: 1.5em;
 }
 
 #sidebars_top,
