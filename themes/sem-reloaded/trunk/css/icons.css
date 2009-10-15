@@ -24,6 +24,7 @@ li.nav_branch {
 	list-style-image: url(../icons/bullet.gif);
 }
 
+ul,
 .post_list ul,
 .fuzzy_widget ul,
 .random_widget ul,
