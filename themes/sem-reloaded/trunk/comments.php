@@ -147,34 +147,6 @@ if ( $comments ) {
 			. '<div class="comment_header_top"><div class="hidden"></div></div>' . "\n"
 			. '<div class="pad">' . "\n";
 		
-		echo '<h3>'
-			. '<span class="comment_author" id="comment_author-' . get_comment_ID() . '">'
-				. get_avatar($comment, 60)
-				. ( $comment->user_id == $post->post_author
-					? ( '<em>' . get_comment_author_link() . '</em>' )
-					: get_comment_author_link()
-					)
-				. '</span>'
-			. '<span class="comment_time">'
-			. ' @ ' . "\n"
-			. get_comment_date(__('g:i a', 'sem-reloaded'))
-			. '</span>' . "\n"
-			. '<span class="link_comment">'
-			. '<a href="#comment-' . get_comment_ID() . '" title="#">'
-			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="14" class="no_icon" alt="#" />'
-			. '</a>'
-			. '</span>' . "\n"
-			. '</h3>' . "\n";
-
-		echo '</div>' . "\n"
-			. '<div class="comment_header_bottom"><div class="hidden"></div></div>' . "\n"
-			. '</div>' . "\n";
-
-
-		echo '<div class="comment_content">' . "\n"
-			. '<div class="comment_content_top"><div class="hidden"></div></div>' . "\n"
-			. '<div class="pad">' . "\n";
-		
 		if ( !( isset($_GET['action']) && $_GET['action'] == 'print' ) ) {
 			echo '<div class="comment_actions">' . "\n";
 
@@ -202,6 +174,34 @@ if ( $comments ) {
 			
 			echo '</div>' . "\n";
 		}
+		
+		echo '<h3>'
+			. '<span class="comment_author" id="comment_author-' . get_comment_ID() . '">'
+				. get_avatar($comment, 60)
+				. ( $comment->user_id == $post->post_author
+					? ( '<em>' . get_comment_author_link() . '</em>' )
+					: get_comment_author_link()
+					)
+				. '</span>'
+			. '<span class="comment_time">'
+			. ' @ ' . "\n"
+			. get_comment_date(__('g:i a', 'sem-reloaded'))
+			. '</span>' . "\n"
+			. '<span class="link_comment">'
+			. '<a href="#comment-' . get_comment_ID() . '" title="#">'
+			. '<img src="' . sem_url . '/icons/pixel.gif' . '" height="12" width="14" class="no_icon" alt="#" />'
+			. '</a>'
+			. '</span>' . "\n"
+			. '</h3>' . "\n";
+
+		echo '</div>' . "\n"
+			. '<div class="comment_header_bottom"><div class="hidden"></div></div>' . "\n"
+			. '</div>' . "\n";
+
+
+		echo '<div class="comment_content">' . "\n"
+			. '<div class="comment_content_top"><div class="hidden"></div></div>' . "\n"
+			. '<div class="pad">' . "\n";
 		
 		echo apply_filters('comment_text', get_comment_text());
 		
