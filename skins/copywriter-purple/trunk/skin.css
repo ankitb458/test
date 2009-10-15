@@ -18,9 +18,10 @@ Author uri: http://www.mesoconcepts.com
 .skin #wrapper,
 .skin #header,
 .skin #navbar,
+.skin #header_split,
+.skin #navbar_split,
 .skin #body,
 .skin #credits,
-#header_wrapper .wrapper,
 #footer_wrapper .wrapper {
 	width: 100%;
 }
