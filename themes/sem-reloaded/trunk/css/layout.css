@@ -165,7 +165,8 @@ To customize this file, create a custom.css file in the theme's folder, and past
  * Spacer
  */
 
-.spacer {
+.spacer,
+.entry_bottom {
 	clear: both;
 }
 
