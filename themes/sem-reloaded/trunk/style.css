@@ -176,20 +176,8 @@ Semiologic Defaults
 -------------------
 */
 
-p, dl, ul, ol, h1, h2, h3, h4, h5, h6, pre, blockquote {
+p, dl, ul, ol, h1, h2, h3, h4, h5, h6, pre, blockquote, li, dt, dd {
 	margin: .4em 0px;
-}
-
-li, dt, dd {
-	margin: .4em 0px;
-}
-
-pre {
-	margin-left: 12px;
-}
-
-pre, code, kbd, samp, tt {
-	font-size: 14px;
 }
 
 blockquote, q, ul, ol, dl {
@@ -200,6 +188,13 @@ ul ul,
 ol ol,
 dl dl {
 	margin-left: 8px;
+}
+
+pre {
+	padding: 15px;
+	background: #f8f8ff;
+	color: #000;
+	border: dotted 1px #bbb;
 }
 
 strong, b {
@@ -218,11 +213,13 @@ ins, u {
 	text-decoration: underline;
 }
 
-a {
+a,
+pre a {
 	color: #22d;
 }
 
-a:hover {
+a:hover,
+pre a:hover {
 	color: #b22;
 }
 
