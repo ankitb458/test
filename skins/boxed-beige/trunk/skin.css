@@ -381,7 +381,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 .entry_bg {
-	padding-top: 11px;
+	padding-top: 5px;
 }
 
 .main .pad {
@@ -472,7 +472,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 .widget_bg {
-	padding-top: 1px;
+	padding-top: 5px;
 }
 
 .widget {
@@ -480,10 +480,10 @@ Author uri: http://www.mesoconcepts.com
 }
 
 h2.widget_title {
+	margin-top: 0px;
 	padding-bottom: 3px;
 	border-bottom: solid 1px;
 }
-
 
 
 /*
