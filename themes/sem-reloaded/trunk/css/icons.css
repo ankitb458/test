@@ -13,45 +13,8 @@ To override these icons, create a copy of this file and drop it, as icons.css, i
 	padding-right: 14px;
 }
 
-li.nav_home {
+ul {
 	list-style-image: url(../icons/bullet.gif);
-}
-
-.widget_categories ul,
-.widget_archive ul,
-li.nav_blog,
-li.nav_branch {
-	list-style-image: url(../icons/bullet.gif);
-}
-
-ul,
-.post_list ul,
-.fuzzy_widget ul,
-.random_widget ul,
-.related_widget ul,
-.widget_pages ul,
-.widget_recent_entries ul,
-li.nav_leaf {
-	list-style-image: url(../icons/bullet.gif);
-}
-
-.widget_recent_comments ul,
-.fuzzy_comments ul,
-.random_comments ul {
-	list-style-image: url(../icons/comment.gif);
-}
-
-.pings_list ul,
-.widget_links ul,
-.widget_rss ul,
-.fuzzy_links ul,
-.random_links ul,
-li.nav_url {
-	list-style-image: url(../icons/world_link.gif);
-}
-
-.countdown ul {
-	list-style-image: url(../icons/calendar.gif);
 }
 
 .edit_entry a {
