@@ -166,7 +166,8 @@ To customize this file, create a custom.css file in the theme's folder, and past
  */
 
 .spacer,
-.entry_bottom {
+.entry_bottom,
+li.search_result {
 	clear: both;
 }
 
