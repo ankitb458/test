@@ -777,6 +777,17 @@ div.scripts {
 	height: 0px !important;
 }
 
+.inline_boxes .bookmark_me_narrow a {
+	width: auto;
+	padding-right: 10px;
+}
+
+/* newsletter manager */
+
+.inline_boxes .newsletter_inline input.from {
+	width: 200px;
+}
+
 /* banner ad widgets */
 
 .ad_unit,
