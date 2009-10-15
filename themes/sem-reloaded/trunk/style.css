@@ -37,7 +37,7 @@ Copyright (c) 2008, Yahoo! Inc. All rights reserved. BSD Licensed.
 
 html {
 	color:#000;
-	background:#FFF;
+	background:#fff;
 }
 
 body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote {
@@ -408,7 +408,7 @@ img.avatar {
 	width: 40px !important;
 	overflow: hidden !important;
 	background: url(icons/comment_box.gif) top center no-repeat !important;
-	color: #333 !important;
+	color: #222 !important;
 	text-decoration: none !important;
 	font-weight: bold !important;
 	font-size: 18px !important;
@@ -667,7 +667,7 @@ p.comment_label {
     -moz-border-radius-topright: 3px;
 	border-radius: 3px;
     background-color: #f3f3f3;
-	color: #000;
+	color: #111;
     border: 1px solid #ddd;
     margin: .5em;
     padding-top: 4px;
