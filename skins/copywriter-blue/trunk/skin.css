@@ -18,8 +18,8 @@ Author uri: http://www.mesoconcepts.com
 .skin #wrapper,
 .skin #header,
 .skin #navbar,
-.skin #header_split,
-.skin #navbar_split,
+.skin #header_wrapper,
+.skin #footer_wrapper,
 .skin #body,
 .skin #credits,
 #footer_wrapper .wrapper {
