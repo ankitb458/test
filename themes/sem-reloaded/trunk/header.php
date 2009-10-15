@@ -39,7 +39,7 @@ echo '<div id="wrapper_bg">' . "\n";
 	
 	if ( $active_layout != 'letter') :
 		
-		echo '<div id="header_wrapper">' . "\n";
+		echo '<div id="header_wrapper" class="wrapper">' . "\n";
 		
 		sem_panels::display('the_header');
 		

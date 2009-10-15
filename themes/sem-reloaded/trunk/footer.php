@@ -218,7 +218,7 @@
 	
 	if ( $active_layout != 'letter' ) :
 		
-		echo '<div id="footer_wrapper">' . "\n";
+		echo '<div id="footer_wrapper" class="wrapper">' . "\n";
 		
 		echo '<div id="footer_split" class="wrapper"><div class="hidden"></div></div>' . "\n";
 
