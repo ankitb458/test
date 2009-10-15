@@ -17,6 +17,11 @@ ul {
 	list-style-image: url(../icons/bullet.gif);
 }
 
+.entry_content ul,
+.search_result ul {
+	list-style: square;
+}
+
 .edit_entry a {
 	background: url(../icons/page_white_edit.gif) center left no-repeat;
 	padding-left: 18px;

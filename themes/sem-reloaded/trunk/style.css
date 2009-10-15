@@ -197,6 +197,14 @@ pre {
 	border: dotted 1px #bbb;
 }
 
+blockquote {
+	background: url(icons/blockquote.gif) top left no-repeat;
+	padding: 5px 10px 5px 50px;
+	margin-left: 0px;
+	min-height: 50px;
+}
+
+
 strong, b {
 	font-weight: bold;
 }
