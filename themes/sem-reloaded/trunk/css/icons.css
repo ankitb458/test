@@ -14,14 +14,14 @@ To override these icons, create a copy of this file and drop it, as icons.css, i
 }
 
 li.nav_home {
-	list-style-image: url(../icons/house.gif);
+	list-style-image: url(../icons/bullet.gif);
 }
 
 .widget_categories ul,
 .widget_archive ul,
 li.nav_blog,
 li.nav_branch {
-	list-style-image: url(../icons/folder.gif);
+	list-style-image: url(../icons/bullet.gif);
 }
 
 .post_list ul,
@@ -31,7 +31,7 @@ li.nav_branch {
 .widget_pages ul,
 .widget_recent_entries ul,
 li.nav_leaf {
-	list-style-image: url(../icons/page_white_text.gif);
+	list-style-image: url(../icons/bullet.gif);
 }
 
 .widget_recent_comments ul,

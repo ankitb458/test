@@ -777,15 +777,21 @@ div.scripts {
 	height: 0px !important;
 }
 
+.inline_boxes .bookmark_me_narrow {
+	margin: .4em 0px;
+}
+
 .inline_boxes .bookmark_me_narrow a {
 	width: auto;
-	padding-right: 10px;
+	padding-right: 5px;
+	float: none;
+	display: inline;
 }
 
 /* newsletter manager */
 
 .inline_boxes .newsletter_inline input.from {
-	width: 200px;
+	width: 180px;
 }
 
 /* banner ad widgets */
