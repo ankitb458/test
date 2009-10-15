@@ -20,6 +20,7 @@ Author uri: http://www.mesoconcepts.com
 .skin #navbar,
 .skin #body,
 .skin #credits,
+#header_wrapper .wrapper,
 #footer_wrapper .wrapper {
 	width: 100%;
 }
@@ -40,7 +41,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #header_split {
-	height: 8px;
+	height: 3px;
 	border-top: solid 1px;
 	border-bottom: solid 1px;
 	margin-bottom: 5px;
@@ -58,7 +59,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #footer_split {
-	height: 8px;
+	height: 3px;
 	border-top: solid 1px;
 	border-bottom: solid 1px;
 	margin-top: 5px;
