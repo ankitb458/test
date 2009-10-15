@@ -193,7 +193,7 @@ pre, code, kbd, samp, tt {
 }
 
 blockquote, q, ul, ol, dl {
-	margin-left: 24px;
+	margin-left: 22px;
 }
 
 ul ul,
@@ -293,7 +293,7 @@ div.pings_date {
 .button {
 	font-weight: bold;
 	background: url(icons/gray-grad.png) center repeat-x #dfdfdf;
-	border: solid 1px #888;
+	border: solid 1px #808080;
 	color: #111;
 	padding: 1px 7px;
 	-moz-border-radius: 9px;
@@ -308,13 +308,15 @@ div.pings_date {
 	border-left: solid 1px #999;
 	border-bottom: solid 1px #111;
 	border-right: solid 1px #111;
-	color: #000;
 }
 
 .button:active {
-	border: solid 1px #555;
-	color: #000;
+	border-top: solid 1px #111;
+	border-left: solid 1px #111;
+	border-bottom: solid 1px #999;
+	border-right: solid 1px #999;
 }
+
 
 /*
  * calendar
