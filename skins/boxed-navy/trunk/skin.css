@@ -384,6 +384,15 @@ Author uri: http://www.mesoconcepts.com
 	padding-top: 11px;
 }
 
+.main .pad {
+	padding: 0px;
+}
+
+.pad .pad,
+.post_list {
+	padding: 0px 20px;
+}
+
 .main_widget_bg,
 .post_list {
 	padding-top: 1px;
