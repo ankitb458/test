@@ -19,6 +19,7 @@ Author uri: http://www.mesoconcepts.com
 	width: 100%;
 }
 
+html,
 body {
 	background: url(images/background.jpg) top center repeat-y #0c2029;
 	color: #fff;
@@ -38,10 +39,6 @@ body {
 #footer {
 	padding-top: 10px;
 	padding-bottom: 10px;
-}
-
-#navbar_bg {
-	background-image: url(images/navbar_bg.jpg);
 }
 
 #navbar span {
@@ -105,12 +102,18 @@ body {
 
 #footer_boxes,
 .footer_widget {
-	margin-top: .8em;
-	margin-bottom: .8em;
+	padding-top: 1px;
+	padding-bottom: 1px;
 }
 
 #body {
 	padding-top: 1px;
+}
+
+#footer_split {
+	border-top: solid 1px;
+	height: 2px;
+	border-bottom: solid 1px;
 }
 
 .mts #sidebar .pad,
