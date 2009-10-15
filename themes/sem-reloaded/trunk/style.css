@@ -291,10 +291,30 @@ div.pings_date {
 }
 
 .button {
-	min-height: 23px;
 	font-weight: bold;
+	background: url(icons/gray-grad.png) center repeat-x #dfdfdf;
+	border: solid 1px #888;
+	color: #111;
+	padding: 1px 7px;
+	-moz-border-radius: 9px;
+	-khtml-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+	cursor: pointer;
 }
 
+.button:hover {
+	border-top: solid 1px #999;
+	border-left: solid 1px #999;
+	border-bottom: solid 1px #111;
+	border-right: solid 1px #111;
+	color: #000;
+}
+
+.button:active {
+	border: solid 1px #555;
+	color: #000;
+}
 
 /*
  * calendar
