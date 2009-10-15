@@ -189,7 +189,7 @@ pre {
 }
 
 pre, code, kbd, samp, tt {
-	font-size: 10pt;
+	font-size: 14px;
 }
 
 blockquote, q, ul, ol, dl {
@@ -274,12 +274,8 @@ h2 {
 	font-weight: bold;
 }
 
-#main h3 {
+.main h3 {
 	font-size: 15px;
-}
-
-.wp-calendar tbody {
-	font-size: 14px;
 }
 
 h3,
@@ -292,7 +288,10 @@ div.pings_date {
 
 .button {
 	font-weight: bold;
-	background: url(icons/gray-grad.png) center repeat-x #dfdfdf;
+	background-image: none;
+	background-position: top center;
+	background-repeat: repeat-x;
+	background-color: #dfdfdf;
 	border: solid 1px #808080;
 	color: #111;
 	padding: 1px 7px;
@@ -304,17 +303,13 @@ div.pings_date {
 }
 
 .button:hover {
-	border-top: solid 1px #999;
-	border-left: solid 1px #999;
-	border-bottom: solid 1px #111;
-	border-right: solid 1px #111;
+	background-image: url(icons/gray-grad.png);
+	text-shadow: #f7f7f7 0 1px 0;
 }
 
 .button:active {
-	border-top: solid 1px #111;
-	border-left: solid 1px #111;
-	border-bottom: solid 1px #999;
-	border-right: solid 1px #999;
+	background-image: url(icons/gray-grad-rev.png);
+	text-shadow: #f7f7f7 0 1px 0;
 }
 
 
@@ -774,13 +769,26 @@ p.attachment {
 	text-align: right;
 }
 
-.search_title {
-	font-size: 1.2em;
+.main h3.search_title {
+	font-size: 18px;
 	font-weight: normal;
 }
 
 .search_url {
 	color: #060;
+}
+
+li.search_result {
+	margin-left: -22px;
+	list-style: none;
+}
+
+li.search_result ul {
+	margin-left: 22px;
+}
+
+li.search_result ul ul {
+	margin-left: 8px;
 }
 
 /* footer scripts */
