@@ -485,7 +485,7 @@ body,
 #body,
 #header_wrapper {
 	background-color: #f7f7f7;
-	color: #000;
+	color: #111;
 }
 
 #header_split,
@@ -507,7 +507,7 @@ body,
 .main_widget,
 .widget {
 	background-color: #fff;
-	color: #000;
+	color: #111;
 }
 
 h2.widget_title {
