@@ -230,10 +230,25 @@ h2.widget_title {
 	border-bottom: solid 1px;
 }
 
-#sidebars #sidebar,
-#sidebars #sidebar2 {
-	margin-top: -10px;
-	margin-bottom: -10px;
+#main .entry:first-child,
+.sidebar .widget:first-child {
+	margin-top: 18px;
+}
+
+#top_sidebar .widget:last-child {
+	margin-bottom: 0px;
+}
+
+#bottom_sidebar .widget:first-child {
+	margin-top: 0px;
+}
+
+#sidebars .widget:first-child {
+	margin-top: 18px;
+}
+
+#sidebars .widget:last-child {
+	margin-bottom: 18px;
 }
 
 
