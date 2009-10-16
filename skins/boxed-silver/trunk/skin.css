@@ -28,51 +28,55 @@ Author uri: http://www.mesoconcepts.com
 
 .mmm #navbar_bg,
 .mmm #credits_bg {
-	width: 950px;
+	width: 952px;
 }
 
 .mm #navbar_bg,
 .mm #credits_bg {
-	width: 750px;
+	width: 752px;
 }
 
 .m #navbar_bg,
 .m #credits_bg {
-	width: 620px;
+	width: 622px;
 }
 
-#header_split {
-	height: 3px;
-	border-top: solid 1px;
-	border-bottom: solid 1px;
-	margin-bottom: 5px;
+.m2s #main,
+.m1s #main {
+	width: 532px;
 }
 
-#navbar_split {
-	margin-bottom: 5px;
+.mm1s #main {
+	width: 632px;
 }
 
-#navbar {
-	line-height: 32px;
-	background-image: url(images/navbar.jpg);
-	border-top: solid 1px;
-	border-bottom: solid 1px;
+.m2s #sidebar,
+.m2s #sidebar2 {
+	width: 191px;
 }
 
-#footer_split {
-	height: 3px;
-	border-top: solid 1px;
-	border-bottom: solid 1px;
-	margin-top: 5px;
+.sms #sidebar_wrapper {
+	width: 741px;
 }
 
-#footer {
-	padding-top: 10px;
-	padding-bottom: 10px;
+.main .pad {
+	padding: 0px;
+}
+
+.pad,
+.pad .pad,
+.post_list {
+	padding: 0px 18px;
 }
 
 #navbar .pad {
-	padding: 0px 5px;
+	padding: 0px 2px;
+}
+
+#navbar {
+	background-image: url(images/navbar.jpg);
+	border-top: solid 1px;
+	border-bottom: solid 1px;
 }
 
 #navbar_bg {
@@ -90,8 +94,8 @@ Author uri: http://www.mesoconcepts.com
 	background-image: url(images/navbar_bg.jpg);
 	display: block;
 	float: left;
-	padding-left: 15px;
-	padding-right: 17px;
+	padding-left: 17px;
+	padding-right: 19px;
 	margin: 0px;
 }
 
@@ -102,118 +106,75 @@ Author uri: http://www.mesoconcepts.com
 
 #navbar span.nav_active {
 	font-weight: normal;
-	padding-left: 15px;
-	padding-right: 17px;
+	padding-left: 17px;
+	padding-right: 19px;
 	margin: 0px;
 }
 
 #navbar span.nav_active a {
-	margin-left: -15px;
-	margin-right: -17px;
+	margin-left: -17px;
+	margin-right: -19px;
 	background: none;
 }
 
-#header_boxes_top,
-.header_widget_top,
-#header_boxes_bottom,
-.header_widget_bottom {
-	height: 10px;
+#pre_header_split,
+#header_split,
+#footer_split {
+	height: 3px;
+	border-top: solid 1px;
+	border-bottom: solid 1px;
 }
 
-.mmm #header_boxes {
-	background-image: url(images/mmm-header_boxes.jpg);
+#footer {
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
-.mmm #header_boxes_bg {
-	background-image: url(images/mmm-header_boxes_bg.jpg);
+#header_boxes_bg,
+.header_widget_bg,
+.entry_bg,
+.post_list,
+.main_widget_bg,
+.widget_bg {
+	border: solid 1px;
+	-moz-border-radius: 6px;
+	-khtml-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 
-.mmm #header_boxes_top {
-	background-image: url(images/mmm-header_boxes_top.jpg);
+#header_wrapper,
+#footer_wrapper {
+	overflow: hidden;
 }
 
-.mmm #header_boxes_bottom {
-	background-image: url(images/mmm-header_boxes_bottom.jpg);
+.entry_bg {
+	padding-top: 10px;
+	padding-bottom: 5px;
 }
 
-.mm #header_boxes {
-	background-image: url(images/mm-header_boxes.jpg);
+.blog_footer .main_widget_bg {
+	border: none;
+	background: none;
+	-moz-box-shadow: none;
+	-khtml-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
-.mm #header_boxes_bg {
-	background-image: url(images/mm-header_boxes_bg.jpg);
+#header_boxes_bg,
+.header_widget_bg {
+	background-image: url(images/header_widget_bg.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
 }
 
-.mm #header_boxes_top {
-	background-image: url(images/mm-header_boxes_top.jpg);
-}
-
-.mm #header_boxes_bottom {
-	background-image: url(images/mm-header_boxes_bottom.jpg);
-}
-
-.m #header_boxes {
-	background-image: url(images/m-header_boxes.jpg);
-}
-
-.m #header_boxes_bg {
-	background-image: url(images/m-header_boxes_bg.jpg);
-}
-
-.m #header_boxes_top {
-	background-image: url(images/m-header_boxes_top.jpg);
-}
-
-.m #header_boxes_bottom {
-	background-image: url(images/m-header_boxes_bottom.jpg);
-}
-
-.mmm .header_widget {
-	background-image: url(images/mmm-header_widget.jpg);
-}
-
-.mmm .header_widget_bg {
-	background-image: url(images/mmm-header_widget_bg.jpg);
-}
-
-.mmm .header_widget_top {
-	background-image: url(images/mmm-header_widget_top.jpg);
-}
-
-.mmm .header_widget_bottom {
-	background-image: url(images/mmm-header_widget_bottom.jpg);
-}
-
-.mm .header_widget {
-	background-image: url(images/mm-header_widget.jpg);
-}
-
-.mm .header_widget_bg {
-	background-image: url(images/mm-header_widget_bg.jpg);
-}
-
-.mm .header_widget_top {
-	background-image: url(images/mm-header_widget_top.jpg);
-}
-
-.mm .header_widget_bottom {
-	background-image: url(images/mm-header_widget_bottom.jpg);
-}
-
-.m .header_widget {
-	background-image: url(images/m-header_widget.jpg);
-}
-
-.m .header_widget_bg {
-	background-image: url(images/m-header_widget_bg.jpg);
-}
-
-.m .header_widget_top {
-	background-image: url(images/m-header_widget_top.jpg);
-}
-
-.m .header_widget_bottom {
-	background-image: url(images/m-header_widget_bottom.jpg);
+.entry_bg,
+.main_widget_bg,
+.widget_bg {
+	background-image: url(images/body_bg.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
 }
 
 #footer_boxes {
@@ -225,248 +186,25 @@ Author uri: http://www.mesoconcepts.com
 	background-image: url(images/mmm-footer_boxes.jpg);
 }
 
-#header_boxes_bg {
-	padding-top: 1px;
-}
-
-#header_boxes h2,
-.header_widget h2 {
-	margin: 0px;
-	padding-top: 8px;
+.entry,
+.main_widget,
+.widget,
+#top_split,
+#header_split,
+#navbar_split,
+#header_boxes,
+.header_widget {
+	margin-top: 0px;
+	margin-bottom: 18px;
 }
 
 #footer_boxes,
 .footer_widget {
-	margin-top: .8em;
-	margin-bottom: .8em;
-}
-
-#footer_boxes h2 {
-	margin-top: 0px;
-}
-
-.entry_top,
-.main_widget_top,
-.entry_bottom,
-.main_widget_bottom {
-	height: 10px;
-}
-
-.mmm .entry,
-.mmm .main_widget {
-	background-image: url(images/mmm-main.jpg);
-}
-
-.mmm .entry_bg,
-.mmm .main_widget_bg,
-.mmm .post_list {
-	background-image: url(images/mmm-main_bg.jpg);
-}
-
-.mmm .entry_top,
-.mmm .main_widget_top {
-	background-image: url(images/mmm-main_top.jpg);
-}
-
-.mmm .entry_bottom,
-.mmm .main_widget_bottom {
-	background-image: url(images/mmm-main_bottom.jpg);
-}
-
-.mm .entry,
-.mm .main_widget {
-	background-image: url(images/mm-main.jpg);
-}
-
-.mm .entry_bg,
-.mm .main_widget_bg,
-.mm .post_list {
-	background-image: url(images/mm-main_bg.jpg);
-}
-
-.mm .entry_top,
-.mm .main_widget_top {
-	background-image: url(images/mm-main_top.jpg);
-}
-
-.mm .entry_bottom,
-.mm .main_widget_bottom {
-	background-image: url(images/mm-main_bottom.jpg);
-}
-
-.m .entry,
-.m .main_widget {
-	background-image: url(images/m-main.jpg);
-}
-
-.m .entry_bg,
-.m .main_widget_bg,
-.m .post_list {
-	background-image: url(images/m-main_bg.jpg);
-}
-
-.m .entry_top,
-.m .main_widget_top {
-	background-image: url(images/m-main_top.jpg);
-}
-
-.m .entry_bottom,
-.m .main_widget_bottom {
-	background-image: url(images/m-main_bottom.jpg);
-}
-
-.mm1s .entry,
-.mm1s .main_widget {
-	background-image: url(images/wide_main.jpg);
-}
-
-.mm1s .entry_bg,
-.mm1s .main_widget_bg,
-.mm1s .post_list {
-	background-image: url(images/wide_main_bg.jpg);
-}
-
-.mm1s .entry_top,
-.mm1s .main_widget_top {
-	background-image: url(images/wide_main_top.jpg);
-}
-
-.mm1s .entry_bottom,
-.mm1s .main_widget_bottom {
-	background-image: url(images/wide_main_bottom.jpg);
-}
-
-.m2s .entry,
-.m1s .entry,
-.m2s .main_widget,
-.m1s .main_widget {
-	background-image: url(images/main.jpg);
-}
-
-.m2s .entry_bg,
-.m1s .entry_bg,
-.m2s .main_widget_bg,
-.m1s .main_widget_bg,
-.m2s .post_list,
-.m1s .post_list {
-	background-image: url(images/main_bg.jpg);
-}
-
-.m2s .entry_top,
-.m1s .entry_top,
-.m2s .main_widget_top,
-.m1s .main_widget_top {
-	background-image: url(images/main_top.jpg);
-}
-
-.m2s .entry_bottom,
-.m1s .entry_bottom,
-.m2s .main_widget_bottom,
-.m1s .main_widget_bottom {
-	background-image: url(images/main_bottom.jpg);
-}
-
-.entry_bg {
-	padding-top: 5px;
-}
-
-.main .pad {
-	padding: 0px;
-}
-
-.pad .pad,
-.post_list {
-	padding: 0px 20px;
-}
-
-.main_widget_bg,
-.post_list {
-	padding-top: 1px;
-}
-
-.entry,
-.main_widget {
-	margin: 0px;
-}
-
-.blog_footer .main_widget_top,
-.blog_footer .main_widget_bottom {
-	height: 0px;
-	background: none;
-}
-
-.blog_footer .main_widget_bg {
-	padding-bottom: 0px;
-}
-
-.skin .blog_footer,
-.blog_footer .main_widget_bg {
-	background: none;
-}
-
-.widget_top,
-.widget_bottom {
-	height: 10px;
-}
-
-.widget {
-	background-image: url(images/sidebar.jpg);
-}
-
-.widget_bg {
-	background-image: url(images/sidebar_bg.jpg);
-}
-
-.widget_top {
-	background-image: url(images/sidebar_top.jpg);
-}
-
-.widget_bottom {
-	background-image: url(images/sidebar_bottom.jpg);
-}
-
-.mm1s .widget {
-	background-image: url(images/wide_sidebar.jpg);
-}
-
-.mm1s .widget_bg {
-	background-image: url(images/wide_sidebar_bg.jpg);
-}
-
-.mm1s .widget_top {
-	background-image: url(images/wide_sidebar_top.jpg);
-}
-
-.mm1s .widget_bottom {
-	background-image: url(images/wide_sidebar_bottom.jpg);
-}
-
-.wide_sidebar .widget {
-	background-image: url(images/xwide_sidebar.jpg);
-}
-
-.wide_sidebar .widget_top {
-	background-image: url(images/xwide_sidebar_top.jpg);
-}
-
-.wide_sidebar .widget_bg {
-	background-image: url(images/xwide_sidebar_bg.jpg);
-}
-
-.wide_sidebar .widget_bottom {
-	background-image: url(images/xwide_sidebar_bottom.jpg);
-}
-
-.widget_bg {
-	padding-top: 5px;
-}
-
-.widget {
-	margin: 0px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 h2.widget_title {
-	margin-top: 0px;
 	padding-bottom: 3px;
 	border-bottom: solid 1px;
 }
@@ -488,26 +226,34 @@ body,
 	color: #111;
 }
 
+#pre_header_split,
 #header_split,
 #footer_split {
 	background-color: #ddd;
 	color: #000;
-	border-color: #aaa;
+	border-color: #bbb;
 }
 
 #header_split {
 	border-top-color: #999;
 }
 
+#pre_header_split,
 #footer_split {
 	border-bottom-color: #999;
 }
 
-.entry,
-.main_widget,
-.widget {
+#header_boxes_bg,
+.header_widget_bg {
+	border-color: #bbb;
+}
+
+.entry_bg,
+.main_widget_bg,
+.widget_bg {
 	background-color: #fff;
 	color: #111;
+	border-color: #bbb;
 }
 
 h2.widget_title {
@@ -539,8 +285,8 @@ h2.widget_title {
 	border-color: #5e5e5e; /* L/2 */
 }
 
-#header_boxes,
-.header_widget,
+#header_boxes_bg,
+.header_widget_bg,
 .widget_calendar tfoot {
 	background-color: #f6f6f6; /* A-S5 L97 */
 	color: #000;
