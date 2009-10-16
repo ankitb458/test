@@ -490,6 +490,87 @@ class sem_template {
 		
 		return $query_string;
 	} # archive_query_string()
+	
+	
+	/**
+	 * dynamic_sidebar_params()
+	 *
+	 * @param array $params
+	 * @return array $params
+	 **/
+
+	function dynamic_sidebar_params($params) {
+		if ( !is_array($params) || !is_array($params[0]) || $params[0]['id'] != 'the_header' )
+			return $params;
+		
+		global $did_header;
+		global $did_navbar;
+		global $did_top_split;
+		global $did_middle_split;
+		
+		if ( !empty($did_header) && !empty($did_navbar) )
+			return $params;
+		
+		$is_header = false;
+		$is_navbar = false;
+		
+		global $wp_registered_widgets;
+		$widget_id = $params[0]['widget_id'];
+		if ( is_array($wp_registered_widgets[$widget_id]['callback']) ) {
+			switch ( get_class($wp_registered_widgets[$widget_id]['callback'][0]) ) {
+			case 'header':
+				if ( !empty($did_navbar) ) {
+					if ( !empty($did_middle_split) ) {
+						echo '<div id="pre_header_split"><div class="hidden"></div></div>' . "\n";
+					
+					}
+				} else {
+					if ( !empty($did_top_split) ) {
+						echo '<div id="pre_header_split"><div class="hidden"></div></div>' . "\n";
+					}
+				}
+				break;
+			
+			case 'navbar':
+				if ( !empty($did_header) ) {
+					if ( !empty($did_middle_split) ) {
+						echo '<div id="pre_navbar_split"><div class="hidden"></div></div>' . "\n";
+				
+					}
+				} else {
+					if ( !empty($did_top_split) ) {
+						echo '<div id="pre_navbar_split"><div class="hidden"></div></div>' . "\n";
+					}
+				}
+				break;
+			
+			default:
+				if ( empty($did_header) && empty($did_navbar) ) {
+					if ( empty($did_top_split) ) {
+						if ( !empty($did_navbar) ) {
+							echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
+						} else {
+							echo '<div id="top_split"><div class="hidden"></div></div>' . "\n";
+						}
+						$did_top_split = true;
+					}
+				} else {
+					if ( empty($did_middle_split) ) {
+						if ( empty($did_header) ) {
+						
+								echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
+						} elseif ( empty($did_navbar) ) {
+								echo '<div id="header_split"><div class="hidden"></div></div>' . "\n";
+						}
+						$did_middle_split = true;
+					}
+				}
+				break;
+			}
+		}
+		
+		return $params;
+	} # dynamic_sidebar_params()
 } # sem_template
 
 if ( !is_admin() ) {
@@ -502,6 +583,7 @@ if ( !is_admin() ) {
 	add_filter('widget_title', array('sem_template', 'widget_title'));
 	add_action('wp_footer', array('sem_template', 'display_credits'), 5);
 	add_filter('query_string', array('sem_template', 'archive_query_string'), 20);
+	add_filter('dynamic_sidebar_params', array('sem_template', 'dynamic_sidebar_params'), 15);
 	remove_action('wp_print_styles', array('external_links', 'styles'), 5);
 } else {
 	add_action('admin_menu', array('sem_template', 'admin_menu'));

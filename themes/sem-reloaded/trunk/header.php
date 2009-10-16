@@ -43,7 +43,7 @@ echo '<div id="wrapper_bg">' . "\n";
 		
 		sem_panels::display('the_header');
 		
-		echo '<div id="body_split" class="wrapper"><div class="hidden"></div></div>' . "\n";
+		echo '<div id="body_split"><div class="hidden"></div></div>' . "\n";
 
 		echo '</div>' . "\n";
 		
@@ -51,6 +51,8 @@ echo '<div id="wrapper_bg">' . "\n";
 
 	
 	# body
+	
+	echo '<div id="body_wrapper" class="wrapper">' . "\n";
 	
 	echo '<div id="body" class="wrapper">' . "\n";
 	

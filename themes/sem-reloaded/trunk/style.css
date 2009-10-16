@@ -176,8 +176,12 @@ Semiologic Defaults
 -------------------
 */
 
-p, dl, ul, ol, h1, h2, h3, h4, h5, h6, pre, blockquote, li, dt, dd {
-	margin: .4em 0px;
+pre, blockquote, li, dt, dd {
+	margin: 3px 0px;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl {
+	margin: 10px 0px;
 }
 
 blockquote, q, ul, ol, dl {
@@ -188,6 +192,8 @@ ul ul,
 ol ol,
 dl dl {
 	margin-left: 8px;
+	margin-top: 4px;
+	margin-bottom: 4px;
 }
 
 pre {
@@ -197,10 +203,10 @@ pre {
 	border: dotted 1px #bbb;
 }
 
-blockquote {
+.main blockquote {
 	background: url(icons/blockquote.gif) top left no-repeat;
 	padding: 5px 10px 5px 50px;
-	margin-left: 0px;
+	margin: 0px;
 	min-height: 50px;
 }
 
@@ -368,7 +374,7 @@ div.pings_date {
  */
 
 #commentform div {
-	margin: .5em 0px;
+	margin: 5px 0px;
 }
 
 
@@ -527,12 +533,8 @@ h2 a {
 .entry,
 .comment,
 .widget {
-	margin-top: 10px;
+	margin-top: 0px;
 	margin-bottom: 20px;
-}
-
-#top_sidebar .widget {
-	margin-bottom: 0px;
 }
 
 .pad {
@@ -553,26 +555,25 @@ h2 a {
 	margin: 0px !important;
 }
 
-.entry_content h1, .entry_content h2, .entry_content h3,
-.entry_content h4, .entry_content h5, .entry_content h6,
-.entry_content p, .entry_content ul, .entry_content ol, .entry_content dl {
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-
 .entry h2 {
 	margin-top: 15px;
 }
 
-.entry_header h1 {
-	margin: 0px;
+.entry_header,
+.entry_date {
+	margin-top: 10px;
+}
+
+.entry_date + .entry_header,
+.entry_date + .entry_header h1 {
+	margin-top: 2px;
 	padding: 0px;
 }
 
 .entry_date,
 .comment_date,
 .pings_date {
-	margin-bottom: 3px;
+	margin-bottom: 2px;
 }
 
 .entry_header,
@@ -693,7 +694,7 @@ p.wp-caption-text {
 
 div.media,
 div.enclosures {
-	margin: .5em 0px;
+	margin: 5px 0px;
 }
 
 div.media {
@@ -711,7 +712,7 @@ div.media {
 .entry .entry_author_image {
 	float: left;
 	border: outset 1px;
-	margin: 1.2em 1.2em 0px 3px;
+	margin: 10px 10px 0px 3px;
 }
 
 /* wp gallery */
@@ -797,11 +798,14 @@ div.scripts {
 }
 
 .inline_boxes .bookmark_me_narrow {
-	margin: .4em 0px;
+	margin: 10px 0px;
 }
 
 .inline_boxes .bookmark_me_narrow a {
 	width: auto;
+	height: auto !important;
+	line-height: 1em !important;
+	margin: 0px;
 	padding-right: 5px;
 	float: none;
 	display: inline;
@@ -813,6 +817,10 @@ div.scripts {
 	width: 180px;
 }
 
+p.newsletter_fields {
+	margin: 9px 0px;
+}
+
 /* banner ad widgets */
 
 .ad_unit,
@@ -821,6 +829,11 @@ div.scripts {
 .ad_unit .main_widget_bg,
 .ad_unit .widget_bg {
 	background: none !important;
+	border: none !important;
+	-moz-border-radius: 0px !important;
+	-khtml-border-radius: 0px !important;
+	-webkit-border-radius: 0px !important;
+	border-radius: 0px !important;
 }
 
 .ad_unit .header_widget_top,
@@ -832,7 +845,7 @@ div.scripts {
 .ad_unit .widget_top,
 .ad_unit .widget_bottom {
 	background: none !important;
-	height: 0px;
+	height: 0px !important;
 }
 
 .ad_unit .pad,
@@ -840,9 +853,4 @@ div.scripts {
 .ad_unit .pad,
 .ad_unit .pad {
 	padding: 0px;
-	margin: 5px;
-}
-
-.entry .ad_unit .pad {
-	padding: 0px 15px;
 }

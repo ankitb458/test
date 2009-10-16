@@ -213,6 +213,7 @@
 
 	echo '</div><!-- body -->' . "\n";
 	
+	echo '</div>' . "\n";
 	
 	# footer
 	
@@ -220,7 +221,7 @@
 		
 		echo '<div id="footer_wrapper" class="wrapper">' . "\n";
 		
-		echo '<div id="footer_split" class="wrapper"><div class="hidden"></div></div>' . "\n";
+		echo '<div id="footer_split"><div class="hidden"></div></div>' . "\n";
 
 		sem_panels::display('the_footer');
 		

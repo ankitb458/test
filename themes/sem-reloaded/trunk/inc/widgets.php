@@ -1785,7 +1785,7 @@ class header extends WP_Widget {
 		if ( empty($did_header) ) {
 			$did_header = true;
 			if ( !empty($did_navbar) )
-				echo '<div id="header_split" class="wrapper"><div class="hidden"></div></div>' . "\n";
+				echo '<div id="header_split"><div class="hidden"></div></div>' . "\n";
 		}
 	} # widget()
 	
@@ -3162,7 +3162,7 @@ class navbar extends sem_nav_menu {
 		if ( empty($did_navbar) ) {
 			$did_navbar = true;
 			if ( !empty($did_header) )
-				echo '<div id="navbar_split" class="wrapper"><div class="hidden"></div></div>' . "\n";
+				echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
 		}
 	} # widget()
 	
