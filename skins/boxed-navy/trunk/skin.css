@@ -222,7 +222,8 @@ h2.widget_title {
 
 body,
 #body,
-#header_wrapper {
+#header_wrapper,
+#body_wrapper {
 	background-color: #f7f7f7;
 	color: #111;
 }
