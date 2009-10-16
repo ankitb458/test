@@ -88,10 +88,7 @@ To customize this file, create a custom.css file in the theme's folder, and past
  */
 
 .mmm #wrapper,
-.mmm #credits {
-	width: 960px;
-}
-
+.mmm #credits,
 .mmm .wrapper,
 .mmm .wrapper_item {
 	width: 950px;
@@ -128,10 +125,7 @@ To customize this file, create a custom.css file in the theme's folder, and past
  */
 
 .mm #wrapper,
-.mm #credits {
-	width: 760px;
-}
-
+.mm #credits,
 .mm .wrapper,
 .mm .wrapper_item {
 	width: 750px;
@@ -151,10 +145,7 @@ To customize this file, create a custom.css file in the theme's folder, and past
  */
 
 .m #wrapper,
-.m #credits {
-	width: 630px;
-}
-
+.m #credits,
 .m .wrapper,
 .m .wrapper_item {
 	width: 620px;

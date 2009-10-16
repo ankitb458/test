@@ -233,7 +233,7 @@ class sem_panels {
 			echo '<div class="spacer"></div>' . "\n"
 				. '<div id="' . $class . '" class="wrapper inline_boxes">' . "\n"
 				. '<div id="' . $class . '_top" class="inline_boxes_top"><div class="hidden"></div></div>' . "\n"
-				. '<div id="' . $class . '_bg" class="inline_boxes_gb">' . "\n"
+				. '<div id="' . $class . '_bg" class="inline_boxes_bg">' . "\n"
 				. '<div class="wrapper_item">' . "\n";
 			dynamic_sidebar($panel_id);
 			echo '<div class="spacer"></div>' . "\n"
