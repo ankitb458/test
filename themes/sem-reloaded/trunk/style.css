@@ -823,6 +823,12 @@ p.newsletter_fields {
 
 /* banner ad widgets */
 
+.ad_unit {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.ad_unit,
 .ad_unit .header_widget_bg,
 .ad_unit .footer_widget_bg {
 	background: none !important;
@@ -841,7 +847,7 @@ p.newsletter_fields {
 	height: 0px !important;
 }
 
-.header_widget .ad_unit .pad,
-.footer_widget .ad_unit .pad {
+.ad_unit .header_widget_bg .pad,
+.ad_unit .footer_widget_bg .pad {
 	padding: 0px;
 }
