@@ -237,21 +237,22 @@ li.search_result {
 }
 
 .m .inline_box {
-	width: 50%;
+	width: 310px;
 }
 
 .mm .inline_box {
-	width: 50%;
+	width: 375px;
 }
 
 .mmm .inline_box {
-	width: 33.33%;
+	width: 316px;
 }
 
-/* IE fix */
-.mmm .inline_boxes .wrapper_item {
-	width: 949px;
+.mmm .inline_box:first-child,
+.mmm .inline_box:last-child {
+	width: 317px;
 }
+
 
 /*
  * Default Background Handling
