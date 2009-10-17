@@ -11,91 +11,44 @@ Author uri: http://www.mesoconcepts.com
  * Canvas
  */
 
-.sem_admin_menu #wrapper {
+#wrapper {
 	margin-top: 15px;
 }
 
-.skin #wrapper,
-.skin #header,
-.skin #navbar,
-.skin #header_wrapper,
-.skin #footer_wrapper,
-.skin #body,
-.skin #credits,
-#footer_wrapper .wrapper {
-	width: 100%;
+.sem_admin_menu #wrapper {
+	margin-top: 30px;
 }
 
-.mmm #navbar_bg,
-.mmm #credits_bg {
+.mmm #wrapper {
 	width: 952px;
 }
 
-.mm #navbar_bg,
-.mm #credits_bg {
+.mm #wrapper {
 	width: 752px;
 }
 
-.m #navbar_bg,
-.m #credits_bg {
+.m #wrapper {
 	width: 622px;
 }
 
-.m2s #main,
-.m1s #main {
-	width: 532px;
-}
-
-.mm1s #main {
-	width: 632px;
-}
-
-.m2s #sidebar,
-.m2s #sidebar2 {
-	width: 199px;
-}
-
-.sms #sidebar,
-.sms #sidebar2 {
-	width: 191px;
-}
-
-.sms #sidebar_wrapper {
-	width: 741px;
-}
-
-.m #header_boxes .inline_box {
-	width: 309;
-}
-
-.mmm #header_boxes .inline_box {
-	width: 374px;
-}
-
-.mmm #header_boxes .inline_box {
-	width: 316px;
-}
-
-.main .pad {
-	padding: 0px;
-}
-
-.pad,
-.pad .pad,
-.post_list {
-	padding: 0px 18px;
+#wrapper_bg {
+	border: solid 1px;
 }
 
 #sidebars #sidebar .pad {
-	padding-right: 9px;
+	padding-right: 10px;
 }
 
 #sidebars #sidebar2 .pad {
-	padding-left: 9px;
+	padding-left: 10px;
 }
 
 #navbar .pad {
 	padding: 0px 2px;
+}
+
+#search_form {
+	padding: 0px 18px;
 }
 
 #navbar {
@@ -148,10 +101,18 @@ Author uri: http://www.mesoconcepts.com
 
 #pre_header_split,
 #header_split,
+#body_split {
+	border-top: solid 1px;
+}
+
 #footer_split {
 	height: 3px;
 	border-top: solid 1px;
 	border-bottom: solid 1px;
+}
+
+#bottom_split {
+	padding-bottom: 1px;
 }
 
 #footer {
@@ -159,44 +120,13 @@ Author uri: http://www.mesoconcepts.com
 	padding-bottom: 10px;
 }
 
-#header_boxes_bg,
-.header_widget_bg,
-#main_bg,
-#sidebars_bg,
-.sidebar_bg {
-	border: solid 1px;
-	-moz-border-radius: 9px;
-	-khtml-border-radius: 9px;
-	-webkit-border-radius: 9px;
-	border-radius: 9px;
+#header_boxes {
+	background-image: url(images/header_boxes.jpg);
+	background-repeat: no-repeat;
 }
 
-#main_bg {
-	padding-top: 5px;
-	padding-bottom: 1px;
-}
-
-#sidebars_bg,
-.sidebar_bg {
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-#header_boxes_bg,
-.header_widget_bg {
-	background-image: url(images/header_widget_bg.jpg);
-	background-position: top center;
-	background-repeat: repeat-x;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-#main_bg,
-#sidebars_bg,
-.sidebar_bg {
-	background-image: url(images/body_bg.jpg);
-	background-position: top center;
-	background-repeat: repeat-x;
+.mmm #header_boxes {
+	background-image: url(images/mmm-header_boxes.jpg);
 }
 
 #footer_boxes {
@@ -208,16 +138,8 @@ Author uri: http://www.mesoconcepts.com
 	background-image: url(images/mmm-footer_boxes.jpg);
 }
 
-#main,
-#sidebars,
-.sidebar,
-#top_split,
-#header_split,
-#navbar_split,
-#header_boxes,
-.header_widget {
-	margin-top: 0px;
-	margin-bottom: 18px;
+#body_bg {
+	padding-top: 10px;
 }
 
 #sidebars .sidebar {
@@ -234,17 +156,36 @@ Author uri: http://www.mesoconcepts.com
 
 #sidebars .widget.ad_unit:first-child {
 	margin-top: 10px;
-	margin-bottom: 18px;
+	margin-bottom: 20px;
 }
 
 #sidebars .widget.ad_unit:last-child {
 	margin-bottom: 10px;
 }
 
+#header_boxes,
+.header_widget,
 #footer_boxes,
 .footer_widget {
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+
+#header_wrapper .ad_unit,
+#footer_wrapper .ad_unit {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#header_boxes .ad_unit,
+#footer_boxes .ad_unit  {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+
+#top_split + .ad_unit  {
+	margin-top: -1px;
 }
 
 .entry_bottom {
@@ -274,16 +215,19 @@ h2.widget_title {
 	color: #000;
 }
 
-body,
-#body,
-#header_wrapper,
-#body_wrapper {
-	background-color: #f7f7f7;
+html,
+body {
+	background-color: #eee;
 	color: #111;
 }
 
+#wrapper_bg,
 #pre_header_split,
 #header_split,
+#body_split {
+	border-color: #999;
+}
+
 #footer_split {
 	background-color: #ddd;
 	color: #000;
@@ -294,21 +238,8 @@ body,
 	background-color: #bbb;
 }
 
-#header_split {
-	border-top-color: #999;
-}
-
-#pre_header_split,
 #footer_split {
 	border-bottom-color: #999;
-}
-
-#header_boxes_bg,
-.header_widget_bg,
-#main_bg,
-#sidebars_bg,
-.sidebar_bg {
-	border-color: #bbb;
 }
 
 .main,
@@ -316,9 +247,8 @@ body,
 	color: #111;
 }
 
-#main_bg,
-#sidebars_bg,
-.sidebar_bg {
+#wrapper,
+#body {
 	background-color: #fff;
 }
 
@@ -351,6 +281,7 @@ h2.widget_title {
 	border-color: #5e5e5e; /* L/2 */
 }
 
+#header_wrapper,
 #header_boxes,
 .header_widget,
 .widget_calendar tfoot {
@@ -364,19 +295,15 @@ h2.widget_title {
 	color: #000;
 }
 
-#footer,
-#credits,
-html /* credits bottom */ {
+#footer {
 	background-color: #5e5e5e; /* S+10 L/2 */
 	color: #fff;
 }
 
-#footer a,
-#credits a {
+#footer a {
 	color: #fff;
 }
 
-#footer a:hover,
-#credits a:hover {
+#footer a:hover {
 	color: #e2e2e2; /* S15 L90 */
 }
