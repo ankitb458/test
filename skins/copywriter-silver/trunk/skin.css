@@ -130,6 +130,10 @@ Author uri: http://www.mesoconcepts.com
 	background: none;
 }
 
+#top_split {
+	padding-top: 1px;
+}
+
 #pre_header_split,
 #header_split,
 #footer_split {
