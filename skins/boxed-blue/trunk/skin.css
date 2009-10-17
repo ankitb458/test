@@ -69,6 +69,11 @@ Author uri: http://www.mesoconcepts.com
 	padding: 0px 18px;
 }
 
+.ad_unit .main_widget_bg .pad,
+.ad_unit .widget_bg .pad {
+	padding: 0px;
+}
+
 #navbar .pad {
 	padding: 0px 2px;
 }
@@ -166,13 +171,12 @@ Author uri: http://www.mesoconcepts.com
 	padding-bottom: 5px;
 }
 
+.ad_unit .entry_bg,
+.ad_unit .main_widget_bg,
+.ad_unit .widget_bg,
 .blog_footer .main_widget_bg {
 	border: none;
 	background: none;
-	-moz-box-shadow: none;
-	-khtml-box-shadow: none;
-	-webkit-box-shadow: none;
-	box-shadow: none;
 	padding-top: 0px;
 	padding-bottom: 0px;
 }
@@ -219,9 +223,9 @@ h2.widget_title {
 	color: #000;
 }
 
-.entry,
-.main_widget,
-.widget {
+.entry_bg,
+.main_widget_bg,
+.widget_bg {
 	background-color: #fff;
 	color: #111;
 }

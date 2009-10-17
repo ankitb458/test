@@ -220,6 +220,15 @@ Author uri: http://www.mesoconcepts.com
 	margin-bottom: 0px;
 }
 
+#sidebars .widget.ad_unit:first-child {
+	margin-top: 10px;
+	margin-bottom: 18px;
+}
+
+#sidebars .widget.ad_unit:last-child {
+	margin-bottom: 10px;
+}
+
 #footer_boxes,
 .footer_widget {
 	margin-top: 10px;
@@ -290,9 +299,9 @@ body,
 	border-color: #bbb;
 }
 
-#main,
-#sidebars,
-.sidebar {
+#main_bg,
+#sidebars_bg,
+.sidebar_bg {
 	background-color: #fff;
 	color: #111;
 }
