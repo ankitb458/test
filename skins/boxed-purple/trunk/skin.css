@@ -227,11 +227,15 @@ h2.widget_title {
 	color: #000;
 }
 
+#main,
+.sidebar {
+	color: #111;
+}
+
 .entry_bg,
 .main_widget_bg,
 .widget_bg {
 	background-color: #fff;
-	color: #111;
 }
 
 body,

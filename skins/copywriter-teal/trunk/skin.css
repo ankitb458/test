@@ -303,11 +303,16 @@ body,
 	border-color: #bbb;
 }
 
+#main,
+#sidebars,
+.sidebar {
+	color: #111;
+}
+
 #main_bg,
 #sidebars_bg,
 .sidebar_bg {
 	background-color: #fff;
-	color: #111;
 }
 
 h2.widget_title {
