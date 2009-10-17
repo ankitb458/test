@@ -823,11 +823,8 @@ p.newsletter_fields {
 
 /* banner ad widgets */
 
-.ad_unit,
 .ad_unit .header_widget_bg,
-.ad_unit .footer_widget_bg,
-.ad_unit .main_widget_bg,
-.ad_unit .widget_bg {
+.ad_unit .footer_widget_bg {
 	background: none !important;
 	border: none !important;
 	-moz-border-radius: 0px !important;
@@ -839,18 +836,12 @@ p.newsletter_fields {
 .ad_unit .header_widget_top,
 .ad_unit .header_widget_bottom,
 .ad_unit .footer_widget_top,
-.ad_unit .footer_widget_bottom,
-.ad_unit .main_widget_top,
-.ad_unit .main_widget_bottom,
-.ad_unit .widget_top,
-.ad_unit .widget_bottom {
+.ad_unit .footer_widget_bottom {
 	background: none !important;
 	height: 0px !important;
 }
 
-.ad_unit .pad,
-.ad_unit .pad,
-.ad_unit .pad,
-.ad_unit .pad {
+.header_widget .ad_unit .pad,
+.footer_widget .ad_unit .pad {
 	padding: 0px;
 }
