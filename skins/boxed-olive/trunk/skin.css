@@ -59,6 +59,14 @@ Author uri: http://www.mesoconcepts.com
 	width: 741px;
 }
 
+.m #header_boxes .inline_box {
+	width: 309;
+}
+
+.mmm #header_boxes .inline_box {
+	width: 374px;
+}
+
 .mmm #header_boxes .inline_box {
 	width: 316px;
 }
