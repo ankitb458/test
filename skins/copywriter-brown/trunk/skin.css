@@ -154,6 +154,10 @@ Author uri: http://www.mesoconcepts.com
 	border-bottom: solid 1px;
 }
 
+#footer_wrapper {
+	border-bottom: solid 1px;
+}
+
 #footer {
 	padding-top: 10px;
 	padding-bottom: 10px;
@@ -369,6 +373,10 @@ h2.widget_title {
 html /* credits bottom */ {
 	background-color: #472707; /* S+10 L/2 */
 	color: #fff;
+}
+
+#footer_wrapper {
+	border-color: #472707; /* S+10 L/2 */
 }
 
 #footer a,
