@@ -155,7 +155,11 @@ Author uri: http://www.mesoconcepts.com
 	border-radius: 9px;
 }
 
-#main_bg,
+#main_bg {
+	padding-top: 5px;
+	padding-bottom: 1px;
+}
+
 #sidebars_bg,
 .sidebar_bg {
 	padding-top: 5px;
