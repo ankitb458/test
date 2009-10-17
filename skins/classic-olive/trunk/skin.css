@@ -1,5 +1,5 @@
 /*
-Skin name: Classic, Purple
+Skin name: Classic, Olive
 Skin uri: http://skins.semiologic.com/classic/
 Version: 0.9 RC
 Author: Denis de Bernardy
@@ -329,45 +329,45 @@ h2.widget_title {
 
 /*
  * Scheme Colors
- * H300 S90 L30
+ * H75 S75 L70
  */
 
 #sitename {
-	color: #5c005c; /* S100 L20 */
+	color: #283600; /* S100 L20 */
 }
 
 #navbar,
 .widget_calendar thead {
-	background-color: #7d0c7d; /* - */
-	color: #fff;
+	background-color: #95b82e; /* - */
+	color: #000;
 }
 
 #navbar a {
-	color: #fff;
+	color: #000;
 }
 
 #navbar,
 #go {
-	border-color: #470747; /* L/2 */
+	border-color: #495916; /* L/2 */
 }
 
 #header_boxes,
 .header_widget,
 .widget_calendar tfoot {
-	background-color: #fff2fc; /* A-S5 L97 */
+	background-color: #f7f7eb; /* A-S5 L97 */
 	color: #000;
 }
 
 #footer_wrapper,
 #footer_boxes {
-	background-color: #f7e0ff; /* A-S15 L92 */
+	background-color: #dbedca; /* A-S15 L92 */
 	color: #000;
 }
 
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #4a004a; /* S+10 L/2 */
+	background-color: #46590d; /* S+10 L/2 */
 	color: #fff;
 }
 
@@ -378,5 +378,5 @@ html /* credits bottom */ {
 
 #footer a:hover,
 #credits a:hover {
-	color: #fcd7fc; /* S15 L90 */
+	color: #dde5c3; /* S15 L90 */
 }
