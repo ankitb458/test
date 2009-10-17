@@ -166,6 +166,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 .entry_bg,
+.post_list,
 .main_widget_bg,
 .widget_bg {
 	background-image: url(images/body_bg.jpg);
@@ -233,6 +234,7 @@ h2.widget_title {
 }
 
 .entry_bg,
+.post_list,
 .main_widget_bg,
 .widget_bg {
 	background-color: #fff;
@@ -267,6 +269,7 @@ body,
 #header_boxes_bg,
 .header_widget_bg,
 .entry_bg,
+.post_list,
 .main_widget_bg,
 .widget_bg {
 	border-color: #bbb;
