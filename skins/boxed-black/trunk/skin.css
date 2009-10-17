@@ -228,23 +228,10 @@ h2.widget_title {
 	color: #000;
 }
 
-.main,
-.sidebar {
-	color: #111;
-}
-
-.entry_bg,
-.post_list,
-.main_widget_bg,
-.widget_bg {
-	background-color: #fff;
-}
-
 body,
 #body,
 #header_wrapper,
-#body_wrapper,
-.blog_footer {
+#body_wrapper {
 	background-color: #f7f7f7;
 	color: #111;
 }
@@ -273,6 +260,18 @@ body,
 .main_widget_bg,
 .widget_bg {
 	border-color: #bbb;
+}
+
+.main,
+.sidebar {
+	color: #111;
+}
+
+.entry_bg,
+.post_list,
+.main_widget_bg,
+.widget_bg {
+	background-color: #fff;
 }
 
 h2.widget_title {
