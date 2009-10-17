@@ -303,8 +303,7 @@ body,
 	border-color: #bbb;
 }
 
-#main,
-#sidebars,
+.main,
 .sidebar {
 	color: #111;
 }
