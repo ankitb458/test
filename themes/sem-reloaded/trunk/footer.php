@@ -217,13 +217,18 @@
 	
 	# footer
 	
-	if ( $active_layout != 'letter' ) :
+	if ( $active_layout != 'letter') :
 		
 		echo '<div id="footer_wrapper" class="wrapper">' . "\n";
 		
-		echo '<div id="footer_split"><div class="hidden"></div></div>' . "\n";
-
+		$did_footer = false;
+		$did_top_split = false;
+		$did_bottom_split = false;
+		
 		sem_panels::display('the_footer');
+		
+		if ( $did_bottom_split || $did_top_split && !$did_footer )
+			echo '<div id="bottom_split"><div class="hidden"></div></div>' . "\n";
 		
 		echo '</div>' . "\n";
 		

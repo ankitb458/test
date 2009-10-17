@@ -41,9 +41,20 @@ echo '<div id="wrapper_bg">' . "\n";
 		
 		echo '<div id="header_wrapper" class="wrapper">' . "\n";
 		
+		$did_header = false;
+		$did_navbar = false;
+		$did_top_split = false;
+		$did_middle_split = false;
+		$did_bottom_split = false;
+		
 		sem_panels::display('the_header');
 		
-		echo '<div id="body_split"><div class="hidden"></div></div>' . "\n";
+		if ( $did_bottom_split )
+			echo '<div id="body_split"><div class="hidden"></div></div>' . "\n";
+		elseif ( intval($did_header) > intval($did_navbar) )
+			echo '<div id="header_split"><div class="hidden"></div></div>' . "\n";
+		elseif ( intval($did_header) < intval($did_navbar) )
+			echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
 
 		echo '</div>' . "\n";
 		
