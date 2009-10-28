@@ -1,5 +1,5 @@
 /*
-Skin name: Classy, Beige
+Skin name: Classy, Brown
 Skin uri: http://skins.semiologic.com/classy/
 Version: 0.9 RC
 Author: Denis de Bernardy
@@ -313,7 +313,7 @@ h2.widget_title {
 
 /*
  * Scheme Colors
- * H30 S40 L80
+ * H30 S80 L30
  */
 
 html {
@@ -322,27 +322,27 @@ html {
 }
 
 #sitename {
-	color: #4d2600; /* S100 L20 */
+	color: #5c2e00; /* S100 L25 */
 }
 
 #navbar,
 .widget_calendar thead {
-	background-color: #ebbc8d; /* - */
-	color: #000;
+	background-color: #633c14; /* - */
+	color: #fff;
 }
 
 #navbar a {
-	color: #000;
+	color: #fff;
 }
 
 #navbar_bg,
 #go {
-	border-color: #705b43; /* L/2 */
+	border-color: #36200b; /* L/2 */
 }
 
 #wrapper,
 .widget_calendar thead {
-	border-color: #707070; /* L/2 S0 */
+	border-color: #363636; /* L/2 S0 */
 }
 
 #header_boxes,
