@@ -18,26 +18,25 @@ Author uri: http://www.mesoconcepts.com
 .skin #wrapper,
 .skin #header,
 .skin #navbar,
-.skin #header_wrapper,
-.skin #footer_wrapper,
 .skin #body,
 .skin #credits,
 #footer_wrapper .wrapper {
 	width: 100%;
 }
 
-.mmm #navbar_bg,
-.mmm #credits_bg {
+#navbar_bg {
+	margin: 0px auto;
+}
+
+.mmm #navbar_bg {
 	width: 952px;
 }
 
-.mm #navbar_bg,
-.mm #credits_bg {
+.mm #navbar_bg {
 	width: 752px;
 }
 
-.m #navbar_bg,
-.m #credits_bg {
+.m #navbar_bg {
 	width: 622px;
 }
 
@@ -59,18 +58,6 @@ Author uri: http://www.mesoconcepts.com
 	width: 741px;
 }
 
-.m #header_boxes .inline_box {
-	width: 309;
-}
-
-.mmm #header_boxes .inline_box {
-	width: 374px;
-}
-
-.mmm #header_boxes .inline_box {
-	width: 316px;
-}
-
 .main .pad {
 	padding: 0px;
 }
@@ -87,17 +74,26 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #navbar .pad {
-	padding: 0px 2px;
+	padding: 0px 1px;
+}
+
+#header {
+	background-image: url(images/header.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
 }
 
 #navbar {
 	background-image: url(images/navbar.jpg);
-	border-top: solid 1px;
+	background-position: top center;
+	background-repeat: repeat;
 	border-bottom: solid 1px;
 }
 
 #navbar_bg {
 	background-image: url(images/navbar_bg.jpg);
+	background-position: top left;
+	background-repeat: repeat-y;
 }
 
 #navbar span {
@@ -109,50 +105,50 @@ Author uri: http://www.mesoconcepts.com
 
 #navbar a {
 	background-image: url(images/navbar_bg.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
 	display: block;
 	float: left;
-	padding-left: 17px;
-	padding-right: 19px;
+	padding-left: 18px;
+	padding-right: 20px;
 	margin: 0px;
 }
 
 #navbar a:hover,
 #navbar span.nav_active {
 	background-image: url(images/navbar_active.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
 }
 
 #navbar span.nav_active {
 	font-weight: normal;
-	padding-left: 17px;
-	padding-right: 19px;
+	padding-left: 18px;
+	padding-right: 20px;
 	margin: 0px;
 }
 
 #navbar span.nav_active a {
-	margin-left: -17px;
-	margin-right: -19px;
+	margin-left: -18px;
+	margin-right: -20px;
 	background: none;
 }
 
-#top_split {
+#header,
+#header_top_wrapper,
+#header_middle_wrapper {
+	border-bottom: solid 1px;
+}
+
+#footer_top_wrapper,
+#footer_bottom_wrapper {
 	padding-top: 1px;
-}
-
-#pre_header_split,
-#header_split,
-#footer_split {
-	height: 3px;
-	border-top: solid 1px;
-	border-bottom: solid 1px;
-}
-
-#footer_wrapper {
-	border-bottom: solid 1px;
+	padding-bottom: 1px;
 }
 
 #footer {
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 #header_boxes_bg,
@@ -188,7 +184,6 @@ Author uri: http://www.mesoconcepts.com
 	padding-bottom: 5px;
 }
 
-.ad_unit .entry_bg,
 .ad_unit .main_widget_bg,
 .ad_unit .widget_bg,
 .blog_footer .main_widget_bg {
@@ -200,6 +195,7 @@ Author uri: http://www.mesoconcepts.com
 
 #footer_boxes {
 	background-image: url(images/footer_boxes.jpg);
+	background-position: center;
 	background-repeat: no-repeat;
 }
 
@@ -209,14 +205,29 @@ Author uri: http://www.mesoconcepts.com
 
 .entry,
 .main_widget,
-.widget,
-#top_split,
-#header_split,
-#navbar_split,
-#header_boxes,
-.header_widget {
+.widget {
 	margin-top: 0px;
 	margin-bottom: 18px;
+}
+
+#header_top_wrapper {
+	padding-top: 1px;
+}
+
+#header_boxes,
+.header_widget {
+	margin-top: 18px;
+	margin-bottom: 18px;
+}
+
+#body {
+	margin-top: 18px;
+}
+
+#body_bottom {
+	height: 3px;
+	border-top: solid 1px;
+	border-bottom: solid 1px;
 }
 
 #footer_boxes,
@@ -230,38 +241,30 @@ h2.widget_title {
 	border-bottom: solid 1px;
 }
 
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
 
 /*
  * Skin Colors
  */
 
-#header {
-	background-color: #fff;
-	color: #000;
-}
-
-body,
-#body,
-#header_wrapper,
-#body_wrapper {
+#wrapper,
+#body {
 	background-color: #f7f7f7;
 	color: #111;
 }
 
-#pre_header_split,
-#header_split,
-#footer_split {
-	background-color: #ddd;
+h1, h2 {
 	color: #000;
-	border-color: #bbb;
 }
 
-#header_split {
-	border-top-color: #999;
-}
-
-#pre_header_split,
-#footer_split {
+#body_bottom {
+	background-color: #ddd;
+	border-top-color: #aaa;
 	border-bottom-color: #999;
 }
 
@@ -270,13 +273,11 @@ body,
 .entry_bg,
 .post_list,
 .main_widget_bg,
-.widget_bg {
-	border-color: #bbb;
-}
-
-.main,
-.sidebar {
-	color: #111;
+.widget_bg,
+h2.widget_title,
+.widget_calendar table,
+.widget_calendar tfoot {
+	border-color: #aaa;
 }
 
 .entry_bg,
@@ -286,23 +287,24 @@ body,
 	background-color: #fff;
 }
 
-h2.widget_title {
-	border-color: #bbb;
-}
-
 
 /*
  * Scheme Colors
- * H- S0 L12
+ * H- S0 L15
  */
 
+#header {
+	background-color: #e8e8e8; /* A-S10 L92 */
+	color: #000;
+}
+
 #sitename {
-	color: #121212; /* S100 L25 */
+	color: #000; /* S100 L25 */
 }
 
 #navbar,
 .widget_calendar thead {
-	background-color: #1f1f1f; /* - */
+	background-color: #262626; /* - */
 	color: #fff;
 }
 
@@ -312,18 +314,24 @@ h2.widget_title {
 
 #navbar,
 #go {
-	border-color: #121212; /* L/2 */
+	border-color: #151515; /* L/2 */
 }
 
-#header_boxes,
-.header_widget,
+#header,
+#header_top_wrapper,
+#header_middle_wrapper,
+.widget_calendar thead {
+	border-color: #151515; /* L/2 S0 */
+}
+
+#header_boxes_bg,
+.header_widget_bg,
 .widget_calendar tfoot {
 	background-color: #f6f6f6; /* A-S5 L97 */
 	color: #000;
 }
 
-#footer_wrapper,
-#footer_boxes {
+#footer_wrapper {
 	background-color: #e8e8e8; /* A-S15 L92 */
 	color: #000;
 }
@@ -331,12 +339,8 @@ h2.widget_title {
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #121212; /* S+10 L/2 */
+	background-color: #1c1c1c; /* S+10 L*2/3 */
 	color: #fff;
-}
-
-#footer_wrapper {
-	border-color: #121212; /* S+10 L/2 */
 }
 
 #footer a,
