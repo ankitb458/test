@@ -239,6 +239,12 @@ EOS;
 			$custom = stripslashes_deep($_POST['custom']);
 
 			foreach ( $custom as $css => $vals ) {
+				if ( $css == 'extra' ) {
+					$custom['extra'] = stripslashes($_POST['custom']['extra']);
+					if ( empty($custom['extra']) )
+						unset($custom['extra']);
+					continue;
+				}
 				foreach ( $vals as $key => $val ) {
 					if ( empty($val) ) {
 						unset($custom[$css][$key]);
@@ -440,6 +446,12 @@ EOS;
 			|| is_object($wp_filesystem) && $wp_filesystem->errors->get_error_code() )
 			return;
 		
+		$custom = get_option('sem_custom');
+		$published_css = get_option('sem_custom_published');
+		$restore_css = is_array($published_css[$sem_options['active_skin']])
+			? $published_css[$sem_options['active_skin']]
+			: array();
+		
 		echo '<div class="wrap">' . "\n"
 			. '<form method="POST" action="themes.php?page=custom">' . "\n";
 		
@@ -498,14 +510,12 @@ EOS;
 				. '</a></li>'
 			. '<li class="button hide-if-no-js"><a href="#custom-tabs-footer">'
 				. __('Footer', 'sem-reloaded')
+				. '</a></li>'
+			. '<li class="button hide-if-no-js"><a href="#custom-tabs-extra">'
+				. __('Extra', 'sem-reloaded')
 				. '</a></li>';
 		
-		$published_css = get_option('sem_custom_published');
-		$restore_css = is_array($published_css[$sem_options['active_skin']])
-			? $published_css[$sem_options['active_skin']]
-			: array();
-		
-		if ( $restore_css && get_option('sem_custom') != $restore_css ) {
+		if ( $restore_css && $custom != $restore_css ) {
 			echo '<li class="submit">'
 				. '<input type="submit" name="restore" onclick="return confirm(\'' . esc_js(__('You are about to delete all changes you\'ve done since the last time you\'ve published. Please confirm to continue.', 'sem-reloaded')) . '\');" value="' . esc_attr(__('Restore', 'sem-reloaded')) . '" />'
 			. '</li>';
@@ -555,6 +565,208 @@ EOS;
 		echo '<h3>' . __('Footer Area', 'sem-reloaded') . '</h3>';
 		
 		sem_custom::edit_area('footer');
+		
+		echo '</div>' . "\n";
+		
+		
+		echo '<div id="custom-tabs-extra" class="clear">';
+		
+		echo '<h3>' . __('Extra CSS', 'sem-reloaded') . '</h3>';
+		
+		echo '<p>'
+			. __('Anything you want... You\'ll find a CSS cheat sheet below.', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		echo '<textarea name="custom[extra]" class="widefat code" rows="24">'
+			. esc_html(!empty($custom['extra']) ? $custom['extra'] : '')
+			. '</textarea>' . "\n";
+		
+		echo '<p class="submit">'
+			. '<input type="submit" value="' . esc_attr(__('Save Changes', 'sem-reloaded')) . '" />'
+			. '</p>' . "\n";
+		
+		echo '<h3>'
+			. __('Theme ID/Classes Cheat Sheet', 'sem-reloaded')
+			. '</h3>' . "\n";
+		
+		echo '<p>'
+			. __('The more commonly used CSS selectors in the Semiologic theme are indicated below, grouped by area. For more examples, please check the CSS code of the built-in skins.', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		echo <<<EOS
+<pre>
+- body, #wrapper, #wrapper_bg
+
+  - #header_wrapper
+
+    - #header_top_wrapper, #header_top_wrapper_bg
+
+      - #header_boxes, #header_boxes_bg
+
+        - #header_boxes h2
+
+      - .header_widget, .header_widget_bg
+
+        - .header_widget h2
+
+    - #header, #header_bg
+
+      - #sitename, #tagline
+
+    - #header_middle_wrapper, #header_middle_wrapper_bg
+
+      - #header_boxes, #header_boxes_bg
+
+        - #header_boxes h2
+
+      - .header_widget, .header_widget_bg
+
+        - .header_widget h2
+
+    - #navbar, #navbar_bg
+
+      - #navbar span
+      - #navbar a
+      - #navbar a:hover, #navbar span.nav_active
+
+    - #header_bottom_wrapper, #header_bottom_wrapper_bg
+
+      - #header_boxes, #header_boxes_bg
+
+        - #header_boxes h2
+
+      - .header_widget, .header_widget_bg
+
+        - .header_widget h2
+
+  - #body, #body_bg
+
+    - #main, #main_bg
+
+      - .entry, .entry_bg
+
+        - .entry_date
+        - .entry_header, .entry_header h1
+        - .entry_content
+        - .entry_categories
+        - .entry_tags
+        - .entry_comments
+
+      - .main_widget, .main_widget_bg
+
+        - .main_widget h2
+
+    - #sidebar, #sidebar2, .sidebar_bg
+
+      - .widget, .widget_bg, .mm1s .widget, .mm1s .widget_bg
+
+    - #sidebars, #sidebars_bg
+
+      - .wide_sidebar .widget, .wide_sidebar .widget_bg
+
+  - #footer_wrapper
+
+    - #footer_top_wrapper, #footer_top_wrapper_bg
+
+      - #footer_boxes, #footer_boxes_bg
+
+      - .footer_widget, .footer_widget_bg
+
+    - #footer, #footer_bg
+
+      - #footer span
+      - #footer a
+      - #footer a:hover, #footer span.nav_active
+
+    - #footer_bottom_wrapper, #footer_bottom_wrapper_bg
+
+      - #footer_boxes, #footer_boxes_bg
+
+      - .footer_widget, .footer_widget_bg
+
+- html, #credits, #credits_bg
+</pre>
+EOS;
+		
+		echo '<h3>'
+			. __('CSS Cheat Sheet', 'sem-reloaded')
+			. '</h3>' . "\n";
+		
+		echo '<p>'
+			. __('Many users have some basic understanding of Stylesheets, but have no idea of what a <strong>Cascading</strong> Stylesheet might be. So here goes...', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. __('There are three basic types of selectors:', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		foreach ( array(
+			'p' => __('Affects all <p> tags, no matter where.', 'sem-reloaded'),
+			'.widget' => __('Affects anything in an area with the "widget" class, i.e. <div class="widget">. "Stronger" than the previous if declared after.', 'sem-reloaded'),
+			'#body' => __('Affects everything in the area with the "body" ID, i.e. <div id="body">. "Stronger" than the above two if declared after.', 'sem-reloaded'),
+			)
+			as $selector => $description ) {
+			$description = str_replace(array("\r\n", "\n", "\r"), "\n   * ", wordwrap(esc_attr($description), 80));
+			echo <<<EOS
+<pre>
+$selector {
+  /*
+   * $description
+   */
+}
+
+</pre>
+EOS;
+		}
+		
+		echo '<p>'
+			. __('They can be combined and cascaded:', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		foreach ( array(
+			'h2.widget_title' => __('Affects <h2 class="widget_title"> tags, i.e. sidebar widget titles. "Stronger" than the previous three (it\'s "more precise").', 'sem-reloaded'),
+			'div#sitename' => __('Affects <div id="sitename">, i.e. the site\'s name. "Stronger" than the previous (it\'s "more precise"), but generally useless since IDs are unique.', 'sem-reloaded'),
+			'.mm1s .widget' => __('Affects anything within an area with the "widget" class, itself within an area with the "mm1s" class, i.e. widgets when using a "Wide Content, Sidebar" layouts. "Stronger" than all of the above.'),
+			'#top_sidebar .widget' => __('Affects anything within an area with the "widget" class, itself within an area with the "top_sidebar" ID, i.e. widgets in the top sidebar when using a "Content, Wide Sidebar" layout. "Stronger" than the previous if declared after.'),
+			'.sidebar h2' => __('Affects <h2> tags within an area with the header_widget class, i.e. <h2> tags in sidebar widgets. "Stronger" than the previous if declared after.'),
+			)
+			as $selector => $description ) {
+			$description = str_replace(array("\r\n", "\n", "\r"), "\n   * ", wordwrap(esc_attr($description), 80));
+			echo <<<EOS
+<pre>
+$selector {
+  /*
+   * $description
+   */
+}
+
+</pre>
+EOS;
+		}
+		
+		echo '<p>'
+			. sprintf(__('There are, of course, many more <a href="%s">CSS selectors</a>, but they\'re not universally supported...', 'sem-reloaded'), 'http://kimblim.dk/css-tests/selectors/')
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. __('The gist, here, is to remember that the C in CSS stands for cascading and that CSS is applied on a &quot;last strongest declaration gets used&quot; basis (i.e. mind the order). `foo`, `.foo`, and `#foo` are interchangeable in CSS-compliant browsers; `foo.bar` is stronger than `foo`, and `foo bar` is even stronger. In other words, to affect a particular area, use `.foo` or `#foo`; to affect `bar` within a particular area, use `.foo bar` or `#foo bar`.')
+			. '</p>' . "\n";
+		
+		echo '<p>'
+			. __('In some rare cases, you may also need a knock-out declaration that overrides everything regardless of the order it\'s declared in. This is where the `!important` keyword, placed immediately before the semi-colon, comes in:', 'sem-reloaded')
+			. '</p>' . "\n";
+		
+		echo <<<EOS
+<pre>
+p {
+	line-height: 150% !important;
+}
+</pre>
+EOS;
+		
+		echo '<p>'
+			. __('The latter declaration overrides absolutely everything.', 'sem-reloaded')
+			. '</p>' . "\n";
 		
 		echo '</div>' . "\n";
 		
@@ -840,18 +1052,14 @@ EOS;
 	function get_fonts() {
 		return array(
 			'' =>  __('- Default Font Family -', 'sem-reloaded'),
-			'arial' => __('Arial, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'antica' => __('Book Antica, Times, Serif', 'sem-reloaded'),
-			'bookman' => __('Bookman Old Style, Times, Serif', 'sem-reloaded'),
-			'comic' => __('Comic Sans MS, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'courier' => __('Courier New, Courier, Monospace', 'sem-reloaded'),
-			'garamond' => __('Garamond, Times, Serif', 'sem-reloaded'),
-			'georgia' => __('Georgia, Times, Serif', 'sem-reloaded'),
-			'corsiva' => __('Monotype Corsiva, Courier, Monospace', 'sem-reloaded'),
-			'tahoma' => __('Tahoma, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'times' => __('Times New Roman, Times, Serif', 'sem-reloaded'),
-			'trebuchet' => __('Trebuchet MS, Tahoma, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'verdana' => __('Verdana, Helvetica, Sans-Serif', 'sem-reloaded'),
+			'arial' => __('Arial stack / Sans-Serif', 'sem-reloaded'),
+			'tahoma' => __('Tahoma stack / Sans-Serif', 'sem-reloaded'),
+			'trebuchet' => __('Trebuchet stack / Sans-Serif', 'sem-reloaded'),
+			'verdana' => __('Verdana stack / Sans-Serif', 'sem-reloaded'),
+			'antica' => __('Antica stack / Serif', 'sem-reloaded'),
+			'georgia' => __('Georgia stack / Serif', 'sem-reloaded'),
+			'times' => __('Times stack / Serif', 'sem-reloaded'),
+			'courier' => __('Courier stack / Monospace', 'sem-reloaded'),
 			);
 	} # get_fonts()
 	
@@ -912,18 +1120,14 @@ EOS;
 		$custom = get_option('sem_custom');
 		
 		$font_families = array(
-			'arial' => 'Arial, Helvetica, Sans-Serif',
-			'antica' => '"Book Antica", Times, Serif',
-			'bookman' => '"Bookman Old Style", Times, Serif',
-			'comic' => '"Comic Sans MS", Helvetica, Sans-Serif',
-			'courier' => '"Courier New", Courier, Monospace',
-			'garamond' => 'Garamond, Times, Serif',
-			'georgia' => 'Georgia, Times, Serif',
-			'corsiva' => '"Monotype Corsiva", Courier, Monospace',
-			'tahoma' => 'Tahoma, Helvetica, Sans-Serif',
-			'times' => '"Times New Roman", Times, Serif',
-			'trebuchet' => '"Trebuchet MS", Tahoma, Helvetica, Sans-Serif',
-			'verdana' => 'Verdana, Helvetica, Sans-Serif',
+			'arial' => '"Helvetica Neue", Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
+			'tahoma' => 'Frutiger, "Frutiger Linotype", Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
+			'trebuchet' => '"Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
+			'verdana' => 'Verdana, "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
+			'antica' => '"Palatino, "Book Antica", "Palatino Linotype", "URW Palladio L", Palladio, Georgia, "DejaVu Serif", Serif',
+			'georgia' => 'Georgia, "New Century Schoolbook", "Century Schoolbook L", "DejaVu Serif", Serif',
+			'times' => '"Times New Roman", Times, "Liberation Serif", "DejaVu Serif Condensed", Serif',
+			'courier' => '"Courier New", "Liberation Mono", "Nimbus Mono L", Monospace',
 			);
 		$font_sizes = array();
 		for ( $i = 9; $i <= 24; $i++ )
@@ -942,6 +1146,8 @@ EOS;
 			);
 		
 		foreach ( $custom as $pointer => $defs ) {
+			if ( $pointer == 'extra' )
+				continue;
 			foreach ( $defs as $k => $v ) {
 				switch ( $k ) {
 				case 'font_family':
@@ -1053,6 +1259,9 @@ EOS;
 			
 			$o .= '}' . "\n\n";
 		}
+		
+		if ( !empty($custom['extra']) )
+			$o .= $custom['extra'] . "\n\n";
 		
 		return rtrim($o);
 	} # get_css()
