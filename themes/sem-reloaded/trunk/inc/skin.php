@@ -66,70 +66,47 @@ class sem_skin {
 	border-right: none;
 }
 
-.skin {
-	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
-	font-size: 14px;
-}
-
-.antica {
-	font-family: "Book Antica", Times, Serif;
-	font-size: 14px;
-}
-
 .arial {
-	font-family: Arial, Helvetica, Sans-Serif;
-	font-size: 14px;
-}
-
-.bookman {
-	font-family: "Bookman Old Style", Times, Serif;
-	font-size: 14px;
-}
-
-.comic {
-	font-family: "Comic Sans MS", Helvetica, Sans-Serif;
-	font-size: 14px;
-}
-
-.corsiva {
-	font-family: "Monotype Corsiva", Courier, Monospace;
-	font-size: 14px;
-}
-
-.courier {
-	font-family: "Courier New", Courier, Monospace;
-	font-size: 14px;
-}
-
-.garamond {
-	font-family: Garamond, Times, Serif;
-	font-size: 14px;
-}
-
-.georgia {
-	font-family: Georgia, Times, Serif;
+	font-family: "Helvetica Neue", Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
 	font-size: 14px;
 }
 
 .tahoma {
-	font-family: Tahoma, Helvetica, Sans-Serif;
-	font-size: 14px;
-}
-
-.times {
-	font-family: "Times New Roman", Times, Serif;
+	font-family: Frutiger, "Frutiger Linotype", Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
 	font-size: 14px;
 }
 
 .trebuchet {
-	font-family: "Trebuchet MS", Tahoma, Helvetica, Sans-Serif;
+	font-family: "Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
 	font-size: 14px;
 }
 
 .verdana {
-	font-family: Verdana, Helvetica, Sans-Serif;
+	font-family: Verdana, "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
 	font-size: 14px;
 }
+
+.antica,
+.bookman {
+	font-family: Palatino, "Book Antica", "Palatino Linotype", "URW Palladio L", Palladio, Georgia, "DejaVu Serif", Serif;
+	font-size: 14px;
+}
+
+.georgia {
+	font-family: Georgia, "New Century Schoolbook", "Century Schoolbook L", "DejaVu Serif", Serif;
+	font-size: 14px;
+}
+
+.times {
+	font-family: "Times New Roman", Times, "Liberation Serif", "DejaVu Serif Condensed", Serif;
+	font-size: 14px;
+}
+
+.courier {
+	font-family: "Courier New", "Liberation Mono", "Nimbus Mono L", Monospace;
+	font-size: 14px;
+}
+
 </style>
 
 <script type="text/javascript">
@@ -220,7 +197,7 @@ EOS;
 		
 		echo '<h4>' . sprintf($title, $name, $details['version'], $author) . '</h4>';
 		
-		$font = '<span class="' . $sem_options['active_font'] . '">'
+		$font = '<span class="' . esc_attr($sem_options['active_font']) . '">'
 			. $fonts[$sem_options['active_font']]
 			. '</span>';
 		
@@ -349,7 +326,7 @@ EOS;
 		echo '<ul>' . "\n";
 		
 		foreach ( $fonts as $k => $v ) {
-			echo '<li class="' . ( $k ? $k : 'skin' ) . '">'
+			echo '<li class="' . esc_attr($k) . '">'
 				. '<label>'
 				. '<input type="radio" name="font" value="' . $k . '"'
 					. checked($sem_options['active_font'], $k, false)
@@ -440,19 +417,15 @@ EOS;
 
 	function get_fonts() {
 		return array(
-			'' =>  __('The skin\'s default', 'sem-reloaded'),
-			'arial' => __('Arial, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'antica' => __('Book Antica, Times, Serif', 'sem-reloaded'),
-			'bookman' => __('Bookman Old Style, Times, Serif', 'sem-reloaded'),
-			'comic' => __('Comic Sans MS, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'courier' => __('Courier New, Courier, Monospace', 'sem-reloaded'),
-			'garamond' => __('Garamond, Times, Serif', 'sem-reloaded'),
-			'georgia' => __('Georgia, Times, Serif', 'sem-reloaded'),
-			'corsiva' => __('Monotype Corsiva, Courier, Monospace', 'sem-reloaded'),
-			'tahoma' => __('Tahoma, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'times' => __('Times New Roman, Times, Serif', 'sem-reloaded'),
-			'trebuchet' => __('Trebuchet MS, Tahoma, Helvetica, Sans-Serif', 'sem-reloaded'),
-			'verdana' => __('Verdana, Helvetica, Sans-Serif', 'sem-reloaded'),
+			'' =>  __('The skin\'s default stack', 'sem-reloaded'),
+			'arial' => __('Arial stack: "Helvetica Neue", Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
+			'tahoma' => __('Tahoma stack: Frutiger, "Frutiger Linotype", Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
+			'trebuchet' =>  __('Trebuchet stack: "Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
+			'verdana' =>  __('Verdana stack: Verdana, "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
+			'antica' => __('Antica stack: Palatino, "Book Antica", "Palatino Linotype", "URW Palladio L", Palladio, Georgia, "DejaVu Serif", Serif', 'sem-reloaded'),
+			'georgia' => __('Georgia stack: Georgia, "New Century Schoolbook", "Century Schoolbook L", "DejaVu Serif", Serif', 'sem-reloaded'),
+			'times' => __('Times stack: "Times New Roman", Times, "Liberation Serif", "DejaVu Serif Condensed", Serif', 'sem-reloaded'),
+			'courier' => __('Courier stack: "Courier New", "Liberation Mono", "Nimbus Mono L", Monospace', 'sem-reloaded'),
 			);
 	} # get_fonts()
 } # sem_skin

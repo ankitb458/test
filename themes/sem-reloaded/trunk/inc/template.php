@@ -505,9 +505,9 @@ class sem_template {
 		
 		global $did_header;
 		global $did_navbar;
-		global $did_top_split;
-		global $did_middle_split;
-		global $did_bottom_split;
+		global $did_top_widgets;
+		global $did_middle_widgets;
+		global $did_bottom_widgets;
 		
 		global $wp_registered_widgets;
 		$widget_id = $params[0]['widget_id'];
@@ -518,6 +518,11 @@ class sem_template {
 				$instance = $instance[$wp_registered_widgets[$widget_id]['callback'][0]->number];
 				if ( apply_filters('widget_display_callback', $instance, $wp_registered_widgets[$widget_id]['callback'][0], $params) === false )
 					return $params;
+				
+				if ( is_a($wp_registered_widgets[$widget_id]['callback'][0], 'header_boxes') ) {
+					if ( !is_active_sidebar('the_header_boxes') )
+						return $params;
+				}
 			}
 		} else {
 			$type = $wp_registered_widgets[$widget_id]['callback'];
@@ -526,56 +531,39 @@ class sem_template {
 		switch ( $type ) {
 		case 'header':
 			if ( $did_navbar ) {
-				if ( $did_middle_split ) {
-					echo '<div id="pre_header_split"><div class="hidden"></div></div>' . "\n";
-				
-				}
+				if ( $did_middle_widgets )
+					echo '</div></div>' . "\n";
 			} else {
-				if ( $did_top_split ) {
-					echo '<div id="pre_header_split"><div class="hidden"></div></div>' . "\n";
-				}
+				if ( $did_top_widgets )
+					echo '</div></div>' . "\n";
 			}
 			break;
 		
 		case 'navbar':
 			if ( $did_header ) {
-				if ( $did_middle_split ) {
-					echo '<div id="pre_navbar_split"><div class="hidden"></div></div>' . "\n";
-			
-				}
+				if ( $did_middle_widgets )
+					echo '</div></div>' . "\n";
 			} else {
-				if ( $did_top_split ) {
-					echo '<div id="pre_navbar_split"><div class="hidden"></div></div>' . "\n";
-				}
+				if ( $did_top_widgets )
+					echo '</div></div>' . "\n";
 			}
 			break;
 		
 		default:
 			if ( !$did_header && !$did_navbar ) {
-				if ( !$did_top_split ) {
-					if ( $did_navbar ) {
-						echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
-					} else {
-						echo '<div id="top_split"><div class="hidden"></div></div>' . "\n";
-					}
-					$did_top_split = true;
+				if ( !$did_top_widgets ) {
+					echo '<div id="header_top_wrapper"><div id="header_top_wrapper_bg">' . "\n";
+					$did_top_widgets = true;
 				}
 			} elseif ( $did_header && $did_navbar ) {
-				if ( !$did_bottom_split ) {
-					if ( intval($did_navbar) < intval($did_header) )
-						echo '<div id="header_split"><div class="hidden"></div></div>' . "\n";
-					else
-						echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
-					$did_bottom_split = true;
+				if ( !$did_bottom_widgets ) {
+					echo '<div id="header_bottom_wrapper"><div id="header_bottom_wrapper_bg">' . "\n";
+					$did_bottom_widgets = true;
 				}
 			} else {
-				if ( !$did_middle_split ) {
-					if ( !$did_header ) {
-							echo '<div id="navbar_split"><div class="hidden"></div></div>' . "\n";
-					} else {
-							echo '<div id="header_split"><div class="hidden"></div></div>' . "\n";
-					}
-					$did_middle_split = true;
+				if ( !$did_middle_widgets ) {
+					echo '<div id="header_middle_wrapper"><div id="header_middle_wrapper_bg">' . "\n";
+					$did_middle_widgets = true;
 				}
 			}
 			break;
@@ -597,8 +585,8 @@ class sem_template {
 			return $params;
 		
 		global $did_footer;
-		global $did_top_split;
-		global $did_bottom_split;
+		global $did_top_widgets;
+		global $did_bottom_widgets;
 		
 		global $wp_registered_widgets;
 		$widget_id = $params[0]['widget_id'];
@@ -609,6 +597,11 @@ class sem_template {
 				$instance = $instance[$wp_registered_widgets[$widget_id]['callback'][0]->number];
 				if ( apply_filters('widget_display_callback', $instance, $wp_registered_widgets[$widget_id]['callback'][0], $params) === false )
 					return $params;
+				
+				if ( is_a($wp_registered_widgets[$widget_id]['callback'][0], 'footer_boxes') ) {
+					if ( !is_active_sidebar('the_footer_boxes') )
+						return $params;
+				}
 			}
 		} else {
 			$type = $wp_registered_widgets[$widget_id]['callback'];
@@ -616,23 +609,21 @@ class sem_template {
 		
 		switch ( $type ) {
 		case 'footer':
-			if ( $did_top_split ) {
-				echo '<div id="footer_boxes_split"><div class="hidden"></div></div>' . "\n";
-			} else {
-				echo '<div id="footer_split"><div class="hidden"></div></div>' . "\n";
+			if ( $did_top_widgets ) {
+				echo '</div></div>' . "\n";
 			}
 			break;
 		
 		default:
 			if ( !$did_footer ) {
-				if ( !$did_top_split ) {
-					echo '<div id="footer_split"><div class="hidden"></div></div>' . "\n";
-					$did_top_split = true;
+				if ( !$did_top_widgets ) {
+					echo '<div id="footer_top_wrapper"><div id="footer_top_wrapper_bg">' . "\n";
+					$did_top_widgets = true;
 				}
 			} else {
-				if ( !$did_bottom_split ) {
-					echo '<div id="pre_bottom_split"><div class="hidden"></div></div>' . "\n";
-					$did_bottom_split = true;
+				if ( !$did_bottom_widgets ) {
+					echo '<div id="footer_bottom_wrapper"><div id="footer_bottom_wrapper_bg">' . "\n";
+					$did_bottom_widgets = true;
 				}
 			}
 			break;

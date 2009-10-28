@@ -215,13 +215,67 @@ class sem_panels {
 			break;
 		case 'top_sidebar':
 		case 'bottom_sidebar':
-		case 'the_header':
 		case 'before_the_entries':
 		case 'after_the_entries':
-		case 'the_footer':
 		case 'the_404':
 		case 'the_entry':
 			dynamic_sidebar($panel_id);
+			break;
+		case 'the_header':
+			if ( !is_active_sidebar($panel_id) )
+			 	break;
+			
+			global $did_header;
+			global $did_navbar;
+			global $did_top_widgets;
+			global $did_middle_widgets;
+			global $did_bottom_widgets;
+			
+			echo '<div id="header_wrapper">' . "\n";
+			
+			$did_header = false;
+			$did_navbar = false;
+			$did_top_widgets = false;
+			$did_middle_widgets = false;
+			$did_bottom_widgets = false;
+			
+			dynamic_sidebar($panel_id);
+			
+			if ( !$did_header && !$did_navbar && $did_top_widgets ) {
+				echo '</div></div>' . "\n";
+			} elseif ( $did_header && $did_navbar && $did_bottom_widgets ) {
+				echo '</div></div>' . "\n";
+			} elseif ( !( $did_header && $did_navbar ) && $did_middle_widgets ) {
+				echo '</div></div>' . "\n";
+			}
+			
+			echo '</div>' . "\n";
+			
+			break;
+		case 'the_footer':
+			if ( !is_active_sidebar($panel_id) )
+			 	break;
+			
+			global $did_footer;
+			global $did_top_widgets;
+			global $did_bottom_widgets;
+			
+			echo '<div id="footer_wrapper">' . "\n";
+			
+			$did_top_widgets = false;
+			$did_footer = false;
+			$did_bottom_widgets = false;
+			
+			dynamic_sidebar($panel_id);
+			
+			if ( !$did_footer && $did_top_widgets ) {
+				echo '</div></div>' . "\n";
+			} elseif ( $did_bottom_widgets ) {
+				echo '</div></div>' . "\n";
+			}
+			
+			echo '</div>' . "\n";
+			
 			break;
 		case 'the_header_boxes':
 		case 'the_footer_boxes':
@@ -235,12 +289,15 @@ class sem_panels {
 				. '<div id="' . $class . '_top" class="inline_boxes_top"><div class="hidden"></div></div>' . "\n"
 				. '<div id="' . $class . '_bg" class="inline_boxes_bg">' . "\n"
 				. '<div class="wrapper_item">' . "\n";
+			
 			dynamic_sidebar($panel_id);
+			
 			echo '<div class="spacer"></div>' . "\n"
 				. '</div>' . "\n"
 				. '</div>' . "\n"
 				. '<div id="' . $class . '_bottom" class="inline_boxes_bottom"><div class="hidden"></div></div>' . "\n"
 				. '</div><!-- ' . $class . ' -->' . "\n";
+			
 			break;
 		}
 	} # display()
