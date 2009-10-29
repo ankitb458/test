@@ -1,7 +1,7 @@
 <?php
-if ( 5 >= $GLOBALS['dd32_version'] && !class_exists('DD32') ) {
+if ( 3 >= $GLOBALS['dd32_version'] && !class_exists('DD32') ) {
 class DD32 {
-	var $version = 5;
+	var $version = 3;
 	function DD32() {
 		
 	}
@@ -11,9 +11,9 @@ class DD32 {
 	
 		$folder = untrailingslashit($folder);
 	
-		$defaults = array( 'pattern' => '', 'levels' => 100, 'relative' => false );
+		$defaults = array( 'pattern' => '', 'levels' => 100, 'relative' => '' );
 		$r = wp_parse_args($args, $defaults);
-
+	
 		extract($r, EXTR_SKIP);
 		
 		//Now for recursive calls, clear relative, we'll handle it, and decrease the levels.
@@ -25,9 +25,6 @@ class DD32 {
 		
 		if ( ! is_readable($folder) )
 			return false;
-
-		if ( true === $relative )
-			$relative = $folder;
 	
 		$files = array();
 		if ( $dir = @opendir( $folder ) ) {
@@ -66,9 +63,10 @@ class DD32 {
 
 	//Function adds a list of changes after the plugin in the plugins table.
 	function add_changelog($plugin, $url) {
-		add_action("after_plugin_row_$plugin", create_function('$file, $data', 'DD32::add_changelog_rows("' . $plugin .'", "' . $url . '", $data);'), 10, 2);
+		add_action("after_plugin_row_$plugin", create_function('$data', 'DD32::add_changelog_rows("' . $plugin .'", "' . $url . '", $data);'), 10, 2);
 	}
 	function add_changelog_rows($plugin, $url, $plugin_data) {
+
 		if ( false === get_option('dd32_changelogs', false) )
 			add_option('dd32_changelogs', array(), '', 'no'); //Add a no-auto-load option.
 

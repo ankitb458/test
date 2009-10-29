@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Add From Server
-Version: 2.1
+Version: 2.2.1
 Plugin URI: http://dd32.id.au/wordpress-plugins/add-from-server/
 Description: Plugin to allow the Media Manager to add files from the webservers filesystem. <strong>Note:</strong> All files are copied to the uploads directory.
 Author: Dion Hulse
@@ -14,7 +14,7 @@ class add_from_server {
 	var $dd32_requires = 2;
 	var $basename = '';
 	var $folder = '';
-	var $version = '2.1';
+	var $version = '2.2.1';
 	
 	function add_from_server() {
 		//Set the directory of the plugin:
@@ -49,7 +49,7 @@ class add_from_server {
 		add_action('media_upload_server', array(&$this, 'add_head_files') );
 
 		DD32::add_configure($this->basename, __('Add From Server', 'add-from-server'), admin_url('media-new.php?page=add-from-server'));
-		DD32::add_changelog($this->basename, 'http://svn.wp-plugins.org/add-from-server/trunk/readme.txt');
+		//DD32::add_changelog($this->basename, 'http://svn.wp-plugins.org/add-from-server/trunk/readme.txt');
 
 		//Add actions/filters
 		add_filter('media_upload_tabs', array(&$this, 'tabs'));
@@ -57,7 +57,7 @@ class add_from_server {
 	}
 
 	function admin_menu() {
-		add_media_page( __('Add From Server', 'add-from-server'), __('Add From Server', 'add-from-server'), 'unfiltered_upload', 'add-from-server', array(&$this, 'menu_page') );
+		add_media_page( __('Add From Server', 'add-from-server'), __('Add From Server', 'add-from-server'), 'upload_files', 'add-from-server', array(&$this, 'menu_page') );
 	}
 
 	function deactivate(){
@@ -66,7 +66,7 @@ class add_from_server {
 
 	//Add a tab to the media uploader:
 	function tabs($tabs) {
-		if( current_user_can( 'unfiltered_upload' ) )
+		if( current_user_can( 'upload_files' ) )
 			$tabs['server'] = __('Add From Server', 'add-from-server');
 		return $tabs;
 	}
@@ -82,7 +82,7 @@ class add_from_server {
 
 	//Handle the actual page:
 	function tab_handler(){
-		if( ! current_user_can( 'unfiltered_upload' ) )
+		if( ! current_user_can( 'upload_files' ) )
 			return;
 
 		//Set the body ID
@@ -105,7 +105,7 @@ class add_from_server {
 	}
 	
 	function menu_page() {
-		if( ! current_user_can( 'unfiltered_upload' ) )
+		if( ! current_user_can( 'upload_files' ) )
 			return;
 
 		echo '<div class="wrap">';
@@ -119,8 +119,9 @@ class add_from_server {
 
 		//Do the content
 		$this->main_content();
-
+		
 		echo '</div>';
+
 	}
 
 	//Handle the imports
@@ -140,7 +141,7 @@ class add_from_server {
 				$filename = $cwd . $file;
 				$id = $this->handle_import_file($filename, $post_id);
 				if ( is_wp_error($id) ) {
-					echo '<div class="updated error"><p>' . sprintf(__('<em>%s</em> was <strong>not</strong> imported due to an error: %s', 'add-from-server'), $file, $id) . '</p></div>';
+					echo '<div class="updated error"><p>' . sprintf(__('<em>%s</em> was <strong>not</strong> imported due to an error: %s', 'add-from-server'), $file, $id->get_error_message() ) . '</p></div>';
 				} else {
 					//increment the gallery count
 					if ( $import_to_gallery )
@@ -167,6 +168,9 @@ class add_from_server {
 		$wp_filetype = wp_check_filetype( $file, null );
 
 		extract( $wp_filetype );
+		
+		if ( ( !$type || !$ext ) && !current_user_can( 'unfiltered_upload' ) )
+			return new WP_Error('wrong_file_type', __( 'File type does not meet security guidelines. Try another.' ) ); //A WP-core string..
 
 		//Is the file allready in the uploads folder?
 		if( preg_match('|^' . preg_quote(str_replace('\\', '/', $uploads['basedir'])) . '(.*)$|i', $file, $mat) ) {
@@ -310,6 +314,7 @@ class add_from_server {
 			$quickjumps[] = array( __('WordPress Root', 'add-from-server'), ABSPATH );
 			if ( ( $uploads = wp_upload_dir() ) && false === $uploads['error'] )
 				$quickjumps[] = array( __('Uploads Folder', 'add-from-server'), $uploads['path']);
+			$quickjumps[] = array( __('Content Folder', 'add-from-server'), WP_CONTENT_DIR );
 
 			$quickjumps = apply_filters('frmsvr_quickjumps', $quickjumps);
 
