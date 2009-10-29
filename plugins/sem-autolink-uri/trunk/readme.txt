@@ -36,6 +36,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
+= 2.0.2 =
+
+- Avoid auto-linking background attributes
+
 = 2.0.1 =
 
 - Also catch urls with a parameter and no trailing slash

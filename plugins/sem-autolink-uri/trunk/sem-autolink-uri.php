@@ -3,7 +3,7 @@
 Plugin Name: Autolink URI
 Plugin URI: http://www.semiologic.com/software/autolink-uri/
 Description: Automatically wraps unhyperlinked uri with html anchors.
-Version: 2.0.1
+Version: 2.0.2
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-autolink-uri
@@ -147,7 +147,7 @@ class autolink_uri {
 				<\s*a\s.+?>.+?<\s*\/\s*a\s*>
 				/isx",
 			'tags' => "/
-				<[^<>]+?(?:src|href|codebase|archive|usemap|data|value|action)=[^<>]+?>
+				<[^<>]+?(?:src|href|codebase|archive|usemap|data|value|action|background)=[^<>]+?>
 				/ix",
 			) as $regex ) {
 			$text = preg_replace_callback($regex, array('autolink_uri', 'escape_callback'), $text);
