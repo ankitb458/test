@@ -19,7 +19,6 @@ Author uri: http://www.mesoconcepts.com
 .skin #header,
 .skin #navbar,
 .skin #body,
-.skin #credits,
 #footer_wrapper .wrapper {
 	width: 100%;
 }
@@ -85,12 +84,6 @@ Author uri: http://www.mesoconcepts.com
 	padding: 0px 1px;
 }
 
-#header {
-	background-image: url(images/header.jpg);
-	background-position: top center;
-	background-repeat: repeat-x;
-}
-
 #navbar {
 	background-image: url(images/navbar.jpg);
 	background-position: top center;
@@ -148,10 +141,21 @@ Author uri: http://www.mesoconcepts.com
 	border-bottom: solid 1px;
 }
 
+#header_top_wrapper {
+	padding-top: solid 1px;
+}
+
 #footer_top_wrapper,
 #footer_bottom_wrapper {
+	border-bottom: solid 1px;
+}
+
+#footer_bottom_wrapper {
+	border-top: 1px;
+}
+
+#footer_top_wrapper {
 	padding-top: 1px;
-	padding-bottom: 1px;
 }
 
 #footer {
@@ -194,6 +198,8 @@ Author uri: http://www.mesoconcepts.com
 	background-image: url(images/footer_boxes.jpg);
 	background-position: center;
 	background-repeat: no-repeat;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .mmm #footer_boxes {
@@ -205,10 +211,6 @@ Author uri: http://www.mesoconcepts.com
 .sidebar {
 	margin-top: 0px;
 	margin-bottom: 18px;
-}
-
-#header_top_wrapper {
-	padding-top: 1px;
 }
 
 #header_boxes,
@@ -227,7 +229,6 @@ Author uri: http://www.mesoconcepts.com
 	border-bottom: solid 1px;
 }
 
-#footer_boxes,
 .footer_widget {
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -284,22 +285,25 @@ h2.widget_title {
 
 #wrapper,
 #body {
-	background-color: #f7f7f7;
+	background-color: #eee;
 	color: #111;
 }
 
-h1, h2 {
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2 {
 	color: #000;
 }
 
-.entry_bottom {
-	background-color: #aaa;
+#body_bottom {
+	background-color: #ccc;
+	border-color: #999;
 }
 
-#body_bottom {
-	background-color: #ddd;
-	border-top-color: #aaa;
-	border-bottom-color: #999;
+.entry_bottom {
+	background-color: #999;
 }
 
 #header_boxes_bg,
@@ -310,7 +314,7 @@ h1, h2 {
 h2.widget_title,
 .widget_calendar table,
 .widget_calendar tfoot {
-	border-color: #aaa;
+	border-color: #999;
 }
 
 #main_bg,
@@ -322,65 +326,64 @@ h2.widget_title,
 
 /*
  * Scheme Colors
- * H45 S100 L80
+ * H45 S95 L80
  */
-
-#header {
-	background-color: #e8e8d1; /* A-S10 L92 */
-	color: #000;
-}
-
-#sitename {
-	color: #4a3700; /* S100 L25 */
-}
 
 #navbar,
 .widget_calendar thead {
-	background-color: #fabb00; /* - */
+	background-color: #f7bd0c; /* - */
 	color: #000;
-}
-
-#navbar a {
-	color: #000;
-}
-
-#navbar,
-#go {
-	border-color: #785a00; /* L/2 */
 }
 
 #header,
-#header_top_wrapper,
-#header_middle_wrapper,
-.widget_calendar thead {
-	border-color: #787878; /* L/2 S0 */
-}
-
-#header_boxes_bg,
-.header_widget_bg,
-.widget_calendar tfoot {
-	background-color: #fcf6f0; /* A-S5 L97 */
-	color: #000;
-}
-
 #footer_wrapper {
-	background-color: #ebebc7; /* A-S15 L92 */
+	background-color: #ffddad; /* AL+ L+10%r5 */
 	color: #000;
 }
 
 #footer,
 #credits,
 html /* credits bottom */ {
-	background-color: #9e7700; /* S+10 L*2/3 */
-	color: #fff;
+	background-color: #e5af0b; /* L-5 */
+	color: #000;
 }
 
-#footer a,
+#header_boxes_bg,
+.header_widget_bg {
+	background-color: #f2f5ff; /* C-S5 L97 */
+	color: #000;
+}
+
+.widget_calendar tfoot {
+	background-color: #faf5ed; /* AL+ S5 L97 */
+	color: #000;
+}
+
+#navbar a,
+#footer_wrapper a,
 #credits a {
-	color: #fff;
+	color: #000;
 }
 
-#footer a:hover,
+#footer_wrapper a:hover,
 #credits a:hover {
-	color: #ebe2c7; /* S15 L90 */
+	color: #2e2407; /* S/L 15/85 */
+}
+
+#header,
+#navbar,
+#go,
+#header_top_wrapper,
+#header_middle_wrapper,
+#footer_top_wrapper,
+#footer_bottom_wrapper {
+	border-color: #7a5d06; /* B/2 */
+}
+
+.widget_calendar thead {
+	border-color: #7a7a7a; /* B/2 S0 */
+}
+
+#body_bottom {
+	border-bottom-color: #7a7a7a; /* B/2 S0 */
 }
