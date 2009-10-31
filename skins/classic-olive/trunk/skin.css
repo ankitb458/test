@@ -20,10 +20,10 @@ html {
 #wrapper {
 	margin-top: 10px;
 	margin-bottom: 5px;
-	-moz-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-khtml-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-webkit-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	box-shadow: rgba(0,0,0,0.4) 0 0 5px;
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
 }
 
 #credits {
@@ -265,18 +265,22 @@ h2.widget_title {
 	color: #000;
 }
 
-h1, h2 {
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2 {
 	color: #000;
 }
 
 .widget_calendar table,
 .widget_calendar tfoot,
 h2.widget_title {
-	border-color: #aaa;
+	border-color: #999;
 }
 
 .entry_bottom {
-	background-color: #aaa;
+	background-color: #999;
 }
 
 
@@ -285,32 +289,56 @@ h2.widget_title {
  * H75 S75 L75
  */
 
-html {
-	background-color: #dfebd3; /* A-S10 L92 */
-	color: #111;
-}
-
-#sitename {
-	color: #304000; /* S100 L25 */
-}
-
 #navbar,
 .widget_calendar thead {
 	background-color: #a0c431; /* - */
 	color: #000;
 }
 
+html {
+	background-color: #f2edff; /* C-S10 L95 */
+	color: #111;
+}
+
+#header_wrapper,
+#footer_wrapper {
+	background-color: #f0f2da; /* AL-S10 L95 */
+	color: #000;
+}
+
+#footer {
+	background-color: #cbd9a3; /* S-25 L85 */
+	color: #000;
+}
+
+.widget_calendar tfoot {
+	background-color: #f0f2da; /* AL-S10 L95 */
+	color: #000;
+}
+
+#sitename {
+	color: #304000; /* S100 L25 */
+}
+
 #navbar a {
 	color: #000;
 }
 
-#navbar,
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #202906; /* S/L 15/85 */
+}
+
 #go {
-	border-color: #4c5c17; /* L/2 */
+	border-color: #4f6118; /* B/2 */
 }
 
 #wrapper,
 #header,
+#navbar,
 #header_top_wrapper,
 #header_middle_wrapper,
 #header_bottom_wrapper,
@@ -318,21 +346,5 @@ html {
 #footer_top_wrapper,
 #footer_bottom_wrapper,
 .widget_calendar thead {
-	border-color: #5c5c5c; /* L/2 S0 */
-}
-
-#header_wrapper,
-.widget_calendar tfoot,
-#footer_wrapper {
-	background-color: #f2f2da; /* A-S10 L95 */
-	color: #000;
-}
-
-#footer {
-	background-color: #cdd9a3; /* S-25 L85 */
-	color: #000;
-}
-
-#footer a {
-	color: #000;
+	border-color: #616161; /* B/2 S0 */
 }

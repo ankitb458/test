@@ -20,10 +20,10 @@ html {
 #wrapper {
 	margin-top: 10px;
 	margin-bottom: 5px;
-	-moz-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-khtml-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-webkit-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	box-shadow: rgba(0,0,0,0.4) 0 0 5px;
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
 }
 
 #credits {
@@ -265,18 +265,22 @@ h2.widget_title {
 	color: #000;
 }
 
-h1, h2 {
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2 {
 	color: #000;
 }
 
 .widget_calendar table,
 .widget_calendar tfoot,
 h2.widget_title {
-	border-color: #aaa;
+	border-color: #999;
 }
 
 .entry_bottom {
-	background-color: #aaa;
+	background-color: #999;
 }
 
 
@@ -285,46 +289,20 @@ h2.widget_title {
  * H180 S90 L50
  */
 
-html {
-	background-color: #daecf2; /* A-S10 L92 */
-	color: #111;
-}
-
-#sitename {
-	color: #074242; /* S100 L25 */
-}
-
 #navbar,
 .widget_calendar thead {
 	background-color: #0d8585; /* - */
 	color: #fff;
 }
 
-#navbar a {
-	color: #fff;
-}
-
-#navbar,
-#go {
-	border-color: #074242; /* L/2 */
-}
-
-#wrapper,
-#header,
-#header_top_wrapper,
-#header_middle_wrapper,
-#header_bottom_wrapper,
-#footer,
-#footer_top_wrapper,
-#footer_bottom_wrapper,
-.widget_calendar thead {
-	border-color: #424242; /* L/2 S0 */
+html {
+	background-color: #ffebeb; /* C-S10 L95 */
+	color: #111;
 }
 
 #header_wrapper,
-.widget_calendar tfoot,
 #footer_wrapper {
-	background-color: #dff7f1; /* A-S10 L95 */
+	background-color: #dcf5f3; /* AL-S10 L95 */
 	color: #000;
 }
 
@@ -333,6 +311,40 @@ html {
 	color: #000;
 }
 
+.widget_calendar tfoot {
+	background-color: #dcf5f3; /* AL-S10 L95 */
+	color: #000;
+}
+
+#sitename {
+	color: #004242; /* S100 L25 */
+}
+
+#navbar a {
+	color: #fff;
+}
+
 #footer a {
 	color: #000;
+}
+
+#footer a:hover {
+	color: #072b2b; /* S/L 15/85 */
+}
+
+#go {
+	border-color: #074242; /* B/2 */
+}
+
+#wrapper,
+#header,
+#navbar,
+#header_top_wrapper,
+#header_middle_wrapper,
+#header_bottom_wrapper,
+#footer,
+#footer_top_wrapper,
+#footer_bottom_wrapper,
+.widget_calendar thead {
+	border-color: #424242; /* B/2 S0 */
 }

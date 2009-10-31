@@ -20,10 +20,10 @@ html {
 #wrapper {
 	margin-top: 10px;
 	margin-bottom: 5px;
-	-moz-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-khtml-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-webkit-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	box-shadow: rgba(0,0,0,0.4) 0 0 5px;
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
 }
 
 #credits {
@@ -265,66 +265,44 @@ h2.widget_title {
 	color: #000;
 }
 
-h1, h2 {
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2 {
 	color: #000;
 }
 
 .widget_calendar table,
 .widget_calendar tfoot,
 h2.widget_title {
-	border-color: #aaa;
+	border-color: #999;
 }
 
 .entry_bottom {
-	background-color: #aaa;
+	background-color: #999;
 }
 
 
 /*
  * Scheme Colors
- * H- S0 L15
+ * H- S0 L12
  */
 
+#navbar,
+.widget_calendar thead {
+	background-color: #1f1f1f; /* - */
+	color: #fff;
+}
+
 html {
-	background-color: #e8e8e8; /* A-S10 L92 */
+	background-color: #f1f1f1; /* C-S10 L95 */
 	color: #111;
 }
 
-#sitename {
-	color: #000; /* S100 L25 */
-}
-
-#navbar,
-.widget_calendar thead {
-	background-color: #262626; /* - */
-	color: #fff;
-}
-
-#navbar a {
-	color: #fff;
-}
-
-#navbar,
-#go {
-	border-color: #141414; /* L/2 */
-}
-
-#wrapper,
-#header,
-#header_top_wrapper,
-#header_middle_wrapper,
-#header_bottom_wrapper,
-#footer,
-#footer_top_wrapper,
-#footer_bottom_wrapper,
-.widget_calendar thead {
-	border-color: #141414; /* L/2 S0 */
-}
-
 #header_wrapper,
-.widget_calendar tfoot,
 #footer_wrapper {
-	background-color: #f0f0f0; /* A-S10 L95 */
+	background-color: #f1f1f1; /* AL-S10 L95 */
 	color: #000;
 }
 
@@ -333,6 +311,40 @@ html {
 	color: #000;
 }
 
+.widget_calendar tfoot {
+	background-color: #f1f1f1; /* AL-S10 L95 */
+	color: #000;
+}
+
+#sitename {
+	color: #1f1f1f; /* S100 L25 */
+}
+
+#navbar a {
+	color: #fff;
+}
+
 #footer a {
 	color: #000;
+}
+
+#footer a:hover {
+	color: #262626; /* S/L 15/85 */
+}
+
+#go {
+	border-color: #0f0f0f; /* B/2 */
+}
+
+#wrapper,
+#header,
+#navbar,
+#header_top_wrapper,
+#header_middle_wrapper,
+#header_bottom_wrapper,
+#footer,
+#footer_top_wrapper,
+#footer_bottom_wrapper,
+.widget_calendar thead {
+	border-color: #0f0f0f; /* B/2 S0 */
 }

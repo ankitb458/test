@@ -20,10 +20,10 @@ html {
 #wrapper {
 	margin-top: 10px;
 	margin-bottom: 5px;
-	-moz-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-khtml-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	-webkit-box-shadow: rgba(0,0,0,0.4) 0 0 5px;
-	box-shadow: rgba(0,0,0,0.4) 0 0 5px;
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
 }
 
 #credits {
@@ -265,18 +265,22 @@ h2.widget_title {
 	color: #000;
 }
 
-h1, h2 {
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2 {
 	color: #000;
 }
 
 .widget_calendar table,
 .widget_calendar tfoot,
 h2.widget_title {
-	border-color: #aaa;
+	border-color: #999;
 }
 
 .entry_bottom {
-	background-color: #aaa;
+	background-color: #999;
 }
 
 
@@ -285,46 +289,20 @@ h2.widget_title {
  * H300 S90 L30
  */
 
+#navbar,
+.widget_calendar thead {
+	background-color: #800d80; /* - */
+	color: #fff;
+}
+
 html {
-	background-color: #f6e3fc; /* A-S10 L92 */
+	background-color: #dff7df; /* C-S10 L95 */
 	color: #111;
 }
 
-#sitename {
-	color: #6e006e; /* S100 L25 */
-}
-
-#navbar,
-.widget_calendar thead {
-	background-color: #7d0c7d; /* - */
-	color: #fff;
-}
-
-#navbar a {
-	color: #fff;
-}
-
-#navbar,
-#go {
-	border-color: #470747; /* L/2 */
-}
-
-#wrapper,
-#header,
-#header_top_wrapper,
-#header_middle_wrapper,
-#header_bottom_wrapper,
-#footer,
-#footer_top_wrapper,
-#footer_bottom_wrapper,
-.widget_calendar thead {
-	border-color: #474747; /* L/2 S0 */
-}
-
 #header_wrapper,
-.widget_calendar tfoot,
 #footer_wrapper {
-	background-color: #ffebfa; /* A-S10 L95 */
+	background-color: #ffebfd; /* AL-S10 L95 */
 	color: #000;
 }
 
@@ -333,6 +311,40 @@ html {
 	color: #000;
 }
 
+.widget_calendar tfoot {
+	background-color: #ffebfd; /* AL-S10 L95 */
+	color: #000;
+}
+
+#sitename {
+	color: #6e006e; /* S100 L25 */
+}
+
+#navbar a {
+	color: #fff;
+}
+
 #footer a {
 	color: #000;
+}
+
+#footer a:hover {
+	color: #450a45; /* S/L 15/85 */
+}
+
+#go {
+	border-color: #260426; /* B/2 */
+}
+
+#wrapper,
+#header,
+#navbar,
+#header_top_wrapper,
+#header_middle_wrapper,
+#header_bottom_wrapper,
+#footer,
+#footer_top_wrapper,
+#footer_bottom_wrapper,
+.widget_calendar thead {
+	border-color: #363636; /* B/2 S0 */
 }

@@ -337,7 +337,7 @@ h2.widget_title,
 
 #header,
 #footer_wrapper {
-	background-color: #d0de37; /* AL+ L+10%r5 */
+	background-color: #d0de37; /* AL L+10% */
 	color: #000;
 }
 
@@ -355,7 +355,7 @@ html /* credits bottom */ {
 }
 
 .widget_calendar tfoot {
-	background-color: #f6f7eb; /* AL+ S5 L97 */
+	background-color: #f0f2da; /* AL-S10 L95 */
 	color: #000;
 }
 
