@@ -24,6 +24,9 @@ html {
 	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
 	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
 	box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	background-image: url(images/pattern.png);
+	background-repeat: repeat;
+	background-position: top center;
 }
 
 #credits {
@@ -284,8 +287,10 @@ h2.widget_title {
  * Skin Colors
  */
 
-#wrapper,
-#body {
+.entry_bg,
+.post_list,
+#sidebars_bg,
+.sidebar_bg {
 	background-color: #fff;
 	color: #111;
 }
@@ -328,6 +333,11 @@ h2.widget_title {
 
 html {
 	background-color: #f2edff; /* C-S10 L95 */
+	color: #111;
+}
+
+#wrapper {
+	background-color: #fcfdff; /* A*L-S2 L99 */
 	color: #111;
 }
 

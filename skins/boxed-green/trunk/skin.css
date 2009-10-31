@@ -238,8 +238,19 @@ Author uri: http://www.mesoconcepts.com
 }
 
 h2.widget_title {
-	padding-bottom: 3px;
-	border-bottom: solid 1px;
+	margin-top: -6px;
+	margin-left: -19px;
+	margin-right: -19px;
+	padding: 5px 18px 3px;
+	border: solid 1px;
+	-moz-border-radius-topleft: 9px;
+	-moz-border-radius-topright: 9px;
+	-khtml-border-top-left-radius: 9px;
+	-khtml-border-top-right-radius: 9px;
+	-webkit-border-top-left-radius: 9px;
+	-webkit-border-top-right-radius: 9px;
+	border-top-left-radius: 9px;
+	border-top-right-radius: 9px;
 }
 
 .widget_calendar table,
@@ -278,7 +289,6 @@ h2.widget_title {
 .post_list,
 .main_widget_bg,
 .widget_bg,
-h2.widget_title,
 .widget_calendar table,
 .widget_calendar tfoot {
 	border-color: #999;
@@ -299,7 +309,8 @@ h2.widget_title,
  */
 
 #navbar,
-.widget_calendar thead {
+.widget_calendar thead,
+h2.widget_title {
 	background-color: #0b6e0b; /* - */
 	color: #fff;
 }
@@ -349,7 +360,8 @@ html /* credits bottom */ {
 	border-color: #053605; /* B/2 */
 }
 
-.widget_calendar thead {
+.widget_calendar thead,
+h2.widget_title {
 	border-color: #363636; /* B/2 S0 */
 }
 
