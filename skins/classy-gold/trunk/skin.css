@@ -299,7 +299,8 @@ h2.widget_title {
 .main h2,
 .main h3,
 .sidebar h1,
-.sidebar h2 {
+.sidebar h2,
+.widget_calendar caption {
 	color: #000;
 }
 
@@ -350,17 +351,17 @@ html {
 }
 
 #footer {
-	background-color: #e0d2a8; /* S-25 L85 */
+	background-color: #f0e1b4; /* S25 L90 */
 	color: #000;
 }
 
 .widget_calendar tfoot {
-	background-color: #faefe1; /* AL-S10 L95 */
+	background-color: #fff7de; /* L97 */
 	color: #000;
 }
 
 #sitename {
-	color: #4a3700; /* S100 L25 */
+	color: #3d2f03; /* L20 */
 }
 
 #navbar a {

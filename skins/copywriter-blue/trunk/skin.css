@@ -293,7 +293,8 @@ h2.widget_title {
 .main h2,
 .main h3,
 .sidebar h1,
-.sidebar h2 {
+.sidebar h2,
+.widget_calendar caption {
 	color: #000;
 }
 
@@ -337,7 +338,7 @@ h2.widget_title,
 
 #header,
 #footer_wrapper {
-	background-color: #1668db; /* AL L+10% */
+	background-color: #1574d4; /* L+20% */
 	color: #fff;
 }
 
@@ -355,7 +356,7 @@ html /* credits bottom */ {
 }
 
 .widget_calendar tfoot {
-	background-color: #e5f4ff; /* AL-S10 L95 */
+	background-color: #f2f9ff; /* L97 */
 	color: #000;
 }
 

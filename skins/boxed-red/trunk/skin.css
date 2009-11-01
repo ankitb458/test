@@ -274,7 +274,8 @@ h2.widget_title {
 .main h2,
 .main h3,
 .sidebar h1,
-.sidebar h2 {
+.sidebar h2,
+.widget_calendar caption {
 	color: #000;
 }
 
@@ -310,21 +311,17 @@ h2.widget_title {
 
 #navbar,
 .widget_calendar thead,
-h2.widget_title {
+h2.widget_title,
+#footer,
+#credits,
+html /* credits bottom */ {
 	background-color: #b81212; /* - */
 	color: #fff;
 }
 
 #header,
 #footer_wrapper {
-	background-color: #cc2414; /* AL L+10% */
-	color: #fff;
-}
-
-#footer,
-#credits,
-html /* credits bottom */ {
-	background-color: #a31010; /* L-5 */
+	background-color: #de1616; /* L+20% */
 	color: #fff;
 }
 
@@ -335,7 +332,7 @@ html /* credits bottom */ {
 }
 
 .widget_calendar tfoot {
-	background-color: #ffeceb; /* AL-S10 L95 */
+	background-color: #fff5f5; /* L97 */
 	color: #000;
 }
 

@@ -299,7 +299,8 @@ h2.widget_title {
 .main h2,
 .main h3,
 .sidebar h1,
-.sidebar h2 {
+.sidebar h2,
+.widget_calendar caption {
 	color: #000;
 }
 
@@ -322,7 +323,7 @@ h2.widget_title {
 
 /*
  * Scheme Colors
- * H- S0 L80
+ * H60 S0 L80
  */
 
 #navbar,
@@ -332,12 +333,12 @@ h2.widget_title {
 }
 
 html {
-	background-color: #f1f1f1; /* C-S10 L95 */
+	background-color: #f0f0ff; /* C-S10 L95 */
 	color: #111;
 }
 
 #wrapper {
-	background-color: #fcfcfc; /* A*L-S2 L99 */
+	background-color: #fcfcf7; /* A*L-S2 L99 */
 	color: #111;
 }
 
@@ -345,22 +346,22 @@ html {
 #footer_boxes,
 .header_widget,
 .footer_widget {
-	background-color: #f1f1f1; /* AL-S10 L95 */
+	background-color: #f5f1dc; /* AL-S10 L95 */
 	color: #000;
 }
 
 #footer {
-	background-color: #d4d4d4; /* S-25 L85 */
+	background-color: #e5e5ac; /* S25 L90 */
 	color: #000;
 }
 
 .widget_calendar tfoot {
-	background-color: #f1f1f1; /* AL-S10 L95 */
+	background-color: #f6f6f6; /* L97 */
 	color: #000;
 }
 
 #sitename {
-	color: #3b3b3b; /* S100 L25 */
+	color: #303030; /* L20 */
 }
 
 #navbar a {
@@ -372,7 +373,7 @@ html {
 }
 
 #footer a:hover {
-	color: #262626; /* S/L 15/85 */
+	color: #262606; /* S/L 15/85 */
 }
 
 #navbar_bg,
