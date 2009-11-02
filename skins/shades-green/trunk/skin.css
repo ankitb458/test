@@ -1,7 +1,7 @@
 /*
 Skin name: Shades, Green
 Skin uri: http://skins.semiologic.com/shades/
-Version: 0.9 alpha
+Version: 0.9 RC
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -11,358 +11,263 @@ Author uri: http://www.mesoconcepts.com
  * Canvas
  */
 
-html {
-	background: #132600;
-	color: #fff;
-}
-
 .sem_admin_menu #wrapper {
 	margin-top: 15px;
-}
-
-body {
-	background: #2d5900;
 }
 
 .skin #wrapper,
 .skin #navbar,
 .skin #body,
-.skin #footer,
-.skin #credits {
+.skin #footer {
 	width: 100%;
 }
 
-h1, h2, .widget_calendar caption {
-	color: #ffecb2;
+#navbar_bg {
+	margin: 0px auto;
+}
+
+.mmm #navbar_bg {
+	width: 950px;
+}
+
+.mm #navbar_bg {
+	width: 750px;
+}
+
+.m #navbar_bg {
+	width: 620px;
+}
+
+#navbar .pad {
+	padding: 0px;
+}
+
+#sidebars #sidebar .pad {
+	padding-right: 10px;
+}
+
+#sidebars #sidebar2 .pad {
+	padding-left: 10px;
+}
+
+#sidebars .sidebar {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget:first-child {
+	margin-top: 0px;
+}
+
+#sidebars .widget:last-child {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget.ad_unit:first-child {
+	margin-top: 10px;
+}
+
+#sidebars .widget.ad_unit:last-child {
+	margin-bottom: 10px;
+}
+
+#navbar {
+	background-position: top center;
+	background-repeat: repeat;
+	border-bottom: solid 1px;
+}
+
+#navbar_bg {
+	background-image: url(images/navbar_bg.jpg);
+	background-position: top left;
+	background-repeat: repeat-y;
+}
+
+#navbar span {
+	display: block;
+	float: left;
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar a {
+	background-image: url(images/navbar_bg.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+	display: block;
+	float: left;
+	padding-left: 19px;
+	padding-right: 20px;
+	margin: 0px;
+}
+
+#navbar a:hover,
+#navbar span.nav_active {
+	background-image: url(images/navbar_bg.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
+#navbar span.nav_active {
+	font-weight: normal;
+	padding-left: 19px;
+	padding-right: 20px;
+	margin: 0px;
+}
+
+#navbar span.nav_active a {
+	margin-left: -19px;
+	margin-right: -20px;
+	background: none;
+}
+
+#header_top_wrapper,
+#footer_top_wrapper {
+	padding-top: 1px;
+}
+
+#header_bottom_wrapper,
+#footer_bottom_wrapper {
+	padding-bottom: 1px;
+}
+
+#body {
+	background-image: url(images/bg.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+	min-height: 300px;
+}
+
+#header_boxes_bg,
+#footer_boxes_bg,
+.header_widget_bg,
+.footer_widget_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border: solid 1px;
+	-moz-border-radius: 9px;
+	-khtml-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+}
+
+#header_boxes,
+.header_widget,
+#footer_bottom_wrapper {
+	margin-top: 20px;
+}
+
+#header_boxes,
+.header_widget,
+#footer_boxes,
+.footer_widget {
+	margin-bottom: 20px;
+}
+
+#footer {
+	margin-bottom: 10px;
+}
+
+#footer_boxes_bg {
+	background-image: url(images/footer_boxes.jpg);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.mmm #footer_boxes_bg {
+	background-image: url(images/mmm-footer_boxes.jpg);
+}
+
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
+#navbar {
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+}
+
+.entry_bottom {
+	width: 40%;
+	margin: 20px auto;
+	border-bottom: solid 1px;
+}
+
+.single .entry_bottom,
+.page .entry_bottom {
+	border: none;
+	margin: 0px;
+}
+
+h2.widget_title {
+	padding-bottom: 3px;
+	border-bottom: solid 1px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+#sitename,
+h1,
+h2,
+.widget_calendar caption {
+	color: #ffe5b2; /* H40 B100 S30 */
 }
 
 a {
-	color: #80bfff;
+	color: #99bbff; /* H220 B100 S40 */
 }
 
 a:hover {
-	color: #b3b2ff;
+	color: #ffb2cc; /* H340 B100 S30 */
 }
 
 
 /*
- * Header
+ * Scheme Colors
+ * H120 S90 L40
  */
 
-#header_wrapper {
-	background: #2d5900;
+#wrapper,
+#header_wrapper,
+#body,
+#footer_boxes_bg,
+.footer_widget_bg {
+	background-color: #074a07; /* B*2/3 */
+	color: #eee;
 }
 
-#sitename {
-	color: #ffecb2;
+#navbar,
+.widget_calendar thead,
+html /* credits bottom */,
+#footer_wrapper {
+	background-color: #053005; /* B*2/3 L-10 */
+	color: #eee;
 }
 
-
-/*
- * Navbar
- */
+#header_boxes_bg,
+.header_widget_bg,
+.widget_calendar tfoot {
+	background-color: #0a660a; /* B*2/3 L+10 */
+	color: #eee;
+}
 
 #navbar {
-	background: #132600;
-	border-top: solid 1px #666;
-	border-bottom: solid 1px #666;
-}
-
-
-/*
- * Footer
- */
-
-#footer {
-	border-top: solid 1px #666;
-	border-bottom: solid 1px #666;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	background: #2d5900;
-}
-
-#footer_wrapper {
-	background: #132600;
-}
-
-
-/*
- * Header Boxes
- */
-
-#header_boxes_top,
-#header_boxes_bottom {
-	height: 10px;
-}
-
-#header_boxes {
-	margin-bottom: 5px;
-}
-
-.mmm #header_boxes {
-	background: url(images/mmm-header_boxes.jpg?ver=0.9) center repeat-y;
-}
-
-.mmm #header_boxes_top {
-	background: url(images/mmm-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mmm #header_boxes_bottom {
-	background: url(images/mmm-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.mm #header_boxes {
-	background: url(images/mm-header_boxes.jpg?ver=0.9) center repeat-y;
-}
-
-.mm #header_boxes_top {
-	background: url(images/mm-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mm #header_boxes_bottom {
-	background: url(images/mm-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.m #header_boxes {
-	background: url(images/m-header_boxes.jpg?ver=0.9) center repeat-y;
-}
-
-.m #header_boxes_top {
-	background: url(images/m-header_boxes_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.m #header_boxes_bottom {
-	background: url(images/m-header_boxes_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-
-/*
- * Footer Boxes
- */
-
-#footer_boxes_top,
-#footer_boxes_bottom {
-	height: 10px;
-}
-
-#footer_boxes {
-	margin-bottom: 5px;
-}
-
-.mmm #footer_boxes {
-	background: url(images/mmm-footer_boxes.jpg?ver=0.9) center repeat-y;
-}
-
-.mmm #footer_boxes_top {
-	background: url(images/mmm-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mmm #footer_boxes_bottom {
-	background: url(images/mmm-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.mm #footer_boxes {
-	background: url(images/mm-footer_boxes.jpg?ver=0.9) center repeat-y;
-}
-
-.mm #footer_boxes_top {
-	background: url(images/mm-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mm #footer_boxes_bottom {
-	background: url(images/mm-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.m #footer_boxes {
-	background: url(images/m-footer_boxes.jpg?ver=0.9) center repeat-y;
-}
-
-.m #footer_boxes_top {
-	background: url(images/m-footer_boxes_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.m #footer_boxes_bottom {
-	background: url(images/m-footer_boxes_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-
-
-/*
- * Header Widgets
- */
-
-.header_widget_top,
-.header_widget_bottom {
-	height: 10px;
-}
-
-.header_widget {
-	margin-top: 5px;
-}
-
-.mmm .header_widget {
-	background: url(images/mmm-header_widget.jpg?ver=0.9) center repeat-y;
-}
-
-.mmm .header_widget_top {
-	background: url(images/mmm-header_widget_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mmm .header_widget_bottom {
-	background: url(images/mmm-header_widget_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.mm .header_widget {
-	background: url(images/mm-header_widget.jpg?ver=0.9) center repeat-y;
-}
-
-.mm .header_widget_top {
-	background: url(images/mm-header_widget_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mm .header_widget_bottom {
-	background: url(images/mm-header_widget_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.m .header_widget {
-	background: url(images/m-header_widget.jpg?ver=0.9) center repeat-y;
-}
-
-.m .header_widget_top {
-	background: url(images/m-header_widget_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.m .header_widget_bottom {
-	background: url(images/m-header_widget_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-
-/*
- * Footer Widgets
- */
-
-.footer_widget_top,
-.footer_widget_bottom {
-	height: 10px;
-}
-
-.footer_widget {
-	margin-bottom: 5px;
-}
-
-.mmm .footer_widget {
-	background: url(images/mmm-footer_widget.jpg?ver=0.9) center repeat-y;
-}
-
-.mmm .footer_widget_top {
-	background: url(images/mmm-footer_widget_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mmm .footer_widget_bottom {
-	background: url(images/mmm-footer_widget_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.mm .footer_widget {
-	background: url(images/mm-footer_widget.jpg?ver=0.9) center repeat-y;
-}
-
-.mm .footer_widget_top {
-	background: url(images/mm-footer_widget_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.mm .footer_widget_bottom {
-	background: url(images/mm-footer_widget_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-.m .footer_widget {
-	background: url(images/m-footer_widget.jpg?ver=0.9) center repeat-y;
-}
-
-.m .footer_widget_top {
-	background: url(images/m-footer_widget_top.jpg?ver=0.9) bottom center no-repeat;
-}
-
-.m .footer_widget_bottom {
-	background: url(images/m-footer_widget_bottom.jpg?ver=0.9) top center no-repeat;
-}
-
-
-/*
- * Body
- */
-
-#body {
-	background: url(images/body.jpg?ver=0.9) bottom center repeat-x #2d5900;
-}
-
-
-/*
- * Credits
- */
-
-#credits {
-	background: #132600;
-	padding-top: 10px;
-	padding-bottom: 10px;
-}
-
-
-/*
- * Content
- */
-
-h1 {
-	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
-	font-weight: normal;
-	font-size: 22px;
-}
-
-h2,
-.widget_calendar caption {
-	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
-	font-weight: normal;
-	font-size: 18px;
-}
-
-h1 {
-}
-
-.entry_date,
-.comment_date,
-.pings_date {
-}
-
-blockquote {
-	background: url(../../icons/blockquote.gif) top left no-repeat;
-	padding: 5px 10px 5px 50px;
-	margin-left: 0px;
-	min-height: 50px;
-}
-
-
-/*
- * Sidebars
- */
-
-h2.widget_title {
-}
-
-
-/*
- * Calendar
- */
-
-.widget_calendar table {
-	border: solid 1px #666;
-	background: #2d5900;
 	color: #fff;
 }
 
-.widget_calendar thead {
-	border-bottom: solid 1px #666;
-	background: #132600;
-}
-
+#navbar,
+#header_boxes_bg,
+#footer_boxes_bg,
+.header_widget_bg,
+.footer_widget_bg,
+.entry_bottom,
+h2.widget_title,
+.widget_calendar table,
+.widget_calendar thead,
 .widget_calendar tfoot {
-	border-top: solid 1px #666;
+	border-color: #488248; /* B*2/3 L+20 S/2 */
 }
