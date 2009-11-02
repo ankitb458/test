@@ -2070,7 +2070,6 @@ EOS;
 	background: url(${header}) no-repeat top center;
 	height: ${height}px;
 	border: 0px;
-	overflow: hidden;
 	position: relative;
 	padding: 0px;
 	margin: 0px auto;

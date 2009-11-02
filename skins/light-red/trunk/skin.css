@@ -11,6 +11,12 @@ Author uri: http://www.mesoconcepts.com
  * Canvas
  */
 
+html {
+	background-image: url(images/pattern.png);
+	background-position: top center;
+	background-repeat: repeat;
+}
+
 .sem_admin_menu #wrapper {
 	margin-top: 20px;
 }
@@ -123,7 +129,15 @@ Author uri: http://www.mesoconcepts.com
 	box-shadow: rgba(0,0,0,.4) 0 0 5px;
 }
 
+#header_img img {
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
+}
+
 #header_img,
+#header_img img,
 #navbar,
 #navbar_bg,
 #body,
