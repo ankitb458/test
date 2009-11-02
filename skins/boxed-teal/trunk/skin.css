@@ -295,12 +295,13 @@ h2.widget_title {
 	border-color: #999;
 }
 
-.widget_calendar table,
 .entry_bg,
 .post_list,
 .main_widget_bg,
-.widget_bg {
+.widget_bg,
+.widget_calendar table {
 	background-color: #fff;
+	color: #111;
 }
 
 

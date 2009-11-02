@@ -256,14 +256,14 @@ Author uri: http://www.mesoconcepts.com
 }
 
 .entry_bottom {
-	margin: 18px auto;
-	height: 1px;
 	width: 40%;
+	margin: 20px auto;
+	border-bottom: solid 1px;
 }
 
 .single .entry_bottom,
 .page .entry_bottom {
-	height: 0px;
+	border: none;
 	margin: 0px;
 }
 
@@ -303,15 +303,12 @@ h2.widget_title {
 	border-color: #999;
 }
 
-.entry_bottom {
-	background-color: #999;
-}
-
 #header_boxes_bg,
 .header_widget_bg,
 #main_bg,
 #sidebars_bg,
 .sidebar_bg,
+.entry_bottom,
 h2.widget_title,
 .widget_calendar table,
 .widget_calendar tfoot {
@@ -320,8 +317,10 @@ h2.widget_title,
 
 #main_bg,
 #sidebars_bg,
-.sidebar_bg {
+.sidebar_bg,
+.widget_calendar table {
 	background-color: #fff;
+	color: #111;
 }
 
 

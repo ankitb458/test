@@ -206,14 +206,14 @@ html {
 }
 
 .entry_bottom {
-	margin: 20px auto;
-	height: 1px;
 	width: 40%;
+	margin: 20px auto;
+	border-bottom: solid 1px;
 }
 
 .single .entry_bottom,
 .page .entry_bottom {
-	height: 0px;
+	border: none;
 	margin: 0px;
 }
 
@@ -255,7 +255,8 @@ h2.widget_title {
  */
 
 #wrapper,
-#body {
+#body,
+.widget_calendar table {
 	background-color: #fff;
 	color: #111;
 }
@@ -276,12 +277,9 @@ h2.widget_title {
 
 .widget_calendar table,
 .widget_calendar tfoot,
+.entry_bottom,
 h2.widget_title {
 	border-color: #999;
-}
-
-.entry_bottom {
-	background-color: #999;
 }
 
 

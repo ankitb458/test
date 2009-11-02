@@ -290,7 +290,8 @@ h2.widget_title {
 .entry_bg,
 .post_list,
 #sidebars_bg,
-.sidebar_bg {
+.sidebar_bg,
+.widget_calendar table {
 	background-color: #fff;
 	color: #111;
 }
