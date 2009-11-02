@@ -169,6 +169,18 @@ Author uri: http://www.mesoconcepts.com
 #sidebars_bg,
 .sidebar_bg {
 	border: solid 1px;
+}
+
+#header_boxes,
+#header_boxes_bg,
+.header_widget,
+.header_widget_bg,
+#main,
+#main_bg,
+#sidebars,
+#sidebars_bg,
+.sidebar,
+.sidebar_bg {
 	-moz-border-radius: 9px;
 	-khtml-border-radius: 9px;
 	-webkit-border-radius: 9px;
@@ -330,6 +342,9 @@ h2.widget_title,
  */
 
 #navbar,
+#footer,
+#credits,
+html /* credits bottom */,
 .widget_calendar thead {
 	background-color: #1f1f1f; /* - */
 	color: #fff;
@@ -341,15 +356,8 @@ h2.widget_title,
 	color: #fff;
 }
 
-#footer,
-#credits,
-html /* credits bottom */ {
-	background-color: #1b1b1b; /* L-5 */
-	color: #fff;
-}
-
-#header_boxes_bg,
-.header_widget_bg {
+#header_boxes,
+.header_widget {
 	background-color: #f2f5ff; /* C-S5 L97 */
 	color: #000;
 }
