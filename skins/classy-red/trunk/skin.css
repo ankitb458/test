@@ -326,33 +326,29 @@ html {
 }
 
 html {
-	background-color: #e3fcfc; /* C-S10 L97 */
+	background-color: #ebfafa; /* C-L97 */
 	color: #000;
 }
 
 #wrapper {
-	background-color: #fffbfa; /* A-S3 L99 */
+	background-color: #fffbfa; /* A-L99 */
 	color: #111;
 }
 
 .header_widget,
 .footer_widget {
-	background-color: #fff4f0; /* A-S10 L97 */
+	background-color: #fff4f0; /* A-L97 */
 	color: #000;
 }
 
-#footer {
-	background-color: #ffd9d9; /* S25 L90 */
-	color: #000;
-}
-
+#footer,
 .widget_calendar tfoot {
-	background-color: #fff5f5; /* L97 */
+	background-color: #ffe0e0; /* L92 */
 	color: #000;
 }
 
 #sitename {
-	color: #610a0a; /* L20 */
+	color: #7d0000; /* L25 */
 }
 
 #navbar a {

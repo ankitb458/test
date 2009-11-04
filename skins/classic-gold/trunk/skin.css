@@ -130,7 +130,7 @@ html {
 	border-top: solid 1px;
 }
 
-#footer {
+#footer_bg {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
@@ -142,19 +142,21 @@ html {
 #footer_bottom_wrapper {
 	padding-top: 1px;
 	padding-bottom: 1px;
-	background-image: url(images/header_widget.jpg);
+	background-image: url(images/wrapper_widget.jpg);
 	background-repeat: repeat-x;
 	background-position: top center;
 }
 
+#header_boxes,
 #footer_boxes {
-	background-image: url(images/footer_boxes.gif);
+	background-image: url(images/inline_boxes.gif);
 	background-position: center;
 	background-repeat: no-repeat;
 }
 
+.mmm #header_boxes,
 .mmm #footer_boxes {
-	background-image: url(images/mmm-footer_boxes.gif);
+	background-image: url(images/mmm-inline_boxes.gif);
 }
 
 .header_widget,
@@ -213,6 +215,18 @@ html {
 .smm #body_bg,
 .sm #body_bg {
 	background-image: url(images/sm-body.gif);
+}
+
+#footer {
+	background-image: url(images/footer.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+#footer_bg {
+	background-image: url(images/footer_bottom.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
 }
 
 .entry_bottom {
@@ -305,28 +319,24 @@ html {
 }
 
 html {
-	background-color: #f2f5ff; /* C-S10 L97 */
+	background-color: #f2f5ff; /* C-L97 */
 	color: #000;
 }
 
 #header_wrapper,
 #footer_wrapper {
-	background-color: #f7f7df; /* A-S10 L97 */
+	background-color: #f7f7e4; /* A-L97 */
 	color: #000;
 }
 
-#footer {
-	background-color: #f0e1b4; /* S25 L90 */
-	color: #000;
-}
-
+#footer,
 .widget_calendar tfoot {
-	background-color: #fff7de; /* L97 */
+	background-color: #f3e7c2; /* L92 */
 	color: #000;
 }
 
 #sitename {
-	color: #3d2f03; /* L20 */
+	color: #4a3700; /* L25 */
 }
 
 #navbar a {

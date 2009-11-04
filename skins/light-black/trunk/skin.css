@@ -304,23 +304,23 @@ html {
 }
 
 .header_widget {
-	background-color: #f2f5ff; /* C-S10 L97 */
+	background-color: #f2f5ff; /* C-L97 */
 	color: #000;
 }
 
 .footer_widget {
-	background-color: #f7f7df; /* A-S10 L97 */
+	background-color: #f7f7e4; /* A-L97 */
 	color: #000;
 }
 
 .widget_calendar tfoot {
-	background-color: #f6f6f6; /* L97 */
+	background-color: #e8e8e8; /* L92 */
 	color: #000;
 }
 
 #sitename,
 .main h1 {
-	color: #1f1f1f; /* L20 */
+	color: #1f1f1f; /* L25 */
 }
 
 #navbar a {

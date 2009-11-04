@@ -243,12 +243,12 @@ html {
 
 .header_widget,
 .footer_widget {
-	background-color: #fff2ff; /* C-S10 L97 */
+	background-color: #fff2ff; /* C-L97 */
 	color: #000;
 }
 
 .widget_calendar tfoot {
-	background-color: #e3ffe3; /* L97 */
+	background-color: #c4f5c4; /* L92 */
 	color: #000;
 }
 
@@ -257,7 +257,7 @@ html {
 }
 
 .main h1 {
-	color: #063806; /* L20 */
+	color: #033803; /* L25 */
 }
 
 #header {
