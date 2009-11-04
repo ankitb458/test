@@ -176,20 +176,32 @@ Author uri: http://www.mesoconcepts.com
 	border-radius: 9px;
 }
 
-.header_widget_bg {
+.header_widget {
 	background-image: url(images/header_widget.jpg);
 	background-position: top center;
 	background-repeat: repeat-x;
+}
+
+.header_widget_bg {
 	padding-top: 5px;
 	padding-bottom: 5px;
+}
+
+#main,
+#sidebars,
+.sidebar {
+	background-image: url(images/body.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+#sidebars .sidebar {
+	background: none;
 }
 
 #main_bg,
 #sidebars_bg,
 .sidebar_bg {
-	background-image: url(images/body.jpg);
-	background-position: top center;
-	background-repeat: repeat-x;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
@@ -319,9 +331,9 @@ Author uri: http://www.mesoconcepts.com
 	border-color: #999;
 }
 
-#main_bg,
-#sidebars_bg,
-.sidebar_bg,
+#main,
+#sidebars,
+.sidebar,
 .widget_calendar table {
 	background-color: #fff;
 	color: #111;
@@ -344,27 +356,27 @@ html /* credits bottom */,
 
 #header,
 #footer_wrapper {
-	background-color: #960f96; /* L+20% */
-	color: #fff;
+	background-color: #ffdeff; /* L92 */
+	color: #000;
 }
 
 .header_widget {
-	background-color: #e3fce3; /* C-S10 L97 */
+	background-color: #ebfaeb; /* C-L97 */
 	color: #000;
 }
 
 .widget_calendar tfoot {
-	background-color: #fff5ff; /* L97 */
+	background-color: #ffdeff; /* L92 */
 	color: #000;
 }
 
 #navbar a,
-#footer_wrapper a,
+#footer a,
 #credits a {
 	color: #fff;
 }
 
-#footer_wrapper a:hover,
+#footer a:hover,
 #credits a:hover {
 	color: #ffd4ff; /* S/L 20/90 */
 }
