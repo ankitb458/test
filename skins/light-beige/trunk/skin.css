@@ -1,0 +1,345 @@
+/*
+Skin name: Light, Beige
+Skin uri: http://skins.semiologic.com/light/
+Version: 0.9 RC
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+.skin .wrapper_item {
+	width: auto;
+}
+
+#wrapper {
+	margin-top: 15px;
+	margin-bottom: 10px;
+}
+
+html {
+	background-image: url(images/pattern.png);
+	background-position: top center;
+	background-repeat: repeat;
+}
+
+.sem_admin_menu #wrapper {
+	margin-top: 20px;
+}
+
+#sidebars #sidebar .pad {
+	padding-right: 10px;
+}
+
+#sidebars #sidebar2 .pad {
+	padding-left: 10px;
+}
+
+#navbar .pad {
+	padding: 0px 0px;
+}
+
+#search_form {
+	padding: 0px 19px;
+}
+
+#navbar {
+	background-image: url(images/navbar.jpg);
+	background-position: top center;
+	background-repeat: repeat;
+}
+
+#navbar span {
+	display: block;
+	float: left;
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar a {
+	background-image: url(images/navbar_item.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+	display: block;
+	float: left;
+	padding-left: 20px;
+	padding-right: 22px;
+	margin: 0px;
+}
+
+#navbar span.nav_active {
+	font-weight: normal;
+	padding-left: 20px;
+	padding-right: 22px;
+	margin: 0px;
+}
+
+#navbar span.nav_active a {
+	margin-left: -20px;
+	margin-right: -22px;
+	background: none;
+}
+
+#navbar span:first-child,
+#navbar span:first-child a {
+	-moz-border-radius-topleft: 9px;
+	-moz-border-radius-bottomleft: 9px;
+	-khtml-border-top-left-radius: 9px;
+	-khtml-border-bottom-left-radius: 9px;
+	-webkit-border-top-left-radius: 9px;
+	-webkit-border-bottom-left-radius: 9px;
+	border-top-left-radius: 9px;
+	border-bottom-left-radius: 9px;
+}
+
+.header_widget,
+#navbar,
+#header {
+	margin-bottom: 15px;
+}
+
+#wrapper,
+.footer_widget {
+	margin-top: 15px;
+}
+
+#footer {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#credits {
+	border-top: solid 1px;
+	margin-top: 5px;
+}
+
+#navbar,
+#body,
+.header_widget,
+.footer_widget {
+	border: solid 1px;
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
+}
+
+#header_img img {
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
+}
+
+#header_img,
+#header_img img,
+#navbar,
+#navbar_bg,
+#body,
+#body_bg,
+.header_widget,
+.header_widget_bg,
+.footer_widget,
+.footer_widget_bg {
+	-moz-border-radius: 9px;
+	-khtml-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+}
+
+#body,
+.header_widget,
+.footer_widget {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.header_widget_bg {
+	background-image: url(images/header_widget.jpg);
+	background-repeat: repeat-x;
+	background-position: top center;
+}
+
+.footer_widget {
+	background-image: url(images/footer_widget.jpg);
+	background-repeat: repeat-x;
+	background-position: bottom center;
+}
+
+#footer_boxes_bg {
+	background-image: url(images/footer_boxes.gif);
+	background-position: center;
+	background-repeat: repeat-y;
+}
+
+.mmm #footer_boxes_bg {
+	background-image: url(images/mmm-footer_boxes.gif);
+}
+
+#body {
+	background-image: url(images/body.jpg);
+	background-repeat: repeat-x;
+	background-position: bottom center;
+}
+
+#body_bg {
+	background-repeat: repeat-y;
+	background-position: center;
+}
+
+.mts #body_bg {
+	background-image: url(images/mts-body.gif);
+}
+
+.tsm #body_bg {
+	background-image: url(images/tsm-body.gif);
+}
+
+.sms #body_bg {
+	background-image: url(images/sms-body.gif);
+}
+
+.mms #body_bg,
+.ms #body_bg {
+	background-image: url(images/ms-body.gif);
+}
+
+.smm #body_bg,
+.sm #body_bg {
+	background-image: url(images/sm-body.gif);
+}
+
+#sidebars .sidebar {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget:first-child {
+	margin-top: 0px;
+}
+
+#sidebars .widget:last-child {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget.ad_unit:first-child {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+#sidebars .widget.ad_unit:last-child {
+	margin-bottom: 10px;
+}
+
+.entry_bottom {
+	width: 40%;
+	margin: 20px auto;
+	border-bottom: solid 1px;
+}
+
+.single .entry_bottom,
+.page .entry_bottom {
+	border: none;
+	margin: 0px;
+}
+
+.widget_title h2 {
+	padding-bottom: 3px;
+	border-bottom: solid 1px;
+}
+
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+html {
+	background-color: #eee;
+	color: #111;
+}
+
+#body,
+.widget_calendar table {
+	background-color: #fff;
+	color: #111;
+}
+
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2,
+.widget_calendar caption {
+	color: #000;
+}
+
+#body,
+.header_widget,
+.footer_widget,
+#credits,
+.widget_calendar table,
+.widget_calendar tfoot,
+.widget_title h2,
+.entry_bottom {
+	border-color: #999;
+}
+
+
+/*
+ * Scheme Colors
+ * H30 S35 L80
+ */
+
+#navbar,
+.widget_calendar thead {
+	background-color: #e8bf97; /* - */
+	color: #000;
+}
+
+.header_widget {
+	background-color: #f0f7ff; /* C-S10 L97 */
+	color: #000;
+}
+
+.footer_widget {
+	background-color: #fcf6e3; /* A-S10 L97 */
+	color: #000;
+}
+
+.widget_calendar tfoot {
+	background-color: #fff6ed; /* L97 */
+	color: #000;
+}
+
+#sitename,
+.main h1 {
+	color: #382e24; /* L20 */
+}
+
+#navbar a {
+	color: #000;
+}
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #472707; /* S/L 20/90 */
+}
+
+#navbar,
+#go {
+	border-color: #735f4b; /* B/2 */
+}
+
+.widget_calendar thead {
+	border-color: #737373; /* B/2 S0 */
+}

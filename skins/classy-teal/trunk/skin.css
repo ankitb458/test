@@ -11,6 +11,10 @@ Author uri: http://www.mesoconcepts.com
  * Canvas
  */
 
+.skin .wrapper_item {
+	width: auto;
+}
+
 html {
 	background-image: url(images/bg.jpg);
 	background-repeat: repeat-x;
@@ -73,11 +77,6 @@ html {
 	width: 745px;
 }
 
-#header_wrapper .wrapper_item,
-#footer_wrapper .wrapper_item {
-	width: 100%;
-}
-
 .pad {
 	padding: 0px 15px;
 }
@@ -121,7 +120,7 @@ html {
 }
 
 #navbar a {
-	background-image: url(images/navbar_bg.jpg);
+	background-image: url(images/navbar_item.jpg);
 	background-position: top right;
 	background-repeat: no-repeat;
 	display: block;
@@ -154,8 +153,6 @@ html {
 #wrapper,
 #navbar_bg,
 #footer_bg,
-#header_boxes_bg,
-#footer_boxes_bg,
 .header_widget_bg,
 .footer_widget_bg,
 .entry_bg,
@@ -175,31 +172,27 @@ html {
 #navbar,
 #body,
 #footer,
-#header_boxes,
-#footer_boxes,
 .header_widget,
 .footer_widget {
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
-#header_boxes_bg,
 .header_widget_bg,
-#footer_boxes_bg,
 .footer_widget_bg {
-	background-image: url(images/header_widget_bg.jpg);
+	background-image: url(images/header_widget.jpg);
 	background-position: top center;
 	background-repeat: repeat-x;
 }
 
 #footer_boxes {
-	background-image: url(images/footer_boxes.jpg);
+	background-image: url(images/footer_boxes.gif);
 	background-position: center;
 	background-repeat: no-repeat;
 }
 
 .mmm #footer_boxes {
-	background-image: url(images/mmm-footer_boxes.jpg);
+	background-image: url(images/mmm-footer_boxes.gif);
 }
 
 .main_widget_bg,
@@ -207,7 +200,7 @@ html {
 .post_list,
 #sidebars_bg,
 .sidebar_bg {
-	background-image: url(images/body_bg.jpg);
+	background-image: url(images/body.jpg);
 	background-position: top center;
 	background-repeat: repeat-x;
 	padding-top: 5px;
@@ -216,6 +209,7 @@ html {
 
 .ad_unit .main_widget_bg,
 .ad_unit .widget_bg,
+.main .blog_footer,
 .blog_footer .main_widget_bg {
 	border: none;
 	background: none;
@@ -271,7 +265,7 @@ html {
 	margin-bottom: 10px;
 }
 
-h2.widget_title {
+.widget_title h2 {
 	padding-bottom: 3px;
 	border-bottom: solid 1px;
 }
@@ -305,8 +299,6 @@ h2.widget_title {
 	color: #000;
 }
 
-#header_boxes_bg,
-#footer_boxes_bg,
 .header_widget_bg,
 .footer_widget_bg,
 #footer_bg,
@@ -317,7 +309,7 @@ h2.widget_title {
 .sidebar_bg,
 .widget_calendar table,
 .widget_calendar tfoot,
-h2.widget_title {
+.widget_title h2 {
 	border-color: #999;
 }
 
@@ -334,20 +326,18 @@ h2.widget_title {
 }
 
 html {
-	background-color: #ffebeb; /* C-S10 L95 */
-	color: #111;
+	background-color: #fff2f2; /* C-S10 L97 */
+	color: #000;
 }
 
 #wrapper {
-	background-color: #fafeff; /* A*L-S2 L99 */
+	background-color: #f5fcfb; /* A-S3 L99 */
 	color: #111;
 }
 
-#header_boxes,
-#footer_boxes,
 .header_widget,
 .footer_widget {
-	background-color: #dcf5f3; /* AL-S10 L95 */
+	background-color: #e3fcf6; /* A-S10 L97 */
 	color: #000;
 }
 
@@ -374,7 +364,7 @@ html {
 }
 
 #footer a:hover {
-	color: #072b2b; /* S/L 15/85 */
+	color: #063838; /* S/L 20/90 */
 }
 
 #navbar_bg,
