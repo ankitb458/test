@@ -24,8 +24,8 @@ class sem_panels {
 						. '<div class="widget_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . "\n";
 		
-		$before_title = '<h2 class="widget_title">';
-		$after_title = '</h2>' . "\n";
+		$before_title = '<div class="widget_title"><h2>';
+		$after_title = '</h2></div>' . "\n";
 		
 		if ( strpos($sem_options['active_layout'], 't') !== false ) {
 			register_sidebar(
@@ -282,12 +282,13 @@ class sem_panels {
 			if ( !is_active_sidebar($panel_id) )
 			 	break;
 			
-			$class = ( $panel_id == 'the_header_boxes' ) ? 'header_boxes' : 'footer_boxes';
+			$id = ( $panel_id == 'the_header_boxes' ) ? 'header_boxes' : 'footer_boxes';
+			$class = ( $panel_id == 'the_header_boxes' ) ? 'header_widget' : 'footer_widget';
 
 			echo '<div class="spacer"></div>' . "\n"
-				. '<div id="' . $class . '" class="wrapper inline_boxes">' . "\n"
-				. '<div id="' . $class . '_top" class="inline_boxes_top"><div class="hidden"></div></div>' . "\n"
-				. '<div id="' . $class . '_bg" class="inline_boxes_bg">' . "\n"
+				. '<div id="' . $id . '" class="wrapper inline_boxes ' . $class . '">' . "\n"
+				. '<div id="' . $id . '_top" class="inline_boxes_top ' . $class . '_top"><div class="hidden"></div></div>' . "\n"
+				. '<div id="' . $id . '_bg" class="inline_boxes_bg ' . $class . '_bg">' . "\n"
 				. '<div class="wrapper_item">' . "\n";
 			
 			dynamic_sidebar($panel_id);
@@ -295,8 +296,8 @@ class sem_panels {
 			echo '<div class="spacer"></div>' . "\n"
 				. '</div>' . "\n"
 				. '</div>' . "\n"
-				. '<div id="' . $class . '_bottom" class="inline_boxes_bottom"><div class="hidden"></div></div>' . "\n"
-				. '</div><!-- ' . $class . ' -->' . "\n";
+				. '<div id="' . $id . '_bottom" class="inline_boxes_bottom ' . $class . '_bottom"><div class="hidden"></div></div>' . "\n"
+				. '</div><!-- ' . $id . ' -->' . "\n";
 			
 			break;
 		}

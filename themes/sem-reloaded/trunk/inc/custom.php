@@ -724,11 +724,11 @@ EOS;
 			. '</p>' . "\n";
 		
 		foreach ( array(
-			'h2.widget_title' => __('Affects <h2 class="widget_title"> tags, i.e. sidebar widget titles. "Stronger" than the previous three (it\'s "more precise").', 'sem-reloaded'),
+			'div.entry_date' => __('Affects <h2> tagsclass="widget_title"> tags, i.e. sidebar widget titles. "Stronger" than the previous three (it\'s "more precise").', 'sem-reloaded'),
 			'div#sitename' => __('Affects <div id="sitename">, i.e. the site\'s name. "Stronger" than the previous (it\'s "more precise"), but generally useless since IDs are unique.', 'sem-reloaded'),
 			'.mm1s .widget' => __('Affects anything within an area with the "widget" class, itself within an area with the "mm1s" class, i.e. widgets when using a "Wide Content, Sidebar" layouts. "Stronger" than all of the above.'),
 			'#top_sidebar .widget' => __('Affects anything within an area with the "widget" class, itself within an area with the "top_sidebar" ID, i.e. widgets in the top sidebar when using a "Content, Wide Sidebar" layout. "Stronger" than the previous if declared after.'),
-			'.sidebar h2' => __('Affects <h2> tags within an area with the header_widget class, i.e. <h2> tags in sidebar widgets. "Stronger" than the previous if declared after.'),
+			'.widget_title h2' => __('Affects <h2> tags within an area with the "widget_title" class, i.e. <h2> tags in sidebar widgets. "Stronger" than the previous if declared after.'),
 			)
 			as $selector => $description ) {
 			$description = str_replace(array("\r\n", "\n", "\r"), "\n   * ", wordwrap(esc_attr($description), 80));
