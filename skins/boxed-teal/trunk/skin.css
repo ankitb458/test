@@ -279,6 +279,11 @@ Author uri: http://www.mesoconcepts.com
 	background-repeat: repeat-x;
 }
 
+.widget_title h2,
+.widget_calendar caption {
+	font-size: 17px;
+}
+
 .widget_calendar table,
 .widget_calendar thead,
 .widget_calendar tfoot {

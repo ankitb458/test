@@ -269,11 +269,6 @@ h2,
 	font-family: Georgia, "New Century Schoolbook", "Century Schoolbook L", "DejaVu Serif", Serif;
 }
 
-.widget_title h2,
-.widget_calendar caption {
-	font-size: 17px;
-}
-
 h3,
 th,
 div.entry_date,
