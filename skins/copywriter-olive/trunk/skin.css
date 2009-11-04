@@ -138,24 +138,15 @@ Author uri: http://www.mesoconcepts.com
 
 #header,
 #header_top_wrapper,
-#header_middle_wrapper {
-	border-bottom: solid 1px;
-}
-
-#header_top_wrapper {
-	padding-top: solid 1px;
-}
-
+#header_middle_wrapper,
 #footer_top_wrapper,
 #footer_bottom_wrapper {
 	border-bottom: solid 1px;
 }
 
+#header_top_wrapper,
+#footer_top_wrapper,
 #footer_bottom_wrapper {
-	border-top: 1px;
-}
-
-#footer_top_wrapper {
 	padding-top: 1px;
 }
 
@@ -240,6 +231,11 @@ Author uri: http://www.mesoconcepts.com
 .footer_widget {
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+
+#footer_boxes {
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 #sidebars .sidebar {

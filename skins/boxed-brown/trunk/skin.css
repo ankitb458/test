@@ -130,24 +130,15 @@ Author uri: http://www.mesoconcepts.com
 
 #header,
 #header_top_wrapper,
-#header_middle_wrapper {
-	border-bottom: solid 1px;
-}
-
-#header_top_wrapper {
-	padding-top: solid 1px;
-}
-
+#header_middle_wrapper,
 #footer_top_wrapper,
 #footer_bottom_wrapper {
 	border-bottom: solid 1px;
 }
 
+#header_top_wrapper,
+#footer_top_wrapper,
 #footer_bottom_wrapper {
-	border-top: 1px;
-}
-
-#footer_top_wrapper {
 	padding-top: 1px;
 }
 
@@ -247,6 +238,11 @@ Author uri: http://www.mesoconcepts.com
 	margin-bottom: 10px;
 }
 
+#footer_boxes {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
 .widget_title h2 {
 	margin-top: -6px;
 	margin-left: -19px;
@@ -267,51 +263,6 @@ Author uri: http://www.mesoconcepts.com
 .widget_calendar thead,
 .widget_calendar tfoot {
 	border: solid 1px;
-}
-
-
-/*
- * Skin Colors
- */
-
-#wrapper,
-#body,
-#main {
-	background-color: #eee;
-	color: #111;
-}
-
-.main h1,
-.main h2,
-.main h3,
-.sidebar h1,
-.sidebar h2,
-.widget_calendar caption {
-	color: #000;
-}
-
-#body_bottom {
-	background-color: #ccc;
-	border-color: #999;
-}
-
-.header_widget_bg,
-.entry_bg,
-.post_list,
-.main_widget_bg,
-.widget_bg,
-.widget_calendar table,
-.widget_calendar tfoot {
-	border-color: #999;
-}
-
-.entry,
-.post_list,
-.main_widget,
-.widget,
-.widget_calendar table {
-	background-color: #fff;
-	color: #111;
 }
 
 
