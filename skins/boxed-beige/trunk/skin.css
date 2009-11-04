@@ -170,10 +170,21 @@ Author uri: http://www.mesoconcepts.com
 	border-radius: 9px;
 }
 
-.header_widget_bg {
+.header_widget {
 	background-image: url(images/header_widget.jpg);
 	background-position: top center;
 	background-repeat: repeat-x;
+}
+
+.entry,
+.main_widget,
+.widget {
+	background-image: url(images/body.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+.header_widget_bg {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
@@ -182,13 +193,11 @@ Author uri: http://www.mesoconcepts.com
 .post_list,
 .main_widget_bg,
 .widget_bg {
-	background-image: url(images/body.jpg);
-	background-position: top center;
-	background-repeat: repeat-x;
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
+.main .ad_unit,
 .ad_unit .main_widget_bg,
 .ad_unit .widget_bg,
 .main .blog_footer,
@@ -199,15 +208,23 @@ Author uri: http://www.mesoconcepts.com
 	padding-bottom: 0px;
 }
 
-#footer_boxes {
+#header_boxes_bg {
+	background-image: url(images/header_boxes.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.mmm #header_boxes_bg {
+	background-image: url(images/mmm-header_boxes.gif);
+}
+
+#footer_boxes_bg {
 	background-image: url(images/footer_boxes.gif);
 	background-position: center;
 	background-repeat: no-repeat;
-	padding-top: 5px;
-	padding-bottom: 5px;
 }
 
-.mmm #footer_boxes {
+.mmm #footer_boxes_bg {
 	background-image: url(images/mmm-footer_boxes.gif);
 }
 
@@ -259,6 +276,13 @@ Author uri: http://www.mesoconcepts.com
 	border-top-right-radius: 9px;
 }
 
+.widget_title h2,
+.widget_calendar thead {
+	background-image: url(images/widget_header.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
 .widget_calendar table,
 .widget_calendar thead,
 .widget_calendar tfoot {
@@ -302,7 +326,6 @@ Author uri: http://www.mesoconcepts.com
 }
 
 .entry,
-.post_list,
 .main_widget,
 .widget,
 .widget_calendar table {
