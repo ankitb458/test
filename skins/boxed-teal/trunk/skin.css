@@ -276,8 +276,7 @@ Author uri: http://www.mesoconcepts.com
 	border-top-right-radius: 9px;
 }
 
-.widget_title h2,
-.widget_calendar thead {
+.widget_title h2 {
 	background-image: url(images/widget_header.jpg);
 	background-position: top center;
 	background-repeat: repeat-x;
