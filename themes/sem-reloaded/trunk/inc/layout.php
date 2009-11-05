@@ -155,7 +155,7 @@ EOS;
 		
 		echo '</table>' . "\n";
 		
-		echo '<p>' . __('Note: These numbers may vary slighting depending on the skin you are using.', 'sem-reloaded') . '</p>' . "\n";
+		echo '<p>' . __('Note: These numbers may vary slightly depending on the skin you are using.', 'sem-reloaded') . '</p>' . "\n";
 		
 		echo '<div style="clear: both;"></div>' . "\n";
 		
