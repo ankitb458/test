@@ -131,17 +131,17 @@ html {
 .header_widget,
 .footer_widget {
 	border: solid 1px;
-	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
-	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
-	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
-	box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-moz-box-shadow: rgba(0,0,0,.2) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.2) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.2) 0 0 5px;
+	box-shadow: rgba(0,0,0,.2) 0 0 5px;
 }
 
 #header_img img {
-	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
-	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
-	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
-	box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-moz-box-shadow: rgba(0,0,0,.2) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.2) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.2) 0 0 5px;
+	box-shadow: rgba(0,0,0,.2) 0 0 5px;
 }
 
 #header_img,
