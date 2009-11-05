@@ -277,6 +277,10 @@ h2 {
 	color: inherit;
 }
 
+.widget_calendar tfoot a:hover {
+	color: #b22;
+}
+
 h3,
 th,
 div.entry_date,
