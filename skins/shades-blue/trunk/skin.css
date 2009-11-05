@@ -42,7 +42,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #navbar .pad {
-	padding: 0px;
+	padding: 0px 1px;
 }
 
 #sidebars #sidebar .pad {
@@ -74,6 +74,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #navbar {
+	background-image: url(images/navbar.jpg);
 	background-position: top center;
 	background-repeat: repeat;
 	border-bottom: solid 1px;
@@ -98,28 +99,28 @@ Author uri: http://www.mesoconcepts.com
 	background-repeat: no-repeat;
 	display: block;
 	float: left;
-	padding-left: 19px;
-	padding-right: 20px;
+	padding-left: 20px;
+	padding-right: 22px;
 	margin: 0px;
 }
 
 #navbar a:hover,
 #navbar span.nav_active {
-	background-image: url(images/navbar_item.jpg);
+	background-image: url(images/navbar_active.jpg);
 	background-position: top right;
 	background-repeat: no-repeat;
 }
 
 #navbar span.nav_active {
 	font-weight: normal;
-	padding-left: 19px;
-	padding-right: 20px;
+	padding-left: 20px;
+	padding-right: 22px;
 	margin: 0px;
 }
 
 #navbar span.nav_active a {
-	margin-left: -19px;
-	margin-right: -20px;
+	margin-left: -20px;
+	margin-right: -22px;
 	background: none;
 }
 
@@ -148,14 +149,16 @@ Author uri: http://www.mesoconcepts.com
 .header_widget,
 .footer_widget {
 	border: solid 1px;
+}
+
+.header_widget_bg,
+.footer_widget_bg {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
 .header_widget,
-#footer_bottom_wrapper,
-.footer_widget,
-#footer {
+.footer_widget {
 	margin-top: 15px;
 }
 
@@ -165,7 +168,28 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #footer {
+	margin-top: 10px;
 	margin-bottom: 5px;
+}
+
+#credits {
+	border-top: solid 1px;
+}
+
+.footer_widget {
+	background-image: url(images/footer_widget.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+#header_boxes_bg {
+	background-image: url(images/header_boxes.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.mmm #header_boxes_bg {
+	background-image: url(images/mmm-header_boxes.gif);
 }
 
 #footer_boxes_bg {
@@ -222,7 +246,8 @@ a {
 	color: #99bbff; /* H220 B100 S40 */
 }
 
-a:hover {
+a:hover,
+.widget_calendar tfoot a:hover {
 	color: #ffb2cc; /* H340 B100 S30 */
 }
 
@@ -250,7 +275,7 @@ html /* credits bottom */,
 
 .header_widget,
 .widget_calendar tfoot {
-	background-color: #10579e; /* B*2/3 L+10 */
+	background-color: #0e4c8a; /* B*2/3 L+5 */
 	color: #eee;
 }
 
@@ -261,6 +286,7 @@ html /* credits bottom */,
 #navbar,
 .header_widget,
 .footer_widget,
+#credits,
 .entry_bottom,
 .widget_title h2,
 .widget_calendar table,
