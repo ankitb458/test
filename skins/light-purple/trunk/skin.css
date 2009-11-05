@@ -16,7 +16,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #wrapper {
-	margin-top: 15px;
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 
@@ -70,6 +70,13 @@ html {
 	margin: 0px;
 }
 
+#navbar a:hover,
+#navbar span.nav_active {
+	background-image: url(images/navbar_active.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
 #navbar span.nav_active {
 	font-weight: normal;
 	padding-left: 20px;
@@ -95,15 +102,18 @@ html {
 	border-bottom-left-radius: 9px;
 }
 
-.header_widget,
 #navbar,
-#header {
+#header,
+.header_widget {
 	margin-bottom: 15px;
 }
 
-#wrapper,
 .footer_widget {
 	margin-top: 15px;
+}
+
+#footer ~ div .footer_widget {
+	margin-top: 10px;
 }
 
 #footer {
@@ -113,7 +123,7 @@ html {
 
 #credits {
 	border-top: solid 1px;
-	margin-top: 5px;
+	margin-top: 10px;
 }
 
 #navbar,
@@ -150,14 +160,14 @@ html {
 	border-radius: 9px;
 }
 
-#body,
-.header_widget,
-.footer_widget {
+#body_bg,
+.header_widget_bg,
+.footer_widget_bg {
 	padding-top: 5px;
 	padding-bottom: 5px;
 }
 
-.header_widget_bg {
+.header_widget {
 	background-image: url(images/header_widget.jpg);
 	background-repeat: repeat-x;
 	background-position: top center;
@@ -169,20 +179,20 @@ html {
 	background-position: bottom center;
 }
 
-#footer_boxes_bg {
-	background-image: url(images/footer_boxes.gif);
+.inline_boxes_bg {
+	background-image: url(images/inline_boxes.gif);
 	background-position: center;
-	background-repeat: repeat-y;
+	background-repeat: no-repeat;
 }
 
-.mmm #footer_boxes_bg {
-	background-image: url(images/mmm-footer_boxes.gif);
+.mmm .inline_boxes_bg {
+	background-image: url(images/mmm-inline_boxes.gif);
 }
 
 #body {
 	background-image: url(images/body.jpg);
 	background-repeat: repeat-x;
-	background-position: bottom center;
+	background-position: top center;
 }
 
 #body_bg {
@@ -261,17 +271,14 @@ html {
  * Skin Colors
  */
 
-html {
-	background-color: #eee;
-	color: #111;
-}
-
+html,
 #body,
 .widget_calendar table {
 	background-color: #fff;
 	color: #111;
 }
 
+.main h1
 .main h2,
 .main h3,
 .sidebar h1,
@@ -303,13 +310,9 @@ html {
 	color: #fff;
 }
 
-.header_widget {
-	background-color: #ebfaeb; /* C-L97 */
-	color: #000;
-}
-
+.header_widget,
 .footer_widget {
-	background-color: #fff2fc; /* A-L97 */
+	background-color: #ebfaeb; /* C-L97 */
 	color: #000;
 }
 
@@ -318,8 +321,7 @@ html {
 	color: #000;
 }
 
-#sitename,
-.main h1 {
+#sitename {
 	color: #6e006e; /* L25 */
 }
 
