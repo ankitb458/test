@@ -356,7 +356,7 @@ html /* credits bottom */,
 
 #header,
 #footer_wrapper {
-	background-color: #fae7af; /* L92 */
+	background-color: #ffe599; /* L92 */
 	color: #000;
 }
 
@@ -366,7 +366,7 @@ html /* credits bottom */,
 }
 
 .widget_calendar tfoot {
-	background-color: #fae7af; /* L92 */
+	background-color: #ffe599; /* L92 */
 	color: #000;
 }
 
