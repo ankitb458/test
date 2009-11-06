@@ -292,5 +292,5 @@ html /* credits bottom */,
 .widget_calendar table,
 .widget_calendar thead,
 .widget_calendar tfoot {
-	border-color: #404040; /* B*2/3 L+20 S/2 */
+	border-color: #323232; /* B*2/3 L+15 S/2 */
 }
