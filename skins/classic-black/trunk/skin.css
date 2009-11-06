@@ -319,13 +319,13 @@ html {
 }
 
 html {
-	background-color: #f2f5ff; /* C-L97 */
+	background-color: #f5f7fc; /* C-L97 */
 	color: #000;
 }
 
 #header_wrapper,
 #footer_wrapper {
-	background-color: #f7f7e4; /* A-L97 */
+	background-color: #f7f7f0; /* A-L97 */
 	color: #000;
 }
 
