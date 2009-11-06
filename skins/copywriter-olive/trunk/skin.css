@@ -24,9 +24,15 @@ Author uri: http://www.mesoconcepts.com
 	width: auto;
 }
 
+#wrapper {
+	background: url(images/pattern.jpg);
+	background-position: center;
+	background-repeat: repeat;
+}
+
 #header {
 	background-image: url(images/header.jpg);
-	background-position: top center;
+	background-position: bottom center;
 	background-repeat: repeat-x;
 }
 
@@ -305,10 +311,8 @@ Author uri: http://www.mesoconcepts.com
  * Skin Colors
  */
 
-#wrapper,
-#body,
-#main {
-	background-color: #eee;
+#wrapper {
+	background-color: #f7f7f7;
 	color: #111;
 }
 
@@ -362,7 +366,7 @@ html /* credits bottom */,
 
 #header,
 #footer_wrapper {
-	background-color: #daf291; /* L92 */
+	background-color: #d1e595; /* L88 */
 	color: #000;
 }
 
