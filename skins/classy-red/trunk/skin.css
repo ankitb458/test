@@ -311,6 +311,10 @@ html {
 	color: #000;
 }
 
+#wrapper {
+	border-color: #666;
+}
+
 .header_widget_bg,
 .footer_widget_bg,
 #footer_bg,
@@ -380,7 +384,6 @@ html {
 	border-color: #5c0909; /* B/2 */
 }
 
-#wrapper,
 .widget_calendar thead {
 	border-color: #5c5c5c; /* B/2 S0 */
 }

@@ -236,6 +236,7 @@ html {
 #wrapper {
 	background-color: #fff;
 	color: #111;
+	border-color: #666;
 }
 
 .main h1,
@@ -287,7 +288,6 @@ html {
 	border-color: #301d0a; /* B/2 */
 }
 
-#wrapper,
 .widget_calendar thead {
 	border-color: #303030; /* B/2 S0 */
 }
