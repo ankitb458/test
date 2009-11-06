@@ -309,12 +309,12 @@ html {
 
 /*
  * Scheme Colors
- * H75 S75 L75
+ * H75 S70 L80
  */
 
 #navbar,
 .widget_calendar thead {
-	background-color: #a0c431; /* - */
+	background-color: #afd43f; /* - */
 	color: #000;
 }
 
@@ -331,7 +331,7 @@ html {
 
 #footer,
 .widget_calendar tfoot {
-	background-color: #daf097; /* L92 */
+	background-color: #daf291; /* L92 */
 	color: #000;
 }
 
@@ -352,7 +352,7 @@ html {
 }
 
 #go {
-	border-color: #4f6118; /* B/2 */
+	border-color: #52631e; /* B/2 */
 }
 
 #wrapper,
@@ -365,5 +365,5 @@ html {
 #footer_top_wrapper,
 #footer_bottom_wrapper,
 .widget_calendar thead {
-	border-color: #616161; /* B/2 S0 */
+	border-color: #636363; /* B/2 S0 */
 }

@@ -348,7 +348,7 @@ Author uri: http://www.mesoconcepts.com
 
 /*
  * Scheme Colors
- * H75 S75 L75
+ * H75 S70 L80
  */
 
 #navbar,
@@ -356,13 +356,13 @@ Author uri: http://www.mesoconcepts.com
 #credits,
 html /* credits bottom */,
 .widget_calendar thead {
-	background-color: #a0c431; /* - */
+	background-color: #afd43f; /* - */
 	color: #000;
 }
 
 #header,
 #footer_wrapper {
-	background-color: #daf097; /* L92 */
+	background-color: #daf291; /* L92 */
 	color: #000;
 }
 
@@ -372,7 +372,7 @@ html /* credits bottom */,
 }
 
 .widget_calendar tfoot {
-	background-color: #daf097; /* L92 */
+	background-color: #daf291; /* L92 */
 	color: #000;
 }
 
@@ -394,13 +394,13 @@ html /* credits bottom */,
 #header_middle_wrapper,
 #footer_top_wrapper,
 #footer_bottom_wrapper {
-	border-color: #4f6118; /* B/2 */
+	border-color: #52631e; /* B/2 */
 }
 
 .widget_calendar thead {
-	border-color: #616161; /* B/2 S0 */
+	border-color: #636363; /* B/2 S0 */
 }
 
 #body_bottom {
-	border-bottom-color: #616161; /* B/2 S0 */
+	border-bottom-color: #636363; /* B/2 S0 */
 }
