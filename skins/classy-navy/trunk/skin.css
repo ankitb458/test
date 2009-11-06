@@ -338,7 +338,7 @@ html {
 }
 
 html {
-	background-color: #f8f8e9; /* C-L97 */
+	background-color: #f7f7f0; /* C-L97 */
 	color: #000;
 }
 
@@ -349,7 +349,7 @@ html {
 
 .header_widget,
 .footer_widget {
-	background-color: #f2f5ff; /* A-L97 */
+	background-color: #f5f7fc; /* A-L97 */
 	color: #000;
 }
 
