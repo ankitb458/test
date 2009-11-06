@@ -63,3 +63,7 @@ html {
 .widget_calendar tfoot td {
 	border-top: solid 1px #dcdcdc;
 }
+
+h1, h2, h3 {
+	font-family: inherit;
+}
