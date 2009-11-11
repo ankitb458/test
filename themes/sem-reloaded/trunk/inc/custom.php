@@ -1120,8 +1120,8 @@ EOS;
 		$custom = get_option('sem_custom');
 		
 		$font_families = array(
-			'arial' => '"Helvetica Neue", Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
-			'tahoma' => 'Frutiger, "Frutiger Linotype", Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
+			'arial' => 'Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
+			'tahoma' => 'Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
 			'trebuchet' => '"Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
 			'verdana' => 'Verdana, "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
 			'antica' => '"Palatino, "Book Antica", "Palatino Linotype", "URW Palladio L", Palladio, Georgia, "DejaVu Serif", Serif',

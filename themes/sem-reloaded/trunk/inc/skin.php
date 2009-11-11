@@ -67,12 +67,12 @@ class sem_skin {
 }
 
 .arial {
-	font-family: "Helvetica Neue", Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
+	font-family: Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
 	font-size: 14px;
 }
 
 .tahoma {
-	font-family: Frutiger, "Frutiger Linotype", Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
+	font-family: Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
 	font-size: 14px;
 }
 
@@ -418,8 +418,8 @@ EOS;
 	function get_fonts() {
 		return array(
 			'' =>  __('The skin\'s default stack', 'sem-reloaded'),
-			'arial' => __('Arial stack: "Helvetica Neue", Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
-			'tahoma' => __('Tahoma stack: Frutiger, "Frutiger Linotype", Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
+			'arial' => __('Arial stack: Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
+			'tahoma' => __('Tahoma stack: Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
 			'trebuchet' =>  __('Trebuchet stack: "Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
 			'verdana' =>  __('Verdana stack: Verdana, "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
 			'antica' => __('Antica stack: Palatino, "Book Antica", "Palatino Linotype", "URW Palladio L", Palladio, Georgia, "DejaVu Serif", Serif', 'sem-reloaded'),
