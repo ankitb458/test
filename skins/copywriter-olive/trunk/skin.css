@@ -25,7 +25,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #wrapper {
-	background: url(images/pattern.jpg);
+	background-image: url(images/pattern.jpg);
 	background-position: center;
 	background-repeat: repeat;
 }
@@ -352,7 +352,7 @@ Author uri: http://www.mesoconcepts.com
 
 /*
  * Scheme Colors
- * H75 S70 L80
+ * H75 S70 L80 needs update
  */
 
 #navbar,
