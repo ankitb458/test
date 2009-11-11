@@ -214,15 +214,26 @@ html {
 	border-radius: 6px;
 }
 
+#navbar,
+#footer,
 .entry,
 .main_widget,
 .widget,
 .header_widget,
 .footer_widget {
-	-moz-box-shadow: rgba(0,0,0,.2) 0 0 5px;
-	-khtml-box-shadow: rgba(0,0,0,.2) 0 0 5px;
-	-webkit-box-shadow: rgba(0,0,0,.2) 0 0 5px;
-	box-shadow: rgba(0,0,0,.2) 0 0 5px;
+	-moz-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+	-khtml-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+	-webkit-box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+	box-shadow: rgba(0,0,0,.2) 1px 1px 3px;
+}
+
+#wrapper {
+	overflow: hidden;
+	padding-bottom: 5px;
+}
+
+body {
+	padding-bottom: 5px;
 }
 
 .entry,
@@ -316,7 +327,7 @@ html {
  */
 
 html {
-	background-color: #ededed;
+	background-color: #fff;
 	color: #000;
 }
 
@@ -355,13 +366,13 @@ html {
 
 /*
  * Scheme Colors
- * H30 S35 L80
+ * H30 S40 L80 needs update
  */
 
 #navbar,
 .widget_calendar thead,
 .widget_title h2 {
-	background-color: #e8bf97; /* - */
+	background-color: #ebbc8d; /* - */
 	color: #000;
 }
 
