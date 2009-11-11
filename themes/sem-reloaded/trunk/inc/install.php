@@ -6,7 +6,7 @@
 #
 
 # Skin, layout, font
-$sem_options['active_skin'] = 'classy-olive';
+$sem_options['active_skin'] = 'classy-citrus';
 $sem_options['active_layout'] = 'mts';
 $sem_options['active_font'] = '';
 
