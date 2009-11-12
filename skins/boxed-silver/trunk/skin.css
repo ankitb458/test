@@ -364,8 +364,8 @@ html {
 	color: #000;
 }
 
-.entry_header h1,
-#sitename {
+#sitename,
+.entry_header h1 {
 	color: #474747; /* L30 */
 }
 
