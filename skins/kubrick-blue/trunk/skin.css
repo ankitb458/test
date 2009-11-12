@@ -227,6 +227,10 @@ html {
 	border-color: #666;
 }
 
+.post_list h3 {
+	color: inherit;
+}
+
 .main h1,
 .main h2,
 .main h3,

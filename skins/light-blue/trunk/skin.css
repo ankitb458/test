@@ -279,13 +279,17 @@ html,
 	color: #222;
 }
 
-.main h1
+.main h1,
 .main h2,
 .main h3,
 .sidebar h1,
 .sidebar h2,
 .widget_calendar caption {
 	color: #000;
+}
+
+.post_list h3 {
+	color: inherit;
 }
 
 #body,
