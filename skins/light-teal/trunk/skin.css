@@ -325,7 +325,8 @@ html,
 }
 
 #sitename,
-.entry_header h1 {
+.entry_header h1,
+.archives_header h1 {
 	color: #044f4f; /* L30 */
 }
 
