@@ -243,10 +243,6 @@ html {
 	background-repeat: repeat-x;
 }
 
-#sidebars .sidebar {
-	background: none;
-}
-
 #main_bg,
 #sidebars_bg,
 .sidebar_bg {
@@ -348,6 +344,9 @@ html,
 	color: #222;
 }
 
+#sidebars .sidebar {
+	background: none;
+}
 
 
 /*

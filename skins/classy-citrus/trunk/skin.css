@@ -224,6 +224,8 @@ html {
 
 .ad_unit .main_widget_bg,
 .ad_unit .widget_bg,
+.main .blog_header,
+.blog_header .main_widget_bg,
 .main .blog_footer,
 .blog_footer .main_widget_bg {
 	border: none;
@@ -297,13 +299,17 @@ html {
  */
 
 #wrapper,
-.entry_bg,
-.post_list,
-#sidebars_bg,
-.sidebar_bg,
+.main_widget,
+.entry,
+#sidebars,
+.sidebar,
 .widget_calendar table {
 	background-color: #fff;
 	color: #222;
+}
+
+#sidebars .sidebar {
+	background: none;
 }
 
 .main h1,
