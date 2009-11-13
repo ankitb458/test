@@ -351,13 +351,13 @@ html,
 
 /*
  * Scheme Colors
- * H210 S95 L40
+ * H210 S85 L40
  */
 
 #navbar,
 #footer,
 .widget_calendar thead {
-	background-color: #0960b8; /* - */
+	background-color: #1961a8; /* - */
 	color: #fff;
 }
 
@@ -402,11 +402,11 @@ html,
 #header_top_wrapper,
 #header_middle_wrapper,
 #footer_top_wrapper {
-	border-color: #05305c; /* B/2 */
+	border-color: #0d3054; /* B/2 */
 }
 
 #footer_wrapper,
 #footer_bottom_wrapper,
 .widget_calendar thead {
-	border-color: #5c5c5c; /* B/2 S0 */
+	border-color: #545454; /* B/2 S0 */
 }
