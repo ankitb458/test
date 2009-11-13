@@ -1,7 +1,7 @@
 /*
 Skin name: Shades, Blue
 Skin uri: http://skins.semiologic.com/shades/
-Version: 0.9 RC
+Version: 0.9 RC2
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -129,13 +129,6 @@ Author uri: http://www.mesoconcepts.com
 	padding-top: 1px;
 }
 
-#body {
-	background-image: url(images/bg.jpg);
-	background-position: bottom center;
-	background-repeat: repeat-x;
-	min-height: 300px;
-}
-
 .header_widget,
 .header_widget_bg,
 .footer_widget,
@@ -172,8 +165,23 @@ Author uri: http://www.mesoconcepts.com
 	margin-bottom: 5px;
 }
 
+#navbar {
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+}
+
 #credits {
 	border-top: solid 1px;
+	padding-top: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#body {
+	background-image: url(images/bg.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+	min-height: 300px;
 }
 
 .footer_widget {
@@ -182,35 +190,20 @@ Author uri: http://www.mesoconcepts.com
 	background-repeat: repeat-x;
 }
 
-#header_boxes_bg {
-	background-image: url(images/header_boxes.gif);
+.inline_boxes_bg {
+	background-image: url(images/inline_boxes.gif);
 	background-position: center;
 	background-repeat: no-repeat;
 }
 
-.mmm #header_boxes_bg {
-	background-image: url(images/mmm-header_boxes.gif);
-}
-
-#footer_boxes_bg {
-	background-image: url(images/footer_boxes.gif);
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-.mmm #footer_boxes_bg {
-	background-image: url(images/mmm-footer_boxes.gif);
+.mmm .inline_boxes_bg {
+	background-image: url(images/mmm-inline_boxes.gif);
 }
 
 .widget_calendar table,
 .widget_calendar thead,
 .widget_calendar tfoot {
 	border: solid 1px;
-}
-
-#navbar {
-	border-top: solid 1px;
-	border-bottom: solid 1px;
 }
 
 .entry_bottom {
@@ -261,7 +254,7 @@ a:hover,
 #header_wrapper,
 #body,
 .footer_widget {
-	background-color: #0c4175; /* B*2/3 */
+	background-color: #114170; /* B*2/3 */
 	color: #eee;
 }
 
@@ -269,13 +262,13 @@ a:hover,
 .widget_calendar thead,
 html /* credits bottom */,
 #footer_wrapper {
-	background-color: #07294a; /* B*2/3 L-10 */
+	background-color: #0d3257; /* B*2/3 L-10 */
 	color: #eee;
 }
 
 .header_widget,
 .widget_calendar tfoot {
-	background-color: #0e4c8a; /* B*2/3 L+5 */
+	background-color: #13487d; /* B*2/3 L+5 */
 	color: #eee;
 }
 
@@ -292,5 +285,5 @@ html /* credits bottom */,
 .widget_calendar table,
 .widget_calendar thead,
 .widget_calendar tfoot {
-	border-color: #658eb8; /* B*2/3 L+15 S/2 */
+	border-color: #577796; /* B*2/3 L+15 S/2 */
 }
