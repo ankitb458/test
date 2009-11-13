@@ -343,13 +343,13 @@ html {
 
 /*
  * Scheme Colors
- * H0 S95 L40
+ * H0 S85 L40
  */
 
 #navbar,
 .widget_calendar thead,
 .widget_title h2 {
-	background-color: #bd0909; /* - */
+	background-color: #b51b1b; /* - */
 	color: #fff;
 }
 
@@ -367,7 +367,7 @@ html {
 #sitename,
 .entry_header h1,
 .archives_header h1 {
-	color: #8f0707; /* L30 */
+	color: #8a1515; /* L30 */
 }
 
 #navbar a {
@@ -384,10 +384,10 @@ html {
 
 #navbar_bg,
 #go {
-	border-color: #5e0505; /* B/2 */
+	border-color: #590d0d; /* B/2 */
 }
 
 .widget_calendar thead,
 .widget_title h2 {
-	border-color: #5e5e5e; /* B/2 S0 */
+	border-color: #595959; /* B/2 S0 */
 }
