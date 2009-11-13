@@ -1,7 +1,7 @@
 /*
 Skin name: Copywriter, Beige
 Skin uri: http://skins.semiologic.com/copywriter/
-Version: 0.9 RC
+Version: 0.9 RC2
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -22,18 +22,6 @@ Author uri: http://www.mesoconcepts.com
 .header_widget .wrapper_item,
 #footer_wrapper .wrapper {
 	width: auto;
-}
-
-#wrapper {
-	background-image: url(images/pattern.jpg);
-	background-position: center;
-	background-repeat: repeat;
-}
-
-#header {
-	background-image: url(images/header.jpg);
-	background-position: bottom center;
-	background-repeat: repeat-x;
 }
 
 #navbar_bg {
@@ -149,6 +137,7 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #header,
+#footer,
 #header_top_wrapper,
 #header_middle_wrapper,
 #footer_top_wrapper,
@@ -167,11 +156,51 @@ Author uri: http://www.mesoconcepts.com
 	padding-bottom: 5px;
 }
 
+#credits {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
 .header_widget_bg,
 #main_bg,
 #sidebars_bg,
 .sidebar_bg {
 	border: solid 1px;
+}
+
+.header_widget_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#main,
+#sidebars,
+.sidebar {
+	margin-top: 0px;
+	margin-bottom: 18px;
+}
+
+.header_widget {
+	margin-top: 18px;
+	margin-bottom: 18px;
+}
+
+#body {
+	margin-top: 18px;
+}
+
+#footer_wrapper {
+	border-top: solid 1px;
+}
+
+.footer_widget {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#footer_boxes {
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 .header_widget,
@@ -182,21 +211,28 @@ Author uri: http://www.mesoconcepts.com
 #sidebars_bg,
 .sidebar,
 .sidebar_bg {
-	-moz-border-radius: 9px;
-	-khtml-border-radius: 9px;
-	-webkit-border-radius: 9px;
-	border-radius: 9px;
+	-moz-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+}
+
+html {
+	background-image: url(images/pattern.jpg);
+	background-position: center;
+	background-repeat: repeat;
+}
+
+#header {
+	background-image: url(images/header.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
 }
 
 .header_widget {
 	background-image: url(images/header_widget.jpg);
 	background-position: top center;
 	background-repeat: repeat-x;
-}
-
-.header_widget_bg {
-	padding-top: 5px;
-	padding-bottom: 5px;
 }
 
 #main,
@@ -228,38 +264,6 @@ Author uri: http://www.mesoconcepts.com
 
 .mmm #footer_boxes {
 	background-image: url(images/mmm-footer_boxes.gif);
-}
-
-#main,
-#sidebars,
-.sidebar {
-	margin-top: 0px;
-	margin-bottom: 18px;
-}
-
-.header_widget {
-	margin-top: 18px;
-	margin-bottom: 18px;
-}
-
-#body {
-	margin-top: 18px;
-}
-
-#body_bottom {
-	height: 3px;
-	border-top: solid 1px;
-	border-bottom: solid 1px;
-}
-
-.footer_widget {
-	margin-top: 10px;
-	margin-bottom: 10px;
-}
-
-#footer_boxes {
-	margin-top: 0px;
-	margin-bottom: 0px;
 }
 
 #sidebars .sidebar {
@@ -311,11 +315,6 @@ Author uri: http://www.mesoconcepts.com
  * Skin Colors
  */
 
-#wrapper {
-	background-color: #f7f7f7;
-	color: #111;
-}
-
 .main h1,
 .main h2,
 .main h3,
@@ -325,9 +324,8 @@ Author uri: http://www.mesoconcepts.com
 	color: #000;
 }
 
-#body_bottom {
-	background-color: #ccc;
-	border-color: #999;
+.post_list h3 {
+	color: inherit;
 }
 
 .header_widget_bg,
@@ -341,12 +339,13 @@ Author uri: http://www.mesoconcepts.com
 	border-color: #999;
 }
 
+html,
 #main,
 #sidebars,
 .sidebar,
 .widget_calendar table {
 	background-color: #fff;
-	color: #111;
+	color: #222;
 }
 
 
@@ -357,16 +356,23 @@ Author uri: http://www.mesoconcepts.com
 
 #navbar,
 #footer,
-#credits,
-html /* credits bottom */,
 .widget_calendar thead {
 	background-color: #e8bf97; /* - */
 	color: #000;
 }
 
-#header,
+#header {
+	background-color: #ffe9d4; /* L85 */
+	color: #000;
+}
+
+.widget_calendar tfoot {
+	background-color: #ffe9d4; /* L90 */
+	color: #000;
+}
+
 #footer_wrapper {
-	background-color: #fff5d6; /* A-L92 */
+	background-color: #faebc8; /* A-L90 */
 	color: #000;
 }
 
@@ -375,36 +381,32 @@ html /* credits bottom */,
 	color: #000;
 }
 
-.widget_calendar tfoot {
-	background-color: #ffe2c4; /* L92 */
-	color: #000;
-}
-
 #navbar a,
-#footer a,
-#credits a {
+#footer a {
 	color: #000;
 }
 
-#footer a:hover,
-#credits a:hover {
-	color: #472707; /* S/L 20/90 */
+#footer a:hover {
+	color: #472707; /* L90* */
+}
+
+.entry_bottom,
+.widget_title h2 {
+	border-color: #ad9379; /* L63 */
 }
 
 #header,
 #navbar,
 #go,
+#footer,
 #header_top_wrapper,
 #header_middle_wrapper,
-#footer_top_wrapper,
-#footer_bottom_wrapper {
+#footer_top_wrapper {
 	border-color: #735f4b; /* B/2 */
 }
 
+#footer_wrapper,
+#footer_bottom_wrapper,
 .widget_calendar thead {
 	border-color: #737373; /* B/2 S0 */
-}
-
-#body_bottom {
-	border-bottom-color: #737373; /* B/2 S0 */
 }
