@@ -352,18 +352,18 @@ html,
 
 /*
  * Scheme Colors
- * H180 S95 L45
+ * H180 S70 L45
  */
 
 #navbar,
 #footer,
 .widget_calendar thead {
-	background-color: #067878; /* - */
+	background-color: #237575; /* - */
 	color: #fff;
 }
 
 #header {
-	background-color: #b9eded; /* L85 */
+	background-color: #96e3e3; /* L85 */
 	color: #000;
 }
 
@@ -403,7 +403,7 @@ html,
 #header_top_wrapper,
 #header_middle_wrapper,
 #footer_top_wrapper {
-	border-color: #033b3b; /* B/2 */
+	border-color: #123b3b; /* B/2 */
 }
 
 #footer_wrapper,
