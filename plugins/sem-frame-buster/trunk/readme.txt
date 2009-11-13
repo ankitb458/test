@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: frames, frame-buster, semiologic
 Requires at least: 2.0
-Tested up to: 2.8.4
+Tested up to: 2.8.6
 Stable tag: trunk
 
 

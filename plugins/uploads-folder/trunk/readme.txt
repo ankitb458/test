@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: uploads, uploads-folder, uploads folder, cms, semiologic
 Requires at least: 2.6
-Tested up to: 2.8.4
+Tested up to: 2.8.6
 Stable tag: trunk
 
 Changes your uploads subfolders to more natural paths that are unique to posts and pages.
