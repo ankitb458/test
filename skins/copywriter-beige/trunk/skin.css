@@ -381,6 +381,11 @@ html,
 	color: #000;
 }
 
+.entry_header h1,
+.archives_header h1 {
+	color: #5c4025; /* L30 */
+}
+
 #navbar a,
 #footer a {
 	color: #000;
