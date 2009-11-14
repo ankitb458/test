@@ -702,7 +702,7 @@ div.media {
 .entry .entry_author_image {
 	float: left;
 	border: outset 1px;
-	margin: 10px 10px 0px 3px;
+	margin: 4px 10px 0px 4px;
 }
 
 /* wp gallery and thumbnails */
@@ -747,7 +747,7 @@ p.attachment {
 	display: block;
 	float: left;
 	border: outset 1px;
-	margin: 10px 10px 0px 3px;
+	margin: 4px 10px 0px 4px;
 }
 
 /* search reloaded */
@@ -787,6 +787,12 @@ div.scripts {
 }
 
 /* bookmark me, subscribe me */
+
+.entry .bookmark_me,
+.entry .subscribe_me {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
 
 .center_feed_button {
 	margin-top: 10px;
