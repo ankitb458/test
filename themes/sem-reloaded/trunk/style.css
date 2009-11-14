@@ -705,7 +705,7 @@ div.media {
 	margin: 10px 10px 0px 3px;
 }
 
-/* wp gallery */
+/* wp gallery and thumbnails */
 
 .gallery {
 	clear: both;
@@ -741,6 +741,13 @@ p.attachment {
 	margin-right: 3%;
 	float: right;
 	text-align: left;
+}
+
+.wp-post-image {
+	display: block;
+	float: left;
+	border: outset 1px;
+	margin: 10px 10px 0px 3px;
 }
 
 /* search reloaded */

@@ -32,6 +32,9 @@ if ( !class_exists('sem_fixes') ) {
 	wp_timezone_override_offset();
 }
 
+if ( function_exists('add_theme_support') )
+	add_theme_support('post-thumbnails');
+
 
 #
 # extra functions

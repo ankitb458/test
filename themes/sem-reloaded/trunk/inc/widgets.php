@@ -455,9 +455,12 @@ class entry_content extends WP_Widget {
 			}
 		}
 		
+		$thumbnail = function_exists('get_the_post_image') ? get_the_post_image() : '';
+		
 		if ( $actions || $content ) {
 			echo $before_widget
 				. $actions
+				. $thumbnail
 				. $content
 				. '<div class="spacer"></div>' . "\n"
 				. $after_widget;
