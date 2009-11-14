@@ -343,9 +343,7 @@ html {
 	color: #000;
 }
 
-#sitename,
-.entry_header h1,
-.archives_header h1 {
+#sitename {
 	color: #134980; /* L30 */
 }
 
