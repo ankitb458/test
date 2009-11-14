@@ -743,7 +743,7 @@ p.attachment {
 	text-align: left;
 }
 
-.wp-post-image {
+.wp_thumbnail {
 	display: block;
 	float: left;
 	border: outset 1px;
