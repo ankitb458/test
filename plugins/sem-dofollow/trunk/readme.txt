@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: dofollow, nofollow, semiologic
 Requires at least: 2.0
-Tested up to: 2.8.6
+Tested up to: 2.9
 Stable tag: trunk
 
 The dofollow plugin for WordPress lets you remove the evil nofollow attribute from your comments. Because nofollow will not work.

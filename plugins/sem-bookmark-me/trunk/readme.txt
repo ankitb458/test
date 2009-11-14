@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: bookmark-me, social-bookmarking, social-media, buzzup, delicious, digg, facebook, mixx, reddit, stumbleupon, twitter, bookmarking, widget, semiologic
 Requires at least: 2.8
-Tested up to: 2.8.6
+Tested up to: 2.9
 Stable tag: trunk
 
 Adds buttons that let your visitors share your content on social media sites.
