@@ -174,7 +174,8 @@ class sem_panels {
 				break;
 			
 			default:
-				$before_widget = '<div class="%2$s">' . "\n"
+				$before_widget = '<div class="spacer"></div>' . "\n"
+					. '<div class="%2$s">' . "\n"
 					. '<div class="pad">' . "\n";
 				$after_widget = '</div>' . "\n"
 					. '</div>' . "\n";

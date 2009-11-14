@@ -228,8 +228,6 @@ class entry_header extends WP_Widget {
 		}
 		
 		if ( $date || $title ) {
-			echo '<div class="spacer"></div>' . "\n";
-			
 			if ( $date ) {
 				echo '<div class="entry_date">' . "\n"
 					. '<div class="pad">' . "\n"
@@ -251,8 +249,6 @@ class entry_header extends WP_Widget {
 					. '<div class="entry_header_bottom"><div class="hidden"></div></div>' . "\n"
 					. '</div>' . "\n";
 			}
-			
-			echo '<div class="spacer"></div>' . "\n";
 		}
 	} # widget()
 	
@@ -464,7 +460,8 @@ class entry_content extends WP_Widget {
 		}
 		
 		if ( $actions || $content ) {
-			echo $before_widget
+			echo '<div class="entry_content">' . "\n"
+				. '<div class="pad">' . "\n"
 				. $actions
 				. $thumbnail
 				. $content
@@ -1033,8 +1030,7 @@ class entry_comments extends WP_Widget {
 		if ( !class_exists('widget_contexts') && is_letter() )
 			return;
 		
-		echo '<div class="spacer"></div>' . "\n"
-			. '<div class="entry_comments">' . "\n";
+		echo '<div class="entry_comments">' . "\n";
 		
 		global $comments_captions;
 		$comments_captions = wp_parse_args($instance, entry_comments::defaults());

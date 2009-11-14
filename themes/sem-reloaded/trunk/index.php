@@ -33,7 +33,8 @@ include sem_path . '/header.php';
 					
 					sem_panels::display('the_entry');
 					
-					echo '</div>' . "\n"
+					echo '<div class="spacer"></div>' . "\n"
+						. '</div>' . "\n"
 						. '<div class="entry_bottom"><div class="hidden"></div></div>' . "\n"
 						. '</div>' . '<!-- entry -->' . "\n";
 
