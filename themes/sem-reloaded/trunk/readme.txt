@@ -30,6 +30,8 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 = 0.9 =
 
 - Switch to 3 inline boxes instead of 4 in wide layouts
+- Skin revamp (30 new skins)
+- WP 2.9 post thumbnails
 
 = 0.8 =
 
