@@ -3,7 +3,7 @@
 Plugin Name: External Links
 Plugin URI: http://www.semiologic.com/software/external-links/
 Description: Marks outbound links as such, with various effects that are configurable under <a href="options-general.php?page=external-links">Settings / External Links</a>.
-Version: 4.0.2
+Version: 4.0.3 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: external-links
@@ -129,6 +129,8 @@ class external_links {
 				
 				$site_domain .= ".$tld";
 			}
+			
+			$site_domain = strtolower($site_domain);
 		}
 		
 		if ( !$site_domain )
@@ -137,6 +139,7 @@ class external_links {
 		$link_domain = parse_url($url);
 		$link_domain = $link_domain['host'];
 		$link_domain = preg_replace("/^www\./i", '', $link_domain);
+		$link_domain = strtolower($link_domain);
 		
 		if ( $site_domain == $link_domain ) {
 			return true;
@@ -145,11 +148,11 @@ class external_links {
 			$link_elts = explode('.', $link_domain);
 			
 			while ( ( $site_elt = array_pop($site_elts) ) && ( $link_elt = array_pop($link_elts) ) ) {
-				if ( strtolower($site_elt) !== strtolower($link_elt) )
+				if ( $site_elt !== $link_elt )
 					return false;
 			}
 			
-			return !empty($link_elts);
+			return empty($link_elts) || empty($site_elts);
 		}
 	} # is_local_url()
 	
