@@ -43,7 +43,7 @@ function my_custom_head() {
 <?php
 } # my_custom_head()
 
-# Remove the leading dash below to use the above function
+# Remove the leading pound below to use the above function
 # add_action('wp_head', 'my_custom_head');
 
 
@@ -65,7 +65,7 @@ function my_custom_footer() {
 <?php
 } # my_custom_footer()
 
-# Remove the leading dash below to use the above function
+# Remove the leading pound below to use the above function
 # add_action('wp_footer', 'my_custom_footer');
 
 
@@ -88,7 +88,7 @@ function my_custom_php() {
 	include_once 'http://www.remotesite.com/folder/file.php';
 } # my_custom_php()
 
-# Remove the leading dash below to use the above function
+# Remove the leading pound below to use the above function
 # add_action('wp', 'my_custom_php');
 
 
@@ -127,6 +127,6 @@ function my_conditional_php() {
 	endif;
 } # my_conditional_php()
 
-# Remove the leading dash below to use the above function
+# Remove the leading pound below to use the above function
 # add_action('wp', 'my_conditional_php');
 
