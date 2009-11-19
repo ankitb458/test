@@ -38,6 +38,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 - Improve case-insensitive handling of domains
 - Improve image handling
+- Switch back to using a target attribute: work around double windows getting opened in Vista/IE7
 
 = 4.0.2 =
 

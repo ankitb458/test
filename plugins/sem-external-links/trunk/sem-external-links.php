@@ -72,15 +72,8 @@ class external_links {
 			&& !in_array('follow', $anchor['attr']['rel']) )
 			$anchor['attr']['rel'][] = 'nofollow';
 		
-		if ( $o['target'] && !is_feed() ) {
-			if ( empty($anchor['attr']['onclick']) ) {
-				$anchor['attr']['onclick'] = 'window.open(this.href); return false;';
-			} else {
-				$anchor['attr']['onclick'] = 'window.open(this.href); '
-					. rtrim($anchor['attr']['onclick'], ';') . '; '
-					. 'return false;';
-			}
-		}
+		if ( $o['target'] && !is_feed() && empty($anchor['attr']['target']) )
+		 	$anchor['attr']['target'] = '_blank';
 		
 		return $anchor;
 	} # filter()
