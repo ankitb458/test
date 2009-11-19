@@ -54,21 +54,22 @@ class external_links {
 		if ( external_links::is_local_url($anchor['attr']['href']) )
 			return $anchor;
 		
-		# ignore links on images
-		if ( preg_match("/^\s*<\s*img\s.+?>\s*$/is", $anchor['body']) )
-			return $anchor;
+		# no icons for images
+		$is_image = (bool) preg_match("/^\s*<\s*img\s.+?>\s*$/is", $anchor['body']);
 		
 		$o = external_links::get_options();
 		
 		if ( !in_array('external', $anchor['attr']['class']) )
 			$anchor['attr']['class'][] = 'external';
 		
-		if ( $o['icon'] && !in_array('external_icon', $anchor['attr']['class'])
-			&& !in_array('no_icon', $anchor['attr']['class']) && !in_array('noicon', $anchor['attr']['class']) )
+		if ( !$is_image && $o['icon'] && !in_array('external_icon', $anchor['attr']['class'])
+			&& !in_array('no_icon', $anchor['attr']['class'])
+			&& !in_array('noicon', $anchor['attr']['class']) )
 			$anchor['attr']['class'][] = 'external_icon';
 		
 		if ( $o['nofollow'] && !function_exists('strip_nofollow')
-			&& !in_array('nofollow', $anchor['attr']['rel']) && !in_array('follow', $anchor['attr']['rel']) )
+			&& !in_array('nofollow', $anchor['attr']['rel'])
+			&& !in_array('follow', $anchor['attr']['rel']) )
 			$anchor['attr']['rel'][] = 'nofollow';
 		
 		if ( $o['target'] && !is_feed() ) {

@@ -37,6 +37,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 4.0.3 =
 
 - Improve case-insensitive handling of domains
+- Improve image handling
 
 = 4.0.2 =
 
