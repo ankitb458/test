@@ -27,9 +27,13 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 6.0.2 =
+
+- Improved local url identification
+
 = 6.0.1 =
 
-- Fix the layout switcher
+- Fix the layout switcher in IE
 
 = 6.0 =
 

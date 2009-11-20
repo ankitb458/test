@@ -2578,6 +2578,8 @@ class sem_nav_menu extends WP_Widget {
 				
 				$site_domain .= ".$tld";
 			}
+			
+			$site_domain = strtolower($site_domain);
 		}
 		
 		if ( !$site_domain )
@@ -2586,6 +2588,7 @@ class sem_nav_menu extends WP_Widget {
 		$link_domain = parse_url($url);
 		$link_domain = $link_domain['host'];
 		$link_domain = preg_replace("/^www\./i", '', $link_domain);
+		$link_domain = strtolower($link_domain);
 		
 		if ( $site_domain == $link_domain ) {
 			return true;
@@ -2594,11 +2597,11 @@ class sem_nav_menu extends WP_Widget {
 			$link_elts = explode('.', $link_domain);
 			
 			while ( ( $site_elt = array_pop($site_elts) ) && ( $link_elt = array_pop($link_elts) ) ) {
-				if ( strtolower($site_elt) !== strtolower($link_elt) )
+				if ( $site_elt !== $link_elt )
 					return false;
 			}
 			
-			return !empty($link_elts);
+			return empty($link_elts) || empty($site_elts);
 		}
 	} # is_local_url()
 	
