@@ -86,6 +86,7 @@ class external_links {
 	 * @return bool $is_local_url
 	 **/
 
+	function is_local_url($url) {
 		if ( in_array(substr($url, 0, 1), array('?', '#')) || strpos($url, '://') === false )
 			return true;
 		elseif ( preg_match("~/go(/|\.)~i", $url) )
