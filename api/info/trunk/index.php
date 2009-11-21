@@ -130,7 +130,7 @@ while ( $row = $dbs->get_row() ) {
 		'rating' => 100,
 		'num_ratings' => 0,
 		'last_updated' => $row->{$packages . '_modified'},
-		'download_link' => $row->{$packages . '_package'},
+		'download_link' => !$expired || preg_match("|^http://downloads.wordpress.org|i", $row->{$packages . '_package'}) ? $row->{$packages . '_package'} : '',
 		'readme' => $row->{$packages . '_readme'},
 		);
 }
