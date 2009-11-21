@@ -30,6 +30,7 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 = 6.0.2 =
 
 - Improved local url identification
+- WP 2.9 compat
 
 = 6.0.1 =
 

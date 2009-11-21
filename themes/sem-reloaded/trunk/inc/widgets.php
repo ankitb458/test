@@ -2481,6 +2481,7 @@ class sem_nav_menu extends WP_Widget {
 			SELECT	posts.ID
 			FROM	$wpdb->posts as posts
 			WHERE	posts.post_type = 'page'
+			AND		post_status <> 'trash'
 			AND		posts.post_parent IN ( 0, $page_id, $front_page_id, $blog_page_id )
 			");
 		
