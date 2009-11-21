@@ -1,0 +1,289 @@
+/*
+Skin name: Shades, Blue
+Skin uri: http://skins.semiologic.com/shades/
+Version: 0.9
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
+.skin #wrapper,
+.skin #header,
+.skin #navbar,
+.skin #body,
+.skin #footer,
+.header_widget .wrapper_item,
+.footer_widget .wrapper_item {
+	width: auto;
+}
+
+#navbar_bg {
+	margin: 0px auto;
+}
+
+.mmm #navbar_bg {
+	width: 950px;
+}
+
+.mm #navbar_bg {
+	width: 750px;
+}
+
+.m #navbar_bg {
+	width: 620px;
+}
+
+#navbar .pad {
+	padding: 0px 1px;
+}
+
+#sidebars #sidebar .pad {
+	padding-right: 10px;
+}
+
+#sidebars #sidebar2 .pad {
+	padding-left: 10px;
+}
+
+#sidebars .sidebar {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget:first-child {
+	margin-top: 0px;
+}
+
+#sidebars .widget:last-child {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget.ad_unit:first-child {
+	margin-top: 10px;
+}
+
+#sidebars .widget.ad_unit:last-child {
+	margin-bottom: 10px;
+}
+
+#navbar {
+	background-image: url(images/navbar.jpg);
+	background-position: top center;
+	background-repeat: repeat;
+	border-bottom: solid 1px;
+}
+
+#navbar_bg {
+	background-image: url(images/navbar_item.jpg);
+	background-position: top left;
+	background-repeat: repeat-y;
+}
+
+#navbar span {
+	display: block;
+	float: left;
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar a {
+	background-image: url(images/navbar_item.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+	display: block;
+	float: left;
+	padding-left: 20px;
+	padding-right: 22px;
+	margin: 0px;
+}
+
+#navbar a:hover,
+#navbar span.nav_active {
+	background-image: url(images/navbar_active.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
+#navbar span.nav_active {
+	font-weight: normal;
+	padding-left: 20px;
+	padding-right: 22px;
+	margin: 0px;
+}
+
+#navbar span.nav_active a {
+	margin-left: -20px;
+	margin-right: -22px;
+	background: none;
+}
+
+#header_top_wrapper,
+#footer_wrapper {
+	padding-top: 1px;
+}
+
+.header_widget,
+.header_widget_bg,
+.footer_widget,
+.footer_widget_bg {
+	-moz-border-radius: 9px;
+	-khtml-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+}
+
+.header_widget,
+.footer_widget {
+	border: solid 1px;
+}
+
+.header_widget_bg,
+.footer_widget_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.header_widget,
+.footer_widget {
+	margin-top: 15px;
+}
+
+#header_wrapper,
+.header_widget {
+	margin-bottom: 15px;
+}
+
+#footer {
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+#navbar {
+	border-top: solid 1px;
+	border-bottom: solid 1px;
+}
+
+#credits {
+	border-top: solid 1px;
+	padding-top: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#body {
+	background-image: url(images/bg.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+	min-height: 300px;
+}
+
+.footer_widget {
+	background-image: url(images/footer_widget.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+.inline_boxes_bg {
+	background-image: url(images/inline_boxes.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.mmm .inline_boxes_bg {
+	background-image: url(images/mmm-inline_boxes.gif);
+}
+
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
+.entry_bottom {
+	width: 40%;
+	margin: 20px auto;
+	border-bottom: solid 1px;
+}
+
+.single .entry_bottom,
+.page .entry_bottom {
+	border: none;
+	margin: 0px;
+}
+
+.widget_title h2 {
+	padding-bottom: 3px;
+	border-bottom: solid 1px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+#sitename,
+h1,
+h2,
+.widget_calendar caption {
+	color: #ffe5b2; /* H40 B100 S30 */
+}
+
+a {
+	color: #99bbff; /* H220 B100 S40 */
+}
+
+a:hover,
+.widget_calendar tfoot a:hover {
+	color: #ffb2cc; /* H340 B100 S30 */
+}
+
+
+/*
+ * Scheme Colors
+ * H210 S85 L40
+ */
+
+#wrapper,
+#header_wrapper,
+#body,
+.footer_widget {
+	background-color: #114170; /* B*2/3 */
+	color: #eee;
+}
+
+#navbar,
+.widget_calendar thead,
+html /* credits bottom */,
+#footer_wrapper {
+	background-color: #0d3257; /* B*2/3 L-10 */
+	color: #eee;
+}
+
+.header_widget,
+.widget_calendar tfoot {
+	background-color: #13487d; /* B*2/3 L+5 */
+	color: #eee;
+}
+
+#navbar {
+	color: #fff;
+}
+
+#navbar,
+.header_widget,
+.footer_widget,
+#credits,
+.entry_bottom,
+.widget_title h2,
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border-color: #577796; /* B*2/3 L+15 S/2 */
+}
