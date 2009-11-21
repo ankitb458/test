@@ -1,0 +1,391 @@
+/*
+Skin name: Boxed, Purple
+Skin uri: http://skins.semiologic.com/boxed/
+Version: 0.9
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+#wrapper {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.sem_admin_menu #wrapper {
+	margin-top: 20px;
+}
+
+.skin .wrapper_item {
+	width: auto;
+}
+
+html {
+	background-image: url(images/pattern.jpg);
+	background-position: top center;
+	background-repeat: repeat;
+}
+
+.m2s #main,
+.m1s #main {
+	width: 532px;
+}
+
+.mm1s #main {
+	width: 632px;
+}
+
+.m2s #sidebar,
+.m2s #sidebar2 {
+	width: 191px;
+}
+
+.sms #sidebar_wrapper {
+	width: 741px;
+}
+
+.main .pad {
+	padding: 0px;
+}
+
+.pad,
+.pad .pad,
+.post_list {
+	padding: 0px 18px;
+}
+
+.ad_unit .main_widget_bg .pad,
+.ad_unit .widget_bg .pad {
+	padding: 0px;
+}
+
+#navbar .pad {
+	padding: 0px 18px 0px 0px;
+}
+
+#search_form {
+	padding-left: 18px;
+}
+
+#navbar_bg {
+	background-image: url(images/navbar.jpg);
+	background-position: top center;
+	background-repeat: repeat;
+}
+
+#navbar span {
+	display: block;
+	float: left;
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar a {
+	background-image: url(images/navbar_item.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+	display: block;
+	float: left;
+	padding-left: 17px;
+	padding-right: 19px;
+	margin: 0px;
+}
+
+#navbar a:hover,
+#navbar span.nav_active {
+	background-image: url(images/navbar_active.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
+#navbar span.nav_active {
+	font-weight: normal;
+	padding-left: 17px;
+	padding-right: 19px;
+	margin: 0px;
+}
+
+#navbar span.nav_active a {
+	margin-left: -17px;
+	margin-right: -19px;
+	background: none;
+}
+
+#navbar_bg {
+	border: solid 1px;
+}
+
+#credits {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-top: 10px;
+	border-top: solid 1px;
+}
+
+.entry_bg,
+.post_list,
+.main_widget_bg,
+.widget_bg,
+.header_widget_bg,
+.footer_widget_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.entry_bg,
+.post_list,
+.main_widget_bg,
+.widget_bg,
+.header_widget_bg,
+.footer_widget_bg {
+	border: solid 1px;
+}
+
+.entry,
+.main_widget,
+.widget {
+	margin-top: 0px;
+	margin-bottom: 18px;
+}
+
+#body {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+#header,
+#navbar,
+.header_widget,
+#header_top_wrapper,
+#header_middle_wrapper,
+#header_bottom_wrapper {
+	margin-top: 15px;
+	margin-bottom: 18px;
+}
+
+#footer,
+.footer_widget {
+	margin-top: 0px;
+	margin-bottom: 18px;
+}
+
+#header,
+#header_bg,
+#header_img,
+#header_img img,
+#navbar,
+#navbar_bg,
+.entry,
+.entry_bg,
+.post_list,
+.main_widget,
+.main_widget_bg,
+.widget,
+.widget_bg,
+.header_widget,
+.header_widget_bg,
+.footer_widget,
+.footer_widget_bg {
+	-moz-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+}
+
+#navbar span:first-child,
+#navbar span:first-child a {
+	-moz-border-radius-topleft: 7px;
+	-moz-border-radius-bottomleft: 7px;
+	-khtml-border-top-left-radius: 7px;
+	-khtml-border-bottom-left-radius: 7px;
+	-webkit-border-top-left-radius: 7px;
+	-webkit-border-bottom-left-radius: 7px;
+	border-top-left-radius: 7px;
+	border-bottom-left-radius: 7px;
+}
+
+#header_img img,
+#navbar,
+.entry,
+.main_widget,
+.widget,
+.header_widget,
+.footer_widget {
+	-moz-box-shadow: rgba(0,0,0,.15) 1px 1px 4px;
+	-khtml-box-shadow: rgba(0,0,0,.15) 1px 1px 4px;
+	-webkit-box-shadow: rgba(0,0,0,.15) 1px 1px 4px;
+	box-shadow: rgba(0,0,0,.15) 1px 1px 4px;
+}
+
+.entry,
+.main_widget,
+.widget {
+	background-image: url(images/body.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+.header_widget {
+	background-image: url(images/header_widget.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+.footer_widget {
+	background-image: url(images/footer_widget.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+.main .ad_unit,
+.ad_unit .main_widget_bg,
+.ad_unit .widget_bg,
+.main .blog_header,
+.main .blog_footer,
+.blog_header .main_widget_bg,
+.blog_footer .main_widget_bg {
+	border: none;
+	background: none;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	-moz-box-shadow: none;
+	-khtml-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.inline_boxes_bg {
+	background-image: url(images/inline_boxes.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.mmm .inline_boxes_bg {
+	background-image: url(images/mmm-inline_boxes.gif);
+}
+
+.widget_title h2 {
+	margin-top: -6px;
+	margin-left: -19px;
+	margin-right: -19px;
+	padding: 5px 18px 3px;
+	border: solid 1px;
+	-moz-border-radius-topleft: 7px;
+	-moz-border-radius-topright: 7px;
+	-khtml-border-top-left-radius: 7px;
+	-khtml-border-top-right-radius: 7px;
+	-webkit-border-top-left-radius: 7px;
+	-webkit-border-top-right-radius: 7px;
+	border-top-left-radius: 7px;
+	border-top-right-radius: 7px;
+	background-image: url(images/widget_header.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+.widget_title h2 {
+	font-size: 17px;
+}
+
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+html {
+	background-color: #fff;
+	color: #000;
+}
+
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2,
+.widget_calendar caption {
+	color: #000;
+}
+
+.post_list h3 {
+	color: inherit;
+}
+
+.entry_bg,
+.post_list,
+.main_widget_bg,
+.widget_bg,
+.header_widget_bg,
+.footer_widget_bg,
+.widget_calendar table,
+.widget_calendar tfoot,
+#credits {
+	border-color: #999;
+}
+
+.entry,
+.main_widget,
+.widget,
+.widget_calendar table {
+	background-color: #fff;
+	color: #222;
+}
+
+
+/*
+ * Scheme Colors
+ * H300 S80 L35
+ */
+
+#navbar,
+.widget_calendar thead,
+.widget_title h2 {
+	background-color: #8f1d8f; /* - */
+	color: #fff;
+}
+
+.widget_calendar tfoot {
+	background-color: #ffd4ff; /* L90 */
+	color: #000;
+}
+
+.header_widget,
+.footer_widget {
+	background-color: #edfaed; /* C-L97 */
+	color: #000;
+}
+
+#sitename {
+	color: #7a187a; /* L30 */
+}
+
+#navbar a {
+	color: #fff;
+}
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #590959; /* L90* */
+}
+
+#navbar_bg,
+#go {
+	border-color: #470e47; /* B/2 */
+}
+
+.widget_calendar thead,
+.widget_title h2 {
+	border-color: #474747; /* B/2 S0 */
+}
