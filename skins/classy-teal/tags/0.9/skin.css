@@ -1,0 +1,401 @@
+/*
+Skin name: Classy, Teal
+Skin uri: http://skins.semiologic.com/classy/
+Version: 0.9
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+#wrapper {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.sem_admin_menu #wrapper {
+	margin-top: 20px;
+}
+
+.skin .wrapper_item {
+	width: auto;
+}
+
+html {
+	background-image: url(images/bg.jpg);
+	background-repeat: repeat-x;
+	background-position: top center;
+}
+
+.mmm #wrapper {
+	width: 970px;
+}
+
+.mm #wrapper {
+	width: 770px;
+}
+
+.m #wrapper {
+	width: 640px;
+}
+
+.m2s #main,
+.m1s #main {
+	width: 540px;
+}
+
+.mm1s #main {
+	width: 640px;
+}
+
+.m2s #sidebar,
+.m2s #sidebar2 {
+	width: 199px;
+}
+
+.sms #sidebar,
+.sms #sidebar2 {
+	width: 195px;
+}
+
+.sms #sidebar_wrapper {
+	width: 745px;
+}
+
+.pad {
+	padding: 0px 15px;
+}
+
+.main .pad {
+	padding: 0px 0px;
+}
+
+.pad .pad,
+.pad .post_list {
+	padding: 0px 15px;
+}
+
+#navbar .pad {
+	padding: 0px 0px;
+}
+
+#search_form {
+	padding: 0px 15px;
+}
+
+#sidebars #sidebar .pad {
+	padding-right: 8px;
+}
+
+#sidebars #sidebar2 .pad {
+	padding-left: 8px;
+}
+
+#navbar_bg {
+	background-image: url(images/navbar.jpg);
+	background-position: top center;
+	background-repeat: repeat;
+}
+
+#navbar span {
+	display: block;
+	float: left;
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar a {
+	background-image: url(images/navbar_item.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+	display: block;
+	float: left;
+	padding-left: 15px;
+	padding-right: 17px;
+	margin: 0px;
+}
+
+#navbar a:hover,
+#navbar span.nav_active {
+	background-image: url(images/navbar_active.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
+#navbar span.nav_active {
+	font-weight: normal;
+	padding-left: 15px;
+	padding-right: 17px;
+	margin: 0px;
+}
+
+#navbar span.nav_active a {
+	margin-left: -15px;
+	margin-right: -17px;
+	background: none;
+}
+
+#credits {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#wrapper,
+#navbar_bg,
+#footer_bg,
+.header_widget_bg,
+.footer_widget_bg,
+.entry_bg,
+.post_list,
+.main_widget_bg,
+#sidebars_bg,
+.sidebar_bg {
+	border: solid 1px;
+}
+
+#footer_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#header,
+#navbar,
+#body,
+#footer,
+.header_widget,
+.footer_widget {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#wrapper {
+	-moz-box-shadow: rgba(0,0,0,.3) 0 0 4px;
+	-khtml-box-shadow: rgba(0,0,0,.3) 0 0 4px;
+	-webkit-box-shadow: rgba(0,0,0,.3) 0 0 4px;
+	box-shadow: rgba(0,0,0,.3) 0 0 4px;
+	background-image: url(images/pattern.jpg);
+	background-repeat: repeat;
+	background-position: top center;
+}
+
+.header_widget,
+.footer_widget {
+	background-image: url(images/wrapper_widget.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+.inline_boxes_bg {
+	background-image: url(images/inline_boxes.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.mmm .inline_boxes_bg {
+	background-image: url(images/mmm-inline_boxes.gif);
+}
+
+#footer {
+	background-image: url(images/footer_top.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+#footer_bg {
+	background-image: url(images/footer_bottom.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+.main_widget_bg,
+.entry_bg,
+.post_list,
+#sidebars_bg,
+.sidebar_bg {
+	background-image: url(images/body.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.ad_unit .main_widget_bg,
+.ad_unit .widget_bg,
+.main .blog_header,
+.blog_header .main_widget_bg,
+.main .blog_footer,
+.blog_footer .main_widget_bg {
+	border: none;
+	background: none;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.ad_unit .main_widget_bg .pad {
+	padding: 0px;
+}
+
+.entry,
+.comment,
+.main_widget {
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
+
+.entry:first-child,
+.main_widget:first-child {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.entry ~ .entry,
+.main_widget ~ .entry,
+.entry ~ .main_widget,
+.main_widget ~ .main_widget,
+.main_widget ~ .post_list,
+.post_list ~ .main_widget {
+	margin-top: 10px;
+	margin-bottom: 0px;
+}
+
+#sidebars .sidebar {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget:first-child {
+	margin-top: 0px;
+}
+
+#sidebars .widget:last-child {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget.ad_unit:first-child {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+#sidebars .widget.ad_unit:last-child {
+	margin-bottom: 10px;
+}
+
+.widget_title h2 {
+	padding-bottom: 3px;
+	border-bottom: solid 1px;
+}
+
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+#wrapper,
+.main_widget,
+.entry,
+#sidebars,
+.sidebar,
+.widget_calendar table {
+	background-color: #fff;
+	color: #222;
+}
+
+#sidebars .sidebar {
+	background: none;
+}
+
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2,
+.widget_calendar caption {
+	color: #000;
+}
+
+.post_list h3 {
+	color: inherit;
+}
+
+#wrapper {
+	border-color: #666;
+}
+
+.header_widget_bg,
+.footer_widget_bg,
+#footer_bg,
+.main_widget_bg,
+.entry_bg,
+.post_list,
+#sidebars_bg,
+.sidebar_bg,
+.widget_calendar table,
+.widget_calendar tfoot {
+	border-color: #999;
+}
+
+
+/*
+ * Scheme Colors
+ * H180 S70 L45
+ */
+
+#navbar,
+.widget_calendar thead {
+	background-color: #237575; /* - */
+	color: #fff;
+}
+
+#footer,
+.widget_calendar tfoot {
+	background-color: #b9eded; /* L90 */
+	color: #000;
+}
+
+.header_widget,
+.footer_widget {
+	background-color: #ebfaf8; /* A-L97 */
+	color: #000;
+}
+
+html {
+	background-color: #fff2f2; /* C-L97 */
+	color: #000;
+}
+
+#sitename {
+	color: #184f4f; /* L30 */
+}
+
+#navbar a {
+	color: #fff;
+}
+
+#footer a {
+	color: #000;
+}
+
+#footer a:hover {
+	color: #063838; /* L90* */
+}
+
+.widget_title h2 {
+	border-color: #70a1a1; /* L63 */
+}
+
+#navbar_bg,
+#go {
+	border-color: #123b3b; /* B/2 */
+}
+
+.widget_calendar thead {
+	border-color: #3b3b3b; /* B/2 S0 */
+}
