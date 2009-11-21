@@ -1,0 +1,412 @@
+/*
+Skin name: Copywriter, Green
+Skin uri: http://skins.semiologic.com/copywriter/
+Version: 0.9
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+.sem_admin_menu #wrapper {
+	margin-top: 15px;
+}
+
+.skin #wrapper,
+.skin #header,
+.skin #navbar,
+.skin #body,
+.header_widget .wrapper_item,
+#footer_wrapper .wrapper {
+	width: auto;
+}
+
+#navbar_bg {
+	margin: 0px auto;
+}
+
+.mmm #navbar_bg {
+	width: 952px;
+}
+
+.mm #navbar_bg {
+	width: 752px;
+}
+
+.m #navbar_bg {
+	width: 622px;
+}
+
+.m2s #main,
+.m1s #main {
+	width: 532px;
+}
+
+.mm1s #main {
+	width: 632px;
+}
+
+.m2s #sidebar,
+.m2s #sidebar2 {
+	width: 199px;
+}
+
+.sms #sidebar,
+.sms #sidebar2 {
+	width: 191px;
+}
+
+.sms #sidebar_wrapper {
+	width: 741px;
+}
+
+.main .pad {
+	padding: 0px;
+}
+
+.pad,
+.pad .pad,
+.post_list {
+	padding: 0px 18px;
+}
+
+#sidebars #sidebar .pad {
+	padding-right: 9px;
+}
+
+#sidebars #sidebar2 .pad {
+	padding-left: 9px;
+}
+
+#navbar .pad {
+	padding: 0px 1px;
+}
+
+#navbar {
+	background-image: url(images/navbar.jpg);
+	background-position: top center;
+	background-repeat: repeat;
+	border-bottom: solid 1px;
+}
+
+#navbar_bg {
+	background-image: url(images/navbar_item.jpg);
+	background-position: top left;
+	background-repeat: repeat-y;
+}
+
+#navbar span {
+	display: block;
+	float: left;
+	padding: 0px;
+	margin: 0px;
+}
+
+#navbar a {
+	background-image: url(images/navbar_item.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+	display: block;
+	float: left;
+	padding-left: 18px;
+	padding-right: 20px;
+	margin: 0px;
+}
+
+#navbar a:hover,
+#navbar span.nav_active {
+	background-image: url(images/navbar_active.jpg);
+	background-position: top right;
+	background-repeat: no-repeat;
+}
+
+#navbar span.nav_active {
+	font-weight: normal;
+	padding-left: 18px;
+	padding-right: 20px;
+	margin: 0px;
+}
+
+#navbar span.nav_active a {
+	margin-left: -18px;
+	margin-right: -20px;
+	background: none;
+}
+
+#header,
+#footer,
+#header_top_wrapper,
+#header_middle_wrapper,
+#footer_top_wrapper,
+#footer_bottom_wrapper {
+	border-bottom: solid 1px;
+}
+
+#header_top_wrapper,
+#footer_top_wrapper,
+#footer_bottom_wrapper {
+	padding-top: 1px;
+}
+
+#footer_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#credits {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.header_widget_bg,
+#main_bg,
+#sidebars_bg,
+.sidebar_bg {
+	border: solid 1px;
+}
+
+.header_widget_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#main,
+#sidebars,
+.sidebar {
+	margin-top: 0px;
+	margin-bottom: 18px;
+}
+
+.header_widget {
+	margin-top: 18px;
+	margin-bottom: 18px;
+}
+
+#body {
+	margin-top: 18px;
+}
+
+#footer_wrapper {
+	border-top: solid 1px;
+}
+
+.footer_widget {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#footer_boxes {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.header_widget,
+.header_widget_bg,
+#main,
+#main_bg,
+#sidebars,
+#sidebars_bg,
+.sidebar,
+.sidebar_bg {
+	-moz-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+}
+
+html {
+	background-image: url(images/pattern.jpg);
+	background-position: center;
+	background-repeat: repeat;
+}
+
+#header {
+	background-image: url(images/header.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+.header_widget {
+	background-image: url(images/header_widget.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+#main,
+#sidebars,
+.sidebar {
+	background-image: url(images/body.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+#main_bg,
+#sidebars_bg,
+.sidebar_bg {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#footer_boxes {
+	background-image: url(images/footer_boxes.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.mmm #footer_boxes {
+	background-image: url(images/mmm-footer_boxes.gif);
+}
+
+#sidebars .sidebar {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget:first-child {
+	margin-top: 0px;
+}
+
+#sidebars .widget:last-child {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget.ad_unit:first-child {
+	margin-top: 10px;
+	margin-bottom: 18px;
+}
+
+#sidebars .widget.ad_unit:last-child {
+	margin-bottom: 10px;
+}
+
+.entry_bottom {
+	width: 40%;
+	margin: 20px auto;
+	border-bottom: solid 1px;
+}
+
+.single .entry_bottom,
+.page .entry_bottom {
+	border: none;
+	margin: 0px;
+}
+
+.widget_title h2 {
+	padding-bottom: 3px;
+	border-bottom: solid 1px;
+}
+
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2,
+.widget_calendar caption {
+	color: #000;
+}
+
+.post_list h3 {
+	color: inherit;
+}
+
+.header_widget_bg,
+#main_bg,
+#sidebars_bg,
+.sidebar_bg,
+.entry_bottom,
+.widget_title h2,
+.widget_calendar table,
+.widget_calendar tfoot {
+	border-color: #999;
+}
+
+html,
+#main,
+#sidebars,
+.sidebar,
+.widget_calendar table {
+	background-color: #fff;
+	color: #222;
+}
+
+#sidebars .sidebar {
+	background: none;
+}
+
+
+/*
+ * Scheme Colors
+ * H120 S75 L45
+ */
+
+#navbar,
+#footer,
+.widget_calendar thead {
+	background-color: #1f7a1f; /* - */
+	color: #fff;
+}
+
+#header {
+	background-color: #99e899; /* L85 */
+	color: #000;
+}
+
+.widget_calendar tfoot {
+	background-color: #b6f0b6; /* L90 */
+	color: #000;
+}
+
+#footer_wrapper {
+	background-color: #c1f0bb; /* A-L90 */
+	color: #000;
+}
+
+.header_widget {
+	background-color: #fff2ff; /* C-L97 */
+	color: #000;
+}
+
+#navbar a,
+#footer a {
+	color: #fff;
+}
+
+#footer a:hover {
+	color: #b6f0b6; /* L90* */
+}
+
+.entry_bottom,
+.widget_title h2 {
+	border-color: #72a372; /* L63 */
+}
+
+#header,
+#navbar,
+#go,
+#footer,
+#header_top_wrapper,
+#header_middle_wrapper,
+#footer_top_wrapper {
+	border-color: #0f3d0f; /* B/2 */
+}
+
+#footer_wrapper,
+#footer_bottom_wrapper,
+.widget_calendar thead {
+	border-color: #3d3d3d; /* B/2 S0 */
+}
