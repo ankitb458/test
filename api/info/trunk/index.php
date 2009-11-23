@@ -72,12 +72,14 @@ $expires = db::get_var("
 db::disconnect();
 
 $expired = false;
-if ( $expires === false ) {
-	$expired = true;
-} elseif ( is_null($expires) ) {
-	$expired = false;
-} elseif ( $type != 'themes' ) {
-	$expired = time() > strtotime($expires);
+if ( $type != 'themes' ) {
+	if ( $expires === false ) {
+		$expired = true;
+	} elseif ( is_null($expires) ) {
+		$expired = false;
+	} else {
+		$expired = time() > strtotime($expires);
+	}
 }
 
 db::connect('mysql');
@@ -119,6 +121,8 @@ while ( $row = $dbs->get_row() ) {
 	if ( empty($row->{$packages . '_version'}) ) {
 		continue;
 	}
+	if ( $type == 'themes' && $row->package != 'sem-reloaded' )
+		continue;
 	$response[$row->package] = (object) array(
 		'name' => '',
 		'slug' => $row->package,
@@ -133,6 +137,10 @@ while ( $row = $dbs->get_row() ) {
 		'download_link' => !$expired || preg_match("|^http://downloads.wordpress.org|i", $row->{$packages . '_package'}) ? $row->{$packages . '_package'} : '',
 		'readme' => $row->{$packages . '_readme'},
 		);
+	if ( $type == 'themes' ) {
+		$response[$row->package]->preview_url = 'http://www.semiologic.com';
+		$response[$row->package]->screenshot_url = 'http://skins.semiologic.com/wp-content/themes/sem-reloaded/screenshot.png';
+	}
 }
 
 if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
