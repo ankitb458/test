@@ -12,3 +12,10 @@ Allows to easily insert a favicon on your site.
 Favicons are the icons that display in your address bar when browsing some sites.
 
 The plugin allows to readily insert such an icon on your site.
+
+
+== Change Log ==
+
+= 1.4.1. =
+
+- Move plugin in its own folder
