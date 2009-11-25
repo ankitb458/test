@@ -1,5 +1,4 @@
 === WP-Hashcash ===
-
 Contributors: ecb29, donncha
 Tags: spam, antispam, anti-spam, comments, comment, pingback, trackback, wp-hashcash, plugin, security, wordpress, javascript, js
 Requires at least: 2.8
