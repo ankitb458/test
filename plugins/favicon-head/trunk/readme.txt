@@ -3,9 +3,10 @@ Contributors: Tim A. Johansson, Denis de Bernardy
 Tags: semiologic
 Requires at least: 2.8
 Tested up to: 2.9
-Stable tag: 2.2.1
+Stable tag: trunk
 
 Allows to easily insert a favicon on your site.
+
 
 == Description ==
 
