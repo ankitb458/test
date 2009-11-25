@@ -82,6 +82,10 @@ function sem_exec() {
 			eval "`sem_info $svn $*`" && echo $version || return 1
 			;;
 		
+		url )
+			eval "`sem_url $svn $*`" && echo $url || return 1
+			;;
+		
 		deps )
 			sem_deps $svn $* || return 1
 			;;
@@ -241,7 +245,7 @@ function sem_info() {
 		version=${version##*"'"}
 	else
 		version=`head -n 10 $hash.info | grep -i -m 1 -E 'Version[[:space:]]*:.+'`
-		version=${version##*:}
+		version=${version#*:}
 		version=${version##[[:space:]]}
 
 		version=${version%%[[:space:]]}
@@ -250,6 +254,60 @@ function sem_info() {
 	echo $version > $hash.info
 	
 	echo "local version='`cat $hash.info`'"
+	
+	return 0
+}
+
+
+#
+# sem_url()
+#
+
+function sem_url() {
+	eval "`sem_parse $1`"
+	
+	local hash=`md5 -q -s "$svn"`
+	
+	if [[ -f $hash.url ]]; then
+		echo "local url='`cat $hash.url`'" && return 0
+	fi
+	
+	local url
+	local file
+	
+	case $type in
+		plugins | lib )
+			file=$package.php
+			;;
+		
+		themes )
+			file=style.css
+			;;
+		
+		skins )
+			file=skin.css
+			;;
+		
+		* )
+			if [[ "$package" = 'sem-pro' ]]; then
+				echo "local url='http://members.semiologic.com/sem-pro/'" && return 0
+			else
+				echo "Err: Unsupported package type ($svn)" && return 1
+			fi
+			;;
+	esac
+	
+	svn cat $svn_root/$svn/$file > $hash.url || exit 1
+	
+	url=`head -n 10 $hash.url | grep -i -m 1 -E 'Ur[il][[:space:]]*:.+'`
+	url=${url#*:}
+	url=${url##[[:space:]]}
+
+	url=${url%%[[:space:]]}
+	
+	echo $url > $hash.url
+	
+	echo "local url='`cat $hash.url`'"
 	
 	return 0
 }
@@ -527,7 +585,7 @@ function sem_pub() {
 			type=core
 		fi
 		
-		local url=$zip
+		eval "`sem_url $*`"
 		local requires
 		local compat
 		
@@ -535,22 +593,13 @@ function sem_pub() {
 			requires=`grep -i -E 'Requires[[:space:]]+at[[:space:]]+least[[:space:]]*:' $hash.readme`
 			compat=`grep -i -E 'Tested[[:space:]]+up[[:space:]]+to[[:space:]]*:' $hash.readme`
 			
-			requires=${requires##*:}
+			requires=${requires#*:}
 			requires=${requires##[[:space:]]}
 			requires=${requires%%[[:space:]]}
 			
-			compat=${compat##*:}
+			compat=${compat#*:}
 			compat=${compat##[[:space:]]}
 			compat=${compat%%[[:space:]]}
-		fi
-		
-		url=${url%/*}/
-		url=${url/media\//}
-		
-		if [[ "$type" == 'themes' ]]; then
-			url=${url/members.semiologic.com\/themes/www.semiologic.com\/software}
-		elif [[ "$type" == 'plugins' ]]; then
-			url=${url/members.semiologic.com\/plugins/www.semiologic.com\/software}
 		fi
 		
 		local check="SELECT EXISTS ( SELECT 1 FROM packages WHERE type = '$type' AND package = '$package' )"
