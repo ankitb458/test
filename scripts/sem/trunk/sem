@@ -292,7 +292,7 @@ function sem_check() {
 		if [[ "$svn" =~ /trunk$ ]]; then
 			eval "`sem_info $svn`"
 			
-			if [[ $version =~ [1-9] && $version =~ ^[0-9]*(\.[0-9]+)*$ ]]; then
+			if [[ $version =~ [1-9] && ${version/fork/} =~ ^[0-9]*(\.[0-9]+)*$ ]]; then
 				if [[ "$svn" = "$1" ]]; then
 					continue
 				else
