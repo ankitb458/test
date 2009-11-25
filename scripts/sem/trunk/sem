@@ -244,9 +244,6 @@ function sem_info() {
 		version=${version##*:}
 		version=${version##[[:space:]]}
 
-		version=${version/(fork)/}
-		version=${version/fork/}
-
 		version=${version%%[[:space:]]}
 	fi
 	
