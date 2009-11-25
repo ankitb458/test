@@ -112,7 +112,7 @@ class add_from_server {
 		
 		screen_icon();
 		
-		echo '<h2>', __('Add From Server', 'add-front-server'), '</h2>';
+		echo '<h2>', __('Add From Server', 'add-from-server'), '</h2>';
 
 		//Handle any imports:
 		$this->handle_imports();
