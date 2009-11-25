@@ -55,9 +55,10 @@ if ( is_array($check) ) {
 			$slug = $key;
 		} elseif ( $type == 'plugins' ) {
 			$slug = explode('/', trim($key, '/'));
-			if ( count($slug) != 2 )
-				continue;
-			$slug = current($slug);
+			if ( count($slug) == 2 )
+				$slug = current($slug);
+			else
+				$slug = basename(current($slug), '.php');
 		} else {
 			continue;
 		}
