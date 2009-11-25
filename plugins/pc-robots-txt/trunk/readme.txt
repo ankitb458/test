@@ -1,4 +1,4 @@
-=== PC Robots TXT ===
+=== PC Robots.txt ===
 Contributors: Peter Coughlin, Denis de Bernardy
 Tags: semiologic
 Requires at least: 2.8
