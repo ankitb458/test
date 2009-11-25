@@ -3,7 +3,7 @@
 Plugin Name: Favicon Head
 Plugin URI: http://timjoh.com/wordpress-plugin-favicon-head/
 Description: Favicon Head adds meta tags in the head of every page, specifying the location of your blog's favicon.ico.
-Author: Tim A. Johansson
+Author: Tim A. Johansson, Denis de Bernardy
 Version: 1.4 fork
 Author URI: http://timjoh.com/
 
