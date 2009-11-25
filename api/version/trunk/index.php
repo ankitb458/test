@@ -55,8 +55,6 @@ if ( is_array($check) ) {
 			$slug = $key;
 		} elseif ( $type == 'plugins' ) {
 			$slug = explode('/', trim($key, '/'));
-			if ( count($slug) != 2 )
-				continue;
 			$slug = current($slug);
 		} else {
 			continue;
