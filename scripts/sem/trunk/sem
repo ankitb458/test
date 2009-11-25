@@ -503,6 +503,7 @@ function sem_pub() {
 		local bleeding_zip=${zip%.zip}-dev.zip
 		
 		local ext=`svn pg sem:ext $svn_root/$svn`
+		local rev=`svn pg sem:rev $svn_root/$svn`
 
 		if [[ "$ext" != '' ]]; then
 			if [[ "$method" = 'stable' ]]; then
@@ -512,6 +513,12 @@ function sem_pub() {
 			case $type in
 				'plugins' )
 					stable_zip=http://downloads.wordpress.org/plugin/$package.zip
+					;;
+			esac
+		elif [[ "$rev" != '' ]]; then
+			case $type in
+				'plugins' )
+					bleeding_zip=http://downloads.wordpress.org/plugin/$package.zip
 					;;
 			esac
 		fi
