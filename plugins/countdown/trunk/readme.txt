@@ -1,5 +1,20 @@
-Countdown - Dates to Remember
-=============================
+=== Countdown ===
+Contributors: Owen Winkler, Denis de Bernardy
+Tags: semiologic
+Requires at least: 2.8
+Tested up to: 2.9
+Stable tag: trunk
 
-Please read the instructions for installation and use located at http://redalt.com/wiki/Countdown
+An upcoming events as a widget.
 
+
+== Description ==
+
+An upcoming events as a widget.
+
+
+== Change Log ==
+
+= 3.0 =
+
+- WP 2.8 compat

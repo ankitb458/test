@@ -2,7 +2,7 @@
 /*
 Plugin Name: Star Rating for Reviews
 Plugin URI: http://www.channel-ai.com/blog/plugins/star-rating/
-Description: Insert inline rating stars within your posts based on the score you assign.
+Description: Insert inline rating stars within your posts based on the score you assign, e.g.: [rating:5].
 Version: 0.2.1 fork
 Author: Yaosan Yeo
 Author URI: http://www.channel-ai.com/blog/
