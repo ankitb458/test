@@ -348,7 +348,8 @@ function sem_tag() {
 	eval "`sem_parse $*`"
 	eval "`sem_info $*`"
 	
-	local svn_tag=$package/tags/$version
+	local svn_tag=${version/fork/}
+	svn_tag=$package/tags/$svn_tag
 	
 	if [[ "$type" != '' ]]; then
 		svn_tag=$type/$svn_tag
