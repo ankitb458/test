@@ -77,7 +77,7 @@ class sem_skin {
 }
 
 .trebuchet {
-	font-family: "Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
+	font-family: "Trebuchet MS", "Nimbus Sans L", "DejaVu Sans", Sans-Serif;
 	font-size: 14px;
 }
 
@@ -420,7 +420,7 @@ EOS;
 			'' =>  __('The skin\'s default stack', 'sem-reloaded'),
 			'arial' => __('Arial stack: Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
 			'tahoma' => __('Tahoma stack: Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
-			'trebuchet' =>  __('Trebuchet stack: "Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
+			'trebuchet' =>  __('Trebuchet stack: "Trebuchet MS", "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
 			'verdana' =>  __('Verdana stack: Verdana, "Nimbus Sans L", "DejaVu Sans", Sans-Serif', 'sem-reloaded'),
 			'antica' => __('Antica stack: Palatino, "Book Antica", "Palatino Linotype", "URW Palladio L", Palladio, Georgia, "DejaVu Serif", Serif', 'sem-reloaded'),
 			'georgia' => __('Georgia stack: Georgia, "New Century Schoolbook", "Century Schoolbook L", "DejaVu Serif", Serif', 'sem-reloaded'),

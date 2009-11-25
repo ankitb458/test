@@ -1122,7 +1122,7 @@ EOS;
 		$font_families = array(
 			'arial' => 'Arial, "Liberation Sans", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
 			'tahoma' => 'Tahoma, "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
-			'trebuchet' => '"Trebuchet MS", "Helvetica Neue", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
+			'trebuchet' => '"Trebuchet MS", "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
 			'verdana' => 'Verdana, "Nimbus Sans L", "DejaVu Sans", Sans-Serif',
 			'antica' => '"Palatino, "Book Antica", "Palatino Linotype", "URW Palladio L", Palladio, Georgia, "DejaVu Serif", Serif',
 			'georgia' => 'Georgia, "New Century Schoolbook", "Century Schoolbook L", "DejaVu Serif", Serif',

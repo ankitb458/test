@@ -167,4 +167,21 @@ function dump_js() {
 
 if ( $_GET['debug'] == 'js' )
 	add_action('wp_print_scripts', 'dump_js');
+
+
+/**
+ * dump_http()
+ *
+ * @param array $args
+ * @param string $url
+ * @return array $args
+ **/
+
+function dump_http($args, $url) {
+	dump(preg_replace("|/[0-9a-f]{32}/?$|", '', $url));
+	return $args;
+} # dump_http()
+
+if ( $_GET['debug'] == 'http' )
+	add_filter('http_request_args', 'dump_http', 0, 2);
 ?>

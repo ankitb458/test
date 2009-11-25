@@ -1,7 +1,7 @@
 /*
 Skin name: Kubrick, Teal
 Skin uri: http://skins.semiologic.com/kubrick/
-Version: 0.9
+Version: 0.9.1 beta
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -125,7 +125,13 @@ Author uri: http://www.mesoconcepts.com
 }
 
 #wrapper,
-#wrapper_bg,
+#wrapper_bg {
+	-moz-border-radius: 9px;
+	-khtml-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+}
+
 #header,
 #header_bg,
 #header_img,
@@ -134,10 +140,10 @@ Author uri: http://www.mesoconcepts.com
 .header_widget_bg,
 .footer_widget,
 .footer_widget_bg {
-	-moz-border-radius: 9px;
-	-khtml-border-radius: 9px;
-	-webkit-border-radius: 9px;
-	border-radius: 9px;
+	-moz-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
 }
 
 #wrapper {

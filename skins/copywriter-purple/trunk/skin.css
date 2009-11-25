@@ -1,7 +1,7 @@
 /*
 Skin name: Copywriter, Purple
 Skin uri: http://skins.semiologic.com/copywriter/
-Version: 0.9
+Version: 0.9.1 beta
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -42,11 +42,11 @@ Author uri: http://www.mesoconcepts.com
 
 .m2s #main,
 .m1s #main {
-	width: 532px;
+	width: 535px;
 }
 
 .mm1s #main {
-	width: 632px;
+	width: 635px;
 }
 
 .m2s #sidebar,
@@ -56,11 +56,11 @@ Author uri: http://www.mesoconcepts.com
 
 .sms #sidebar,
 .sms #sidebar2 {
-	width: 191px;
+	width: 192px;
 }
 
 .sms #sidebar_wrapper {
-	width: 741px;
+	width: 742px;
 }
 
 .main .pad {
@@ -70,15 +70,15 @@ Author uri: http://www.mesoconcepts.com
 .pad,
 .pad .pad,
 .post_list {
-	padding: 0px 18px;
+	padding: 0px 15px;
 }
 
 #sidebars #sidebar .pad {
-	padding-right: 9px;
+	padding-right: 8px;
 }
 
 #sidebars #sidebar2 .pad {
-	padding-left: 9px;
+	padding-left: 8px;
 }
 
 #navbar .pad {
@@ -111,8 +111,8 @@ Author uri: http://www.mesoconcepts.com
 	background-repeat: no-repeat;
 	display: block;
 	float: left;
-	padding-left: 18px;
-	padding-right: 20px;
+	padding-left: 15px;
+	padding-right: 17px;
 	margin: 0px;
 }
 
@@ -125,14 +125,14 @@ Author uri: http://www.mesoconcepts.com
 
 #navbar span.nav_active {
 	font-weight: normal;
-	padding-left: 18px;
-	padding-right: 20px;
+	padding-left: 15px;
+	padding-right: 17px;
 	margin: 0px;
 }
 
 #navbar span.nav_active a {
-	margin-left: -18px;
-	margin-right: -20px;
+	margin-left: -15px;
+	margin-right: -17px;
 	background: none;
 }
 
@@ -177,16 +177,16 @@ Author uri: http://www.mesoconcepts.com
 #sidebars,
 .sidebar {
 	margin-top: 0px;
-	margin-bottom: 18px;
+	margin-bottom: 15px;
 }
 
 .header_widget {
-	margin-top: 18px;
-	margin-bottom: 18px;
+	margin-top: 15px;
+	margin-bottom: 15px;
 }
 
 #body {
-	margin-top: 18px;
+	margin-top: 15px;
 }
 
 #footer_wrapper {
@@ -276,7 +276,7 @@ html {
 
 #sidebars .widget.ad_unit:first-child {
 	margin-top: 10px;
-	margin-bottom: 18px;
+	margin-bottom: 15px;
 }
 
 #sidebars .widget.ad_unit:last-child {

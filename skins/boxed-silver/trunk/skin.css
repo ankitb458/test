@@ -1,7 +1,7 @@
 /*
 Skin name: Boxed, Silver
 Skin uri: http://skins.semiologic.com/boxed/
-Version: 0.9
+Version: 0.9.1 beta
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -12,8 +12,8 @@ Author uri: http://www.mesoconcepts.com
  */
 
 #wrapper {
-	margin-top: 15px;
-	margin-bottom: 15px;
+	margin-top: 6px;
+	margin-bottom: 6px;
 }
 
 .sem_admin_menu #wrapper {
@@ -32,20 +32,20 @@ html {
 
 .m2s #main,
 .m1s #main {
-	width: 532px;
+	width: 538px;
 }
 
 .mm1s #main {
-	width: 632px;
+	width: 638px;
 }
 
 .m2s #sidebar,
 .m2s #sidebar2 {
-	width: 191px;
+	width: 194px;
 }
 
 .sms #sidebar_wrapper {
-	width: 741px;
+	width: 744px;
 }
 
 .main .pad {
@@ -55,7 +55,7 @@ html {
 .pad,
 .pad .pad,
 .post_list {
-	padding: 0px 18px;
+	padding: 0px 15px;
 }
 
 .ad_unit .main_widget_bg .pad,
@@ -64,11 +64,11 @@ html {
 }
 
 #navbar .pad {
-	padding: 0px 18px 0px 0px;
+	padding: 0px 15px 0px 0px;
 }
 
 #search_form {
-	padding-left: 18px;
+	padding-left: 15px;
 }
 
 #navbar_bg {
@@ -90,8 +90,8 @@ html {
 	background-repeat: no-repeat;
 	display: block;
 	float: left;
-	padding-left: 17px;
-	padding-right: 19px;
+	padding-left: 15px;
+	padding-right: 17px;
 	margin: 0px;
 }
 
@@ -104,14 +104,14 @@ html {
 
 #navbar span.nav_active {
 	font-weight: normal;
-	padding-left: 17px;
-	padding-right: 19px;
+	padding-left: 15px;
+	padding-right: 17px;
 	margin: 0px;
 }
 
 #navbar span.nav_active a {
-	margin-left: -17px;
-	margin-right: -19px;
+	margin-left: -15px;
+	margin-right: -17px;
 	background: none;
 }
 
@@ -145,11 +145,12 @@ html {
 	border: solid 1px;
 }
 
+#header_wrapper,
 .entry,
 .main_widget,
 .widget {
 	margin-top: 0px;
-	margin-bottom: 18px;
+	margin-bottom: 12px;
 }
 
 #body {
@@ -158,19 +159,22 @@ html {
 }
 
 #header,
-#navbar,
+#navbar {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
 .header_widget,
 #header_top_wrapper,
 #header_middle_wrapper,
 #header_bottom_wrapper {
-	margin-top: 15px;
-	margin-bottom: 18px;
+	margin-top: 12px;
+	margin-bottom: 12px;
 }
 
 #footer,
 .footer_widget {
 	margin-top: 0px;
-	margin-bottom: 18px;
+	margin-bottom: 12px;
 }
 
 #header,
@@ -270,9 +274,9 @@ html {
 
 .widget_title h2 {
 	margin-top: -6px;
-	margin-left: -19px;
-	margin-right: -19px;
-	padding: 5px 18px 3px;
+	margin-left: -16px;
+	margin-right: -16px;
+	padding: 5px 15px 3px;
 	border: solid 1px;
 	-moz-border-radius-topleft: 7px;
 	-moz-border-radius-topright: 7px;

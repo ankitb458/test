@@ -1,7 +1,7 @@
 /*
 Skin name: Light, Teal
 Skin uri: http://skins.semiologic.com/light/
-Version: 0.9
+Version: 0.9.1 beta
 Author: Denis de Bernardy
 Author uri: http://www.mesoconcepts.com
 */
@@ -90,22 +90,27 @@ html {
 	background: none;
 }
 
-#body {
-	margin-top: 18px;
-	margin-bottom: 18px;
+#body,
+#header_wrapper {
+	margin-top: 12px;
+	margin-bottom: 12px;
 }
 
 #header,
-#navbar,
+#navbar {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
 .header_widget {
-	margin-top: 15px;
-	margin-bottom: 18px;
+	margin-top: 12px;
+	margin-bottom: 12px;
 }
 
 #footer,
 .footer_widget {
-	margin-top: 18px;
-	margin-bottom: 15px;
+	margin-top: 12px;
+	margin-bottom: 12px;
 }
 
 #credits {
