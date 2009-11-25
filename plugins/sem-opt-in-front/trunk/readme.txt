@@ -31,7 +31,6 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Create a WordPress Category called 'Blog' or 'News'. You can safely rename it afterwards -- what really counts is a slug of 'blog' or 'news'.
-1. At your option, click the link in the plugin's description to add the Blog category to every existing post.
 
 
 == Change Log ==
