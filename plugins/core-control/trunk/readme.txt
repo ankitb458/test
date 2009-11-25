@@ -2,6 +2,7 @@
 Contributors: dd32
 Tags: 2.7, admin, filesystem, manager
 Requires at least: 2.7
+Tested up to: 2.9
 Stable tag: 0.8
 
 Core Control is a set of plugin modules which can be used to control certain aspects of the WordPress Core.

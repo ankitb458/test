@@ -2,6 +2,7 @@
 Contributors: dd32
 Tags: 2.5, admin, media, uploads, post
 Requires at least: 2.8
+Tested up to: 2.9
 Stable tag: 2.2.1
 
 "Add From Server" is a quick plugin which allows you to import media & files into the WordPress uploads manager from the Webservers filesystem
@@ -28,7 +29,7 @@ Note: French, Spanish, German, Persion, Italian and Russian translations are inc
  A. If a file is allready in the uploads folder, Then it is not copied anywhere, Instead, the file will stay in its current location, and the date for the media manager will be taken from the URL (ie. import a file in /uploads/2008/01/ and it will be stored in the media library as January 2008)
 
  Q. I recieve the error: <strong>File type does not meet security guidelines. Try another.</strong>
- A. This will occur in when using 2.2+, This is due to WordPress requiring Whitelisting(of the file extension..) for ALL file uploads now (WordPress 2.8.5+). The solution is to use a plugin which adds the mime types you wish to upload to the whistlist.. This makes things much more secure. If you'd prefer to restore the old behaviour, You may add the following define to your wp-config.php file: define(‘ALLOW_UNFILTERED_UPLOADS’, true);
+ A. This will occur in when using 2.2+, This is due to WordPress requiring Whitelisting(of the file extension..) for ALL file uploads now (WordPress 2.8.5+). The solution is to use a plugin which adds the mime types you wish to upload to the whistlist.. This makes things much more secure. If you'd prefer to restore the old behaviour, You may add the following define to your wp-config.php file: define(Ã«ALLOW_UNFILTERED_UPLOADSÃ­, true);
 
 == Changelog ==
 
