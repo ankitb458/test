@@ -108,19 +108,11 @@ class add_from_server {
 		if( ! current_user_can( 'upload_files' ) )
 			return;
 
-		echo '<div class="wrap">';
-		
-		screen_icon();
-		
-		echo '<h2>', __('Add From Server', 'add-from-server'), '</h2>';
-
 		//Handle any imports:
 		$this->handle_imports();
 
 		//Do the content
 		$this->main_content();
-		
-		echo '</div>';
 
 	}
 
