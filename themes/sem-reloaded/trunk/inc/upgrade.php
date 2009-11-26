@@ -13,7 +13,7 @@ function upgrade_sem_6_0() {
 		: false;
 	
 	// fix a bug that was introduced in 5.7.2
-	if ( $sem_options['version'] == '5.7.2' && !empty($sem_pro_version) ) {
+	if ( $sem_options['version'] == '5.7.2' && ( !empty($sem_pro_version) || class_exists('version_checker') ) ) {
 		$post_ids = $wpdb->get_col("
 			SELECT	ID
 			FROM	$wpdb->posts
@@ -459,7 +459,7 @@ function upgrade_sem_6_0() {
 		}
 	}
 	
-	if ( empty($sem_pro_version) )
+	if ( empty($sem_pro_version) && !class_exists('version_checker') )
 		return;
 	
 	# drop obsolete plugins

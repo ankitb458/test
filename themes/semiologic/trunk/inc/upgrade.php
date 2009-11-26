@@ -209,7 +209,7 @@ function upgrade_sem_5_5() {
 		}
 	}
 	
-	if ( empty($sem_pro_version) ) {
+	if ( empty($sem_pro_version) && !class_exists('version_checker') ) {
 		# clean-up a bit
 		unset($sem_options['api_key']);
 		unset($sem_options['theme_archives']);
@@ -454,7 +454,7 @@ function upgrade_sem_6_0() {
 		: false;
 	
 	// fix a bug that was introduced in 5.7.2
-	if ( $sem_options['version'] == '5.7.2' && !empty($sem_pro_version) ) {
+	if ( $sem_options['version'] == '5.7.2' && ( !empty($sem_pro_version) || class_exists('version_checker') ) ) {
 		$post_ids = $wpdb->get_col("
 			SELECT	ID
 			FROM	$wpdb->posts
@@ -908,7 +908,7 @@ function upgrade_sem_6_0() {
 	# clear corrupt cron jobs
 	wp_clear_scheduled_hook('dealdotcom');
 	
-	if ( empty($sem_pro_version) )
+	if ( empty($sem_pro_version) && !class_exists('version_checker') )
 		return;
 	
 	# drop obsolete plugins

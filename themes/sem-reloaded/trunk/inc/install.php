@@ -23,7 +23,7 @@ if ( !defined('sem_install_test') )
 	update_option('sem6_options', $sem_options);
 
 
-if ( !empty($sem_pro_version) ) :
+if ( !empty($sem_pro_version) || class_exists('version_checker') ) :
 #
 # Step 2
 # ------
