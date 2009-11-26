@@ -707,6 +707,7 @@ div.media {
 
 /* wp gallery and thumbnails */
 
+.wp-caption,
 .gallery {
 	clear: both;
 }
