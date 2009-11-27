@@ -3,7 +3,7 @@
 Plugin Name: Opt-in Front Page
 Plugin URI: http://www.semiologic.com/software/opt-in-front/
 Description: Restricts the access to your front page on an opt-in basis: Only posts within the category with a slug of 'blog' or 'news' will be displayed on your front page.
-Version: 4.0
+Version: 4.1 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-opt-in-front
@@ -41,8 +41,9 @@ class sem_opt_in_front {
 		if ( main_cat_id ) {
 			add_filter('category_link', array('sem_opt_in_front', 'category_link'), 10, 2);
 
-			if ( !is_admin() )
+			if ( !is_admin() ) {
 				add_filter('posts_join', array('sem_opt_in_front', 'posts_join'), 11);
+			}
 		}
 	} # init()
 	
@@ -149,6 +150,64 @@ class sem_opt_in_front {
 		delete_transient('sem_opt_in_front');
 		return $in;
 	} # flush_cache()
+	
+	
+	/**
+	 * activate()
+	 *
+	 * @return void
+	 **/
+
+	function activate() {
+		global $wpdb;
+		
+		if ( !sem_opt_in_front::get_main_cat_id() ) {
+			$main_cat = wp_create_term(__('News', 'sem-opt-in-front'), 'category');
+			$main_cat_id = is_array($main_cat) ? $main_cat['term_taxonomy_id'] : $main_cat;
+			$main_cat_id = intval($main_cat_id);
+			if ( $main_cat_id ) {
+				$wpdb->query("
+					INSERT INTO $wpdb->term_relationships (
+							object_id,
+							term_taxonomy_id
+							)
+					SELECT	posts.ID,
+							$main_cat_id
+					FROM	$wpdb->posts as posts
+					WHERE	posts.post_type = 'post'
+					AND		posts.post_status IN ('publish', 'private', 'pending', 'draft')
+					");
+			}
+		} else {
+			$main_cat = get_term(sem_opt_in_front::get_main_cat_id(), 'category');
+			$main_cat_id = $main_cat->term_taxonomy_id;
+			
+			$max_date = $wpdb->get_var("
+				SELECT	MAX(posts.post_date)
+				FROM	$wpdb->posts as posts
+				JOIN	$wpdb->term_relationships as tr
+				ON		tr.object_id = posts.ID
+				AND		tr.term_taxonomy_id = $main_cat_id;
+				");
+			
+			$wpdb->query("
+				INSERT INTO $wpdb->term_relationships (
+						object_id,
+						term_taxonomy_id
+						)
+				SELECT	posts.ID,
+						$main_cat_id
+				FROM	$wpdb->posts as posts
+				WHERE	posts.post_type = 'post'
+				AND		posts.post_status IN ('publish', 'private', 'pending', 'draft')
+				AND		posts.post_date > '$max_date'
+				");
+		}
+		
+		wp_update_term_count_now(array($main_cat_id), 'category');
+		sem_opt_in_front::flush_cache();
+		wp_cache_flush();
+	} # activate()
 } # sem_opt_in_front
 
 add_action('init', array('sem_opt_in_front', 'init'));
@@ -157,12 +216,11 @@ foreach ( array(
 	'create_term',
 	'edit_term',
 	'delete_term',
-	
 	'flush_cache',
 	'after_db_upgrade',
 	) as $hook )
 	add_action($hook, array('sem_opt_in_front', 'flush_cache'));
 
-register_activation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
+register_activation_hook(__FILE__, array('sem_opt_in_front', 'activate'));
 register_deactivation_hook(__FILE__, array('sem_opt_in_front', 'flush_cache'));
 ?>

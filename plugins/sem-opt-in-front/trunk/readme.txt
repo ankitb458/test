@@ -19,6 +19,12 @@ It changes your main category's url as relevant, and it fallbacks to normal blog
 
 You can safely change your "Blog" or "News" category's name after it is created: The opt-in front page plugin looks for the category with a slug of "blog" or "news".
 
+
+= Auto-installer =
+
+Please note that Opt-in front page automatically creates/fills in the needed main category when it activates. You can always browse Posts / Categories to delete it.
+
+
 = Help Me! =
 
 The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
@@ -34,6 +40,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 
 == Change Log ==
+
+= 4.1 =
+
+- Implement an auto-installer
 
 = 4.0 =
 
