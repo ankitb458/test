@@ -159,8 +159,13 @@ class sem_opt_in_front {
 	 **/
 
 	function activate() {
-		global $wpdb;
+		global $pagenow;
+		if ( $pagenow != 'plugins.php' || in_array('sem-opt-in-front/sem-opt-in-front.php', array_keys(get_option('recently_activated', array()))) ) {
+			sem_opt_in_front::flush_cache();
+			return;
+		}
 		
+		global $wpdb;
 		if ( !sem_opt_in_front::get_main_cat_id() ) {
 			$main_cat = wp_create_term(__('News', 'sem-opt-in-front'), 'category');
 			$main_cat_id = is_array($main_cat) ? $main_cat['term_taxonomy_id'] : $main_cat;
