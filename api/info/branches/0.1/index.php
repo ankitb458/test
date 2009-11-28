@@ -56,6 +56,11 @@ if ( isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/^WordPress\/(.*); (.*)$/
 if ( !preg_match("/^\d*\.\d+(?:\.\d+)(?: [a-z0-9]+)?$/i", $wp_version) )
 	$wp_version = '2.8';
 
+$wp_version = preg_replace("/( |-).*$/", '', $wp_version);
+$wp_version2 = explode('.', $wp_version);
+$wp_version2 = array_slice($wp_version2, 0, 2);
+$wp_version2 = implode('.', $wp_version2);
+
 header('Content-Type: text/plain; Charset: UTF-8');
 
 db::connect('pgsql');
@@ -95,7 +100,7 @@ if ( !$slug ) {
 		", array(
 			'type' => $type,
 			'wp_version' => $wp_version,
-			'wp_version2' => $wp_version,
+			'wp_version2' => $wp_version2,
 		));
 } else {
 	$dbs = db::query("
@@ -110,7 +115,7 @@ if ( !$slug ) {
 			'type' => $type,
 			'slug' => $slug,
 			'wp_version' => $wp_version,
-			'wp_version2' => $wp_version,
+			'wp_version2' => $wp_version2,
 		));
 }
 
