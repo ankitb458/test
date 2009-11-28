@@ -54,7 +54,7 @@ if ( isset($_SERVER['HTTP_USER_AGENT']) && preg_match("/^WordPress\/(.*); (.*)$/
 }
 
 if ( !preg_match("/^\d*\.\d+(?:\.\d+)(?: [a-z0-9]+)?$/i", $wp_version) )
-	$wp_version = '2.8.2';
+	$wp_version = '2.8';
 
 $wp_version = preg_replace("/( |-).*$/", '', $wp_version);
 $wp_version2 = explode('.', $wp_version);
