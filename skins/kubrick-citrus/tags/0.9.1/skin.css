@@ -1,0 +1,294 @@
+/*
+Skin name: Kubrick, Citrus
+Skin uri: http://skins.semiologic.com/kubrick/
+Version: 0.9.1
+Author: Denis de Bernardy
+Author uri: http://www.mesoconcepts.com
+*/
+
+
+/*
+ * Canvas
+ */
+
+#wrapper {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.sem_admin_menu #wrapper {
+	margin-top: 20px;
+}
+
+.skin .wrapper,
+.skin .wrapper_item {
+	width: auto;
+}
+
+#wrapper {
+	background-image: url(images/wrapper.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+.mmm #wrapper {
+	width: 950px;
+}
+
+.mm #wrapper {
+	width: 750px;
+}
+
+.m #wrapper {
+	width: 620px;
+}
+
+#header_top_wrapper .pad,
+#header_middle_wrapper .pad,
+#header_bottom_wrapper .pad,
+#footer_top_wrapper .pad,
+#footer_bottom_wrapper .pad {
+	padding: 0px 10px;
+}
+
+#navbar .pad {
+	padding: 0px 20px;
+}
+
+#sidebars #sidebar .pad {
+	padding-right: 10px;
+}
+
+#sidebars #sidebar2 .pad {
+	padding-left: 10px;
+}
+
+#header,
+#footer,
+.header_widget,
+.footer_widget {
+	margin: 0px 10px;
+}
+
+#header,
+#navbar,
+.header_widget,
+#body {
+	margin-top: 10px;
+}
+
+#header ~ #navbar,
+#navbar ~ #header,
+#navbar ~ div .header_widget {
+	margin-top: 5px;
+}
+
+#body,
+#footer,
+.footer_widget {
+	margin-bottom: 10px;
+}
+
+#credits {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#wrapper,
+#header_img,
+.header_widget_bg,
+.footer_widget_bg {
+	border: solid 1px;
+}
+
+#header {
+	background-image: url(images/header.jpg);
+	background-position: bottom center;
+	background-repeat: repeat-x;
+}
+
+.header_widget,
+.footer_widget {
+	background-image: url(images/wrapper_widget.jpg);
+	background-position: top center;
+	background-repeat: repeat-x;
+}
+
+.inline_boxes_bg {
+	background-image: url(images/inline_boxes.gif);
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.mmm .inline_boxes_bg {
+	background-image: url(images/mmm-inline_boxes.gif);
+}
+
+#wrapper,
+#wrapper_bg {
+	-moz-border-radius: 9px;
+	-khtml-border-radius: 9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
+}
+
+#header,
+#header_bg,
+#header_img,
+#header_img img,
+.header_widget,
+.header_widget_bg,
+.footer_widget,
+.footer_widget_bg {
+	-moz-border-radius: 7px;
+	-khtml-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
+}
+
+#wrapper {
+	-moz-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-khtml-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	-webkit-box-shadow: rgba(0,0,0,.4) 0 0 5px;
+	box-shadow: rgba(0,0,0,.4) 0 0 5px;
+}
+
+#sidebars .sidebar {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget:first-child {
+	margin-top: 0px;
+}
+
+#sidebars .widget:last-child {
+	margin-bottom: 0px;
+}
+
+#sidebars .widget.ad_unit:first-child {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+#sidebars .widget.ad_unit:last-child {
+	margin-bottom: 10px;
+}
+
+#sitename {
+	padding-top: 10px;
+	padding-bottom: 33px;
+}
+
+#tagline {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.invert_header #sitename {
+	padding-top: 30px;
+	padding-bottom: 0px;
+}
+
+.invert_header #tagline {
+	padding-top: 0px;
+	padding-bottom: 33px;
+}
+
+.entry_bottom {
+	width: 40%;
+	margin: 20px auto;
+	border-bottom: solid 1px;
+}
+
+.single .entry_bottom,
+.page .entry_bottom {
+	border: none;
+	margin: 0px;
+}
+
+.widget_title h2 {
+	padding-bottom: 3px;
+	border-bottom: solid 1px;
+}
+
+.widget_calendar table,
+.widget_calendar thead,
+.widget_calendar tfoot {
+	border: solid 1px;
+}
+
+
+/*
+ * Skin Colors
+ */
+
+html {
+	background-color: #ddd;
+	color: #000;
+}
+
+#wrapper {
+	background-color: #fff;
+	color: #222;
+	border-color: #666;
+}
+
+.post_list h3 {
+	color: inherit;
+}
+
+.main h1,
+.main h2,
+.main h3,
+.sidebar h1,
+.sidebar h2,
+.widget_calendar caption {
+	color: #000;
+}
+
+.header_widget_bg,
+.footer_widget_bg,
+.widget_calendar table,
+.widget_calendar tfoot {
+	border-color: #999;
+}
+
+
+/*
+ * Scheme Colors
+ * H75 S70 L80
+ */
+
+#header,
+.widget_calendar thead {
+	background-color: #afd43f; /* - */
+	color: #000;
+}
+
+.widget_calendar tfoot {
+	background-color: #e6f2c2; /* L90 */
+	color: #000;
+}
+
+.header_widget,
+.footer_widget {
+	background-color: #f7f5ff; /* C-L97 */
+	color: #000;
+}
+
+#tagline {
+	color: #2a3605; /* L90* */
+}
+
+.entry_bottom,
+.widget_title h2 {
+	border-color: #929e6f; /* L63 */
+}
+
+#header_img {
+	border-color: #52631e; /* B/2 */
+}
+
+.widget_calendar thead {
+	border-color: #636363; /* B/2 S0 */
+}
