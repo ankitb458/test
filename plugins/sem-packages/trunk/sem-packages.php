@@ -3,7 +3,7 @@
 Plugin Name: Semiologic Packages
 Plugin URI: https://api.semiologic.com/version/
 Description: Interfaces with Mediacaster in order to output extra information for stable and bleeding edge downloads.
-Version: 1.0
+Version: 1.0.1 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-packages
@@ -99,7 +99,7 @@ class sem_packages {
 				);
 		}
 		
-		$title = '<strong>' . $title . '</strong>';
+		$title = '<strong>' . $title . '</strong><input type="hidden" class="event_label" value="' . esc_attr($title) . '" />';
 		
 		if ( $last_mod ) {
 			$title = sprintf(
