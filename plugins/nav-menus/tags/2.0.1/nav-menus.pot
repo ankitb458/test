@@ -1,0 +1,132 @@
+# Nav Menus pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Nav Menus package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-10-01 16:44+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: nav-menus-info.php:2
+msgid "Nav Menus"
+msgstr ""
+
+#: nav-menus-info.php:3
+msgid "WordPress widgets that let you create navigation menus."
+msgstr ""
+
+#: nav-menus.php:83
+msgid "Nav Menu Widgets"
+msgstr ""
+
+#: nav-menus.php:134
+msgid "A navigation menu"
+msgstr ""
+
+#: nav-menus.php:141
+msgid "Nav Menu"
+msgstr ""
+
+#: nav-menus.php:262 nav-menus.php:778 nav-menus.php:932
+msgid "Home"
+msgstr ""
+
+#: nav-menus.php:298 nav-menus.php:360 nav-menus.php:794 nav-menus.php:843
+#: nav-menus.php:946 nav-menus.php:978
+msgid "Untitled"
+msgstr ""
+
+#: nav-menus.php:735
+msgid "Config"
+msgstr ""
+
+#: nav-menus.php:739
+msgid "Title:"
+msgstr ""
+
+#: nav-menus.php:755
+msgid "Show Descriptions"
+msgstr ""
+
+#: nav-menus.php:761
+msgid "Menu Items"
+msgstr ""
+
+#: nav-menus.php:774
+msgid "- Select a menu item -"
+msgstr ""
+
+#: nav-menus.php:776
+msgid "Special"
+msgstr ""
+
+#: nav-menus.php:781
+msgid "Url"
+msgstr ""
+
+#: nav-menus.php:785
+msgid "Pages"
+msgstr ""
+
+#: nav-menus.php:812
+msgid "Drag and drop menu items to rearrange them."
+msgstr ""
+
+#: nav-menus.php:878 nav-menus.php:926
+msgid "Empty Navigation Menu. Leave it empty to populate it automatically."
+msgstr ""
+
+#: nav-menus.php:937
+msgid "Url Label"
+msgstr ""
+
+#: nav-menus.php:1025
+msgid "Browse"
+msgstr ""
+
+#: widget-utils/widget-utils.php:27
+msgid "This Post In Widgets"
+msgstr ""
+
+#: widget-utils/widget-utils.php:46
+msgid "This Page In Widgets"
+msgstr ""
+
+#: widget-utils/widget-utils.php:113
+msgid "The following fields let you configure options shared by:"
+msgstr ""
+
+#: widget-utils/widget-utils.php:121
+msgid ""
+"It will <b>NOT</b> affect anything else. In particular WordPress's built-in "
+"Pages widget."
+msgstr ""
+
+#: widget-utils/widget-utils.php:128
+msgid "Title"
+msgstr ""
+
+#: widget-utils/widget-utils.php:140
+msgid "Description"
+msgstr ""
+
+#: widget-utils/widget-utils.php:151
+msgid "Exclude"
+msgstr ""
+
+#: widget-utils/widget-utils.php:163
+msgid "Exclude this entry from automatically generated lists"
+msgstr ""
+
+#: widget-utils/widget-utils.php:182
+msgid "... except for silo stubs, silo maps and smart links."
+msgstr ""
