@@ -30,6 +30,10 @@ On occasion, you'll want to split a subset of images into a separate gallery. Au
 
 Note that thickbox works on any link, not merely image links. To enable thickbox on an arbitrary link, set that link's class to thickbox.
 
+= No thickbox =
+
+In the event you want to disable thickbox on some links to images, assign it a nothickbox class.
+
 = Help Me! =
 
 The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
@@ -44,6 +48,11 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 
 == Change Log ==
+
+= 2.0.1 =
+
+- Restore the nothickbox functionality
+
 
 = 2.0 =
 
