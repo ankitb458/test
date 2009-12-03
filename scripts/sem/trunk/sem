@@ -769,22 +769,25 @@ function sem_ext() {
 function sem_wp() {
 	local version=$1
 	local method
+	local methods
 	local zip
 	
 	if [[ $version =~ [1-9] && $version =~ ^[0-9]*(\.[0-9]+)*$ ]]; then
-		method=stable
+		methods='stable bleeding'
 	elif [[ "$version" = '' ]]; then
 		echo "Err: no version provided" && return 1
 	else
-		method=bleeding
+		methods=bleeding
 	fi
 	
 	local check="SELECT EXISTS ( SELECT 1 FROM packages WHERE type = 'core' AND package = 'wordpress' )"
 	zip=http://wordpress.org/wordpress-$version.zip
 	
 	if [[ 1 -eq `mysql -u root $dbn -sN -e "$check"` ]]; then
-		echo $method
-		mysql -u root $dbn -t <<SQL
+		for method in $methods; do
+			echo "Publishing WP/$method: $version"
+			
+			mysql -u root $dbn -t <<SQL
 
 UPDATE	packages
 SET		${method}_package = '$zip',
@@ -794,9 +797,10 @@ WHERE	type = 'core'
 AND		package = 'wordpress';
 
 SQL
-		if [[ $? -ne 0 ]]; then
-			return 1
-		fi
+			if [[ $? -ne 0 ]]; then
+				return 1
+			fi
+		done
 	else
 		mysql -u root $dbn -t <<SQL
 		#cat <<SQL
@@ -829,8 +833,6 @@ SQL
 			return 1
 		fi
 	fi
-	
-	echo $version
 }
 
 
