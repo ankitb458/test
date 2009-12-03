@@ -2,7 +2,7 @@
 #
 # hub.org WP/Sem Pro utils
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.9
+# Version: 0.9.1 beta
 # http://www.mesoconcepts.com/license/
 #
 
@@ -475,6 +475,7 @@ find $path -type f -exec chmod 0644 {} \; 2> /dev/null
 chmod ugo+w $path/.htaccess
 chmod ugo+w $path/wp-config.php
 chmod ugo+w $path/wp-content
+chmod ugo+w $path/wp-content/*-cache-config.php
 
 for dir in	media \
 			wp-content/authors \
