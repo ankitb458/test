@@ -48,7 +48,9 @@ function sem_exec() {
 	fi
 
 	if [[ "$cmd" == 'help' ]]; then
-		sem_help $* && return 0
+		sem_help $* && return 0 || return 1
+	elif [[ "$cmd" == 'wp' ]]; then
+		sem_wp $* && return 0 || return 1
 	elif [[ $# -lt 1 ]]; then
 		echo 'Err: Insufficient number of arguments. Type sem help.' && return 1
 	fi
@@ -63,7 +65,7 @@ function sem_exec() {
 		if [[ "$type" != '' ]]; then
 			echo "Err: Failed to lookup $svn_root/$svn" && return 1
 		fi
-		
+
 		for type in plugins themes skins lib bail; do
 			if [[ $type = 'bail' ]]; then
 				echo "Err: Failed to locate $svn in $svn_root" && return 1
@@ -757,6 +759,78 @@ function sem_ext() {
 	rm -Rf $package.ext || return 1
 	
 	return 0
+}
+
+
+#
+# sem_wp()
+#
+
+function sem_wp() {
+	local version=$1
+	local method
+	local zip
+	
+	if [[ $version =~ [1-9] && $version =~ ^[0-9]*(\.[0-9]+)*$ ]]; then
+		method=stable
+	elif [[ "$version" = '' ]]; then
+		echo "Err: no version provided" && return 1
+	else
+		method=bleeding
+	fi
+	
+	local check="SELECT EXISTS ( SELECT 1 FROM packages WHERE type = 'core' AND package = 'wordpress' )"
+	zip=http://wordpress.org/wordpress-$version.zip
+	
+	if [[ 1 -eq `mysql -u root $dbn -sN -e "$check"` ]]; then
+		echo $method
+		mysql -u root $dbn -t <<SQL
+
+UPDATE	packages
+SET		${method}_package = '$zip',
+		${method}_version = '$version',
+		${method}_modified = NOW()
+WHERE	type = 'core'
+AND		package = 'wordpress';
+
+SQL
+		if [[ $? -ne 0 ]]; then
+			return 1
+		fi
+	else
+		mysql -u root $dbn -t <<SQL
+		#cat <<SQL
+
+INSERT INTO packages (
+		type,
+		package,
+		url,
+		stable_version,
+		stable_package,
+		stable_modified,
+		bleeding_version,
+		bleeding_package,
+		bleeding_modified
+		)
+VALUES (
+		'core',
+		'wordpress',
+		'http://wordpress.org',
+		'$version',
+		'$zip',
+		NOW(),
+		'$version',
+		'$zip',
+		NOW()
+		);
+
+SQL
+		if [[ $? -ne 0 ]]; then
+			return 1
+		fi
+	fi
+	
+	echo $version
 }
 
 
