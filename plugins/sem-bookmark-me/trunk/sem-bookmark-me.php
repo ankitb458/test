@@ -566,7 +566,7 @@ foreach ( array(
 		
 		'flush_cache',
 		'after_db_upgrade',
-		) as $hook) {
+		) as $hook ) {
 	add_action($hook, array('bookmark_me', 'flush_cache'));
 }
 
