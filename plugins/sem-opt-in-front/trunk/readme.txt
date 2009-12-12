@@ -41,6 +41,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
+= 4.1.1 =
+
+- Enhance memcached support
+
 = 4.1 =
 
 - Implement an auto-installer
