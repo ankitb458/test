@@ -57,7 +57,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 2.0.1 =
 
 - Restore the nothickbox functionality
-- German and Brazilian Translation
+- German and Brazilian Translation (requires WP 2.9 for the js part)
 
 = 2.0 =
 
