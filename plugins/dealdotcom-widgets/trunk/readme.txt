@@ -6,7 +6,7 @@ Requires at least: 2.8
 Tested up to: 2.9
 Stable tag: trunk
 
-[Dealdotcom](http://go.semiologic.com/dealdotcom) is a great place to look for deals on internet marketing related materials.
+Dealdotcom is a great place to look for deals on internet marketing related materials.
 
 
 == Description ==
