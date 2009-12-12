@@ -55,12 +55,12 @@ class sem_packages {
 				");
 			
 			if ( $package ) {
-				wp_cache_set($package->stable_package, $package, 'sem_packages');
-				wp_cache_set($package->bleeding_package, $package, 'sem_packages');
-				wp_cache_set($package->package, $package, 'sem_packages');
+				wp_cache_set($package->stable_package, $package, 'sem_packages', 900);
+				wp_cache_set($package->bleeding_package, $package, 'sem_packages', 900);
+				wp_cache_set($package->package, $package, 'sem_packages', 900);
 			} else {
 				$package = (object) $package;
-				wp_cache_set($args['src'], $package, 'sem_packages');
+				wp_cache_set($args['src'], $package, 'sem_packages', 900);
 			}
 		}
 		
@@ -158,12 +158,12 @@ class sem_packages {
 				");
 			
 			if ( $readme ) {
-				wp_cache_set($readme->stable_package, $readme, 'sem_packages');
-				wp_cache_set($readme->bleeding_package, $readme, 'sem_packages');
-				wp_cache_set($readme->package, $readme, 'sem_packages');
+				wp_cache_set($readme->stable_package, $readme, 'sem_packages', 900);
+				wp_cache_set($readme->bleeding_package, $readme, 'sem_packages', 900);
+				wp_cache_set($readme->package, $readme, 'sem_packages', 900);
 			} else {
 				$readme = (object) $readme;
-				wp_cache_set($package, $readme, 'sem_packages');
+				wp_cache_set($package, $readme, 'sem_packages', 900);
 			}
 		}
 		
@@ -213,6 +213,4 @@ else
 
 add_filter('mediacaster_file', array('sem_packages', 'download'), 10, 2);
 add_shortcode('changelog', array('sem_packages', 'changelog'));
-
-wp_cache_add_non_persistent_groups(array('sem_packages'));
 ?>
