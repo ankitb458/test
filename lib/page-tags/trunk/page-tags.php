@@ -2,7 +2,7 @@
 /*
  * Page Tags
  * Author: Denis de Bernardy <http://www.mesoconcepts.com>
- * Version: 2.0
+ * Version: 2.0.1
  */
 
 
@@ -86,5 +86,6 @@ class page_tags {
 	} # display_page_tags()
 } # page_tags
 
-add_action('admin_print_scripts', array('page_tags', 'scripts'));
+add_action('admin_print_scripts-page.php', array('page_tags', 'scripts'));
+add_action('admin_print_scripts-page-new.php', array('page_tags', 'scripts'));
 ?>
