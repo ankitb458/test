@@ -989,6 +989,5 @@ if ( !defined('sem_install_test') ) {
 }
 	
 
-wp_cache_flush();
 do_action('flush_cache');
 ?>

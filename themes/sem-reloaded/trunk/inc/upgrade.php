@@ -620,6 +620,5 @@ if ( !defined('sem_install_test') ) {
 	delete_option('current_theme');
 }
 
-wp_cache_flush();
 do_action('flush_cache');
 ?>

@@ -401,7 +401,6 @@ class entry_content extends WP_Widget {
 			}
 			
 			$content = apply_filters('the_content', $content);
-			$content = str_replace(']]>', ']]&gt;', $content);
 			
 			$content .= wp_link_pages(
 				array(
@@ -1465,13 +1464,22 @@ class blog_footer extends WP_Widget {
 		else
 			$stop = "$y-01-01";
 		
-		$date = $wpdb->get_var("
+		$sql = "
 			SELECT	MAX(post_date)
 			FROM	$wpdb->posts
 			WHERE	post_date < '$stop'
 			AND		post_type = 'post'
 			AND		post_status = 'publish'
-			");
+			";
+		$cache_id = md5($sql);
+		
+		$date = wp_cache_get($cache_id, 'widget_queries');
+		if ( $date === false ) {
+			$date = $wpdb->get_var($sql);
+			if ( !$date )
+				$date = 0;
+			wp_cache_add($cache_id, $date, 'widget_queries');
+		}
 		
 		if ( $date ) {
 			$date = strtotime("$date GMT");
@@ -1504,13 +1512,22 @@ class blog_footer extends WP_Widget {
 		else
 			$stop = gmdate('Y-m-d', strtotime("$y-01-01 GMT + 1 year"));
 		
-		$date = $wpdb->get_var("
+		$sql = "
 			SELECT	MIN(post_date)
 			FROM	$wpdb->posts
 			WHERE	post_date >= '$stop'
 			AND		post_type = 'post'
 			AND		post_status = 'publish'
-			");
+			";
+		$cache_id = md5($sql);
+		
+		$date = wp_cache_get($cache_id, 'widget_queries');
+		if ( $date === false ) {
+			$date = $wpdb->get_var($sql);
+			if ( !$date )
+				$date = 0;
+			wp_cache_add($cache_id, $date, 'widget_queries');
+		}
 		
 		if ( $date ) {
 			$date = strtotime("$date GMT");
@@ -2164,10 +2181,14 @@ class sem_nav_menu extends WP_Widget {
 			return;
 		
 		if ( is_page() ) {
+			global $_wp_using_ext_object_cache;
 			global $wp_the_query;
 			$page_id = $wp_the_query->get_queried_object_id();
 			$cache_id = "_$widget_id";
-			$o = get_post_meta($page_id, $cache_id, true);
+			if ( $_wp_using_ext_object_cache )
+				$o = wp_cache_get($page_id, $widget_id);
+			else
+				$o = get_post_meta($page_id, $cache_id, true);
 		} else {
 			$cache_id = "$widget_id";
 			if ( is_home() && !is_paged() ) {
@@ -2228,7 +2249,10 @@ class sem_nav_menu extends WP_Widget {
 		
 		if ( !is_preview() ) {
 			if ( is_page() ) {
-				update_post_meta($page_id, $cache_id, $o);
+				if ( $_wp_using_ext_object_cache )
+					wp_cache_set($page_id, $o, $widget_id);
+				else
+					update_post_meta($page_id, $cache_id, $o);
 			} else {
 				$cache[$context] = $o;
 				set_transient($cache_id, $cache);
@@ -2366,7 +2390,7 @@ class sem_nav_menu extends WP_Widget {
 				$classes[] = 'nav_active';
 		} elseif ( get_option('show_on_front') == 'page' && get_option('page_for_posts') == $page->ID ) {
 			$classes[] = 'nav_blog';
-			if ( !is_search() && !is_404() && ( !is_home() || is_home() && is_paged() ) )
+			if ( !is_home() || is_home() && is_paged() )
 				$link = '<a href="' . $url . '" title="' . esc_attr($label) . '">'
 					. $link
 					. '</a>';
@@ -2464,12 +2488,21 @@ class sem_nav_menu extends WP_Widget {
 			$parent_ids[] = $front_page_id;
 		if ( $blog_page_id )
 			$parent_ids[] = $blog_page_id;
+		$parent_ids = array_map('intval', $parent_ids);
+		$parent_ids = array_unique($parent_ids);
+		sort($parent_ids);
 		
 		$cached = true;
 		foreach ( $parent_ids as $parent_id ) {
-			$cached = is_array(wp_cache_get($parent_id, 'page_children'));
+			$children_ids = wp_cache_get($parent_id, 'page_children');
+			$cached = is_array($children_ids);
 			if ( $cached === false )
 				break;
+			foreach ( $children_ids as $children_id ) {
+				$cached = is_array(wp_cache_get($children_id, 'page_children'));
+				if ( $cached === false )
+					break 2;
+			}
 		}
 		
 		if ( $cached )
@@ -2477,17 +2510,31 @@ class sem_nav_menu extends WP_Widget {
 		
 		global $wpdb;
 		
+		$root_ids = array();
+		if ( $page_id ) {
+			$parent_page = get_post($page_id);
+			while ( $parent_page->post_parent ) {
+				$root_ids[] = $parent_page->post_parent;
+				$parent_page = get_post($parent_page->post_parent);
+			}
+		}
+		$root_ids = array_merge($root_ids, array(0, $page_id, $front_page_id, $blog_page_id));
+		$root_ids = array_map('intval', $root_ids);
+		$root_ids = array_unique($root_ids);
+		sort($root_ids);
+		
 		$roots = (array) $wpdb->get_col("
 			SELECT	posts.ID
 			FROM	$wpdb->posts as posts
 			WHERE	posts.post_type = 'page'
 			AND		post_status <> 'trash'
-			AND		posts.post_parent IN ( 0, $page_id, $front_page_id, $blog_page_id )
+			AND		posts.post_parent IN ( " . implode(',', $root_ids) . " )
 			");
 		
 		$parent_ids = array_merge($parent_ids, $roots, array($page_id, $front_page_id, $blog_page_id));
-		$parent_ids = array_unique($parent_ids);
 		$parent_ids = array_map('intval', $parent_ids);
+		$parent_ids = array_unique($parent_ids);
+		sort($parent_ids);
 		
 		$pages = (array) $wpdb->get_results("
 			SELECT	posts.*
@@ -2520,7 +2567,6 @@ class sem_nav_menu extends WP_Widget {
 		foreach ( $all_ancestors as $child_id => $parent_ids ) {
 			while ( $parent_ids[0] && is_array($all_ancestors[$parent_ids[0]]) )
 				$parent_ids = array_merge($all_ancestors[$parent_ids[0]], $parent_ids);
-			
 			wp_cache_set($child_id, $parent_ids, 'page_ancestors');
 		}
 		
@@ -3008,6 +3054,98 @@ EOS;
 	
 	
 	/**
+	 * pre_flush_post()
+	 *
+	 * @param int $post_id
+	 * @return void
+	 **/
+
+	function pre_flush_post($post_id) {
+		$post_id = (int) $post_id;
+		if ( !$post_id )
+			return;
+		
+		$post = get_post($post_id);
+		if ( !$post || $post->post_type != 'page' || wp_is_post_revision($post_id) )
+			return;
+		
+		if ( wp_cache_get($post_id, 'pre_flush_post') !== false )
+			return;
+		
+		$old = array(
+			'post_title' => $post->post_title,
+			'post_name' => $post->post_name,
+			'post_date' => $post->post_date,
+			'post_excerpt' => $post->post_excerpt,
+			'post_content' => $post->post_content,
+			'permalink' => get_permalink($post_id),
+			);
+		
+		foreach ( array(
+			'widgets_label', 'widgets_desc',
+			'widgets_exclude', 'widgets_exception',
+			) as $key ) {
+			$old[$key] = get_post_meta($post_id, "_$key", true);
+		}
+		
+		foreach ( array('category', 'post_tag') as $taxonomy ) {
+			$terms = wp_get_object_terms($post_id, $taxonomy);
+			$old[$taxonomy] = array();
+			foreach ( $terms as &$term )
+				$old[$taxonomy][] = $term->term_id;
+		}
+		
+		wp_cache_add($post_id, $old, 'pre_flush_post');
+	} # pre_flush_post()
+	
+	
+	/**
+	 * flush_post()
+	 *
+	 * @param int $post_id
+	 * @return void
+	 **/
+
+	function flush_post($post_id) {
+		$post_id = (int) $post_id;
+		if ( !$post_id )
+			return;
+		
+		$post = get_post($post_id);
+		if ( !$post || $post->post_type != 'page' || wp_is_post_revision($post_id) )
+			return;
+		
+		$old = wp_cache_get($post_id, 'pre_flush_post');
+		if ( $old === false )
+			return sem_nav_menu::flush_cache();
+		
+		extract($old, EXTR_SKIP);
+		foreach ( array_keys($old) as $key ) {
+			switch ( $key ) {
+			case 'widgets_label':
+			case 'widgets_exclude':
+				if ( $$key != get_post_meta($post_id, "_$key", true) )
+					return sem_nav_menu::flush_cache();
+				break;
+			
+			case 'permalink':
+				if ( $$key != get_permalink($post_id) )
+					return sem_nav_menu::flush_cache();
+				break;
+			
+			case 'post_title':
+				if ( $$key != $post->$key )
+					return sem_nav_menu::flush_cache();
+			}
+		}
+		
+		# prevent mass-flushing when rewrite rules have not changed
+		if ( $post->post_type == 'page' )
+			remove_action('generate_rewrite_rules', array('sem_nav_menu', 'flush_cache'));
+	} # flush_post()
+	
+	
+	/**
 	 * flush_cache()
 	 *
 	 * @param mixed $in
@@ -3015,10 +3153,15 @@ EOS;
 	 **/
 	
 	function flush_cache($in = null) {
+		static $done = false;
+		if ( $done )
+			return $in;
+		
+		$done = true;
 		$cache_ids = array();
 		
-		foreach ( array('navbar', 'footer') as $type ) {
-			$widgets = get_option("widget_$type");
+		foreach ( array('navbar', 'footer') as $option_name ) {
+			$widgets = get_option("widget_$option_name");
 			
 			if ( !$widgets )
 				continue;
@@ -3026,24 +3169,35 @@ EOS;
 			unset($widgets['_multiwidget']);
 			unset($widgets['number']);
 			
-			foreach ( array_keys($widgets) as $widget_id )
-				$cache_ids[] = "$type-$widget_id";
-		}
-		
-		foreach ( $cache_ids as $cache_id ) {
-			delete_transient($cache_id);
-			delete_post_meta_by_key("_$cache_id");
-		}
-		
-		if ( wp_cache_get(0, 'page_children') !== false ) {
-			global $wpdb;
-			$page_ids = $wpdb->get_col("SELECT ID FROM $wpdb->posts WHERE post_type = 'page' AND post_status = 'publish'");
-			foreach ( $page_ids as $page_id ) {
-				wp_cache_delete($page_id, 'page_ancestors');
-				wp_cache_delete($page_id, 'page_children');
+			if ( !$widgets )
+				continue;
+			
+			global $_wp_using_ext_object_cache;
+			foreach ( array_keys($widgets) as $widget_id ) {
+				$cache_id = "$option_name-$widget_id";
+				delete_transient($cache_id);
+				delete_post_meta_by_key("_$cache_id");
+				if ( $_wp_using_ext_object_cache )
+					$cache_ids[] = $cache_id;
 			}
-			wp_cache_delete(0, 'page_ancestors');
-			wp_cache_delete(0, 'page_children');
+		}
+		
+		if ( $cache_ids ) {
+			$page_ids = wp_cache_get('page_ids', 'widget_queries');
+			if ( $page_ids === false ) {
+				global $wpdb;
+				$page_ids = $wpdb->get_col("
+					SELECT	ID
+					FROM	$wpdb->posts
+					WHERE	post_type = 'page'
+					AND		post_status <> 'trash'
+					");
+				wp_cache_set('page_ids', $page_ids, 'widget_queries');
+			}
+			foreach ( $cache_ids as $cache_id ) {
+				foreach ( $page_ids as $page_id )
+					wp_cache_delete($page_id, $cache_id);
+			}
 		}
 		
 		return $in;
@@ -3450,8 +3604,6 @@ if ( !is_admin() ) {
 }
 
 foreach ( array(
-		'save_post',
-		'delete_post',
 		'switch_theme',
 		'update_option_active_plugins',
 		'update_option_show_on_front',
@@ -3464,12 +3616,21 @@ foreach ( array(
 		
 		'flush_cache',
 		'after_db_upgrade',
-		) as $hook)
+		) as $hook )
 	add_action($hook, array('sem_nav_menu', 'flush_cache'));
+
+add_action('pre_post_update', array('sem_nav_menu', 'pre_flush_post'));
+
+foreach ( array(
+		'save_post',
+		'delete_post',
+		) as $hook )
+	add_action($hook, array('sem_nav_menu', 'flush_post'), 1); // before _save_post_hook()
 
 add_action('widget_tag_cloud_args', array('sem_widgets', 'tag_cloud_args'));
 add_filter('widget_display_callback', array('sem_widgets', 'widget_display_callback'), 10, 3);
 
 wp_cache_add_non_persistent_groups(array('sem_header'));
-wp_cache_add_non_persistent_groups(array('nav_menu_roots'));
+wp_cache_add_non_persistent_groups(array('nav_menu_roots', 'page_ancestors', 'page_children'));
+wp_cache_add_non_persistent_groups(array('widget_queries', 'pre_flush_post'));
 ?>

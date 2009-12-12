@@ -67,7 +67,7 @@ if ( is_admin() ) {
 	}
 	
 	add_action('load-appearance_page_header', 'sem_header_admin');
-	foreach ( array('post.php', 'post-new.php', 'page.php', 'page-new.php') as $hook) {
+	foreach ( array('post.php', 'post-new.php', 'page.php', 'page-new.php') as $hook ) {
 		add_action("load-$hook", 'sem_header_admin');
 		add_action("load-$hook", 'load_multipart_entry');
 	}

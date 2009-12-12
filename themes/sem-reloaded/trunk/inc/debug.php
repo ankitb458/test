@@ -6,6 +6,9 @@
 if ( !defined('SAVEQUERIES') && isset($_GET['debug']) && $_GET['debug'] == 'sql' )
 	define('SAVEQUERIES', true);
 
+if ( !defined('sem_sql_debug') )
+	define('sem_sql_debug', false);
+
 
 /**
  * add_stop()
@@ -24,8 +27,8 @@ function add_stop($in = null, $where = null) {
 	$out =  "$queries queries - {$milliseconds}ms";
 	
 	if ( function_exists('memory_get_usage') ) {
-		$memory = number_format(memory_get_usage() / 1024, 0);
-		$out .= " - {$memory}kB";
+		$memory = number_format(memory_get_usage() / ( 1024 * 1024 ), 1);
+		$out .= " - {$memory}MB";
 	}
 	
 	$out .= " - $wp_object_cache->cache_hits cache hits / " . ( $wp_object_cache->cache_hits + $wp_object_cache->cache_misses );
@@ -48,7 +51,7 @@ function add_stop($in = null, $where = null) {
  **/
 
 function dump_stops($in = null) {
-	if ( $_POST || !current_user_can('manage_options') )
+	if ( ( $_POST || !current_user_can('manage_options') ) && !sem_sql_debug )
 		return $in;
 	
 	global $sem_stops;
@@ -57,7 +60,7 @@ function dump_stops($in = null) {
 	$stops = '';
 	foreach ( $sem_stops as $where => $stop )
 		$stops .= "$where: $stop\n";
-	dump(trim($stops));
+	dump("\n" . trim($stops) . "\n");
 	
 	# only show queries to admin users
 	if ( defined('SAVEQUERIES') && $_GET['debug'] == 'sql' ) {

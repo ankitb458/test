@@ -27,6 +27,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 0.9.1 =
+
+- Sem Cache 2.0 related tweaks
+- Fix blog link on search/404 pages
+
 = 0.9 =
 
 - Switch to 3 inline boxes instead of 4 in wide layouts

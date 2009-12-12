@@ -24,8 +24,8 @@ function add_stop($in = null, $where = null) {
 	$out =  "$queries queries - {$milliseconds}ms";
 	
 	if ( function_exists('memory_get_usage') ) {
-		$memory = number_format(memory_get_usage() / 1024, 0);
-		$out .= " - {$memory}kB";
+		$memory = number_format(memory_get_usage() / ( 1024 * 1024 ), 1);
+		$out .= " - {$memory}MB";
 	}
 	
 	$out .= " - $wp_object_cache->cache_hits cache hits / " . ( $wp_object_cache->cache_hits + $wp_object_cache->cache_misses );
