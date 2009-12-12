@@ -34,6 +34,10 @@ Alternatively, email sales at semiologic dot com.
 
 == Change Log ==
 
+= 2.0.1 =
+
+- Force a higher pcre.backtrack_limit and pcre.recursion_limit to avoid blank screens on large posts
+
 = 2.0 =
 
 - New, better regular expression for link processing

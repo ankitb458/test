@@ -58,6 +58,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 - Restore the nothickbox functionality
 - German and Brazilian Translation (requires WP 2.9 for the js part)
+- Force a higher pcre.backtrack_limit and pcre.recursion_limit to avoid blank screens on large posts
 
 = 2.0 =
 

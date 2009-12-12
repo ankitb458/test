@@ -34,6 +34,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
+= 4.0.4 =
+
+- Force a higher pcre.backtrack_limit and pcre.recursion_limit to avoid blank screens on large posts
+
 = 4.0.3 =
 
 - Improve case-insensitive handling of domains
