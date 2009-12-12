@@ -34,6 +34,11 @@ Note that thickbox works on any link, not merely image links. To enable thickbox
 
 In the event you want to disable thickbox on some links to images, assign it a nothickbox class.
 
+= Hat Translators =
+
+- German: hakre
+- Portuguese/Brazil: Henrique Schiavo
+
 = Help Me! =
 
 The [Semiologic forum](http://forum.semiologic.com) is the best place to report issues. Please note, however, that while community members and I do our best to answer all queries, we're assisting you on a voluntary basis.
@@ -52,7 +57,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 2.0.1 =
 
 - Restore the nothickbox functionality
-
+- German and Brazilian Translation
 
 = 2.0 =
 

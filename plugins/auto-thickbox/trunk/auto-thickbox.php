@@ -139,11 +139,37 @@ var tb_closeImage = "{$includes_url}js/thickbox/tb-close.png";
 
 EOS;
 	} # thickbox_images()
+	
+	/**
+	 * 
+	 * @param WP_Scripts $scripts 
+	 * @return void
+	 */
+	function translate($scripts) {		
+		if (isset($scripts->registered['thickbox'])) {
+			/* @var $dep _WP_Dependency */
+			$dep = $scripts->registered['thickbox'];			
+			# pre-mature l10n injection			
+			$r = load_plugin_textdomain('auto-thickbox', false, dirname(plugin_basename(__FILE__)) . '/lang');			
+			$l10n = array(
+				'next' => __('Next &gt;', 'auto-thickbox'),
+				'prev' => __('&lt; Prev', 'auto-thickbox'),
+				'image' => __('Image', 'auto-thickbox'),
+				'of' => __('of', 'auto-thickbox'),
+				'close' => __('Close', 'auto-thickbox'),
+				'l10n_print_after' => 'try{convertEntities(thickboxL10n);}catch(e){};'
+			);
+			$scripts->add_data( $handle = 'thickbox', 'l10n', array( $object_name = 'thickboxL10n', $l10n ) );	
+		}
+		return $scripts;	
+	}
 } # auto_thickbox
 
 if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === false ) {
 	if ( !class_exists('anchor_utils') )
 		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
+		
+	add_action('wp_default_scripts', array('auto_thickbox', 'translate'));
 	
 	add_action('wp_print_scripts', array('auto_thickbox', 'scripts'));
 	add_action('wp_print_styles', array('auto_thickbox', 'styles'));
