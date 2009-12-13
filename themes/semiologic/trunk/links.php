@@ -17,7 +17,7 @@ Template Name: Links
 if ( isset($_GET['cat_id']) )
 {
 	global $wp_the_query;
-	wp_redirect(get_permalink($wp_the_query->get_queried_object_id()), 301);
+	wp_redirect(apply_filters('the_permalink', get_permalink($wp_the_query->get_queried_object_id())), 301);
 	die;
 }
 
