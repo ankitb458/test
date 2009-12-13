@@ -451,7 +451,7 @@ class bookmark_me extends WP_Widget {
 	 **/
 
 	function flush_cache($in = null) {
-		$o = get_option('bookmark_me');
+		$o = get_option('widget_bookmark_me');
 		unset($o['_multiwidget']);
 		
 		if ( !$o )
