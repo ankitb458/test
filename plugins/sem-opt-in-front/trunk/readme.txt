@@ -44,6 +44,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 4.1.1 =
 
 - Enhance memcached support
+- Apply filters to permalinks
 
 = 4.1 =
 

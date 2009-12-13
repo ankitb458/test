@@ -2825,7 +2825,7 @@ class sem_nav_menu extends WP_Widget {
 				$page = get_post($ref);
 				if ( !$page )
 					continue 2;
-				$url = get_permalink($ref);
+				$url = apply_filters('the_permalink', get_permalink($ref));
 				$handle = 'page-' . $ref;
 				$label = get_post_meta($page->ID, '_widgets_label', true);
 				if ( $label === '' )
@@ -2959,7 +2959,7 @@ EOS;
 				break;
 			case 'page':
 				$ref = $item['ref'];
-				$url = get_permalink($ref);
+				$url = apply_filters('the_permalink', get_permalink($ref));
 				$handle = 'page-' . $ref;
 				$page = get_post($ref);
 				$label = get_post_meta($page->ID, '_widgets_label', true);
@@ -3077,9 +3077,10 @@ EOS;
 			'post_name' => $post->post_name,
 			'post_date' => $post->post_date,
 			'post_author' => $post->post_author,
+			'post_status' => $post->post_status,
 			'post_excerpt' => $post->post_excerpt,
 			'post_content' => $post->post_content,
-			'permalink' => get_permalink($post_id),
+			'permalink' => apply_filters('the_permalink', get_permalink($post_id)),
 			);
 		
 		foreach ( array(
@@ -3130,11 +3131,12 @@ EOS;
 				break;
 			
 			case 'permalink':
-				if ( $$key != get_permalink($post_id) )
+				if ( $$key != apply_filters('the_permalink', get_permalink($post_id)) )
 					return sem_nav_menu::flush_cache();
 				break;
 			
 			case 'post_title':
+			case 'post_status':
 				if ( $$key != $post->$key )
 					return sem_nav_menu::flush_cache();
 			}

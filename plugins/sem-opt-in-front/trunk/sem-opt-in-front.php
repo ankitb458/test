@@ -130,7 +130,7 @@ class sem_opt_in_front {
 		
 		if ( get_option('show_on_front') == 'page' && get_option('page_on_front') ) {
 			if ( $blog_page_id = get_option('page_for_posts') )
-				return get_permalink($blog_page_id);
+				return apply_filters('the_permalink', get_permalink($blog_page_id));
 			else
 				return $link;
 		} else {
