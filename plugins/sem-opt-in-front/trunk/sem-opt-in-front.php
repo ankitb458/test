@@ -147,7 +147,13 @@ class sem_opt_in_front {
 	 **/
 
 	function flush_cache($in = null) {
+		static $done = false;
+		if ( $done )
+			return $in;
+		
+		$done = true;
 		delete_transient('sem_opt_in_front');
+		
 		return $in;
 	} # flush_cache()
 	
