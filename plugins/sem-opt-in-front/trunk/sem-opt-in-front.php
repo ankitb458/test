@@ -223,9 +223,9 @@ class sem_opt_in_front {
 add_action('init', array('sem_opt_in_front', 'init'));
 
 foreach ( array(
-	'create_term',
-	'edit_term',
-	'delete_term',
+	'create_category',
+	'edit_category',
+	'delete_category',
 	'flush_cache',
 	'after_db_upgrade',
 	) as $hook )
