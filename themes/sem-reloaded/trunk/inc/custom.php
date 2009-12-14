@@ -1297,6 +1297,9 @@ EOS;
 		$cache_enabled = false;
 		$super_cache_enabled = false;
 		
+		if ( method_exists('static_cache', 'disable') )
+			static_cache::disable();
+		
 		echo '<style type="text/css">' . "\n";
 		
 		echo sem_custom::get_css() . "\n";
