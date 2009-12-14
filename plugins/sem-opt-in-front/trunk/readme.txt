@@ -45,6 +45,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 - Enhance memcached support
 - Apply filters to permalinks
+- Fix the main category cache on new sites
 
 = 4.1 =
 
