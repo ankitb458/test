@@ -3117,7 +3117,7 @@ EOS;
 		if ( !$post_id )
 			return;
 		
-		# prevent mass-flushing when rewrite rules have not changed
+		# prevent mass-flushing when the permalink structure hasn't changed
 		remove_action('generate_rewrite_rules', array('sem_nav_menu', 'flush_cache'));
 		
 		$post = get_post($post_id);
