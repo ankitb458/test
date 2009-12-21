@@ -3,7 +3,7 @@
 Plugin Name: Poll Widget / Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.16 fork
+Version: 1.16.1 fork beta
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
@@ -357,13 +357,20 @@ function jal_add_page() {
 // Add the javascript to the head of the page
 function jal_add_js () {
     global $jal_dem_version;
-
+	$folder = plugin_dir_url(__FILE__);
+	wp_enqueue_script('democracy', $folder . 'js.php', array(), '20091221', true);
+	
     //$jal_wp_url = (dirname($_SERVER['PHP_SELF']) == "/") ? "/" : dirname($_SERVER['PHP_SELF']) . "/";
-    $jal_wp_url = trailingslashit(site_url());
+    //$jal_wp_url = trailingslashit(site_url());
 
-    echo '<script type="text/javascript" src="'.$jal_wp_url.'wp-content/plugins/democracy/js.php"></script>
-<link rel="stylesheet" href="'.$jal_wp_url.'wp-content/plugins/democracy/democracy.css?ver=1.14" type="text/css" />
-';
+    //echo '<script type="text/javascript" src="'.$jal_wp_url.'wp-content/plugins/democracy/js.php"></script>
+//<link rel="stylesheet" href="'.$jal_wp_url.'wp-content/plugins/democracy/democracy.css?ver=1.14" type="text/css" />
+//';
+}
+
+function jal_add_css() {
+	$folder = plugin_dir_url(__FILE__);
+	wp_enqueue_style('democracy', $folder . 'democracy.css', null, '20091221');
 }
 
 // Run a check of visitors IP to make sure they haven't voted already.
@@ -749,7 +756,8 @@ if (function_exists('register_activation_hook'))
 if (function_exists('add_action')) {
 
     // javascript for main blog
-	 add_action('wp_head', 'jal_add_js', 9);
+	 add_action('wp_print_scripts', 'jal_add_js');
+	 add_action('wp_print_styles', 'jal_add_css');
 	 // add the management page to the admin nav bar
     add_action('admin_menu', 'jal_add_page');
     // add javascript to admin area, only on democracy admin page

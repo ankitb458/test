@@ -15,6 +15,10 @@ A poll widget.
 
 == Change Log ==
 
+= 1.16.1 =
+
+- Use Sem Cache's asset cache feature
+
 = 1.16 =
 
 - WP 2.8 compat
