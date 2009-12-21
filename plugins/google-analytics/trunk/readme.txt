@@ -80,6 +80,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 4.0.1 =
+
+- Localization enhancements
+
 = 4.0 =
 
 - Complete rewrite
