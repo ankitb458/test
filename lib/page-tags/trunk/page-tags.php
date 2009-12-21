@@ -2,7 +2,7 @@
 /*
  * Page Tags
  * Author: Denis de Bernardy <http://www.mesoconcepts.com>
- * Version: 2.0.1
+ * Version: 2.0.2
  */
 
 
@@ -27,6 +27,7 @@ class page_tags {
 		wp_localize_script('page_tags', 'page_tagsL10n', array(
 			'tagsUsed' => __('Tags used on this page:', page_tags_textdomain),
 			'addTag' => esc_attr(__('Add new tag', page_tags_textdomain)),
+			'l10n_print_after' => 'try{convertEntities(page_tagsL10n);}catch(e){};'
 		));
 	} # scripts()
 	
