@@ -107,6 +107,14 @@ class auto_thickbox {
 
 	function scripts() {
 		wp_enqueue_script('thickbox');
+		wp_localize_script('thickbox', 'thickboxL10n', array(
+			'next' => __('Next &gt;', 'auto-thickbox'),
+			'prev' => __('&lt; Prev', 'auto-thickbox'),
+			'image' => __('Image', 'auto-thickbox'),
+			'of' => __('of', 'auto-thickbox'),
+			'close' => __('Close', 'auto-thickbox'),
+			'l10n_print_after' => 'try{convertEntities(thickboxL10n);}catch(e){};'
+		));
 	} # scripts()
 	
 	
@@ -139,36 +147,12 @@ var tb_closeImage = "{$includes_url}js/thickbox/tb-close.png";
 
 EOS;
 	} # thickbox_images()
-	
-	
-	/**
-	 * translate()
-	 * 
-	 * @return void
-	 */
-	function translate() {	
-		global $wp_scripts;
-		
-		if ( isset($wp_scripts->registered['thickbox']) ) {
-			$l10n = array(
-				'next' => __('Next &gt;', 'auto-thickbox'),
-				'prev' => __('&lt; Prev', 'auto-thickbox'),
-				'image' => __('Image', 'auto-thickbox'),
-				'of' => __('of', 'auto-thickbox'),
-				'close' => __('Close', 'auto-thickbox'),
-				'l10n_print_after' => 'try{convertEntities(thickboxL10n);}catch(e){};'
-			);
-			$wp_scripts->add_data('thickbox', 'l10n', array('thickboxL10n', $l10n));
-		}
-	}
 } # auto_thickbox
 
 if ( !is_admin() && strpos($_SERVER['HTTP_USER_AGENT'], 'W3C_Validator') === false ) {
 	if ( !class_exists('anchor_utils') )
 		include dirname(__FILE__) . '/anchor-utils/anchor-utils.php';
 		
-	add_action('wp_print_scripts', array('auto_thickbox', 'translate'), 20);
-	
 	add_action('wp_print_scripts', array('auto_thickbox', 'scripts'));
 	add_action('wp_print_styles', array('auto_thickbox', 'styles'));
 	
