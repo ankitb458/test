@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: HTTP Access Logger Module
-Version: 0.7
-Description: <strong>Requires WordPress 2.8 or 2.7.1  & patch <a href="http://trac.wordpress.org/ticket/8780">#8780</a></strong> Core Control HTTP Logger module, This allows you to Log external connections which WordPress makes.
+Version: 0.9.1
+Description: Core Control HTTP Logger module, This allows you to Log external connections which WordPress makes.
 Author: Dion Hulse
 Author URI: http://dd32.id.au/
 */
@@ -23,7 +23,7 @@ class core_control_http_log {
 		add_action('admin_post_core_control-http_log-inspect', array(&$this, 'handle_ajax_inspect'));
 		
 		//Enable Logging if so be it.
-		if ( $this->settings['logging'] != false ) {
+		if ( $this->settings['logging'] != false && ( !defined('WP_HTTP_BLOCK_EXTERNAL') || !WP_HTTP_BLOCK_EXTERNAL) ) {
 			add_action('http_api_debug', array(&$this, 'do_log'), 10, 3);
 			add_filter('http_request_args', array(&$this, 'do_log'), 10, 2 );
 			add_action('shutdown', array(&$this, 'end_request'));
@@ -99,9 +99,9 @@ class core_control_http_log {
 			'post_type' => 'http',
 			'post_status' => is_wp_error($this->request->result) ? 'error' : $this->request->result['response']['code'] . ' ' . $this->request->result['response']['message'],
 			'post_title' => $this->request->args['method'] . ' ' . $this->request->url,
-			'post_name' => md5($url . $this->request->realtime),
-			'post_content' => serialize($this->request),
-			'guid' => md5($url . $this->request->realtime),
+			'post_name' => md5($this->request->url . $this->request->realtime),
+			'post_content' => addslashes(serialize($this->request)),
+			'guid' => md5($this->request->url . $this->request->realtime),
 			'post_content_filtered' => $post_content_filtered
 		);
 
@@ -150,7 +150,11 @@ class core_control_http_log {
 	}
 
 	function table() {
-		$https = get_posts( array('post_type' => 'http', 'post_status' => 'any', 'numberposts' => 100) );
+		$https = get_posts( array('post_type' => 'http', 'post_status' => 'any', 'numberposts' => 0) );
+		if ( defined('WP_HTTP_BLOCK_EXTERNAL') && WP_HTTP_BLOCK_EXTERNAL ) {
+			echo '<p>Logging is currently disabled, It appears you are blocking outgoing connections in your wp-config.php file through the define <code>WP_HTTP_BLOCK_EXTERNAL</code>.</p>';
+			return;
+		}
 		?>
 		<form method="post" action="admin-post.php?action=core_control-http_log">
 		<br class="clear" />
@@ -222,14 +226,14 @@ class core_control_http_log {
 			<tbody>
 			<?php
 				foreach ( (array)$https as $request ) {
-					$the_request = unserialize($request->post_content);
+					$the_request = @unserialize($request->post_content);
 					if ( !is_wp_error($the_request->result) && isset($the_request->result['response']) && !empty($request->post_content_filtered) ) 
 						$the_request->result['body'] = $request->post_content_filtered;
 					echo '<tr id="http-' . $request->ID . '">';
 					echo '<td class="check-column"><input type="checkbox" name="checked[]" value="' . $request->ID . '" /></td>';
 					echo '<td class="title">' . $request->post_title . '</td>';
 					echo '<td>' . $request->post_status . '</td>';
-					echo '<td>' . round($the_request->time,3) . 's</td>';
+					echo '<td>' . round($the_request->time, 3) . 's</td>';
 					echo '<td>' . $request->post_date . '</td>';
 					echo '</tr>';
 				}
