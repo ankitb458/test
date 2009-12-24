@@ -1748,7 +1748,7 @@ function embed_wmedia(width, height, link) {
 				echo $data;
 				exit;
 			}
-dump($encodings);die;
+
 			// Loop through each possible encoding, till we return something, or run out of possibilities
 			foreach ($encodings as $encoding)
 			{
