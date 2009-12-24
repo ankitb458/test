@@ -1761,7 +1761,6 @@ function embed_wmedia(width, height, link) {
 					// If it's parsed fine
 					if ($parser->parse($utf8_data, 'UTF-8'))
 					{
-						dump($encoding);die;
 						$this->data = $parser->get_data();
 						if ($this->get_type() & ~SIMPLEPIE_TYPE_NONE)
 						{
