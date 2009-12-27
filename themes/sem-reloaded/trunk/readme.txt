@@ -30,8 +30,9 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 = 0.9.1 =
 
 - Sem Cache 2.0 related tweaks
-- Fix blog link on search/404 pages
 - Apply filters to permalinks
+- Fix blog link on search/404 pages
+- Fix thumbnail support (broken by WP API change before releasing)
 
 = 0.9 =
 

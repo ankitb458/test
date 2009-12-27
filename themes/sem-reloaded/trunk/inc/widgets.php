@@ -450,7 +450,7 @@ class entry_content extends WP_Widget {
 			}
 		}
 		
-		$thumbnail = function_exists('get_the_post_image') ? get_the_post_image() : '';
+		$thumbnail = function_exists('get_the_post_thumbnail') ? get_the_post_thumbnail() : '';
 		
 		if ( $thumbnail ) {
 			$thumbnail = '<div class="wp_thumbnail">'
