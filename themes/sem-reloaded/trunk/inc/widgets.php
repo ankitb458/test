@@ -215,7 +215,7 @@ class entry_header extends WP_Widget {
 		extract($instance, EXTR_SKIP);
 		
 		$date = false;
-		if ( $show_post_date && ( is_single() || !is_singular() && !is_day() ) )
+		if ( $show_post_date && !is_sticky() && ( is_single() || !is_singular() && !is_day() ) )
 			$date = the_date('', '', '', false);
 		
 		$title = the_title('', '', false);
