@@ -67,6 +67,9 @@ class bookmark_me extends WP_Widget {
 
 	function template_redirect() {
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
+			if ( has_filter('template_redirect', 'redirect_canonical') )
+				redirect_canonical();
+
 			if ( file_exists(STYLESHEETPATH . '/print.php') ) {
 				include STYLESHEETPATH . '/print.php';
 			} elseif ( TEMPLATEPATH != STYLESHEETPATH && file_exists(TEMPLATEPATH . '/print.php') ) {

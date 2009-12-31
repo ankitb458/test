@@ -247,6 +247,9 @@ class sem_template {
 		if ( !isset($_GET['action']) || $_GET['action'] != 'print' )
 			return;
 
+		if ( has_filter('template_redirect', 'redirect_canonical') )
+			redirect_canonical();
+		
 		add_filter('option_blog_public', 'false');
 		add_filter('comments_open', 'false');
 		add_filter('pings_open', 'false');
