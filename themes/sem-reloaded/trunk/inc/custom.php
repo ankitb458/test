@@ -381,6 +381,7 @@ EOS;
 							$published_css = get_option('sem_custom_published');
 							$published_css[$sem_options['active_skin']] = get_option('sem_custom');
 							update_option('sem_custom_published', $published_css);
+							do_action('flush_cache');
 						} else {
 							$fs_error = sprintf(__('Publish Failed: A WP filesystem error occurred (probably related to <a href="%1$s">this WP bug</a>) occurred. Paste the following code in %2$s:<pre>%3$s</pre>', 'sem-reloaded'), 'http://core.trac.wordpress.org/ticket/10889', 'wp-content/themes/sem-reloaded/skins/' . $sem_options['active_skin'] . '/custom.css',  $new_css);
 							break;
