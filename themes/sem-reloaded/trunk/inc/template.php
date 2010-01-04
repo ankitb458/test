@@ -133,9 +133,9 @@ class sem_template {
 		wp_enqueue_style('layout', sem_url . '/css/layout.css', null, sem_last_mod);
 		
 		if ( file_exists($skin_path . '/icons.css') )
-			wp_enqueue_style('icons', $skin_url . '/icons.css', null, sem_last_mod);
+			wp_enqueue_style('custom-icons', $skin_url . '/icons.css', null, sem_last_mod);
 		else
-			wp_enqueue_style('custom-icons', sem_url . '/css/icons.css', null, sem_last_mod);
+			wp_enqueue_style('icons', sem_url . '/css/icons.css', null, sem_last_mod);
 		
 		if ( isset($_GET['action']) && $_GET['action'] == 'print' ) {
 			wp_enqueue_style('print', sem_url . '/css/print.css', null, sem_last_mod);
