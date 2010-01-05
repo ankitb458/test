@@ -1,0 +1,61 @@
+# XML Sitemaps pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the XML Sitemaps package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.5.1\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-12-22 09:52+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: xml-sitemaps-info.php:2
+msgid "XML Sitemaps"
+msgstr ""
+
+#: xml-sitemaps-info.php:3
+msgid ""
+"Automatically generates XML Sitemaps for your site and notifies search "
+"engines when they're updated."
+msgstr ""
+
+#: xml-sitemaps.php:263
+msgid ""
+"XML Sitemaps requires MySQL 4.1.1 or later. It's time to <a href=\"http://"
+"www.semiologic.com/resources/wp-basics/wordpress-server-requirements/"
+"\">change hosts</a> if yours doesn't want to upgrade."
+msgstr ""
+
+#: xml-sitemaps.php:269
+msgid ""
+"Safe mode or an open_basedir restriction is used on your server. It's time "
+"to <a href=\"http://www.semiologic.com/resources/wp-basics/wordpress-server-"
+"requirements/\">change hosts</a> if yours doesn't want to upgrade."
+msgstr ""
+
+#: xml-sitemaps.php:276
+#, php-format
+msgid ""
+"XML Sitemaps requires that you enable a fancy url structure, under <a href="
+"\"%s\">Settings / Permalinks</a>."
+msgstr ""
+
+#: xml-sitemaps.php:284
+#, php-format
+msgid ""
+"XML Sitemaps is not active on your site because of your site's privacy "
+"settings (<a href=\"%s\">Settings / Privacy</a>)."
+msgstr ""
+
+#: xml-sitemaps.php:292
+msgid ""
+"XML Sitemaps is not active on your site. Please make the following file and "
+"folder writable by the server:"
+msgstr ""
