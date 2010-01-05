@@ -2,7 +2,7 @@
 Contributors: Michael D. Adams
 Tags: semiologic
 Requires at least: 2.0
-Tested up to: 2.9
+Tested up to: 2.9.1
 Stable tag: trunk
 
 Keeps WordPress from sending pings to your own site.

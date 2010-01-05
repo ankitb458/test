@@ -2,7 +2,7 @@
 Contributors: Steve Smith
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 2.9
+Tested up to: 2.9.1
 Stable tag: trunk
 
 Detects all ways to access your original WordPress feeds and redirects them to your FeedBurner feed so you can track every possible subscriber.
