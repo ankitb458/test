@@ -5,6 +5,10 @@
 # BSD licensed
 #
 
+rm *.diff 2> /dev/null
+rm *.patch 2> /dev/null
+rm *.rej 2> /dev/null
+rm *.orig 2> /dev/null
 find . -name *.diff -exec rm '{}' \;
 find . -name *.patch -exec rm '{}' \;
 find . -name *.rej -exec rm '{}' \;
