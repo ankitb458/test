@@ -1,9 +1,9 @@
-#mm-memberships .fixed .column-status {
+#memberships .fixed .column-status {
 	text-align: center;
 	width: 100px;
 }
 
-#mm-memberships .fixed .column-members {
+#memberships .fixed .column-members {
 	text-align: center;
 	width: 80px;
 }
