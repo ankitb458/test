@@ -3408,6 +3408,42 @@ class navbar extends sem_nav_menu {
 			'show_search_form' => true,
 			), parent::defaults());
 	} # defaults()
+	
+	
+	/**
+	 * default_items()
+	 *
+	 * @return array $items
+	 **/
+
+	function default_items() {
+		$items = array(array('type' => 'home'));
+		
+		$roots = wp_cache_get(0, 'page_children');
+		
+		if ( !$roots )
+			return $items;
+		
+		$front_page_id = get_option('show_on_front') == 'page'
+			? (int) get_option('page_on_front')
+			: 0;
+
+		foreach ( $roots as $root_id ) {
+			if ( $root_id == $front_page_id )
+				continue;
+			if ( get_post_meta($root_id, '_widgets_exclude', true) )
+				continue;
+			if ( !wp_cache_get($root_id, 'page_children') ) # only sections
+				continue;
+			
+			$items[] = array(
+				'type' => 'page',
+				'ref' => $root_id,
+				);
+		}
+		
+		return $items;
+	} # default_items()
 } # navbar
 
 
@@ -3588,18 +3624,38 @@ class footer extends sem_nav_menu {
 	
 	
 	/**
-	 * default_items
+	 * default_items()
 	 *
-	 * @return array $default_items
+	 * @return array $items
 	 **/
 
 	function default_items() {
-		return array(
-			array(
-				'label' => __('Home', 'sem-reloaded'),
-				'type' => 'home',
-				),
-			);
+		$items = array(array('type' => 'home'));
+		
+		$roots = wp_cache_get(0, 'page_children');
+		
+		if ( !$roots )
+			return $items;
+		
+		$front_page_id = get_option('show_on_front') == 'page'
+			? (int) get_option('page_on_front')
+			: 0;
+
+		foreach ( $roots as $root_id ) {
+			if ( $root_id == $front_page_id )
+				continue;
+			if ( get_post_meta($root_id, '_widgets_exclude', true) )
+				continue;
+			if ( wp_cache_get($root_id, 'page_children') ) # only non-sections
+				continue;
+			
+			$items[] = array(
+				'type' => 'page',
+				'ref' => $root_id,
+				);
+		}
+		
+		return $items;
 	} # default_items()
 } # footer
 
