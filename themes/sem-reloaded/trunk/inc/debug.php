@@ -158,6 +158,22 @@ add_action('wp_print_scripts', 'init_dump');
 
 
 /**
+ * dump_phpinfo()
+ *
+ * @return void
+ **/
+
+function dump_phpinfo() {
+	if ( isset($_GET['debug']) && $_GET['debug'] == 'phpinfo' && current_user_can('manage_options')) {
+		phpinfo();
+		die;
+	}
+} # dump_phpinfo()
+
+add_action('init', 'dump_phpinfo');
+
+
+/**
  * dump_js()
  *
  * @return void
