@@ -13,8 +13,10 @@ class sem_panels {
 	 **/
 
 	function register() {
-		global $sem_options;
+		# autofix panels
+		sem_panels::switch_themes();
 		
+		global $sem_options;
 		$before_widget = '<div class="widget %2$s">' . "\n"
 						. '<div class="widget_top"><div class="hidden"></div></div>' . "\n"
 						. '<div class="widget_bg">' . "\n"
@@ -572,7 +574,15 @@ class sem_panels {
 	 **/
 
 	function switch_themes() {
-		update_option('init_sem_panels', '1');
+		if ( !get_option('init_sem_panels') ) {
+			$sidebars_widgets = wp_get_sidebars_widgets();
+			foreach ( array('before_the_entries', 'the_entries', 'after_the_entries') as $sidebar ) {
+				if ( empty($sidebars_widgets[$sidebar]) ) {
+					update_option('init_sem_panels', '1');
+					break;
+				}
+			}
+		}
 	} # switch_themes()
 } # sem_panels
 
@@ -580,9 +590,4 @@ sem_panels::register();
 
 if ( !defined('DOING_CRON') )
 	add_action('init', array('sem_panels', 'init_widgets'), 2000);
-
-if ( !empty($_GET['preview']) && !empty($_GET['stylesheet']) )
-	sem_panels::switch_themes();
-else
-	add_action('switch_themes', array('sem_panels', 'switch_themes'));
 ?>
