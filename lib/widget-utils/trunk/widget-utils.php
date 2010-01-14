@@ -2,7 +2,7 @@
 /*
  * Widget Utils
  * Author: Denis de Bernardy <http://www.mesoconcepts.com>
- * Version: 2.0
+ * Version: 2.0.1
  */
 
 /**
@@ -25,7 +25,7 @@ class widget_utils {
 			return;
 		
 		add_meta_box('post_widget_config', __('This Post In Widgets', widget_utils_textdomain), array('widget_utils', 'post_widget_config'), 'post');
-		add_action('save_post', array('widget_utils', 'post_save_widget_config'));
+		add_action('save_post', array('widget_utils', 'post_save_widget_config'), 0);
 
 		$done = true;
 	} # post_meta_boxes()
