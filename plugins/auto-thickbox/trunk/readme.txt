@@ -54,6 +54,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
+= 2.0.2 =
+
+- Actually load the text domain for i18n support...
+
 = 2.0.1 =
 
 - Restore the nothickbox functionality
