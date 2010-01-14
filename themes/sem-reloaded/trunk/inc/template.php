@@ -143,7 +143,7 @@ class sem_template {
 				wp_enqueue_style('custom-print', $skin_url . '/print.css', null, sem_last_mod);
 		} elseif ( apply_filters('active_layout', $sem_options['active_layout']) == 'letter' ) {
 			wp_enqueue_style('letter', sem_url . '/css/letter.css', null, sem_last_mod);
-			if ( file_exists($skin_dir . '/letter.css') )
+			if ( file_exists($skin_path . '/letter.css') )
 				wp_enqueue_style('custom-letter', $skin_url . '/letter.css', null, sem_last_mod);
 		} else {
 			wp_enqueue_style('skin', $skin_url . '/skin.css', null, sem_last_mod);
