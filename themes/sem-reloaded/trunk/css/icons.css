@@ -3,7 +3,9 @@ Fam Fam Fam silk icons are copyright Mark James (http://www.famfamfam.com/lab/ic
 
 http://creativecommons.org/licenses/by/2.5/
 
-To override these icons, create a copy of this file and drop it, as icons.css, into your skin's folder.
+To customize this file, create a icons.css file in your skin's folder. Paste this file's contents into it,
+then only keep that which you need. Remove references to images, or adjust them accordingly. This will let
+you customize the theme's CSS without losing your changes when you upgrade.
 */
 
 #main a.external_icon,
