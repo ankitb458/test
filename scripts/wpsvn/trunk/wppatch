@@ -54,4 +54,4 @@ then
 	exit 1
 fi
 
-patch -p0 -i $PWD/$patch && rm $PWD/$patch
+patch -p0 -l -i $PWD/$patch && rm $PWD/$patch
