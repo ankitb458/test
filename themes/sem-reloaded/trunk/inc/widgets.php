@@ -450,7 +450,12 @@ class entry_content extends WP_Widget {
 			}
 		}
 		
-		$thumbnail = function_exists('get_the_post_thumbnail') ? get_the_post_thumbnail() : '';
+		$thumbnail = '';
+		if ( function_exists('get_the_post_thumbnail') ) {
+			add_filter('image_downsize', array('entry_content', 'thumbnail_downsize'), 10, 3);
+			$thumbnail = get_the_post_thumbnail();
+			remove_filter('image_downsize', array('entry_content', 'thumbnail_downsize'), 10, 3);
+		}
 		
 		if ( $thumbnail ) {
 			$thumbnail = '<div class="wp_thumbnail">'
@@ -468,6 +473,22 @@ class entry_content extends WP_Widget {
 				. $after_widget;
 		}
 	} # widget()
+	
+	
+	/**
+	 * thumbnail_downsize()
+	 *
+	 * @param mixed $in
+	 * @param int $id
+	 * @param string $size
+	 * @return False on failure, array on success
+	 **/
+
+	function thumbnail_downsize($in, $id, $size) {
+		if ( $in || $size != 'post-thumbnail' )
+			return $in;
+		return image_downsize($id, 'thumbnail');
+	} # thumbnail_downsize()
 	
 	
 	/**

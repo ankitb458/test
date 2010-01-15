@@ -32,6 +32,7 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 - Autofix panels when moving in and out of themes
 - Change default menu items: sections in navbar, non-sections in footer
 - Fix the check for a custom letter.css
+- Fix WP's built-in post thumbnail processing (i.e. downsize them automatically)
 
 = 0.9.1 =
 
