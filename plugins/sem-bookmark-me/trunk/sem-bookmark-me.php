@@ -3,7 +3,7 @@
 Plugin Name: Bookmark Me
 Plugin URI: http://www.semiologic.com/software/bookmark-me/
 Description: Widgets that let your visitors share your webpages on social media sites such as Buzzup, Delicious and Digg.
-Version: 5.0.1
+Version: 5.0.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-bookmark-me
@@ -190,7 +190,7 @@ class bookmark_me extends WP_Widget {
 					if ( preg_match("/\bclass\s*=\s*(\"|')(.*?)\\1/", $tag[0], $class) ) {
 						$tag[1] = str_replace($class[2], $class[2] . ' bookmark_me', $tag[1]);
 					} else {
-						$tag[1] = str_replace('>', ' class="bookmark_me"', $tag[1]);
+						$tag[1] = str_replace('>', ' class="bookmark_me">', $tag[1]);
 					}
 					$before_widget = preg_replace("/^$tag[0]/", $tag[1], $before_widget);
 				} else {
