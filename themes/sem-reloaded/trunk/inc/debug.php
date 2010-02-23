@@ -201,6 +201,22 @@ function dump_http($args, $url) {
 	return $args;
 } # dump_http()
 
+
+/**
+ * dump_trace()
+ *
+ * @return void
+ **/
+
+function dump_trace() {
+	$backtrace = debug_backtrace();
+	foreach ( $backtrace as $trace )
+		dump(
+			'File/Line: ' . $trace['file'] . ', ' . $trace['line'],
+			'Function / Class: ' . $trace['function'] . ', ' . $trace['class']
+			);
+} # dump_trace()
+
 if ( $_GET['debug'] == 'http' )
 	add_filter('http_request_args', 'dump_http', 0, 2);
 ?>
