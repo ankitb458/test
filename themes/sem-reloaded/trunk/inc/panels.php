@@ -576,7 +576,7 @@ class sem_panels {
 	function switch_themes() {
 		if ( !get_option('init_sem_panels') ) {
 			$sidebars_widgets = wp_get_sidebars_widgets();
-			foreach ( array('before_the_entries', 'the_entries', 'after_the_entries') as $sidebar ) {
+			foreach ( array('before_the_entries', 'the_entry', 'after_the_entries') as $sidebar ) {
 				if ( empty($sidebars_widgets[$sidebar]) ) {
 					update_option('init_sem_panels', '1');
 					break;
