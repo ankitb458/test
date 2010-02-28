@@ -28,6 +28,10 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 == Change Log ==
 
+= 2.0.2 =
+
+- Avoid using broken WP functions
+
 = 2.0.1 =
 
 - Remove potential infinite loop when dealing with corrupt data
