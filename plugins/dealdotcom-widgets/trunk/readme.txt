@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: dealdotcom, marketing, internet-marketing, monetize, money, adsense, widget, semiologic
 Requires at least: 2.8
-Tested up to: 2.9.1
+Tested up to: 2.9.2
 Stable tag: trunk
 
 Dealdotcom is a great place to look for deals on internet marketing related materials.

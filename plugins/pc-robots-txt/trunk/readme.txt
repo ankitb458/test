@@ -2,7 +2,7 @@
 Contributors: Peter Coughlin, Denis de Bernardy
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 2.9.1
+Tested up to: 2.9.2
 Stable tag: trunk
 
 A robots.txt file manager.

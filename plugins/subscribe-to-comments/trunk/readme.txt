@@ -2,7 +2,7 @@
 Contributors: markjaquith
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 2.9.1
+Tested up to: 2.9.2
 Stable tag: trunk
 
 Allows commenters on an entry to subscribe to e-mail notifications for subsequent comments.
