@@ -190,7 +190,7 @@ function upgrade_sem_5_5() {
 				$page_id = $wpdb->get_var("
 					SELECT	ID
 					FROM	$wpdb->posts
-					WHERE	post_name = '" . $wpdb->escape($ref) . "'
+					WHERE	post_name = '" . $wpdb->_real_escape($ref) . "'
 					");
 
 				if ( $page_id ) {

@@ -33,6 +33,7 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 - Change default menu items: sections in navbar, non-sections in footer
 - Fix the check for a custom letter.css
 - Fix WP's built-in post thumbnail processing (i.e. downsize them automatically)
+- Fix a potential infinite loop
 
 = 0.9.1 =
 

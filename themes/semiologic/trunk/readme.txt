@@ -27,6 +27,11 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 6.0.4
+
+- Fix a potential infinite loop
+- Avoid using broken WP functions
+
 = 6.0.3 =
 
 - Sem Cache 2.0 related tweaks
