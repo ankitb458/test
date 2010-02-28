@@ -3,7 +3,7 @@
 Plugin Name: Semiologic Packages
 Plugin URI: https://api.semiologic.com/version/
 Description: Interfaces with Mediacaster in order to output extra information for stable and bleeding edge downloads.
-Version: 1.0.1
+Version: 1.0.2 beta
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-packages
@@ -50,8 +50,8 @@ class sem_packages {
 			$package = $wpdb->get_row("
 				SELECT	*
 				FROM	$wpdb->packages
-				WHERE	stable_package = '" . $wpdb->escape($args['src']) . "'
-				OR		bleeding_package = '" . $wpdb->escape($args['src']) . "'
+				WHERE	stable_package = '" . $wpdb->_real_escape($args['src']) . "'
+				OR		bleeding_package = '" . $wpdb->_real_escape($args['src']) . "'
 				");
 			
 			if ( $package ) {
@@ -154,7 +154,7 @@ class sem_packages {
 			$readme = $wpdb->get_row("
 				SELECT	*
 				FROM	$wpdb->packages
-				WHERE	package = '" . $wpdb->escape($package) . "-'
+				WHERE	package = '" . $wpdb->_real_escape($package) . "-'
 				");
 			
 			if ( $readme ) {

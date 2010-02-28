@@ -15,6 +15,10 @@ Allows to customize the number of posts returned by WP based on the type of page
 
 == Change Log ==
 
+= 2.15.2 =
+
+- Avoid using broken WP functions
+
 = 2.15.1 =
 
 - Move plugin in its own folder

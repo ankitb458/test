@@ -32,6 +32,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 3.0.2 =
+
+- Avoid using broken WP functions
+
 = 3.0.1 =
 
 - Default tweak on first use

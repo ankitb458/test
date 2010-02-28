@@ -146,7 +146,7 @@ class article_uploader_admin {
 			if ( $content ) {
 				$wpdb->query("
 					UPDATE	$wpdb->posts
-					SET		post_content = '" . $wpdb->escape($content) . "'
+					SET		post_content = '" . $wpdb->_real_escape($content) . "'
 					WHERE	ID = " . intval($post_id)
 					);
 				
@@ -164,7 +164,7 @@ class article_uploader_admin {
 			if ( $content ) {
 				$wpdb->query("
 					UPDATE	$wpdb->posts
-					SET		post_content = '" . $wpdb->escape($content) . "'
+					SET		post_content = '" . $wpdb->_real_escape($content) . "'
 					WHERE	ID = " . intval($post_id)
 					);
 			}

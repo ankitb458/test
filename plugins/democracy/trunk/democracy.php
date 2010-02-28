@@ -3,7 +3,7 @@
 Plugin Name: Poll Widget / Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.16.1 fork
+Version: 1.16.2 beta fork
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
@@ -70,7 +70,7 @@ function jal_edit_poll () {
 
     // read which aids are in this poll
     $edits = explode(" ", $_POST['editable']);
-	 $question = $wpdb->escape(stripslashes(wp_filter_post_kses($_POST['question'])));
+	 $question = $wpdb->_real_escape(stripslashes(wp_filter_post_kses($_POST['question'])));
 
     // Allow users to edit poll?
     $allowusers = (isset($_POST['allowNewAnswers'])) ? "1" : "0";
@@ -94,10 +94,10 @@ function jal_edit_poll () {
 		$aid = (int) $aid;
 
 		if (!empty($answer) && in_array($aid, $edits))
-			$wpdb->query("UPDATE {$table_prefix}democracyA SET answers='".$wpdb->escape(stripslashes(wp_filter_post_kses($answer)))."' WHERE qid = {$poll_id} AND aid = {$aid}");
+			$wpdb->query("UPDATE {$table_prefix}democracyA SET answers='".$wpdb->_real_escape(stripslashes(wp_filter_post_kses($answer)))."' WHERE qid = {$poll_id} AND aid = {$aid}");
 
 		if (!empty($answer) && !in_array($aid, $edits))
-			$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$poll_id}, '".$wpdb->escape(stripslashes(wp_filter_post_kses($answer)))."', 0)");
+			$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$poll_id}, '".$wpdb->_real_escape(stripslashes(wp_filter_post_kses($answer)))."', 0)");
 
 	}
 }
@@ -163,7 +163,7 @@ function jal_add_question () {
     $allow_users_to_add = (isset($_POST['allowNewAnswers'])) ? "1" : "0";
 
     // Add a new question and activate it
-    $wpdb->query("INSERT INTO {$table_prefix}democracyQ (question, timestamp, allowusers, active) VALUES ('".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['jal_dem_question'])))."', '".time()."', '".$allow_users_to_add."', '1')");
+    $wpdb->query("INSERT INTO {$table_prefix}democracyQ (question, timestamp, allowusers, active) VALUES ('".$wpdb->_real_escape(stripslashes(wp_filter_post_kses($_POST['jal_dem_question'])))."', '".time()."', '".$allow_users_to_add."', '1')");
 
     // Get the id of that new question
     $new_q = $wpdb->get_var("SELECT id FROM {$table_prefix}democracyQ WHERE active = '1'");
@@ -171,7 +171,7 @@ function jal_add_question () {
     // Add the questions
     foreach($_POST['answer'] as $answer)
         if (!empty($answer))
-        	$sql[] = "INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$new_q}, '".$wpdb->escape(stripslashes(wp_filter_post_kses($answer)))."', 0);";
+        	$sql[] = "INSERT INTO {$table_prefix}democracyA (qid, answers, votes) VALUES ({$new_q}, '".$wpdb->_real_escape(stripslashes(wp_filter_post_kses($answer)))."', 0);";
 
     foreach($sql as $query)
     	$wpdb->query($query);
@@ -390,8 +390,8 @@ function jal_checkIP ($poll_id = 0) {
             die("Go stuff the ballot box elsewhere!");
 
         // add the new IP address to the array
-        $results[] = wp_filter_post_kses($_SERVER['REMOTE_ADDR']);
-        $final = $wpdb->escape(serialize($results));
+        $results[] = stripslashes(wp_filter_post_kses($_SERVER['REMOTE_ADDR']));
+        $final = $wpdb->_real_escape(serialize($results));
 
         $wpdb->query("UPDATE {$table_prefix}democracyQ SET voters = '{$final}' WHERE {$where}");
 }
@@ -695,30 +695,28 @@ Let's run them....
 
 // for users with js turned off
 if (isset($_GET['jal_nojs'])) {
-    include ("../../../wp-config.php");
-
-    $jal_cookie_path = dirname(dirname(dirname(dirname($_SERVER['PHP_SELF']))));
+    include dirname(dirname(dirname(dirname(__FILE__)))) . '/wp-load.php';
 
     // Set the cookies, it doesn't matter that they might already have voted.
     if($_POST['poll_aid'] == "newAnswer") {
        $aid = $wpdb->get_var("SELECT aid FROM {$table_prefix}democracyA ORDER BY aid DESC LIMIT 1");
        // Give the user a cookie
-       setcookie("demVoted_".$GLOBALS['table_prefix'].$_POST['poll_id'],$aid + 1,time()+$jal_cookietime, $jal_cookie_path);
+       setcookie("demVoted_".$GLOBALS['table_prefix'].$_POST['poll_id'],$aid + 1,time()+$jal_cookietime, COOKIEPATH);
 	} else
-	    setcookie("demVoted_".$GLOBALS['table_prefix'].$_POST['poll_id'],$_POST['poll_aid'],time()+$jal_cookietime, $jal_cookie_path);
+	    setcookie("demVoted_".$GLOBALS['table_prefix'].$_POST['poll_id'],$_POST['poll_aid'],time()+$jal_cookietime, COOKIEPATH);
 
     // Check their IP against past votes
-	jal_checkIP($wpdb->escape($_POST['poll_id']));
+	jal_checkIP(intval($_POST['poll_id']));
 
     // Add a new answer to the choice list
     if ($_POST['poll_aid'] == "newAnswer") {
     	if ($wpdb->get_var("SELECT allowusers FROM {$table_prefix}democracyQ WHERE id = '".intval($_POST['poll_id'])."'") == 1) {
     		// Add the new choice
-    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES (".$wpdb->escape($_POST['poll_id']).", '".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['poll_vote'])))."', 1, 1)");
+    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES (".intval($_POST['poll_id']).", '".$wpdb->_real_escape(stripslashes(wp_filter_post_kses($_POST['poll_vote'])))."', 1, 1)");
     	}
 
     } else
-    	$wpdb->query("UPDATE {$table_prefix}democracyA SET votes = (votes+1) WHERE qid = ".$wpdb->escape($_POST['poll_id'])." AND aid = ".$wpdb->escape($_POST['poll_aid']));
+    	$wpdb->query("UPDATE {$table_prefix}democracyA SET votes = (votes+1) WHERE qid = ".intval($_POST['poll_id'])." AND aid = ".$wpdb->_real_escape(stripslashes($_POST['poll_aid'])));
 
     $x = (strstr($_SERVER['HTTP_REFERER'], '?')) ? "&" : "?";
 
@@ -727,8 +725,8 @@ if (isset($_GET['jal_nojs'])) {
 
 // When the poll sends the vote
 if (isset($_GET['demSend'])) {
-	include ("../../../wp-config.php");
-	jal_checkIP($wpdb->escape($_POST['poll_id']));
+	include dirname(dirname(dirname(dirname(__FILE__)))) . '/wp-load.php';
+	jal_checkIP(intval($_POST['poll_id']));
 
 	$poll_id = (int) $_POST['poll_id'];
 
@@ -736,16 +734,16 @@ if (isset($_GET['demSend'])) {
 		// Make sure users are allowed to add comments
 		if ($wpdb->get_var("SELECT allowusers FROM {$table_prefix}democracyQ WHERE id = '{$poll_id}'") == 1) {
     		// Add the new question and give it one vote
-    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES ($poll_id, '".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['vote'])))."', 1, 1)");
+    		$wpdb->query("INSERT INTO {$table_prefix}democracyA (qid, answers, votes, added_by) VALUES ($poll_id, '".$wpdb->_real_escape(stripslashes(wp_filter_post_kses($_POST['vote'])))."', 1, 1)");
     	    // Get the new id of the new answer
     	}
 	} else
-		$wpdb->query("UPDATE {$table_prefix}democracyA SET votes = (votes+1) WHERE qid = {$poll_id} AND aid = ".$wpdb->escape(stripslashes(wp_filter_post_kses($_POST['vote']))));
+		$wpdb->query("UPDATE {$table_prefix}democracyA SET votes = (votes+1) WHERE qid = {$poll_id} AND aid = ".$wpdb->_real_escape(stripslashes(wp_filter_post_kses($_POST['vote']))));
 }
 
 // When the poll wants results
 if (isset($_GET['demGet'])) {
-	include ("../../../wp-config.php");
+	include dirname(dirname(dirname(dirname(__FILE__)))) . '/wp-load.php';
    jal_SeeResults($_GET['poll_id'], TRUE);
 }
 
@@ -817,7 +815,7 @@ if (function_exists('add_action')) {
 		function democracy_widget() {
 			$widget_ops = array(
 				'classname' => 'widget_democracy',
-				'description' => __('Displays polls, which you configure under Settings / Events.', 'democracy'),
+				'description' => __('Displays polls, which you configure under Settings / Polls.', 'democracy'),
 				);
 			
 			$this->WP_Widget('democracy', __('Poll Widget', 'democracy'), $widget_ops);

@@ -2,7 +2,7 @@
 
 /* <WP plugin data>
  * Plugin Name:   Custom Query String
- * Version:       2.15.1 fork
+ * Version:       2.15.2 beta fork
  * Plugin URI:    http://mattread.com/projects/wp-plugins/custom-query-string-plugin/
  * Description:   Change the number of posts displayed when viewing different archive pages.
  * Author:        Matt Read, Denis de Bernardy
@@ -257,7 +257,7 @@ class cqs
 		return (int) $wpdb->get_var("
 			SELECT term_id
 			FROM $wpdb->terms
-			WHERE slug = '". $wpdb->escape($category_nicename) ."'
+			WHERE slug = '". $wpdb->_real_escape($category_nicename) ."'
 			");
 	}
 
@@ -274,7 +274,7 @@ class cqs
 		return $wpdb->get_var("
 			SELECT slug
 			FROM $wpdb->terms
-			WHERE term_id = '". $wpdb->escape((int) $category_ID) ."'
+			WHERE term_id = '". intval($category_ID) ."'
 			");
 	}
 

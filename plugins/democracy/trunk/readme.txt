@@ -15,6 +15,10 @@ A poll widget.
 
 == Change Log ==
 
+= 1.16.2 =
+
+- Avoid using broken WP functions
+
 = 1.16.1 =
 
 - Use Sem Cache's asset cache feature
