@@ -416,7 +416,7 @@ class entry_content extends WP_Widget {
 		if ( !isset($_GET['action']) || $_GET['action'] != 'print' ) {
 			global $post;
 			
-			$edit_link = get_edit_post_link($post->ID);
+			$edit_link = get_edit_post_link($post->ID, 'raw');
 			if ( $edit_link ) {
 				$edit_link = '<a class="post-edit-link"'
 					. ' href="' . esc_url($edit_link) . '"'
