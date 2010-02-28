@@ -696,7 +696,8 @@ Let's run them....
 // for users with js turned off
 if (isset($_GET['jal_nojs'])) {
     include dirname(dirname(dirname(dirname(__FILE__)))) . '/wp-load.php';
-
+	nocache_headers();
+	
     // Set the cookies, it doesn't matter that they might already have voted.
     if($_POST['poll_aid'] == "newAnswer") {
        $aid = $wpdb->get_var("SELECT aid FROM {$table_prefix}democracyA ORDER BY aid DESC LIMIT 1");
@@ -726,6 +727,7 @@ if (isset($_GET['jal_nojs'])) {
 // When the poll sends the vote
 if (isset($_GET['demSend'])) {
 	include dirname(dirname(dirname(dirname(__FILE__)))) . '/wp-load.php';
+	nocache_headers();
 	jal_checkIP(intval($_POST['poll_id']));
 
 	$poll_id = (int) $_POST['poll_id'];
@@ -744,7 +746,8 @@ if (isset($_GET['demSend'])) {
 // When the poll wants results
 if (isset($_GET['demGet'])) {
 	include dirname(dirname(dirname(dirname(__FILE__)))) . '/wp-load.php';
-   jal_SeeResults($_GET['poll_id'], TRUE);
+	nocache_headers();
+	jal_SeeResults($_GET['poll_id'], TRUE);
 }
 
 // Make sure WP is running
