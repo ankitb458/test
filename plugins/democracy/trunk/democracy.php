@@ -405,7 +405,7 @@ function jal_democracy($poll_id = 0) {
  	$poll_question = $wpdb->get_row("SELECT id, question, voters, allowusers FROM {$table_prefix}democracyQ WHERE {$where}");
 
 // Check if they've voted
- if ($_GET['jal_no_js'] || isset($_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id])
+ if (!empty($_GET['jal_no_js']) || isset($_COOKIE['demVoted_'.$GLOBALS['table_prefix'].$poll_question->id])
  	|| isset($_COOKIE['demVoted_'.$poll_question->id]))
     jal_SeeResults($poll_question->id);
  else {
@@ -453,9 +453,9 @@ function jal_democracy($poll_id = 0) {
         <p><?php if ($total_votes > 0) {
         	// For non-js users...JS users get this link changed onload
         ?>  <script type="text/javascript">
-        	document.write('<a id="view-results" href="<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES).$x; ?>jal_no_js=true&amp;poll_id=<?php echo $poll_question->id; ?>">View Results</a>');
+        	document.write('<a id="view-results" href="<?php echo esc_js($_SERVER['REQUEST_URI'].$x); ?>jal_no_js=true&amp;poll_id=<?php echo intval($poll_question->id); ?>">View Results</a>');
         	</script>
-        	<?php if ($user_added) echo "<br /><small><sup>1</sup> = Added by a guest</small>"; ?>        <?php } else { echo "No votes yet"; } ?></p>
+        	<?php if (!empty($user_added)) echo "<br /><small><sup>1</sup> = Added by a guest</small>"; ?>        <?php } else { echo "No votes yet"; } ?></p>
        </div>
     </form>
 
