@@ -59,7 +59,7 @@ class sem_packages {
 				wp_cache_set($package->bleeding_package, $package, 'sem_packages', 900);
 				wp_cache_set($package->package, $package, 'sem_packages', 900);
 			} else {
-				$package = (object) $package;
+				$package = 0;
 				wp_cache_set($args['src'], $package, 'sem_packages', 900);
 			}
 		}
