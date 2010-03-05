@@ -230,7 +230,7 @@ function dates_to_remember($showonly = -1, $timefrom = null, $startswith = '<li>
 				if($eventtime < $timefrom)
 				{
 					$zero_hour = getdate($timefrom);
-					$month = dtr_monthtonum(date('M', mktime(0,0,0, ($zero_hour['mon'] % 12) + 1, 1, $_zero_hour['year'])));
+					$month = dtr_monthtonum(date('M', mktime(0,0,0, ($zero_hour['mon'] % 12) + 1, 1, $zero_hour['year'])));
 					$eventtime = dtr_xst_weekday($xst, $day, $month);
 				}
 			}

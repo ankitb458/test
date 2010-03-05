@@ -184,7 +184,7 @@ function jal_dem_admin_head() { ?>    <script type="text/javascript" src="<?php 
 
 function jal_dem_admin_page() {
 	global $wpdb, $table_prefix;
-	$poll_id = (int) $_GET['poll_id'];
+	$poll_id = isset($_GET['poll_id']) ? intval($_GET['poll_id']) : 0;
 
  if (isset($_GET['jal_dem_delete'])) { ?><div class="updated">
     <p>Poll #<?php echo $poll_id; ?> was deleted successfully</p>

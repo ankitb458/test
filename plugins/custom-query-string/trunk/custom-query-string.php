@@ -294,9 +294,11 @@ class cqs
 	 */
 	function options_page() {
 		load_plugin_textdomain('custom-query-string');
-		$this->request = $_REQUEST['cqs'];
+		$this->request = isset($_REQUEST['cqs']) ? $_REQUEST['cqs'] : false;
 
-		if ($this->request['add'] || $this->request['addCategory']) {
+		if ( !$this->request ) {
+			$this->display_options_page();
+		} elseif ($this->request['add'] || $this->request['addCategory']) {
 			$this->add_options();
 			$this->display_options_page(true);
 		}
@@ -507,7 +509,9 @@ class cqs
 				<th scope="row"><?php _e('Category', 'cqs'); ?></th>
 
 				<td>
-				<?php dropdown_cats(0, 'All', 'ID', 'asc', 0, 0, 0, FALSE, 0, 0) ?>
+				<?php wp_dropdown_categories(array(
+					'show_option_all' => 0,
+					)); ?>
 				</td>
 
 				<td>
@@ -546,7 +550,6 @@ class cqs
 	</div>
 
 		<?php
-		ob_end_flush();
 	}
 }
 

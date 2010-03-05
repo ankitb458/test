@@ -24,7 +24,7 @@ function dtr_management_page()
 	#var_dump(get_option('countdown_datefile'), $_POST['dates']);
 	#echo '</pre>';
 
-	if ( $_POST['update_countdown'] ) {
+	if ( !empty($_POST['update_countdown']) ) {
 		check_admin_referer('countdown');
 		$_POST = array_map('stripslashes', $_POST);
 
