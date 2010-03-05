@@ -453,7 +453,7 @@ function jal_democracy($poll_id = 0) {
         <p><?php if ($total_votes > 0) {
         	// For non-js users...JS users get this link changed onload
         ?>  <script type="text/javascript">
-        	document.write('<a id="view-results" href="<?php echo esc_js($_SERVER['REQUEST_URI'].$x); ?>jal_no_js=true&amp;poll_id=<?php echo intval($poll_question->id); ?>">View Results</a>');
+        	document.write('<a id="view-results" href="<?php echo esc_url($_SERVER['REQUEST_URI'] . $x . 'jal_no_js=true&poll_id=' . intval($poll_question->id)); ?>">View Results</a>');
         	</script>
         	<?php if (!empty($user_added)) echo "<br /><small><sup>1</sup> = Added by a guest</small>"; ?>        <?php } else { echo "No votes yet"; } ?></p>
        </div>
