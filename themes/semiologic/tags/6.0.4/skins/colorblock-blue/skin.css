@@ -1,0 +1,263 @@
+/*
+Skin name: Colorblock-blue
+Version: 1.0.2
+Author: Techie Coach
+Author uri: http://www.techiecoachtutorials.com
+Description: Color block squares in blue
+*/
+
+/*
+	Background, font and link colors for the entire site
+	----------------------------------------------------
+*/
+
+.sem_admin_menu #ext_wrapper {
+	margin-top: 15px;
+}
+
+body
+{
+	background-color: #f4f4f4;
+	color: black;
+}
+
+
+h1, h1 a:link, a:link, a:visited
+{
+	color: #4B87B6;
+}
+
+h1 a:active, h1 a:hover, a:active, a:hover
+{
+	color: #63B2B9;
+}
+
+
+/*
+	Border, background, font and link colors for the site canvas
+	------------------------------------------------------------
+*/
+
+#wrapper
+{
+	border: solid 1px #c1c1c1;
+	background-color: #fff;
+	color: black;
+}
+
+/*
+	Border, background, font and link colors for the header
+	-------------------------------------------------------
+*/
+
+#header div.pad
+{
+	background-color: #63B2B9;
+	color: black;
+	text-align: center;
+}
+
+.skin #header h1,
+#header h1 a
+{
+	color: white;
+	font-size:48px;
+}
+
+#header h1 a:hover
+{
+	color: white;
+}
+
+#header h2
+{
+	color: white;
+}
+
+/*
+	Offsets for the header
+	----------------------
+*/
+
+#header div.pad
+{
+	margin: 10px;
+	padding: 0px;
+}
+
+
+/*
+	Aligns for the header
+	---------------------
+*/
+
+#header h1
+{
+	padding-bottom: 20px;
+	text-align: center;
+}
+
+
+#header h2
+{
+	text-align: center;
+}
+
+
+
+/*
+	Border, background, font and link colors for the navbar
+	-------------------------------------------------------
+*/
+
+#navbar
+{
+	background-color: #436DB0;
+	color: white;
+}
+
+#navbar a
+{
+	color: white;
+	text-decoration: none
+}
+
+#navbar a:hover
+{
+	text-decoration: underline
+}
+
+/*
+	Offset for the navbar
+	---------------------
+*/
+
+#navbar
+{
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-top: 6px;
+	padding-bottom: 3px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+/**/
+
+/*
+	Float Left Icons for each sidebar widget
+	-----------------------------------------
+*/
+
+#sidebar h2,
+#sidebar2 h2,
+#ext_sidebar h2
+{
+	background:transparent url(sideicon.gif) no-repeat scroll left center;
+	padding-left:30px;
+}
+
+#sidebar .widget li,
+#sidebar2 .widget li,
+#ext_sidebar .widget li
+{
+	list-style-image: url(li-icon.gif);
+}
+/*
+	Calendar style
+	--------------
+*/
+
+.widget_calendar table
+{
+	border: solid 1px #c1c1c1;
+	background-color: white;
+}
+
+.widget_calendar thead th
+{
+	border-bottom: solid 1px #c1c1c1;
+}
+
+.widget_calendar tfoot td
+{
+	background-color: white;
+}
+
+/*
+	Border, background, font and link colors for the footer
+	-------------------------------------------------------
+*/
+
+#footer
+{
+	border-top: solid 1px #c1c1c1;
+	background-color: #63B2B9;
+	color: #FFFFFF;
+}
+
+#footer a
+{
+	color: #FFFFFF;
+	font-weight:bold;
+	text-decoration: none;
+}
+
+#footer a:hover
+{
+	color: #FFFFFF;
+	font-weight:bold;
+	text-decoration: underline;
+}
+
+
+/*
+	Offset for the footer
+	---------------------
+*/
+#footer
+{
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+	padding-top: 6px;
+	padding-bottom: 3px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+/*
+	Margins for the main area
+	-------------------------
+*/
+#main div.pad
+{
+	margin: 10px 10px;
+	padding: 0px 0px;
+}
+
+/*
+	Border, background, font and link colors for each entry
+	-------------------------------------------------------
+*/
+div.entry
+{
+	border-bottom: solid 1px #c1c1c1;
+	color: black;
+	padding: 0px 20px 20px 20px;
+}
+
+
+/*
+Blockquote new graphic
+-------------------------
+*/
+
+blockquote
+{
+	margin: 0 20px;
+	padding: 2px 20px;
+	border-left: 4px solid #B0D9DB;
+    background-color: #D8ECED;
+    background-image: none;
+}
