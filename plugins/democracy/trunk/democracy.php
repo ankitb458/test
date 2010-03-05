@@ -762,7 +762,7 @@ if (function_exists('add_action')) {
 	 // add the management page to the admin nav bar
     add_action('admin_menu', 'jal_add_page');
     // add javascript to admin area, only on democracy admin page
-    if ($_REQUEST['page'] == "democracy")
+    if ( isset($_REQUEST['page']) && $_REQUEST['page'] == "democracy")
 		add_action('admin_head', 'jal_dem_admin_head');
 
 /* These actions are run through 'init' for security */

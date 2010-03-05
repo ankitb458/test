@@ -193,7 +193,7 @@ EOS;
 		
 		echo '<div id="current_option">' . "\n";
 		
-		echo '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr(sprintf($title, $details['name'], $details['version'], $details['author'])) . '" />' . "\n";
+		echo '<img src="' . esc_url($screenshot) . '" alt="" />' . "\n";
 		
 		echo '<h4>' . sprintf($title, $name, $details['version'], $author) . '</h4>';
 		
@@ -278,7 +278,7 @@ EOS;
 			
 			echo '<p>'
 				. '<label for="skin-' . $skin . '">'
-				. '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($details['name']) . '"/>'
+				. '<img src="' . esc_url($screenshot) . '" alt="" />'
 				. '</label>'
 				. '</p>' . "\n"
 				. '<h4>'

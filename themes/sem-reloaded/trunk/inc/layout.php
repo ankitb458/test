@@ -131,7 +131,7 @@ EOS;
 		
 		echo '<div id="current_option">' . "\n";
 		
-		echo '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($details['name']) . '" />' . "\n";
+		echo '<img src="' . esc_url($screenshot) . '" alt="" />' . "\n";
 		
 		echo '<h4>' . $details['name'] . '</h4>';
 		
@@ -199,7 +199,7 @@ EOS;
 			
 			echo '<h4>'
 				. '<label for="layout-' . $layout . '">'
-				. '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($details['name']) . '"/>'
+				. '<img src="' . esc_url($screenshot) . '" alt="" />'
 				. '</label>'
 				. '</p>' . "\n"
 				. '<p>'

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe To Comments
-Version: 2.5.2 fork
+Version: 2.5.3 beta fork
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to receive notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
@@ -331,16 +331,16 @@ class sg_subscribe {
 		$this->messages = '';
 		$this->use_wp_style = ( $this->settings['use_custom_style'] == 'use_custom_style' ) ? false : true;
 		if ( !$this->use_wp_style ) {
-			$this->header = str_replace('[theme_path]', get_template_directory(), stripslashes($this->settings['header']));
-			$this->sidebar = str_replace('[theme_path]', get_template_directory(), stripslashes($this->settings['sidebar']));
-			$this->footer = str_replace('[theme_path]', get_template_directory(), stripslashes($this->settings['footer']));
-			$this->before_manager = stripslashes($this->settings['before_manager']);
-			$this->after_manager = stripslashes($this->settings['after_manager']);
+			$this->header = str_replace('[theme_path]', get_template_directory(), !empty($this->settings['header']) ? stripslashes($this->settings['header']) : '');
+			$this->sidebar = str_replace('[theme_path]', get_template_directory(), !empty($this->settings['sidebar']) ? stripslashes($this->settings['sidebar']) : '');
+			$this->footer = str_replace('[theme_path]', get_template_directory(), !empty($this->settings['footer']) ? stripslashes($this->settings['footer']) : '');
+			$this->before_manager = !empty($this->settings['before_manager']) ? stripslashes($this->settings['before_manager']) : '';
+			$this->after_manager = !empty($this->settings['after_manager']) ? stripslashes($this->settings['after_manager']) : '';
 		}
 
 		// version 2.0.8 -- allow plugin file to be renamed or placed in a subdirectory
 		if ( 'edit.php?page=subscribe-to-comments.php' == $this->form_action )
-			$this->form_action = 'edit.php?page=' . STC_PLUGIN_BASENAME;
+			$this->form_action = 'tools.php?page=' . STC_PLUGIN_BASENAME;
 
 
 		foreach ( array('email', 'key', 'ref', 'new_email') as $var )
@@ -357,7 +357,7 @@ class sg_subscribe {
 
 
 	function show_errors($type='manager', $before_all='<div class="updated updated-error">', $after_all='</div>', $before_each='<p>', $after_each='</p>'){
-		if ( is_array($this->errors[$type]) ) {
+		if ( !empty($this->errors[$type]) && is_array($this->errors[$type]) ) {
 			echo $before_all;
 			foreach ($this->errors[$type] as $error)
 				echo $before_each . $error . $after_each;
@@ -754,13 +754,14 @@ class sg_subscribe {
 		add_option('sg_subscribe_settings', array('use_custom_style' => '', 'email' => get_bloginfo('admin_email'), 'name' => get_bloginfo('name'), 'header' => '[theme_path]/header.php', 'sidebar' => '', 'footer' => '[theme_path]/footer.php', 'before_manager' => '<div id="content" class="widecolumn subscription-manager">', 'after_manager' => '</div>', 'default_subscribed' => '', 'not_subscribed_text' => __('Notify me of followup comments via e-mail', 'subscribe-to-comments'), 'subscribed_text' => __('You are subscribed to this entry.  <a href="[manager_link]">Manage your subscriptions</a>.', 'subscribe-to-comments'), 'author_text' => __('You are the author of this entry.  <a href="[manager_link]">Manage subscriptions</a>.', 'subscribe-to-comments')));
 
 		$settings = get_option('sg_subscribe_settings');
+		$update = false;
 
-		if ( !$settings['salt'] ) {
+		if ( empty($settings['salt']) ) {
 			$settings['salt'] = md5(md5(uniqid(rand() . rand() . rand() . rand() . rand(), true))); // random MD5 hash
 			$update = true;
 		}
 
-		if ( !$settings['clear_both'] ) {
+		if ( empty($settings['clear_both']) ) {
 			$settings['clear_both'] = 'clear_both';
 			$update = true;
 		}
@@ -883,7 +884,7 @@ add_filter('preprocess_comment', 'stc_checkbox_state', 1);
 
 
 // detect "subscribe without commenting" attempts
-add_action('init', create_function('$a','global $sg_subscribe; if ( $_POST[\'solo-comment-subscribe\'] == \'solo-comment-subscribe\' && is_numeric($_POST[\'postid\']) ) {
+add_action('init', create_function('$a','global $sg_subscribe; if ( isset($_POST[\'solo-comment-subscribe\']) && $_POST[\'solo-comment-subscribe\'] == \'solo-comment-subscribe\' && is_numeric($_POST[\'postid\']) ) {
 	sg_subscribe_start();
 	$sg_subscribe->solo_subscribe($_POST[\'email\'], $_POST[\'postid\']);
 }')
@@ -1073,7 +1074,7 @@ function sg_subscribe_admin($standalone = false) {
 	<?php if ( current_user_can('manage_options') ) { ?>
 
 		<fieldset class="options">
-			<?php if ( $_REQUEST['email'] ) : ?>
+			<?php if ( !empty($_REQUEST['email']) ) : ?>
 				<p><a href="<?php echo $sg_subscribe->form_action; ?>"><?php _e('&laquo; Back'); ?></a></p>
 			<?php endif; ?>
 
