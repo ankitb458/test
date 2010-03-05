@@ -141,11 +141,11 @@ EOS;
 		
 		echo '<div id="current_option">' . "\n";
 		
-		echo '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($layouts[$sem_options['active_layout']]) . '" class="layout" />' . "\n";
+		echo '<img src="' . esc_url($screenshot) . '" alt="" class="layout" />' . "\n";
 		
 		echo '<h4>' . $name . '</h4>';
 		
-		echo '<img src="' . esc_url($screenshot2) . '" alt="' . esc_attr($widths[$sem_options['active_width']]) . '" />' . "\n";
+		echo '<img src="' . esc_url($screenshot2) . '" alt="" />' . "\n";
 		
 		echo '<div style="clear: both;"></div>' . "\n";
 		
@@ -189,7 +189,7 @@ EOS;
 			
 			echo '<h4>'
 				. '<label for="layout-' . $layout . '">'
-				. '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($name) . '"/>'
+				. '<img src="' . esc_url($screenshot) . '" alt="" />'
 				. '</label>'
 				. '</p>' . "\n"
 				. '<p>'
@@ -268,7 +268,7 @@ EOS;
 			
 			echo '<h4>'
 				. '<label for="width-' . $width . '">'
-				. '<img src="' . esc_url($screenshot) . '" alt="' . esc_attr($name) . '"/>'
+				. '<img src="' . esc_url($screenshot) . '" alt="" />'
 				. '</label>'
 				. '</p>' . "\n"
 				. '<p>'

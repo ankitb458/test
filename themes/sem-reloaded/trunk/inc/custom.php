@@ -449,7 +449,8 @@ EOS;
 		
 		$custom = get_option('sem_custom');
 		$published_css = get_option('sem_custom_published');
-		$restore_css = is_array($published_css[$sem_options['active_skin']])
+		$restore_css = isset($published_css[$sem_options['active_skin']]) &&
+			is_array($published_css[$sem_options['active_skin']])
 			? $published_css[$sem_options['active_skin']]
 			: array();
 		
