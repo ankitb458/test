@@ -5,7 +5,7 @@
  Description: Client-side javascript blocks all spam bots.  XHTML 1.1 compliant.
  Author: Elliott Back
  Author URI: http://elliottback.com
- Version: 4.3
+ Version: 4.4
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -58,7 +58,8 @@ function wphc_install () {
 	$options['refresh'] = 60 * 60 * 24 * 7;
 	$options['signup_active'] = 1;
 	$options['comments_active'] = 1;
-
+	$options['attribution'] = 1;
+	
 	// akismet compat check
 	if(function_exists('akismet_init')){
 		$options['moderation'] = 'akismet';
@@ -124,12 +125,13 @@ function widget_ratio($options){
 	$signups_spam = (int)$options['signups-spam'];
 	$ham = (int)$options['comments-ham'];
 	$spam = (int)$options['comments-spam'];
-	$ratio = get_spam_ratio( $hame, $spam );
+	$ratio = get_spam_ratio( $ham, $spam );
 	$signups_ratio = get_spam_ratio( $signups_ham, $signups_spam );
 
-	$msg = "<p>$spam spam comments blocked out of $ham human comments.  " . $ratio ."% of your comments are spam!</p>";
+	$msg = "<li><span>$spam spam comments blocked out of $ham human comments.  " . $ratio ."% of your comments are spam!</span></li>";
+
 	if( $signups_ham && $signups_spam )
-		$msg = "<p>$signups_spam spam signups blocked out of $signups_ham human signups.  " . $signups_ratio ."% of your signups are spam!</p>";
+		$msg = "<li><span>$signups_spam spam signups blocked out of $signups_ham human signups.  " . $signups_ratio ."% of your signups are spam!</span></li>";
 
 	return $msg;
 }
@@ -144,8 +146,8 @@ function wphc_widget_init () {
 
 		echo $before_widget . $before_title . '<a href="http://wordpress-plugins.feifei.us/hashcash/">WP Hashcash</a>' . $after_title;
 		echo '<ul>';
-		echo '<li><small>By <a href="http://elliottback.com">Elliott Back</a></small></li>';
-		echo "<li>".widget_ratio($options)."</li>";
+		echo '<li><a href="http://elliottback.com/wp/">By Elliott Back</a></li>';
+		echo widget_ratio($options);
 		echo '</ul>';
 		echo $after_widget;
 	}
@@ -196,8 +198,8 @@ function wphc_admin_options() {
 		$options['validate-ip'] = strip_tags(stripslashes($_POST['wphc-validate-ip']));
 		$options['validate-url'] = strip_tags(stripslashes($_POST['wphc-validate-url']));
 		$options['logging'] = strip_tags(stripslashes($_POST['wphc-logging']));
-		$options['signup_active'] = (int)$_POST['signup_active'];
-		$options['comments_active'] = (int)$_POST['comments_active'];
+		$options['signup_active'] = (int) $_POST['signup_active'];
+		$options['comments_active'] = (int) $_POST['comments_active'];
 		wphc_option($options);
 	}
 	
@@ -369,7 +371,7 @@ function wphc_addhead() {
 }
 ';
 	echo  wphc_getjs() . "\n";
-	echo "addLoadEvent(function(){document.getElementById('wphc_value').value=wphc();});\n";
+	echo "addLoadEvent(function(){var el=document.getElementById('wphc_value');if(el)el.value=wphc();});\n";
 	echo "//--></script>\n";
 }
 
@@ -552,10 +554,15 @@ function wphc_check_signup_hidden_tag( $result ) {
 	
 	return $result;
 }
+
 add_filter( 'wpmu_validate_blog_signup', 'wphc_check_signup_hidden_tag' );
 add_filter( 'wpmu_validate_user_signup', 'wphc_check_signup_hidden_tag' );
 
 function wphc_check_hidden_tag($comment) {
+	// admins can do what they like
+	if( is_admin() )
+		return $comment;
+	
 	// get our options
 	$type = $comment['comment_type'];
 	$options = wphc_option();

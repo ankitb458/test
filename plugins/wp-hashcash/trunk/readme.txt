@@ -1,9 +1,9 @@
 === WP-Hashcash ===
+
 Contributors: ecb29, donncha
 Tags: spam, antispam, anti-spam, comments, comment, pingback, trackback, wp-hashcash, plugin, security, wordpress, javascript, js
 Requires at least: 2.8
 Tested up to: 2.9.2
-Stable tag: 4.3
 
 Client-side javascript blocks all spam bots. XHTML 1.1 compliant.
 
