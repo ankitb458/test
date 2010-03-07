@@ -1,0 +1,118 @@
+.postbox h3 {
+	cursor: auto !important;
+}
+
+input.warning {
+	background-color: #ffebe8 !important;
+	border-color: #c00;
+}
+
+.fixed .column-status,
+.fixed .column-expires {
+	width: 10%;
+}
+
+.fixed .column-orders {
+	width: 8%;
+	text-align: center;
+}
+
+.fixed .column-product,
+.fixed .column-user,
+.fixed .column-affiliate {
+	width: 18%;
+}
+
+.fixed .column-price,
+.fixed .column-discount_price,
+.fixed .column-comm {
+	width: 15%;
+}
+
+.status-select {
+	line-height: 2.5em;
+	margin-top: 3px;
+}
+
+.curtime .timestamp,
+.curtime .expires {
+	background-repeat: no-repeat;
+	background-position: left top;
+	padding-left: 18px;
+}
+
+.timestampdiv select,
+.expiresdiv select {
+	height: 20px;
+	line-height: 14px;
+	padding: 0;
+	vertical-align: top;
+}
+
+.timestampdiv,
+.expiresdiv {
+	padding-top: 5px;
+	line-height: 23px;
+}
+
+.timestampdiv p,
+.expiresdiv p {
+	margin: 8px 0 6px;
+}
+
+.timestampdiv input,
+.expiresdiv input {
+	border-width: 1px;
+	border-style: solid;
+}
+
+.pricelist tr td,
+.pricelist tr th {
+	padding-right: 0px;
+}
+
+.pricelist tr:first-child th,
+.discount-limits tr:first-child th {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+.number {
+	text-align: right;
+}
+
+.ui-datepicker, .ui-datepicker th, .ui-datepicker td {
+	font-size: 10px !important;
+	line-height: 11px !important;
+}
+
+ul.s_results {
+	border: 1px solid #999;
+	background-color: #fff;
+	padding: 0px !important;
+	margin: 0px !important;
+	list-style: none !important;
+	position: absolute;
+	z-index: 10000;
+	display: none;
+	width: 360px;
+}
+
+.s_results li {
+	padding: 3px 5px !important;
+	margin: 0px !important;
+	white-space: nowrap;
+	overflow: hidden;
+	color: #222;
+	text-align: left;
+}
+
+.s_over {
+	cursor: pointer;
+	background-color: #eee;
+}
+
+.s_match {
+	text-decoration: underline;
+	color: black;
+}
