@@ -5,7 +5,7 @@
  Description: Client-side javascript blocks all spam bots.  XHTML 1.1 compliant.
  Author: Elliott Back
  Author URI: http://elliottback.com
- Version: 4.4
+ Version: 4.5
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -357,15 +357,21 @@ add_action('signup_header', 'wphc_signuphead');
 function wphc_addhead() {
 	echo "<script type=\"text/javascript\"><!--\n";
 	echo 'function addLoadEvent(func) {
-  var oldonload = window.onload;
-  if (typeof window.onload != \'function\') {
-    window.onload = func;
+  if( jQuery ) {
+    jQuery(document).ready( func );
+  } else if( Prototype ) {
+    Event.observe( window, \'load\', func );
   } else {
-    window.onload = function() {
-      if (oldonload) {
-        oldonload();
+    var oldonload = window.onload;
+    if (typeof window.onload != \'function\') {
+      window.onload = func;
+    } else {
+      window.onload = function() {
+        if (oldonload)
+          oldonload();
+        
+        func();
       }
-      func();
     }
   }
 }
@@ -504,7 +510,8 @@ function wphc_getjs(){
 function wphc_add_signupform(){
 	echo '<input type="hidden" id="wphc_value" name="wphc_value" value=""/>';
 }
-add_action( 'signup_hidden_fields', 'wphc_add_signupform' );
+add_action('signup_hidden_fields', 'wphc_add_signupform');
+add_action('bp_after_registration_submit_buttons', 'wphc_add_signupform');
 
 function wphc_add_commentform(){
 	$options = wphc_option();
@@ -557,6 +564,34 @@ function wphc_check_signup_hidden_tag( $result ) {
 
 add_filter( 'wpmu_validate_blog_signup', 'wphc_check_signup_hidden_tag' );
 add_filter( 'wpmu_validate_user_signup', 'wphc_check_signup_hidden_tag' );
+
+function wphc_check_signup_for_bp(){
+	global $bp;
+
+	// get our options
+	$options = wphc_option();
+	$spam = false;
+
+	// Check the wphc values against the last five keys
+	$spam = !in_array($_POST["wphc_value"], $options['key']);
+
+	if($spam){
+		$options['signups-spam'] = ((int) $options['signups-spam']) + 1;
+		wphc_option($options);
+		$bp->signup->errors['spam'] = __('You did not pass a spam check. Please enable JavaScript in your browser.');
+	} else {
+		$options['signups-ham'] = ((int) $options['signups-ham']) + 1;
+		wphc_option($options);
+	}
+}
+
+add_action('bp_signup_validate', 'wphc_check_signup_for_bp');
+
+function wphc_error_hook_register_page(){
+	do_action('bp_spam_errors');
+}
+
+add_action('bp_before_register_page', 'wphc_error_hook_register_page');
 
 function wphc_check_hidden_tag($comment) {
 	// admins can do what they like

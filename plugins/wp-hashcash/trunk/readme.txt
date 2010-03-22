@@ -1,7 +1,7 @@
 === WP-Hashcash ===
 
 Contributors: ecb29, donncha
-Tags: spam, antispam, anti-spam, comments, comment, pingback, trackback, wp-hashcash, plugin, security, wordpress, javascript, js
+Tags: spam, antispam, anti-spam, comments, comment, pingback, trackback, wp-hashcash, plugin, security, wordpress, javascript, js, signup, sign-up, wp-login.php, wp-signup.php, buddypress, bp, WPMU
 Requires at least: 2.8
 Tested up to: 2.9.2
 
@@ -19,11 +19,12 @@ You can read more at the [WP Hashcash plugin](http://wordpress-plugins.feifei.us
 
 1. Blocks all comment spam, but not real comments
 2. Also prevents most trackback / pingback spam
-3. Widget support to display spam statistics and edit the configuration
-4. Works with IE, Firefox, and Safari
-5. 100% standards compliant XHTML 1.1
-6. Tested with Wordpres 2.6, Firefox 2, Safari 3, and IE 7
-7. Akismet compatibility
+3. Also protects signup pages for Wordpress (WP), BuddyPress (BP), and Wordpress Multi-User (WPMU)
+4. Widget support to display spam statistics and edit the configuration
+5. Works with IE, Firefox, and Safari
+6. 100% standards compliant XHTML 1.1, works with jQuery and Prototype
+7. Tested with Wordpres 2, Firefox, Safari, IE, and Chrome
+8. Akismet compatibility
 
 = Limitations =
 
@@ -56,6 +57,17 @@ If you are upgrading from a previous version of WP-Hashcash, please disabled the
 * "I haven't had anything to 'deal' with in several weeks. That's a nice thing. I've also had a bunch of folks leave legitimate comments that have gotten through. It's all good."
 
 == Change Log ==
+
+= WP Hashcash 4.5 =
+
+* Support clean interoperation with jQuery and Prototype
+* Protect BuddyPress (BP) signup pages
+
+= WP Hashcash 4.4 =
+
+* Admin users can now comment from Dashboard
+* Tested on WP 2.9.2 in Chrome, IE, and FF
+* Fix a potential JS error
 
 = WP Hashcash 4.1 =
 
