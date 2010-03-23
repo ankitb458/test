@@ -11,6 +11,18 @@ CREATE TYPE status_activatable AS enum (
 	);
 
 /**
+ * Billable status
+ */
+CREATE TYPE status_billable AS enum (
+	'trash',
+	'draft',
+	'pending',
+	'reversed',
+	'cancelled',
+	'cleared'
+	);
+
+/**
  * uuid()
  *
  * Used to set defaults for uuid fields.
@@ -162,11 +174,11 @@ END $$ LANGUAGE plpgsql;
  * Timestampable behavior
  *
  * Adds fields:
- * - {table}.created
- * - {table}.updated
+ * - {table}.created_date
+ * - {table}.modified_date
  *
  * Creates procedures:
- * - {table}_updated() and trigger (priority 10)
+ * - {table}_modified() and trigger (priority 10)
  */
 CREATE OR REPLACE FUNCTION timestampable(varchar)
 	RETURNS varchar
@@ -174,38 +186,38 @@ AS $$
 DECLARE
 	table_name	alias for $1;
 BEGIN
-	IF NOT column_exists(table_name, 'created')
+	IF NOT column_exists(table_name, 'created_date')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(table_name) || $EXEC$
-			ADD COLUMN created timestamp(0) with time zone NOT NULL DEFAULT NOW();
+			ADD COLUMN created_date timestamp(0) with time zone NOT NULL DEFAULT NOW();
 		$EXEC$;
 	END IF;
 	
-	IF NOT column_exists(table_name, 'updated')
+	IF NOT column_exists(table_name, 'modified_date')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(table_name) || $EXEC$
-			ADD COLUMN updated timestamp(0) with time zone NOT NULL DEFAULT NOW();
+			ADD COLUMN modified_date timestamp(0) with time zone NOT NULL DEFAULT NOW();
 		$EXEC$;
 	END IF;
 	
 	EXECUTE $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(table_name || '_updated') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(table_name || '_modified') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		NEW.updated = NOW();
+		NEW.modified_date = NOW();
 		RETURN NEW;
 	END $DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(table_name || '_10_updated')
+	IF NOT trigger_exists(table_name || '_10_modified')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(table_name || '_10_updated') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(table_name || '_10_modified') || $EXEC$
 			BEFORE UPDATE ON $EXEC$ || quote_ident(table_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(table_name || '_updated') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(table_name || '_modified') || $EXEC$();
 		$EXEC$;
 	END IF;
 	

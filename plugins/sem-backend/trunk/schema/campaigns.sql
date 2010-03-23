@@ -26,7 +26,7 @@ CREATE TABLE campaigns (
 
 SELECT sluggable('campaigns'), timestampable('campaigns'), searchable('campaigns');
 
-CREATE INDEX campaigns_status_sort ON campaigns (name);
+CREATE INDEX campaigns_sort ON campaigns (name);
 
 /**
  * Clean a campaign before it gets stored.
