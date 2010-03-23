@@ -1,13 +1,14 @@
 /**
  * Activatable enum
  */
-CREATE TYPE status_activatable AS enum(
+CREATE TYPE status_activatable AS enum (
 	'trash',
 	'draft',
 	'pending',
 	'inactive',
 	'future',
-	'active');
+	'active'
+	);
 
 /**
  * uuid()
@@ -248,7 +249,7 @@ BEGIN
 	AS $DEF$
 	BEGIN
 		NEW.tsv = setweight(to_tsvector(NEW.name), 'A')
-			|| setweight(to_tsvector(COALESCE(NEW.ukey, '')), 'B')
+			|| setweight(to_tsvector(COALESCE(regexp_replace(NEW.ukey, E'-\\d+$', ''), '')), 'B')
 			|| setweight(to_tsvector(NEW.memo), 'D');
 		RETURN NEW;
 	END $DEF$ LANGUAGE plpgsql;

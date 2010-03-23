@@ -10,6 +10,7 @@ INSERT INTO campaigns DEFAULT VALUES;
 INSERT INTO products (ukey) VALUES ('test');
 INSERT INTO products (ukey) VALUES ('test');
 
-SELECT ukey FROM products;
-
 COMMIT;
+
+SELECT * FROM products;
+

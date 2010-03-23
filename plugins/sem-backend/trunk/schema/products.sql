@@ -23,13 +23,16 @@ CREATE TABLE products (
 				rec_price >= 0 AND rec_comm >= 0 ),
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
-			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) )
+			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
+	CONSTRAINT valid_order_flow
+		CHECK ( ( max_orders IS NULL OR max_orders > 0 ) AND
+			( min_date IS NULL OR max_date IS NULL OR
+			max_date IS NOT NULL AND min_date <= max_date ) )
 );
 
 SELECT sluggable('products'), timestampable('products'), searchable('products');
 
-CREATE INDEX products_status_sort ON products (name)
-WHERE	status = 'active';
+CREATE INDEX products_status_sort ON products (name);
 
 /**
  * Clean a product before it gets stored.
@@ -39,6 +42,21 @@ CREATE OR REPLACE FUNCTION products_clean()
 AS $$
 BEGIN
 	NEW.name := trim(NEW.name);
+	
+	IF NEW.status = 'active' AND NEW.rec_interval IS NULL
+	THEN
+		NEW.rec_count := NULL;
+	END IF;
+	
+	IF NEW.status >= 'future'
+	THEN
+		-- Make sure that max_date is after min_date
+		IF NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
+		THEN
+			NEW.max_date := NULL;
+		END IF;
+	END IF;
+	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 

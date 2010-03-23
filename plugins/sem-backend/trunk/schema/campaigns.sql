@@ -17,13 +17,16 @@ CREATE TABLE campaigns (
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_discount
-		CHECK ( init_discount >= 0 AND rec_discount >= 0 )
+		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
+	CONSTRAINT valid_order_flow
+		CHECK ( ( max_orders IS NULL OR max_orders > 0 ) AND
+			( min_date IS NULL OR max_date IS NULL OR
+			max_date IS NOT NULL AND min_date <= max_date ) )
 );
 
 SELECT sluggable('campaigns'), timestampable('campaigns'), searchable('campaigns');
 
-CREATE INDEX campaigns_status_sort ON campaigns (name)
-WHERE	status = 'active';
+CREATE INDEX campaigns_status_sort ON campaigns (name);
 
 /**
  * Clean a campaign before it gets stored.
@@ -34,17 +37,8 @@ AS $$
 BEGIN
 	NEW.name := trim(NEW.name);
 	
-	IF NEW.product_id IS NULL
+	IF NEW.product_id IS NOT NULL
 	THEN
-		-- Dump all coupon fields and exit
-		NEW.status := 'active';
-		NEW.init_discount := 0;
-		NEW.rec_discount := 0;
-		NEW.min_date := NULL;
-		NEW.max_date := NULL;
-		NEW.max_orders := NULL;
-		NEW.firesale := FALSE;
-	ELSE
 		-- Ensure discounts and prices are consistent
 		SELECT	CASE
 				WHEN NEW.aff_id IS NULL
@@ -60,6 +54,62 @@ BEGIN
 				NEW.rec_discount
 		FROM	products
 		WHERE	product_id = NEW.product_id;
+		
+		-- Turn non-promos into campaigns
+		IF NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
+		AND NOT EXISTS (
+			SELECT	1
+			FROM	products
+			WHERE	uuid = NEW.uuid
+			)
+		THEN
+			NEW.product_id := NULL;
+		END IF;
+	END IF;
+	
+	IF NEW.product_id IS NULL
+	THEN
+		-- Dump all coupon fields
+		NEW.status := 'active';
+		NEW.init_discount := 0;
+		NEW.rec_discount := 0;
+		NEW.min_date := NULL;
+		NEW.max_date := NULL;
+		NEW.max_orders := NULL;
+		NEW.firesale := FALSE;
+	ELSEIF NEW.status >= 'future'
+	THEN
+		-- Require a min_date
+		IF NEW.min_date IS NULL
+		THEN
+			NEW.min_date := NOW();
+		END IF;
+		
+		-- Reset min_date on coupon changes
+		IF TG_OP = 'UPDATE'
+		THEN
+			IF ( NEW.status <> OLD.status OR
+				NEW.init_discount <> OLD.init_discount OR
+				NEW.rec_discount <> OLD.rec_discount )
+			THEN
+				IF NEW.min_date <= NOW() - interval '1 hour'
+				THEN
+					NEW.min_date := NOW();
+				END IF;
+			END IF;
+		END IF;
+		
+		-- Make sure that max_date is after min_date
+		IF NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
+		THEN
+			NEW.max_date := NULL;
+		END IF;
+		
+		-- Firesales require either or both of max_date and max_orders
+		IF NEW.max_date IS NULL AND NEW.max_orders IS NULL
+		THEN
+			NEW.firesale := FALSE;
+		END IF;
 	END IF;
 	
 	RETURN NEW;
