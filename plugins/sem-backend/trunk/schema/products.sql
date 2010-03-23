@@ -42,12 +42,12 @@ AS $$
 BEGIN
 	NEW.name := trim(NEW.name);
 	
-	IF NEW.status = 'active' AND NEW.rec_interval IS NULL
+	IF NEW.status > 'inactive' AND NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;
 	END IF;
 	
-	IF NEW.status >= 'future'
+	IF NEW.status > 'inactive'
 	THEN
 		-- Make sure that max_date is after min_date
 		IF NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date

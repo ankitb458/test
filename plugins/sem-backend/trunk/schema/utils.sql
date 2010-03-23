@@ -17,8 +17,8 @@ CREATE TYPE status_billable AS enum (
 	'trash',
 	'draft',
 	'pending',
-	'reversed',
 	'cancelled',
+	'reversed',
 	'cleared'
 	);
 
@@ -47,8 +47,8 @@ BEGIN
 	RETURN EXISTS (
 		SELECT	1
 		FROM	information_schema.columns
-		WHERE	table_name = quote_ident(t_name)
-		AND		column_name = quote_ident(c_name)
+		WHERE	table_name = t_name
+		AND		column_name = c_name
 		);
 END $$ LANGUAGE plpgsql;
 
@@ -260,9 +260,15 @@ BEGIN
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		NEW.tsv := setweight(to_tsvector(NEW.name), 'A')
-			|| setweight(to_tsvector(COALESCE(regexp_replace(NEW.ukey, E'-\\d+$', ''), '')), 'B')
-			|| setweight(to_tsvector(NEW.memo), 'D');
+		IF column_exists($EXEC$ || quote_literal(table_name) || $EXEC$, 'ukey')
+		THEN
+			NEW.tsv := setweight(to_tsvector(NEW.name), 'A')
+				|| setweight(to_tsvector(COALESCE(regexp_replace(NEW.ukey, E'-\\d+$', ''), '')), 'B')
+				|| setweight(to_tsvector(NEW.memo), 'D');
+		ELSE
+			NEW.tsv := setweight(to_tsvector(NEW.name), 'A')
+				|| setweight(to_tsvector(NEW.memo), 'D');
+		END IF;
 		RETURN NEW;
 	END $DEF$ LANGUAGE plpgsql;
 	$EXEC$;

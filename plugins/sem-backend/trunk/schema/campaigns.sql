@@ -18,7 +18,7 @@ CREATE TABLE campaigns (
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_discount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
-	CONSTRAINT valid_order_flow
+	CONSTRAINT order_flow
 		CHECK ( ( max_orders IS NULL OR max_orders > 0 ) AND
 			( min_date IS NULL OR max_date IS NULL OR
 			max_date IS NOT NULL AND min_date <= max_date ) )
@@ -56,7 +56,7 @@ BEGIN
 		WHERE	product_id = NEW.product_id;
 		
 		-- Turn non-promos into campaigns
-		IF NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
+		IF NEW.status > 'inactive' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
 		AND NOT EXISTS (
 			SELECT	1
 			FROM	products
@@ -77,7 +77,7 @@ BEGIN
 		NEW.max_date := NULL;
 		NEW.max_orders := NULL;
 		NEW.firesale := FALSE;
-	ELSEIF NEW.status >= 'future'
+	ELSEIF NEW.status > 'inactive'
 	THEN
 		-- Require a min_date
 		IF NEW.min_date IS NULL
