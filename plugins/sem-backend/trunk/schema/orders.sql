@@ -1,0 +1,23 @@
+CREATE TABLE orders (
+	id				bigserial,
+	uuid			char(36) NOT NULL,
+	ukey			varchar(255),
+	status			enum('trash', 'draft', 'pending', 'cancelled', 'reversed', 'cleared') NOT NULL DEFAULT 'draft',
+	name			varchar(255) NOT NULL DEFAULT '',
+	init_price		decimal(8,2) NOT NULL DEFAULT 0,
+	init_comm		decimal(8,2) NOT NULL DEFAULT 0,
+	init_discount	decimal(8,2) NOT NULL DEFAULT 0,
+	rec_price		decimal(8,2) NOT NULL DEFAULT 0,
+	rec_comm		decimal(8,2) NOT NULL DEFAULT 0,
+	rec_discount	decimal(8,2) NOT NULL DEFAULT 0,
+	rec_interval	enum('', 'month', 'quarter', 'year') NOT NULL DEFAULT '',
+	user_id			bigint NOT NULL,
+	billing_id		bigint NOT NULL,
+	product_id		bigint,
+	aff_id			bigint,
+	campaign_id		bigint,
+	coupon_id		bigint,
+	created_date	datetime NOT NULL,
+	modified_date	datetime NOT NULL,
+	memo			text NOT NULL DEFAULT ''
+);
