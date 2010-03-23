@@ -56,7 +56,7 @@ BEGIN
 		WHERE	product_id = NEW.product_id;
 		
 		-- Turn non-promos into campaigns
-		IF NEW.status > 'inactive' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
+		IF NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
 		AND NOT EXISTS (
 			SELECT	1
 			FROM	products
@@ -77,7 +77,7 @@ BEGIN
 		NEW.max_date := NULL;
 		NEW.max_orders := NULL;
 		NEW.firesale := FALSE;
-	ELSEIF NEW.status > 'inactive'
+	ELSEIF NEW.status >= 'future'
 	THEN
 		-- Require a min_date
 		IF NEW.min_date IS NULL
