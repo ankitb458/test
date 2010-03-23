@@ -1,5 +1,5 @@
 
---DROP TABLE orders;
+DROP TABLE orders CASCADE;
 DROP TABLE campaigns CASCADE;
 DROP TABLE products CASCADE;
 DROP TABLE users CASCADE;

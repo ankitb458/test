@@ -18,8 +18,8 @@ CREATE TABLE products (
 	max_orders		int,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_price
-		CHECK ( init_price >= 0 AND init_comm >= 0 AND
-				rec_price >= 0 AND rec_comm >= 0 ),
+		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_price >= init_comm AND
+				rec_price >= 0 AND rec_comm >= 0 AND rec_price >= rec_comm ),
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),

@@ -4,6 +4,7 @@ BEGIN;
 \i ./users.sql
 \i ./products.sql
 \i ./campaigns.sql
+\i ./orders.sql
 
 INSERT INTO products DEFAULT VALUES;
 INSERT INTO campaigns DEFAULT VALUES;
