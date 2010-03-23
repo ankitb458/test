@@ -32,7 +32,7 @@ CREATE TABLE products (
 
 SELECT sluggable('products'), timestampable('products'), searchable('products');
 
-CREATE INDEX products_status_sort ON products (name);
+CREATE INDEX products_status_sort ON products(name);
 
 /**
  * Clean a product before it gets stored.

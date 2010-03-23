@@ -1,6 +1,7 @@
 BEGIN;
 \i ./reset.sql
 \i ./utils.sql
+\i ./users.sql
 \i ./products.sql
 \i ./campaigns.sql
 

@@ -1,5 +1,5 @@
 /**
- * Activatable enum
+ * Activatable status
  */
 CREATE TYPE status_activatable AS enum (
 	'trash',
@@ -239,7 +239,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(table_name || '_tsv') || $EXEC$
-			ON $EXEC$ || quote_ident(table_name) || $EXEC$ USING GIN (tsv);
+			ON $EXEC$ || quote_ident(table_name) || $EXEC$ USING GIN(tsv);
 		$EXEC$;
 	END IF;
 	
