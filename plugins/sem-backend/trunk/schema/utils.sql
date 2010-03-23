@@ -207,7 +207,7 @@ BEGIN
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		NEW.modified_date = NOW();
+		NEW.modified_date := NOW();
 		RETURN NEW;
 	END $DEF$ LANGUAGE plpgsql;
 	$EXEC$;
@@ -260,7 +260,7 @@ BEGIN
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		NEW.tsv = setweight(to_tsvector(NEW.name), 'A')
+		NEW.tsv := setweight(to_tsvector(NEW.name), 'A')
 			|| setweight(to_tsvector(COALESCE(regexp_replace(NEW.ukey, E'-\\d+$', ''), '')), 'B')
 			|| setweight(to_tsvector(NEW.memo), 'D');
 		RETURN NEW;
