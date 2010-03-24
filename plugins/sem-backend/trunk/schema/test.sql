@@ -8,11 +8,10 @@ BEGIN;
 
 INSERT INTO products DEFAULT VALUES;
 INSERT INTO campaigns DEFAULT VALUES;
-
-INSERT INTO products (ukey) VALUES ('test');
-INSERT INTO products (ukey) VALUES ('test');
+INSERT INTO orders DEFAULT VALUES;
+INSERT INTO order_lines (order_id) SELECT id FROM orders;
 
 COMMIT;
 
-SELECT * FROM products;
+SELECT * FROM orders;
 
