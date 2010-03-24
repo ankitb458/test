@@ -42,18 +42,18 @@ BEGIN
 		-- Enforce price/comm/discount consistency
 		SELECT	CASE
 				WHEN NEW.aff_id IS NULL
-				THEN MIN(product.init_price, NEW.init_discount)
-				ELSE MIN(product.init_comm, NEW.init_discount)
+				THEN LEAST(products.init_price, NEW.init_discount)
+				ELSE LEAST(products.init_comm, NEW.init_discount)
 				END,
 				CASE
 				WHEN NEW.aff_ID IS NULL
-				THEN MIN(product.rec_price, NEW.rec_discount)
-				ELSE MIN(product.rec_comm, NEW.rec_discount)
+				THEN LEAST(products.rec_price, NEW.rec_discount)
+				ELSE LEAST(products.rec_comm, NEW.rec_discount)
 				END
 		INTO	NEW.init_discount,
 				NEW.rec_discount
 		FROM	products
-		WHERE	product_id = NEW.product_id;
+		WHERE	id = NEW.product_id;
 		
 		-- Turn non-promos into campaigns
 		IF NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
@@ -87,9 +87,10 @@ BEGIN
 		-- Reset min_date on coupon changes
 		IF TG_OP = 'UPDATE'
 		THEN
-			IF ( NEW.status <> OLD.status OR
-				NEW.init_discount <> OLD.init_discount OR
-				NEW.rec_discount <> OLD.rec_discount )
+			IF ( ROW(NEW.status, NEW.init_discount, NEW.rec_discount, NEW.firesale) <>
+				ROW(OLD.status, OLD.init_discount, OLD.rec_discount, OLD.firesale) OR
+				NEW.firesale AND ROW(NEW.max_date, NEW.max_orders) IS DISTINCT FROM
+				ROW(OLD.max_date, OLD.max_orders) )
 			THEN
 				IF NEW.min_date <= NOW() - interval '1 hour'
 				THEN
@@ -117,6 +118,31 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER campaigns_0_clean
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();
+
+/**
+ * Auto-creates a promo for new products.
+ */
+CREATE OR REPLACE FUNCTION products_insert_campaigns()
+	RETURNS trigger
+AS $$
+BEGIN
+	INSERT INTO campaigns (
+		uuid,
+		name,
+		product_id
+		)
+	VALUES (
+		NEW.uuid,
+		'Promo on ' || NEW.name,
+		NEW.id
+		);
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_0_insert_campaign
+	AFTER INSERT ON products
+FOR EACH ROW EXECUTE PROCEDURE products_insert_campaigns();
 
 /**
  * Refreshes coupon discounts on product updates.
