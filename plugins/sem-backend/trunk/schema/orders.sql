@@ -221,7 +221,7 @@ BEGIN
 		END IF;
 		
 		-- Fetch discount
-		IF NEW.coupon_id IS NULL OR c.max_orders = 0 OR c.max_date > NOW()
+		IF NEW.coupon_id IS NULL OR c.max_orders = 0 OR c.max_date < NOW()
 		THEN
 			NEW.init_discount := COALESCE(NEW.init_discount, 0);
 			NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
@@ -237,7 +237,7 @@ BEGIN
 					NULL;
 				END IF;
 			END IF;
-
+			
 			-- Strip commission from discount if applicable
 			IF o.campaign_id = NEW.coupon_id AND o.aff_id IS NOT NULL
 			THEN
