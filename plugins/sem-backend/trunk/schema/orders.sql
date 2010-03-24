@@ -143,6 +143,19 @@ BEGIN
 		NEW.rec_count := NULL;
 	END IF;
 	
+	IF NEW.order_id IS NULL AND NEW.coupon_id IS NULL AND NEW.product_id IS NOT NULL
+	THEN
+		-- Auto-fetch coupon
+		SELECT	campaigns.id
+		INTO	NEW.coupon_id
+		FROM	campaigns
+		JOIN	products
+		ON		products.uuid = campaigns.uuid
+		WHERE	campaigns.product_id = NEW.product_id
+		AND		( campaigns.max_date IS NULL OR campaigns.max_date >= NOW() )
+		AND		( campaigns.max_orders IS NULL OR campaigns.max_orders > 0 );
+	END IF;
+	
 	IF NEW.order_id IS NULL
 	THEN
 		SELECT	aff_id
