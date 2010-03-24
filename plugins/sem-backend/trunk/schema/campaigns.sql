@@ -16,9 +16,9 @@ CREATE TABLE campaigns (
 	max_orders		int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	memo			text NOT NULL DEFAULT '',
-	CONSTRAINT valid_discount
+	CONSTRAINT valid_amount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
-	CONSTRAINT valid_order_flow
+	CONSTRAINT valid_flow
 		CHECK ( ( max_orders IS NULL OR max_orders >= 0 ) AND
 			( min_date IS NULL OR max_date IS NULL OR
 			max_date IS NOT NULL AND min_date <= max_date ) )
@@ -26,7 +26,9 @@ CREATE TABLE campaigns (
 
 SELECT sluggable('campaigns'), timestampable('campaigns'), searchable('campaigns');
 
-CREATE INDEX campaigns_sort ON campaigns (name);
+CREATE INDEX campaigns_sort ON campaigns(name);
+CREATE INDEX campaigns_aff_id ON campaigns(aff_id);
+CREATE INDEX campaigns_product_id ON campaigns(product_id);
 
 COMMENT ON TABLE products IS E'Stores campaigns, coupons, and promos.
 

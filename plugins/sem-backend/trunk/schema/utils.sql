@@ -3,6 +3,7 @@
  */
 CREATE TYPE status_activatable AS enum (
 	'trash',
+	'inherit',
 	'draft',
 	'pending',
 	'inactive',
@@ -15,6 +16,7 @@ CREATE TYPE status_activatable AS enum (
  */
 CREATE TYPE status_billable AS enum (
 	'trash',
+	'inherit',
 	'draft',
 	'pending',
 	'cancelled',
