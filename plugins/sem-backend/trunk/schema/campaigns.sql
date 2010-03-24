@@ -1,5 +1,5 @@
 /**
- * Campaigns/Coupons table.
+ * Campaigns/Coupons
  */
 CREATE TABLE campaigns (
 	id				bigserial PRIMARY KEY,

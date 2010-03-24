@@ -234,6 +234,7 @@ CREATE OR REPLACE FUNCTION searchable(varchar)
 AS $$
 DECLARE
 	table_name	alias for $1;
+	stmt		text := '';
 BEGIN
 	IF NOT column_exists(table_name, 'tsv')
 	THEN
@@ -251,23 +252,41 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	EXECUTE $EXEC$
+	stmt := $EXEC$
 	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(table_name || '_tsv') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		IF column_exists($EXEC$ || quote_literal(table_name) || $EXEC$, 'ukey')
-		THEN
-			NEW.tsv := setweight(to_tsvector(NEW.name), 'A')
-				|| setweight(to_tsvector(COALESCE(regexp_replace(NEW.ukey, E'-\\d+$', ''), '')), 'B')
-				|| setweight(to_tsvector(NEW.memo), 'D');
-		ELSE
-			NEW.tsv := setweight(to_tsvector(NEW.name), 'A')
-				|| setweight(to_tsvector(NEW.memo), 'D');
-		END IF;
+		NEW.tsv := ''::tsvector;$EXEC$;
+	
+	IF column_exists(table_name, 'name')
+	THEN
+		stmt := stmt || $EXEC$
+		NEW.tsv := NEW.tsv ||
+			setweight(to_tsvector(NEW.name), 'A');$EXEC$;
+	END IF;
+	
+	IF column_exists(table_name, 'ukey')
+	THEN
+		stmt := stmt || $EXEC$
+		NEW.tsv := NEW.tsv ||
+			setweight(to_tsvector(COALESCE(regexp_replace(NEW.ukey, E'-\\d+$', ''), '')), 'B');$EXEC$;
+	END IF;
+	
+	IF column_exists(table_name, 'memo')
+	THEN
+		stmt := stmt || $EXEC$
+		NEW.tsv := NEW.tsv ||
+			setweight(to_tsvector(NEW.memo), 'D');$EXEC$;
+	END IF;
+	
+	stmt := stmt || $EXEC$
+		
 		RETURN NEW;
 	END $DEF$ LANGUAGE plpgsql;
 	$EXEC$;
+	
+	EXECUTE stmt;
 	
 	IF NOT trigger_exists(table_name || '_20_tsv')
 	THEN

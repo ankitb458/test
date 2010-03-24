@@ -1,5 +1,5 @@
 /*
- * Products table.
+ * Products
  */
 CREATE TABLE products (
 	id				bigserial PRIMARY KEY,
