@@ -143,12 +143,6 @@ BEGIN
 			-- Keep common comm ratios
 			WHEN init_discount = round(OLD.init_comm / 2, 2)
 			THEN round(NEW.init_comm / 2, 2)
-			WHEN init_discount = round(OLD.init_comm / 3, 2)
-			THEN round(NEW.init_comm / 3, 2)
-			WHEN init_discount = round(OLD.init_comm / 4, 2)
-			THEN round(NEW.init_comm / 4, 2)
-			WHEN init_discount = round(OLD.init_comm / 5, 2)
-			THEN round(NEW.init_comm / 5, 2)
 			-- Keep affiliate comm ratios for affiliate coupons
 			WHEN aff_id IS NOT NULL
 			THEN round(init_discount * NEW.init_comm / OLD.init_comm, 2)
@@ -162,12 +156,6 @@ BEGIN
 			-- Keep common comm ratios
 			WHEN rec_discount = round(OLD.rec_comm / 2, 2)
 			THEN round(NEW.rec_comm / 2, 2)
-			WHEN rec_discount = round(OLD.rec_comm / 3, 2)
-			THEN round(NEW.rec_comm / 3, 2)
-			WHEN rec_discount = round(OLD.rec_comm / 4, 2)
-			THEN round(NEW.rec_comm / 4, 2)
-			WHEN rec_discount = round(OLD.rec_comm / 5, 2)
-			THEN round(NEW.rec_comm / 5, 2)
 			-- Keep affiliate comm ratios for affiliate coupons
 			WHEN aff_id IS NOT NULL
 			THEN round(rec_discount * NEW.rec_comm / OLD.rec_comm, 2)
