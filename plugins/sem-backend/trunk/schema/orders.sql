@@ -105,7 +105,6 @@ BEGIN
 	
 	IF TG_OP = 'INSERT'
 	THEN
-		-- Enforce price/comm/discount consistency
 		SELECT	orders.*
 		INTO	o
 		FROM	orders
@@ -122,10 +121,10 @@ BEGIN
 		SELECT	campaigns.*
 		INTO	c
 		FROM	campaigns
-		JOIN	orders
-		ON		orders.coupon_id = campaigns.id
-		WHERE	orders.id = NEW.order_id;
+		WHERE	id = o.coupon_id
+		AND		campaigns.product_id = NEW.product_id;
 		
+		-- Enforce price/comm/discount consistency
 		NEW.init_price := COALESCE(p.init_price, NEW.init_price);
 		NEW.rec_price := COALESCE(p.rec_price, NEW.rec_price);
 		NEW.init_comm := LEAST(COALESCE(p.init_comm, NEW.init_comm), NEW.init_comm);
@@ -139,7 +138,7 @@ BEGIN
 			NEW.rec_discount := LEAST(NEW.rec_comm, NEW.rec_discount);
 		END IF;
 		
-		-- todo: Process firesales
+		-- Process firesales
 		IF c.firesale
 		THEN
 			NULL;
