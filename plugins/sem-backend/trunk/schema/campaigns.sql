@@ -39,7 +39,7 @@ BEGIN
 	
 	IF NEW.product_id IS NOT NULL
 	THEN
-		-- Ensure discounts and prices are consistent
+		-- Enforce price/comm/discount consistency
 		SELECT	CASE
 				WHEN NEW.aff_id IS NULL
 				THEN MIN(product.init_price, NEW.init_discount)
@@ -60,8 +60,7 @@ BEGIN
 		AND NOT EXISTS (
 			SELECT	1
 			FROM	products
-			WHERE	uuid = NEW.uuid
-			)
+			WHERE	uuid = NEW.uuid )
 		THEN
 			NEW.product_id := NULL;
 		END IF;

@@ -48,8 +48,7 @@ BEGIN
 		SELECT	1
 		FROM	information_schema.columns
 		WHERE	table_name = t_name
-		AND		column_name = c_name
-		);
+		AND		column_name = c_name );
 END $$ LANGUAGE plpgsql;
 
 /**
@@ -78,8 +77,7 @@ BEGIN
 		AND		n.nspname NOT IN ('pg_catalog', 'pg_toast')
 		AND		pg_catalog.pg_table_is_visible(c.oid)
 		AND		c.relname = i_name
-		AND		c2.relname = t_name
-		);
+		AND		c2.relname = t_name );
 END $$ LANGUAGE plpgsql;
 
 /**
@@ -95,8 +93,7 @@ BEGIN
 	RETURN EXISTS (
 		SELECT	1
 		FROM	information_schema.triggers
-		WHERE	trigger_name = quote_ident(tg_name)
-		);
+		WHERE	trigger_name = quote_literal(tg_name) );
 END $$ LANGUAGE plpgsql;
 
 /**
@@ -141,11 +138,10 @@ BEGIN
 		ukey_base = regexp_replace(NEW.ukey, E'-\\d+$', '');
 		
 		LOOP
-			IF NOT EXISTS(
+			IF NOT EXISTS (
 				SELECT	1
 				FROM	$EXEC$ || quote_ident(table_name) || $EXEC$
-				WHERE	ukey = NEW.ukey
-				)
+				WHERE	ukey = NEW.ukey )
 			THEN
 				RETURN NEW;
 			END IF;
