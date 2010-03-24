@@ -19,7 +19,7 @@ CREATE TABLE campaigns (
 	CONSTRAINT valid_discount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_order_flow
-		CHECK ( ( max_orders IS NULL OR max_orders > 0 ) AND
+		CHECK ( ( max_orders IS NULL OR max_orders >= 0 ) AND
 			( min_date IS NULL OR max_date IS NULL OR
 			max_date IS NOT NULL AND min_date <= max_date ) )
 );
@@ -27,6 +27,15 @@ CREATE TABLE campaigns (
 SELECT sluggable('campaigns'), timestampable('campaigns'), searchable('campaigns');
 
 CREATE INDEX campaigns_sort ON campaigns (name);
+
+COMMENT ON TABLE products IS E'Stores campaigns, coupons, and promos.
+
+Promos are tied to products through their uuid; every product has one.
+
+- max_orders gets decreased as new orders are *cleared*. In other words,
+  it is only loosely enforced.
+- An active firesale requires either or both of max_date and max_orders.
+  A firesale applies dynamic discount to orders.';
 
 /**
  * Clean a campaign before it gets stored.
@@ -133,14 +142,18 @@ AS $$
 BEGIN
 	INSERT INTO campaigns (
 		uuid,
+		status,
 		name,
 		product_id
 		)
-	VALUES (
-		NEW.uuid,
-		'Promo on ' || NEW.name,
-		NEW.id
-		);
+	SELECT	NEW.uuid,
+			CASE
+			WHEN NEW.status = 'draft'
+			THEN 'draft'
+			ELSE 'inactive'
+			END::status_activatable,
+			'Promo on ' || NEW.name,
+			NEW.id;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;

@@ -24,7 +24,7 @@ CREATE TABLE products (
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_order_flow
-		CHECK ( ( max_orders IS NULL OR max_orders > 0 ) AND
+		CHECK ( ( max_orders IS NULL OR max_orders >= 0 ) AND
 			( min_date IS NULL OR max_date IS NULL OR
 			max_date IS NOT NULL AND min_date <= max_date ) )
 );
@@ -32,6 +32,12 @@ CREATE TABLE products (
 SELECT sluggable('products'), timestampable('products'), searchable('products');
 
 CREATE INDEX products_sort ON products(name);
+
+COMMENT ON TABLE products IS E'Stores products.
+
+- rec_count corresponds to the number of installments, when applicable.
+- max_orders gets decreased as new orders are *cleared*. In other words,
+  it is only loosely enforced.';
 
 /**
  * Clean a product before it gets stored.
