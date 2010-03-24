@@ -37,18 +37,23 @@ AS $$
 BEGIN
 	NEW.name := trim(NEW.name);
 	
+	IF COALESCE(NEW.name, '') = ''
+	THEN
+		NEW.name := 'Campaign';
+	END IF;
+	
 	IF NEW.product_id IS NOT NULL
 	THEN
 		-- Enforce price/comm/discount consistency
 		SELECT	CASE
-				WHEN NEW.aff_id IS NULL
-				THEN LEAST(products.init_price, NEW.init_discount)
-				ELSE LEAST(products.init_comm, NEW.init_discount)
+				WHEN NEW.aff_id IS NOT NULL
+				THEN LEAST(products.init_comm, NEW.init_discount)
+				ELSE LEAST(products.init_price, NEW.init_discount)
 				END,
 				CASE
-				WHEN NEW.aff_ID IS NULL
-				THEN LEAST(products.rec_price, NEW.rec_discount)
-				ELSE LEAST(products.rec_comm, NEW.rec_discount)
+				WHEN NEW.aff_ID IS NOT NULL
+				THEN LEAST(products.rec_comm, NEW.rec_discount)
+				ELSE LEAST(products.rec_price, NEW.rec_discount)
 				END
 		INTO	NEW.init_discount,
 				NEW.rec_discount

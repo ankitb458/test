@@ -42,6 +42,11 @@ AS $$
 BEGIN
 	NEW.name := trim(NEW.name);
 	
+	IF COALESCE(NEW.name, '') = ''
+	THEN
+		NEW.name := 'Product';
+	END IF;
+	
 	IF NEW.status >= 'future' AND NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;
