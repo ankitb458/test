@@ -18,7 +18,7 @@ CREATE TABLE campaigns (
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_discount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
-	CONSTRAINT order_flow
+	CONSTRAINT valid_order_flow
 		CHECK ( ( max_orders IS NULL OR max_orders > 0 ) AND
 			( min_date IS NULL OR max_date IS NULL OR
 			max_date IS NOT NULL AND min_date <= max_date ) )
@@ -60,7 +60,7 @@ BEGIN
 		FROM	products
 		WHERE	id = NEW.product_id;
 		
-		-- Turn non-promos into campaigns
+		-- Force non-promos into campaigns
 		IF NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
 		AND NOT EXISTS (
 			SELECT	1
@@ -127,7 +127,7 @@ FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();
 /**
  * Auto-creates a promo for new products.
  */
-CREATE OR REPLACE FUNCTION products_insert_campaigns()
+CREATE OR REPLACE FUNCTION products_autocreate_promo()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -145,14 +145,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_0_insert_campaign
+CREATE TRIGGER products_10_autocreate_promo
 	AFTER INSERT ON products
-FOR EACH ROW EXECUTE PROCEDURE products_insert_campaigns();
+FOR EACH ROW EXECUTE PROCEDURE products_autocreate_promo();
 
 /**
  * Refreshes coupon discounts on product updates.
  */
-CREATE OR REPLACE FUNCTION products_update_campaigns()
+CREATE OR REPLACE FUNCTION products_refresh_coupons()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -203,6 +203,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_10_update_campaigns
+CREATE TRIGGER products_10_refresh_coupons
 	AFTER UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_update_campaigns();
+FOR EACH ROW EXECUTE PROCEDURE products_refresh_coupons();
