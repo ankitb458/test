@@ -117,3 +117,73 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER campaigns_0_clean
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();
+
+/**
+ * Refreshes coupon discounts on product updates.
+ */
+CREATE OR REPLACE FUNCTION products_update_campaigns()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF NEW.init_price = OLD.init_price AND NEW.rec_price = OLD.rec_price
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	UPDATE	campaigns
+	SET		status = CASE
+			WHEN aff_id IS NOT NULL AND status IN ('active', 'future')
+			THEN 'pending'
+			ELSE status
+			END,
+			init_discount = CASE
+			-- Zero in, when possible
+			WHEN init_discount = 0 OR NEW.init_price = 0 OR aff_id IS NOT NULL AND NEW.init_comm = 0
+			THEN 0
+			-- Keep common comm ratios
+			WHEN init_discount = round(OLD.init_comm / 2, 2)
+			THEN round(NEW.init_comm / 2, 2)
+			WHEN init_discount = round(OLD.init_comm / 3, 2)
+			THEN round(NEW.init_comm / 3, 2)
+			WHEN init_discount = round(OLD.init_comm / 4, 2)
+			THEN round(NEW.init_comm / 4, 2)
+			WHEN init_discount = round(OLD.init_comm / 5, 2)
+			THEN round(NEW.init_comm / 5, 2)
+			-- Keep affiliate comm ratios for affiliate coupons
+			WHEN aff_id IS NOT NULL
+			THEN round(init_discount * NEW.init_comm / OLD.init_comm, 2)
+			-- Keep discount ratios for site coupons
+			ELSE round(init_discount * NEW.init_price / OLD.init_price, 2)
+			END,
+			rec_discount = CASE
+			-- Zero in, when possible
+			WHEN rec_discount = 0 OR NEW.rec_price = 0 OR aff_id IS NOT NULL AND NEW.rec_comm = 0
+			THEN 0
+			-- Keep common comm ratios
+			WHEN rec_discount = round(OLD.rec_comm / 2, 2)
+			THEN round(NEW.rec_comm / 2, 2)
+			WHEN rec_discount = round(OLD.rec_comm / 3, 2)
+			THEN round(NEW.rec_comm / 3, 2)
+			WHEN rec_discount = round(OLD.rec_comm / 4, 2)
+			THEN round(NEW.rec_comm / 4, 2)
+			WHEN rec_discount = round(OLD.rec_comm / 5, 2)
+			THEN round(NEW.rec_comm / 5, 2)
+			-- Keep affiliate comm ratios for affiliate coupons
+			WHEN aff_id IS NOT NULL
+			THEN round(rec_discount * NEW.rec_comm / OLD.rec_comm, 2)
+			-- Keep discount ratios for site coupons
+			ELSE round(rec_discount * NEW.rec_price / OLD.rec_price, 2)
+			END
+	WHERE	product_id = NEW.id
+	AND		( -- Always update on price changes
+			NEW.init_price <> OLD.init_price OR NEW.rec_price <> OLD.rec_price
+			-- Conditionally update on commission changes
+			OR aff_id IS NOT NULL
+			AND ( NEW.init_comm <> OLD.init_comm OR NEW.rec_comm <> OLD.rec_comm ) );
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_10_update_campaigns
+	AFTER UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_update_campaigns();
