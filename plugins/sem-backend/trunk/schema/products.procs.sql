@@ -15,6 +15,8 @@ BEGIN
 			CASE
 			WHEN NEW.status = 'draft'
 			THEN 'draft'
+			WHEN NEW.status <= 'inherit'
+			THEN 'inherit'
 			ELSE 'inactive'
 			END::status_activatable,
 			'Promo on ' || NEW.name,
