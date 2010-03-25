@@ -5,6 +5,7 @@ BEGIN;
 \i ./products.sql
 \i ./campaigns.sql
 \i ./orders.sql
+\i ./order-lines.sql
 
 INSERT INTO products (status, init_price) VALUES ('active', 10);
 UPDATE campaigns SET status = 'active', init_discount = 5, max_date = now() + interval '1 week', firesale = true;
