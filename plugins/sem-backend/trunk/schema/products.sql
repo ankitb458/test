@@ -33,11 +33,28 @@ SELECT sluggable('products'), timestampable('products'), searchable('products'),
 
 CREATE INDEX products_sort ON products(name);
 
-COMMENT ON TABLE products IS E'Stores products.
+COMMENT ON TABLE products IS E'Products
 
 - rec_count corresponds to the number of installments, when applicable.
 - max_orders gets decreased as new orders are *cleared*. In other words,
   it is only loosely enforced.';
+
+/**
+ * Active products
+ */
+CREATE OR REPLACE VIEW active_products
+AS
+	SELECT	*
+	FROM	products
+	WHERE	status = 'active'
+	AND		( max_orders IS NULL OR max_orders > 0 )
+	AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+
+COMMENT ON VIEW active_products IS E'Active Products
+
+- status is active.
+- max_orders, if set, is not depleted.
+- max_date, if set, is not reached.';
 
 /**
  * Clean a product before it gets stored.
@@ -58,13 +75,10 @@ BEGIN
 		NEW.rec_count := NULL;
 	END IF;
 	
-	IF NEW.status >= 'future'
+	-- Make sure that max_date is after min_date
+	IF NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
 	THEN
-		-- Make sure that max_date is after min_date
-		IF NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
-		THEN
-			NEW.max_date := NULL;
-		END IF;
+		NEW.max_date := NULL;
 	END IF;
 	
 	RETURN NEW;

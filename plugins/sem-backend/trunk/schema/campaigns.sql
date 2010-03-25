@@ -39,6 +39,82 @@ Promos are tied to products through their uuid; every product has one.
 - An active firesale requires either or both of max_date and max_orders.
   A firesale applies dynamic discount to orders.';
 
+/*
+ * Active campaigns
+ */
+CREATE OR REPLACE VIEW active_campaigns
+AS
+	SELECT	campaigns.*
+	FROM	campaigns
+	WHERE	status >= 'pending';
+
+COMMENT ON VIEW active_campaigns IS E'Active Campaigns
+
+- status is pending or greater, i.e. it''s trackable.';
+
+/**
+ * Coupons
+ */
+CREATE OR REPLACE VIEW coupons
+AS
+	SELECT	campaigns.*
+	FROM	campaigns
+	WHERE	product_id IS NOT NULL;
+
+COMMENT ON VIEW coupons IS E'Coupons
+
+- product_id is set.';
+
+/**
+ * Active coupons
+ */
+CREATE OR REPLACE VIEW active_coupons
+AS
+	SELECT	coupons.*
+	FROM	coupons
+	WHERE	status = 'active'
+	AND		( max_orders IS NULL OR max_orders > 0 )
+	AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+
+COMMENT ON VIEW active_coupons IS E'Active Coupons
+
+- product_id is set.
+- status is active.
+- max_orders, if set, is not depleted.
+- max_date, if set, is not reached.';
+
+/**
+ * Promos
+ */
+CREATE OR REPLACE VIEW promos
+AS
+	SELECT	campaigns.*
+	FROM	campaigns
+	JOIN	products
+	ON		products.uuid = campaigns.uuid;
+
+COMMENT ON VIEW promos IS E'Promos
+
+- A product is tied to the campaign through the uuid.';
+
+/**
+ * Active promos
+ */
+CREATE OR REPLACE VIEW active_promos
+AS
+	SELECT	promos.*
+	FROM	promos
+	WHERE	status = 'active'
+	AND		( max_orders IS NULL OR max_orders > 0 )
+	AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+
+COMMENT ON VIEW active_promos IS E'Active Promos
+
+- A product is tied to the campaign through the uuid.
+- status is active.
+- max_orders, if set, is not depleted.
+- max_date, if set, is not reached.';
+
 /**
  * Clean a campaign before it gets stored.
  */
@@ -105,8 +181,7 @@ BEGIN
 		THEN
 			IF	ROW(NEW.status, NEW.init_discount, NEW.rec_discount, NEW.firesale) <>
 				ROW(OLD.status, OLD.init_discount, OLD.rec_discount, OLD.firesale) OR
-				NEW.firesale AND ROW(NEW.max_date, NEW.max_orders) IS DISTINCT FROM
-				ROW(OLD.max_date, OLD.max_orders)
+				NEW.firesale AND ROW(NEW.max_date, NEW.max_orders) IS DISTINCT FROM ROW(OLD.max_date, OLD.max_orders)
 			THEN
 				IF NEW.min_date <= NOW() - interval '1 hour'
 				THEN
@@ -134,90 +209,3 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER campaigns_0_clean
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();
-
-/**
- * Auto-creates a promo for new products.
- */
-CREATE OR REPLACE FUNCTION products_autocreate_promo()
-	RETURNS trigger
-AS $$
-BEGIN
-	INSERT INTO campaigns (
-		uuid,
-		status,
-		name,
-		product_id
-		)
-	SELECT	NEW.uuid,
-			CASE
-			WHEN NEW.status = 'draft'
-			THEN 'draft'
-			ELSE 'inactive'
-			END::status_activatable,
-			'Promo on ' || NEW.name,
-			NEW.id;
-	
-	RETURN NEW;
-END $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER products_10_autocreate_promo
-	AFTER INSERT ON products
-FOR EACH ROW EXECUTE PROCEDURE products_autocreate_promo();
-
-/**
- * Refreshes coupon discounts on product updates.
- */
-CREATE OR REPLACE FUNCTION products_refresh_coupons()
-	RETURNS trigger
-AS $$
-BEGIN
-	IF NEW.init_price = OLD.init_price AND NEW.rec_price = OLD.rec_price
-	THEN
-		RETURN NEW;
-	END IF;
-	
-	UPDATE	campaigns
-	SET		status = CASE
-			WHEN aff_id IS NOT NULL AND status IN ('active', 'future')
-			THEN 'pending'
-			ELSE status
-			END,
-			init_discount = CASE
-			-- Zero in, when possible
-			WHEN init_discount = 0 OR NEW.init_price = 0 OR aff_id IS NOT NULL AND NEW.init_comm = 0
-			THEN 0
-			-- Keep common comm ratios
-			WHEN init_discount = round(OLD.init_comm / 2, 2)
-			THEN round(NEW.init_comm / 2, 2)
-			-- Keep affiliate comm ratios for affiliate coupons
-			WHEN aff_id IS NOT NULL
-			THEN round(init_discount * NEW.init_comm / OLD.init_comm, 2)
-			-- Keep discount ratios for site coupons
-			ELSE round(init_discount * NEW.init_price / OLD.init_price, 2)
-			END,
-			rec_discount = CASE
-			-- Zero in, when possible
-			WHEN rec_discount = 0 OR NEW.rec_price = 0 OR aff_id IS NOT NULL AND NEW.rec_comm = 0
-			THEN 0
-			-- Keep common comm ratios
-			WHEN rec_discount = round(OLD.rec_comm / 2, 2)
-			THEN round(NEW.rec_comm / 2, 2)
-			-- Keep affiliate comm ratios for affiliate coupons
-			WHEN aff_id IS NOT NULL
-			THEN round(rec_discount * NEW.rec_comm / OLD.rec_comm, 2)
-			-- Keep discount ratios for site coupons
-			ELSE round(rec_discount * NEW.rec_price / OLD.rec_price, 2)
-			END
-	WHERE	product_id = NEW.id
-	AND		( -- Always update on price changes
-			NEW.init_price <> OLD.init_price OR NEW.rec_price <> OLD.rec_price
-			-- Conditionally update on commission changes
-			OR aff_id IS NOT NULL
-			AND ( NEW.init_comm <> OLD.init_comm OR NEW.rec_comm <> OLD.rec_comm ) );
-	
-	RETURN NEW;
-END $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER products_10_refresh_coupons
-	AFTER UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_refresh_coupons();
