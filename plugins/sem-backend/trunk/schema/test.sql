@@ -2,25 +2,13 @@ BEGIN;
 \i ./reset.sql
 \i ./init.sql
 
-INSERT INTO products ( status, init_price )
-VALUES	( 'active', 60 );
-
-UPDATE	products
-SET		status = 'trash';
-
-DELETE FROM products;
+\i ./test.product.sql
 
 INSERT INTO products ( init_price )
 VALUES	( 60 );
 
---DELETE FROM campaigns;
-
---SELECT * FROM campaigns;
-
 UPDATE	products
 SET		status = 'active';
-
---SELECT * FROM campaigns;
 
 UPDATE	campaigns
 SET		status = 'active',

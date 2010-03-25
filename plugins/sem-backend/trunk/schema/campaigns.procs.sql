@@ -30,7 +30,7 @@ BEGIN
 		FROM	products
 		WHERE	id = OLD.promo_id )
 	THEN
-		RAISE EXCEPTION 'Campaign % cannot be deleted. Delete the product instead.', OLD.id;
+		RAISE EXCEPTION 'Failed to delete campaigns.%. Delete products.% instead.', OLD.id, OLD.product_id;
 	END IF;
 	
 	RETURN OLD;

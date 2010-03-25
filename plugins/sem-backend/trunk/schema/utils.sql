@@ -321,7 +321,7 @@ BEGIN
 	BEGIN
 		IF OLD.status > 'inherit'
 		THEN
-			RAISE EXCEPTION 'Failed to delete row: it should be trashed first.';
+			RAISE EXCEPTION 'Failed to delete $EXEC$ || t_name || $EXEC$.id = %. Trash it first.', OLD.id;
 		END IF;
 		
 		RETURN OLD;
