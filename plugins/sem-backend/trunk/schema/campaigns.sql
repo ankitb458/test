@@ -18,7 +18,8 @@ CREATE TABLE campaigns (
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_promo
-		CHECK ( promo_id IS NULL OR promo_id IS NOT DISTINCT FROM product_id ),
+		CHECK ( promo_id IS NULL OR
+			promo_id IS NOT DISTINCT FROM product_id AND aff_id IS NULL ),
 	CONSTRAINT valid_amount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_flow

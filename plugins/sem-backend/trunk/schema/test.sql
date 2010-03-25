@@ -13,6 +13,8 @@ DELETE FROM products;
 INSERT INTO products ( init_price )
 VALUES	( 60 );
 
+DELETE FROM campaigns;
+
 --SELECT * FROM campaigns;
 
 UPDATE	products

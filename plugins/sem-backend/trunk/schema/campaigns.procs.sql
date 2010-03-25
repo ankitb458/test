@@ -25,12 +25,12 @@ CREATE OR REPLACE FUNCTION campaigns_delete_promo()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	EXISTS(
+	IF	EXISTS (
 		SELECT	1
 		FROM	products
 		WHERE	id = OLD.promo_id )
 	THEN
-		RAISE EXCEPTION 'Campaign %s cannot be deleted. Delete the product instead.';
+		RAISE EXCEPTION 'Campaign % cannot be deleted. Delete the product instead.', OLD.id;
 	END IF;
 	
 	RETURN OLD;

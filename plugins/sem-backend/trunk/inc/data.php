@@ -807,7 +807,7 @@ abstract class s_data_base extends s_base {
 		
 		do {
 			$conflict = $wpdb->get_var("
-				SELECT EXISTS(
+				SELECT EXISTS (
 					SELECT	1
 					FROM	`{$wpdb->$table}`
 					WHERE	ukey = '" . $wpdb->_real_escape($ukey) . "'
