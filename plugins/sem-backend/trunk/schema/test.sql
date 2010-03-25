@@ -2,7 +2,7 @@ BEGIN;
 \i ./reset.sql
 \i ./init.sql
 
-\i ./test.product.sql
+\i ./products.test.sql
 
 INSERT INTO products ( init_price )
 VALUES	( 60 );

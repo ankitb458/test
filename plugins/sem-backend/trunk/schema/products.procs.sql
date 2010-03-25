@@ -47,6 +47,15 @@ BEGIN
 		RETURN NEW;
 	END IF;
 	
+	IF	EXISTS (
+		SELECT	1
+		FROM	order_lines
+		WHERE	product_id = NEW.id
+		)
+	THEN
+		RAISE EXCEPTION 'products.% is referenced in orders.', NEW.id;
+	END IF;
+	
 	UPDATE	campaigns
 	SET		product_id = CASE
 			WHEN promo_id = NEW.id
