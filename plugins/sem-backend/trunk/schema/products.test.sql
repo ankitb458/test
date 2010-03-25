@@ -66,3 +66,17 @@ SELECT	init_discount = 6 AND
 		as check_campaigns_autofix_valid_coupon_discount
 FROM	campaigns
 WHERE	aff_id IS NOT NULL;
+
+-- clean up
+
+UPDATE	products
+SET		status = 'trash';
+
+DELETE FROM products;
+
+UPDATE	campaigns
+SET		status = 'trash';
+
+DELETE FROM campaigns;
+
+DELETE FROM users;

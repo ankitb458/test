@@ -182,7 +182,10 @@ BEGIN
 	IF	NEW.product_id IS NULL
 	THEN
 		-- Reset all coupon fields
-		NEW.status := 'active';
+		IF	NEW.status > 'inherit'
+		THEN
+			NEW.status := 'active';
+		END IF;
 		NEW.init_discount := 0;
 		NEW.rec_discount := 0;
 		NEW.min_date := NULL;
