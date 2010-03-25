@@ -29,7 +29,7 @@ CREATE TABLE products (
 			max_date IS NOT NULL AND min_date <= max_date ) )
 );
 
-SELECT sluggable('products'), timestampable('products'), searchable('products');
+SELECT sluggable('products'), timestampable('products'), searchable('products'), trashable('products');
 
 CREATE INDEX products_sort ON products(name);
 

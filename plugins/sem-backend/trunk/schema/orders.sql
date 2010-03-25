@@ -15,7 +15,7 @@ CREATE TABLE orders (
 		CHECK ( NOT ( order_date IS NULL AND status > 'draft' ) )
 );
 
-SELECT timestampable('orders'), searchable('orders');
+SELECT timestampable('orders'), searchable('orders'), trashable('orders');
 
 CREATE INDEX orders_sort ON orders(order_date DESC);
 CREATE INDEX orders_user_id ON orders(user_id);
