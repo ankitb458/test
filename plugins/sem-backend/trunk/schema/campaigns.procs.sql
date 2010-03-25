@@ -18,3 +18,24 @@ CREATE TRIGGER campaigns_0_update_promo
 	AFTER UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_update_promo();
 
+/**
+ * Prevents promos from being deleted
+ */
+CREATE OR REPLACE FUNCTION campaigns_delete_promo()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	EXISTS(
+		SELECT	1
+		FROM	products
+		WHERE	id = OLD.promo_id )
+	THEN
+		RAISE EXCEPTION 'Campaign %s cannot be deleted. Delete the product instead.';
+	END IF;
+	
+	RETURN OLD;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER campaigns_0_delete_promo
+	AFTER DELETE ON campaigns
+FOR EACH ROW EXECUTE PROCEDURE campaigns_delete_promo();
