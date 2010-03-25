@@ -167,7 +167,7 @@ BEGIN
 				END IF;
 			END IF;
 			
-			-- Strip commission from discount if applicable
+			-- Strip discount from commission where applicable
 			IF o.campaign_id = NEW.coupon_id AND o.aff_id IS NOT NULL
 			THEN
 				NEW.init_comm := GREATEST(NEW.init_comm - c.init_discount, 0);
