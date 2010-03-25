@@ -8,7 +8,7 @@ CREATE TABLE campaigns (
 	status			status_activatable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL DEFAULT '',
 	aff_id			bigint REFERENCES users(id),
-	product_id		bigint REFERENCES products(id) ON DELETE SET NULL,
+	product_id		bigint REFERENCES products(id),
 	init_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	rec_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	min_date		timestamp(0) with time zone,
