@@ -7,9 +7,9 @@ CREATE TABLE orders (
 	status			status_billable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL DEFAULT '',
 	order_date		timestamp(0) with time zone,
-	user_id			bigint REFERENCES users(id),
-	aff_id			bigint REFERENCES users(id),
-	campaign_id		bigint REFERENCES campaigns(id),
+	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_order_flow
 		CHECK ( NOT ( order_date IS NULL AND status > 'draft' ) )
@@ -39,9 +39,9 @@ AS $$
 BEGIN
 	NEW.name := trim(NEW.name);
 	
-	IF COALESCE(NEW.name, '') = ''
+	IF	COALESCE(NEW.name, '') = ''
 	THEN
-		IF NEW.user_id IS NOT NULL
+		IF	NEW.user_id IS NOT NULL
 		THEN
 			SELECT	name
 			INTO	NEW.name
@@ -49,13 +49,13 @@ BEGIN
 			WHERE	id = NEW.user_id;
 		END IF;
 		
-		IF NEW.name = ''
+		IF	NEW.name = ''
 		THEN
 			NEW.name := 'Anonymous User';
 		END IF;
 	END IF;
 	
-	IF NEW.order_date IS NULL AND NEW.status > 'draft'
+	IF	NEW.order_date IS NULL AND NEW.status > 'draft'
 	THEN
 		NEW.order_date := NOW();
 	END IF;

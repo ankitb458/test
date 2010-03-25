@@ -6,10 +6,10 @@ CREATE TABLE order_lines (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_billable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL DEFAULT '',
-	order_id		bigint NOT NULL REFERENCES orders(id),
-	user_id			bigint REFERENCES users(id),
-	product_id		bigint REFERENCES products(id),
-	coupon_id		bigint REFERENCES campaigns(id),
+	order_id		bigint NOT NULL REFERENCES orders(id) ON UPDATE CASCADE,
+	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,
+	coupon_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	quantity		smallint NOT NULL DEFAULT 1,
 	init_price		numeric(8,2) NOT NULL,
 	init_comm		numeric(8,2) NOT NULL,
@@ -21,9 +21,9 @@ CREATE TABLE order_lines (
 	rec_count		smallint,
 	CONSTRAINT valid_price
 		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_discount >= 0 AND
-				init_price >= init_comm + init_discount AND
+				init_price >= init_comm AND init_price >= init_discount AND
 				rec_price >= 0 AND rec_comm >= 0 AND rec_discount >= 0 AND
-				rec_price >= rec_comm + rec_discount ),
+				rec_price >= rec_comm AND rec_price >= rec_discount ),
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) )
@@ -53,9 +53,9 @@ DECLARE
 BEGIN
 	NEW.name := trim(NEW.name);
 	
-	IF COALESCE(NEW.name, '') = ''
+	IF	COALESCE(NEW.name, '') = ''
 	THEN
-		IF NEW.product_id IS NOT NULL
+		IF	NEW.product_id IS NOT NULL
 		THEN
 			SELECT	name
 			INTO	NEW.name
@@ -63,13 +63,13 @@ BEGIN
 			WHERE	id = NEW.product_id;
 		END IF;
 		
-		IF NEW.name = ''
+		IF	NEW.name = ''
 		THEN
 			NEW.name := 'Unknown Product';
 		END IF;
 	END IF;
 	
-	IF NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
+	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;
 	END IF;
@@ -88,19 +88,22 @@ CREATE OR REPLACE FUNCTION order_lines_autofill()
 	RETURNS trigger
 AS $$
 DECLARE
-	o			orders;
-	p			products;
-	c			campaigns;
+	o			record;
+	p			record;
+	c			record;
 	t_ratio		numeric := 1;
 	cur_orders	float8;
 	o_ratio		numeric := 1;
 BEGIN
-	IF NEW.init_price IS NULL OR NEW.init_comm IS NULL OR
-	   NEW.rec_price IS NULL OR NEW.rec_comm IS NULL
+	IF	NEW.init_price IS NULL OR NEW.init_comm IS NULL OR
+		NEW.rec_price IS NULL OR NEW.rec_comm IS NULL
 	THEN
-		IF NEW.product_id IS NOT NULL
+		IF	NEW.product_id IS NOT NULL
 		THEN
-			SELECT	products.*
+			SELECT	init_price,
+					init_comm,
+					rec_price,
+					rec_comm
 			INTO	p
 			FROM	products
 			WHERE	id = NEW.product_id;
@@ -113,23 +116,31 @@ BEGIN
 		NEW.rec_comm := COALESCE(NEW.rec_comm, p.rec_comm, 0);
 	END IF;
 	
-	IF NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
+	IF	NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
 	THEN
-		SELECT	orders.*
+		SELECT	aff_id,
+				campaign_id
 		INTO	o
 		FROM	orders
 		WHERE	id = NEW.order_id;
 		
-		IF NEW.coupon_id IS NOT NULL
+		IF	NEW.coupon_id IS NOT NULL
 		THEN
 			-- Validate coupon
-			SELECT	coupon.*
+			SELECT	id,
+					aff_id,
+					init_discount,
+					rec_discount,
+					firesale,
+					min_date,
+					max_date,
+					max_orders
 			INTO	c
-			FROM	active_coupons as coupon
+			FROM	active_coupons
 			WHERE	id = NEW.coupon_id
 			AND		product_id = NEW.product_id;
 			
-			IF NOT FOUND
+			IF	NOT FOUND
 			THEN
 				NEW.coupon_id := NULL;
 			ELSEIF c.aff_id IS NOT NULL AND o.aff_id IS DISTINCT FROM c.aff_id -- inconsistent sponsor
@@ -138,32 +149,39 @@ BEGIN
 			END IF;
 		ELSE
 			-- Autofetch coupon
-			SELECT	promo.*
+			SELECT	id,
+					aff_id,
+					init_discount,
+					rec_discount,
+					firesale,
+					min_date,
+					max_date,
+					max_orders
 			INTO	c
-			FROM	active_promos as promo;
+			FROM	active_promos;
 			
-			IF FOUND
+			IF	FOUND
 			THEN
 				NEW.coupon_id := c.id;
 			END IF;
 		END IF;
 		
 		-- Fetch discount
-		IF c.id IS NULL
+		IF	c.id IS NULL
 		THEN
 			NEW.init_discount := COALESCE(NEW.init_discount, 0);
 			NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
 		ELSE
 			-- Process firesale if applicable
-			IF c.firesale
+			IF	c.firesale
 			THEN
-				IF c.max_date IS NOT NULL -- max_date < NOW() is guaranteed by active_promos
+				IF	c.max_date IS NOT NULL -- max_date < NOW() is guaranteed by active_promos
 				THEN
 					t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::timestamp(0) with time zone) /
 						EXTRACT(EPOCH FROM c.max_date - c.min_date);
 				END IF;
 				
-				IF c.max_orders IS NOT NULL -- max_orders > 0 is guaranteed by active_promos
+				IF	c.max_orders IS NOT NULL -- max_orders > 0 is guaranteed by active_promos
 				THEN
 					SELECT	SUM(order_lines.quantity)
 					INTO	cur_orders
@@ -183,7 +201,7 @@ BEGIN
 			END IF;
 			
 			-- Strip discount from commission where applicable
-			IF o.campaign_id = c.id AND o.aff_id IS NOT NULL
+			IF	o.campaign_id = c.id AND o.aff_id IS NOT NULL
 			THEN
 				NEW.init_comm := GREATEST(NEW.init_comm - c.init_discount, 0);
 				NEW.rec_comm := GREATEST(NEW.rec_comm - c.rec_discount, 0);

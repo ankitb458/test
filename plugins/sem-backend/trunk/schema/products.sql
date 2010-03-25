@@ -44,11 +44,11 @@ COMMENT ON TABLE products IS E'Products
  */
 CREATE OR REPLACE VIEW active_products
 AS
-	SELECT	*
-	FROM	products
-	WHERE	status = 'active'
-	AND		( max_orders IS NULL OR max_orders > 0 )
-	AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+SELECT	*
+FROM	products
+WHERE	status = 'active'
+AND		( max_orders IS NULL OR max_orders > 0 )
+AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
 
 COMMENT ON VIEW active_products IS E'Active Products
 
@@ -63,20 +63,23 @@ CREATE OR REPLACE FUNCTION products_clean()
 	RETURNS trigger
 AS $$
 BEGIN
+	-- Trim fields
 	NEW.name := trim(NEW.name);
 	
-	IF COALESCE(NEW.name, '') = ''
+	-- Default name
+	IF	COALESCE(NEW.name, '') = ''
 	THEN
 		NEW.name := 'Product';
 	END IF;
 	
-	IF NEW.status >= 'future' AND NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
+	-- Make sure that rec_interval and rec_count are consistent
+	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;
 	END IF;
 	
-	-- Make sure that max_date is after min_date
-	IF NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
+	-- Make sure that min_date and max_date are consistent
+	IF	NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
 	THEN
 		NEW.max_date := NULL;
 	END IF;

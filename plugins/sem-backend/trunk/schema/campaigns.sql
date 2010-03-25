@@ -7,8 +7,9 @@ CREATE TABLE campaigns (
 	ukey			varchar(255) UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL DEFAULT '',
-	aff_id			bigint REFERENCES users(id),
-	product_id		bigint REFERENCES products(id),
+	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	promo_id		bigint REFERENCES products(id) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE UNIQUE,
+	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE DEFERRABLE,
 	init_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	rec_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	min_date		timestamp(0) with time zone,
@@ -44,9 +45,9 @@ Promos are tied to products through their uuid; every product has one.
  */
 CREATE OR REPLACE VIEW active_campaigns
 AS
-	SELECT	campaigns.*
-	FROM	campaigns
-	WHERE	status >= 'pending';
+SELECT	campaigns.*
+FROM	campaigns
+WHERE	status >= 'pending';
 
 COMMENT ON VIEW active_campaigns IS E'Active Campaigns
 
@@ -57,9 +58,9 @@ COMMENT ON VIEW active_campaigns IS E'Active Campaigns
  */
 CREATE OR REPLACE VIEW coupons
 AS
-	SELECT	campaigns.*
-	FROM	campaigns
-	WHERE	product_id IS NOT NULL;
+SELECT	campaigns.*
+FROM	campaigns
+WHERE	product_id IS NOT NULL;
 
 COMMENT ON VIEW coupons IS E'Coupons
 
@@ -70,11 +71,11 @@ COMMENT ON VIEW coupons IS E'Coupons
  */
 CREATE OR REPLACE VIEW active_coupons
 AS
-	SELECT	coupons.*
-	FROM	coupons
-	WHERE	status = 'active'
-	AND		( max_orders IS NULL OR max_orders > 0 )
-	AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+SELECT	coupons.*
+FROM	coupons
+WHERE	status = 'active'
+AND		( max_orders IS NULL OR max_orders > 0 )
+AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
 
 COMMENT ON VIEW active_coupons IS E'Active Coupons
 
@@ -88,10 +89,9 @@ COMMENT ON VIEW active_coupons IS E'Active Coupons
  */
 CREATE OR REPLACE VIEW promos
 AS
-	SELECT	campaigns.*
-	FROM	campaigns
-	JOIN	products
-	ON		products.uuid = campaigns.uuid;
+SELECT	campaigns.*
+FROM	campaigns
+WHERE	promo_id IS NOT NULL;
 
 COMMENT ON VIEW promos IS E'Promos
 
@@ -102,11 +102,11 @@ COMMENT ON VIEW promos IS E'Promos
  */
 CREATE OR REPLACE VIEW active_promos
 AS
-	SELECT	promos.*
-	FROM	promos
-	WHERE	status = 'active'
-	AND		( max_orders IS NULL OR max_orders > 0 )
-	AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+SELECT	promos.*
+FROM	promos
+WHERE	status = 'active'
+AND		( max_orders IS NULL OR max_orders > 0 )
+AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
 
 COMMENT ON VIEW active_promos IS E'Active Promos
 
@@ -121,46 +121,70 @@ COMMENT ON VIEW active_promos IS E'Active Promos
 CREATE OR REPLACE FUNCTION campaigns_clean()
 	RETURNS trigger
 AS $$
+DECLARE
+	p		record;
 BEGIN
+	-- Trim fields
 	NEW.name := trim(NEW.name);
 	
-	IF COALESCE(NEW.name, '') = ''
+	-- Default name
+	IF	COALESCE(NEW.name, '') = ''
 	THEN
 		NEW.name := 'Campaign';
 	END IF;
 	
-	IF NEW.product_id IS NOT NULL
+	-- Sanitize promo_id
+	IF	NEW.promo_id IS NOT NULL
 	THEN
-		-- Enforce price/comm/discount consistency
-		SELECT	CASE
-				WHEN NEW.aff_id IS NOT NULL
-				THEN LEAST(products.init_comm, NEW.init_discount)
-				ELSE LEAST(products.init_price - products.init_comm, NEW.init_discount)
-				END,
-				CASE
-				WHEN NEW.aff_ID IS NOT NULL
-				THEN LEAST(products.rec_comm, NEW.rec_discount)
-				ELSE LEAST(products.rec_price - products.rec_comm, NEW.rec_discount)
-				END
-		INTO	NEW.init_discount,
-				NEW.rec_discount
-		FROM	products
-		WHERE	id = NEW.product_id;
-		
-		-- Force non-promos into campaigns
-		IF	NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0 AND
-			NOT EXISTS (
-			SELECT	1
-			FROM	products
-			WHERE	uuid = NEW.uuid )
+		NEW.product_id := NEW.promo_id;
+	ELSEIF TG_OP = 'UPDATE'
+	THEN
+		IF NEW.promo_id IS DISTINCT FROM OLD.promo_id
 		THEN
-			NEW.product_id := NULL;
+			RAISE EXCEPTION 'promo_id is a read-only field.';
 		END IF;
 	END IF;
 	
-	IF NEW.product_id IS NULL
+	IF	NEW.product_id IS NOT NULL
 	THEN
-		-- Dump all coupon fields
+		-- Validate product and sanitize status
+		SELECT	uuid,
+				status,
+				init_price,
+				init_comm,
+				rec_price,
+				rec_comm
+		INTO	p
+		FROM	products
+		WHERE	id = NEW.product_id;
+		
+		IF	NEW.product_id = NEW.promo_id
+		THEN
+			NEW.status := CASE
+				WHEN p.status <= 'inherit'
+				THEN 'inherit'
+				WHEN p.status = 'draft'
+				THEN 'draft'
+				WHEN p.status = 'pending'
+				THEN 'pending'
+				WHEN p.status < 'future'
+				THEN 'inactive'
+				ELSE NEW.status
+				END::status_activatable;
+		ELSE
+			IF p.status < 'future'
+			THEN
+				NEW.product_id := NULL;
+			ELSEIF NEW.status = 'inherit' -- allowed for promos only
+			THEN
+				NEW.status := 'trash';
+			END IF;
+		END IF;
+	END IF;
+	
+	IF	NEW.product_id IS NULL
+	THEN
+		-- Reset all coupon fields
 		NEW.status := 'active';
 		NEW.init_discount := 0;
 		NEW.rec_discount := 0;
@@ -168,36 +192,37 @@ BEGIN
 		NEW.max_date := NULL;
 		NEW.max_orders := NULL;
 		NEW.firesale := FALSE;
-	ELSEIF NEW.status >= 'future'
-	THEN
+	ELSE
+		-- Sanitize discount
+		IF NEW.aff_id IS NOT NULL
+		THEN
+			NEW.init_discount := LEAST(NEW.init_discount, p.init_comm);
+			NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_comm);
+		ELSE
+			NEW.init_discount := LEAST(NEW.init_discount, p.init_price - p.init_comm);
+			NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_price - p.rec_comm);
+		END IF;
+		
+		-- Require a discount
+		IF	NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
+		THEN
+			NEW.status = 'inactive';
+		END IF;
+		
 		-- Require a min_date
-		IF NEW.min_date IS NULL
+		IF	NEW.status >= 'future' AND NEW.min_date IS NULL
 		THEN
 			NEW.min_date := NOW();
 		END IF;
 		
-		-- Reset min_date on coupon changes
-		IF TG_OP = 'UPDATE'
-		THEN
-			IF	ROW(NEW.status, NEW.init_discount, NEW.rec_discount, NEW.firesale) <>
-				ROW(OLD.status, OLD.init_discount, OLD.rec_discount, OLD.firesale) OR
-				NEW.firesale AND ROW(NEW.max_date, NEW.max_orders) IS DISTINCT FROM ROW(OLD.max_date, OLD.max_orders)
-			THEN
-				IF NEW.min_date <= NOW() - interval '1 hour'
-				THEN
-					NEW.min_date := NOW();
-				END IF;
-			END IF;
-		END IF;
-		
-		-- Make sure that max_date is after min_date
-		IF NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
+		-- Make sure that min_date and max_date are consistent
+		IF	NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
 		THEN
 			NEW.max_date := NULL;
 		END IF;
 		
 		-- Firesales require either or both of max_date and max_orders
-		IF NEW.max_date IS NULL AND NEW.max_orders IS NULL
+		IF	NEW.firesale AND NEW.max_date IS NULL AND NEW.max_orders IS NULL
 		THEN
 			NEW.firesale := FALSE;
 		END IF;

@@ -1,7 +1,7 @@
 /**
  * Auto-creates a promo for new products.
  */
-CREATE OR REPLACE FUNCTION products_autocreate_promo()
+CREATE OR REPLACE FUNCTION products_create()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -9,34 +9,101 @@ BEGIN
 		uuid,
 		status,
 		name,
-		product_id
+		product_id,
+		promo_id
 		)
-	SELECT	NEW.uuid,
-			CASE
-			WHEN NEW.status = 'draft'
-			THEN 'draft'
-			WHEN NEW.status <= 'inherit'
-			THEN 'inherit'
-			ELSE 'inactive'
-			END::status_activatable,
-			'Promo on ' || NEW.name,
-			NEW.id;
+	VALUES (
+		NEW.uuid,
+		CASE
+		WHEN NEW.status <= 'inherit'
+		THEN 'inherit'
+		WHEN NEW.status = 'draft'
+		THEN 'draft'
+		WHEN NEW.status = 'pending'
+		THEN 'pending'
+		ELSE 'inactive'
+		END::status_activatable,
+		'Promo on ' || NEW.name,
+		NEW.id,
+		NEW.id
+		);
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_20_autocreate_promo
+CREATE TRIGGER products_10_create
 	AFTER INSERT ON products
-FOR EACH ROW EXECUTE PROCEDURE products_autocreate_promo();
+FOR EACH ROW EXECUTE PROCEDURE products_create();
+
+/**
+ * Processes coupons when products are trashed.
+ */
+CREATE OR REPLACE FUNCTION products_trash()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF NEW.status = OLD.status OR NEW.status > 'inherit' OR OLD.status <= 'inherit'
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	UPDATE	campaigns
+	SET		product_id = CASE
+			WHEN promo_id = NEW.id
+			THEN product_id
+			ELSE NULL
+			END,
+			status = CASE
+			WHEN promo_id = NEW.id
+			THEN 'inherit'
+			ELSE 'active'
+			END::status_activatable
+	WHERE	product_id = NEW.id;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_10_trash
+	AFTER UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_trash();
+
+/**
+ * Processes coupons when products are untrashed.
+ */
+CREATE OR REPLACE FUNCTION products_untrash()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF NEW.status = OLD.status OR NEW.status <= 'inherit' OR OLD.status > 'inherit'
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	UPDATE	campaigns
+	SET		status = CASE
+			WHEN NEW.status = 'draft'
+			THEN 'draft'
+			WHEN NEW.status = 'pending'
+			THEN 'pending'
+			ELSE 'inactive'
+			END::status_activatable
+	WHERE	promo_id = NEW.id;
+
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_10_untrash
+	AFTER UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_untrash();
 
 /**
  * Refreshes coupon discounts on product updates.
  */
-CREATE OR REPLACE FUNCTION products_refresh_coupons()
+CREATE OR REPLACE FUNCTION products_edit_price()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF NEW.init_price = OLD.init_price AND NEW.rec_price = OLD.rec_price
+	IF	NEW.init_price = OLD.init_price AND NEW.rec_price = OLD.rec_price
 	THEN
 		RETURN NEW;
 	END IF;
@@ -83,6 +150,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_20_refresh_coupons
+CREATE TRIGGER products_20_edit_price
 	AFTER UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_refresh_coupons();
+FOR EACH ROW EXECUTE PROCEDURE products_edit_price();
