@@ -72,8 +72,8 @@ BEGIN
 		WHERE	id = NEW.product_id;
 		
 		-- Force non-promos into campaigns
-		IF NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
-		AND NOT EXISTS (
+		IF	NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0 AND
+			NOT EXISTS (
 			SELECT	1
 			FROM	products
 			WHERE	uuid = NEW.uuid )
@@ -103,10 +103,10 @@ BEGIN
 		-- Reset min_date on coupon changes
 		IF TG_OP = 'UPDATE'
 		THEN
-			IF ( ROW(NEW.status, NEW.init_discount, NEW.rec_discount, NEW.firesale) <>
+			IF	ROW(NEW.status, NEW.init_discount, NEW.rec_discount, NEW.firesale) <>
 				ROW(OLD.status, OLD.init_discount, OLD.rec_discount, OLD.firesale) OR
 				NEW.firesale AND ROW(NEW.max_date, NEW.max_orders) IS DISTINCT FROM
-				ROW(OLD.max_date, OLD.max_orders) )
+				ROW(OLD.max_date, OLD.max_orders)
 			THEN
 				IF NEW.min_date <= NOW() - interval '1 hour'
 				THEN
