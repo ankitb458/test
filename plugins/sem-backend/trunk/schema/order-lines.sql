@@ -29,12 +29,14 @@ CREATE TABLE order_lines (
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) )
 );
 
+SELECT timestampable('order_lines'), searchable('order_lines'), trashable('order_lines');
+
 CREATE INDEX order_lines_order_id ON order_lines(order_id);
 CREATE INDEX order_lines_user_id ON order_lines(user_id);
 CREATE INDEX order_lines_product_id ON order_lines(product_id);
 CREATE INDEX order_lines_coupon_id ON order_lines(coupon_id);
 
-COMMENT ON TABLE orders IS E'Stores order lines.
+COMMENT ON TABLE orders IS E'Order lines
 
 - user_id gets shipped; orders.user_id gets billed.
 - init/rec price/comm/discount are auto-filled if not provided.
@@ -47,7 +49,7 @@ CREATE OR REPLACE FUNCTION order_lines_clean()
 	RETURNS trigger
 AS $$
 DECLARE
-	a_id		bigint;
+	c			campaigns;
 BEGIN
 	NEW.name := trim(NEW.name);
 	
@@ -72,30 +74,6 @@ BEGIN
 		NEW.rec_count := NULL;
 	END IF;
 	
-	IF NEW.order_id IS NULL AND NEW.coupon_id IS NULL AND NEW.product_id IS NOT NULL
-	THEN
-		-- Auto-fetch coupon
-		SELECT	campaigns.id
-		INTO	NEW.coupon_id
-		FROM	campaigns
-		JOIN	products
-		ON		products.uuid = campaigns.uuid
-		WHERE	campaigns.product_id = NEW.product_id
-		AND		( campaigns.max_date IS NULL OR campaigns.max_date >= NOW() )
-		AND		( campaigns.max_orders IS NULL OR campaigns.max_orders > 0 );
-	END IF;
-	
-	IF NEW.order_id IS NULL
-	THEN
-		SELECT	aff_id
-		INTO	a_id
-		FROM	campaigns
-		WHERE	id = NEW.coupon_id;
-		INSERT INTO orders (user_id, aff_id, campaign_id)
-		VALUES	(NEW.user_id, a_id, NEW.coupon_id)
-		RETURNING id INTO NEW.order_id;
-	END IF;
-	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
@@ -113,8 +91,9 @@ DECLARE
 	o			orders;
 	p			products;
 	c			campaigns;
-	t_ratio		float := 1;
-	o_ratio		float := 1;
+	t_ratio		numeric := 1;
+	cur_orders	float8;
+	o_ratio		numeric := 1;
 BEGIN
 	IF NEW.init_price IS NULL OR NEW.init_comm IS NULL OR
 	   NEW.rec_price IS NULL OR NEW.rec_comm IS NULL
@@ -143,14 +122,34 @@ BEGIN
 		
 		IF NEW.coupon_id IS NOT NULL
 		THEN
-			SELECT	campaigns.*
+			-- Validate coupon
+			SELECT	coupon.*
 			INTO	c
-			FROM	campaigns
-			WHERE	id = NEW.coupon_id;
+			FROM	active_coupons as coupon
+			WHERE	id = NEW.coupon_id
+			AND		product_id = NEW.product_id;
+			
+			IF NOT FOUND
+			THEN
+				NEW.coupon_id := NULL;
+			ELSEIF c.aff_id IS NOT NULL AND o.aff_id IS DISTINCT FROM c.aff_id -- inconsistent sponsor
+			THEN
+				NEW.coupon_id := NULL;
+			END IF;
+		ELSE
+			-- Autofetch coupon
+			SELECT	promo.*
+			INTO	c
+			FROM	active_promos as promo;
+			
+			IF FOUND
+			THEN
+				NEW.coupon_id := c.id;
+			END IF;
 		END IF;
 		
 		-- Fetch discount
-		IF NEW.coupon_id IS NULL OR c.max_orders = 0 OR c.max_date < NOW()
+		IF c.id IS NULL
 		THEN
 			NEW.init_discount := COALESCE(NEW.init_discount, 0);
 			NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
@@ -158,17 +157,33 @@ BEGIN
 			-- Process firesale if applicable
 			IF c.firesale
 			THEN
-				IF c.max_date IS NOT NULL AND c.max_date <= now()
+				IF c.max_date IS NOT NULL -- max_date < NOW() is guaranteed by active_promos
 				THEN
-					t_ratio := EXTRACT(EPOCH FROM NOW() - NEW.min_date) /
-						EXTRACT(EPOCH FROM NEW.max_date - NEW.min_date);
-					RAISE NOTICE '%', t_ratio;
-					NULL;
+					t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::timestamp(0) with time zone) /
+						EXTRACT(EPOCH FROM c.max_date - c.min_date);
 				END IF;
+				
+				IF c.max_orders IS NOT NULL -- max_orders > 0 is guaranteed by active_promos
+				THEN
+					SELECT	SUM(order_lines.quantity)
+					INTO	cur_orders
+					FROM	order_lines
+					JOIN	orders
+					ON		orders.id = order_lines.order_id
+					WHERE	order_lines.order_id <> NEW.order_id
+					AND		order_lines.coupon_id = NEW.coupon_id
+					AND		order_lines.status > 'pending'
+					AND		orders.order_date >= c.min_date;
+					
+					o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
+				END IF;
+				
+				c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);
+				c.rec_discount := round(c.rec_discount * t_ratio * o_ratio, 2);
 			END IF;
 			
 			-- Strip discount from commission where applicable
-			IF o.campaign_id = NEW.coupon_id AND o.aff_id IS NOT NULL
+			IF o.campaign_id = c.id AND o.aff_id IS NOT NULL
 			THEN
 				NEW.init_comm := GREATEST(NEW.init_comm - c.init_discount, 0);
 				NEW.rec_comm := GREATEST(NEW.rec_comm - c.rec_discount, 0);
@@ -183,6 +198,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_1_autofill
+CREATE TRIGGER order_lines_3_autofill
 	BEFORE INSERT ON order_lines
 FOR EACH ROW EXECUTE PROCEDURE order_lines_autofill();

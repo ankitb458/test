@@ -22,7 +22,7 @@ CREATE INDEX orders_user_id ON orders(user_id);
 CREATE INDEX orders_aff_id ON orders(aff_id);
 CREATE INDEX orders_campaign_id ON orders(campaign_id);
 
-COMMENT ON TABLE orders IS E'Stores orders.
+COMMENT ON TABLE orders IS E'Orders
 
 - user_id gets billed; order_lines.user_id gets shipped.
 - aff_id gets the commission and is tied to the campaign_id. It gets stored
