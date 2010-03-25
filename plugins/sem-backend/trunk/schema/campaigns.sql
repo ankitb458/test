@@ -17,6 +17,8 @@ CREATE TABLE campaigns (
 	max_orders		int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	memo			text NOT NULL DEFAULT '',
+	CONSTRAINT valid_promo
+		CHECK ( promo_id IS NULL OR promo_id IS NOT DISTINCT FROM product_id ),
 	CONSTRAINT valid_amount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_flow
@@ -137,12 +139,6 @@ BEGIN
 	IF	NEW.promo_id IS NOT NULL
 	THEN
 		NEW.product_id := NEW.promo_id;
-	ELSEIF TG_OP = 'UPDATE'
-	THEN
-		IF NEW.promo_id IS DISTINCT FROM OLD.promo_id
-		THEN
-			RAISE EXCEPTION 'promo_id is a read-only field.';
-		END IF;
 	END IF;
 	
 	IF	NEW.product_id IS NOT NULL
