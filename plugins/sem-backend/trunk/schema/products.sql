@@ -72,10 +72,22 @@ BEGIN
 		NEW.name := 'Product';
 	END IF;
 	
+	-- Forbid status = inherit
+	IF	NEW.status = 'inherit'
+	THEN
+		NEW.status = 'trash';
+	END IF;
+	
 	-- Make sure that rec_interval and rec_count are consistent
 	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;
+	END IF;
+	
+	-- Require a scheduled date
+	IF	NEW.status = 'future' AND NEW.min_date IS NULL
+	THEN
+		NEW.status := 'inactive';
 	END IF;
 	
 	-- Make sure that min_date and max_date are consistent

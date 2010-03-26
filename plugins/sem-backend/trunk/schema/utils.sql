@@ -21,6 +21,7 @@ CREATE TYPE status_billable AS enum (
 	'pending',
 	'cancelled',
 	'reversed',
+	'future',
 	'cleared'
 	);
 

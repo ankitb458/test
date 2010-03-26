@@ -26,11 +26,11 @@ SELECT	init_discount = 6 AND rec_discount = 6 as check_autofix_promos_discount
 FROM	campaigns
 WHERE	aff_id IS NULL;
 
-INSERT INTO users (email) VALUES ('foo@bar.com');
+INSERT INTO users ( email ) VALUES ( 'foo@bar.com' );
 
 -- UPDATE	campaigns SET aff_id = users.id FROM users; -- must fail
 
-INSERT INTO campaigns(aff_id, init_discount, rec_discount) SELECT id, 12, 12 FROM users;
+INSERT INTO campaigns ( aff_id, init_discount, rec_discount ) SELECT id, 12, 12 FROM users;
 
 SELECT	init_discount = 0 AND
 		rec_discount = 0

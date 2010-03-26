@@ -210,7 +210,10 @@ BEGIN
 		END IF;
 		
 		-- Require a min_date
-		IF	NEW.status >= 'future' AND NEW.min_date IS NULL
+		IF	NEW.status = 'future' AND NEW.min_date IS NULL
+		THEN
+			NEW.status := 'inactive';
+		ELSEIF NEW.status = 'active' AND NEW.min_date IS NULL
 		THEN
 			NEW.min_date := NOW();
 		END IF;
