@@ -129,8 +129,6 @@ COMMENT ON VIEW active_promos IS E'Active Promos
 CREATE OR REPLACE FUNCTION campaigns_clean()
 	RETURNS trigger
 AS $$
-DECLARE
-	p		record;
 BEGIN
 	-- Trim fields
 	NEW.name := trim(NEW.name);
@@ -150,46 +148,9 @@ BEGIN
 		NEW.status = 'inherit';
 	END IF;
 	
-	IF	NEW.product_id IS NOT NULL
-	THEN
-		-- Validate product and sanitize status
-		SELECT	uuid,
-				status,
-				init_price,
-				init_comm,
-				rec_price,
-				rec_comm
-		INTO	p
-		FROM	products
-		WHERE	id = NEW.product_id;
-		
-		IF	NEW.product_id = NEW.promo_id
-		THEN
-			NEW.status := CASE
-				WHEN p.status <= 'inherit'
-				THEN 'inherit'
-				WHEN p.status = 'draft'
-				THEN 'draft'
-				WHEN p.status = 'pending'
-				THEN 'pending'
-				WHEN p.status < 'future'
-				THEN 'inactive'
-				ELSE NEW.status
-				END::status_activatable;
-		ELSE
-			IF p.status < 'future'
-			THEN
-				NEW.product_id := NULL;
-			ELSEIF NEW.status = 'inherit' -- allowed for promos only
-			THEN
-				NEW.status := 'trash';
-			END IF;
-		END IF;
-	END IF;
-	
 	IF	NEW.product_id IS NULL
 	THEN
-		-- Reset all coupon fields
+		-- Reset coupon fields
 		IF	NEW.status > 'inherit'
 		THEN
 			NEW.status := 'active';
@@ -201,16 +162,6 @@ BEGIN
 		NEW.max_orders := NULL;
 		NEW.firesale := FALSE;
 	ELSE
-		-- Sanitize discount
-		IF NEW.aff_id IS NOT NULL
-		THEN
-			NEW.init_discount := LEAST(NEW.init_discount, p.init_comm);
-			NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_comm);
-		ELSE
-			NEW.init_discount := LEAST(NEW.init_discount, p.init_price - p.init_comm);
-			NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_price - p.rec_comm);
-		END IF;
-		
 		-- Require a discount
 		IF	NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
 		THEN
