@@ -48,7 +48,7 @@ BEGIN
 		RETURN NEW;
 	END IF;
 	
-	IF	NEW.status <> 'active'
+	IF	NEW.status < 'future'
 	THEN
 		-- Product was active but no longer is
 		UPDATE	campaigns
