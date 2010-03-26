@@ -1,5 +1,5 @@
 /**
- * Activatable behavior
+ * Repeatable behavior
  *
  * Adds fields:
  * - rec_interval
