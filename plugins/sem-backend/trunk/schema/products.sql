@@ -23,10 +23,8 @@ CREATE TABLE products (
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
-	CONSTRAINT valid_flow
-		CHECK ( ( max_orders IS NULL OR max_orders >= 0 ) AND
-			( min_date IS NULL OR max_date IS NULL OR
-			max_date IS NOT NULL AND min_date <= max_date ) )
+	CONSTRAINT valid_max_orders
+		CHECK ( max_orders IS NULL OR max_orders >= 0 )
 );
 
 SELECT	activatable('products'),

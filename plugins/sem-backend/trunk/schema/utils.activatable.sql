@@ -19,12 +19,15 @@ CREATE TYPE status_activatable AS enum (
  * - min_date
  * - max_date
  *
+ * Adds constraint:
+ * - valid_min_max_date
+ *
  * Adds indexes:
  * - {table}_activate
  * - {table}_deactivate
  *
  * Adds triggers:
- * - {table}_check_schedule
+ * - {table}_01_check_schedule
  *
  * Adds functions
  * - {table}_activate
@@ -57,6 +60,15 @@ BEGIN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
 			ADD COLUMN max_date timestamp(0) with time zone,
+		$EXEC$;
+	END IF;
+	
+	IF NOT constraint_exists(t_name, 'valid_min_max_date')
+	THEN
+		EXECUTE $EXEC$
+		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
+			ADD CONSTRAINT valid_min_max_date
+				CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date );
 		$EXEC$;
 	END IF;
 	
@@ -136,10 +148,10 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_1_check_schedule')
+	IF NOT trigger_exists(t_name || '_01_check_schedule')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_1_check_schedule') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01_check_schedule') || $EXEC$
 			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
 		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '_check_schedule') || $EXEC$();
 		$EXEC$;
