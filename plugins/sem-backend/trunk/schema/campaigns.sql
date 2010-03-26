@@ -27,7 +27,7 @@ CREATE TABLE campaigns (
 );
 
 SELECT	activatable('campaigns'),
-		depletable('order_lines', 'max_orders'),
+		depletable('campaigns', 'max_orders'),
 		sluggable('campaigns'),
 		timestampable('campaigns'),
 		searchable('campaigns'),
