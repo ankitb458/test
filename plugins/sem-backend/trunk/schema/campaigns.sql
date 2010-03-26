@@ -28,7 +28,11 @@ CREATE TABLE campaigns (
 			max_date IS NOT NULL AND min_date <= max_date ) )
 );
 
-SELECT sluggable('campaigns'), timestampable('campaigns'), searchable('campaigns'), trashable('campaigns');
+SELECT	activatable('campaigns'),
+		sluggable('campaigns'),
+		timestampable('campaigns'),
+		searchable('campaigns'),
+		trashable('campaigns');
 
 CREATE INDEX campaigns_sort ON campaigns(name);
 CREATE INDEX campaigns_aff_id ON campaigns(aff_id);
@@ -136,10 +140,13 @@ BEGIN
 		NEW.name := 'Campaign';
 	END IF;
 	
-	-- Sanitize promo_id
-	IF	NEW.promo_id IS NOT NULL
+	-- Handle inherit status
+	IF	NEW.status = 'inherit' AND NEW.promo_id IS NULL
 	THEN
-		NEW.product_id := NEW.promo_id;
+		NEW.status = 'trash';
+	ELSEIF NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
+	THEN
+		NEW.status = 'inherit';
 	END IF;
 	
 	IF	NEW.product_id IS NOT NULL
@@ -234,6 +241,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_0_clean
+CREATE TRIGGER campaigns_3_clean
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();

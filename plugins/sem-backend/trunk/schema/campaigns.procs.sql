@@ -8,13 +8,13 @@ BEGIN
 	IF	NEW.promo_id IS NULL AND OLD.promo_id IS NOT NULL OR
 		NEW.promo_id IS NOT NULL AND OLD.promo_id IS NULL
 	THEN
-		RAISE EXCEPTION 'promo_id is a read-only field.';
+		RAISE EXCEPTION 'Failed to delete campaigns.%. promo_id is a read-only field.';
 	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_0_update_promo
+CREATE TRIGGER campaigns_5_update_promo
 	AFTER UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_update_promo();
 
@@ -28,7 +28,8 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	products
-		WHERE	id = OLD.promo_id )
+		WHERE	id = OLD.promo_id
+		)
 	THEN
 		RAISE EXCEPTION 'Failed to delete campaigns.%. Delete products.% instead.', OLD.id, OLD.product_id;
 	END IF;
@@ -36,6 +37,6 @@ BEGIN
 	RETURN OLD;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_0_delete_promo
+CREATE TRIGGER campaigns_5_delete_promo
 	AFTER DELETE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_delete_promo();

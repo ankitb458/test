@@ -77,7 +77,7 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_0_clean
+CREATE TRIGGER order_lines_3_clean
 	BEFORE INSERT OR UPDATE ON order_lines
 FOR EACH ROW EXECUTE PROCEDURE order_lines_clean();
 
@@ -216,6 +216,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_3_autofill
+CREATE TRIGGER order_lines_5_autofill
 	BEFORE INSERT ON order_lines
 FOR EACH ROW EXECUTE PROCEDURE order_lines_autofill();

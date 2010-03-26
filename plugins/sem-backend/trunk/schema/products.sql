@@ -29,7 +29,11 @@ CREATE TABLE products (
 			max_date IS NOT NULL AND min_date <= max_date ) )
 );
 
-SELECT sluggable('products'), timestampable('products'), searchable('products'), trashable('products');
+SELECT	activatable('products'),
+		sluggable('products'),
+		timestampable('products'),
+		searchable('products'),
+		trashable('products');
 
 CREATE INDEX products_sort ON products(name);
 
@@ -72,7 +76,7 @@ BEGIN
 		NEW.name := 'Product';
 	END IF;
 	
-	-- Forbid status = inherit
+	-- Handle inherit status
 	IF	NEW.status = 'inherit'
 	THEN
 		NEW.status = 'trash';
@@ -84,21 +88,9 @@ BEGIN
 		NEW.rec_count := NULL;
 	END IF;
 	
-	-- Require a scheduled date
-	IF	NEW.status = 'future' AND NEW.min_date IS NULL
-	THEN
-		NEW.status := 'inactive';
-	END IF;
-	
-	-- Make sure that min_date and max_date are consistent
-	IF	NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
-	THEN
-		NEW.max_date := NULL;
-	END IF;
-	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_0_clean
+CREATE TRIGGER products_3_clean
 	BEFORE INSERT OR UPDATE ON products
 FOR EACH ROW EXECUTE PROCEDURE products_clean();
