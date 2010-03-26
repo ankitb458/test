@@ -216,21 +216,6 @@ BEGIN
 			NEW.status = 'inactive';
 		END IF;
 		
-		-- Require a min_date
-		IF	NEW.status = 'future' AND NEW.min_date IS NULL
-		THEN
-			NEW.status := 'inactive';
-		ELSEIF NEW.status = 'active' AND NEW.min_date IS NULL
-		THEN
-			NEW.min_date := NOW();
-		END IF;
-		
-		-- Make sure that min_date and max_date are consistent
-		IF	NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
-		THEN
-			NEW.max_date := NULL;
-		END IF;
-		
 		-- Firesales require either or both of max_date and max_orders
 		IF	NEW.firesale AND NEW.max_date IS NULL AND NEW.max_orders IS NULL
 		THEN
