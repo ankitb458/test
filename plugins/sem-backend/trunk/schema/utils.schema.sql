@@ -11,7 +11,7 @@ VOLATILE STRICT LANGUAGE C;
 /**
  * @param string The table's name
  * @param string The column's name
- * @return boolean Whether table has that column already
+ * @return boolean Whether the column exists
  */
 CREATE OR REPLACE FUNCTION column_exists(varchar, varchar)
 	RETURNS boolean
@@ -24,14 +24,15 @@ BEGIN
 		SELECT	1
 		FROM	information_schema.columns
 		WHERE	table_name = t_name
-		AND		column_name = c_name );
+		AND		column_name = c_name
+		);
 END;
 $$ LANGUAGE plpgsql;
 
 /**
 * @param string The table's name
 * @param string The index' name
-* @return boolean Whether table has that trigger already
+* @return boolean Whether the index exists
  */
 CREATE OR REPLACE FUNCTION index_exists(varchar, varchar)
 	RETURNS boolean
@@ -54,13 +55,14 @@ BEGIN
 		AND		n.nspname NOT IN ('pg_catalog', 'pg_toast')
 		AND		pg_catalog.pg_table_is_visible(c.oid)
 		AND		c.relname = i_name
-		AND		c2.relname = t_name );
+		AND		c2.relname = t_name
+		);
 END;
 $$ LANGUAGE plpgsql;
 
 /**
 * @param string The trigger's name
-* @return boolean Whether the trigger already
+* @return boolean Whether the trigger exists
  */
 CREATE OR REPLACE FUNCTION trigger_exists(varchar)
 	RETURNS boolean
@@ -71,6 +73,26 @@ BEGIN
 	RETURN EXISTS (
 		SELECT	1
 		FROM	information_schema.triggers
-		WHERE	trigger_name = quote_literal(tg_name) );
+		WHERE	trigger_name = tg_name
+		);
 END;
 $$ LANGUAGE plpgsql;
+
+/**
+ * @param string The constraint's name
+ * @return boolean Whether the constraint exists
+ */
+CREATE OR REPLACE FUNCTION constraint_exists(varchar, varchar)
+	RETURNS boolean
+AS $$
+DECLARE
+	t_name		alias for $1;
+	c_name		alias for $2;
+BEGIN
+	RETURN EXISTS (
+		SELECT	1
+		FROM	information_schema.constraint_column_usage
+		WHERE	table_name = t_name
+		AND		constraint_name = c_name
+		);
+END $$ LANGUAGE plpgsql;
