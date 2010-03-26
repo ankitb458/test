@@ -2,7 +2,7 @@
  * Tests products
  */
 CREATE OR REPLACE FUNCTION test_products()
-	RETURNS VOID
+	RETURNS boolean
 AS $$
 DECLARE
 	res			boolean;
@@ -104,7 +104,7 @@ BEGIN
 		RAISE WARNING 'Failed: autofix valid coupon discount';
 	END IF;
 	
-	-- RETURN;
+	-- RETURN TRUE;
 	
 	-- clean up
 
@@ -119,6 +119,8 @@ BEGIN
 	DELETE FROM campaigns;
 
 	DELETE FROM users;
+	
+	RETURN TRUE;
 END $$ LANGUAGE plpgsql;
 
 SELECT	test_products();
