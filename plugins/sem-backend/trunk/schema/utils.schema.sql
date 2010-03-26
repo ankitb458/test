@@ -25,7 +25,8 @@ BEGIN
 		FROM	information_schema.columns
 		WHERE	table_name = t_name
 		AND		column_name = c_name );
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 /**
 * @param string The table's name
@@ -54,7 +55,8 @@ BEGIN
 		AND		pg_catalog.pg_table_is_visible(c.oid)
 		AND		c.relname = i_name
 		AND		c2.relname = t_name );
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 /**
 * @param string The trigger's name
@@ -70,4 +72,5 @@ BEGIN
 		SELECT	1
 		FROM	information_schema.triggers
 		WHERE	trigger_name = quote_literal(tg_name) );
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;

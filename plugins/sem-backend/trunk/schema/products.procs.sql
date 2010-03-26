@@ -29,7 +29,8 @@ BEGIN
 		);
 	
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER products_10_create
 	AFTER INSERT ON products
@@ -82,7 +83,8 @@ BEGIN
 	END IF;
 	
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER products_10_update_status
 	AFTER UPDATE ON products
@@ -110,7 +112,8 @@ BEGIN
 	END IF;
 	
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER products_10_trash
 	AFTER UPDATE ON products
@@ -168,7 +171,8 @@ BEGIN
 			AND ( NEW.init_comm <> OLD.init_comm OR NEW.rec_comm <> OLD.rec_comm ) );
 	
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER products_20_update_price
 	AFTER UPDATE ON products

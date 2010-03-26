@@ -61,7 +61,8 @@ BEGIN
 	END IF;
 	
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER orders_3_clean
 	BEFORE INSERT OR UPDATE ON orders

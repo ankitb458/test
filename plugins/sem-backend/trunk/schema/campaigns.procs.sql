@@ -12,7 +12,8 @@ BEGIN
 	END IF;
 	
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER campaigns_5_update_promo
 	AFTER UPDATE ON campaigns
@@ -35,7 +36,8 @@ BEGIN
 	END IF;
 	
 	RETURN OLD;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER campaigns_5_delete_promo
 	AFTER DELETE ON campaigns

@@ -21,7 +21,8 @@ BEGIN
 		END IF;
 		
 		RETURN OLD;
-	END $DEF$ LANGUAGE plpgsql;
+	END;
+	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
 	IF NOT trigger_exists(t_name || '_20_check_trash')
@@ -34,4 +35,5 @@ BEGIN
 	END IF;
 	
 	RETURN t_name;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;

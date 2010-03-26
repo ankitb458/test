@@ -24,7 +24,8 @@ BEGIN
 	NEW.email := trim(lower(NEW.email));
 	 
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER users_3_clean
 	BEFORE INSERT OR UPDATE ON users

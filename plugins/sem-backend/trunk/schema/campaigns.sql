@@ -239,7 +239,8 @@ BEGIN
 	END IF;
 	
 	RETURN NEW;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE TRIGGER campaigns_3_clean
 	BEFORE INSERT OR UPDATE ON campaigns

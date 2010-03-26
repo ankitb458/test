@@ -89,7 +89,8 @@ BEGIN
 		AND		min_date <= NOW()::timestamp(0) with time zone;
 		
 		RETURN FOUND;
-	END $DEF$ LANGUAGE plpgsql;
+	END;
+	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
 	EXECUTE $EXEC$
@@ -103,7 +104,8 @@ BEGIN
 		AND		max_date <= NOW()::timestamp(0) with time zone;
 		
 		RETURN FOUND;
-	END $DEF$ LANGUAGE plpgsql;
+	END;
+	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
 	EXECUTE $EXEC$
@@ -130,7 +132,8 @@ BEGIN
 		END IF;
 		
 		RETURN NEW;
-	END $DEF$ LANGUAGE plpgsql;
+	END;
+	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
 	IF NOT trigger_exists(t_name || '_1_check_schedule')
@@ -142,4 +145,5 @@ BEGIN
 		$EXEC$;
 	END IF;
 	RETURN t_name;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;

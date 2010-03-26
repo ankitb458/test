@@ -61,7 +61,8 @@ BEGIN
 	stmt := stmt || $EXEC$
 		
 		RETURN NEW;
-	END $DEF$ LANGUAGE plpgsql;
+	END;
+	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
 	EXECUTE stmt;
@@ -76,4 +77,5 @@ BEGIN
 	END IF;
 	
 	RETURN t_name;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;

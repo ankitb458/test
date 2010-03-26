@@ -37,7 +37,8 @@ BEGIN
 	BEGIN
 		NEW.modified_date := NOW();
 		RETURN NEW;
-	END $DEF$ LANGUAGE plpgsql;
+	END;
+	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
 	IF NOT trigger_exists(t_name || '_10_modified')
@@ -50,4 +51,5 @@ BEGIN
 	END IF;
 	
 	RETURN t_name;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;

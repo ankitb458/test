@@ -53,7 +53,8 @@ BEGIN
 		END LOOP;
 		
 		RETURN NEW;
-	END $DEF$ LANGUAGE plpgsql;
+	END;
+	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
 	IF NOT trigger_exists(t_name || '_10_ukey')
@@ -66,4 +67,5 @@ BEGIN
 	END IF;
 	
 	RETURN t_name;
-END $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
