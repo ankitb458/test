@@ -5,8 +5,8 @@
  * - {table}.created_date
  * - {table}.modified_date
  *
- * Creates procedures:
- * - {table}_modified() and trigger (priority 10)
+ * Adds triggers:
+ * - {table}_10_modified()
  */
 CREATE OR REPLACE FUNCTION timestampable(varchar)
 	RETURNS varchar

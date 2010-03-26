@@ -4,8 +4,8 @@
  * Adds fields:
  * - {table}.tsv
  *
- * Creates procedures:
- * - {table}_tsv() and trigger (priority 20)
+ * Adds triggers:
+ * - {table}_20_tsv()
  */
 CREATE OR REPLACE FUNCTION searchable(varchar)
 	RETURNS varchar

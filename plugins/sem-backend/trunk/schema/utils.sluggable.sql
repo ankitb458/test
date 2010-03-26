@@ -4,8 +4,8 @@
  * Adds fields:
  * - {table}.ukey
  *
- * Creates procedures:
- * - {table}_ukey() and trigger (priority 10)
+ * Adds triggers:
+ * - {table}_10_ukey()
  */
 CREATE OR REPLACE FUNCTION sluggable(varchar)
 	RETURNS varchar
