@@ -64,6 +64,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER orders_3_clean
+CREATE TRIGGER orders_03_clean
 	BEFORE INSERT OR UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_clean();

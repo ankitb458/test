@@ -15,7 +15,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_5_update_promo
+CREATE TRIGGER campaigns_05_update_promo
 	AFTER UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_update_promo();
 
@@ -39,6 +39,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_5_delete_promo
+CREATE TRIGGER campaigns_05_delete_promo
 	AFTER DELETE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_delete_promo();
