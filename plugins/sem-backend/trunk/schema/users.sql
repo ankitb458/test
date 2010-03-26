@@ -1,4 +1,3 @@
-
 /*
  * Users table.
  */
@@ -10,3 +9,4 @@ CREATE TABLE users (
 );
 
 CREATE INDEX users_sort ON users(name);
+CREATE INDEX users_email ON users(email);
