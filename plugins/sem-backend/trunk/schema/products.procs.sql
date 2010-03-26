@@ -68,6 +68,8 @@ BEGIN
 					THEN 'pending'
 					ELSE 'inactive'
 					END
+				WHEN status = 'trash'
+				THEN 'trash'
 				ELSE 'active'
 				END::status_activatable
 		WHERE	product_id = NEW.id;
