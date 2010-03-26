@@ -1,4 +1,5 @@
 \i ./utils.schema.sql
+\i ./utils.email.sql
 \i ./utils.activatable.sql
 \i ./utils.billable.sql
 \i ./utils.searchable.sql

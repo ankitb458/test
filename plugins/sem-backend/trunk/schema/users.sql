@@ -7,7 +7,7 @@ CREATE TABLE users (
 	name			varchar(255) NOT NULL DEFAULT '',
 	email			varchar(255) NOT NULL UNIQUE,
 	CONSTRAINT valid_email
-		CHECK ( email ~ '^[0-9a-z_-]+(?:\.[0-9a-z_-]+)*@(?:[0-9a-z_-]+\.)+[0-9a-z]+$' )
+		CHECK ( check_email(email) )
 );
 
 CREATE INDEX users_sort ON users(name);
