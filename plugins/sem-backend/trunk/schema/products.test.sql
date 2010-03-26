@@ -103,7 +103,9 @@ BEGIN
 	THEN
 		RAISE WARNING 'Failed: autofix valid coupon discount';
 	END IF;
-
+	
+	-- RETURN;
+	
 	-- clean up
 
 	UPDATE	products
@@ -118,5 +120,7 @@ BEGIN
 
 	DELETE FROM users;
 END $$ LANGUAGE plpgsql;
+
+SELECT	test_products();
 
 DROP FUNCTION test_products();
