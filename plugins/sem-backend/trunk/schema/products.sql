@@ -19,13 +19,12 @@ CREATE TABLE products (
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amount
 		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_price >= init_comm AND
-				rec_price >= 0 AND rec_comm >= 0 AND rec_price >= rec_comm ),
-	CONSTRAINT valid_max_orders
-		CHECK ( max_orders IS NULL OR max_orders >= 0 )
+				rec_price >= 0 AND rec_comm >= 0 AND rec_price >= rec_comm )
 );
 
 SELECT	activatable('products'),
 		repeatable('products'),
+		depletable('products', 'max_orders'),
 		sluggable('products'),
 		timestampable('products'),
 		searchable('products'),

@@ -2,6 +2,7 @@
 \i ./utils.email.sql
 \i ./utils.activatable.sql
 \i ./utils.billable.sql
+\i ./utils.depletable.sql
 \i ./utils.repeatable.sql
 \i ./utils.searchable.sql
 \i ./utils.sluggable.sql

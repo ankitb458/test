@@ -28,6 +28,7 @@ CREATE TABLE order_lines (
 
 SELECT	timestampable('order_lines'),
 		repeatable('order_lines'),
+		depletable('order_lines', 'max_orders'),
 		searchable('order_lines'),
 		trashable('order_lines');
 
