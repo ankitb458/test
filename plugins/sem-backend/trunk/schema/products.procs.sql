@@ -126,7 +126,7 @@ CREATE OR REPLACE FUNCTION products_update_price()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.init_price, NEW.rec_price) <> ROW(OLD.init_price, OLD.rec_price)
+	IF	ROW(NEW.init_price, NEW.rec_price) = ROW(OLD.init_price, OLD.rec_price)
 	THEN
 		RETURN NEW;
 	END IF;
