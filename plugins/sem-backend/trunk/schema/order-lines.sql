@@ -23,13 +23,13 @@ CREATE TABLE order_lines (
 		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_discount >= 0 AND
 				init_price >= init_comm AND init_price >= init_discount AND
 				rec_price >= 0 AND rec_comm >= 0 AND rec_discount >= 0 AND
-				rec_price >= rec_comm AND rec_price >= rec_discount ),
-	CONSTRAINT valid_interval
-		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
-			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) )
+				rec_price >= rec_comm AND rec_price >= rec_discount )
 );
 
-SELECT timestampable('order_lines'), searchable('order_lines'), trashable('order_lines');
+SELECT	timestampable('order_lines'),
+		repeatable('order_lines'),
+		searchable('order_lines'),
+		trashable('order_lines');
 
 CREATE INDEX order_lines_order_id ON order_lines(order_id);
 CREATE INDEX order_lines_user_id ON order_lines(user_id);
