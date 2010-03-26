@@ -13,5 +13,8 @@
 \i ./orders.sql
 \i ./order-lines.sql
 
+\i ./users.procs.sql
 \i ./products.procs.sql
 \i ./campaigns.procs.sql
+\i ./orders.procs.sql
+\i ./order-lines.procs.sql
