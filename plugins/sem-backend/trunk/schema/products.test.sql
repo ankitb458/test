@@ -110,7 +110,7 @@ BEGIN
 		RAISE WARNING 'Failed: autofix valid coupon discount';
 	END IF;
 	
-	-- RETURN TRUE;
+	RETURN success;
 	
 	-- clean up
 

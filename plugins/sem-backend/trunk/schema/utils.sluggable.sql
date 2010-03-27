@@ -5,7 +5,7 @@
  * - {table}.ukey
  *
  * Adds triggers:
- * - {table}_10_ukey()
+ * - {table}_10__ukey()
  */
 CREATE OR REPLACE FUNCTION sluggable(varchar)
 	RETURNS varchar
@@ -22,7 +22,7 @@ BEGIN
 	END IF;
 	
 	EXECUTE $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '_ukey') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__ukey') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	DECLARE
@@ -57,12 +57,12 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_10_ukey')
+	IF NOT trigger_exists(t_name || '_10__ukey')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_10_ukey') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_10__ukey') || $EXEC$
 			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '_ukey') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__ukey') || $EXEC$();
 		$EXEC$;
 	END IF;
 	

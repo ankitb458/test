@@ -5,7 +5,7 @@
  * - {table}.tsv
  *
  * Adds triggers:
- * - {table}_20_tsv()
+ * - {table}_20__tsv()
  */
 CREATE OR REPLACE FUNCTION searchable(varchar)
 	RETURNS varchar
@@ -31,7 +31,7 @@ BEGIN
 	END IF;
 	
 	stmt := $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '_tsv') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__tsv') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
@@ -67,12 +67,12 @@ BEGIN
 	
 	EXECUTE stmt;
 	
-	IF NOT trigger_exists(t_name || '_20_tsv')
+	IF NOT trigger_exists(t_name || '_20__tsv')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_20_tsv') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_20__tsv') || $EXEC$
 			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '_tsv') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__tsv') || $EXEC$();
 		$EXEC$;
 	END IF;
 	

@@ -27,7 +27,7 @@ CREATE TYPE status_activatable AS enum (
  * - {table}_deactivate
  *
  * Adds triggers:
- * - {table}_01_check_schedule
+ * - {table}_01__check_schedule
  *
  * Adds functions
  * - {table}_activate
@@ -121,7 +121,7 @@ BEGIN
 	$EXEC$;
 	
 	EXECUTE $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '_check_schedule') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__check_schedule') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
@@ -148,12 +148,12 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_01_check_schedule')
+	IF NOT trigger_exists(t_name || '_01__check_schedule')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01_check_schedule') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_schedule') || $EXEC$
 			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '_check_schedule') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__check_schedule') || $EXEC$();
 		$EXEC$;
 	END IF;
 	RETURN t_name;

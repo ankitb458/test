@@ -6,7 +6,7 @@
  * - {table}.modified_date
  *
  * Adds triggers:
- * - {table}_10_modified()
+ * - {table}_10__modified()
  */
 CREATE OR REPLACE FUNCTION timestampable(varchar)
 	RETURNS varchar
@@ -31,7 +31,7 @@ BEGIN
 	END IF;
 	
 	EXECUTE $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '_modified') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__modified') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
@@ -41,12 +41,12 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_10_modified')
+	IF NOT trigger_exists(t_name || '_10__modified')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_10_modified') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_10__modified') || $EXEC$
 			BEFORE UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '_modified') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__modified') || $EXEC$();
 		$EXEC$;
 	END IF;
 	
