@@ -35,6 +35,34 @@ BEGIN
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
+		IF	TG_OP = 'UPDATE'
+		THEN
+			IF	NEW.tsv = OLD.tsv$EXEC$;
+	
+	IF column_exists(t_name, 'name')
+	THEN
+		stmt := stmt || $EXEC$ AND
+				NEW.name = OLD.name$EXEC$;
+	END IF;
+	
+	IF column_exists(t_name, 'ukey')
+	THEN
+		stmt := stmt || $EXEC$ AND
+				NEW.ukey IS NOT DISTINCT FROM OLD.ukey$EXEC$;
+	END IF;
+	
+	IF column_exists(t_name, 'memo')
+	THEN
+		stmt := stmt || $EXEC$ AND
+				NEW.memo = OLD.memo$EXEC$;
+	END IF;
+	
+	stmt := stmt || $EXEC$
+			THEN
+				RETURN NEW;
+			END IF;
+		END IF;
+		
 		NEW.tsv := ''::tsvector;$EXEC$;
 	
 	IF column_exists(t_name, 'name')
