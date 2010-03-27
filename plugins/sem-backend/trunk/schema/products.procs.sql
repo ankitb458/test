@@ -1,7 +1,36 @@
 /**
+ * Checks integrity when a product is trashed.
+ */
+CREATE OR REPLACE FUNCTION products_check_trash()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF NEW.status = OLD.status OR NEW.status <> 'trash'
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	IF	EXISTS (
+		SELECT	1
+		FROM	order_lines
+		WHERE	product_id = NEW.id
+		)
+	THEN
+		RAISE EXCEPTION 'products.id = % is referenced in orders.', NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_01_check_trash
+	AFTER UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_check_trash();
+
+/**
  * Auto-creates a promo for new products.
  */
-CREATE OR REPLACE FUNCTION products_create()
+CREATE OR REPLACE FUNCTION products_create_promo()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -32,9 +61,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_10_create
+CREATE TRIGGER products_10_create_promo
 	AFTER INSERT ON products
-FOR EACH ROW EXECUTE PROCEDURE products_create();
+FOR EACH ROW EXECUTE PROCEDURE products_create_promo();
 
 /**
  * Process coupons when a product's status changes
@@ -93,42 +122,14 @@ CREATE TRIGGER products_10_update_status
 FOR EACH ROW EXECUTE PROCEDURE products_update_status();
 
 /**
- * Checks integrity when a product is trashed.
- */
-CREATE OR REPLACE FUNCTION products_trash()
-	RETURNS trigger
-AS $$
-BEGIN
-	IF NEW.status = OLD.status OR NEW.status <> 'trash'
-	THEN
-		RETURN NEW;
-	END IF;
-	
-	IF	EXISTS (
-		SELECT	1
-		FROM	order_lines
-		WHERE	product_id = NEW.id
-		)
-	THEN
-		RAISE EXCEPTION 'products.id = % is referenced in orders.', NEW.id;
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER products_10_trash
-	AFTER UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_trash();
-
-/**
  * Refreshes coupon discounts on product updates.
  */
 CREATE OR REPLACE FUNCTION products_update_price()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.init_price, NEW.rec_price) = ROW(OLD.init_price, OLD.rec_price)
+	IF	ROW(NEW.init_price, NEW.rec_price) <> ROW(OLD.init_price, OLD.rec_price) OR
+		ROW(NEW.init_comm, NEW.rec_comm) <> ROW(OLD.init_comm, OLD.rec_comm)
 	THEN
 		RETURN NEW;
 	END IF;
@@ -141,7 +142,9 @@ BEGIN
 			END,
 			init_discount = CASE
 			-- Zero in, when possible
-			WHEN init_discount = 0 OR NEW.init_price = 0 OR aff_id IS NOT NULL AND NEW.init_comm = 0
+			WHEN init_discount = 0 OR
+				( NEW.init_price = 0 OR OLD.init_comm = 0 ) OR
+				aff_id IS NOT NULL AND ( NEW.init_comm = 0 OR OLD.init_comm = 0 )
 			THEN 0
 			-- Keep common comm ratios
 			WHEN init_discount = round(OLD.init_comm / 2, 2)
@@ -154,7 +157,9 @@ BEGIN
 			END,
 			rec_discount = CASE
 			-- Zero in, when possible
-			WHEN rec_discount = 0 OR NEW.rec_price = 0 OR aff_id IS NOT NULL AND NEW.rec_comm = 0
+			WHEN rec_discount = 0 OR
+				( NEW.rec_price = 0 OR OLD.rec_comm = 0 ) OR
+				aff_id IS NOT NULL AND ( NEW.rec_comm = 0 OR OLD.rec_comm = 0 )
 			THEN 0
 			-- Keep common comm ratios
 			WHEN rec_discount = round(OLD.rec_comm / 2, 2)

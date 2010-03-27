@@ -42,7 +42,7 @@ BEGIN
 	IF column_exists(t_name, 'name')
 	THEN
 		stmt := stmt || $EXEC$ AND
-				NEW.name = OLD.name$EXEC$;
+				NEW.name IS NOT DISTINCT FROM OLD.name$EXEC$;
 	END IF;
 	
 	IF column_exists(t_name, 'ukey')
@@ -54,7 +54,7 @@ BEGIN
 	IF column_exists(t_name, 'memo')
 	THEN
 		stmt := stmt || $EXEC$ AND
-				NEW.memo = OLD.memo$EXEC$;
+				NEW.memo IS NOT DISTINCT FROM OLD.memo$EXEC$;
 	END IF;
 	
 	stmt := stmt || $EXEC$

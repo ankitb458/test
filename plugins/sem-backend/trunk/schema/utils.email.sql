@@ -1,7 +1,7 @@
 /**
  * Validates against rfc822
  */
-CREATE OR REPLACE FUNCTION check_email(varchar)
+CREATE OR REPLACE FUNCTION is_email(varchar)
 	RETURNS boolean
 AS $$
 	use strict;
@@ -17,7 +17,7 @@ AS $$
 		return 'true'
 	}
 	else {
-		elog(WARNING, "$address failed $Email::Valid::Details check.");
+		#elog(WARNING, "$address failed $Email::Valid::Details check.");
 		return 'false';
 	}
 $$ LANGUAGE plperlu IMMUTABLE STRICT;

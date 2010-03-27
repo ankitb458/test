@@ -19,7 +19,9 @@ CREATE TABLE products (
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amount
 		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_price >= init_comm AND
-				rec_price >= 0 AND rec_comm >= 0 AND rec_price >= rec_comm )
+				rec_price >= 0 AND rec_comm >= 0 AND rec_price >= rec_comm ),
+	CONSTRAINT valid_min_max_date
+		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date )
 );
 
 SELECT	activatable('products'),
@@ -43,7 +45,7 @@ COMMENT ON TABLE products IS E'Products
  */
 CREATE OR REPLACE VIEW active_products
 AS
-SELECT	*
+SELECT	products.*
 FROM	products
 WHERE	status = 'active'
 AND		( max_orders IS NULL OR max_orders > 0 )
@@ -74,13 +76,13 @@ BEGIN
 	-- Handle inherit status
 	IF	NEW.status = 'inherit'
 	THEN
-		NEW.status = 'trash';
+		RAISE EXCEPTION 'Undefined behavior for products.status = inherit.';
 	END IF;
 	
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_03_clean
+CREATE TRIGGER products_05_clean
 	BEFORE INSERT OR UPDATE ON products
 FOR EACH ROW EXECUTE PROCEDURE products_clean();

@@ -24,6 +24,8 @@ CREATE TABLE campaigns (
 			promo_id IS NOT DISTINCT FROM product_id AND aff_id IS NULL ),
 	CONSTRAINT valid_amount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
+	CONSTRAINT valid_min_max_date
+		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date ),
 	CONSTRAINT valid_firesale
 		CHECK ( NOT firesale OR max_orders IS NOT NULL OR max_date IS NOT NULL )
 );
@@ -151,7 +153,7 @@ BEGIN
 	IF	NEW.product_id IS NULL
 	THEN
 		-- Reset coupon fields
-		IF	NEW.status > 'inherit'
+		IF	NEW.status <> 'trash'
 		THEN
 			NEW.status := 'active';
 		END IF;
@@ -179,6 +181,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_03_clean
+CREATE TRIGGER campaigns_05_clean
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();

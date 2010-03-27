@@ -7,32 +7,51 @@ CREATE TABLE users (
 	ukey			varchar(255) UNIQUE,
 	status			status_authenticatable NOT NULL DEFAULT 'pending',
 	name			varchar(255) NOT NULL,
-	username		varchar(255) UNIQUE,
+	username		varchar(255),
 	password		varchar(64) NOT NULL DEFAULT '',
-	email			varchar(255) UNIQUE,
+	email			varchar(255),
 	nickname		varchar(255) NOT NULL DEFAULT '',
 	firstname		varchar(255) NOT NULL DEFAULT '',
 	lastname		varchar(255) NOT NULL DEFAULT '',
 	phone			varchar(255) NOT NULL DEFAULT '',
-	paypal			varchar(255),
 	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL,
+	paypal			varchar(255),
+	CONSTRAINT valid_username
+		CHECK ( username IS NULL OR username <> '' ),
+	CONSTRAINT valid_password
+		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) ),
 	CONSTRAINT valid_email
-		CHECK ( email IS NULL OR check_email(email) ),
+		CHECK ( email IS NULL OR is_email(email) ),
 	CONSTRAINT valid_paypal
-		CHECK ( paypal IS NULL OR check_email(paypal) )
+		CHECK ( paypal IS NULL OR is_email(paypal) )
 );
 
-SELECT	authenticatable('users'),
-		sluggable('users'),
+SELECT	sluggable('users'),
 		timestampable('users'),
 		searchable('users'),
 		trashable('users');
 
 CREATE INDEX users_sort ON users(name);
+CREATE UNIQUE INDEX users_username_key ON users(lower(username));
+CREATE UNIQUE INDEX users_email_key ON users(lower(email));
+CREATE INDEX users_ref_id ON users(ref_id);
 
 COMMENT ON TABLE users IS E'Users
 
 - name corresponds to the screen name.';
+
+/**
+ * Active users
+ */
+CREATE OR REPLACE VIEW active_users
+AS
+SELECT	users.*
+FROM	users
+WHERE	status = 'active';
+
+COMMENT ON VIEW active_users IS E'Active Users
+
+- status is active.';
 
 /**
  * Cleans a user before storing it
@@ -51,7 +70,7 @@ BEGIN
 	NEW.lastname := trim(NEW.lastname);
 	NEW.nickname := trim(NEW.nickname);
 	
-	NEW.email := trim(lower(NEW.email));
+	NEW.email := trim(NEW.email);
 	NEW.phone := trim(NEW.phone);
 	
 	NEW.paypal := trim(NEW.paypal);
@@ -82,7 +101,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER users_03_clean
+CREATE TRIGGER users_05_clean
 	BEFORE INSERT OR UPDATE ON users
 FOR EACH ROW EXECUTE PROCEDURE users_clean();
 
@@ -96,9 +115,9 @@ BEGIN
 	IF TG_OP = 'UPDATE'
 	THEN
 		IF	NEW.tsv IS NOT DISTINCT FROM OLD.tsv AND
-			NEW.nickname = OLD.nickname AND
-			NEW.firstname = OLD.firstname AND
-			NEW.lastname = OLD.lastname AND
+			NEW.nickname IS NOT DISTINCT FROM OLD.nickname AND
+			NEW.firstname IS NOT DISTINCT FROM OLD.firstname AND
+			NEW.lastname IS NOT DISTINCT FROM OLD.lastname AND
 			NEW.username IS NOT DISTINCT FROM OLD.username AND
 			NEW.email IS NOT DISTINCT FROM OLD.email AND
 			NEW.paypal IS NOT DISTINCT FROM OLD.paypal
@@ -113,7 +132,7 @@ BEGIN
 		|| setweight(to_tsvector(NEW.lastname), 'A')
 		|| setweight(to_tsvector(COALESCE(NEW.username, '')), 'B');
 	
-	IF	NEW.email IS NOT NULL
+	IF	is_email(NEW.email)
 	THEN
 		NEW.tsv := NEW.tsv
 			|| setweight(to_tsvector(NEW.email), 'B')
@@ -123,7 +142,7 @@ BEGIN
 				' ')), 'B');
 	END IF;
 	
-	IF	NEW.paypal IS NOT NULL AND NEW.paypal IS DISTINCT FROM NEW.email
+	IF	is_email(NEW.paypal) AND NEW.paypal IS DISTINCT FROM NEW.email
 	THEN
 		NEW.tsv := NEW.tsv
 			|| setweight(to_tsvector(NEW.paypal), 'B')

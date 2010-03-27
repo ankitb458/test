@@ -1,7 +1,7 @@
 /**
  * Checks integrity when a user is trashed.
  */
-CREATE OR REPLACE FUNCTION users_trash()
+CREATE OR REPLACE FUNCTION users_check_trash()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -41,6 +41,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER users_10_trash
+CREATE TRIGGER users_01_check_trash
 	AFTER UPDATE ON users
-FOR EACH ROW EXECUTE PROCEDURE users_trash();
+FOR EACH ROW EXECUTE PROCEDURE users_check_trash();
