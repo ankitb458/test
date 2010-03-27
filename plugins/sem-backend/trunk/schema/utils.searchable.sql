@@ -37,7 +37,7 @@ BEGIN
 	BEGIN
 		IF	TG_OP = 'UPDATE'
 		THEN
-			IF	NEW.tsv = OLD.tsv$EXEC$;
+			IF	NEW.tsv IS NOT DISTINCT FROM OLD.tsv$EXEC$;
 	
 	IF column_exists(t_name, 'name')
 	THEN
