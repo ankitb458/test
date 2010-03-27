@@ -1,5 +1,6 @@
 \i ./utils.schema.sql
 \i ./utils.activatable.sql
+\i ./utils.authenticatable.sql
 \i ./utils.billable.sql
 \i ./utils.crypto.sql
 \i ./utils.depletable.sql

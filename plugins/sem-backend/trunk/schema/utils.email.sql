@@ -17,7 +17,7 @@ AS $$
 		return 'true'
 	}
 	else {
-		elog(WARNING, "address failed $Email::Valid::Details check.");
+		elog(WARNING, "$address failed $Email::Valid::Details check.");
 		return 'false';
 	}
 $$ LANGUAGE plperlu IMMUTABLE STRICT;

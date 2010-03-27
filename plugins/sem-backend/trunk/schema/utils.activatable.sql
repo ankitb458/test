@@ -156,6 +156,7 @@ BEGIN
 		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__check_schedule') || $EXEC$();
 		$EXEC$;
 	END IF;
+	
 	RETURN t_name;
 END;
 $$ LANGUAGE plpgsql;
