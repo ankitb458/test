@@ -1,8 +1,9 @@
 \i ./utils.schema.sql
-\i ./utils.email.sql
 \i ./utils.activatable.sql
 \i ./utils.billable.sql
+\i ./utils.crypt.sql
 \i ./utils.depletable.sql
+\i ./utils.email.sql
 \i ./utils.repeatable.sql
 \i ./utils.searchable.sql
 \i ./utils.sluggable.sql
