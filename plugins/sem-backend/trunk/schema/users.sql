@@ -95,7 +95,7 @@ AS $$
 BEGIN
 	IF TG_OP = 'UPDATE'
 	THEN
-		IF	NEW.tsv = OLD.tsv AND
+		IF	NEW.tsv IS NOT DISTINCT FROM OLD.tsv AND
 			NEW.nickname = OLD.nickname AND
 			NEW.firstname = OLD.firstname AND
 			NEW.lastname = OLD.lastname AND
