@@ -51,7 +51,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN min_date timestamp(0) with time zone,
+			ADD COLUMN min_date timestamp(0) with time zone;
 		$EXEC$;
 	END IF;
 	
@@ -59,7 +59,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN max_date timestamp(0) with time zone,
+			ADD COLUMN max_date timestamp(0) with time zone;
 		$EXEC$;
 	END IF;
 	
