@@ -5,7 +5,8 @@ CREATE OR REPLACE FUNCTION test_products()
 	RETURNS boolean
 AS $$
 DECLARE
-	res			boolean;
+	success		boolean := true;
+	res			boolean := true;
 BEGIN
 	INSERT INTO products
 	DEFAULT VALUES;
@@ -30,6 +31,7 @@ BEGIN
 	
 	IF	res IS NOT TRUE
 	THEN
+		success := FALSE;
 		RAISE WARNING 'Failed: inherit campaign status';
 	END IF;
 
@@ -45,6 +47,7 @@ BEGIN
 	
 	IF	res IS NOT TRUE
 	THEN
+		success := FALSE;
 		RAISE WARNING 'Failed: autofix promos discount';
 	END IF;
 
@@ -62,6 +65,7 @@ BEGIN
 	
 	IF	res IS NOT TRUE
 	THEN
+		success := FALSE;
 		RAISE WARNING	'Failed: autofix campaign discount';
 	END IF;
 	
@@ -80,6 +84,7 @@ BEGIN
 	
 	IF	res IS NOT TRUE
 	THEN
+		success := FALSE;
 		RAISE WARNING 'Failed: autofix invalid coupon discount';
 	END IF;
 
@@ -101,6 +106,7 @@ BEGIN
 	
 	IF	res IS NOT TRUE
 	THEN
+		success := FALSE;
 		RAISE WARNING 'Failed: autofix valid coupon discount';
 	END IF;
 	
@@ -120,7 +126,7 @@ BEGIN
 
 	DELETE FROM users;
 	
-	RETURN TRUE;
+	RETURN success;
 END $$ LANGUAGE plpgsql;
 
 SELECT	test_products();
