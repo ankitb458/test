@@ -72,10 +72,10 @@ BEGIN
 			END;
 	END IF;
 	
-	-- disable inherit for now
-	IF	NEW.status = 'inherit'
+	-- disable inherit and trash for now
+	IF	NEW.status <= 'inherit'
 	THEN
-		NEW.status := 'trash';
+		RAISE EXCEPTION 'users cannot be trashed yet.';
 	END IF;
 	
 	RETURN NEW;
