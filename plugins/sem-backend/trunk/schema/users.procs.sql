@@ -16,7 +16,7 @@ BEGIN
 		WHERE	aff_id = NEW.id
 		)
 	THEN
-		RAISE EXCEPTION 'Failed to delete users.id = %. It is referenced in campaigns.', NEW.id;
+		RAISE EXCEPTION 'users.id = % is referenced in campaigns.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -25,7 +25,7 @@ BEGIN
 		WHERE	user_id = NEW.id
 		)
 	THEN
-		RAISE EXCEPTION 'Failed to delete users.id = %. It is referenced in orders.', NEW.id;
+		RAISE EXCEPTION 'users.id = % is referenced in orders.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -34,7 +34,7 @@ BEGIN
 		WHERE	user_id = NEW.id
 		)
 	THEN
-		RAISE EXCEPTION 'Failed to delete users.id = %. It is referenced in order_lines.', NEW.id;
+		RAISE EXCEPTION 'users.id = % is referenced in order_lines.', NEW.id;
 	END IF;
 	
 	RETURN NEW;
