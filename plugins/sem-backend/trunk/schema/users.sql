@@ -73,9 +73,9 @@ BEGIN
 	END IF;
 	
 	-- disable inherit and trash for now
-	IF	NEW.status <= 'inherit'
+	IF	NEW.status = 'inherit'
 	THEN
-		RAISE EXCEPTION 'users cannot be trashed yet.';
+		RAISE EXCEPTION 'Undefined behavior for users.status = inherit.';
 	END IF;
 	
 	RETURN NEW;

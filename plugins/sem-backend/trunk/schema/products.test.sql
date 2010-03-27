@@ -110,7 +110,7 @@ BEGIN
 		RAISE WARNING 'Failed: autofix valid coupon discount';
 	END IF;
 	
-	RETURN success;
+	-- RETURN success;
 	
 	-- clean up
 
@@ -123,6 +123,9 @@ BEGIN
 	SET		status = 'trash';
 
 	DELETE FROM campaigns;
+
+	UPDATE	users
+	SET		status = 'trash';
 
 	DELETE FROM users;
 	

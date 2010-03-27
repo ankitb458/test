@@ -85,7 +85,7 @@ BEGIN
 	IF	NEW.promo_id IS NULL AND OLD.promo_id IS NOT NULL OR
 		NEW.promo_id IS NOT NULL AND OLD.promo_id IS NULL
 	THEN
-		RAISE EXCEPTION 'Failed to delete campaigns.%. promo_id is a read-only field.';
+		RAISE EXCEPTION 'Failed to update campaigns.id = %. promo_id is a read-only field.';
 	END IF;
 	
 	RETURN NEW;
@@ -109,7 +109,7 @@ BEGIN
 		WHERE	id = OLD.promo_id
 		)
 	THEN
-		RAISE EXCEPTION 'Failed to delete campaigns.%. Delete products.% instead.', OLD.id, OLD.product_id;
+		RAISE EXCEPTION 'Failed to delete campaigns.id = %. Delete products.id = % instead.', OLD.id, OLD.product_id;
 	END IF;
 	
 	RETURN OLD;

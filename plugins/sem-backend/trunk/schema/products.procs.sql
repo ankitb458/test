@@ -110,7 +110,7 @@ BEGIN
 		WHERE	product_id = NEW.id
 		)
 	THEN
-		RAISE EXCEPTION 'products.% is referenced in orders.', NEW.id;
+		RAISE EXCEPTION 'products.id = % is referenced in orders.', NEW.id;
 	END IF;
 	
 	RETURN NEW;
