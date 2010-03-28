@@ -54,23 +54,30 @@ SET		init_price = 9,
 SELECT	'Fix promo discounts on price/comm update',
 		init_discount = 3 AND
 		rec_discount = 3
-FROM	campaigns
-WHERE	aff_id IS NULL;
+FROM	campaigns;
 
 UPDATE	products
-SET		init_price = 3,
-		rec_price = 3;
+SET		init_price = 4,
+		rec_price = 4;
 
 SELECT	'Fix product commissions on price update',
-		init_comm = 3 AND
-		rec_comm = 3
+		init_comm = 4 AND
+		rec_comm = 4
 FROM	products;
 
-SELECT	'Fix promo discounts on price/comm update',
-		init_discount = 0 AND
-		rec_discount = 0
-FROM	campaigns
-WHERE	aff_id IS NULL;
+UPDATE	products
+SET		init_price = 18,
+		rec_price = 18,
+		init_comm = 6,
+		rec_comm = 6;
+
+UPDATE	campaigns
+SET		init_discount = 4,
+		rec_discount = 4;
+
+UPDATE	products
+SET		init_price = 12,
+		rec_price = 12;
 
 INSERT INTO users ( status, email ) VALUES ( 'active', 'foo@bar.com' );
 
@@ -79,49 +86,6 @@ UPDATE	campaigns
 SET		aff_id = users.id
 FROM	users;
 \echo
-
-INSERT INTO campaigns ( aff_id, init_discount, rec_discount ) SELECT id, 12, 12 FROM users;
-
-SELECT	'Fix coupon discount',
-		init_discount = 0 AND
-		rec_discount = 0
-FROM	campaigns
-WHERE	aff_id IS NOT NULL;
-
-UPDATE	campaigns
-SET		init_discount = 12,
-		rec_discount = 12,
-		product_id = products.id
-FROM	products
-WHERE	campaigns.aff_id IS NOT NULL;
-
-SELECT	'Fix invalid coupon discount',
-		init_discount = 0 AND
-		rec_discount = 0
-FROM	campaigns
-WHERE	aff_id IS NOT NULL;
-
-UPDATE	products
-SET		status = 'active';
-
-UPDATE	products
-SET		init_price = 12,
-		rec_price = 12,
-		init_comm = 6,
-		rec_comm = 6;
-
-UPDATE	campaigns
-SET		init_discount = 12,
-		rec_discount = 12,
-		product_id = products.id
-FROM	products
-WHERE	campaigns.aff_id IS NOT NULL;
-
-SELECT	'Fix valid coupon discount',
-		init_discount = 6 AND
-		rec_discount = 6
-FROM	campaigns
-WHERE	aff_id IS NOT NULL;
 
 -- clean up
 

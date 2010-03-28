@@ -148,25 +148,17 @@ BEGIN
 			THEN 0
 			WHEN aff_id IS NOT NULL
 			THEN LEAST(CASE
-				-- Keep common comm ratios
 				WHEN init_discount = OLD.init_comm
 				THEN NEW.init_comm
-				WHEN init_discount = round(OLD.init_comm / 2, 2)
-				THEN round(NEW.init_comm / 2, 2)
-				-- Keep affiliate comm ratios for affiliate coupons
-				ELSE round(init_discount * NEW.init_price / OLD.init_price, 2)
+				ELSE round(init_discount * NEW.init_comm / OLD.init_comm, 2)
 				END, NEW.init_comm)
 			ELSE LEAST(CASE
-				-- Keep common comm ratios
+				WHEN NEW.init_comm = OLD.init_comm
+				THEN init_discount
 				WHEN init_discount = OLD.init_comm
 				THEN NEW.init_comm
 				WHEN init_discount = OLD.init_price
 				THEN NEW.init_price
-				WHEN init_discount = round(OLD.init_comm / 2, 2)
-				THEN round(NEW.init_comm / 2, 2)
-				WHEN init_discount = round(OLD.init_price / 2, 2)
-				THEN round(NEW.init_price / 2, 2)
-				-- Keep discount ratios for site coupons
 				ELSE round(init_discount * NEW.init_price / OLD.init_price, 2)
 				END, NEW.init_price - NEW.init_comm)
 			END,
@@ -178,25 +170,17 @@ BEGIN
 			THEN 0
 			WHEN aff_id IS NOT NULL
 			THEN LEAST(CASE
-				-- Keep common comm ratios
 				WHEN rec_discount = OLD.rec_comm
 				THEN NEW.rec_comm
-				WHEN rec_discount = round(OLD.rec_comm / 2, 2)
-				THEN round(NEW.rec_comm / 2, 2)
-				-- Keep affiliate comm ratios for affiliate coupons
-				ELSE round(rec_discount * NEW.rec_price / OLD.rec_price, 2)
+				ELSE round(rec_discount * NEW.rec_comm / OLD.rec_comm, 2)
 				END, NEW.rec_comm)
 			ELSE LEAST(CASE
-				-- Keep common comm ratios
+				WHEN NEW.rec_comm = OLD.rec_comm
+				THEN rec_discount
 				WHEN rec_discount = OLD.rec_comm
 				THEN NEW.rec_comm
 				WHEN rec_discount = OLD.rec_price
 				THEN NEW.rec_price
-				WHEN rec_discount = round(OLD.rec_comm / 2, 2)
-				THEN round(NEW.rec_comm / 2, 2)
-				WHEN rec_discount = round(OLD.rec_price / 2, 2)
-				THEN round(NEW.rec_price / 2, 2)
-				-- Keep discount ratios for site coupons
 				ELSE round(rec_discount * NEW.rec_price / OLD.rec_price, 2)
 				END, NEW.rec_price - NEW.rec_comm)
 			END
