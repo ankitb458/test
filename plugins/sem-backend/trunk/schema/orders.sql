@@ -6,7 +6,7 @@ CREATE TABLE orders (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_billable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL DEFAULT '',
-	order_date		timestamp(0) with time zone,
+	order_date		datetime,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,

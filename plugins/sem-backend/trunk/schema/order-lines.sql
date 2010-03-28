@@ -179,7 +179,7 @@ BEGIN
 			THEN
 				IF	c.max_date IS NOT NULL -- max_date < NOW() is guaranteed by active_promos
 				THEN
-					t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::timestamp(0) with time zone) /
+					t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
 						EXTRACT(EPOCH FROM c.max_date - c.min_date);
 				END IF;
 				

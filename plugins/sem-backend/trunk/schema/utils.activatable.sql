@@ -51,7 +51,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN min_date timestamp(0) with time zone;
+			ADD COLUMN min_date datetime;
 		$EXEC$;
 	END IF;
 	
@@ -59,7 +59,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN max_date timestamp(0) with time zone;
+			ADD COLUMN max_date datetime;
 		$EXEC$;
 	END IF;
 	
@@ -98,7 +98,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'active'
 		WHERE	status = 'future'
-		AND		min_date <= NOW()::timestamp(0) with time zone;
+		AND		min_date <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -113,7 +113,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'inactive'
 		WHERE	status = 'active'
-		AND		max_date <= NOW()::timestamp(0) with time zone;
+		AND		max_date <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -131,7 +131,7 @@ BEGIN
 			IF	NEW.min_date IS NULL
 			THEN
 				NEW.status := 'inactive';
-			ELSEIF NEW.min_date <= NOW()::timestamp(0) with time zone
+			ELSEIF NEW.min_date <= NOW()::datetime
 			THEN
 				NEW.status := 'active';
 			END IF;

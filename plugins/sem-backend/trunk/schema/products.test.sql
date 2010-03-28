@@ -38,6 +38,15 @@ SELECT	'Campaign Inherits inactive status',
 		campaigns.status = 'inactive'
 FROM	campaigns;
 
+UPDATE	campaigns
+SET		init_discount = 12,
+		rec_discount = 12;
+
+SELECT	'Fix campaign discounts',
+		init_comm = 6 AND
+		rec_comm = 6
+FROM	products;
+SELECT	* FROM campaigns;
 UPDATE	products
 SET		init_price = 3,
 		rec_price = 3;
@@ -46,7 +55,7 @@ SELECT	'Fix product commissions on price update',
 		init_comm = 3 AND
 		rec_comm = 3
 FROM	products;
-
+SELECT	* FROM campaigns;
 SELECT	'Fix promo discounts on price/comm update',
 		init_discount = 3 AND
 		rec_discount = 3

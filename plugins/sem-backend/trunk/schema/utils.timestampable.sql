@@ -18,7 +18,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN created_date timestamp(0) with time zone NOT NULL DEFAULT NOW();
+			ADD COLUMN created_date datetime NOT NULL DEFAULT NOW();
 		$EXEC$;
 	END IF;
 	
@@ -26,7 +26,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN modified_date timestamp(0) with time zone NOT NULL DEFAULT NOW();
+			ADD COLUMN modified_date datetime NOT NULL DEFAULT NOW();
 		$EXEC$;
 	END IF;
 	

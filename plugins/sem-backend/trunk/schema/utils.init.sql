@@ -1,4 +1,5 @@
 \i ./utils.schema.sql
+\i ./utils.datetime.sql
 \i ./utils.activatable.sql
 \i ./utils.authenticatable.sql
 \i ./utils.billable.sql

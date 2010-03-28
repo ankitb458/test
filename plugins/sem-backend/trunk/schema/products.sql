@@ -13,8 +13,8 @@ CREATE TABLE products (
 	rec_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_interval	interval,
 	rec_count		smallint,
-	min_date		timestamp(0) with time zone,
-	max_date		timestamp(0) with time zone,
+	min_date		datetime,
+	max_date		datetime,
 	max_orders		int,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amount
@@ -49,7 +49,7 @@ SELECT	products.*
 FROM	products
 WHERE	status = 'active'
 AND		( max_orders IS NULL OR max_orders > 0 )
-AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+AND		( max_date IS NULL OR max_date >= NOW()::datetime );
 
 COMMENT ON VIEW active_products IS E'Active Products
 

@@ -12,8 +12,8 @@ CREATE TABLE campaigns (
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE DEFERRABLE,
 	init_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	rec_discount	numeric(8,2) NOT NULL DEFAULT 0,
-	min_date		timestamp(0) with time zone,
-	max_date		timestamp(0) with time zone,
+	min_date		datetime,
+	max_date		datetime,
 	max_orders		int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	memo			text NOT NULL DEFAULT '',
@@ -85,7 +85,7 @@ SELECT	coupons.*
 FROM	coupons
 WHERE	status = 'active'
 AND		( max_orders IS NULL OR max_orders > 0 )
-AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+AND		( max_date IS NULL OR max_date >= NOW()::datetime );
 
 COMMENT ON VIEW active_coupons IS E'Active Coupons
 
@@ -116,7 +116,7 @@ SELECT	promos.*
 FROM	promos
 WHERE	status = 'active'
 AND		( max_orders IS NULL OR max_orders > 0 )
-AND		( max_date IS NULL OR max_date >= NOW()::timestamp(0) with time zone );
+AND		( max_date IS NULL OR max_date >= NOW()::datetime );
 
 COMMENT ON VIEW active_promos IS E'Active Promos
 

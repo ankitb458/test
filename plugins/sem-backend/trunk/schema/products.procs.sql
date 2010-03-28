@@ -106,7 +106,7 @@ BEGIN
 	THEN
 		UPDATE	campaigns
 		SET		status = CASE
-				WHEN status = 'future' AND min_date >= NOW()::timestamp(0) with time zone
+				WHEN status = 'future' AND min_date >= NOW()::datetime
 				THEN 'active'
 				ELSE status
 				END::status_activatable
@@ -128,8 +128,8 @@ CREATE OR REPLACE FUNCTION products_update_price()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.init_price, NEW.rec_price) <> ROW(OLD.init_price, OLD.rec_price) OR
-		ROW(NEW.init_comm, NEW.rec_comm) <> ROW(OLD.init_comm, OLD.rec_comm)
+	IF	ROW(NEW.init_price, NEW.rec_price) IS NOT DISTINCT FROM ROW(OLD.init_price, OLD.rec_price) AND
+		ROW(NEW.init_comm, NEW.rec_comm) IS NOT DISTINCT FROM ROW(OLD.init_comm, OLD.rec_comm)
 	THEN
 		RETURN NEW;
 	END IF;
@@ -147,6 +147,8 @@ BEGIN
 				aff_id IS NOT NULL AND ( NEW.init_comm = 0 OR OLD.init_comm = 0 )
 			THEN 0
 			-- Keep common comm ratios
+			WHEN init_discount = OLD.init_comm
+			THEN NEW.init_comm
 			WHEN init_discount = round(OLD.init_comm / 2, 2)
 			THEN round(NEW.init_comm / 2, 2)
 			-- Keep affiliate comm ratios for affiliate coupons
@@ -162,6 +164,8 @@ BEGIN
 				aff_id IS NOT NULL AND ( NEW.rec_comm = 0 OR OLD.rec_comm = 0 )
 			THEN 0
 			-- Keep common comm ratios
+			WHEN init_discount = OLD.rec_comm
+			THEN NEW.rec_comm
 			WHEN rec_discount = round(OLD.rec_comm / 2, 2)
 			THEN round(NEW.rec_comm / 2, 2)
 			-- Keep affiliate comm ratios for affiliate coupons
