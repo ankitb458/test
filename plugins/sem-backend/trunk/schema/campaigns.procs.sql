@@ -16,7 +16,7 @@ BEGIN
 		WHERE	campaign_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'campaigns.id = % is referenced in orders.', NEW.id;
+		RAISE EXCEPTION 'Cannot delete campaigns.id = %. It is referenced in orders.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -25,7 +25,7 @@ BEGIN
 		WHERE	coupon_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'campaigns.id = % is referenced in order_lines.', NEW.id;
+		RAISE EXCEPTION 'Cannot delete campaigns.id = %. It is referenced in order_lines.', NEW.id;
 	END IF;
 	
 	RETURN NEW;
@@ -96,18 +96,6 @@ DECLARE
 BEGIN
 	IF	NEW.product_id IS NULL
 	THEN
-		-- Reset coupon fields and exit
-		IF	NEW.status <> 'trash'
-		THEN
-			NEW.status := 'active';
-		END IF;
-		NEW.init_discount := 0;
-		NEW.rec_discount := 0;
-		NEW.min_date := NULL;
-		NEW.max_date := NULL;
-		NEW.max_orders := NULL;
-		NEW.firesale := FALSE;
-		
 		RETURN NEW;
 	ELSEIF TG_TABLE_NAME <> 'campaigns' OR -- Trust triggers
 		ROW(NEW.product_id, NEW.init_discount, NEW.rec_discount)
@@ -136,7 +124,10 @@ BEGIN
 	IF	NOT FOUND
 	THEN
 		NEW.product_id := NULL;
-	ELSEIF NEW.product_id = NEW.promo_id
+		RETURN NEW;
+	END IF;
+	
+	IF	NEW.product_id = NEW.promo_id
 	THEN
 		IF TG_OP = 'INSERT'
 		THEN
@@ -173,11 +164,7 @@ BEGIN
 	END IF;
 	
 	-- Sanitize discount
-	IF	NEW.product_id IS NULL
-	THEN
-		NEW.init_discount := 0;
-		NEW.rec_discount := 0;
-	ELSEIF NEW.aff_id IS NOT NULL
+	IF NEW.aff_id IS NOT NULL
 	THEN
 		NEW.init_discount := LEAST(NEW.init_discount, p.init_comm);
 		NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_comm);

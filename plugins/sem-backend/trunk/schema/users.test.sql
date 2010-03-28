@@ -1,3 +1,4 @@
+\echo
 \echo '#'
 \echo '# Testing users'
 \echo '#'
@@ -60,6 +61,9 @@ SELECT	'Case insensitive search on user emails',
 -- clean up
 --/*
 --\! sleep 3
+
+\echo '# Cleaning up...'
+\echo
 
 UPDATE	products
 SET		status = 'trash';

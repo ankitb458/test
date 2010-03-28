@@ -1,6 +1,7 @@
 \set QUIET on
 \set ON_ERROR_STOP off
 \pset tuples_only off
+\set VERBOSITY terse
 
 ROLLBACK;
 \i ./utils.reset.sql
@@ -18,5 +19,7 @@ COMMIT;
 \i ./products.test.sql
 \i ./campaigns.test.sql
 
+\set VERBOSITY default
 \pset tuples_only off
 \set QUIET off
+\echo

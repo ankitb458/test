@@ -1,3 +1,4 @@
+\echo
 \echo '#'
 \echo '# Testing products'
 \echo '#'
@@ -123,6 +124,9 @@ FROM	campaigns;
 -- clean up
 --/*
 --\! sleep 3
+
+\echo '# Cleaning up...'
+\echo
 
 UPDATE	products
 SET		status = 'trash';

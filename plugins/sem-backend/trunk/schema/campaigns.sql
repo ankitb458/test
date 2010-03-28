@@ -139,25 +139,16 @@ BEGIN
 	-- Trim fields
 	NEW.name := COALESCE(NULLIF(trim(NEW.name), ''), NEW.ukey);
 	
-	IF	NEW.ukey IS NULL AND NEW.promo_id IS NULL AND NEW.aff_id IS NULL
+	IF	NEW.promo_id IS NULL AND NEW.aff_id IS NULL
 	THEN
-		-- Default name
-		IF	NEW.name IS NULL
-		THEN
-			NEW.name := 'Campaign';
-		END IF;
-		
-		-- Default ukey
-		IF	NEW.ukey IS NULL
-		THEN
-			NEW.ukey := 'campaign';
-		END IF;
+		NEW.name := COALESCE(NEW.name, 'Campaign');
+		NEW.ukey := COALESCE(NEW.ukey, NEW.name);
 	END IF;
 	
 	-- Handle inherit status
 	IF	NEW.status = 'inherit' AND NEW.promo_id IS NULL
 	THEN
-		NEW.status := 'trash';
+		RAISE EXCEPTION 'Undefined behavior for campaigns.status = inherit.';
 	ELSEIF NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
 	THEN
 		NEW.status := 'inherit';

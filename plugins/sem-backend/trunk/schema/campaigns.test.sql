@@ -1,3 +1,4 @@
+\echo
 \echo '#'
 \echo '# Testing campaigns'
 \echo '#'
@@ -145,6 +146,9 @@ SELECT	'Allow for active coupons on future products',
 -- clean up
 --/*
 --\! sleep 3
+
+\echo '# Cleaning up...'
+\echo
 
 UPDATE	products
 SET		status = 'trash';
