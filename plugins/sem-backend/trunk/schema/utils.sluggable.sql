@@ -1,5 +1,5 @@
 /**
- * "Slugify" a string
+ * "Slugifies" a string
  */
 CREATE OR REPLACE FUNCTION to_slug(varchar)
 	RETURNS varchar
@@ -17,7 +17,13 @@ BEGIN
 	str := regexp_replace(str, '[^a-z0-9]+', '-', 'g');
 	str := regexp_replace(str, '-+', '-', 'g');
 	str := trim(both '-' from str);
-	RETURN str;
+	
+	IF	str = ''
+	THEN
+		RETURN NULL;
+	ELSE
+		RETURN str;
+	END IF;
 END $$ LANGUAGE plpgsql IMMUTABLE STRICT;
 
 /**
@@ -63,7 +69,7 @@ BEGIN
 			END IF;
 		END IF;
 		
-		NEW.ukey := to_slug(NEW.ukey);
+		NEW.ukey := COALESCE(to_slug(NEW.ukey), NEW.id || '-1');
 		
 		-- todo:
 		-- - scan for a min suffix instead of trying 2, then 3, etc.

@@ -137,12 +137,12 @@ CREATE OR REPLACE FUNCTION campaigns_clean()
 AS $$
 BEGIN
 	-- Trim fields
-	NEW.name := COALESCE(trim(NEW.name), NEW.ukey);
+	NEW.name := COALESCE(NULLIF(trim(NEW.name), ''), NEW.ukey);
 	
 	IF	NEW.ukey IS NULL AND NEW.promo_id IS NULL AND NEW.aff_id IS NULL
 	THEN
 		-- Default name
-		IF	( NEW.name <> '' ) IS NOT TRUE
+		IF	NEW.name IS NULL
 		THEN
 			NEW.name := 'Campaign';
 		END IF;

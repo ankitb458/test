@@ -52,7 +52,7 @@ AS $$
 DECLARE
 	c			campaigns;
 BEGIN
-	NEW.name := trim(NEW.name);
+	NEW.name := NULLIF(trim(NEW.name, ''), '');
 	
 	IF	COALESCE(NEW.name, '') = ''
 	THEN

@@ -33,7 +33,7 @@ BEGIN
 	
 	IF	NOT FOUND
 	THEN
-		NEW.aff_id := NULL;
+		RAISE EXCEPTION 'users.id = % cannot be tied to campaigns.id = %', NEW.aff_id, NEW.id;
 	ELSE
 		NEW.name := COALESCE(NULLIF(NEW.name, ''), u.name);
 		NEW.ukey := COALESCE(NULLIF(NEW.ukey, ''), u.ukey, u.name);

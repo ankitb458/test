@@ -37,9 +37,9 @@ CREATE OR REPLACE FUNCTION orders_clean()
 	RETURNS trigger
 AS $$
 BEGIN
-	NEW.name := trim(NEW.name);
+	NEW.name := NULLIF(trim(NEW.name, ''), '');
 	
-	IF	( NEW.name <> '' ) IS NOT TRUE
+	IF	NEW.name IS NULL
 	THEN
 		IF	NEW.user_id IS NOT NULL
 		THEN

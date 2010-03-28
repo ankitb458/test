@@ -68,11 +68,11 @@ CREATE OR REPLACE FUNCTION products_clean()
 AS $$
 BEGIN
 	-- Trim fields
-	NEW.name := trim(NEW.name);
-	NEW.sku := trim(NEW.sku);
+	NEW.name := NULLIF(trim(NEW.name, ''), '');
+	NEW.sku := NULLIF(trim(NEW.sku, ''), '');
 	
 	-- Default name
-	IF	( NEW.name <> '' ) IS NOT TRUE
+	IF	NEW.name IS NULL
 	THEN
 		NEW.name := 'Product';
 	END IF;

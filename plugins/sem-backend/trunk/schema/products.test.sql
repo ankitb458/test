@@ -79,7 +79,7 @@ UPDATE	products
 SET		init_price = 12,
 		rec_price = 12;
 
-INSERT INTO users ( status, email ) VALUES ( 'active', 'foo@bar.com' );
+INSERT INTO users ( name, status, email ) VALUES ( 'Joe', 'active', 'foo@bar.com' );
 
 SELECT	'Deny promo ownership';
 UPDATE	campaigns
@@ -112,6 +112,8 @@ FROM	campaigns;
 
 -- clean up
 --/*
+\! sleep 1
+
 UPDATE	products
 SET		status = 'trash';
 

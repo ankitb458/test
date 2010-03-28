@@ -63,22 +63,22 @@ CREATE OR REPLACE FUNCTION users_clean()
 AS $$
 BEGIN
 	-- Trim fields
-	NEW.name := trim(NEW.name);
+	NEW.name := NULLIF(trim(NEW.name), '');
 	
-	NEW.username := trim(NEW.username);
+	NEW.username := NULLIF(trim(NEW.username), '');
 	NEW.password := trim(NEW.password);
 	
 	NEW.firstname := trim(NEW.firstname);
 	NEW.lastname := trim(NEW.lastname);
 	NEW.nickname := trim(NEW.nickname);
 	
-	NEW.email := trim(NEW.email);
+	NEW.email := NULLIF(trim(NEW.email), '');
 	NEW.phone := trim(NEW.phone);
 	
-	NEW.paypal := trim(NEW.paypal);
+	NEW.paypal := NULLIF(trim(NEW.paypal), '');
 	
 	-- Set name
-	IF	( NEW.name <> '' ) IS NOT TRUE
+	IF	NEW.name IS NULL
 	THEN
 		NEW.name := CASE
 			WHEN NEW.firstname <> '' AND NEW.lastname <> ''
@@ -89,8 +89,12 @@ BEGIN
 			THEN NEW.firstname
 			WHEN NEW.lastname <> ''
 			THEN NEW.lastname
-			ELSE COALESCE(NEW.username, '')
+			ELSE NEW.username
 			END;
+		IF	NEW.name IS NULL
+		THEN
+			NEW.name = 'Anonymous';
+		END IF;
 	END IF;
 	
 	-- Disable inherit and trash for now

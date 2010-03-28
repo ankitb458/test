@@ -32,9 +32,10 @@ DELETE FROM users
 WHERE	status = 'trash';
 
 UPDATE	users
-SET		firstname = 'Joe',
+SET		name = '',
+		firstname = 'Joe',
 		lastname = 'Bar',
-		nickname = 'joe'
+		nickname = 'Joe'
 WHERE	lower(email) = 'joe@bar.com';
 
 SELECT	'Extract name from first, last and nicknames',
@@ -58,6 +59,8 @@ SELECT	'Case insensitive search on user emails',
 
 -- clean up
 --/*
+\! sleep 1
+
 UPDATE	products
 SET		status = 'trash';
 

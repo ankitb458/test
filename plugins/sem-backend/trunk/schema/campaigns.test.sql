@@ -11,18 +11,34 @@ DELETE FROM campaigns;
 
 INSERT INTO users ( email ) VALUES ( 'joe@bar.com' );
 
+SELECT	'Deny adding campaigns to a non-active user';
+INSERT INTO campaigns ( aff_id )
+SELECT	id
+FROM	users;
+\echo
+
+UPDATE	users
+SET		status = 'inactive';
+
 INSERT INTO campaigns ( aff_id )
 SELECT	id
 FROM	users;
 
-SELECT	*
-FROM	users;
+SELECT	'Allow assigning a campaign to an inactive user',
+		EXISTS(
+		SELECT	1
+		FROM	users
+		);
 
-SELECT	*
-FROM	campaigns;
+SELECT	'Deny trashing campaign owner';
+UPDATE	users
+SET		status = 'trash';
+\echo
 
 -- clean up
 /*
+\! sleep 1
+
 UPDATE	products
 SET		status = 'trash';
 
