@@ -79,6 +79,10 @@ BEGIN
 		RAISE EXCEPTION 'Undefined behavior for products.status = inherit.';
 	END IF;
 	
+	-- Fix commissions if needed
+	NEW.init_comm := LEAST(NEW.init_comm, NEW.init_price);
+	NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_price);
+	
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
