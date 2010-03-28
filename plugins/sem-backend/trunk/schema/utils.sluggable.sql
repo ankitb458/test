@@ -1,4 +1,26 @@
 /**
+ * "Slugify" a string
+ */
+CREATE OR REPLACE FUNCTION to_slug(varchar)
+	RETURNS varchar
+AS $$
+DECLARE
+	str			varchar := $1;
+BEGIN
+	str := trim(str);
+	-- When PG 9 is around, we'll be able to use unaccent
+	-- http://developer.postgresql.org/pgdocs/postgres/unaccent.html
+	str := translate(str,
+		'âãäåāăąÁÂÃÄÅĀĂĄèééêëēĕėęěĒĔĖĘĚìíîïìĩīĭÌÍÎÏÌĨĪĬóôõöōŏőÒÓÔÕÖŌŎŐùúûüũūŭůÙÚÛÜŨŪŬŮ',
+		'aaaaaaaaaaaaaaaeeeeeeeeeeeeeeeiiiiiiiiiiiiiiiiooooooooooooooouuuuuuuuuuuuuuuu');
+	str := lower(str);
+	str := regexp_replace(str, '[^a-z0-9]+', '-', 'g');
+	str := regexp_replace(str, '-+', '-', 'g');
+	str := trim(both '-' from str);
+	RETURN str;
+END $$ LANGUAGE plpgsql IMMUTABLE STRICT;
+
+/**
  * Sluggable behavior
  *
  * Adds fields:
@@ -40,6 +62,8 @@ BEGIN
 				RETURN NEW;
 			END IF;
 		END IF;
+		
+		NEW.ukey := to_slug(NEW.ukey);
 		
 		-- todo:
 		-- - scan for a min suffix instead of trying 2, then 3, etc.

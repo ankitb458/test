@@ -69,6 +69,7 @@ AS $$
 BEGIN
 	-- Trim fields
 	NEW.name := trim(NEW.name);
+	NEW.sku := trim(NEW.sku);
 	
 	-- Default name
 	IF	COALESCE(NEW.name, '') = ''

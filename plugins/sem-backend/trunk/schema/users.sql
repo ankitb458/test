@@ -99,7 +99,7 @@ BEGIN
 		RAISE EXCEPTION 'Undefined behavior for users.status = inherit.';
 	END IF;
 
-	IF	COALESCE(NEW.password, '') <> ''
+	IF	NEW.password <> ''
 	THEN
 		IF	length(NEW.password) = 60 AND substring(NEW.password from 1 for 4) = '$2a$'
 		THEN
@@ -157,7 +157,7 @@ BEGIN
 			|| setweight(to_tsvector(regexp_replace(
 				substring(NEW.email from 1 for (position('@' in NEW.email) - 1)),
 				'[._-]+',
-				' ')), 'B');
+				' ', 'g')), 'B');
 	END IF;
 	
 	IF	is_email(NEW.paypal) AND NEW.paypal IS DISTINCT FROM NEW.email
@@ -167,7 +167,7 @@ BEGIN
 			|| setweight(to_tsvector(regexp_replace(
 				substring(NEW.paypal from 1 for (position('@' in NEW.paypal) - 1)),
 				'[._-]+',
-				' ')), 'B');
+				' ', 'g')), 'B');
 	END IF;
 	
 	RETURN NEW;
