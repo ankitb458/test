@@ -147,7 +147,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_05_check_update_promo
+CREATE TRIGGER campaigns_01_check_update_promo
 	AFTER UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_check_update_promo();
 

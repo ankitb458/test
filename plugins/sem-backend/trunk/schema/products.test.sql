@@ -46,7 +46,17 @@ SELECT	'Fix campaign discounts',
 		init_comm = 6 AND
 		rec_comm = 6
 FROM	products;
-SELECT	* FROM campaigns;
+
+UPDATE	products
+SET		init_price = 9,
+		rec_price = 9;
+
+SELECT	'Fix promo discounts on price/comm update',
+		init_discount = 3 AND
+		rec_discount = 3
+FROM	campaigns
+WHERE	aff_id IS NULL;
+
 UPDATE	products
 SET		init_price = 3,
 		rec_price = 3;
@@ -55,20 +65,10 @@ SELECT	'Fix product commissions on price update',
 		init_comm = 3 AND
 		rec_comm = 3
 FROM	products;
-SELECT	* FROM campaigns;
+
 SELECT	'Fix promo discounts on price/comm update',
-		init_discount = 3 AND
-		rec_discount = 3
-FROM	campaigns
-WHERE	aff_id IS NULL;
-
-UPDATE	campaigns
-SET		init_discount = 12,
-		rec_discount = 12;
-
-SELECT	'Fix promo discounts on discount update',
-		init_discount = 6 AND
-		rec_discount = 6
+		init_discount = 0 AND
+		rec_discount = 0
 FROM	campaigns
 WHERE	aff_id IS NULL;
 
@@ -103,6 +103,12 @@ WHERE	aff_id IS NOT NULL;
 
 UPDATE	products
 SET		status = 'active';
+
+UPDATE	products
+SET		init_price = 12,
+		rec_price = 12,
+		init_comm = 6,
+		rec_comm = 6;
 
 UPDATE	campaigns
 SET		init_discount = 12,

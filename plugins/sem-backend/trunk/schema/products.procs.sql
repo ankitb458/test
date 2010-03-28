@@ -143,43 +143,64 @@ BEGIN
 			init_discount = CASE
 			-- Zero in, when possible
 			WHEN init_discount = 0 OR
-				( NEW.init_price = 0 OR OLD.init_comm = 0 ) OR
+				NEW.init_price = 0 OR OLD.init_price = 0 OR
 				aff_id IS NOT NULL AND ( NEW.init_comm = 0 OR OLD.init_comm = 0 )
 			THEN 0
-			-- Keep common comm ratios
-			WHEN init_discount = OLD.init_comm
-			THEN NEW.init_comm
-			WHEN init_discount = round(OLD.init_comm / 2, 2)
-			THEN round(NEW.init_comm / 2, 2)
-			-- Keep affiliate comm ratios for affiliate coupons
 			WHEN aff_id IS NOT NULL
-			THEN round(init_discount * NEW.init_comm / OLD.init_comm, 2)
-			-- Keep discount ratios for site coupons
-			ELSE round(init_discount * NEW.init_price / OLD.init_price, 2)
+			THEN LEAST(CASE
+				-- Keep common comm ratios
+				WHEN init_discount = OLD.init_comm
+				THEN NEW.init_comm
+				WHEN init_discount = round(OLD.init_comm / 2, 2)
+				THEN round(NEW.init_comm / 2, 2)
+				-- Keep affiliate comm ratios for affiliate coupons
+				ELSE round(init_discount * NEW.init_price / OLD.init_price, 2)
+				END, NEW.init_comm)
+			ELSE LEAST(CASE
+				-- Keep common comm ratios
+				WHEN init_discount = OLD.init_comm
+				THEN NEW.init_comm
+				WHEN init_discount = OLD.init_price
+				THEN NEW.init_price
+				WHEN init_discount = round(OLD.init_comm / 2, 2)
+				THEN round(NEW.init_comm / 2, 2)
+				WHEN init_discount = round(OLD.init_price / 2, 2)
+				THEN round(NEW.init_price / 2, 2)
+				-- Keep discount ratios for site coupons
+				ELSE round(init_discount * NEW.init_price / OLD.init_price, 2)
+				END, NEW.init_price - NEW.init_comm)
 			END,
 			rec_discount = CASE
 			-- Zero in, when possible
 			WHEN rec_discount = 0 OR
-				( NEW.rec_price = 0 OR OLD.rec_comm = 0 ) OR
+				NEW.rec_price = 0 OR OLD.rec_price = 0 OR
 				aff_id IS NOT NULL AND ( NEW.rec_comm = 0 OR OLD.rec_comm = 0 )
 			THEN 0
-			-- Keep common comm ratios
-			WHEN init_discount = OLD.rec_comm
-			THEN NEW.rec_comm
-			WHEN rec_discount = round(OLD.rec_comm / 2, 2)
-			THEN round(NEW.rec_comm / 2, 2)
-			-- Keep affiliate comm ratios for affiliate coupons
 			WHEN aff_id IS NOT NULL
-			THEN round(rec_discount * NEW.rec_comm / OLD.rec_comm, 2)
-			-- Keep discount ratios for site coupons
-			ELSE round(rec_discount * NEW.rec_price / OLD.rec_price, 2)
+			THEN LEAST(CASE
+				-- Keep common comm ratios
+				WHEN rec_discount = OLD.rec_comm
+				THEN NEW.rec_comm
+				WHEN rec_discount = round(OLD.rec_comm / 2, 2)
+				THEN round(NEW.rec_comm / 2, 2)
+				-- Keep affiliate comm ratios for affiliate coupons
+				ELSE round(rec_discount * NEW.rec_price / OLD.rec_price, 2)
+				END, NEW.rec_comm)
+			ELSE LEAST(CASE
+				-- Keep common comm ratios
+				WHEN rec_discount = OLD.rec_comm
+				THEN NEW.rec_comm
+				WHEN rec_discount = OLD.rec_price
+				THEN NEW.rec_price
+				WHEN rec_discount = round(OLD.rec_comm / 2, 2)
+				THEN round(NEW.rec_comm / 2, 2)
+				WHEN rec_discount = round(OLD.rec_price / 2, 2)
+				THEN round(NEW.rec_price / 2, 2)
+				-- Keep discount ratios for site coupons
+				ELSE round(rec_discount * NEW.rec_price / OLD.rec_price, 2)
+				END, NEW.rec_price - NEW.rec_comm)
 			END
-	WHERE	product_id = NEW.id
-	AND		( -- Always update on price changes
-			NEW.init_price <> OLD.init_price OR NEW.rec_price <> OLD.rec_price
-			-- Conditionally update on commission changes
-			OR aff_id IS NOT NULL
-			AND ( NEW.init_comm <> OLD.init_comm OR NEW.rec_comm <> OLD.rec_comm ) );
+	WHERE	product_id = NEW.id;
 	
 	RETURN NEW;
 END;
