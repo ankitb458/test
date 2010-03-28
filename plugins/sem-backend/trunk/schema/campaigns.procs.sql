@@ -137,17 +137,32 @@ BEGIN
 		NEW.product_id := NULL;
 	ELSEIF NEW.product_id = NEW.promo_id
 	THEN
-		NEW.status := CASE
-			WHEN p.status <= 'inherit'
-			THEN 'inherit'
-			WHEN p.status = 'draft'
-			THEN 'draft'
-			WHEN p.status = 'pending'
-			THEN 'pending'
-			WHEN p.status < 'future'
-			THEN 'inactive'
-			ELSE NEW.status
-			END::status_activatable;
+		IF TG_OP = 'INSERT'
+		THEN
+			NEW.status := CASE
+				WHEN p.status <= 'inherit'
+				THEN 'inherit'
+				WHEN p.status = 'draft'
+				THEN 'draft'
+				WHEN p.status = 'pending'
+				THEN 'pending'
+				WHEN p.status < 'future' OR NEW.status <= 'inherit'
+				THEN 'inactive'
+				ELSE NEW.status
+				END::status_activatable;
+		ELSE
+			NEW.status := CASE
+				WHEN p.status <= 'inherit'
+				THEN 'inherit'
+				WHEN p.status = 'draft'
+				THEN 'draft'
+				WHEN p.status = 'pending'
+				THEN 'pending'
+				WHEN p.status < 'future' OR OLD.status <= 'inherit' OR NEW.status <= 'inherit'
+				THEN 'inactive'
+				ELSE NEW.status
+				END::status_activatable;
+		END IF;
 	ELSE
 		IF p.status < 'future'
 		THEN

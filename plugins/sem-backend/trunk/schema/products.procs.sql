@@ -89,7 +89,7 @@ BEGIN
 				status = CASE
 				WHEN promo_id = NEW.id
 				THEN CASE
-					WHEN NEW.status = 'trash'
+					WHEN NEW.status <= 'inherit'
 					THEN 'inherit'
 					WHEN NEW.status = 'draft'
 					THEN 'draft'
@@ -102,13 +102,14 @@ BEGIN
 				ELSE 'active'
 				END::status_activatable
 		WHERE	product_id = NEW.id;
-	ELSEIF NEW.status = 'active' AND OLD.status = 'future'
-	THEN
+	ELSE
 		UPDATE	campaigns
 		SET		status = CASE
+				WHEN promo_id IS NOT NULL AND status <= 'inherit'
+				THEN 'inactive' -- untrash the promo
 				WHEN status = 'future' AND min_date >= NOW()::datetime
 				THEN 'active'
-				ELSE status
+				ELSE status -- keep future status
 				END::status_activatable
 		WHERE	product_id = NEW.id;
 	END IF;

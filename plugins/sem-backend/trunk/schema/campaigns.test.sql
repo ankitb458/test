@@ -85,7 +85,41 @@ UPDATE	products
 SET		init_comm = 8,
 		rec_comm = 8;
 
---\pset tuples_only off
+SELECT	'Change aff discounts on price changes',
+		status = 'pending' AND
+		init_discount = 8 AND
+		rec_discount = 8
+FROM	campaigns
+WHERE	aff_id IS NOT NULL;
+
+SELECT	'Change non-aff discounts on price changes',
+		init_discount = 4 AND
+		rec_discount = 4
+FROM	campaigns
+WHERE	aff_id IS NULL;
+
+UPDATE	products
+SET		status = 'trash';
+
+SELECT	'Invalidate coupons on product trash',
+		NOT EXISTS(
+		SELECT	1
+		FROM	campaigns
+		WHERE	promo_id IS NULL
+		AND		product_id IS NOT NULL
+		);
+
+UPDATE	products
+SET		status = 'active';
+
+UPDATE	campaigns
+SET		product_id = products.id,
+		init_discount = 8,
+		rec_discount = 8
+FROM	products;
+
+--UPDATE	campaigns
+--SET		status = 'trash';
 
 SELECT	*
 FROM	campaigns;

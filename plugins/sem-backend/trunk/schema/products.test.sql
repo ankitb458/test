@@ -38,6 +38,16 @@ SELECT	'Propagate inactive status to promo',
 		campaigns.status = 'inactive'
 FROM	campaigns;
 
+UPDATE	products
+SET		status = 'trash';
+
+UPDATE	products
+SET		status = 'active';
+
+SELECT	'Propagate active status to promo',
+		campaigns.status = 'inactive'
+FROM	campaigns;
+
 UPDATE	campaigns
 SET		init_discount = 12,
 		rec_discount = 12;
