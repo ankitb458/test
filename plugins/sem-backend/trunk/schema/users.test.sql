@@ -5,7 +5,7 @@
 
 INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
-SELECT	'Deny deleting non-trashed';
+SELECT	'Deny deleting non-trashed users';
 DELETE FROM users;
 \echo
 
@@ -59,7 +59,7 @@ SELECT	'Case insensitive search on user emails',
 
 -- clean up
 --/*
-\! sleep 1
+--\! sleep 3
 
 UPDATE	products
 SET		status = 'trash';

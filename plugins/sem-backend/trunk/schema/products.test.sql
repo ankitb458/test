@@ -6,7 +6,7 @@
 INSERT INTO products ( init_price, init_comm, rec_price, rec_comm )
 VALUES	( 12, 6, 12, 6 );
 
-SELECT 'Deny deleting non-trashed';
+SELECT	'Deny deleting non-trashed products';
 DELETE FROM products;
 \echo
 
@@ -112,7 +112,7 @@ FROM	campaigns;
 
 -- clean up
 --/*
-\! sleep 1
+--\! sleep 3
 
 UPDATE	products
 SET		status = 'trash';

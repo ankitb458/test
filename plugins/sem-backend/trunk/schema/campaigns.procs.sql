@@ -113,10 +113,7 @@ BEGIN
 	ELSE
 		IF p.status < 'future'
 		THEN
-			NEW.product_id := NULL;
-		ELSEIF NEW.status = 'inherit' -- Allowed for promos only
-		THEN
-			NEW.status := 'trash';
+			RAISE EXCEPTION 'campaigns.id = % cannot be tied to products.id = %', NEW.id, NEW.product_id;
 		END IF;
 	END IF;
 	
