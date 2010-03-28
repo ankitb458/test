@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION campaigns_sanitize_user()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	TG_TABLE_NAME <> 'campaigns' OR -- trust triggers
+	IF	TG_TABLE_NAME <> 'campaigns' OR -- Trust triggers
 		NEW.aff_id IS NULL
 	THEN
 		RETURN NEW;
@@ -58,7 +58,7 @@ BEGIN
 		NEW.firesale := FALSE;
 		
 		RETURN NEW;
-	ELSEIF TG_TABLE_NAME <> 'campaigns' OR -- trust triggers
+	ELSEIF TG_TABLE_NAME <> 'campaigns' OR -- Trust triggers
 		ROW(NEW.product_id, NEW.init_discount, NEW.rec_discount)
 		IS NOT DISTINCT FROM ROW(NULL, 0, 0)
 	THEN
@@ -102,7 +102,7 @@ BEGIN
 		IF p.status < 'future'
 		THEN
 			NEW.product_id := NULL;
-		ELSEIF NEW.status = 'inherit' -- allowed for promos only
+		ELSEIF NEW.status = 'inherit' -- Allowed for promos only
 		THEN
 			NEW.status := 'trash';
 		END IF;

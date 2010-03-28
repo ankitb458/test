@@ -60,7 +60,7 @@ CREATE OR REPLACE FUNCTION users_clean()
 	RETURNS trigger
 AS $$
 BEGIN
-	-- trim fields
+	-- Trim fields
 	NEW.name := trim(NEW.name);
 	
 	NEW.username := trim(NEW.username);
@@ -75,7 +75,7 @@ BEGIN
 	
 	NEW.paypal := trim(NEW.paypal);
 	
-	-- set name
+	-- Set name
 	IF	COALESCE(NEW.name, '') = ''
 	THEN
 		NEW.name := CASE
@@ -91,7 +91,7 @@ BEGIN
 			END;
 	END IF;
 	
-	-- disable inherit and trash for now
+	-- Disable inherit and trash for now
 	IF	NEW.status = 'inherit'
 	THEN
 		RAISE EXCEPTION 'Undefined behavior for users.status = inherit.';
@@ -99,7 +99,6 @@ BEGIN
 
 	IF	COALESCE(NEW.password, '') <> ''
 	THEN
-		-- hash password
 		IF	length(NEW.password) = 60 AND substring(NEW.password from 1 for 4) = '$2a$'
 		THEN
 			-- blowfish hashed already
@@ -109,7 +108,7 @@ BEGIN
 			-- md5 hash, keep as is for backwards compatibility
 			NULL;
 		ELSE
-			-- hash using blowfish
+			-- Hash using blowfish
 			NEW.password := crypt(NEW.password, gen_salt('bf', 10));
 		END IF;
 	END IF;
