@@ -89,7 +89,8 @@ FROM	users;
 
 SELECT	'Deny promo product change';
 UPDATE	campaigns
-SET		promo_id = NULL;
+SET		ukey = 'test',
+		promo_id = NULL;
 \echo
 
 UPDATE	campaigns
@@ -110,7 +111,7 @@ SELECT	'Fix trashed product promo trashing',
 FROM	campaigns;
 
 -- clean up
-
+--/*
 UPDATE	products
 SET		status = 'trash';
 
@@ -125,3 +126,4 @@ UPDATE	users
 SET		status = 'trash';
 
 DELETE FROM users;
+--*/

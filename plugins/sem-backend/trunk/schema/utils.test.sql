@@ -16,6 +16,7 @@ COMMIT;
 
 \i ./users.test.sql
 \i ./products.test.sql
+\i ./campaigns.test.sql
 
 \pset tuples_only off
 \set QUIET off

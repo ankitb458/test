@@ -57,7 +57,19 @@ SELECT	'Case insensitive search on user emails',
 		);
 
 -- clean up
+--/*
+UPDATE	products
+SET		status = 'trash';
+
+DELETE FROM products;
+
+UPDATE	campaigns
+SET		status = 'trash';
+
+DELETE FROM campaigns;
+
 UPDATE	users
 SET		status = 'trash';
 
 DELETE FROM users;
+--*/

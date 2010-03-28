@@ -17,11 +17,15 @@ CREATE TABLE campaigns (
 	max_orders		int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	memo			text NOT NULL DEFAULT '',
+	CONSTRAINT valid_ukey
+		CHECK ( ukey IS NULL OR ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
+	CONSTRAINT valid_campaign
+		CHECK ( ukey IS NULL AND promo_id IS NOT NULL OR ukey IS NOT NULL AND promo_id IS NULL ),
 	CONSTRAINT valid_coupon
 		CHECK ( status IN ('active', 'trash') OR init_discount >= 0 OR rec_discount >= 0 ),
 	CONSTRAINT valid_promo
 		CHECK ( promo_id IS NULL OR
-			promo_id IS NOT DISTINCT FROM product_id AND aff_id IS NULL ),
+			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
 	CONSTRAINT valid_amount
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_min_max_date

@@ -29,10 +29,16 @@ BEGIN
 		ukey_base	varchar;
 		suffix		int := 1;
 	BEGIN
-		IF NEW.ukey IS NULL OR NEW.ukey = ''
+		IF	NEW.ukey IS NULL OR NEW.ukey = ''
 		THEN
 			NEW.ukey := NULL; -- forbid empty string as ukey
 			RETURN NEW;
+		ELSEIF TG_OP = 'UPDATE'
+		THEN
+			IF	NEW.ukey IS NOT DISTINCT FROM OLD.ukey
+			THEN
+				RETURN NEW;
+			END IF;
 		END IF;
 		
 		-- todo:
@@ -40,10 +46,11 @@ BEGIN
 		ukey_base = regexp_replace(NEW.ukey, E'-\\d+$', '');
 		
 		LOOP
-			IF NOT EXISTS (
+			IF	NOT EXISTS (
 				SELECT	1
 				FROM	$EXEC$ || quote_ident(t_name) || $EXEC$
-				WHERE	ukey = NEW.ukey )
+				WHERE	ukey = NEW.ukey
+				)
 			THEN
 				RETURN NEW;
 			END IF;

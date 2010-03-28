@@ -16,6 +16,8 @@ CREATE TABLE users (
 	phone			varchar(255) NOT NULL DEFAULT '',
 	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL,
 	paypal			varchar(255),
+	CONSTRAINT valid_ukey
+		CHECK ( ukey IS NULL OR ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_username
 		CHECK ( username IS NULL OR username <> '' ),
 	CONSTRAINT valid_password
