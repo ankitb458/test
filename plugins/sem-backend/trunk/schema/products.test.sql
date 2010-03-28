@@ -87,6 +87,15 @@ SET		aff_id = users.id
 FROM	users;
 \echo
 
+SELECT	'Deny promo product change';
+UPDATE	campaigns
+SET		promo_id = NULL;
+\echo
+
+SELECT	'Deny trashing promo';
+UPDATE	campaigns
+SET		status = 'trash';
+
 -- clean up
 
 UPDATE	products
