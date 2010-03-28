@@ -13,7 +13,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	campaigns
-		WHERE	aff_id = NEW.id
+		WHERE	aff_id = NEW.id -- cascade updated
 		)
 	THEN
 		RAISE EXCEPTION 'users.id = % is referenced in campaigns.', NEW.id;
@@ -22,7 +22,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	orders
-		WHERE	user_id = NEW.id
+		WHERE	billing_id = NEW.id -- cascade updated
 		)
 	THEN
 		RAISE EXCEPTION 'users.id = % is referenced in orders.', NEW.id;
@@ -31,7 +31,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	order_lines
-		WHERE	user_id = NEW.id
+		WHERE	user_id = NEW.id -- cascade updated
 		)
 	THEN
 		RAISE EXCEPTION 'users.id = % is referenced in order_lines.', NEW.id;

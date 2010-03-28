@@ -7,7 +7,7 @@ CREATE TABLE orders (
 	status			status_billable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL,
 	order_date		datetime,
-	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	billing_id		bigint REFERENCES users(id) ON UPDATE CASCADE,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	memo			text NOT NULL DEFAULT '',
@@ -18,13 +18,13 @@ CREATE TABLE orders (
 SELECT timestampable('orders'), searchable('orders'), trashable('orders');
 
 CREATE INDEX orders_sort ON orders(order_date DESC);
-CREATE INDEX orders_user_id ON orders(user_id);
+CREATE INDEX orders_billing_id ON orders(billing_id);
 CREATE INDEX orders_aff_id ON orders(aff_id);
 CREATE INDEX orders_campaign_id ON orders(campaign_id);
 
 COMMENT ON TABLE orders IS E'Orders
 
-- user_id gets billed; order_lines.user_id gets shipped.
+- billing_id gets billed; order_lines.user_id gets shipped.
 - aff_id gets the commission and is tied to the campaign_id. It gets stored
   for reference, in case a campaign''s owner changes.
 - coupon_id, when present, is typically the same as the campaign_id. A system-
@@ -41,12 +41,12 @@ BEGIN
 	
 	IF	NEW.name IS NULL
 	THEN
-		IF	NEW.user_id IS NOT NULL
+		IF	NEW.billing_id IS NOT NULL
 		THEN
 			SELECT	name
 			INTO	NEW.name
 			FROM	users
-			WHERE	id = NEW.user_id;
+			WHERE	id = NEW.billing_id;
 		END IF;
 		
 		IF	NEW.name = ''

@@ -1,4 +1,42 @@
 /**
+ * Checks integrity when a campaign is trashed.
+ */
+CREATE OR REPLACE FUNCTION campaigns_check_trash()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF NEW.status = OLD.status OR NEW.status <> 'trash'
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	IF	EXISTS (
+		SELECT	1
+		FROM	orders
+		WHERE	campaign_id = NEW.id -- cascade updated
+		)
+	THEN
+		RAISE EXCEPTION 'campaigns.id = % is referenced in orders.', NEW.id;
+	END IF;
+	
+	IF	EXISTS (
+		SELECT	1
+		FROM	order_lines
+		WHERE	coupon_id = NEW.id -- cascade updated
+		)
+	THEN
+		RAISE EXCEPTION 'campaigns.id = % is referenced in order_lines.', NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER campaigns_01_check_trash
+	AFTER UPDATE ON campaigns
+FOR EACH ROW EXECUTE PROCEDURE campaigns_check_trash();
+
+/**
  * Sanitizes a campaign's affiliate.
  */
 CREATE OR REPLACE FUNCTION campaigns_sanitize_user()

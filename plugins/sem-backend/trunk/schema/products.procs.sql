@@ -13,7 +13,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	order_lines
-		WHERE	product_id = NEW.id
+		WHERE	product_id = NEW.id -- cascade updated
 		)
 	THEN
 		RAISE EXCEPTION 'products.id = % is referenced in orders.', NEW.id;
