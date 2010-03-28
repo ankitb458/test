@@ -5,7 +5,7 @@
 
 INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
-SELECT 'Deny deleting non-trashed';
+SELECT	'Deny deleting non-trashed';
 DELETE FROM users;
 \echo
 

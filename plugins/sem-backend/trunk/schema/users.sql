@@ -110,7 +110,7 @@ BEGIN
 			NULL;
 		ELSE
 			-- hash using blowfish
-			NEW.password := crypt(NEW.password, gen_salt('bf'));
+			NEW.password := crypt(NEW.password, gen_salt('bf', 10));
 		END IF;
 	END IF;
 	
