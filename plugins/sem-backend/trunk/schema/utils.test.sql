@@ -1,5 +1,6 @@
 \set QUIET on
 \set ON_ERROR_STOP off
+\pset tuples_only off
 
 ROLLBACK;
 \i ./utils.reset.sql
@@ -11,8 +12,10 @@ BEGIN;
 COMMIT;
 
 \set ON_ERROR_STOP off
+\pset tuples_only on
 
 \i ./users.test.sql
 \i ./products.test.sql
 
+\pset tuples_only off
 \set QUIET off
