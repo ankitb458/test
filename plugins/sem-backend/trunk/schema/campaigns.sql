@@ -6,7 +6,7 @@ CREATE TABLE campaigns (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	ukey			varchar(255) UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
-	name			varchar(255) NOT NULL DEFAULT '',
+	name			varchar(255) NOT NULL,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	promo_id		bigint REFERENCES products(id) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE UNIQUE,
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE DEFERRABLE,
@@ -137,12 +137,21 @@ CREATE OR REPLACE FUNCTION campaigns_clean()
 AS $$
 BEGIN
 	-- Trim fields
-	NEW.name := trim(NEW.name);
+	NEW.name := COALESCE(trim(NEW.name), NEW.ukey);
 	
-	-- Default name
-	IF	COALESCE(NEW.name, '') = ''
+	IF	NEW.ukey IS NULL AND NEW.promo_id IS NULL AND NEW.aff_id IS NULL
 	THEN
-		NEW.name := 'Campaign';
+		-- Default name
+		IF	( NEW.name <> '' ) IS NOT TRUE
+		THEN
+			NEW.name := 'Campaign';
+		END IF;
+		
+		-- Default ukey
+		IF	NEW.ukey IS NULL
+		THEN
+			NEW.ukey := 'campaign';
+		END IF;
 	END IF;
 	
 	-- Handle inherit status

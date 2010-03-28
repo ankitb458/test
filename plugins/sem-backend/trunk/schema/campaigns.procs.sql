@@ -4,8 +4,15 @@
 CREATE OR REPLACE FUNCTION campaigns_sanitize_user()
 	RETURNS trigger
 AS $$
+DECLARE
+	u			record;
 BEGIN
-	IF	TG_TABLE_NAME <> 'campaigns' OR -- Trust triggers
+	IF NEW.aff_id IS NULL AND NEW.promo_id IS NULL
+	THEN
+		NEW.name := COALESCE(NEW.name, 'Campaign');
+		NEW.ukey := COALESCE(NEW.ukey, 'campaign');
+		RETURN NEW;
+	ELSEIF TG_TABLE_NAME <> 'campaigns' OR -- Trust triggers
 		NEW.aff_id IS NULL
 	THEN
 		RETURN NEW;
@@ -17,14 +24,19 @@ BEGIN
 		END IF;
 	END IF;
 	
-	IF	NOT EXISTS(
-		SELECT	1
-		FROM	users
-		WHERE	id = NEW.aff_id
-		AND		status > 'pending'
-		)
+	SELECT	name,
+			ukey
+	INTO	u
+	FROM	users
+	WHERE	id = NEW.aff_id
+	AND		status > 'pending';
+	
+	IF	NOT FOUND
 	THEN
 		NEW.aff_id := NULL;
+	ELSE
+		NEW.name := COALESCE(NULLIF(NEW.name, ''), u.name);
+		NEW.ukey := COALESCE(NULLIF(NEW.ukey, ''), u.ukey, u.name);
 	END IF;
 	
 	RETURN NEW;
@@ -41,7 +53,7 @@ CREATE OR REPLACE FUNCTION campaigns_sanitize_coupon()
 	RETURNS trigger
 AS $$
 DECLARE
-	p		record;
+	p			record;
 BEGIN
 	IF	NEW.product_id IS NULL
 	THEN

@@ -78,7 +78,7 @@ BEGIN
 	NEW.paypal := trim(NEW.paypal);
 	
 	-- Set name
-	IF	COALESCE(NEW.name, '') = ''
+	IF	( NEW.name <> '' ) IS NOT TRUE
 	THEN
 		NEW.name := CASE
 			WHEN NEW.firstname <> '' AND NEW.lastname <> ''

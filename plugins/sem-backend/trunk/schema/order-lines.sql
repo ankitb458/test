@@ -5,7 +5,7 @@ CREATE TABLE order_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_billable NOT NULL DEFAULT 'draft',
-	name			varchar(255) NOT NULL DEFAULT '',
+	name			varchar(255) NOT NULL,
 	order_id		bigint NOT NULL REFERENCES orders(id) ON UPDATE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,

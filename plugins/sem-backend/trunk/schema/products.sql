@@ -6,7 +6,7 @@ CREATE TABLE products (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	ukey			varchar(255) UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
-	name			varchar(255) NOT NULL DEFAULT '',
+	name			varchar(255) NOT NULL,
 	sku				varchar(255) UNIQUE,
 	init_price		numeric(8,2) NOT NULL DEFAULT 0,
 	init_comm		numeric(8,2) NOT NULL DEFAULT 0,
@@ -72,7 +72,7 @@ BEGIN
 	NEW.sku := trim(NEW.sku);
 	
 	-- Default name
-	IF	COALESCE(NEW.name, '') = ''
+	IF	( NEW.name <> '' ) IS NOT TRUE
 	THEN
 		NEW.name := 'Product';
 	END IF;
