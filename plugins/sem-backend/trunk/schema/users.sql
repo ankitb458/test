@@ -8,7 +8,7 @@ CREATE TABLE users (
 	status			status_authenticatable NOT NULL DEFAULT 'pending',
 	name			varchar(255) NOT NULL,
 	username		varchar(255),
-	password		varchar(255) NOT NULL DEFAULT '',
+	password		varchar(60) NOT NULL DEFAULT '',
 	email			varchar(255),
 	nickname		varchar(255) NOT NULL DEFAULT '',
 	firstname		varchar(255) NOT NULL DEFAULT '',
