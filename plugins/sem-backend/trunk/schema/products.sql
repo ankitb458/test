@@ -7,7 +7,7 @@ CREATE TABLE products (
 	ukey			varchar(255) UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL DEFAULT '',
-	sku				varchar(255) NOT NULL DEFAULT '',
+	sku				varchar(255) UNIQUE,
 	init_price		numeric(8,2) NOT NULL DEFAULT 0,
 	init_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_price		numeric(8,2) NOT NULL DEFAULT 0,
@@ -93,3 +93,31 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER products_05_clean
 	BEFORE INSERT OR UPDATE ON products
 FOR EACH ROW EXECUTE PROCEDURE products_clean();
+
+/**
+ * Add SKU to the tsv
+ */
+CREATE OR REPLACE FUNCTION products_tsv()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	NEW.sku IS NULL
+	THEN
+		RETURN NEW;
+	ELSEIF TG_OP = 'UPDATE'
+	THEN
+		IF	NEW.tsv IS NOT DISTINCT FROM OLD.tsv AND
+			NEW.sku IS NOT DISTINCT FROM OLD.sku
+		THEN
+			RETURN NEW;
+		END IF;
+	END IF;
+	
+	NEW.tsv := NEW.tsv || setweight(to_tsvector(NEW.tsv), 'A');
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_20_tsv
+	BEFORE INSERT OR UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_tsv();
