@@ -144,15 +144,10 @@ BEGIN
 	-- Handle inherit status
 	IF	NEW.status = 'inherit' AND NEW.promo_id IS NULL
 	THEN
-		NEW.status = 'trash';
+		NEW.status := 'trash';
 	ELSEIF NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
 	THEN
-		IF	TG_OP = 'INSERT'
-		THEN
-			RAISE EXCEPTION 'campaigns.id = % is tied to products.id = %.', NEW.id, NEW.promo_id;
-		ELSE
-			RAISE EXCEPTION 'campaigns.id = % is tied to products.id = %.', OLD.id, OLD.promo_id;
-		END IF;
+		NEW.status := 'inherit';
 	END IF;
 	
 	IF	NEW.product_id IS NULL

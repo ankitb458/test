@@ -1,5 +1,5 @@
 \echo '#'
-\echo '# products.test.sql'
+\echo '# Testing products'
 \echo '#'
 \echo
 
@@ -92,9 +92,22 @@ UPDATE	campaigns
 SET		promo_id = NULL;
 \echo
 
-SELECT	'Deny trashing promo';
 UPDATE	campaigns
 SET		status = 'trash';
+
+SELECT	'Fix non-trashed product promo trashing',
+		status = 'inactive'
+FROM	campaigns;
+
+UPDATE	products
+SET		status = 'trash';
+
+UPDATE	campaigns
+SET		status = 'trash';
+
+SELECT	'Fix trashed product promo trashing',
+		status = 'inherit'
+FROM	campaigns;
 
 -- clean up
 

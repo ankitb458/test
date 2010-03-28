@@ -1,5 +1,5 @@
 \echo '#'
-\echo '# users.test.sql'
+\echo '# Testing users'
 \echo '#'
 \echo
 

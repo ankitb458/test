@@ -65,13 +65,13 @@ BEGIN
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
 	THEN
-		IF	ROW(NEW.product_id, NEW.init_discount, NEW.rec_discount)
-			IS NOT DISTINCT FROM ROW(OLD.product_id, OLD.init_discount, OLD.rec_discount)
+		IF	ROW(NEW.status, NEW.product_id, NEW.init_discount, NEW.rec_discount)
+			IS NOT DISTINCT FROM ROW(OLD.status, OLD.product_id, OLD.init_discount, OLD.rec_discount)
 		THEN
 			RETURN NEW;
 		END IF;
 	END IF;
-
+	
 	-- Validate product and sanitize status
 	SELECT	status,
 			init_price,
