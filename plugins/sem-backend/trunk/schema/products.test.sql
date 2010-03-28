@@ -13,28 +13,28 @@ DELETE FROM products;
 UPDATE	products
 SET		status = 'trash';
 
-SELECT	'Campaign Inherits trash status',
+SELECT	'Propagate trash status to promo',
 		campaigns.status = 'inherit'
 FROM	campaigns;
 
 UPDATE	products
 SET		status = 'draft';
 
-SELECT	'Campaign Inherits draft status',
+SELECT	'Propagate draft status to promo',
 		campaigns.status = 'draft'
 FROM	campaigns;
 
 UPDATE	products
 SET		status = 'pending';
 
-SELECT	'Campaign Inherits pending status',
+SELECT	'Propagate pending status to promo',
 		campaigns.status = 'pending'
 FROM	campaigns;
 
 UPDATE	products
 SET		status = 'inactive';
 
-SELECT	'Campaign Inherits inactive status',
+SELECT	'Propagate inactive status to promo',
 		campaigns.status = 'inactive'
 FROM	campaigns;
 
