@@ -8,7 +8,7 @@ CREATE TABLE users (
 	status			status_authenticatable NOT NULL DEFAULT 'pending',
 	name			varchar(255) NOT NULL,
 	username		varchar(255),
-	password		varchar(64) NOT NULL DEFAULT '',
+	password		varchar(255) NOT NULL DEFAULT '',
 	email			varchar(255),
 	nickname		varchar(255) NOT NULL DEFAULT '',
 	firstname		varchar(255) NOT NULL DEFAULT '',
@@ -95,6 +95,23 @@ BEGIN
 	IF	NEW.status = 'inherit'
 	THEN
 		RAISE EXCEPTION 'Undefined behavior for users.status = inherit.';
+	END IF;
+
+	IF	COALESCE(NEW.password, '') <> ''
+	THEN
+		-- hash password
+		IF	length(NEW.password) = 60 AND substring(NEW.password from 1 for 4) = '$2a$'
+		THEN
+			-- blowfish hashed already
+			NULL;
+		ELSEIF length(NEW.password) = 32 AND NEW.password ~ '^[0-9a-f]{32}$'
+		THEN
+			-- md5 hash, keep as is for backwards compatibility
+			NULL;
+		ELSE
+			-- hash using blowfish
+			NEW.password := crypt(NEW.password, gen_salt('bf'));
+		END IF;
 	END IF;
 	
 	RETURN NEW;

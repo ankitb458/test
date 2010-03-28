@@ -3,7 +3,7 @@
 \echo '#'
 \echo
 
-INSERT INTO users ( email ) VALUES ( 'joe@bar.com' );
+INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
 SELECT 'Deny deleting non-trashed';
 DELETE FROM users;
