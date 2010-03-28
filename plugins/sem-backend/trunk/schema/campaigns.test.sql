@@ -113,19 +113,37 @@ UPDATE	products
 SET		status = 'active';
 
 UPDATE	campaigns
-SET		product_id = products.id,
-		init_discount = 8,
-		rec_discount = 8
+SET		status = 'inactive',
+		product_id = products.id,
+		init_discount = 0,
+		rec_discount = 0
 FROM	products;
 
---UPDATE	campaigns
---SET		status = 'trash';
+SELECT	'Allow for inactive coupons with no discounts',
+		NOT EXISTS(
+		SELECT	1
+		FROM	campaigns
+		WHERE	( product_id IS NULL OR status <> 'inactive' )
+		);
 
-SELECT	*
-FROM	campaigns;
+UPDATE	campaigns
+SET		status = 'active',
+		init_discount = 8,
+		rec_discount = 8;
+
+UPDATE	products
+SET		status = 'future',
+		min_date = NOW() + interval '1 week';
+
+SELECT	'Allow for active coupons on future products',
+		NOT EXISTS(
+		SELECT	1
+		FROM	campaigns
+		WHERE	( product_id IS NULL OR status <> 'active' )
+		);
 
 -- clean up
-/*
+--/*
 --\! sleep 3
 
 UPDATE	products

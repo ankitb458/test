@@ -71,7 +71,8 @@ BEGIN
 	
 	IF	NOT FOUND
 	THEN
-		RAISE EXCEPTION 'users.id = % cannot be tied to campaigns.id = %', NEW.aff_id, NEW.id;
+		RAISE EXCEPTION 'Cannot tie users.id = % to campaigns.id = %: user isn''t active.',
+			NEW.aff_id, NEW.id;
 	ELSE
 		NEW.name := COALESCE(NULLIF(NEW.name, ''), u.name);
 		NEW.ukey := COALESCE(NULLIF(NEW.ukey, ''), u.ukey, u.name);
@@ -166,7 +167,8 @@ BEGIN
 	ELSE
 		IF p.status < 'future'
 		THEN
-			RAISE EXCEPTION 'campaigns.id = % cannot be tied to products.id = %', NEW.id, NEW.product_id;
+			RAISE EXCEPTION 'Cannot tie campaigns.id = % to products.id = %: product isn''t active.',
+				NEW.id, NEW.product_id;
 		END IF;
 	END IF;
 	
@@ -200,9 +202,12 @@ CREATE OR REPLACE FUNCTION campaigns_check_update_promo()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	NEW.promo_id IS DISTINCT FROM OLD.promo_id
+	-- IS DISTINCT FROM would disallow SQL to propagate an id change
+	IF	NEW.promo_id IS NULL AND OLD.promo_id IS NOT NULL OR
+		NEW.promo_id IS NOT NULL AND OLD.promo_id IS NULL
 	THEN
-		RAISE EXCEPTION 'campaigns.id = % is tied to products.id = %.', OLD.id, OLD.promo_id;
+		RAISE EXCEPTION 'Cannot change promo_id on campaigns.id = %.',
+			NEW.id;
 	END IF;
 	
 	RETURN NEW;
