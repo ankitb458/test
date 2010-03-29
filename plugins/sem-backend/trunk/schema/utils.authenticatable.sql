@@ -7,5 +7,6 @@ CREATE TYPE status_authenticatable AS enum (
 	'pending',
 	'banned',
 	'inactive',
+	'locked',
 	'active'
 	);

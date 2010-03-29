@@ -10,6 +10,8 @@ CREATE TABLE users (
 	username		varchar(255),
 	password		varchar(60) NOT NULL DEFAULT '',
 	email			varchar(255),
+	ip				inet,
+	token			uuid,
 	nickname		varchar(255) NOT NULL DEFAULT '',
 	firstname		varchar(255) NOT NULL DEFAULT '',
 	lastname		varchar(255) NOT NULL DEFAULT '',
