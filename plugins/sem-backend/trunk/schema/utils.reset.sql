@@ -8,5 +8,6 @@ DROP TABLE users CASCADE;
 DROP TYPE status_billable;
 DROP TYPE status_activatable;
 DROP TYPE status_authenticatable;
-DROP TYPE datetime;
+DROP DOMAIN datetime;
+DROP DOMAIN email;
 

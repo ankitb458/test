@@ -1,4 +1,10 @@
 /**
+ * email domain
+ */
+
+CREATE DOMAIN email as varchar CHECK ( is_email(value) );
+
+/**
  * Validates against rfc822
  */
 CREATE OR REPLACE FUNCTION is_email(varchar)

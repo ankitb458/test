@@ -19,15 +19,15 @@ CREATE TABLE users (
 	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL,
 	paypal			varchar(255),
 	CONSTRAINT valid_ukey
-		CHECK ( ukey IS NULL OR ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
+		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_username
 		CHECK ( username IS NULL OR username <> '' ),
 	CONSTRAINT valid_password
 		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) ),
 	CONSTRAINT valid_email
-		CHECK ( email IS NULL OR is_email(email) ),
+		CHECK ( is_email(email) ),
 	CONSTRAINT valid_paypal
-		CHECK ( paypal IS NULL OR is_email(paypal) )
+		CHECK ( is_email(paypal) )
 );
 
 SELECT	sluggable('users'),
@@ -99,7 +99,7 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- Disable inherit and trash for now
+	-- Disable inherit (it's required by trashable)
 	IF	NEW.status = 'inherit'
 	THEN
 		RAISE EXCEPTION 'Undefined behavior for users.status = inherit for campaigns.id = %.',
@@ -120,6 +120,11 @@ BEGIN
 			-- Hash using blowfish
 			NEW.password := crypt(NEW.password, gen_salt('bf', 10));
 		END IF;
+	END IF;
+	
+	IF	NEW.status = 'pending' AND NEW.password = ''
+	THEN
+		NEW.status := 'inactive';
 	END IF;
 	
 	RETURN NEW;

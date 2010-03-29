@@ -19,7 +19,7 @@ CREATE TABLE order_lines (
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
 	rec_count		smallint,
-	CONSTRAINT valid_price
+	CONSTRAINT valid_amount
 		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_discount >= 0 AND
 				init_price >= init_comm AND init_price >= init_discount AND
 				rec_price >= 0 AND rec_comm >= 0 AND rec_discount >= 0 AND
