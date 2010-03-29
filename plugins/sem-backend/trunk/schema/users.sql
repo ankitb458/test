@@ -100,7 +100,8 @@ BEGIN
 	-- Disable inherit and trash for now
 	IF	NEW.status = 'inherit'
 	THEN
-		RAISE EXCEPTION 'Undefined behavior for users.status = inherit.';
+		RAISE EXCEPTION 'Undefined behavior for users.status = inherit for campaigns.id = %.',
+			NEW.id;
 	END IF;
 
 	IF	NEW.password <> ''

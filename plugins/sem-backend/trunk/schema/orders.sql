@@ -51,7 +51,7 @@ BEGIN
 		
 		IF	NEW.name = ''
 		THEN
-			NEW.name := 'Anonymous User';
+			NEW.name := 'Order';
 		END IF;
 	END IF;
 	

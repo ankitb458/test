@@ -17,7 +17,7 @@ BEGIN
 	BEGIN
 		IF OLD.status > 'inherit'
 		THEN
-			RAISE EXCEPTION 'Cannot delete $EXEC$ || t_name || $EXEC$.id = %. It must be trashed first.',
+			RAISE EXCEPTION 'Cannot delete $EXEC$ || t_name || $EXEC$.id = %: it must be trashed first.',
 				OLD.id;
 		END IF;
 		

@@ -16,7 +16,7 @@ BEGIN
 		WHERE	product_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'products.id = % is referenced in orders.', NEW.id;
+		RAISE EXCEPTION 'Cannot delete products.id = %: it is referenced in orders.', NEW.id;
 	END IF;
 	
 	RETURN NEW;

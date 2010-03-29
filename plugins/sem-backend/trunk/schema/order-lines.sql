@@ -54,7 +54,7 @@ DECLARE
 BEGIN
 	NEW.name := NULLIF(trim(NEW.name, ''), '');
 	
-	IF	COALESCE(NEW.name, '') = ''
+	IF	NEW.name IS NULL
 	THEN
 		IF	NEW.product_id IS NOT NULL
 		THEN
@@ -66,7 +66,7 @@ BEGIN
 		
 		IF	NEW.name = ''
 		THEN
-			NEW.name := 'Unknown Product';
+			NEW.name := 'Product';
 		END IF;
 	END IF;
 	
