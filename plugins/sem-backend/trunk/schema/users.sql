@@ -9,7 +9,7 @@ CREATE TABLE users (
 	name			varchar(255) NOT NULL,
 	username		varchar(255),
 	password		varchar(60) NOT NULL DEFAULT '',
-	email			varchar(255),
+	email			email,
 	ip				inet,
 	token			uuid,
 	nickname		varchar(255) NOT NULL DEFAULT '',
@@ -17,17 +17,13 @@ CREATE TABLE users (
 	lastname		varchar(255) NOT NULL DEFAULT '',
 	phone			varchar(255) NOT NULL DEFAULT '',
 	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE ON DELETE SET NULL,
-	paypal			varchar(255),
+	paypal			email,
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_username
 		CHECK ( username IS NULL OR username <> '' ),
 	CONSTRAINT valid_password
-		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) ),
-	CONSTRAINT valid_email
-		CHECK ( is_email(email) ),
-	CONSTRAINT valid_paypal
-		CHECK ( is_email(paypal) )
+		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) )
 );
 
 SELECT	sluggable('users'),

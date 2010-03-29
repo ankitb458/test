@@ -10,7 +10,7 @@ SELECT 'Deny deleting non-trashed campaigns';
 DELETE FROM campaigns;
 \echo
 
-INSERT INTO users ( email ) VALUES ( 'joe@bar.com' );
+INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
 SELECT	'Deny adding campaigns to a non-active user';
 INSERT INTO campaigns ( aff_id )
