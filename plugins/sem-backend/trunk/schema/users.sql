@@ -184,3 +184,33 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER users_20_tsv
 	BEFORE INSERT OR UPDATE ON users
 FOR EACH ROW EXECUTE PROCEDURE users_tsv();
+
+/**
+ * Retrieve a user based on its email or ukey
+ */
+CREATE OR REPLACE FUNCTION get_user(varchar)
+	RETURNS SETOF users
+AS $$
+DECLARE
+	k			varchar := $1;
+BEGIN
+	k := trim(k);
+	
+	IF	k = ''
+	THEN
+		RETURN	QUERY
+		SELECT	NULL::users;
+	ELSEIF is_email(k)
+	THEN
+		k := lower(k);
+		RETURN QUERY
+		SELECT	*
+		FROM	users
+		WHERE	email = lower(k);
+	ELSE
+		RETURN QUERY
+		SELECT	*
+		FROM	users
+		WHERE	username = lower(k);
+	END IF;
+END $$ LANGUAGE plpgsql STABLE STRICT;
