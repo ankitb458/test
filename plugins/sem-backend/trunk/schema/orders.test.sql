@@ -33,7 +33,7 @@ FROM	get_user('joe@bar.com') as users,
 \echo
 
 -- clean up
-/*
+--/*
 --\! sleep 3
 
 \echo '# Cleaning up...'

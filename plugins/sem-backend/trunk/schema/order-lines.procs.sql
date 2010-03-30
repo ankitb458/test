@@ -194,3 +194,46 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER order_lines_03_autofill
 	BEFORE INSERT ON order_lines
 FOR EACH ROW EXECUTE PROCEDURE order_lines_autofill();
+
+/**
+ * Forward status changes to orders
+ */
+CREATE OR REPLACE FUNCTION order_lines_delegate_status()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF TG_TABLE_NAME <> 'order_lines' -- Trust triggers
+	THEN
+		RETURN NEW;
+	ELSEIF TG_OP = 'UPDATE'
+	THEN
+		IF	ROW(NEW.status, NEW.order_id) = ROW(OLD.status, OLD.order_id)
+		THEN
+			RETURN NEW;
+		ELSEIF NEW.order_id <> OLD.order_id
+		THEN
+			-- Also do this for the old order
+			UPDATE	orders
+			SET		status = COALESCE((
+					SELECT	MAX(order_lines.status)
+					FROM	order_lines
+					WHERE	order_id = OLD.order_id
+					), 'trash')
+			WHERE	orders.id = OLD.order_id;
+		END IF;
+	END IF;
+
+	UPDATE	orders
+	SET		status = (
+			SELECT	MAX(order_lines.status)
+			FROM	order_lines
+			WHERE	order_id = NEW.order_id
+			)
+	WHERE	orders.id = NEW.order_id;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER order_lines_10_delegate_status
+	AFTER INSERT OR UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_delegate_status();

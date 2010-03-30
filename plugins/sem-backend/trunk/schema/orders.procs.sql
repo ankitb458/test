@@ -66,7 +66,7 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_02_sanitize_campaign_id
+CREATE TRIGGER orders_02_sanitize_campaign_id
 	BEFORE INSERT OR UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_sanitize_campaign_id();
 
@@ -104,7 +104,7 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_02_sanitize_user_id
+CREATE TRIGGER orders_02_sanitize_user_id
 	BEFORE INSERT OR UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_sanitize_user_id();
 
@@ -142,6 +142,30 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_02_sanitize_aff_id
+CREATE TRIGGER orders_02_sanitize_aff_id
 	BEFORE INSERT OR UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_sanitize_aff_id();
+
+/**
+ * Delegates status handling on orders
+ */
+CREATE OR REPLACE FUNCTION orders_delegate_status()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	NEW.status = OLD.status
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	UPDATE	order_lines
+	SET		status = NEW.status
+	WHERE	order_id = NEW.id
+	AND		status = OLD.status;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER orders_10_delegate_status
+	AFTER UPDATE ON orders
+FOR EACH ROW EXECUTE PROCEDURE orders_delegate_status();
