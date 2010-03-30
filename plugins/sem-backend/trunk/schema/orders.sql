@@ -69,6 +69,12 @@ BEGIN
 		NEW.order_date := NOW()::datetime;
 	END IF;
 	
+	-- Raise warning if billing_id = aff_id
+	IF	NEW.billing_id = NEW.aff_id
+	THEN
+		RAISE WARNING 'In orders.id = %, billing_id = aff_id';
+	END IF;
+	
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
