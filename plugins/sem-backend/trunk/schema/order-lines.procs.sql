@@ -213,8 +213,10 @@ FOR EACH ROW EXECUTE PROCEDURE order_lines_autofill();
 CREATE OR REPLACE FUNCTION order_lines_delegate_status()
 	RETURNS trigger
 AS $$
+DECLARE
+	new_status	status_billable;
 BEGIN
-	IF TG_OP = 'UPDATE'
+	IF	TG_OP = 'UPDATE'
 	THEN
 		IF	ROW(NEW.status, NEW.order_id) = ROW(OLD.status, OLD.order_id)
 		THEN
@@ -222,23 +224,33 @@ BEGIN
 		ELSEIF NEW.order_id <> OLD.order_id
 		THEN
 			-- Also do this for the old order
+			SELECT	MAX(order_lines.status)
+			INTO	new_status
+			FROM	order_lines
+			WHERE	order_id = OLD.order_id;
+			
+			new_status := COALESCE(new_status, 'trash');
+			
 			UPDATE	orders
-			SET		status = COALESCE((
-					SELECT	MAX(order_lines.status)
-					FROM	order_lines
-					WHERE	order_id = OLD.order_id
-					), 'trash')
-			WHERE	orders.id = OLD.order_id;
+			SET		status = new_status
+			WHERE	orders.id = OLD.order_id
+			AND		status <> new_status;
+			
+			-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 		END IF;
 	END IF;
+	
+	SELECT	MAX(order_lines.status)
+	INTO	new_status
+	FROM	order_lines
+	WHERE	order_id = NEW.order_id;
 
 	UPDATE	orders
-	SET		status = (
-			SELECT	MAX(order_lines.status)
-			FROM	order_lines
-			WHERE	order_id = NEW.order_id
-			)
-	WHERE	orders.id = NEW.order_id;
+	SET		status = new_status
+	WHERE	orders.id = NEW.order_id
+	AND		status <> new_status;
+	
+	-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;

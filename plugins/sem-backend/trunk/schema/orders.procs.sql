@@ -5,10 +5,12 @@ CREATE OR REPLACE FUNCTION orders_check_trash()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF NEW.status = OLD.status OR NEW.status <> 'trash'
+	IF	NEW.status = OLD.status OR NEW.status <> 'trash'
 	THEN
 		RETURN NEW;
 	END IF;
+	
+	-- RAISE NOTICE '%', TG_NAME;
 	
 	IF	EXISTS (
 		SELECT	1
@@ -46,6 +48,8 @@ BEGIN
 			RETURN NEW;
 		END IF;
 	END IF;
+	
+	-- RAISE NOTICE '%', TG_NAME;
 	
 	SELECT	aff_id
 	INTO	a_id
@@ -90,6 +94,8 @@ BEGIN
 		END IF;
 	END IF;
 	
+	-- RAISE NOTICE '%', TG_NAME;
+	
 	IF	NOT EXISTS(
 		SELECT	1
 		FROM	users
@@ -128,6 +134,8 @@ BEGIN
 		END IF;
 	END IF;
 	
+	-- RAISE NOTICE '%', TG_NAME;
+	
 	IF	NOT EXISTS(
 		SELECT	1
 		FROM	users
@@ -162,6 +170,8 @@ BEGIN
 	SET		status = NEW.status
 	WHERE	order_id = NEW.id
 	AND		status = OLD.status;
+	
+	-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;

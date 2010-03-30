@@ -14,7 +14,7 @@ DECLARE
 	t_name		alias for $1;
 	stmt		text := '';
 BEGIN
-	IF NOT column_exists(t_name, 'tsv')
+	IF	NOT column_exists(t_name, 'tsv')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -22,7 +22,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT index_exists(t_name, t_name || '_tsv')
+	IF	NOT index_exists(t_name, t_name || '_tsv')
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_tsv') || $EXEC$
@@ -39,19 +39,19 @@ BEGIN
 		THEN
 			IF	NEW.tsv IS NOT DISTINCT FROM OLD.tsv$EXEC$;
 	
-	IF column_exists(t_name, 'name')
+	IF	column_exists(t_name, 'name')
 	THEN
 		stmt := stmt || $EXEC$ AND
 				NEW.name IS NOT DISTINCT FROM OLD.name$EXEC$;
 	END IF;
 	
-	IF column_exists(t_name, 'ukey')
+	IF	column_exists(t_name, 'ukey')
 	THEN
 		stmt := stmt || $EXEC$ AND
 				NEW.ukey IS NOT DISTINCT FROM OLD.ukey$EXEC$;
 	END IF;
 	
-	IF column_exists(t_name, 'memo')
+	IF	column_exists(t_name, 'memo')
 	THEN
 		stmt := stmt || $EXEC$ AND
 				NEW.memo IS NOT DISTINCT FROM OLD.memo$EXEC$;
@@ -65,21 +65,21 @@ BEGIN
 		
 		NEW.tsv := ''::tsvector;$EXEC$;
 	
-	IF column_exists(t_name, 'name')
+	IF	column_exists(t_name, 'name')
 	THEN
 		stmt := stmt || $EXEC$
 		NEW.tsv := NEW.tsv ||
 			setweight(to_tsvector(NEW.name), 'A');$EXEC$;
 	END IF;
 	
-	IF column_exists(t_name, 'ukey')
+	IF	column_exists(t_name, 'ukey')
 	THEN
 		stmt := stmt || $EXEC$
 		NEW.tsv := NEW.tsv ||
 			setweight(to_tsvector(COALESCE(regexp_replace(NEW.ukey, E'-\\d+$', ''), '')), 'B');$EXEC$;
 	END IF;
 	
-	IF column_exists(t_name, 'memo')
+	IF	column_exists(t_name, 'memo')
 	THEN
 		stmt := stmt || $EXEC$
 		NEW.tsv := NEW.tsv ||
@@ -95,7 +95,7 @@ BEGIN
 	
 	EXECUTE stmt;
 	
-	IF NOT trigger_exists(t_name || '_20__tsv')
+	IF	NOT trigger_exists(t_name || '_20__tsv')
 	THEN
 		EXECUTE $EXEC$
 		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_20__tsv') || $EXEC$

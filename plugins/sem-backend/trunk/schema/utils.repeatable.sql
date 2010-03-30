@@ -17,7 +17,7 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF NOT column_exists(t_name, 'rec_interval')
+	IF	NOT column_exists(t_name, 'rec_interval')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -25,7 +25,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT column_exists(t_name, 'rec_count')
+	IF	NOT column_exists(t_name, 'rec_count')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -33,7 +33,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT constraint_exists(t_name, 'valid_interval')
+	IF	NOT constraint_exists(t_name, 'valid_interval')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -59,7 +59,7 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_01__check_interval')
+	IF	NOT trigger_exists(t_name || '_01__check_interval')
 	THEN
 		EXECUTE $EXEC$
 		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_interval') || $EXEC$

@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION campaigns_check_trash()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF NEW.status = OLD.status OR NEW.status <> 'trash'
+	IF	NEW.status = OLD.status OR NEW.status <> 'trash'
 	THEN
 		RETURN NEW;
 	END IF;
@@ -45,7 +45,7 @@ AS $$
 DECLARE
 	u			record;
 BEGIN
-	IF NEW.aff_id IS NULL
+	IF	NEW.aff_id IS NULL
 	THEN
 		IF	NEW.promo_id IS NULL
 		THEN
@@ -60,6 +60,8 @@ BEGIN
 			RETURN NEW;
 		END IF;
 	END IF;
+	
+	-- RAISE NOTICE '%', TG_NAME;
 	
 	SELECT	name,
 			ukey
@@ -87,13 +89,14 @@ FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_aff_id();
 /**
  * Validates a coupon's discounts.
  */
-CREATE OR REPLACE FUNCTION campaigns_sanitize_product_id()
+CREATE OR REPLACE FUNCTION campaigns_sanitize_coupon()
 	RETURNS trigger
 AS $$
 DECLARE
 	p			record;
 BEGIN
-	IF	NEW.product_id IS NULL
+	IF	NEW.product_id IS NULL OR
+		TG_OP = 'INSERT' AND NEW.promo_id IS NOT NULL
 	THEN
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
@@ -104,6 +107,8 @@ BEGIN
 			RETURN NEW;
 		END IF;
 	END IF;
+	
+	-- RAISE NOTICE '%', TG_NAME;
 	
 	IF	NEW.product_id = NEW.promo_id
 	THEN
@@ -116,7 +121,7 @@ BEGIN
 		FROM	products
 		WHERE	id = NEW.product_id;
 		
-		IF TG_OP = 'INSERT'
+		IF	TG_OP = 'INSERT'
 		THEN
 			NEW.status := CASE
 				WHEN p.status <= 'inherit'
@@ -161,7 +166,7 @@ BEGIN
 	END IF;
 	
 	-- Sanitize discount
-	IF NEW.aff_id IS NOT NULL
+	IF	NEW.aff_id IS NOT NULL
 	THEN
 		NEW.init_discount := LEAST(NEW.init_discount, p.init_comm);
 		NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_comm);
@@ -173,9 +178,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_03_sanitize_product_id
+CREATE TRIGGER campaigns_03_sanitize_coupon
 	BEFORE INSERT OR UPDATE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_product_id();
+FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_coupon();
 
 /**
  * Prevents promo_id and product_id from being updated when relevant.

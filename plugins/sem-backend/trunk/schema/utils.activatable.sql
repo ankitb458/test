@@ -39,7 +39,7 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF NOT column_exists(t_name, 'status')
+	IF	NOT column_exists(t_name, 'status')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -47,7 +47,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT column_exists(t_name, 'min_date')
+	IF	NOT column_exists(t_name, 'min_date')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -55,7 +55,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT column_exists(t_name, 'max_date')
+	IF	NOT column_exists(t_name, 'max_date')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -63,7 +63,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT constraint_exists(t_name, 'valid_min_max_date')
+	IF	NOT constraint_exists(t_name, 'valid_min_max_date')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -72,7 +72,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT index_exists(t_name, t_name || '_activate')
+	IF	NOT index_exists(t_name, t_name || '_activate')
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_activate') || $EXEC$
@@ -81,7 +81,7 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF NOT index_exists(t_name, t_name || '_deactivate')
+	IF	NOT index_exists(t_name, t_name || '_deactivate')
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_deactivate') || $EXEC$
@@ -148,7 +148,7 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_01__check_min_max_date')
+	IF	NOT trigger_exists(t_name || '_01__check_min_max_date')
 	THEN
 		EXECUTE $EXEC$
 		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_min_max_date') || $EXEC$

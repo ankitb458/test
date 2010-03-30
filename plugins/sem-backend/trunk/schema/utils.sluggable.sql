@@ -41,7 +41,7 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF NOT column_exists(t_name, 'ukey')
+	IF	NOT column_exists(t_name, 'ukey')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
@@ -94,7 +94,7 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_10__ukey')
+	IF	NOT trigger_exists(t_name || '_10__ukey')
 	THEN
 		EXECUTE $EXEC$
 		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_10__ukey') || $EXEC$

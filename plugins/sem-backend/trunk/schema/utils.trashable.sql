@@ -15,7 +15,7 @@ BEGIN
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		IF OLD.status > 'inherit'
+		IF	OLD.status > 'inherit'
 		THEN
 			RAISE EXCEPTION 'Cannot delete $EXEC$ || t_name || $EXEC$.id = %: it must be trashed first.',
 				OLD.id;
@@ -36,7 +36,7 @@ BEGIN
 	WHERE	id = OLD.id;
 	$EXEC$;
 	
-	IF NOT trigger_exists(t_name || '_01__check_trash')
+	IF	NOT trigger_exists(t_name || '_01__check_trash')
 	THEN
 		EXECUTE $EXEC$
 		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_trash') || $EXEC$
