@@ -72,7 +72,7 @@ BEGIN
 	-- Raise warning if billing_id = aff_id
 	IF	NEW.billing_id = NEW.aff_id
 	THEN
-		RAISE WARNING 'In orders.id = %, billing_id = aff_id.', NEW.billing_id;
+		RAISE WARNING 'In orders.id = %, billing_id = aff_id = %.', NEW.id, NEW.billing_id;
 	END IF;
 	
 	RETURN NEW;
