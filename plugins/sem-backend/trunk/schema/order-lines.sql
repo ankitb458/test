@@ -41,7 +41,9 @@ COMMENT ON TABLE orders IS E'Order lines
 
 - user_id gets shipped; orders.billing_id gets billed.
 - init/rec price/comm/discount are auto-filled if not provided.
-- rec_count gets decremented on cleared payments.';
+- rec_count gets decremented on cleared payments.
+- coupon_id is typically the same as the order''s campaign_id, the
+  exception would be in the event of a site-wide promo.';
 
 /**
  * Clean an order line before it gets stored.

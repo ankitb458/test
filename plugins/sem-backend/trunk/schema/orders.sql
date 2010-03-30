@@ -26,9 +26,7 @@ COMMENT ON TABLE orders IS E'Orders
 
 - billing_id gets billed; order_lines.user_id gets shipped.
 - aff_id gets the commission and is tied to the campaign_id. It gets stored
-  for reference, in case a campaign''s owner changes.
-- coupon_id, when present, is typically the same as the campaign_id. A system-
-  wide promo on a product may make the two different, however.';
+  for reference, in case a campaign''s owner changes.';
 
 /**
  * Clean an order before it gets stored.
