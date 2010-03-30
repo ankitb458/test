@@ -47,11 +47,11 @@ CREATE OR REPLACE VIEW active_users
 AS
 SELECT	users.*
 FROM	users
-WHERE	status = 'active';
+WHERE	status > 'pending';
 
 COMMENT ON VIEW active_users IS E'Active Users
 
-- status is active.';
+- status is greater than pending, i.e. it can be used in orders, etc.';
 
 /**
  * Cleans a user before storing it
