@@ -12,7 +12,7 @@ CREATE TABLE orders (
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_order_flow
-		CHECK ( NOT ( order_date IS NULL AND status > 'draft' ) )
+		CHECK ( NOT ( order_date IS NULL AND status <> 'draft' ) )
 );
 
 SELECT timestampable('orders'), searchable('orders'), trashable('orders');
@@ -64,7 +64,7 @@ BEGIN
 	END IF;
 	
 	-- Assign a default date if needed
-	IF	NEW.order_date IS NULL AND NEW.status > 'draft'
+	IF	NEW.order_date IS NULL AND NEW.status <> 'draft'
 	THEN
 		NEW.order_date := NOW()::datetime;
 	END IF;
