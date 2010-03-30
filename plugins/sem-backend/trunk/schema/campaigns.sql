@@ -61,7 +61,7 @@ CREATE OR REPLACE VIEW active_campaigns
 AS
 SELECT	campaigns.*
 FROM	campaigns
-WHERE	status >= 'pending';
+WHERE	status = 'active';
 
 COMMENT ON VIEW active_campaigns IS E'Active Campaigns
 

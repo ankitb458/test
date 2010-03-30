@@ -49,8 +49,9 @@ BEGIN
 	
 	SELECT	aff_id
 	INTO	a_id
-	FROM	active_campaigns
-	WHERE	id = NEW.campaign_id;
+	FROM	campaigns
+	WHERE	id = NEW.campaign_id
+	AND		status > 'draft';
 	
 	IF	NOT FOUND
 	THEN
@@ -91,8 +92,9 @@ BEGIN
 	
 	IF	NOT EXISTS(
 		SELECT	1
-		FROM	active_users
+		FROM	users
 		WHERE	id = NEW.user_id
+		AND		status > 'pending'
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot tie users.id = % to orders.id = %: user isn''t active.',
@@ -128,8 +130,9 @@ BEGIN
 	
 	IF	NOT EXISTS(
 		SELECT	1
-		FROM	active_users
+		FROM	users
 		WHERE	id = NEW.aff_id
+		AND		status > 'pending'
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot tie users.id = % to orders.id = %: user isn''t active.',

@@ -106,9 +106,10 @@ BEGIN
 					max_date,
 					max_orders
 			INTO	c
-			FROM	active_coupons
+			FROM	campaigns
 			WHERE	id = NEW.coupon_id
-			AND		product_id = NEW.product_id;
+			AND		products_id = NEW.product_id
+			AND		status > 'draft';
 			
 			IF	NOT FOUND
 			THEN
@@ -129,8 +130,9 @@ BEGIN
 					max_date,
 					max_orders
 			INTO	c
-			FROM	active_promos
-			WHERE	product_id = NEW.product_id;
+			FROM	campaigns
+			WHERE	promo_id = NEW.product_id
+			AND		status > 'draft';
 			
 			IF	NOT FOUND
 			THEN
@@ -149,25 +151,35 @@ BEGIN
 			-- Process firesale if applicable
 			IF	c.firesale
 			THEN
-				IF	c.max_date IS NOT NULL -- max_date < NOW() is guaranteed by active_promos
+				IF	c.max_date IS NOT NULL
 				THEN
-					t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
-						EXTRACT(EPOCH FROM c.max_date - c.min_date);
+					IF	c.max_date >= NOW()
+					THEN
+						t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
+							EXTRACT(EPOCH FROM c.max_date - c.min_date);
+					ELSE
+						t_ratio := 0;
+					END IF;
 				END IF;
 				
-				IF	c.max_orders IS NOT NULL -- max_orders > 0 is guaranteed by active_promos
+				IF	c.max_orders IS NOT NULL
 				THEN
-					SELECT	SUM(order_lines.quantity)
-					INTO	cur_orders
-					FROM	order_lines
-					JOIN	orders
-					ON		orders.id = order_lines.order_id
-					WHERE	order_lines.order_id <> NEW.order_id
-					AND		order_lines.coupon_id = NEW.coupon_id
-					AND		order_lines.status > 'pending'
-					AND		orders.order_date >= c.min_date;
+					IF	max_orders > 0
+					THEN
+						SELECT	SUM(order_lines.quantity)
+						INTO	cur_orders
+						FROM	order_lines
+						JOIN	orders
+						ON		orders.id = order_lines.order_id
+						WHERE	order_lines.order_id <> NEW.order_id
+						AND		order_lines.coupon_id = NEW.coupon_id
+						AND		order_lines.status > 'pending'
+						AND		orders.order_date >= c.min_date;
 					
-					o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
+						o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
+					ELSE
+						o_ratio := 0;
+					END IF;
 				END IF;
 				
 				c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);

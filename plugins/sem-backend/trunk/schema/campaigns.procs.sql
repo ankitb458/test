@@ -105,24 +105,17 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- Validate product and sanitize status
-	SELECT	status,
-			init_price,
-			init_comm,
-			rec_price,
-			rec_comm
-	INTO	p
-	FROM	products
-	WHERE	id = NEW.product_id;
-	
-	IF	NOT FOUND
-	THEN
-		NEW.product_id := NULL;
-		RETURN NEW;
-	END IF;
-	
 	IF	NEW.product_id = NEW.promo_id
 	THEN
+		SELECT	status,
+				init_price,
+				init_comm,
+				rec_price,
+				rec_comm
+		INTO	p
+		FROM	products
+		WHERE	id = NEW.product_id;
+		
 		IF TG_OP = 'INSERT'
 		THEN
 			NEW.status := CASE
@@ -150,7 +143,17 @@ BEGIN
 				END::status_activatable;
 		END IF;
 	ELSE
-		IF p.status < 'future'
+		SELECT	status,
+				init_price,
+				init_comm,
+				rec_price,
+				rec_comm
+		INTO	p
+		FROM	products
+		WHERE	id = NEW.product_id
+		AND		status > 'draft';
+		
+		IF	NOT FOUND
 		THEN
 			RAISE EXCEPTION 'Cannot tie campaigns.id = % to products.id = %: product isn''t active.',
 				NEW.id, NEW.product_id;

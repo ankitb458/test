@@ -14,9 +14,6 @@ SET		status = 'pending';
 UPDATE	orders
 SET		status = 'draft';
 
-SELECT	*
-FROM	order_lines;
-
 -- clean up
 /*
 --\! sleep 3
