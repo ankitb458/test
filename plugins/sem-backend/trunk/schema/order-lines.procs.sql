@@ -18,8 +18,6 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- RAISE NOTICE '%', TG_NAME;
-	
 	IF	NOT EXISTS(
 		SELECT	1
 		FROM	users
@@ -39,101 +37,131 @@ CREATE TRIGGER order_lines_02_sanitize_user_id
 FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_user_id();
 
 /**
- * Autofills product/comm/discount when inserting new order lines
+ * Sanitizes an order line's product.
  */
-CREATE OR REPLACE FUNCTION order_lines_autofill()
+CREATE OR REPLACE FUNCTION order_lines_sanitize_product()
+	RETURNS trigger
+AS $$
+DECLARE
+	p		record;
+BEGIN
+	IF	NEW.product_id IS NOT NULL
+	THEN
+		SELECT	init_price,
+				init_comm,
+				rec_price,
+				rec_comm
+		INTO	p
+		FROM	products
+		WHERE	status > 'draft';
+		
+		IF	NOT FOUND
+		THEN
+			RAISE EXCEPTION 'Cannot tie inactive products.id = % to order_lines.id = %',
+				NEW.product_id, NEW.id;
+		END IF;
+		
+		NEW.init_price := COALESCE(NEW.init_price, p.init_price);
+		NEW.init_comm := COALESCE(NEW.init_comm, p.init_comm);
+		NEW.rec_price := COALESCE(NEW.rec_price, p.rec_price);
+		NEW.rec_comm := COALESCE(NEW.rec_comm, p.rec_comm);
+	ELSE
+		NEW.init_price := COALESCE(NEW.init_price, 0);
+		NEW.rec_price := COALESCE(NEW.rec_price, 0);
+		NEW.init_comm := COALESCE(NEW.init_comm, 0);
+		NEW.rec_comm := COALESCE(NEW.rec_comm, 0);
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER order_lines_sanitize_02_product
+	BEFORE INSERT OR UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_product();
+
+/**
+ * Sanitizes an order line's coupon.
+ */
+CREATE OR REPLACE FUNCTION order_lines_sanitize_coupon()
 	RETURNS trigger
 AS $$
 DECLARE
 	o			record;
 	p			record;
 	c			record;
-	t_ratio		numeric := 1;
 	cur_orders	float;
+	t_ratio		numeric := 1;
 	o_ratio		numeric := 1;
 BEGIN
-	IF	NEW.init_price IS NULL OR NEW.init_comm IS NULL OR
-		NEW.rec_price IS NULL OR NEW.rec_comm IS NULL
+	IF	NEW.order_id IS NOT NULL
 	THEN
-		IF	NEW.product_id IS NOT NULL
-		THEN
-			SELECT	COALESCE(NEW.init_price, init_price),
-					COALESCE(NEW.init_comm, init_comm),
-					COALESCE(NEW.rec_price, rec_price),
-					COALESCE(NEW.rec_comm, rec_comm)
-			INTO	NEW.init_price,
-					NEW.init_comm,
-					NEW.rec_price,
-					NEW.rec_comm
-			FROM	products
-			WHERE	id = NEW.product_id;
-		ELSE
-			NEW.init_price := COALESCE(NEW.init_price, 0);
-			NEW.rec_price := COALESCE(NEW.rec_price, 0);
-			NEW.init_comm := COALESCE(NEW.init_comm, 0);
-			NEW.rec_comm := COALESCE(NEW.rec_comm, 0);
-		END IF;	
+		SELECT	campaign_id,
+				aff_id
+		INTO	o
+		FROM	orders
+		WHERE	id = NEW.order_id;
+	ELSEIF NEW.product_id IS NOT NULL
+	THEN
+		-- Auto-create order using the product_id
+		INSERT INTO orders(
+				status,
+				user_id,
+				campaign_id,
+				aff_id
+				)
+		SELECT	NEW.status,
+				NEW.user_id,
+				COALESCE(NEW.coupon_id, promo.id),
+				campaign.aff_id
+		FROM	active_promos as promo
+		FULL JOIN campaigns as campaign
+		ON		promo.product_id = NEW.product_id
+		WHERE	campaign.id = NEW.coupon_id
+		RETURNING id,
+				campaign_id,
+				aff_id
+		INTO	o;
+		NEW.order_id := o.id;
+	ELSEIF NEW.coupon_id IS NOT NULL
+	THEN
+		-- Auto-create order using the coupon_id
+		INSERT INTO orders(
+				status,
+				user_id,
+				campaign_id,
+				aff_id
+				)
+		SELECT	NEW.status,
+				NEW.user_id,
+				campaign.aff_id,
+				NEW.coupon_id
+		FROM	campaigns as campaign
+		WHERE	campaign.id = NEW.coupon_id
+		RETURNING id,
+				campaign_id,
+				aff_id
+		INTO	o;
+		NEW.order_id := o.id;
+	ELSE
+		-- Auto-create order
+		INSERT INTO orders (
+				status,
+				user_id
+				)
+		VALUES (
+				NEW.status,
+				NEW.user_id
+				)
+		RETURNING id,
+				campaign_id,
+				aff_id
+		INTO	o;
+		NEW.order_id := o.id;
 	END IF;
 	
-	IF	NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
+	IF	TG_OP = 'INSERT' AND
+		NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
 	THEN
-		IF	NEW.order_id IS NOT NULL
-		THEN
-			SELECT	campaign_id,
-					aff_id
-			INTO	o
-			FROM	orders
-			WHERE	id = NEW.order_id;
-		ELSEIF NEW.product_id IS NOT NULL
-		THEN
-			-- Auto-create order using the product_id
-			INSERT INTO orders(
-					status,
-					user_id,
-					campaign_id,
-					aff_id
-					)
-			SELECT	NEW.status,
-					NEW.user_id,
-					COALESCE(NEW.coupon_id, promo.id),
-					campaign.aff_id
-			FROM	active_promos as promo
-			FULL JOIN campaigns as campaign
-			ON		promo.product_id = NEW.product_id
-			WHERE	campaign.id = NEW.coupon_id
-			RETURNING id
-			INTO	NEW.order_id;
-		ELSEIF NEW.coupon_id IS NOT NULL
-		THEN
-			-- Auto-create order using the coupon_id
-			INSERT INTO orders(
-					status,
-					user_id,
-					campaign_id,
-					aff_id
-					)
-			SELECT	NEW.status,
-					NEW.user_id,
-					campaign.aff_id,
-					NEW.coupon_id
-			FROM	campaigns as campaign
-			WHERE	campaign.id = NEW.coupon_id
-			RETURNING id
-			INTO	NEW.order_id;
-		ELSE
-			-- Auto-create order
-			INSERT INTO orders (
-					status,
-					user_id
-					)
-			VALUES (
-					NEW.status,
-					NEW.user_id
-					)
-			RETURNING id
-			INTO	NEW.order_id;
-		END IF;
-		
 		IF	NEW.coupon_id IS NOT NULL
 		THEN
 			-- Validate coupon
@@ -150,11 +178,11 @@ BEGIN
 			WHERE	id = NEW.coupon_id
 			AND		products_id = NEW.product_id
 			AND		status > 'draft';
-			
+
 			IF	NOT FOUND
 			THEN
 				NEW.coupon_id := NULL;
-			ELSEIF c.aff_id IS NOT NULL AND o.aff_id IS DISTINCT FROM c.aff_id -- inconsistent sponsor
+			ELSEIF c.aff_id <> o.aff_id -- inconsistent sponsor
 			THEN
 				NEW.coupon_id := NULL;
 			END IF;
@@ -173,7 +201,7 @@ BEGIN
 			FROM	campaigns
 			WHERE	promo_id = NEW.product_id
 			AND		status > 'draft';
-			
+
 			IF	NOT FOUND
 			THEN
 				NEW.coupon_id := NULL;
@@ -181,61 +209,82 @@ BEGIN
 		ELSE
 			NEW.coupon_id := NULL;
 		END IF;
-		
-		-- Fetch discount
+
 		IF	NEW.coupon_id IS NULL
 		THEN
 			NEW.init_discount := COALESCE(NEW.init_discount, 0);
 			NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
-		ELSE
-			-- Process firesale if applicable
-			IF	c.firesale
+			RETURN NEW;
+		END IF;
+		
+		-- Process firesale if applicable
+		IF	c.firesale
+		THEN
+			IF	c.max_date IS NOT NULL
 			THEN
-				IF	c.max_date IS NOT NULL
+				IF	c.max_date >= NOW()
 				THEN
-					IF	c.max_date >= NOW()
-					THEN
-						t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
-							EXTRACT(EPOCH FROM c.max_date - c.min_date);
-					ELSE
-						t_ratio := 0;
-					END IF;
+					t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
+						EXTRACT(EPOCH FROM c.max_date - c.min_date);
+				ELSE
+					t_ratio := 0;
 				END IF;
-				
-				IF	c.max_orders IS NOT NULL
-				THEN
-					IF	max_orders > 0
-					THEN
-						SELECT	SUM(order_lines.quantity)
-						INTO	cur_orders
-						FROM	order_lines
-						JOIN	orders
-						ON		orders.id = order_lines.order_id
-						WHERE	order_lines.order_id <> NEW.order_id
-						AND		order_lines.coupon_id = NEW.coupon_id
-						AND		order_lines.status > 'pending'
-						AND		orders.order_date >= c.min_date;
-					
-						o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
-					ELSE
-						o_ratio := 0;
-					END IF;
-				END IF;
-				
-				c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);
-				c.rec_discount := round(c.rec_discount * t_ratio * o_ratio, 2);
 			END IF;
 			
-			-- Strip discount from commission where applicable
-			IF	o.campaign_id = c.id AND o.aff_id IS NOT NULL
+			IF	c.max_orders IS NOT NULL
 			THEN
-				NEW.init_comm := GREATEST(NEW.init_comm - c.init_discount, 0);
-				NEW.rec_comm := GREATEST(NEW.rec_comm - c.rec_discount, 0);
+				IF	max_orders > 0
+				THEN
+					SELECT	SUM(order_lines.quantity)
+					INTO	cur_orders
+					FROM	order_lines
+					JOIN	orders
+					ON		orders.id = order_lines.order_id
+					WHERE	order_lines.order_id <> NEW.order_id
+					AND		order_lines.coupon_id = NEW.coupon_id
+					AND		order_lines.status > 'pending'
+					AND		orders.order_date >= c.min_date;
+				
+					o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
+				ELSE
+					o_ratio := 0;
+				END IF;
 			END IF;
+			
+			c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);
+			c.rec_discount := round(c.rec_discount * t_ratio * o_ratio, 2);
+		END IF;
+		
+		-- Strip discount from commission where applicable
+		IF	o.campaign_id = c.id AND o.aff_id IS NOT NULL AND
+			( NEW.init_comm IS NULL OR NEW.rec_comm IS NULL )
+		THEN
+			SELECT	init_comm,
+					rec_comm
+			INTO	p
+			FROM	products
+			WHERE	id = NEW.product_id;
+			
+			NEW.init_comm := COALESCE(NEW.init_comm, p.init_comm - c.init_discount, 0);
+			NEW.rec_comm := COALESCE(NEW.rec_comm, p.rec_comm - c.rec_discount, 0);
+		END IF;
 
-			-- Apply discount
-			NEW.init_discount := COALESCE(NEW.init_discount, c.init_discount, 0);
-			NEW.rec_discount := COALESCE(NEW.rec_discount, c.rec_discount, 0);
+		-- Apply discount
+		NEW.init_discount := COALESCE(NEW.init_discount, c.init_discount, 0);
+		NEW.rec_discount := COALESCE(NEW.rec_discount, c.rec_discount, 0);
+	ELSEIF NEW.coupon_id IS NOT NULL
+	THEN
+		-- Validate coupon
+		SELECT	1
+		INTO	c
+		FROM	campaigns
+		WHERE	id = NEW.coupon_id
+		AND		status > 'draft';
+		
+		IF	NOT FOUND
+		THEN
+			RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to order_lines.id = %',
+				NEW.coupon_id, NEW.id;
 		END IF;
 	END IF;
 	
@@ -243,9 +292,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_03_autofill
-	BEFORE INSERT ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_autofill();
+CREATE TRIGGER order_lines_03_sanitize_coupon
+	BEFORE INSERT OR UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_coupon();
 
 /**
  * Forward status changes to orders

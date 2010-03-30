@@ -10,8 +10,6 @@ BEGIN
 		RETURN NEW;
 	END IF;
 	
-	-- RAISE NOTICE '%', TG_NAME;
-	
 	IF	EXISTS (
 		SELECT	1
 		FROM	order_lines
@@ -48,8 +46,6 @@ BEGIN
 			RETURN NEW;
 		END IF;
 	END IF;
-	
-	-- RAISE NOTICE '%', TG_NAME;
 	
 	SELECT	aff_id
 	INTO	a_id
@@ -94,8 +90,6 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- RAISE NOTICE '%', TG_NAME;
-	
 	IF	NOT EXISTS(
 		SELECT	1
 		FROM	users
@@ -133,8 +127,6 @@ BEGIN
 			RETURN NEW;
 		END IF;
 	END IF;
-	
-	-- RAISE NOTICE '%', TG_NAME;
 	
 	IF	NOT EXISTS(
 		SELECT	1

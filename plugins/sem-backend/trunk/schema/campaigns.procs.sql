@@ -61,8 +61,6 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- RAISE NOTICE '%', TG_NAME;
-	
 	SELECT	name,
 			ukey
 	INTO	u
@@ -108,8 +106,6 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- RAISE NOTICE '%', TG_NAME;
-	
 	IF	NEW.product_id = NEW.promo_id
 	THEN
 		SELECT	status,
@@ -148,8 +144,7 @@ BEGIN
 				END::status_activatable;
 		END IF;
 	ELSE
-		SELECT	status,
-				init_price,
+		SELECT	init_price,
 				init_comm,
 				rec_price,
 				rec_comm

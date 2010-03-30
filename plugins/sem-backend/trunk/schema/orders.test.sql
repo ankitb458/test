@@ -18,6 +18,14 @@ FROM	get_user('joe@bar.com') as users,
 		get_user('jack@bar.com') as affs;
 \echo
 
+INSERT INTO campaigns ( status ) VALUES ( 'trash' );
+
+SELECT	'Deny using non-active campaigns in orders.';
+UPDATE	orders
+SET		campaign_id = campaigns.id
+FROM	campaigns;
+\echo
+
 UPDATE	users
 SET		status = 'inactive';
 
