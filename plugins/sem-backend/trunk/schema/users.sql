@@ -21,7 +21,7 @@ CREATE TABLE users (
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_username
-		CHECK ( username IS NULL OR username <> '' ),
+		CHECK ( username <> '' ),
 	CONSTRAINT valid_password
 		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) )
 );
