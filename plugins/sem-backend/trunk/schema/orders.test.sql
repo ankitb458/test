@@ -6,14 +6,11 @@
 
 INSERT INTO orders DEFAULT VALUES;
 
-INSERT INTO users ( name, email )
-VALUES	( 'Joe', 'joe@bar.com' ),
-		( 'Jack', 'jack@bar.com' );
+INSERT INTO users ( status, name, email )
+VALUES	( 'trash', 'Joe', 'joe@bar.com' ),
+		( 'trash', 'Jack', 'jack@bar.com' );
 
-UPDATE	users
-SET		status = 'trash';
-
-SELECT	'Deny using trashed non-active users in orders.';
+SELECT	'Deny using non-active users in orders.';
 UPDATE	orders
 SET		user_id = users.id,
 		aff_id = affs.id

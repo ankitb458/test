@@ -1,4 +1,44 @@
 /**
+ * Sanitizes an order_lins's shipping user.
+ */
+CREATE OR REPLACE FUNCTION order_lines_sanitize_user_id()
+	RETURNS trigger
+AS $$
+DECLARE
+	u_id		bigint;
+BEGIN
+	IF	NEW.user_id IS NULL
+	THEN
+		RETURN NEW;
+	ELSEIF TG_OP = 'UPDATE'
+	THEN
+		IF	NEW.user_id IS NOT DISTINCT FROM OLD.user_id
+		THEN
+			RETURN NEW;
+		END IF;
+	END IF;
+	
+	-- RAISE NOTICE '%', TG_NAME;
+	
+	IF	NOT EXISTS(
+		SELECT	1
+		FROM	users
+		WHERE	id = NEW.user_id
+		AND		status > 'pending'
+		)
+	THEN
+		RAISE EXCEPTION 'Cannot tie inactive users.id = % to order_lines.id = %.',
+			NEW.user_id, NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER order_lines_02_sanitize_user_id
+	BEFORE INSERT OR UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_user_id();
+
+/**
  * Autofills product/comm/discount when inserting new order lines
  */
 CREATE OR REPLACE FUNCTION order_lines_autofill()

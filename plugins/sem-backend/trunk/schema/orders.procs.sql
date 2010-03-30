@@ -18,7 +18,7 @@ BEGIN
 		WHERE	order_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete orders.id = %: it is referenced in order_lines.order_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot delete orders.id = %. It is referenced in order_lines.order_id.', NEW.id;
 	END IF;
 	
 	RETURN NEW;
@@ -59,7 +59,7 @@ BEGIN
 	
 	IF	NOT FOUND
 	THEN
-		RAISE EXCEPTION 'Cannot tie campaigns.id = % to orders.id = %: campaign isn''t active.',
+		RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to orders.id = %.',
 			NEW.campaign_id, NEW.id;
 	ELSEIF TG_OP = 'INSERT'
 	THEN
@@ -103,7 +103,7 @@ BEGIN
 		AND		status > 'pending'
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot tie users.id = % to orders.id = %: user isn''t active.',
+		RAISE EXCEPTION 'Cannot tie inactive users.id = % to orders.id = %.',
 			NEW.user_id, NEW.id;
 	END IF;
 	
@@ -143,7 +143,7 @@ BEGIN
 		AND		status > 'pending'
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot tie users.id = % to orders.id = %: user isn''t active.',
+		RAISE EXCEPTION 'Cannot tie inactive users.id = % to orders.id = %.',
 			NEW.aff_id, NEW.id;
 	END IF;
 	

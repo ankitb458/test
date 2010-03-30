@@ -16,7 +16,7 @@ BEGIN
 		WHERE	campaign_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete campaigns.id = %: it is referenced in orders.campaign_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot delete campaigns.id = %. It is referenced in orders.campaign_id.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -25,7 +25,7 @@ BEGIN
 		WHERE	coupon_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete campaigns.id = %: it is referenced in order_lines.coupon_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot delete campaigns.id = %. It is referenced in order_lines.coupon_id.', NEW.id;
 	END IF;
 	
 	RETURN NEW;
@@ -72,7 +72,7 @@ BEGIN
 	
 	IF	NOT FOUND
 	THEN
-		RAISE EXCEPTION 'Cannot tie users.id = % to campaigns.id = %: user isn''t active.',
+		RAISE EXCEPTION 'Cannot tie inactive users.id = % to campaigns.id = %.',
 			NEW.aff_id, NEW.id;
 	ELSE
 		NEW.name := COALESCE(NULLIF(NEW.name, ''), u.name);
@@ -160,7 +160,7 @@ BEGIN
 		
 		IF	NOT FOUND
 		THEN
-			RAISE EXCEPTION 'Cannot tie campaigns.id = % to products.id = %: product isn''t active.',
+			RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to products.id = %.',
 				NEW.id, NEW.product_id;
 		END IF;
 	END IF;
