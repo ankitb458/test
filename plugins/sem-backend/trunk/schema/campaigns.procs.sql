@@ -39,7 +39,7 @@ FOR EACH ROW EXECUTE PROCEDURE campaigns_check_trash();
 /**
  * Sanitizes a campaign's affiliate.
  */
-CREATE OR REPLACE FUNCTION campaigns_sanitize_user()
+CREATE OR REPLACE FUNCTION campaigns_sanitize_aff_id()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -81,14 +81,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_02_sanitize_user
+CREATE TRIGGER campaigns_02_sanitize_aff_id
 	BEFORE INSERT OR UPDATE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_user();
+FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_aff_id();
 
 /**
  * Validates a coupon's discounts.
  */
-CREATE OR REPLACE FUNCTION campaigns_sanitize_coupon()
+CREATE OR REPLACE FUNCTION campaigns_sanitize_product_id()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -176,9 +176,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_03_sanitize_coupon
+CREATE TRIGGER campaigns_03_sanitize_product_id
 	BEFORE INSERT OR UPDATE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_coupon();
+FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_product_id();
 
 /**
  * Prevents promo_id and product_id from being updated when relevant.

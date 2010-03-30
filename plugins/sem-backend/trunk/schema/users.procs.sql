@@ -31,10 +31,10 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	orders
-		WHERE	billing_id = NEW.id -- cascade updated
+		WHERE	user_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete users.id = %: it is referenced in orders.billing_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot delete users.id = %: it is referenced in orders.user_id.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
