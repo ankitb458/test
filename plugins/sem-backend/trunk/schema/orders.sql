@@ -68,7 +68,7 @@ BEGIN
 	END IF;
 	
 	-- Raise warning if user_id = aff_id
-	IF	NEW.user_id = NEW.aff_id
+	IF	NEW.user_id = NEW.aff_id AND NEW.status > 'inherit'
 	THEN
 		RAISE WARNING 'In orders.id = %, user_id = aff_id = %.', NEW.id, NEW.user_id;
 	END IF;
