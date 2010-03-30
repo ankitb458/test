@@ -74,6 +74,12 @@ BEGIN
 		END IF;
 	END IF;
 	
+	-- Handle inherit status
+	IF	NEW.status = 'inherit'
+	THEN
+		RAISE EXCEPTION 'Undefined behavior for order_lines.status = inherit.';
+	END IF;
+	
 	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;

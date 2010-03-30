@@ -48,46 +48,49 @@ BEGIN
 		THEN
 			-- Auto-create order using the product_id
 			INSERT INTO orders(
+					status,
 					user_id,
 					campaign_id,
 					aff_id
 					)
-			SELECT	NEW.user_id,
+			SELECT	NEW.status,
+					NEW.user_id,
 					COALESCE(NEW.coupon_id, promo.id),
 					campaign.aff_id
 			FROM	active_promos as promo
 			FULL JOIN campaigns as campaign
 			ON		promo.product_id = NEW.product_id
 			WHERE	campaign.id = NEW.coupon_id
-			RETURNING
-					id
+			RETURNING id
 			INTO	NEW.order_id;
 		ELSEIF NEW.coupon_id IS NOT NULL
 		THEN
 			-- Auto-create order using the coupon_id
 			INSERT INTO orders(
+					status,
 					user_id,
 					campaign_id,
 					aff_id
 					)
-			SELECT	NEW.user_id,
+			SELECT	NEW.status,
+					NEW.user_id,
 					campaign.aff_id,
 					NEW.coupon_id
 			FROM	campaigns as campaign
 			WHERE	campaign.id = NEW.coupon_id
-			RETURNING
-					id
+			RETURNING id
 			INTO	NEW.order_id;
 		ELSE
 			-- Auto-create order
 			INSERT INTO orders (
+					status,
 					user_id
 					)
 			VALUES (
+					NEW.status,
 					NEW.user_id
 					)
-			RETURNING
-					id
+			RETURNING id
 			INTO	NEW.order_id;
 		END IF;
 		
