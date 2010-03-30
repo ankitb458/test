@@ -14,18 +14,13 @@ INSERT INTO users ( name, email )
 VALUES	( 'Joe', 'joe@bar.com' ),
 		( 'Jack', 'jack@bar.com' );
 
+SELECT	'Warn that billing_id = aff_id';
 UPDATE	orders
-SET		billing_id = users.id
-FROM	get_user('joe@bar.com') as users;
-
-UPDATE	orders
-SET		status = 'trash';
-
-SELECT	'Allow trashing draft orders that have a billing_id.',
-		status = 'trash'
-FROM	orders;
+SET		billing_id = users.id,
+		aff_id = affs.id
+FROM	get_user('joe@bar.com') as users,
+		get_user('joe@bar.com') as affs;
 \echo
-
 
 -- clean up
 /*

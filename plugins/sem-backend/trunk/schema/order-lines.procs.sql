@@ -134,6 +134,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_03_autofill
-	BEFORE INSERT ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_autofill();
+--CREATE TRIGGER order_lines_03_autofill
+--	BEFORE INSERT ON order_lines
+--FOR EACH ROW EXECUTE PROCEDURE order_lines_autofill();

@@ -48,7 +48,7 @@ SELECT	'Allow creating a promo on an inactive product',
 FROM	campaigns
 WHERE	promo_id IS NOT NULL;
 
-SELECT	'Deny creating a coupon on an inactive product x2';
+SELECT	'Deny creating a coupon on an inactive product (x2)';
 UPDATE	campaigns
 SET		product_id = products.id,
 		init_discount = 12,
@@ -94,10 +94,12 @@ FROM	campaigns
 WHERE	aff_id IS NOT NULL;
 
 SELECT	'Change non-aff discounts on price changes',
-		init_discount = 4 AND
-		rec_discount = 4
-FROM	campaigns
-WHERE	aff_id IS NULL;
+		NOT EXISTS (
+		SELECT	1
+		FROM	campaigns
+		WHERE	aff_id IS NULL
+		AND		( init_discount <> 4 OR rec_discount <> 4 )
+		);
 
 UPDATE	products
 SET		status = 'trash';
