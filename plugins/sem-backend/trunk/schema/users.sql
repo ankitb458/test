@@ -213,4 +213,4 @@ BEGIN
 		FROM	users
 		WHERE	username = lower(k);
 	END IF;
-END $$ LANGUAGE plpgsql STABLE STRICT;
+END $$ LANGUAGE plpgsql STABLE STRICT ROWS 1;
