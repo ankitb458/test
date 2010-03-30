@@ -129,8 +129,8 @@ CREATE OR REPLACE FUNCTION products_update_price()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.init_price, NEW.rec_price) IS NOT DISTINCT FROM ROW(OLD.init_price, OLD.rec_price) AND
-		ROW(NEW.init_comm, NEW.rec_comm) IS NOT DISTINCT FROM ROW(OLD.init_comm, OLD.rec_comm)
+	IF	ROW(NEW.init_price, NEW.rec_price) <> ROW(OLD.init_price, OLD.rec_price) AND
+		ROW(NEW.init_comm, NEW.rec_comm) <> ROW(OLD.init_comm, OLD.rec_comm)
 	THEN
 		RETURN NEW;
 	END IF;
