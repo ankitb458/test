@@ -202,10 +202,7 @@ CREATE OR REPLACE FUNCTION order_lines_delegate_status()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF TG_TABLE_NAME <> 'order_lines' -- Trust triggers
-	THEN
-		RETURN NEW;
-	ELSEIF TG_OP = 'UPDATE'
+	IF TG_OP = 'UPDATE'
 	THEN
 		IF	ROW(NEW.status, NEW.order_id) = ROW(OLD.status, OLD.order_id)
 		THEN

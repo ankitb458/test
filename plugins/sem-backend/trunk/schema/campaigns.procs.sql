@@ -45,14 +45,13 @@ AS $$
 DECLARE
 	u			record;
 BEGIN
-	IF NEW.aff_id IS NULL AND NEW.promo_id IS NULL
+	IF NEW.aff_id IS NULL
 	THEN
-		NEW.name := COALESCE(NEW.name, 'Campaign');
-		NEW.ukey := COALESCE(NEW.ukey, 'campaign');
-		RETURN NEW;
-	ELSEIF TG_TABLE_NAME <> 'campaigns' OR -- Trust triggers
-		NEW.aff_id IS NULL
-	THEN
+		IF	NEW.promo_id IS NULL
+		THEN
+			NEW.name := COALESCE(NEW.name, 'Campaign');
+			NEW.ukey := COALESCE(NEW.ukey, 'campaign');
+		END IF;
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
 	THEN
@@ -95,11 +94,6 @@ DECLARE
 	p			record;
 BEGIN
 	IF	NEW.product_id IS NULL
-	THEN
-		RETURN NEW;
-	ELSEIF TG_TABLE_NAME <> 'campaigns' OR -- Trust triggers
-		ROW(NEW.product_id, NEW.init_discount, NEW.rec_discount)
-		IS NOT DISTINCT FROM ROW(NULL, 0, 0)
 	THEN
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'

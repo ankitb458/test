@@ -36,8 +36,7 @@ AS $$
 DECLARE
 	a_id		bigint;
 BEGIN
-	IF	TG_TABLE_NAME <> 'orders' OR -- Trust triggers
-		NEW.campaign_id IS NULL
+	IF	NEW.campaign_id IS NULL
 	THEN
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
@@ -79,8 +78,7 @@ AS $$
 DECLARE
 	u_id		bigint;
 BEGIN
-	IF	TG_TABLE_NAME <> 'orders' OR -- Trust triggers
-		NEW.user_id IS NULL
+	IF	NEW.user_id IS NULL
 	THEN
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
@@ -117,8 +115,7 @@ AS $$
 DECLARE
 	u_id		bigint;
 BEGIN
-	IF	TG_TABLE_NAME <> 'orders' OR -- Trust triggers
-		NEW.aff_id IS NULL
+	IF	NEW.aff_id IS NULL
 	THEN
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
