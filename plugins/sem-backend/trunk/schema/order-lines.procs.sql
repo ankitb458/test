@@ -9,7 +9,7 @@ DECLARE
 	p			record;
 	c			record;
 	t_ratio		numeric := 1;
-	cur_orders	float8;
+	cur_orders	float;
 	o_ratio		numeric := 1;
 BEGIN
 	IF	NEW.init_price IS NULL OR NEW.init_comm IS NULL OR
