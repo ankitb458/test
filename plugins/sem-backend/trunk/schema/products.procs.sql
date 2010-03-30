@@ -106,12 +106,13 @@ BEGIN
 		UPDATE	campaigns
 		SET		status = CASE
 				WHEN promo_id IS NOT NULL AND status <= 'inherit'
-				THEN 'inactive' -- untrash the promo
+				THEN 'inactive' -- Untrash the promo
 				WHEN status = 'future' AND min_date >= NOW()::datetime
 				THEN 'active'
-				ELSE status -- keep future status
 				END::status_activatable
-		WHERE	product_id = NEW.id;
+		WHERE	product_id = NEW.id
+		AND		( promo_id IS NOT NULL AND status <= 'inherit' OR
+				status = 'future' AND min_date >= NOW()::datetime );
 	END IF;
 	
 	RETURN NEW;
