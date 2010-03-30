@@ -26,6 +26,16 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
+	EXECUTE $EXEC$
+	CREATE OR REPLACE RULE $EXEC$ || quote_ident(t_name || '__auto_trash') || $EXEC$
+	AS ON DELETE TO $EXEC$ || quote_ident(t_name) || $EXEC$
+	WHERE	status > 'inherit'
+	DO INSTEAD
+	UPDATE	 $EXEC$ || quote_ident(t_name) || $EXEC$
+	SET		status = 'trash'
+	WHERE	id = OLD.id;
+	$EXEC$;
+	
 	IF NOT trigger_exists(t_name || '_01__check_trash')
 	THEN
 		EXECUTE $EXEC$

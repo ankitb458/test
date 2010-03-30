@@ -6,10 +6,6 @@
 
 INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
-SELECT	'Deny deleting non-trashed users';
-DELETE FROM users;
-\echo
-
 INSERT INTO users ( email ) VALUES ( 'joe@1.2.3.4' );
 
 SELECT	'Deny invalid emails (x2)';
@@ -70,18 +66,9 @@ SELECT	'Case insensitive search on user emails',
 \echo '# Cleaning up...'
 \echo
 
-UPDATE	products
-SET		status = 'trash';
-
+DELETE FROM order_lines;
+DELETE FROM orders;
 DELETE FROM products;
-
-UPDATE	campaigns
-SET		status = 'trash';
-
 DELETE FROM campaigns;
-
-UPDATE	users
-SET		status = 'trash';
-
 DELETE FROM users;
 --*/

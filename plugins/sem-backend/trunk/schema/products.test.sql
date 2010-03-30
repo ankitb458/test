@@ -7,10 +7,6 @@
 INSERT INTO products ( init_price, init_comm, rec_price, rec_comm )
 VALUES	( 12, 6, 12, 6 );
 
-SELECT	'Deny deleting non-trashed products';
-DELETE FROM products;
-\echo
-
 UPDATE	products
 SET		status = 'trash';
 
@@ -128,18 +124,9 @@ FROM	campaigns;
 \echo '# Cleaning up...'
 \echo
 
-UPDATE	products
-SET		status = 'trash';
-
+DELETE FROM order_lines;
+DELETE FROM orders;
 DELETE FROM products;
-
-UPDATE	campaigns
-SET		status = 'trash';
-
 DELETE FROM campaigns;
-
-UPDATE	users
-SET		status = 'trash';
-
 DELETE FROM users;
 --*/

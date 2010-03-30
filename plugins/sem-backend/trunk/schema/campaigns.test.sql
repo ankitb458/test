@@ -6,10 +6,6 @@
 
 INSERT INTO campaigns DEFAULT VALUES;
 
-SELECT 'Deny deleting non-trashed campaigns';
-DELETE FROM campaigns;
-\echo
-
 INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
 SELECT	'Deny adding campaigns to a non-active user';
@@ -152,18 +148,9 @@ SELECT	'Allow for active coupons on future products',
 \echo '# Cleaning up...'
 \echo
 
-UPDATE	products
-SET		status = 'trash';
-
+DELETE FROM order_lines;
+DELETE FROM orders;
 DELETE FROM products;
-
-UPDATE	campaigns
-SET		status = 'trash';
-
 DELETE FROM campaigns;
-
-UPDATE	users
-SET		status = 'trash';
-
 DELETE FROM users;
 --*/
