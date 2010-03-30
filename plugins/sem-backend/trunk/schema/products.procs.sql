@@ -23,7 +23,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_01_check_trash
+CREATE CONSTRAINTS TRIGGER products_01_check_trash
 	AFTER UPDATE ON products
 FOR EACH ROW EXECUTE PROCEDURE products_check_trash();
 

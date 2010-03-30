@@ -32,7 +32,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_01_check_trash
+CREATE CONSTRAINTS TRIGGER campaigns_01_check_trash
 	AFTER UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_check_trash();
 
@@ -201,7 +201,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_01_check_update_promo
+CREATE CONSTRAINTS TRIGGER campaigns_01_check_update_promo
 	AFTER UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_check_update_promo();
 
@@ -225,6 +225,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_01_check_delete_promo
+CREATE CONSTRAINTS TRIGGER campaigns_01_check_delete_promo
 	AFTER DELETE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_check_delete_promo();
