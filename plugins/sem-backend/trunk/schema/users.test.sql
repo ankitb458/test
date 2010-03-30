@@ -18,8 +18,11 @@ UPDATE	users
 SET		email = 'joe';
 \echo
 
+
 SELECT	'Deny duplicate emails (x2)';
 INSERT INTO users ( email ) VALUES ( 'Joe@bar.com' );
+\echo # Notice - PGSQL 9 allows the next statement to succeed by declaring the column's
+\echo # constraint as INITIALLY DEFERRED.
 UPDATE	users
 SET		email = 'Joe@bar.com';
 \echo
