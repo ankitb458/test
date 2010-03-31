@@ -197,7 +197,7 @@ FROM	orders,
 		campaigns
 WHERE	campaigns.aff_id IS NOT NULL;
 
-SELECT	'Set coupon on order_line w/ campaign, w/ product and w/ invalid coupon',
+SELECT	'Fix coupon on order_line w/ campaign, w/ product and w/ invalid coupon',
 		( campaign_id = coupon_id ) IS TRUE
 FROM	orders,
 		order_lines;
