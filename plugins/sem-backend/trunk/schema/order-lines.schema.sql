@@ -29,7 +29,7 @@ CREATE TABLE order_lines (
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT undefined_behavior
-		CHECK ( status <> 'inherit' AND rec_count IS NULL OR quantity <> 1 )
+		CHECK ( status <> 'inherit' AND rec_count IS NULL AND quantity = 1 )
 );
 
 SELECT	timestampable('order_lines'),
