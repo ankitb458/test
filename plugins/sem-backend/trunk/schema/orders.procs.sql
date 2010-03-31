@@ -14,7 +14,7 @@ BEGIN
 		SELECT	1
 		FROM	order_lines
 		WHERE	order_id = NEW.id -- cascade updated
-		AND		status > 'draft'
+		AND		status > 'inherit'
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot delete orders.id = %. It is referenced in order_lines.order_id.', NEW.id;
@@ -24,7 +24,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER orders_01_check_trash
+CREATE CONSTRAINT TRIGGER orders_30_check_trash
 	AFTER UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_check_trash();
 

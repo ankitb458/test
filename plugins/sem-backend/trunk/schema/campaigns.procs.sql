@@ -32,7 +32,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER campaigns_01_check_trash
+CREATE CONSTRAINT TRIGGER campaigns_30_check_trash
 	AFTER UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_check_trash();
 

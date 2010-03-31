@@ -59,6 +59,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER users_01_check_trash
+CREATE CONSTRAINT TRIGGER users_30_check_trash
 	AFTER UPDATE ON users
 FOR EACH ROW EXECUTE PROCEDURE users_check_trash();

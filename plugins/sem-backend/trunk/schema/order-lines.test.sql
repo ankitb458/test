@@ -70,6 +70,14 @@ SELECT	'Autoset discount on campaign-less promos',
 		( coupon_id IS NOT NULL AND init_discount = 6 )
 FROM	order_lines;
 
+
+/*
+todo:
+
+- try adding a coupon_id with/without a product
+- make sure that aff_id gets set in orders when product_id and coupon_id are supplied
+*/
+
 -- clean up
 /*
 --\! sleep 3
