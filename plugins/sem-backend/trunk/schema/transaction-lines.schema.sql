@@ -13,7 +13,6 @@ CREATE TABLE transaction_lines (
 	parent_id		bigint REFERENCES transaction_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
-	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,
 	amount			numeric(8,2) NOT NULL,
 	fee				numeric(8,2) NOT NULL,
 	tax				numeric(8,2) NOT NULL,
@@ -36,7 +35,6 @@ CREATE INDEX transaction_lines_sort ON transaction_lines(paid_date DESC);
 CREATE INDEX transaction_lines_tx_id ON transaction_lines(tx_id);
 CREATE INDEX transaction_lines_order_line_id ON transaction_lines(order_line_id);
 CREATE INDEX transaction_lines_user_id ON transaction_lines(user_id);
-CREATE INDEX transaction_lines_product_id ON transaction_lines(product_id);
 
 COMMENT ON TABLE transactions IS E'Transaction lines
 
