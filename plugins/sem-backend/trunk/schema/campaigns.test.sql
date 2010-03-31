@@ -8,7 +8,7 @@ INSERT INTO campaigns DEFAULT VALUES;
 
 INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
-SELECT	'Deny adding campaigns to a non-active user';
+SELECT	'Deny adding campaigns to a non-active user:';
 INSERT INTO campaigns ( aff_id )
 SELECT	id
 FROM	users;
@@ -27,7 +27,7 @@ SELECT	'Allow assigning a campaign to an inactive user',
 		FROM	users
 		);
 
-SELECT	'Deny trashing campaign owner';
+SELECT	'Deny trashing campaign owner:';
 UPDATE	users
 SET		status = 'trash';
 \echo
@@ -44,7 +44,7 @@ SELECT	'Allow creating a promo on an inactive product',
 FROM	campaigns
 WHERE	promo_id IS NOT NULL;
 
-SELECT	'Deny creating a coupon on an inactive product (x2)';
+SELECT	'Deny creating a coupon on an inactive product (x2):';
 UPDATE	campaigns
 SET		product_id = products.id,
 		init_discount = 12,

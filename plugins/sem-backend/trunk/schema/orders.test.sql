@@ -10,7 +10,7 @@ INSERT INTO users ( status, name, email )
 VALUES	( 'trash', 'Joe', 'joe@bar.com' ),
 		( 'trash', 'Jack', 'jack@bar.com' );
 
-SELECT	'Deny non-active users in orders.';
+SELECT	'Deny non-active users in orders:';
 UPDATE	orders
 SET		user_id = users.id,
 		aff_id = affs.id
@@ -20,7 +20,7 @@ FROM	get_user('joe@bar.com') as users,
 
 INSERT INTO campaigns ( status ) VALUES ( 'trash' );
 
-SELECT	'Deny non-active campaigns in orders.';
+SELECT	'Deny non-active campaigns in orders:';
 UPDATE	orders
 SET		campaign_id = campaigns.id
 FROM	campaigns;

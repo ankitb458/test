@@ -29,7 +29,7 @@ SELECT	'Propagate order status to order_lines',
 INSERT INTO users ( status, name, email )
 VALUES	( 'trash', 'Joe', 'joe@bar.com' );
 
-SELECT	'Deny non-active users in order_lines.';
+SELECT	'Deny non-active users in order_lines:';
 UPDATE	order_lines
 SET		user_id = users.id
 FROM	users;
@@ -40,7 +40,7 @@ SET		status = 'active';
 
 INSERT INTO products ( status ) VALUES ( 'trash' );
 
-SELECT	'Deny non-active products in order_lines.';
+SELECT	'Deny non-active products in order_lines:';
 UPDATE	order_lines
 SET		product_id = products.id
 FROM	products;
@@ -93,7 +93,7 @@ SELECT	'draft',
 FROM	users,
 		products;
 
-SELECT	'Deny non-active campaigns in order_lines w/o order.';
+SELECT	'Deny non-active campaigns in order_lines w/o order:';
 INSERT INTO order_lines ( coupon_id )
 SELECT	id
 FROM	campaigns

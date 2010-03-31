@@ -8,7 +8,7 @@ INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
 INSERT INTO users ( email ) VALUES ( 'joe@1.2.3.4' );
 
-SELECT	'Deny invalid emails (x2)';
+SELECT	'Deny invalid emails (x2):';
 INSERT INTO users ( email ) VALUES ( 'joe@localhost' );
 \echo
 UPDATE	users
@@ -16,7 +16,7 @@ SET		email = 'joe';
 \echo
 
 
-SELECT	'Deny duplicate emails (x2)';
+SELECT	'Deny duplicate emails (x2):';
 INSERT INTO users ( email ) VALUES ( 'Joe@bar.com' );
 \echo
 \echo # Note - PGSQL 9 allows the next statement to succeed if the constraint is INITIALLY DEFERRED.

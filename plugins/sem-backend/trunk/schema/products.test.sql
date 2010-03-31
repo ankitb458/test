@@ -88,13 +88,13 @@ SET		init_price = 12,
 
 INSERT INTO users ( name, status, email ) VALUES ( 'Joe', 'active', 'foo@bar.com' );
 
-SELECT	'Deny promo ownership';
+SELECT	'Deny promo ownership:';
 UPDATE	campaigns
 SET		aff_id = users.id
 FROM	users;
 \echo
 
-SELECT	'Deny promo product change';
+SELECT	'Deny promo product change:';
 UPDATE	campaigns
 SET		ukey = 'test',
 		promo_id = NULL;
