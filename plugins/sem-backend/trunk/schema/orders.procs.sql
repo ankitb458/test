@@ -110,7 +110,7 @@ CREATE TRIGGER orders_02_sanitize_user_id
 FOR EACH ROW EXECUTE PROCEDURE orders_sanitize_user_id();
 
 /**
- * Sanitizes an orders's billing user.
+ * Sanitizes an orders's affiliate.
  */
 CREATE OR REPLACE FUNCTION orders_sanitize_aff_id()
 	RETURNS trigger
