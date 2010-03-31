@@ -20,6 +20,8 @@ COMMIT;
 \i ./campaigns.test.sql
 \i ./orders.test.sql
 \i ./order-lines.test.sql
+\i ./transactions.test.sql
+\i ./transaction-lines.test.sql
 
 \set VERBOSITY default
 \pset tuples_only off

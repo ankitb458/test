@@ -13,6 +13,16 @@ CREATE TYPE status_payable AS enum (
 	);
 
 /**
+ * Transaction types
+ */
+CREATE TYPE transaction_type AS enum (
+	'rec_in',
+	'init_in',
+	'init_out',
+	'rec_out'
+	);
+
+/**
  * ISO 4217 Currencies
  */
 CREATE TYPE currency_code AS enum (

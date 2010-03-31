@@ -5,7 +5,7 @@ CREATE TABLE order_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
-	name			varchar(255) NOT NULL,
+	name			varchar NOT NULL,
 	order_id		bigint NOT NULL REFERENCES orders(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,
@@ -19,6 +19,7 @@ CREATE TABLE order_lines (
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
 	rec_count		smallint,
+	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amounts
 		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND init_discount >= 0 AND
 				rec_amount >= rec_comm AND rec_comm >= 0 AND rec_discount >= 0 ),

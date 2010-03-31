@@ -17,9 +17,13 @@
 \i ./campaigns.schema.sql
 \i ./orders.schema.sql
 \i ./order-lines.schema.sql
+\i ./transactions.schema.sql
+\i ./transaction-lines.schema.sql
 
 \i ./users.procs.sql
 \i ./products.procs.sql
 \i ./campaigns.procs.sql
 \i ./orders.procs.sql
 \i ./order-lines.procs.sql
+\i ./transactions.procs.sql
+\i ./transaction-lines.procs.sql

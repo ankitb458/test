@@ -4,9 +4,9 @@
 CREATE TABLE campaigns (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
-	ukey			varchar(255) UNIQUE,
+	ukey			varchar UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
-	name			varchar(255) NOT NULL,
+	name			varchar NOT NULL,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	promo_id		bigint REFERENCES products(id) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE UNIQUE,
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE DEFERRABLE,

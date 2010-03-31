@@ -8,6 +8,7 @@ DROP TABLE products CASCADE;
 DROP TABLE users CASCADE;
 
 DROP TYPE status_payable;
+DROP TYPE transaction_type;
 DROP TYPE currency_code;
 DROP TYPE status_activatable;
 DROP TYPE status_authenticatable;

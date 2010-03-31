@@ -5,7 +5,7 @@ CREATE TABLE orders (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
-	name			varchar(255) NOT NULL,
+	name			varchar NOT NULL,
 	order_date		datetime,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
@@ -17,7 +17,9 @@ CREATE TABLE orders (
 		CHECK ( status <> 'inherit' )
 );
 
-SELECT timestampable('orders'), searchable('orders'), trashable('orders');
+SELECT	timestampable('orders'),
+		searchable('orders'),
+		trashable('orders');
 
 CREATE INDEX orders_sort ON orders(order_date DESC);
 CREATE INDEX orders_user_id ON orders(user_id);

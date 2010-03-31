@@ -4,10 +4,10 @@
 CREATE TABLE products (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
-	ukey			varchar(255) UNIQUE,
+	ukey			varchar UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
-	name			varchar(255) NOT NULL,
-	sku				varchar(255) UNIQUE,
+	name			varchar NOT NULL,
+	sku				varchar UNIQUE,
 	init_price		numeric(8,2) NOT NULL DEFAULT 0,
 	init_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_price		numeric(8,2) NOT NULL DEFAULT 0,
