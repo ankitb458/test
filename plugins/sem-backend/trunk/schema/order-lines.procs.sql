@@ -1,68 +1,11 @@
 /**
- * Sanitizes an order line's amounts on update
- */
-CREATE OR REPLACE FUNCTION order_lines_update_amounts()
-	RETURNS trigger
-AS $$
-BEGIN
-	IF	NEW.product_id IS NOT NULL AND
-		NEW.product_id IS DISTINCT FROM OLD.product_id
-	THEN
-		-- Validate product
-		IF	NOT EXISTS (
-			SELECT	1
-			FROM	products
-			WHERE	id = NEW.product_id
-			AND		status > 'draft'
-			)
-		THEN
-			RAISE EXCEPTION 'Cannot tie inactive products.id = % to order_lines.id = %.',
-				NEW.product_id, NEW.id;
-		END IF;
-	END IF;
-	
-	IF	NEW.coupon_id IS NOT NULL AND
-		NEW.coupon_id IS DISTINCT FROM OLD.coupon_id
-	THEN
-		-- Validate coupon
-		IF	NOT EXISTS (
-			SELECT	1
-			FROM	campaigns
-			WHERE	id = NEW.coupon_id
-			AND		status > 'draft'
-			)
-		THEN
-			RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to order_lines.id = %.',
-				NEW.coupon_id, NEW.id;
-		END IF;
-	END IF;
-	
-	IF	( ROW(NEW.init_amount, NEW.init_comm) IS DISTINCT FROM ROW(OLD.init_amount, OLD.init_comm) OR
-		ROW(NEW.rec_amount, NEW.rec_comm) IS DISTINCT FROM ROW(OLD.rec_amount, OLD.rec_comm) )
-	THEN
-		IF	NOT EXISTS (
-			SELECT	1
-			FROM	orders
-			WHERE	order_id = NEW.order_id
-			AND		aff_id IS NOT NULL
-			)
-		THEN
-			NEW.init_comm := 0;
-			NEW.rec_comm := 0;
-		END IF;
-	END IF;
-	
-	RETURN NEW;
-END $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER order_lines_02_update_amounts
-	BEFORE UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_update_amounts();
-
-/**
  * Sanitizes an order line's coupon.
+ *
+ * To force a refresh of an order's details (e.g. when changing its
+ * campaign, affiliate, or coupon), update an order line and set the
+ * relevant amount fields to NULL.
  */
-CREATE OR REPLACE FUNCTION order_lines_insert_amounts()
+CREATE OR REPLACE FUNCTION order_lines_sanitize_amounts()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -73,9 +16,65 @@ DECLARE
 	t_ratio		numeric := 1;
 	o_ratio		numeric := 1;
 BEGIN
+	IF	TG_OP = 'UPDATE' AND
+		NEW.init_amount IS NOT NULL AND NEW.rec_amount IS NOT NULL AND
+		NEW.init_comm IS NOT NULL AND NEW.rec_comm IS NOT NULL AND
+		NEW.init_discount IS NOT NULL AND NEW.rec_discount IS NOT NULL
+	THEN
+		IF	NEW.product_id IS NOT NULL AND
+			NEW.product_id IS DISTINCT FROM OLD.product_id
+		THEN
+			-- Validate product
+			IF	NOT EXISTS (
+				SELECT	1
+				FROM	products
+				WHERE	id = NEW.product_id
+				AND		status > 'draft'
+				)
+			THEN
+				RAISE EXCEPTION 'Cannot tie inactive products.id = % to order_lines.id = %.',
+					NEW.product_id, NEW.id;
+			END IF;
+		END IF;
+
+		IF	NEW.coupon_id IS NOT NULL AND
+			NEW.coupon_id IS DISTINCT FROM OLD.coupon_id
+		THEN
+			-- Validate coupon
+			IF	NOT EXISTS (
+				SELECT	1
+				FROM	campaigns
+				WHERE	id = NEW.coupon_id
+				AND		status > 'draft'
+				)
+			THEN
+				RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to order_lines.id = %.',
+					NEW.coupon_id, NEW.id;
+			END IF;
+		END IF;
+
+		IF	ROW(NEW.init_comm, NEW.rec_comm) <> ROW(0,0) AND
+			( ROW(NEW.init_amount, NEW.init_comm) IS DISTINCT FROM ROW(OLD.init_amount, OLD.init_comm) OR
+			ROW(NEW.rec_amount, NEW.rec_comm) IS DISTINCT FROM ROW(OLD.rec_amount, OLD.rec_comm) )
+		THEN
+			IF	NOT EXISTS (
+				SELECT	1
+				FROM	orders
+				WHERE	order_id = NEW.order_id
+				AND		aff_id IS NOT NULL
+				)
+			THEN
+				NEW.init_comm := 0;
+				NEW.rec_comm := 0;
+			END IF;
+		END IF;
+		
+		RETURN NEW;
+	END IF;
+	
 	IF	NEW.product_id IS NULL
 	THEN
-		-- Try to bail
+		-- Try to bail early
 		NEW.init_discount := COALESCE(NEW.init_discount, 0);
 		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
 		NEW.init_amount := COALESCE(NEW.init_amount, 0);
@@ -352,9 +351,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_02_insert_amounts
-	BEFORE INSERT ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_insert_amounts();
+CREATE TRIGGER order_lines_02_sanitize_amounts
+	BEFORE INSERT OR UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_amounts();
 
 /**
  * Sanitizes an order_line's shipping user.
