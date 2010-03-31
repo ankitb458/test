@@ -154,7 +154,8 @@ CREATE OR REPLACE FUNCTION orders_delegate_status()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	NEW.status = OLD.status
+	IF	NEW.status = OLD.status OR
+		NEW.status > 'pending' AND OLD.status > 'pending' -- Undefined behavior
 	THEN
 		RETURN NEW;
 	END IF;
@@ -172,3 +173,30 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER orders_10_delegate_status
 	AFTER UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_delegate_status();
+
+/**
+ * Delegates commission handling on orders
+ */
+CREATE OR REPLACE FUNCTION orders_delegate_aff_id()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	NEW.aff_id IS NOT DISTINCT FROM OLD.aff_id OR
+		NEW.aff_id IS NOT NULL -- Undefined behavior
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	-- Cancel commissions
+	UPDATE	order_lines
+	SET		init_comm = 0,
+			rec_comm = 0
+	WHERE	order_id = NEW.id
+	AND		( init_comm <> 0 OR rec_comm <> 0 );
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER orders_20_delegate_aff_id
+	AFTER UPDATE ON orders
+FOR EACH ROW EXECUTE PROCEDURE orders_delegate_aff_id();
