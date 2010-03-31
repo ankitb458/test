@@ -106,17 +106,18 @@ BEGIN
 		INSERT INTO orders(
 				status,
 				user_id,
-				campaign_id,
-				aff_id
+				campaign_id
 				)
 		SELECT	NEW.status,
 				NEW.user_id,
-				COALESCE(NEW.coupon_id, promo.id),
-				campaign.aff_id
-		FROM	active_promos as promo
-		FULL JOIN campaigns as campaign
-		ON		promo.product_id = NEW.product_id
-		WHERE	campaign.id = NEW.coupon_id
+				COALESCE(NEW.coupon_id, promo.id)
+		FROM	products
+		LEFT JOIN active_promos as promo
+		ON		promo.product_id = products.id
+		LEFT JOIN campaigns as campaign
+		ON		campaign.id = NEW.coupon_id
+		AND		promo.product_id = products.id
+		WHERE	products.id = NEW.product_id
 		RETURNING id,
 				campaign_id,
 				aff_id

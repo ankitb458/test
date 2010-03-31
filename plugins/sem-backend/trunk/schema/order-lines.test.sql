@@ -54,6 +54,17 @@ FROM	campaigns;
 
 DELETE FROM orders;
 
+UPDATE	products
+SET		status = 'active',
+		init_price = 12;
+
+UPDATE	campaigns
+SET		init_discount = 6;
+
+INSERT INTO order_lines ( product_id )
+SELECT	id
+FROM	products;
+
 -- clean up
 /*
 --\! sleep 3
