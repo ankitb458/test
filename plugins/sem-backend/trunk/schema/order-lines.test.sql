@@ -67,11 +67,11 @@ INSERT INTO order_lines ( product_id )
 SELECT	id
 FROM	products;
 
-SELECT	'Autoset discount on campaign-less promos',
+SELECT	'Set coupon on order_line w/ product and w/o promo',
 		coupon_id IS NOT NULL AND init_discount = 6
 FROM	order_lines;
 
-SELECT	'Autoset campaign on campaign-less promos',
+SELECT	'Set campaign on order_line w/ product and w/o promo',
 		campaign_id IS NOT NULL
 FROM	orders;
 
@@ -81,11 +81,11 @@ INSERT INTO order_lines ( coupon_id )
 SELECT	id
 FROM	promos;
 
-SELECT	'Autoset campaign on product-less order_lines with a promo',
+SELECT	'Set campaign on order_line w/o product and w/ promo',
 		campaign_id IS NOT NULL
 FROM	orders;
 
-SELECT	'Strip coupon on product-less order_lines with a promo',
+SELECT	'Strip coupon on order_line w/o product and w/ promo',
 		coupon_id IS NULL
 FROM	order_lines;
 
@@ -104,12 +104,41 @@ SELECT	id
 FROM	coupons
 WHERE	promo_id IS NULL;
 
-SELECT	'Autoset campaign on product-less order_lines with a coupon',
+SELECT	'Set campaign on order_line w/o product and w/ coupon',
 		campaign_id IS NOT NULL
 FROM	orders;
 
-SELECT	'Strip coupon on product-less order_lines with a coupon',
+SELECT	'Strip coupon on order_line w/o product and w/ coupon',
 		coupon_id IS NULL
+FROM	order_lines;
+
+DELETE FROM order_lines;
+
+INSERT INTO order_lines ( order_id, product_id )
+SELECT	orders.id,
+		products.id
+FROM	orders,
+		products;
+
+SELECT	'Set coupon on order_line w/ product and w/o coupon',
+		coupon_id IS NOT NULL AND init_discount = 3
+FROM	order_lines;
+
+DELETE FROM orders;
+
+INSERT INTO order_lines ( product_id, coupon_id )
+SELECT	products.id,
+		campaigns.id
+FROM	products,
+		campaigns
+WHERE	campaigns.aff_id IS NOT NULL;
+
+SELECT	'Set campaign on order_line w/ product and w/ coupon',
+		campaign_id IS NOT NULL AND aff_id IS NOT NULL
+FROM	orders;
+
+SELECT	'Set coupon on order_line w/ product and w/ coupon',
+		coupon_id IS NOT NULL AND init_discount = 3
 FROM	order_lines;
 
 /*

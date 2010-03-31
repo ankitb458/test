@@ -189,20 +189,41 @@ BEGIN
 			END IF;
 		ELSEIF NEW.product_id IS NOT NULL
 		THEN
-			-- Autofetch promo
-			SELECT	id,
-					aff_id,
-					init_discount,
-					rec_discount,
-					firesale,
-					min_date,
-					max_date,
-					max_orders
-			INTO	c
-			FROM	campaigns
-			WHERE	promo_id = NEW.product_id
-			AND		status > 'draft';
-
+			IF	o.campaign_id IS NOT NULL
+			THEN
+				-- Autofech coupon
+				SELECT	id,
+						aff_id,
+						init_discount,
+						rec_discount,
+						firesale,
+						min_date,
+						max_date,
+						max_orders
+				INTO	c
+				FROM	campaigns
+				WHERE	id = o.campaign_id
+				AND		product_id = NEW.product_id
+				AND		status > 'draft';
+			END IF;
+			
+			IF	o.campaign_id IS NULL OR NOT FOUND
+			THEN
+				-- Autofetch promo
+				SELECT	id,
+						aff_id,
+						init_discount,
+						rec_discount,
+						firesale,
+						min_date,
+						max_date,
+						max_orders
+				INTO	c
+				FROM	campaigns
+				WHERE	promo_id = NEW.product_id
+				AND		status > 'draft';
+			END IF;
+			
 			IF	NOT FOUND
 			THEN
 				NEW.coupon_id := NULL;
