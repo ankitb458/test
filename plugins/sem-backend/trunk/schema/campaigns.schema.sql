@@ -29,7 +29,7 @@ CREATE TABLE campaigns (
 	CONSTRAINT valid_discounts
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_activatable
-		CHECK ( starts IS NULL OR stops IS NULL OR starts <= stops ),
+		CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts ),
 	CONSTRAINT valid_firesale
 		CHECK ( NOT firesale OR max_orders IS NOT NULL OR stops IS NOT NULL ),
 	CONSTRAINT undefined_behavior

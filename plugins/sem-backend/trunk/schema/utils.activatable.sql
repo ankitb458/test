@@ -68,7 +68,7 @@ BEGIN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
 			ADD CONSTRAINT valid_activatable
-				CHECK ( starts IS NULL OR stops IS NULL OR starts <= stops );
+				CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts );
 		$EXEC$;
 	END IF;
 	
