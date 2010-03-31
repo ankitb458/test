@@ -11,19 +11,17 @@ CREATE TABLE order_lines (
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,
 	coupon_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	quantity		smallint NOT NULL DEFAULT 1,
-	init_price		numeric(8,2) NOT NULL,
+	init_amount		numeric(8,2) NOT NULL,
 	init_comm		numeric(8,2) NOT NULL,
 	init_discount	numeric(8,2) NOT NULL,
-	rec_price		numeric(8,2) NOT NULL,
+	rec_amount		numeric(8,2) NOT NULL,
 	rec_comm		numeric(8,2) NOT NULL,
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
 	rec_count		smallint,
 	CONSTRAINT valid_amount
-		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_discount >= 0 AND
-				init_price >= init_comm AND init_price >= init_discount AND
-				rec_price >= 0 AND rec_comm >= 0 AND rec_discount >= 0 AND
-				rec_price >= rec_comm AND rec_price >= rec_discount )
+		CHECK ( init_amount >= 0 AND init_comm >= 0 AND init_discount >= 0 AND init_amount >= init_comm AND
+				rec_amount >= 0 AND rec_comm >= 0 AND rec_discount >= 0 AND rec_amount >= rec_comm )
 );
 
 SELECT	timestampable('order_lines'),
@@ -40,7 +38,9 @@ CREATE INDEX order_lines_coupon_id ON order_lines(coupon_id);
 COMMENT ON TABLE orders IS E'Order lines
 
 - user_id gets shipped; orders.user_id gets billed.
-- init/rec price/comm/discount are auto-filled if not provided.
+- init/rec amount/comm/discount are auto-filled if not provided.
+- init/rec amount/comm are used as is in transactions.
+- init/rec discount is only stored for reference; it is used nowhere.
 - rec_count gets decremented on cleared payments.
 - coupon_id is typically the same as the order''s campaign_id, the
   exception would be in the event of a site-wide promo.';

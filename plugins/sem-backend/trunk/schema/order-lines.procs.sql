@@ -37,52 +37,71 @@ CREATE TRIGGER order_lines_02_sanitize_user_id
 FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_user_id();
 
 /**
- * Sanitizes an order line's product.
+ * Sanitizes an order line's amounts on update
  */
-CREATE OR REPLACE FUNCTION order_lines_sanitize_product()
+CREATE OR REPLACE FUNCTION order_lines_update_amounts()
 	RETURNS trigger
 AS $$
-DECLARE
-	p		record;
 BEGIN
-	IF	NEW.product_id IS NOT NULL
+	IF	NEW.product_id IS NOT NULL AND
+		NEW.product_id IS DISTINCT FROM OLD.product_id
 	THEN
-		SELECT	init_price,
-				init_comm,
-				rec_price,
-				rec_comm
-		INTO	p
-		FROM	products
-		WHERE	status > 'draft';
-		
-		IF	NOT FOUND
+		-- Validate product
+		IF	NOT EXISTS (
+			SELECT	1
+			FROM	products
+			WHERE	id = NEW.product_id
+			AND		status > 'draft'
+			)
 		THEN
 			RAISE EXCEPTION 'Cannot tie inactive products.id = % to order_lines.id = %.',
 				NEW.product_id, NEW.id;
 		END IF;
-		
-		NEW.init_price := COALESCE(NEW.init_price, p.init_price);
-		NEW.init_comm := COALESCE(NEW.init_comm, p.init_comm);
-		NEW.rec_price := COALESCE(NEW.rec_price, p.rec_price);
-		NEW.rec_comm := COALESCE(NEW.rec_comm, p.rec_comm);
-	ELSE
-		NEW.init_price := COALESCE(NEW.init_price, 0);
-		NEW.rec_price := COALESCE(NEW.rec_price, 0);
-		NEW.init_comm := COALESCE(NEW.init_comm, 0);
-		NEW.rec_comm := COALESCE(NEW.rec_comm, 0);
+	END IF;
+	
+	IF	NEW.coupon_id IS NOT NULL AND
+		NEW.coupon_id IS DISTINCT FROM OLD.coupon_id
+	THEN
+		-- Validate coupon
+		IF	NOT EXISTS (
+			SELECT	1
+			FROM	campaigns
+			WHERE	id = NEW.coupon_id
+			AND		status > 'draft'
+			)
+		THEN
+			RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to order_lines.id = %.',
+				NEW.coupon_id, NEW.id;
+		END IF;
+	END IF;
+	
+	IF	( NEW.init_comm > 0 OR NEW.rec_comm > 0 ) AND
+		( ROW(NEW.init_amount, NEW.init_comm) IS DISTINCT FROM ROW(OLD.init_amount, OLD.init_comm) OR
+		ROW(NEW.rec_amount, NEW.rec_comm) IS DISTINCT FROM ROW(OLD.rec_amount, OLD.rec_comm) )
+	THEN
+		IF	NOT EXISTS (
+			SELECT	1
+			FROM	orders
+			WHERE	order_id = NEW.order_id
+			AND		aff_id IS NOT NULL
+			)
+		THEN
+			RAISE EXCEPTION 'Cannot assign commissions to order_lines.id = % with no affiliate.',
+				NEW.id;
+		END IF;
 	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_sanitize_02_product
-	BEFORE INSERT OR UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_product();
+CREATE TRIGGER order_lines_03_update_amounts
+	BEFORE UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_update_amounts();
 
 /**
  * Sanitizes an order line's coupon.
  */
-CREATE OR REPLACE FUNCTION order_lines_sanitize_coupon()
+CREATE OR REPLACE FUNCTION order_lines_sanitize_amounts()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -164,10 +183,36 @@ BEGIN
 	THEN
 		-- Bail
 		NEW.coupon_id := NULL;
+		NEW.init_amount := COALESCE(NEW.init_amount, 0);
+		NEW.init_comm := COALESCE(NEW.init_comm, 0);
 		NEW.init_discount := COALESCE(NEW.init_discount, 0);
+		NEW.rec_amount := COALESCE(NEW.rec_amount, 0);
+		NEW.rec_comm := COALESCE(NEW.rec_comm, 0);
 		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
 		RETURN NEW;
-	ELSEIF NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
+	END IF;
+	
+	SELECT	init_price,
+			init_comm,
+			rec_price,
+			rec_comm
+	INTO	p
+	FROM	products
+	WHERE	id = NEW.product_id
+	AND		status > 'draft';
+	
+	IF	NOT FOUND
+	THEN
+		RAISE EXCEPTION 'Cannot tie inactive products.id = % to order_lines.id = %.',
+			NEW.product_id, NEW.id;
+	END IF;
+	
+	NEW.init_amount := COALESCE(NEW.init_amount, p.init_price);
+	NEW.init_comm := COALESCE(NEW.init_comm, p.init_comm);
+	NEW.rec_amount := COALESCE(NEW.rec_amount, p.rec_price);
+	NEW.rec_comm := COALESCE(NEW.rec_comm, p.rec_comm);
+	
+	IF	NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
 	THEN
 		IF	NEW.coupon_id IS NOT NULL
 		THEN
@@ -311,20 +356,20 @@ BEGIN
 	-- Sanitize discount
 	IF	o.aff_id IS NOT NULL
 	THEN
-		NEW.init_discount := LEAST(NEW.init_discount, NEW.init_price - NEW.init_comm);
-		NEW.rec_discount := LEAST(NEW.rec_discount, NEW.rec_price - NEW.rec_comm);
+		NEW.init_discount := LEAST(NEW.init_discount, NEW.init_amount - NEW.init_comm);
+		NEW.rec_discount := LEAST(NEW.rec_discount, NEW.rec_amount - NEW.rec_comm);
 	ELSE
-		NEW.init_discount := LEAST(NEW.init_discount, NEW.init_price);
-		NEW.rec_discount := LEAST(NEW.rec_discount, NEW.rec_price);
+		NEW.init_discount := LEAST(NEW.init_discount, NEW.init_amount);
+		NEW.rec_discount := LEAST(NEW.rec_discount, NEW.rec_amount);
 	END IF;
 	
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_03_sanitize_coupon
-	BEFORE INSERT OR UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_coupon();
+CREATE TRIGGER order_lines_03_sanitize_amounts
+	BEFORE INSERT ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_amounts();
 
 /**
  * Forward status changes to orders
