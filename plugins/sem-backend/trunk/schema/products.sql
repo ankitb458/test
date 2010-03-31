@@ -21,8 +21,8 @@ CREATE TABLE products (
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_amount
-		CHECK ( init_price >= 0 AND init_comm >= 0 AND init_price >= init_comm AND
-				rec_price >= 0 AND rec_comm >= 0 AND rec_price >= rec_comm ),
+		CHECK ( init_price >= init_comm AND init_comm >= 0 AND
+				rec_price >= rec_comm AND rec_comm >= 0 ),
 	CONSTRAINT valid_min_max_date
 		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date )
 );
