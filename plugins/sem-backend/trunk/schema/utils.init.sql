@@ -12,11 +12,11 @@
 \i ./utils.timestampable.sql
 \i ./utils.trashable.sql
 
-\i ./users.sql
-\i ./products.sql
-\i ./campaigns.sql
-\i ./orders.sql
-\i ./order-lines.sql
+\i ./users.schema.sql
+\i ./products.schema.sql
+\i ./campaigns.schema.sql
+\i ./orders.schema.sql
+\i ./order-lines.schema.sql
 
 \i ./users.procs.sql
 \i ./products.procs.sql
