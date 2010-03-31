@@ -127,6 +127,11 @@ BEGIN
 		NEW.status := 'inactive';
 	END IF;
 	
+	IF	NEW.ref_id = NEW.id
+	THEN
+		NEW.ref_id := NULL;
+	END IF;
+	
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -180,11 +185,6 @@ BEGIN
 				substring(NEW.paypal from 1 for (position('@' in NEW.paypal) - 1)),
 				'[._-]+',
 				' ', 'g')), 'B');
-	END IF;
-	
-	IF	NEW.ref_id = NEW.id
-	THEN
-		NEW.ref_id := NULL;
 	END IF;
 	
 	RETURN NEW;
