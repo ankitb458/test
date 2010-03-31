@@ -206,6 +206,8 @@ BEGIN
 			IF	NOT FOUND
 			THEN
 				NEW.coupon_id := NULL;
+			ELSE
+				NEW.coupon_id := c.id;
 			END IF;
 		ELSE
 			NEW.coupon_id := NULL;

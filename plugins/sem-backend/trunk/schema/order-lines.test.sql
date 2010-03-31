@@ -59,11 +59,16 @@ SET		status = 'active',
 		init_price = 12;
 
 UPDATE	campaigns
-SET		init_discount = 6;
+SET		status = 'active',
+		init_discount = 6;
 
 INSERT INTO order_lines ( product_id )
 SELECT	id
 FROM	products;
+
+SELECT	'Autoset discount on campaign-less promos',
+		( coupon_id IS NOT NULL AND init_discount = 6 )
+FROM	order_lines;
 
 -- clean up
 /*
