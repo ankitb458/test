@@ -46,14 +46,14 @@ FROM	users
 WHERE	lower(email) = 'joe@bar.com';
 
 SELECT	'Case insensitive search on user names',
-		EXISTS(
+		EXISTS (
 		SELECT	1
 		FROM	users
 		WHERE	tsv @@ plainto_tsquery('BAR')
 		);
 
 SELECT	'Case insensitive search on user emails',
-		EXISTS(
+		EXISTS (
 		SELECT	1
 		FROM	users
 		WHERE	tsv @@ plainto_tsquery('JOE@BAR.COM')

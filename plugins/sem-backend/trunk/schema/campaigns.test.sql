@@ -22,7 +22,7 @@ SELECT	id
 FROM	users;
 
 SELECT	'Allow assigning a campaign to an inactive user',
-		EXISTS(
+		EXISTS (
 		SELECT	1
 		FROM	users
 		);
@@ -71,7 +71,7 @@ SET		product_id = products.id,
 FROM	products;
 
 SELECT	'Allow creating a coupon on a future posted product',
-		NOT EXISTS(
+		NOT EXISTS (
 		SELECT	1
 		FROM	campaigns
 		WHERE	init_discount <> 6
@@ -101,7 +101,7 @@ UPDATE	products
 SET		status = 'trash';
 
 SELECT	'Invalidate coupons on product trash',
-		NOT EXISTS(
+		NOT EXISTS (
 		SELECT	1
 		FROM	campaigns
 		WHERE	promo_id IS NULL
@@ -119,7 +119,7 @@ SET		status = 'inactive',
 FROM	products;
 
 SELECT	'Allow for inactive coupons with no discounts',
-		NOT EXISTS(
+		NOT EXISTS (
 		SELECT	1
 		FROM	campaigns
 		WHERE	( product_id IS NULL OR status <> 'inactive' )
@@ -135,7 +135,7 @@ SET		status = 'future',
 		min_date = NOW() + interval '1 week';
 
 SELECT	'Allow for active coupons on future products',
-		NOT EXISTS(
+		NOT EXISTS (
 		SELECT	1
 		FROM	campaigns
 		WHERE	( product_id IS NULL OR status <> 'active' )

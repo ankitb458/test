@@ -18,7 +18,7 @@ BEGIN
 		END IF;
 	END IF;
 	
-	IF	NOT EXISTS(
+	IF	NOT EXISTS (
 		SELECT	1
 		FROM	users
 		WHERE	id = NEW.user_id
