@@ -56,7 +56,8 @@ DELETE FROM orders;
 
 UPDATE	products
 SET		status = 'active',
-		init_price = 12;
+		init_price = 12,
+		init_comm = 6;
 
 UPDATE	campaigns
 SET		status = 'active',
@@ -67,14 +68,54 @@ SELECT	id
 FROM	products;
 
 SELECT	'Autoset discount on campaign-less promos',
-		( coupon_id IS NOT NULL AND init_discount = 6 )
+		coupon_id IS NOT NULL AND init_discount = 6
 FROM	order_lines;
 
+SELECT	'Autoset campaign on campaign-less promos',
+		campaign_id IS NOT NULL
+FROM	orders;
+
+DELETE FROM orders;
+
+INSERT INTO order_lines ( coupon_id )
+SELECT	id
+FROM	promos;
+
+SELECT	'Autoset campaign on product-less order_lines with a promo',
+		campaign_id IS NOT NULL
+FROM	orders;
+
+SELECT	'Strip coupon on product-less order_lines with a promo',
+		coupon_id IS NULL
+FROM	order_lines;
+
+DELETE FROM orders;
+
+INSERT INTO campaigns ( status, aff_id, product_id, init_discount )
+SELECT	'active',
+		users.id,
+		products.id,
+		3
+FROM	users,
+		products;
+
+INSERT INTO order_lines ( coupon_id )
+SELECT	id
+FROM	coupons
+WHERE	promo_id IS NULL;
+
+SELECT	'Autoset campaign on product-less order_lines with a coupon',
+		campaign_id IS NOT NULL
+FROM	orders;
+
+SELECT	'Strip coupon on product-less order_lines with a coupon',
+		coupon_id IS NULL
+FROM	order_lines;
 
 /*
 todo:
 
-- try adding a coupon_id with/without a product
+- try adding a coupon_id with a product
 - make sure that aff_id gets set in orders when product_id and coupon_id are supplied
 */
 

@@ -134,8 +134,8 @@ BEGIN
 				)
 		SELECT	NEW.status,
 				NEW.user_id,
-				campaign.aff_id,
-				NEW.coupon_id
+				NEW.coupon_id,
+				campaign.aff_id
 		FROM	campaigns as campaign
 		WHERE	campaign.id = NEW.coupon_id
 		RETURNING id,
@@ -177,7 +177,7 @@ BEGIN
 			INTO	c
 			FROM	campaigns
 			WHERE	id = NEW.coupon_id
-			AND		products_id = NEW.product_id
+			AND		product_id = NEW.product_id
 			AND		status > 'draft';
 
 			IF	NOT FOUND
@@ -336,7 +336,7 @@ BEGIN
 	INTO	new_status
 	FROM	order_lines
 	WHERE	order_id = NEW.order_id;
-
+	
 	UPDATE	orders
 	SET		status = new_status
 	WHERE	orders.id = NEW.order_id
