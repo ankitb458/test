@@ -209,7 +209,6 @@ BEGIN
 		SELECT	NULL::users;
 	ELSEIF is_email(k)
 	THEN
-		k := lower(k);
 		RETURN QUERY
 		SELECT	*
 		FROM	users
