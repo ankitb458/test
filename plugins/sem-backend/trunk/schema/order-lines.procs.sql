@@ -86,8 +86,8 @@ BEGIN
 			AND		aff_id IS NOT NULL
 			)
 		THEN
-			RAISE EXCEPTION 'Cannot assign commissions to order_lines.id = % with no affiliate.',
-				NEW.id;
+			NEW.init_comm := 0;
+			NEW.rec_comm := 0;
 		END IF;
 	END IF;
 	
@@ -101,7 +101,7 @@ FOR EACH ROW EXECUTE PROCEDURE order_lines_update_amounts();
 /**
  * Sanitizes an order line's coupon.
  */
-CREATE OR REPLACE FUNCTION order_lines_sanitize_amounts()
+CREATE OR REPLACE FUNCTION order_lines_insert_amounts()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -112,8 +112,28 @@ DECLARE
 	t_ratio		numeric := 1;
 	o_ratio		numeric := 1;
 BEGIN
+	IF	NEW.product_id IS NULL
+	THEN
+		-- Try to bail
+		NEW.init_discount := COALESCE(NEW.init_discount, 0);
+		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
+		NEW.init_amount := COALESCE(NEW.init_amount, 0);
+		NEW.rec_amount := COALESCE(NEW.rec_amount, 0);
+		NEW.init_comm := LEAST(COALESCE(NEW.init_comm, 0), NEW.init_amount);
+		NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, 0), NEW.rec_amount);
+	
+		IF	NEW.order_id IS NOT NULL AND
+			ROW(NEW.init_comm, NEW.rec_comm) = ROW(0, 0)
+		THEN
+			-- Nothing to do or verify
+			NEW.coupon_id := NULL;
+			RETURN NEW;
+		END IF;
+	END IF;
+	
 	IF	NEW.order_id IS NOT NULL
 	THEN
+		-- Fetch key order details
 		SELECT	campaign_id,
 				aff_id
 		INTO	o
@@ -133,7 +153,7 @@ BEGIN
 		FROM	products
 		LEFT JOIN active_promos as promo
 		ON		promo.product_id = products.id
-		LEFT JOIN campaigns as campaign
+		LEFT JOIN campaigns as campaign -- non-active coupons are sanitized later
 		ON		campaign.id = NEW.coupon_id
 		AND		promo.product_id = products.id
 		WHERE	products.id = NEW.product_id
@@ -155,7 +175,7 @@ BEGIN
 				NEW.user_id,
 				NEW.coupon_id,
 				campaign.aff_id
-		FROM	campaigns as campaign
+		FROM	campaigns as campaign -- non-active coupons are sanitized later
 		WHERE	campaign.id = NEW.coupon_id
 		RETURNING id,
 				campaign_id,
@@ -182,16 +202,17 @@ BEGIN
 	IF	NEW.product_id IS NULL
 	THEN
 		-- Bail
+		IF	o.aff_id IS NULL
+		THEN
+			NEW.init_comm := 0;
+			NEW.rec_comm := 0;		
+		END IF;
+		
 		NEW.coupon_id := NULL;
-		NEW.init_amount := COALESCE(NEW.init_amount, 0);
-		NEW.init_comm := COALESCE(NEW.init_comm, 0);
-		NEW.init_discount := COALESCE(NEW.init_discount, 0);
-		NEW.rec_amount := COALESCE(NEW.rec_amount, 0);
-		NEW.rec_comm := COALESCE(NEW.rec_comm, 0);
-		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
 		RETURN NEW;
 	END IF;
 	
+	-- Validate product
 	SELECT	init_price,
 			init_comm,
 			rec_price,
@@ -207,18 +228,12 @@ BEGIN
 			NEW.product_id, NEW.id;
 	END IF;
 	
-	NEW.init_amount := COALESCE(NEW.init_amount, p.init_price);
-	NEW.init_comm := COALESCE(NEW.init_comm, p.init_comm);
-	NEW.rec_amount := COALESCE(NEW.rec_amount, p.rec_price);
-	NEW.rec_comm := COALESCE(NEW.rec_comm, p.rec_comm);
-	
-	IF	NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
+	IF	NEW.coupon_id IS NOT NULL OR NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
 	THEN
 		IF	NEW.coupon_id IS NOT NULL
 		THEN
 			-- Validate coupon
-			SELECT	id,
-					aff_id,
+			SELECT	aff_id,
 					init_discount,
 					rec_discount,
 					firesale,
@@ -229,19 +244,19 @@ BEGIN
 			FROM	active_coupons
 			WHERE	id = NEW.coupon_id
 			AND		product_id = NEW.product_id;
-			
-			IF	c.aff_id IS NOT NULL AND o.campaign_id IS NOT NULL
-				AND c.aff_id IS DISTINCT FROM o.aff_id -- inconsistent sponsor
+		
+			IF	NOT FOUND OR
+				-- Drop inconsistent sponsors
+				c.aff_id IS NOT NULL AND o.campaign_id IS NOT NULL AND c.aff_id IS DISTINCT FROM o.aff_id
 			THEN
 				NEW.coupon_id := NULL;
 			END IF;
 		END IF;
-		
-		IF	( NEW.coupon_id IS NULL OR NOT FOUND ) AND o.campaign_id IS NOT NULL
+	
+		IF	NEW.coupon_id IS NULL AND o.campaign_id IS NOT NULL
 		THEN
 			-- Autofech coupon
-			SELECT	id,
-					aff_id,
+			SELECT	aff_id,
 					init_discount,
 					rec_discount,
 					firesale,
@@ -252,18 +267,17 @@ BEGIN
 			FROM	active_coupons
 			WHERE	id = o.campaign_id
 			AND		product_id = NEW.product_id;
-			
+		
 			IF	FOUND
 			THEN
 				NEW.coupon_id := o.campaign_id;
 			END IF;
 		END IF;
-		
-		IF	NEW.coupon_id IS NULL AND o.campaign_id IS NULL OR NOT FOUND
+	
+		IF	NEW.coupon_id IS NULL
 		THEN
 			-- Autofetch promo
-			SELECT	id,
-					aff_id,
+			SELECT	aff_id,
 					init_discount,
 					rec_discount,
 					firesale,
@@ -273,103 +287,84 @@ BEGIN
 			INTO	c
 			FROM	active_promos
 			WHERE	promo_id = NEW.product_id;
-			
+		
 			IF	FOUND
 			THEN
 				NEW.coupon_id := o.campaign_id;
 			END IF;
 		END IF;
-		
-		IF	NOT FOUND
+	END IF;
+	
+	IF	NEW.coupon_id IS NULL
+	THEN
+		-- Sanitize amounts
+		NEW.init_discount := COALESCE(NEW.init_discount, 0);
+		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
+		NEW.init_amount := COALESCE(NEW.init_amount, p.init_price - NEW.init_discount);
+		NEW.rec_amount := COALESCE(NEW.rec_amount, p.rec_price - NEW.rec_discount);
+		IF	o.aff_id IS NULL
 		THEN
-			-- Bail
-			NEW.coupon_id := NULL;
-			NEW.init_discount := COALESCE(NEW.init_discount, 0);
-			NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
-			RETURN NEW;
+			NEW.init_comm := 0;
+			NEW.rec_comm := 0;
+		ELSE -- Assume a site discount, if any
+			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, p.init_comm), NEW.init_amount);
+			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, p.rec_comm), NEW.rec_amount);
 		END IF;
-		
-		IF	TG_OP = 'INSERT'
+	ELSE
+		-- Process firesale if any
+		IF	c.firesale
 		THEN
-			-- Process firesale if applicable
-			IF	c.firesale
+			IF	c.max_date IS NOT NULL
 			THEN
-				IF	c.max_date IS NOT NULL
-				THEN
-					t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
-						EXTRACT(EPOCH FROM c.max_date - c.min_date);
-				END IF;
-			
-				IF	c.max_orders IS NOT NULL
-				THEN
-					SELECT	SUM(order_lines.quantity)
-					INTO	cur_orders
-					FROM	order_lines
-					JOIN	orders
-					ON		orders.id = order_lines.order_id
-					WHERE	order_lines.order_id <> NEW.order_id
-					AND		order_lines.coupon_id = NEW.coupon_id
-					AND		order_lines.status > 'pending'
-					AND		orders.order_date >= c.min_date;
-			
-					o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
-				END IF;
-			
-				c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);
-				c.rec_discount := round(c.rec_discount * t_ratio * o_ratio, 2);
+				t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
+					EXTRACT(EPOCH FROM c.max_date - c.min_date);
 			END IF;
 		
-			-- Strip discount from commission where applicable
-			IF	o.campaign_id = c.id AND o.aff_id IS NOT NULL AND
-				( NEW.init_comm IS NULL OR NEW.rec_comm IS NULL )
+			IF	c.max_orders IS NOT NULL
 			THEN
-				SELECT	init_comm,
-						rec_comm
-				INTO	p
-				FROM	products
-				WHERE	id = NEW.product_id;
-			
-				NEW.init_comm := COALESCE(NEW.init_comm, p.init_comm - c.init_discount, 0);
-				NEW.rec_comm := COALESCE(NEW.rec_comm, p.rec_comm - c.rec_discount, 0);
+				SELECT	SUM(order_lines.quantity)
+				INTO	cur_orders
+				FROM	order_lines
+				JOIN	orders
+				ON		orders.id = order_lines.order_id
+				WHERE	order_lines.order_id <> NEW.order_id
+				AND		order_lines.coupon_id = NEW.coupon_id
+				AND		order_lines.status > 'pending'
+				AND		orders.order_date >= c.min_date;
+		
+				o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
 			END IF;
+		
+			c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);
+			c.rec_discount := round(c.rec_discount * t_ratio * o_ratio, 2);
 		END IF;
 		
-		-- Set discount
+		-- Sanitize amounts
 		NEW.init_discount := COALESCE(NEW.init_discount, c.init_discount, 0);
 		NEW.rec_discount := COALESCE(NEW.rec_discount, c.rec_discount, 0);
-	ELSEIF NEW.coupon_id IS NOT NULL
-	THEN
-		-- Validate coupon
-		SELECT	1
-		INTO	c
-		FROM	campaigns
-		WHERE	id = NEW.coupon_id
-		AND		status > 'draft';
-		
-		IF	NOT FOUND
+		NEW.init_amount := COALESCE(NEW.init_amount, p.init_price - NEW.init_discount);
+		NEW.rec_amount := COALESCE(NEW.rec_amount, p.rec_price - NEW.rec_discount);
+		IF	c.aff_id IS NULL
 		THEN
-			RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to order_lines.id = %.',
-				NEW.coupon_id, NEW.id;
+			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, p.init_comm), NEW.init_amount);
+			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, p.rec_comm), NEW.rec_amount);
+		ELSE
+			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, p.init_comm - NEW.init_discount), NEW.init_amount);
+			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, p.rec_comm - NEW.rec_discount), NEW.rec_amount);
 		END IF;
 	END IF;
 	
-	-- Sanitize discount
-	IF	o.aff_id IS NOT NULL
-	THEN
-		NEW.init_discount := LEAST(NEW.init_discount, NEW.init_amount - NEW.init_comm);
-		NEW.rec_discount := LEAST(NEW.rec_discount, NEW.rec_amount - NEW.rec_comm);
-	ELSE
-		NEW.init_discount := LEAST(NEW.init_discount, NEW.init_amount);
-		NEW.rec_discount := LEAST(NEW.rec_discount, NEW.rec_amount);
-	END IF;
+	--RAISE NOTICE '%, %, % / %, %, %',
+	--	NEW.init_amount, NEW.init_amount, NEW.init_discount,
+	--	NEW.rec_amount, NEW.rec_amount, NEW.rec_discount;
 	
 	RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_03_sanitize_amounts
+CREATE TRIGGER order_lines_03_insert_amounts
 	BEFORE INSERT ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_amounts();
+FOR EACH ROW EXECUTE PROCEDURE order_lines_insert_amounts();
 
 /**
  * Forward status changes to orders
