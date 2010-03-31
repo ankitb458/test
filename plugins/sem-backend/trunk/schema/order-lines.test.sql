@@ -174,7 +174,7 @@ FROM	orders,
 		campaigns
 WHERE	campaigns.aff_id IS NOT NULL;
 
-SELECT	'Set campaign on order_line w/o campaign, w/ product and w/ coupon',
+SELECT	'Set campaign/aff on order_line w/o campaign, w/ product and w/ coupon',
 		campaign_id IS NOT NULL AND aff_id IS NOT NULL
 FROM	orders;
 
@@ -201,19 +201,6 @@ SELECT	'Fix coupon on order_line w/ campaign, w/ product and w/ invalid coupon',
 		( campaign_id = coupon_id ) IS TRUE
 FROM	orders,
 		order_lines;
-
-/*
-\pset tuples_only off
-SELECT * FROM orders; SELECT * FROM order_lines; SELECT * FROM campaigns;
-\pset tuples_only on
---*/
-
-/*
-todo:
-
-- try adding a coupon_id with a product
-- make sure that aff_id gets set in orders when product_id and coupon_id are supplied
-*/
 
 -- clean up
 /*
