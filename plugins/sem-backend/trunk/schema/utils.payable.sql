@@ -1,7 +1,7 @@
 /**
- * Billable status
+ * Payable status
  */
-CREATE TYPE status_billable AS enum (
+CREATE TYPE status_payable AS enum (
 	'trash',
 	'inherit',
 	'draft',

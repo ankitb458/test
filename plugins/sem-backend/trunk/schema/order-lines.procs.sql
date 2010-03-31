@@ -394,7 +394,7 @@ CREATE OR REPLACE FUNCTION order_lines_delegate_status()
 	RETURNS trigger
 AS $$
 DECLARE
-	new_status	status_billable;
+	new_status	status_payable;
 BEGIN
 	IF	TG_OP = 'UPDATE'
 	THEN
