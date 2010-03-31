@@ -20,7 +20,7 @@ CREATE TABLE products (
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
-	CONSTRAINT valid_amount
+	CONSTRAINT valid_amounts
 		CHECK ( init_price >= init_comm AND init_comm >= 0 AND
 				rec_price >= rec_comm AND rec_comm >= 0 ),
 	CONSTRAINT valid_min_max_date

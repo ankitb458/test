@@ -26,7 +26,7 @@ CREATE TABLE campaigns (
 	CONSTRAINT valid_promo
 		CHECK ( promo_id IS NULL OR
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
-	CONSTRAINT valid_amount
+	CONSTRAINT valid_discounts
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_min_max_date
 		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date ),
