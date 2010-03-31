@@ -9,7 +9,6 @@ CREATE TABLE transaction_lines (
 	due_date		datetime NOT NULL DEFAULT NOW()::datetime,
 	paid_date		datetime,
 	tx_id			bigint NOT NULL REFERENCES transactions(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	tx_type			transaction_type NOT NULL DEFAULT 'init_in',
 	parent_id		bigint REFERENCES transaction_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
