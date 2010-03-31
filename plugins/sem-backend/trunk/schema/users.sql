@@ -23,7 +23,9 @@ CREATE TABLE users (
 	CONSTRAINT valid_username
 		CHECK ( username <> '' ),
 	CONSTRAINT valid_password
-		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) )
+		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) ),
+	CONSTRAINT valid_referral
+		CHECK ( id <> ref_id )
 );
 
 SELECT	sluggable('users'),
@@ -176,6 +178,11 @@ BEGIN
 				substring(NEW.paypal from 1 for (position('@' in NEW.paypal) - 1)),
 				'[._-]+',
 				' ', 'g')), 'B');
+	END IF;
+	
+	IF	NEW.ref_id = NEW.id
+	THEN
+		NEW.ref_id := NULL;
 	END IF;
 	
 	RETURN NEW;
