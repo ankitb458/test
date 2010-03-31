@@ -380,17 +380,6 @@ BEGIN
 			NEW.user_id, NEW.id;
 	END IF;
 	
-	IF	EXISTS (
-		SELECT	1
-		FROM	orders
-		WHERE	id = NEW.order_id
-		AND		aff_id = NEW.user_id
-		)
-	THEN
-		RAISE WARNING 'users.id = % got tied as user and affiliate to order_lines.id = %.',
-			NEW.user_id, NEW.id;
-	END IF;
-	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
