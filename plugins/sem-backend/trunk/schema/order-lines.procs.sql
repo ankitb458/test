@@ -228,6 +228,12 @@ BEGIN
 			NEW.product_id, NEW.id;
 	END IF;
 	
+	IF	ROW(NEW.init_discount, NEW.rec_discount) = ROW(0, 0)
+	THEN
+		-- Squash the coupon
+		NEW.coupon_id := NULL;
+	END IF;
+	
 	IF	NEW.coupon_id IS NOT NULL OR NEW.init_discount IS NULL OR NEW.rec_discount IS NULL
 	THEN
 		IF	NEW.coupon_id IS NOT NULL
