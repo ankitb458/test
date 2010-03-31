@@ -164,12 +164,6 @@ BEGIN
 		NEW.order_id := o.id;
 	END IF;
 	
-	IF	o.aff_id = NEW.user_id
-	THEN
-		RAISE WARNING 'users.id = % got tied as user and affiliate to order_lines.id = %.',
-			NEW.user_id, NEW.id;
-	END IF;
-	
 	IF	NEW.product_id IS NULL
 	THEN
 		-- Bail
