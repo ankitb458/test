@@ -1,42 +1,4 @@
 /**
- * Sanitizes an order_line's shipping user.
- */
-CREATE OR REPLACE FUNCTION order_lines_sanitize_user_id()
-	RETURNS trigger
-AS $$
-DECLARE
-	u_id		bigint;
-BEGIN
-	IF	NEW.user_id IS NULL
-	THEN
-		RETURN NEW;
-	ELSEIF TG_OP = 'UPDATE'
-	THEN
-		IF	NEW.user_id IS NOT DISTINCT FROM OLD.user_id
-		THEN
-			RETURN NEW;
-		END IF;
-	END IF;
-	
-	IF	NOT EXISTS (
-		SELECT	1
-		FROM	users
-		WHERE	id = NEW.user_id
-		AND		status > 'pending'
-		)
-	THEN
-		RAISE EXCEPTION 'Cannot tie inactive users.id = % to order_lines.id = %.',
-			NEW.user_id, NEW.id;
-	END IF;
-	
-	RETURN NEW;
-END $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER order_lines_02_sanitize_user_id
-	BEFORE INSERT OR UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_user_id();
-
-/**
  * Sanitizes an order line's amounts on update
  */
 CREATE OR REPLACE FUNCTION order_lines_update_amounts()
@@ -93,7 +55,7 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_03_update_amounts
+CREATE TRIGGER order_lines_02_update_amounts
 	BEFORE UPDATE ON order_lines
 FOR EACH ROW EXECUTE PROCEDURE order_lines_update_amounts();
 
@@ -133,7 +95,9 @@ BEGIN
 	IF	NEW.order_id IS NOT NULL
 	THEN
 		-- Fetch key order details
-		SELECT	campaign_id,
+		SELECT	id,
+				user_id,
+				campaign_id,
 				aff_id
 		INTO	o
 		FROM	orders
@@ -152,11 +116,12 @@ BEGIN
 		FROM	products
 		LEFT JOIN active_promos as promo
 		ON		promo.product_id = products.id
-		LEFT JOIN campaigns as campaign -- non-active coupons are sanitized later
+		LEFT JOIN campaigns as campaign -- Non-active coupons are sanitized later
 		ON		campaign.id = NEW.coupon_id
 		AND		promo.product_id = products.id
 		WHERE	products.id = NEW.product_id
 		RETURNING id,
+				user_id,
 				campaign_id,
 				aff_id
 		INTO	o;
@@ -174,9 +139,10 @@ BEGIN
 				NEW.user_id,
 				NEW.coupon_id,
 				campaign.aff_id
-		FROM	campaigns as campaign -- non-active coupons are sanitized later
+		FROM	campaigns as campaign -- Non-active coupons are sanitized later
 		WHERE	campaign.id = NEW.coupon_id
 		RETURNING id,
+				user_id,
 				campaign_id,
 				aff_id
 		INTO	o;
@@ -192,10 +158,17 @@ BEGIN
 				NEW.user_id
 				)
 		RETURNING id,
+				user_id,
 				campaign_id,
 				aff_id
 		INTO	o;
 		NEW.order_id := o.id;
+	END IF;
+	
+	IF	o.aff_id = NEW.user_id
+	THEN
+		RAISE WARNING 'users.id = % got tied as user and affiliate to order_lines.id = %.',
+			NEW.user_id, NEW.id;
 	END IF;
 	
 	IF	NEW.product_id IS NULL
@@ -379,9 +352,58 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_03_insert_amounts
+CREATE TRIGGER order_lines_02_insert_amounts
 	BEFORE INSERT ON order_lines
 FOR EACH ROW EXECUTE PROCEDURE order_lines_insert_amounts();
+
+/**
+ * Sanitizes an order_line's shipping user.
+ */
+CREATE OR REPLACE FUNCTION order_lines_sanitize_user_id()
+	RETURNS trigger
+AS $$
+DECLARE
+	u_id		bigint;
+BEGIN
+	IF	NEW.user_id IS NULL
+	THEN
+		RETURN NEW;
+	ELSEIF TG_OP = 'UPDATE'
+	THEN
+		IF	NEW.user_id IS NOT DISTINCT FROM OLD.user_id
+		THEN
+			RETURN NEW;
+		END IF;
+	END IF;
+	
+	IF	NOT EXISTS (
+		SELECT	1
+		FROM	users
+		WHERE	id = NEW.user_id
+		AND		status > 'pending'
+		)
+	THEN
+		RAISE EXCEPTION 'Cannot tie inactive users.id = % to order_lines.id = %.',
+			NEW.user_id, NEW.id;
+	END IF;
+	
+	IF	EXISTS (
+		SELECT	1
+		FROM	orders
+		WHERE	id = NEW.order_id
+		AND		aff_id = NEW.user_id
+		)
+	THEN
+		RAISE WARNING 'users.id = % got tied as user and affiliate to order_lines.id = %.',
+			NEW.user_id, NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER order_lines_03_sanitize_user_id
+	BEFORE INSERT OR UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_user_id();
 
 /**
  * Forward status changes to orders
