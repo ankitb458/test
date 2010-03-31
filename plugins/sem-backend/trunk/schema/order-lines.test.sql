@@ -93,15 +93,28 @@ SELECT	'draft',
 FROM	users,
 		products;
 
-SELECT	'Deny non-active campaigns in order_lines.';
-INSERT INTO order_lines ( product_id, coupon_id, init_discount, rec_discount )
-SELECT	product_id,
-		id,
-		init_discount,
-		rec_discount
+SELECT	'Deny non-active campaigns in order_lines w/o order.';
+INSERT INTO order_lines ( coupon_id )
+SELECT	id
 FROM	campaigns
 WHERE	promo_id IS NULL;
 \echo
+
+INSERT INTO orders DEFAULT VALUES;
+
+INSERT INTO order_lines ( order_id, product_id, coupon_id )
+SELECT	orders.id,
+		product_id,
+		campaigns.id
+FROM	orders,
+		campaigns
+WHERE	promo_id IS NULL;
+
+SELECT	'Fix non-active coupons in order_lines w/ order.',
+		coupon_id IS NULL
+FROM	order_lines;
+
+DELETE FROM orders;
 
 UPDATE	campaigns
 SET		status = 'active';
