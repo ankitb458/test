@@ -5,16 +5,17 @@ CREATE TABLE transactions (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
-	name			varchar NOT NULL,
 	due_date		datetime,
 	cleared_date	datetime,
+	name			varchar NOT NULL,
 	tx_type			transaction_type NOT NULL DEFAULT 'init_in',
 	ext_tx_id		varchar(128) UNIQUE,
 	ext_status		varchar(64) NOT NULL DEFAULT '',
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
-			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
+			NOT ( cleared_date IS NULL AND status > 'pending' ) AND
+			( due_date IS NULL OR cleared_date IS NULL OR cleared_date >= due_date ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' )
 );

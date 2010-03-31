@@ -5,6 +5,8 @@ CREATE TABLE order_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
+	due_date		datetime,
+	cleared_date	datetime,
 	name			varchar NOT NULL,
 	order_id		bigint NOT NULL REFERENCES orders(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
@@ -29,6 +31,10 @@ CREATE TABLE order_lines (
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
+	CONSTRAINT valid_flow
+		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+			NOT ( cleared_date IS NULL AND status > 'pending' ) AND
+			( due_date IS NULL OR cleared_date IS NULL OR cleared_date >= due_date ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' AND rec_count IS NULL AND quantity = 1 )
 );
@@ -86,6 +92,16 @@ BEGIN
 	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;
+	END IF;
+	
+	-- Assign default dates if needed
+	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
+	THEN
+		NEW.due_date := NOW()::datetime;
+	END IF;
+	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
+	THEN
+		NEW.cleared_date := NOW()::datetime;
 	END IF;
 	
 	RETURN NEW;

@@ -5,9 +5,9 @@ CREATE TABLE transaction_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
-	name			varchar NOT NULL,
 	due_date		datetime,
 	cleared_date	datetime,
+	name			varchar NOT NULL,
 	tx_id			bigint NOT NULL REFERENCES transactions(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	parent_id		bigint REFERENCES transaction_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
@@ -22,7 +22,8 @@ CREATE TABLE transaction_lines (
 		CHECK ( amount >= 0 AND fee >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
-			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
+			NOT ( cleared_date IS NULL AND status > 'pending' ) AND
+			( due_date IS NULL OR cleared_date IS NULL OR cleared_date >= due_date ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' AND tax = 0 )
 );
