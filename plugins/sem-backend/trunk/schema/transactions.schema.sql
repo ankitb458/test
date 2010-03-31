@@ -9,7 +9,7 @@ CREATE TABLE transactions (
 	due_date		datetime NOT NULL DEFAULT NOW()::datetime,
 	paid_date		datetime,
 	tx_type			transaction_type NOT NULL DEFAULT 'init_in',
-	ext_id			varchar(128) UNIQUE,
+	ext_tx_id		varchar(128) UNIQUE,
 	ext_status		varchar(64) NOT NULL DEFAULT '',
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
@@ -26,7 +26,7 @@ CREATE INDEX transactions_sort ON transactions(paid_date DESC);
 
 COMMENT ON TABLE transactions IS E'Transactions
 
-- ext_id and ext_status correspond to the counterparty''s
+- ext_tx_id and ext_status correspond to the counterparty''s
   transaction id and status.';
 
 /**
@@ -38,7 +38,7 @@ AS $$
 BEGIN
 	-- Trim fields
 	NEW.name := NULLIF(trim(NEW.name, ''), '');
-	NEW.ext_id := trim(NEW.ext_id);
+	NEW.ext_tx_id := trim(NEW.ext_tx_id);
 	NEW.ext_status := trim(NEW.ext_status);
 	
 	-- Default name

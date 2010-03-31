@@ -16,7 +16,7 @@ CREATE TABLE transaction_lines (
 	amount			numeric(8,2) NOT NULL,
 	fee				numeric(8,2) NOT NULL,
 	tax				numeric(8,2) NOT NULL,
-	ext_id			varchar(128) UNIQUE,
+	ext_tx_id		varchar(128) UNIQUE,
 	ext_status		varchar(64) NOT NULL DEFAULT '',
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amounts
@@ -39,7 +39,7 @@ CREATE INDEX transaction_lines_user_id ON transaction_lines(user_id);
 COMMENT ON TABLE transactions IS E'Transaction lines
 
 - product_id is only here for statistics.
-- ext_id and ext_status correspond to the counterparty''s
+- ext_tx_id and ext_status correspond to the counterparty''s
   transaction id and status.';
 
 /**
@@ -53,7 +53,7 @@ DECLARE
 BEGIN
 	-- Trim fields
 	NEW.name := NULLIF(trim(NEW.name, ''), '');
-	NEW.ext_id := trim(NEW.ext_id);
+	NEW.ext_tx_id := trim(NEW.ext_tx_id);
 	NEW.ext_status := trim(NEW.ext_status);
 	
 	-- Default name
