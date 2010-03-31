@@ -11,7 +11,7 @@ CREATE TABLE orders (
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	memo			text NOT NULL DEFAULT '',
-	CONSTRAINT valid_order_flow
+	CONSTRAINT valid_flow
 		CHECK ( NOT ( order_date IS NULL AND status > 'draft' ) )
 );
 
