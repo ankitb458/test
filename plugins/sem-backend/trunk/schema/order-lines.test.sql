@@ -29,7 +29,7 @@ SELECT	'Propagate order status to order_lines',
 INSERT INTO users ( status, name, email )
 VALUES	( 'trash', 'Joe', 'joe@bar.com' );
 
-SELECT	'Deny using non-active users in order_lines.';
+SELECT	'Deny non-active users in order_lines.';
 UPDATE	order_lines
 SET		user_id = users.id
 FROM	users;
@@ -40,16 +40,10 @@ SET		status = 'active';
 
 INSERT INTO products ( status ) VALUES ( 'trash' );
 
-SELECT	'Deny using non-active products in order_lines.';
+SELECT	'Deny non-active products in order_lines.';
 UPDATE	order_lines
 SET		product_id = products.id
 FROM	products;
-\echo
-
-SELECT	'Deny using non-active campaigns in order_lines.';
-UPDATE	order_lines
-SET		coupon_id = campaigns.id
-FROM	campaigns;
 \echo
 
 DELETE FROM orders;
@@ -67,11 +61,11 @@ INSERT INTO order_lines ( product_id )
 SELECT	id
 FROM	products;
 
-SELECT	'Set coupon on order_line w/ product and w/o promo',
+SELECT	'Set coupon on order_line w/o order, w/ product and w/o promo',
 		coupon_id IS NOT NULL AND init_discount = 6
 FROM	order_lines;
 
-SELECT	'Set campaign on order_line w/ product and w/o promo',
+SELECT	'Set campaign on order_line w/o order, w/ product and w/o promo',
 		campaign_id IS NOT NULL
 FROM	orders;
 
@@ -81,34 +75,47 @@ INSERT INTO order_lines ( coupon_id )
 SELECT	id
 FROM	promos;
 
-SELECT	'Set campaign on order_line w/o product and w/ promo',
+SELECT	'Set campaign on order_line w/o order, w/o product and w/ promo',
 		campaign_id IS NOT NULL
 FROM	orders;
 
-SELECT	'Strip coupon on order_line w/o product and w/ promo',
+SELECT	'Strip coupon on order_line w/o order, w/o product and w/ promo',
 		coupon_id IS NULL
 FROM	order_lines;
 
 DELETE FROM orders;
 
 INSERT INTO campaigns ( status, aff_id, product_id, init_discount )
-SELECT	'active',
+SELECT	'draft',
 		users.id,
 		products.id,
 		3
 FROM	users,
 		products;
 
+SELECT	'Deny non-active campaigns in order_lines.';
+INSERT INTO order_lines ( product_id, coupon_id, init_discount, rec_discount )
+SELECT	product_id,
+		id,
+		init_discount,
+		rec_discount
+FROM	campaigns
+WHERE	promo_id IS NULL;
+\echo
+
+UPDATE	campaigns
+SET		status = 'active';
+
 INSERT INTO order_lines ( coupon_id )
 SELECT	id
 FROM	coupons
 WHERE	promo_id IS NULL;
 
-SELECT	'Set campaign on order_line w/o product and w/ coupon',
+SELECT	'Set campaign on order_line w/o order, w/o product and w/ coupon',
 		campaign_id IS NOT NULL
 FROM	orders;
 
-SELECT	'Strip coupon on order_line w/o product and w/ coupon',
+SELECT	'Strip coupon on order_line w/o order, w/o product and w/ coupon',
 		coupon_id IS NULL
 FROM	order_lines;
 
@@ -120,7 +127,7 @@ SELECT	orders.id,
 FROM	orders,
 		products;
 
-SELECT	'Set coupon on order_line w/ product and w/o coupon',
+SELECT	'Set coupon on order_line w/ campaign, w/ product and w/o coupon',
 		coupon_id IS NOT NULL AND init_discount = 3
 FROM	order_lines;
 
@@ -133,13 +140,61 @@ FROM	products,
 		campaigns
 WHERE	campaigns.aff_id IS NOT NULL;
 
-SELECT	'Set campaign on order_line w/ product and w/ coupon',
+SELECT	'Set campaign on order_line w/o order, w/ product and w/ coupon',
 		campaign_id IS NOT NULL AND aff_id IS NOT NULL
 FROM	orders;
 
-SELECT	'Set coupon on order_line w/ product and w/ coupon',
+SELECT	'Set coupon on order_line w/o order, w/ product and w/ coupon',
 		coupon_id IS NOT NULL AND init_discount = 3
 FROM	order_lines;
+
+DELETE FROM orders;
+
+INSERT INTO orders DEFAULT VALUES;
+
+INSERT INTO order_lines ( order_id, product_id, coupon_id )
+SELECT	orders.id,
+		products.id,
+		campaigns.id
+FROM	orders,
+		products,
+		campaigns
+WHERE	campaigns.aff_id IS NOT NULL;
+
+SELECT	'Set campaign on order_line w/o campaign, w/ product and w/ coupon',
+		campaign_id IS NOT NULL AND aff_id IS NOT NULL
+FROM	orders;
+
+SELECT	'Set coupon on order_line w/o campaign, w/ product and w/ coupon',
+		coupon_id IS NOT NULL AND init_discount = 3
+FROM	order_lines;
+
+DELETE FROM orders;
+
+INSERT INTO orders ( campaign_id )
+SELECT	id
+FROM	promos;
+
+INSERT INTO order_lines ( order_id, product_id, coupon_id )
+SELECT	orders.id,
+		products.id,
+		campaigns.id
+FROM	orders,
+		products,
+		campaigns
+WHERE	campaigns.aff_id IS NOT NULL;
+
+SELECT	'Set coupon on order_line w/ campaign, w/ product and w/ invalid coupon',
+		( campaign_id = coupon_id ) IS TRUE
+FROM	orders,
+		order_lines;
+
+/*
+\pset tuples_only off
+SELECT * FROM orders; SELECT * FROM order_lines; SELECT * FROM campaigns;
+\pset tuples_only on
+--*/
+
 
 /*
 todo:
