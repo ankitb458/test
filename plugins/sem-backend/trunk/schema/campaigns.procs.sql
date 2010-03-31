@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION campaigns_check_trash()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	NEW.status = OLD.status OR NEW.status <> 'trash'
+	IF	NEW.status = OLD.status OR NEW.status > 'draft'
 	THEN
 		RETURN NEW;
 	END IF;

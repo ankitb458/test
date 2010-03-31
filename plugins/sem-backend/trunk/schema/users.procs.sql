@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION users_check_trash()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	NEW.status = OLD.status OR NEW.status <> 'trash'
+	IF	NEW.status = OLD.status OR NEW.status > 'pending'
 	THEN
 		RETURN NEW;
 	END IF;
