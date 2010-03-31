@@ -110,7 +110,7 @@ FROM	orders,
 		campaigns
 WHERE	promo_id IS NULL;
 
-SELECT	'Fix non-active coupons in order_lines w/ order.',
+SELECT	'Fix non-active coupons in order_lines w/ order',
 		coupon_id IS NULL
 FROM	order_lines;
 
@@ -207,7 +207,6 @@ FROM	orders,
 SELECT * FROM orders; SELECT * FROM order_lines; SELECT * FROM campaigns;
 \pset tuples_only on
 --*/
-
 
 /*
 todo:
