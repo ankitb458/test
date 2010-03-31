@@ -1,5 +1,5 @@
 /**
- * Sanitizes an order_lins's shipping user.
+ * Sanitizes an order_line's shipping user.
  */
 CREATE OR REPLACE FUNCTION order_lines_sanitize_user_id()
 	RETURNS trigger
