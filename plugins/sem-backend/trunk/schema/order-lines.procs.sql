@@ -216,7 +216,9 @@ BEGIN
 	SELECT	init_price,
 			init_comm,
 			rec_price,
-			rec_comm
+			rec_comm,
+			rec_interval,
+			rec_count
 	INTO	p
 	FROM	products
 	WHERE	id = NEW.product_id
@@ -358,6 +360,16 @@ BEGIN
 			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, p.init_comm - NEW.init_discount), NEW.init_amount);
 			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, p.rec_comm - NEW.rec_discount), NEW.rec_amount);
 		END IF;
+	END IF;
+	
+	-- Fetch interval/count
+	IF	NEW.rec_amount > 0
+	THEN
+		NEW.rec_interval := COALESCE(NEW.rec_interval, p.rec_interval);
+		NEW.rec_count := COALESCE(NEW.rec_count, p.rec_count);
+	ELSE
+		NEW.rec_interval := NULL;
+		NEW.rec_count := NULL;
 	END IF;
 	
 	--RAISE NOTICE '%, %, % / %, %, %',
