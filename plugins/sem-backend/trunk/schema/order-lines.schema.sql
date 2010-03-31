@@ -24,7 +24,12 @@ CREATE TABLE order_lines (
 				rec_amount >= rec_comm AND rec_comm >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_discounts
 		CHECK ( coupon_id IS NULL AND init_discount = 0 AND rec_discount = 0 OR
-			coupon_id IS NOT NULL AND ( init_discount > 0 OR rec_discount > 0 ) )
+			coupon_id IS NOT NULL AND ( init_discount > 0 OR rec_discount > 0 ) ),
+	CONSTRAINT valid_interval
+		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
+			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
+	CONSTRAINT undefined_behavior
+		CHECK ( status <> 'inherit' AND rec_count IS NULL )
 );
 
 SELECT	timestampable('order_lines'),
@@ -75,12 +80,6 @@ BEGIN
 		THEN
 			NEW.name := 'Product';
 		END IF;
-	END IF;
-	
-	-- Handle inherit status
-	IF	NEW.status = 'inherit'
-	THEN
-		RAISE EXCEPTION 'Undefined behavior for order_lines.status = inherit.';
 	END IF;
 	
 	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL

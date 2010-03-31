@@ -31,7 +31,10 @@ CREATE TABLE campaigns (
 	CONSTRAINT valid_min_max_date
 		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date ),
 	CONSTRAINT valid_firesale
-		CHECK ( NOT firesale OR max_orders IS NOT NULL OR max_date IS NOT NULL )
+		CHECK ( NOT firesale OR max_orders IS NOT NULL OR max_date IS NOT NULL ),
+	CONSTRAINT undefined_behavior
+		CHECK ( NOT ( status = 'inherit' AND promo_id IS NULL ) AND
+			NOT ( status = 'trash' AND promo_id IS NOT NULL ) )
 );
 
 SELECT	activatable('campaigns'),
@@ -146,10 +149,7 @@ BEGIN
 	END IF;
 	
 	-- Handle inherit status
-	IF	NEW.status = 'inherit' AND NEW.promo_id IS NULL
-	THEN
-		RAISE EXCEPTION 'Undefined behavior for campaigns.status = inherit.';
-	ELSEIF NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
+	IF NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
 	THEN
 		NEW.status := 'inherit';
 	END IF;

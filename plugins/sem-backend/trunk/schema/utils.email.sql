@@ -2,7 +2,7 @@
  * email domain
  */
 
-CREATE DOMAIN email as varchar(255) CHECK ( is_email(value) );
+CREATE DOMAIN email as varchar(128) CHECK ( is_email(value) );
 
 /**
  * Validates against rfc822

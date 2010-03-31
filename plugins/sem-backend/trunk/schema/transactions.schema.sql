@@ -10,7 +10,9 @@ CREATE TABLE transactions (
 	tx_date			datetime,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( tx_date IS NULL AND status > 'draft' ) )
+		CHECK ( NOT ( tx_date IS NULL AND status > 'draft' ) ),
+	CONSTRAINT undefined_behavior
+		CHECK ( status <> 'inherit' )
 );
 
 SELECT timestampable('transactions'), searchable('transactions'), trashable('transactions');
@@ -36,12 +38,6 @@ BEGIN
 	IF	NEW.name IS NULL
 	THEN
 		NEW.name := NEW.uuid::varchar;
-	END IF;
-	
-	-- Handle inherit status
-	IF	NEW.status = 'inherit'
-	THEN
-		RAISE EXCEPTION 'Undefined behavior for transactions.status = inherit.';
 	END IF;
 	
 	-- Assign a default date if needed

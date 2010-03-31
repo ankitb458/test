@@ -12,7 +12,9 @@ CREATE TABLE orders (
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( order_date IS NULL AND status > 'draft' ) )
+		CHECK ( NOT ( order_date IS NULL AND status > 'draft' ) ),
+	CONSTRAINT undefined_behavior
+		CHECK ( status <> 'inherit' )
 );
 
 SELECT timestampable('orders'), searchable('orders'), trashable('orders');
@@ -53,12 +55,6 @@ BEGIN
 		THEN
 			NEW.name := 'Order';
 		END IF;
-	END IF;
-	
-	-- Handle inherit status
-	IF	NEW.status = 'inherit'
-	THEN
-		RAISE EXCEPTION 'Undefined behavior for orders.status = inherit.';
 	END IF;
 	
 	-- Assign a default date if needed

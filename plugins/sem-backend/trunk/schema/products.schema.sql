@@ -14,6 +14,9 @@ CREATE TABLE products (
 	rec_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_interval	interval,
 	rec_count		smallint,
+	currency		currency_code NOT NULL DEFAULT 'USD',
+	weight			numeric(7,3),
+	volume			numeric(7,3)[3],
 	min_date		datetime,
 	max_date		datetime,
 	max_orders		int,
@@ -23,8 +26,17 @@ CREATE TABLE products (
 	CONSTRAINT valid_amounts
 		CHECK ( init_price >= init_comm AND init_comm >= 0 AND
 				rec_price >= rec_comm AND rec_comm >= 0 ),
+	CONSTRAINT valid_interval
+		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
+			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_min_max_date
-		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date )
+		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date ),
+	CONSTRAINT valid_weight
+		CHECK ( weight >= 0 ),
+	CONSTRAINT valid_volume
+		CHECK ( volume > ARRAY[0,0,0]::numeric(7,3)[3] ),
+	CONSTRAINT undefined_behavior
+		CHECK ( status <> 'inherit' AND rec_count IS NULL AND weight IS NULL AND volume IS NULL )
 );
 
 SELECT	activatable('products'),
@@ -75,12 +87,6 @@ BEGIN
 	IF	NEW.name IS NULL
 	THEN
 		NEW.name := 'Product';
-	END IF;
-	
-	-- Handle inherit status
-	IF	NEW.status = 'inherit'
-	THEN
-		RAISE EXCEPTION 'Undefined behavior for products.status = inherit.';
 	END IF;
 	
 	-- Fix commissions if needed

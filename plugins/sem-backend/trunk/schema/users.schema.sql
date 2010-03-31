@@ -10,22 +10,28 @@ CREATE TABLE users (
 	username		varchar(255),
 	password		varchar(60) NOT NULL DEFAULT '',
 	email			email,
-	ip				inet,
-	token			uuid,
 	nickname		varchar(255) NOT NULL DEFAULT '',
 	firstname		varchar(255) NOT NULL DEFAULT '',
 	lastname		varchar(255) NOT NULL DEFAULT '',
-	phone			varchar(255) NOT NULL DEFAULT '',
-	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	country			country_code,
+	state			state_code,
 	paypal			email,
+	aff_docs		boolean NOT NULL DEFAULT false,
+	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	ip				inet,
+	token			uuid,
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_username
 		CHECK ( username <> '' ),
 	CONSTRAINT valid_password
 		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) ),
+	CONSTRAINT valid_state
+		CHECK ( NOT ( country IN ('US', 'CA', 'AU') AND state IS NULL ) ),
 	CONSTRAINT valid_referral
-		CHECK ( id <> ref_id )
+		CHECK ( id <> ref_id ),
+	CONSTRAINT undefined_behavior
+		CHECK ( status <> 'inherit' )
 );
 
 SELECT	sluggable('users'),
@@ -40,7 +46,11 @@ CREATE INDEX users_ref_id ON users(ref_id);
 
 COMMENT ON TABLE users IS E'Users
 
-- name corresponds to the screen name.';
+- name corresponds to the screen name.
+- aff_docs corresponds to whether the affiliate''s tax docs were sent.
+- ref_id is the id of whichever affiliate referred the user.
+- ip is the last known IP address.
+- token is not null when the user requests an action (unlock, reset password...).';
 
 /**
  * Active users
@@ -68,12 +78,11 @@ BEGIN
 	NEW.username := NULLIF(trim(NEW.username), '');
 	NEW.password := trim(NEW.password);
 	
+	NEW.email := NULLIF(trim(NEW.email), '');
+	
 	NEW.firstname := trim(NEW.firstname);
 	NEW.lastname := trim(NEW.lastname);
 	NEW.nickname := trim(NEW.nickname);
-	
-	NEW.email := NULLIF(trim(NEW.email), '');
-	NEW.phone := trim(NEW.phone);
 	
 	NEW.paypal := NULLIF(trim(NEW.paypal), '');
 	
@@ -97,13 +106,6 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- Disable inherit (it's required by trashable)
-	IF	NEW.status = 'inherit'
-	THEN
-		RAISE EXCEPTION 'Undefined behavior for users.status = inherit for campaigns.id = %.',
-			NEW.id;
-	END IF;
-
 	IF	NEW.password <> ''
 	THEN
 		IF	length(NEW.password) = 60 AND substring(NEW.password from 1 for 4) = '$2a$'
