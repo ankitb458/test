@@ -26,17 +26,6 @@ SET		campaign_id = campaigns.id
 FROM	campaigns;
 \echo
 
-UPDATE	users
-SET		status = 'inactive';
-
-SELECT	'Warn that user_id = aff_id';
-UPDATE	orders
-SET		user_id = users.id,
-		aff_id = affs.id
-FROM	get_user('joe@bar.com') as users,
-		get_user('joe@bar.com') as affs;
-\echo
-
 -- clean up
 --/*
 --\! sleep 3

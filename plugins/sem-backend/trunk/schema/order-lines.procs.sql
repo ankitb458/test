@@ -75,8 +75,7 @@ BEGIN
 		END IF;
 	END IF;
 	
-	IF	( NEW.init_comm > 0 OR NEW.rec_comm > 0 ) AND
-		( ROW(NEW.init_amount, NEW.init_comm) IS DISTINCT FROM ROW(OLD.init_amount, OLD.init_comm) OR
+	IF	( ROW(NEW.init_amount, NEW.init_comm) IS DISTINCT FROM ROW(OLD.init_amount, OLD.init_comm) OR
 		ROW(NEW.rec_amount, NEW.rec_comm) IS DISTINCT FROM ROW(OLD.rec_amount, OLD.rec_comm) )
 	THEN
 		IF	NOT EXISTS (

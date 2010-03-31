@@ -202,6 +202,7 @@ SELECT	'Fix coupon on order_line w/ campaign, w/ product and w/ invalid coupon',
 FROM	orders,
 		order_lines;
 
+
 -- clean up
 /*
 --\! sleep 3
