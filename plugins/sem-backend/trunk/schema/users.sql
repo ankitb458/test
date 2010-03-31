@@ -193,7 +193,7 @@ CREATE TRIGGER users_20_tsv
 FOR EACH ROW EXECUTE PROCEDURE users_tsv();
 
 /**
- * Retrieve a user based on its email or ukey
+ * Retrieve a user based on its email or username
  */
 CREATE OR REPLACE FUNCTION get_user(varchar)
 	RETURNS SETOF users
