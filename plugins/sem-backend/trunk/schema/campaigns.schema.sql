@@ -149,7 +149,7 @@ BEGIN
 	END IF;
 	
 	-- Handle inherit status
-	IF NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
+	IF	NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
 	THEN
 		NEW.status := 'inherit';
 	END IF;

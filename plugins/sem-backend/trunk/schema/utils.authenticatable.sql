@@ -16,7 +16,7 @@ CREATE TYPE status_authenticatable AS enum (
  */
 CREATE TYPE country_code AS enum (
 	'AF', -- AFGHANISTAN
-	'AX', -- ÅLAND ISLANDS
+	'AX', -- ALAND ISLANDS
 	'AL', -- ALBANIA
 	'DZ', -- ALGERIA
 	'AS', -- AMERICAN SAMOA
@@ -68,7 +68,7 @@ CREATE TYPE country_code AS enum (
 	'CD', -- CONGO, THE DEMOCRATIC REPUBLIC OF THE
 	'CK', -- COOK ISLANDS
 	'CR', -- COSTA RICA
-	'CI', -- CÔTE D'IVOIRE
+	'CI', -- COTE D'IVOIRE
 	'HR', -- CROATIA
 	'CU', -- CUBA
 	'CY', -- CYPRUS
@@ -194,11 +194,11 @@ CREATE TYPE country_code AS enum (
 	'PT', -- PORTUGAL
 	'PR', -- PUERTO RICO
 	'QA', -- QATAR
-	'RE', -- RÉUNION
+	'RE', -- REUNION
 	'RO', -- ROMANIA
 	'RU', -- RUSSIAN FEDERATION
 	'RW', -- RWANDA
-	'BL', -- SAINT BARTHÉLEMY
+	'BL', -- SAINT BARTHELEMY
 	'SH', -- SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA
 	'KN', -- TTS AND NEVIS
 	'LC', -- SAINT LUCIA

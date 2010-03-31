@@ -148,7 +148,7 @@ CREATE TYPE currency_code AS enum (
 	'SOS', -- Somalia, Shillings
 	'SPL', -- Seborga, Luigini
 	'SRD', -- Suriname, Dollars
-	'STD', -- São Tome and Principe, Dobras
+	'STD', -- Sao Tome and Principe, Dobras
 	'SVC', -- El Salvador, Colones
 	'SYP', -- Syria, Pounds
 	'SZL', -- Swaziland, Emalangeni
@@ -171,14 +171,14 @@ CREATE TYPE currency_code AS enum (
 	'VND', -- Viet Nam, Dong
 	'VUV', -- Vanuatu, Vatu
 	'WST', -- Samoa, Tala
-	'XAF', -- Communauté Financière Africaine BEAC, Francs
+	'XAF', -- Communaute Financiere Africaine BEAC, Francs
 	'XAG', -- Silver, Ounces
 	'XAU', -- Gold, Ounces
 	'XCD', -- East Caribbean Dollars
 	'XDR', -- International Monetary Fund (IMF) Special Drawing Rights
-	'XOF', -- Communauté Financière Africaine BCEAO, Francs
+	'XOF', -- Communaute Financiere Africaine BCEAO, Francs
 	'XPD', -- Palladium Ounces
-	'XPF', -- Comptoirs Français du Pacifique Francs
+	'XPF', -- Comptoirs Francais du Pacifique Francs
 	'XPT', -- Platinum, Ounces
 	'YER', -- Yemen, Rials
 	'ZAR', -- South Africa, Rand
