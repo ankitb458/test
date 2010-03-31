@@ -6,8 +6,6 @@
 
 INSERT INTO order_lines DEFAULT VALUES;
 
-INSERT INTO order_lines DEFAULT VALUES;
-
 UPDATE	order_lines
 SET		status = 'pending';
 
@@ -54,6 +52,7 @@ SET		coupon_id = campaigns.id
 FROM	campaigns;
 \echo
 
+DELETE FROM orders;
 
 -- clean up
 /*

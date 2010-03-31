@@ -14,6 +14,7 @@ BEGIN
 		SELECT	1
 		FROM	order_lines
 		WHERE	order_id = NEW.id -- cascade updated
+		AND		status > 'draft'
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot delete orders.id = %. It is referenced in order_lines.order_id.', NEW.id;

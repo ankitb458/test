@@ -6,7 +6,7 @@ CREATE TABLE order_lines (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_billable NOT NULL DEFAULT 'draft',
 	name			varchar(255) NOT NULL,
-	order_id		bigint NOT NULL REFERENCES orders(id) ON UPDATE CASCADE,
+	order_id		bigint NOT NULL REFERENCES orders(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,
 	coupon_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
