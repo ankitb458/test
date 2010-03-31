@@ -6,13 +6,15 @@ CREATE TABLE orders (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	order_date		datetime,
+	due_date		datetime,
+	cleared_date	datetime,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( order_date IS NULL AND status > 'draft' ) ),
+		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' )
 );
@@ -21,7 +23,7 @@ SELECT	timestampable('orders'),
 		searchable('orders'),
 		trashable('orders');
 
-CREATE INDEX orders_sort ON orders(order_date DESC);
+CREATE INDEX orders_sort ON orders(due_date DESC);
 CREATE INDEX orders_user_id ON orders(user_id);
 CREATE INDEX orders_campaign_id ON orders(campaign_id);
 CREATE INDEX orders_aff_id ON orders(aff_id);
@@ -59,10 +61,14 @@ BEGIN
 		END IF;
 	END IF;
 	
-	-- Assign a default date if needed
-	IF	NEW.order_date IS NULL AND NEW.status > 'draft'
+	-- Assign default dates if needed
+	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
 	THEN
-		NEW.order_date := NOW()::datetime;
+		NEW.due_date := NOW()::datetime;
+	END IF;
+	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
+	THEN
+		NEW.cleared_date := NOW()::datetime;
 	END IF;
 	
 	RETURN NEW;

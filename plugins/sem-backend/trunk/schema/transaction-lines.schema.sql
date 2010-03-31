@@ -6,8 +6,8 @@ CREATE TABLE transaction_lines (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	due_date		datetime NOT NULL DEFAULT NOW()::datetime,
-	paid_date		datetime,
+	due_date		datetime,
+	cleared_date	datetime,
 	tx_id			bigint NOT NULL REFERENCES transactions(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	parent_id		bigint REFERENCES transaction_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
@@ -21,7 +21,8 @@ CREATE TABLE transaction_lines (
 	CONSTRAINT valid_amounts
 		CHECK ( amount >= 0 AND fee >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( paid_date IS NULL AND status > 'draft' ) ),
+		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' AND tax = 0 )
 );
@@ -30,7 +31,7 @@ SELECT	timestampable('transaction_lines'),
 		searchable('transaction_lines'),
 		trashable('transaction_lines');
 
-CREATE INDEX transaction_lines_sort ON transaction_lines(paid_date DESC);
+CREATE INDEX transaction_lines_sort ON transaction_lines(cleared_date DESC);
 CREATE INDEX transaction_lines_tx_id ON transaction_lines(tx_id);
 CREATE INDEX transaction_lines_order_line_id ON transaction_lines(order_line_id);
 CREATE INDEX transaction_lines_user_id ON transaction_lines(user_id);
@@ -70,6 +71,16 @@ BEGIN
 		THEN
 			NEW.name := 'Transaction';
 		END IF;
+	END IF;
+	
+	-- Assign default dates if needed
+	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
+	THEN
+		NEW.due_date := NOW()::datetime;
+	END IF;
+	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
+	THEN
+		NEW.cleared_date := NOW()::datetime;
 	END IF;
 	
 	RETURN NEW;

@@ -303,7 +303,7 @@ BEGIN
 				WHERE	order_lines.order_id <> NEW.order_id
 				AND		order_lines.coupon_id = NEW.coupon_id
 				AND		order_lines.status > 'pending'
-				AND		orders.order_date >= c.min_date;
+				AND		orders.cleared_date >= c.min_date;
 		
 				o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
 			END IF;

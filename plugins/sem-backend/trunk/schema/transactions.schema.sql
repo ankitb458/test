@@ -6,14 +6,15 @@ CREATE TABLE transactions (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	due_date		datetime NOT NULL DEFAULT NOW()::datetime,
-	paid_date		datetime,
+	due_date		datetime,
+	cleared_date	datetime,
 	tx_type			transaction_type NOT NULL DEFAULT 'init_in',
 	ext_tx_id		varchar(128) UNIQUE,
 	ext_status		varchar(64) NOT NULL DEFAULT '',
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( paid_date IS NULL AND status > 'draft' ) ),
+		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' )
 );
@@ -22,7 +23,7 @@ SELECT	timestampable('transactions'),
 		searchable('transactions'),
 		trashable('transactions');
 
-CREATE INDEX transactions_sort ON transactions(paid_date DESC);
+CREATE INDEX transactions_sort ON transactions(cleared_date DESC);
 
 COMMENT ON TABLE transactions IS E'Transactions
 
@@ -45,6 +46,16 @@ BEGIN
 	IF	NEW.name IS NULL
 	THEN
 		NEW.name := NEW.uuid::varchar;
+	END IF;
+	
+	-- Assign default dates if needed
+	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
+	THEN
+		NEW.due_date := NOW()::datetime;
+	END IF;
+	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
+	THEN
+		NEW.cleared_date := NOW()::datetime;
 	END IF;
 	
 	RETURN NEW;
