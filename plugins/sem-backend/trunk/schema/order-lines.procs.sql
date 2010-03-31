@@ -210,8 +210,8 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					min_date,
-					max_date,
+					starts,
+					stops,
 					max_orders
 			INTO	c
 			FROM	active_coupons
@@ -233,8 +233,8 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					min_date,
-					max_date,
+					starts,
+					stops,
 					max_orders
 			INTO	c
 			FROM	active_coupons
@@ -254,8 +254,8 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					min_date,
-					max_date,
+					starts,
+					stops,
 					max_orders
 			INTO	c
 			FROM	active_promos
@@ -287,10 +287,10 @@ BEGIN
 		-- Process firesale if any
 		IF	c.firesale
 		THEN
-			IF	c.max_date IS NOT NULL
+			IF	c.stops IS NOT NULL
 			THEN
-				t_ratio := EXTRACT(EPOCH FROM c.max_date - NOW()::datetime) /
-					EXTRACT(EPOCH FROM c.max_date - c.min_date);
+				t_ratio := EXTRACT(EPOCH FROM c.stops - NOW()::datetime) /
+					EXTRACT(EPOCH FROM c.stops - c.starts);
 			END IF;
 		
 			IF	c.max_orders IS NOT NULL
@@ -303,7 +303,7 @@ BEGIN
 				WHERE	order_lines.order_id <> NEW.order_id
 				AND		order_lines.coupon_id = NEW.coupon_id
 				AND		order_lines.status > 'pending'
-				AND		orders.cleared_date >= c.min_date;
+				AND		orders.cleared >= c.starts;
 		
 				o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
 			END IF;

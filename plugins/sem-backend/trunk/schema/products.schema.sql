@@ -17,8 +17,8 @@ CREATE TABLE products (
 	currency		currency_code NOT NULL DEFAULT 'USD',
 	weight			numeric(7,3),
 	volume			numeric(7,3)[3],
-	min_date		datetime,
-	max_date		datetime,
+	starts			datetime,
+	stops			datetime,
 	max_orders		int,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_ukey
@@ -29,8 +29,8 @@ CREATE TABLE products (
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
-	CONSTRAINT valid_min_max_date
-		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date ),
+	CONSTRAINT valid_activatable
+		CHECK ( starts IS NULL OR stops IS NULL OR starts <= stops ),
 	CONSTRAINT valid_weight
 		CHECK ( weight >= 0 ),
 	CONSTRAINT valid_volume
@@ -64,13 +64,13 @@ SELECT	products.*
 FROM	products
 WHERE	status = 'active'
 AND		( max_orders IS NULL OR max_orders > 0 )
-AND		( max_date IS NULL OR max_date >= NOW()::datetime );
+AND		( stops IS NULL OR stops >= NOW()::datetime );
 
 COMMENT ON VIEW active_products IS E'Active Products
 
 - status is active.
 - max_orders, if set, is not depleted.
-- max_date, if set, is not reached.';
+- stops, if set, is not reached.';
 
 /**
  * Clean a product before it gets stored.

@@ -12,8 +12,8 @@ CREATE TABLE campaigns (
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE DEFERRABLE,
 	init_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	rec_discount	numeric(8,2) NOT NULL DEFAULT 0,
-	min_date		datetime,
-	max_date		datetime,
+	starts			datetime,
+	stops			datetime,
 	max_orders		int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	memo			text NOT NULL DEFAULT '',
@@ -28,10 +28,10 @@ CREATE TABLE campaigns (
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
 	CONSTRAINT valid_discounts
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
-	CONSTRAINT valid_min_max_date
-		CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date ),
+	CONSTRAINT valid_activatable
+		CHECK ( starts IS NULL OR stops IS NULL OR starts <= stops ),
 	CONSTRAINT valid_firesale
-		CHECK ( NOT firesale OR max_orders IS NOT NULL OR max_date IS NOT NULL ),
+		CHECK ( NOT firesale OR max_orders IS NOT NULL OR stops IS NOT NULL ),
 	CONSTRAINT undefined_behavior
 		CHECK ( NOT ( status = 'inherit' AND promo_id IS NULL ) AND
 			NOT ( status = 'trash' AND promo_id IS NOT NULL ) )
@@ -54,7 +54,7 @@ Promos are tied to products through their uuid; every product has one.
 
 - max_orders gets decreased as new orders are *cleared*. In other words,
   it is only loosely enforced.
-- An active firesale requires either or both of max_date and max_orders.
+- An active firesale requires either or both of stops and max_orders.
   A firesale applies dynamic discount to orders.';
 
 /*
@@ -92,14 +92,14 @@ SELECT	coupons.*
 FROM	coupons
 WHERE	status = 'active'
 AND		( max_orders IS NULL OR max_orders > 0 )
-AND		( max_date IS NULL OR max_date >= NOW()::datetime );
+AND		( stops IS NULL OR stops >= NOW()::datetime );
 
 COMMENT ON VIEW active_coupons IS E'Active Coupons
 
 - product_id is set.
 - status is active.
 - max_orders, if set, is not depleted.
-- max_date, if set, is not reached.';
+- stops, if set, is not reached.';
 
 /**
  * Promos
@@ -123,14 +123,14 @@ SELECT	promos.*
 FROM	promos
 WHERE	status = 'active'
 AND		( max_orders IS NULL OR max_orders > 0 )
-AND		( max_date IS NULL OR max_date >= NOW()::datetime );
+AND		( stops IS NULL OR stops >= NOW()::datetime );
 
 COMMENT ON VIEW active_promos IS E'Active Promos
 
 - A product is tied to the campaign through the uuid.
 - status is active.
 - max_orders, if set, is not depleted.
-- max_date, if set, is not reached.';
+- stops, if set, is not reached.';
 
 /**
  * Clean a campaign before it gets stored.
@@ -163,8 +163,8 @@ BEGIN
 		END IF;
 		NEW.init_discount := 0;
 		NEW.rec_discount := 0;
-		NEW.min_date := NULL;
-		NEW.max_date := NULL;
+		NEW.starts := NULL;
+		NEW.stops := NULL;
 		NEW.max_orders := NULL;
 		NEW.firesale := FALSE;
 	ELSE
@@ -174,8 +174,8 @@ BEGIN
 			NEW.status = 'inactive';
 		END IF;
 		
-		-- Firesales require either or both of max_date and max_orders
-		IF	NEW.firesale AND NEW.max_date IS NULL AND NEW.max_orders IS NULL
+		-- Firesales require either or both of stops and max_orders
+		IF	NEW.firesale AND NEW.stops IS NULL AND NEW.max_orders IS NULL
 		THEN
 			NEW.firesale := FALSE;
 		END IF;

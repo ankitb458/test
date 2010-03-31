@@ -16,18 +16,18 @@ CREATE TYPE status_activatable AS enum (
  *
  * Adds fields:
  * - status
- * - min_date
- * - max_date
+ * - starts
+ * - stops
  *
  * Adds constraint:
- * - valid_min_max_date
+ * - valid_activatable
  *
  * Adds indexes:
  * - {table}_activate
  * - {table}_deactivate
  *
  * Adds triggers:
- * - {table}_01__check_min_max_date
+ * - {table}_01__check_activatable
  *
  * Adds functions
  * - {table}_activate
@@ -47,28 +47,28 @@ BEGIN
 		$EXEC$;
 	END IF;
 	
-	IF	NOT column_exists(t_name, 'min_date')
+	IF	NOT column_exists(t_name, 'starts')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN min_date datetime;
+			ADD COLUMN starts datetime;
 		$EXEC$;
 	END IF;
 	
-	IF	NOT column_exists(t_name, 'max_date')
+	IF	NOT column_exists(t_name, 'stops')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN max_date datetime;
+			ADD COLUMN stops datetime;
 		$EXEC$;
 	END IF;
 	
-	IF	NOT constraint_exists(t_name, 'valid_min_max_date')
+	IF	NOT constraint_exists(t_name, 'valid_activatable')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD CONSTRAINT valid_min_max_date
-				CHECK ( min_date IS NULL OR max_date IS NULL OR min_date <= max_date );
+			ADD CONSTRAINT valid_activatable
+				CHECK ( starts IS NULL OR stops IS NULL OR starts <= stops );
 		$EXEC$;
 	END IF;
 	
@@ -76,7 +76,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_activate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(min_date)
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(starts)
 		WHERE	status = 'future';
 		$EXEC$;
 	END IF;
@@ -85,8 +85,8 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_deactivate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(max_date)
-		WHERE	status = 'active' AND max_date IS NOT NULL;
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(stops)
+		WHERE	status = 'active' AND stops IS NOT NULL;
 		$EXEC$;
 	END IF;
 	
@@ -98,7 +98,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'active'
 		WHERE	status = 'future'
-		AND		min_date <= NOW()::datetime;
+		AND		starts <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -113,7 +113,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'inactive'
 		WHERE	status = 'active'
-		AND		max_date <= NOW()::datetime;
+		AND		stops <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -121,26 +121,26 @@ BEGIN
 	$EXEC$;
 	
 	EXECUTE $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__check_min_max_date') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__check_activatable') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
 		-- Process schedules
 		IF	NEW.status = 'future'
 		THEN
-			IF	NEW.min_date IS NULL
+			IF	NEW.starts IS NULL
 			THEN
 				NEW.status := 'inactive';
-			ELSEIF NEW.min_date <= NOW()::datetime
+			ELSEIF NEW.starts <= NOW()::datetime
 			THEN
 				NEW.status := 'active';
 			END IF;
 		END IF;
 
-		-- Make sure that min_date and max_date are consistent
-		IF	NEW.min_date IS NOT NULL AND NEW.max_date IS NOT NULL AND NEW.min_date > NEW.max_date
+		-- Make sure that starts and stops are consistent
+		IF	NEW.starts IS NOT NULL AND NEW.stops IS NOT NULL AND NEW.starts > NEW.stops
 		THEN
-			NEW.max_date := NULL;
+			NEW.stops := NULL;
 		END IF;
 		
 		RETURN NEW;
@@ -148,12 +148,12 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF	NOT trigger_exists(t_name || '_01__check_min_max_date')
+	IF	NOT trigger_exists(t_name || '_01__check_activatable')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_min_max_date') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_activatable') || $EXEC$
 			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__check_min_max_date') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__check_activatable') || $EXEC$();
 		$EXEC$;
 	END IF;
 	

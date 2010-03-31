@@ -5,17 +5,17 @@ CREATE TABLE transactions (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
-	due_date		datetime,
-	cleared_date	datetime,
+	due				datetime,
+	cleared			datetime,
 	name			varchar NOT NULL,
 	tx_type			transaction_type NOT NULL DEFAULT 'init_in',
 	ext_tx_id		varchar(128) UNIQUE,
 	ext_status		varchar(64) NOT NULL DEFAULT '',
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
-			NOT ( cleared_date IS NULL AND status > 'pending' ) AND
-			( due_date IS NULL OR cleared_date IS NULL OR cleared_date >= due_date ) ),
+		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
+			NOT ( cleared IS NULL AND status > 'pending' ) AND
+			( due IS NULL OR cleared IS NULL OR cleared >= due ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' )
 );
@@ -24,7 +24,7 @@ SELECT	timestampable('transactions'),
 		searchable('transactions'),
 		trashable('transactions');
 
-CREATE INDEX transactions_sort ON transactions(cleared_date DESC);
+CREATE INDEX transactions_sort ON transactions(cleared DESC);
 
 COMMENT ON TABLE transactions IS E'Transactions
 
@@ -50,13 +50,13 @@ BEGIN
 	END IF;
 	
 	-- Assign default dates if needed
-	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
+	IF	NEW.due IS NULL AND NEW.status > 'draft'
 	THEN
-		NEW.due_date := NOW()::datetime;
+		NEW.due := NOW()::datetime;
 	END IF;
-	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
+	IF	NEW.cleared IS NULL AND NEW.status > 'pending'
 	THEN
-		NEW.cleared_date := NOW()::datetime;
+		NEW.cleared := NOW()::datetime;
 	END IF;
 	
 	RETURN NEW;

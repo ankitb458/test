@@ -2,8 +2,8 @@
  * Timestampable behavior
  *
  * Adds fields:
- * - {table}.created_date
- * - {table}.modified_date
+ * - {table}.created
+ * - {table}.modified
  *
  * Adds triggers:
  * - {table}_10__modified()
@@ -14,19 +14,19 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF	NOT column_exists(t_name, 'created_date')
+	IF	NOT column_exists(t_name, 'created')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN created_date datetime NOT NULL DEFAULT NOW();
+			ADD COLUMN created datetime NOT NULL DEFAULT NOW();
 		$EXEC$;
 	END IF;
 	
-	IF	NOT column_exists(t_name, 'modified_date')
+	IF	NOT column_exists(t_name, 'modified')
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN modified_date datetime NOT NULL DEFAULT NOW();
+			ADD COLUMN modified datetime NOT NULL DEFAULT NOW();
 		$EXEC$;
 	END IF;
 	
@@ -35,7 +35,7 @@ BEGIN
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		NEW.modified_date := NOW();
+		NEW.modified := NOW();
 		RETURN NEW;
 	END;
 	$DEF$ LANGUAGE plpgsql;
