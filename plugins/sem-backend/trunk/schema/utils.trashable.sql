@@ -9,9 +9,10 @@ CREATE OR REPLACE FUNCTION trashable(varchar)
 AS $$
 DECLARE
 	t_name		alias for $1;
-	status_type	varchar;
-	trash_key	varchar;
+--	status_type	varchar;
+	trash_key	varchar := 'trash';
 BEGIN
+	/*
 	SELECT	udt_name
 	INTO	status_type
 	FROM	information_schema.columns
@@ -31,6 +32,7 @@ BEGIN
 			END
 	$EXEC$
 	INTO	trash_key;
+	*/
 	
 	EXECUTE $EXEC$
 	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__check_trash') || $EXEC$()
