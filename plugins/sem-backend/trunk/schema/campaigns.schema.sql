@@ -24,12 +24,12 @@ CREATE TABLE campaigns (
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_campaign
 		CHECK ( ukey IS NULL AND promo_id IS NOT NULL OR ukey IS NOT NULL AND promo_id IS NULL ),
+	CONSTRAINT valid_discounts
+		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_coupon
 		CHECK ( promo_id IS NOT NULL OR
 			product_id IS NULL AND init_discount = 0 AND rec_discount = 0 OR
 			product_id IS NOT NULL AND ( status < 'future' OR init_discount > 0 OR rec_discount > 0 ) ),
-	CONSTRAINT valid_discounts
-		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_promo
 		CHECK ( promo_id IS NULL OR
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),

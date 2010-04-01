@@ -26,11 +26,13 @@ CREATE TABLE order_lines (
 	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amounts
-		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND init_discount >= 0 AND
-				rec_amount >= rec_comm AND rec_comm >= 0 AND rec_discount >= 0 ),
+		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND
+				rec_amount >= rec_comm AND rec_comm >= 0 ),
 	CONSTRAINT valid_discounts
+		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
+	CONSTRAINT valid_coupon
 		CHECK ( coupon_id IS NULL AND init_discount = 0 AND rec_discount = 0 OR
-			coupon_id IS NOT NULL AND ( init_discount > 0 OR rec_discount > 0 ) ),
+			coupon_id IS NOT NULL AND product_id IS NOT NULL AND ( init_discount > 0 OR rec_discount > 0 ) ),
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
