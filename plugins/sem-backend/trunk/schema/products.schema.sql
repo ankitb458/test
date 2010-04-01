@@ -20,6 +20,9 @@ CREATE TABLE products (
 	starts			datetime,
 	stops			datetime,
 	stock			int,
+	created			datetime NOT NULL DEFAULT NOW(),
+	modified		datetime NOT NULL DEFAULT NOW(),
+	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
@@ -31,6 +34,8 @@ CREATE TABLE products (
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_activatable
 		CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts ),
+	CONSTRAINT valid_stock
+		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_weight
 		CHECK ( weight >= 0 ),
 	CONSTRAINT valid_volume

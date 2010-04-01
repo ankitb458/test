@@ -20,6 +20,10 @@ CREATE TABLE users (
 	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	ip				inet,
 	token			uuid,
+	created			datetime NOT NULL DEFAULT NOW(),
+	modified		datetime NOT NULL DEFAULT NOW(),
+	tsv				tsvector NOT NULL,
+	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_username

@@ -14,14 +14,6 @@ DECLARE
 	t_name		alias for $1;
 	stmt		text := '';
 BEGIN
-	IF	NOT column_exists(t_name, 'tsv')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN tsv tsvector NOT NULL;
-		$EXEC$;
-	END IF;
-	
 	IF	NOT index_exists(t_name, t_name || '_tsv')
 	THEN
 		EXECUTE $EXEC$

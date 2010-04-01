@@ -14,22 +14,6 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF	NOT column_exists(t_name, 'created')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN created datetime NOT NULL DEFAULT NOW();
-		$EXEC$;
-	END IF;
-	
-	IF	NOT column_exists(t_name, 'modified')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN modified datetime NOT NULL DEFAULT NOW();
-		$EXEC$;
-	END IF;
-	
 	EXECUTE $EXEC$
 	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__modified') || $EXEC$()
 		RETURNS TRIGGER

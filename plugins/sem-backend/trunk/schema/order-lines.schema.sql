@@ -21,6 +21,9 @@ CREATE TABLE order_lines (
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
 	rec_count		int,
+	created			datetime NOT NULL DEFAULT NOW(),
+	modified		datetime NOT NULL DEFAULT NOW(),
+	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amounts
 		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND init_discount >= 0 AND
@@ -41,7 +44,6 @@ CREATE TABLE order_lines (
 
 SELECT	timestampable('order_lines'),
 		repeatable('order_lines'),
-		depletable('order_lines', 'stock'),
 		searchable('order_lines'),
 		trashable('order_lines');
 

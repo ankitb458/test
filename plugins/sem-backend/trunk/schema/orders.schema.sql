@@ -11,6 +11,9 @@ CREATE TABLE orders (
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	created			datetime NOT NULL DEFAULT NOW(),
+	modified		datetime NOT NULL DEFAULT NOW(),
+	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND

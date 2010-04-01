@@ -16,6 +16,9 @@ CREATE TABLE campaigns (
 	stops			datetime,
 	stock			int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
+	created			datetime NOT NULL DEFAULT NOW(),
+	modified		datetime NOT NULL DEFAULT NOW(),
+	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
@@ -30,6 +33,8 @@ CREATE TABLE campaigns (
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_activatable
 		CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts ),
+	CONSTRAINT valid_stock
+		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_firesale
 		CHECK ( NOT firesale OR stock IS NOT NULL OR stops IS NOT NULL ),
 	CONSTRAINT undefined_behavior

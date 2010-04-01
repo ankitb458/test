@@ -39,35 +39,11 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF	NOT column_exists(t_name, 'status')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN status status_activatable NOT NULL DEFAULT 'draft';
-		$EXEC$;
-	END IF;
-	
-	IF	NOT column_exists(t_name, 'starts')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN starts datetime;
-		$EXEC$;
-	END IF;
-	
-	IF	NOT column_exists(t_name, 'stops')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN stops datetime;
-		$EXEC$;
-	END IF;
-	
 	IF	NOT constraint_exists(t_name, 'valid_activatable')
 	THEN
+		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
 		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD CONSTRAINT valid_activatable
+			CONSTRAINT valid_activatable
 				CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts );
 		$EXEC$;
 	END IF;

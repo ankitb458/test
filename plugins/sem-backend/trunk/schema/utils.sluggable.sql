@@ -41,14 +41,6 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF	NOT column_exists(t_name, 'ukey')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN ukey varchar UNIQUE;
-		$EXEC$;
-	END IF;
-	
 	EXECUTE $EXEC$
 	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__ukey') || $EXEC$()
 		RETURNS TRIGGER

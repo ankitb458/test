@@ -17,27 +17,11 @@ AS $$
 DECLARE
 	t_name		alias for $1;
 BEGIN
-	IF	NOT column_exists(t_name, 'rec_interval')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN rec_interval interval;
-		$EXEC$;
-	END IF;
-	
-	IF	NOT column_exists(t_name, 'rec_count')
-	THEN
-		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN rec_count int,
-		$EXEC$;
-	END IF;
-	
 	IF	NOT constraint_exists(t_name, 'valid_interval')
 	THEN
+		RAISE EXCEPTION 'Constraint valid_% does not exist on %. Default:', 'interval', t_name;
 		EXECUTE $EXEC$
-		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD CONSTRAINT valid_interval
+			CONSTRAINT valid_interval
 				CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 					rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) );
 		$EXEC$;
