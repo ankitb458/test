@@ -35,9 +35,7 @@ CREATE TABLE users (
 	CONSTRAINT valid_state
 		CHECK ( NOT ( country IN ('US', 'CA', 'AU') AND state IS NULL ) ),
 	CONSTRAINT valid_referral
-		CHECK ( id <> ref_id ),
-	CONSTRAINT undefined_behavior
-		CHECK ( status <> 'inherit' )
+		CHECK ( id <> ref_id )
 );
 
 SELECT	sluggable('users'),

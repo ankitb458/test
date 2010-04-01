@@ -13,6 +13,7 @@ CREATE TABLE transaction_lines (
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	amount			numeric(8,2) NOT NULL,
+	shipping		numeric(8,2) NOT NULL,
 	fee				numeric(8,2) NOT NULL,
 	tax				numeric(8,2) NOT NULL,
 	ext_tx_id		varchar(128) UNIQUE,
@@ -29,7 +30,7 @@ CREATE TABLE transaction_lines (
 		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
 			NOT ( cleared IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
-		CHECK ( status <> 'inherit' AND tax = 0 )
+		CHECK ( shipping = 0 AND tax = 0 )
 );
 
 SELECT	timestampable('transaction_lines'),

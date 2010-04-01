@@ -42,7 +42,7 @@ CREATE TABLE order_lines (
 		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
 			NOT ( cleared IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
-		CHECK ( status <> 'inherit' AND rec_count IS NULL AND quantity = 1 )
+		CHECK ( rec_count IS NULL AND quantity = 1 )
 );
 
 SELECT	timestampable('order_lines'),
