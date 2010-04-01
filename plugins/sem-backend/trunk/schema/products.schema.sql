@@ -22,8 +22,8 @@ CREATE TABLE products (
 	stock			int,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
-	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
+	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
 	CONSTRAINT valid_amounts

@@ -23,8 +23,8 @@ CREATE TABLE order_lines (
 	rec_count		int,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
-	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
+	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_amounts
 		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND
 				rec_amount >= rec_comm AND rec_comm >= 0 ),

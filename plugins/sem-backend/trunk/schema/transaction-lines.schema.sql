@@ -19,8 +19,8 @@ CREATE TABLE transaction_lines (
 	ext_status		varchar(64) NOT NULL DEFAULT '',
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
-	tsv				tsvector NOT NULL,
 	memo			text NOT NULL DEFAULT '',
+	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_amounts
 		CHECK ( amount >= 0 AND fee >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow
