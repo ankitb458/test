@@ -102,11 +102,11 @@ BEGIN
 	-- Assign default dates if needed
 	IF	NEW.due IS NULL AND NEW.status > 'draft'
 	THEN
-		NEW.due := NOW()::datetime;
+		NEW.due := NOW();
 	END IF;
 	IF	NEW.cleared IS NULL AND NEW.status > 'pending'
 	THEN
-		NEW.cleared := NOW()::datetime;
+		NEW.cleared := NOW();
 	END IF;
 	
 	RETURN NEW;
