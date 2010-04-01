@@ -17,8 +17,8 @@ CREATE TABLE products (
 	currency		currency_code NOT NULL DEFAULT 'USD',
 	weight			numeric(7,3),
 	volume			numeric(7,3)[3],
-	starts			datetime,
-	expires			datetime,
+	launch			datetime,
+	expire			datetime,
 	stock			int,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
@@ -35,7 +35,7 @@ CREATE TABLE products (
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_activatable
-		CHECK ( expires >= starts ),
+		CHECK ( expire >= launch ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_weight
@@ -71,13 +71,13 @@ SELECT	products.*
 FROM	products
 WHERE	status = 'active'
 AND		( stock IS NULL OR stock > 0 )
-AND		( expires IS NULL OR expires >= NOW()::datetime );
+AND		( expire IS NULL OR expire >= NOW()::datetime );
 
 COMMENT ON VIEW active_products IS E'Active Products
 
 - status is active.
 - stock, if set, is not depleted.
-- expires, if set, is not reached.';
+- expire, if set, is not reached.';
 
 /**
  * Clean a product before it gets stored.

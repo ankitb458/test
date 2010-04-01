@@ -14,12 +14,7 @@ CREATE TYPE status_activatable AS enum (
 /**
  * Activatable behavior
  *
- * Adds fields:
- * - status
- * - starts
- * - expires
- *
- * Adds constraint:
+ * Checks constraint:
  * - valid_activatable
  *
  * Adds indexes:
@@ -44,7 +39,7 @@ BEGIN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
 		EXECUTE $EXEC$
 			CONSTRAINT valid_activatable
-				CHECK ( expires >= starts );
+				CHECK ( expire >= launch );
 		$EXEC$;
 	END IF;
 	
@@ -52,7 +47,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_activate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(starts)
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(launch)
 		WHERE	status = 'future';
 		$EXEC$;
 	END IF;
@@ -61,8 +56,8 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_deactivate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(expires)
-		WHERE	status = 'active' AND expires IS NOT NULL;
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(expire)
+		WHERE	status = 'active' AND expire IS NOT NULL;
 		$EXEC$;
 	END IF;
 	
@@ -74,7 +69,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'active'
 		WHERE	status = 'future'
-		AND		starts <= NOW()::datetime;
+		AND		launch <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -89,7 +84,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'inactive'
 		WHERE	status = 'active'
-		AND		expires <= NOW()::datetime;
+		AND		expire <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -104,19 +99,19 @@ BEGIN
 		-- Process schedules
 		IF	NEW.status = 'future'
 		THEN
-			IF	NEW.starts IS NULL
+			IF	NEW.launch IS NULL
 			THEN
 				NEW.status := 'inactive';
-			ELSEIF NEW.starts <= NOW()::datetime
+			ELSEIF NEW.launch <= NOW()::datetime
 			THEN
 				NEW.status := 'active';
 			END IF;
 		END IF;
 
-		-- Make sure that starts and expires are consistent
-		IF	NEW.starts IS NOT NULL AND NEW.expires IS NOT NULL AND NEW.starts > NEW.expires
+		-- Make sure that launch and expire are consistent
+		IF	NEW.launch IS NOT NULL AND NEW.expire IS NOT NULL AND NEW.launch > NEW.expire
 		THEN
-			NEW.expires := NULL;
+			NEW.expire := NULL;
 		END IF;
 		
 		RETURN NEW;

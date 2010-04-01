@@ -12,8 +12,8 @@ CREATE TABLE campaigns (
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE DEFERRABLE,
 	init_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	rec_discount	numeric(8,2) NOT NULL DEFAULT 0,
-	starts			datetime,
-	expires			datetime,
+	launch			datetime,
+	expire			datetime,
 	stock			int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
 	created			datetime NOT NULL DEFAULT NOW(),
@@ -36,11 +36,11 @@ CREATE TABLE campaigns (
 		CHECK ( promo_id IS NULL OR
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
 	CONSTRAINT valid_activatable
-		CHECK ( expires >= starts ),
+		CHECK ( expire >= launch ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_firesale
-		CHECK ( NOT firesale OR stock IS NOT NULL OR expires IS NOT NULL ),
+		CHECK ( NOT firesale OR stock IS NOT NULL OR expire IS NOT NULL ),
 	CONSTRAINT undefined_behavior
 		CHECK ( NOT ( status = 'inherit' AND promo_id IS NULL ) AND
 			NOT ( status = 'trash' AND promo_id IS NOT NULL ) )
@@ -63,7 +63,7 @@ Promos are tied to products through their uuid; every product has one.
 
 - stock gets decreased as new orders are *cleared*. In other words,
   it is only loosely enforced.
-- An active firesale requires either or both of expires and stock.
+- An active firesale requires either or both of expire and stock.
   A firesale applies dynamic discount to orders.';
 
 /*
@@ -101,14 +101,14 @@ SELECT	coupons.*
 FROM	coupons
 WHERE	status = 'active'
 AND		( stock IS NULL OR stock > 0 )
-AND		( expires IS NULL OR expires >= NOW()::datetime );
+AND		( expire IS NULL OR expire >= NOW()::datetime );
 
 COMMENT ON VIEW active_coupons IS E'Active Coupons
 
 - product_id is set.
 - status is active.
 - stock, if set, is not depleted.
-- expires, if set, is not reached.';
+- expire, if set, is not reached.';
 
 /**
  * Promos
@@ -132,14 +132,14 @@ SELECT	promos.*
 FROM	promos
 WHERE	status = 'active'
 AND		( stock IS NULL OR stock > 0 )
-AND		( expires IS NULL OR expires >= NOW()::datetime );
+AND		( expire IS NULL OR expire >= NOW()::datetime );
 
 COMMENT ON VIEW active_promos IS E'Active Promos
 
 - A product is tied to the campaign through the uuid.
 - status is active.
 - stock, if set, is not depleted.
-- expires, if set, is not reached.';
+- expire, if set, is not reached.';
 
 /**
  * Clean a campaign before it gets stored.
@@ -170,8 +170,8 @@ BEGIN
 		END IF;
 		NEW.init_discount := 0;
 		NEW.rec_discount := 0;
-		NEW.starts := NULL;
-		NEW.expires := NULL;
+		NEW.launch := NULL;
+		NEW.expire := NULL;
 		NEW.stock := NULL;
 		NEW.firesale := FALSE;
 	ELSE
@@ -181,8 +181,8 @@ BEGIN
 			NEW.status = 'inactive';
 		END IF;
 		
-		-- Firesales require either or both of expires and stock
-		IF	NEW.firesale AND NEW.expires IS NULL AND NEW.stock IS NULL
+		-- Firesales require either or both of expire and stock
+		IF	NEW.firesale AND NEW.expire IS NULL AND NEW.stock IS NULL
 		THEN
 			NEW.firesale := FALSE;
 		END IF;
