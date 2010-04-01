@@ -44,7 +44,7 @@ BEGIN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
 		EXECUTE $EXEC$
 			CONSTRAINT valid_activatable
-				CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts );
+				CHECK ( stops >= starts );
 		$EXEC$;
 	END IF;
 	

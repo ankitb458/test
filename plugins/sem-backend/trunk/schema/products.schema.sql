@@ -33,7 +33,7 @@ CREATE TABLE products (
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_activatable
-		CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts ),
+		CHECK ( stops >= starts ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_weight

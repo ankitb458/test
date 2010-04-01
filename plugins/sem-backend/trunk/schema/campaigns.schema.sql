@@ -34,7 +34,7 @@ CREATE TABLE campaigns (
 		CHECK ( promo_id IS NULL OR
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
 	CONSTRAINT valid_activatable
-		CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts ),
+		CHECK ( stops >= starts ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_firesale
