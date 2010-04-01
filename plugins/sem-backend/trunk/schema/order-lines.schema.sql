@@ -38,8 +38,7 @@ CREATE TABLE order_lines (
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
-			NOT ( cleared IS NULL AND status > 'pending' ) AND
-			( due IS NULL OR cleared IS NULL OR cleared >= due ) ),
+			NOT ( cleared IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' AND rec_count IS NULL AND quantity = 1 )
 );

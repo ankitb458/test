@@ -17,8 +17,7 @@ CREATE TABLE orders (
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
-			NOT ( cleared IS NULL AND status > 'pending' ) AND
-			( due IS NULL OR cleared IS NULL OR cleared >= due ) ),
+			NOT ( cleared IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' )
 );

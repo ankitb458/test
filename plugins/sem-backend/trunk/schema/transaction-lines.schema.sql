@@ -25,8 +25,7 @@ CREATE TABLE transaction_lines (
 		CHECK ( amount >= 0 AND fee >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
-			NOT ( cleared IS NULL AND status > 'pending' ) AND
-			( due IS NULL OR cleared IS NULL OR cleared >= due ) ),
+			NOT ( cleared IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( status <> 'inherit' AND tax = 0 )
 );
