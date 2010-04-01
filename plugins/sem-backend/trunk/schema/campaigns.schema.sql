@@ -150,7 +150,11 @@ AS $$
 BEGIN
 	-- Trim fields
 	NEW.ukey := NULLIF(trim(NEW.ukey), '');
-	NEW.name := COALESCE(NULLIF(trim(NEW.name), ''), NEW.ukey);
+	NEW.name := NULLIF(trim(NEW.name), '');
+	
+	-- Default name and ukey
+	NEW.name := COALESCE(NEW.name, NEW.ukey);
+	NEW.ukey := COALESCE(NEW.ukey, to_slug(NEW.name));
 	
 	-- Handle inherit status
 	IF	NEW.status = 'trash' AND NEW.promo_id IS NOT NULL

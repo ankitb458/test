@@ -87,14 +87,12 @@ CREATE OR REPLACE FUNCTION products_clean()
 AS $$
 BEGIN
 	-- Trim fields
-	NEW.name := NULLIF(trim(NEW.name, ''), '');
-	NEW.sku := NULLIF(trim(NEW.sku, ''), '');
+	NEW.ukey := NULLIF(trim(NEW.ukey), '');
+	NEW.name := NULLIF(trim(NEW.name), '');
+	NEW.sku := NULLIF(trim(NEW.sku), '');
 	
-	-- Default name
-	IF	NEW.name IS NULL
-	THEN
-		NEW.name := 'Product';
-	END IF;
+	-- Default name and ukey
+	NEW.name := COALESCE(NEW.name, NEW.ukey, NEW.sku, 'Product');
 	
 	-- Fix commissions if needed
 	NEW.init_comm := LEAST(NEW.init_comm, NEW.init_price);
