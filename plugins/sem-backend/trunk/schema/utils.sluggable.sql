@@ -49,7 +49,7 @@ BEGIN
 		ukey_base	varchar;
 		suffix		int := 1;
 	BEGIN
-		IF	NEW.ukey IS NULL OR NEW.ukey = ''
+		IF	NEW.ukey IS NULL OR trim(NEW.ukey) = ''
 		THEN
 			NEW.ukey := NULL; -- forbid empty string as ukey
 			RETURN NEW;
@@ -66,6 +66,11 @@ BEGIN
 		-- todo:
 		-- - scan for a min suffix instead of trying 2, then 3, etc.
 		ukey_base = regexp_replace(NEW.ukey, E'-\\d+$', '');
+		
+		IF	NEW.ukey ~ E'^\\d+$'
+		THEN
+			NEW.ukey := ukey_base || - || suffix;
+		END IF;
 		
 		LOOP
 			IF	NOT EXISTS (
