@@ -8,7 +8,7 @@ CREATE TYPE status_payable AS enum (
 	'pending',
 	'cancelled',
 	'reversed',
-	'future',
+	'refunded',
 	'cleared'
 	);
 
