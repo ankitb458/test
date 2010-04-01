@@ -11,7 +11,7 @@ UPDATE	products
 SET		status = 'trash';
 
 SELECT	'Propagate trash status to promo',
-		campaigns.status = 'inherit'
+		campaigns.status = 'trash'
 FROM	campaigns;
 
 UPDATE	products
@@ -105,16 +105,6 @@ SET		status = 'trash';
 
 SELECT	'Fix non-trashed product promo trashing',
 		status = 'inactive'
-FROM	campaigns;
-
-UPDATE	products
-SET		status = 'trash';
-
-UPDATE	campaigns
-SET		status = 'trash';
-
-SELECT	'Fix trashed product promo trashing',
-		status = 'inherit'
 FROM	campaigns;
 
 -- clean up

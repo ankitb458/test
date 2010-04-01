@@ -43,7 +43,7 @@ CREATE TABLE products (
 	CONSTRAINT valid_volume
 		CHECK ( volume > ARRAY[0,0,0]::numeric(7,3)[3] ),
 	CONSTRAINT undefined_behavior
-		CHECK ( status <> 'inherit' AND rec_count IS NULL AND weight IS NULL AND volume IS NULL )
+		CHECK ( rec_count IS NULL AND weight IS NULL AND volume IS NULL )
 );
 
 SELECT	activatable('products'),

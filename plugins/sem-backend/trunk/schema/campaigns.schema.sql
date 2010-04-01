@@ -40,10 +40,7 @@ CREATE TABLE campaigns (
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_firesale
-		CHECK ( NOT firesale OR stock IS NOT NULL OR expire IS NOT NULL ),
-	CONSTRAINT undefined_behavior
-		CHECK ( NOT ( status = 'inherit' AND promo_id IS NULL ) AND
-			NOT ( status = 'trash' AND promo_id IS NOT NULL ) )
+		CHECK ( NOT firesale OR stock IS NOT NULL OR expire IS NOT NULL )
 );
 
 SELECT	activatable('campaigns'),
@@ -154,12 +151,6 @@ BEGIN
 	
 	-- Default name and ukey
 	NEW.name := COALESCE(NEW.name, NEW.ukey);
-	
-	-- Handle inherit status
-	IF	NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
-	THEN
-		NEW.status := 'inherit';
-	END IF;
 	
 	IF	NEW.product_id IS NULL
 	THEN

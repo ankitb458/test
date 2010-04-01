@@ -3,7 +3,6 @@
  */
 CREATE TYPE status_activatable AS enum (
 	'trash',
-	'inherit',
 	'draft',
 	'pending',
 	'inactive',

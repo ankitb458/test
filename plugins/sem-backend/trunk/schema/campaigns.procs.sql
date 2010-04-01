@@ -121,25 +121,25 @@ BEGIN
 		IF	TG_OP = 'INSERT'
 		THEN
 			NEW.status := CASE
-				WHEN p.status <= 'inherit'
-				THEN 'inherit'
+				WHEN p.status = 'trash'
+				THEN 'trash'
 				WHEN p.status = 'draft'
 				THEN 'draft'
 				WHEN p.status = 'pending'
 				THEN 'pending'
-				WHEN p.status < 'future' OR NEW.status <= 'inherit'
+				WHEN p.status < 'future' OR NEW.status = 'trash'
 				THEN 'inactive'
 				ELSE NEW.status
 				END::status_activatable;
 		ELSE
 			NEW.status := CASE
-				WHEN p.status <= 'inherit'
-				THEN 'inherit'
+				WHEN p.status = 'trash'
+				THEN 'trash'
 				WHEN p.status = 'draft'
 				THEN 'draft'
 				WHEN p.status = 'pending'
 				THEN 'pending'
-				WHEN p.status < 'future' OR OLD.status <= 'inherit' OR NEW.status <= 'inherit'
+				WHEN p.status < 'future' OR OLD.status = 'trash' OR NEW.status = 'trash'
 				THEN 'inactive'
 				ELSE NEW.status
 				END::status_activatable;

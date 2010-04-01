@@ -45,7 +45,7 @@ BEGIN
 		NEW.uuid,
 		CASE
 		WHEN NEW.status = 'trash'
-		THEN 'inherit'
+		THEN 'trash'
 		WHEN NEW.status = 'draft'
 		THEN 'draft'
 		WHEN NEW.status = 'pending'
@@ -89,8 +89,8 @@ BEGIN
 				status = CASE
 					WHEN promo_id = NEW.id
 					THEN CASE
-						WHEN NEW.status <= 'inherit'
-						THEN 'inherit'
+						WHEN NEW.status = 'trash'
+						THEN 'trash'
 						WHEN NEW.status = 'draft'
 						THEN 'draft'
 						WHEN NEW.status = 'pending'
@@ -110,8 +110,8 @@ BEGIN
 				status <> CASE
 					WHEN promo_id = NEW.id
 					THEN CASE
-						WHEN NEW.status <= 'inherit'
-						THEN 'inherit'
+						WHEN NEW.status = 'trash'
+						THEN 'trash'
 						WHEN NEW.status = 'draft'
 						THEN 'draft'
 						WHEN NEW.status = 'pending'
@@ -125,7 +125,7 @@ BEGIN
 	ELSE
 		UPDATE	campaigns
 		SET		status = CASE
-					WHEN promo_id IS NOT NULL AND status <= 'inherit'
+					WHEN promo_id IS NOT NULL AND status = 'trash'
 					THEN 'inactive' -- Untrash the promo
 					WHEN status = 'future' AND launch >= NOW()::datetime
 					THEN 'active'
@@ -133,7 +133,7 @@ BEGIN
 				END::status_activatable
 		WHERE	product_id = NEW.id
 		AND 	status <> CASE
-					WHEN promo_id IS NOT NULL AND status <= 'inherit'
+					WHEN promo_id IS NOT NULL AND status = 'trash'
 					THEN 'inactive' -- Untrash the promo
 					WHEN status = 'future' AND launch >= NOW()::datetime
 					THEN 'active'
