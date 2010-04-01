@@ -16,7 +16,7 @@ BEGIN
 		WHERE	ref_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete users.id = %. It is referenced in users.ref_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in users.ref_id.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -25,7 +25,7 @@ BEGIN
 		WHERE	aff_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete users.id = %. It is referenced in campaigns.aff_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in campaigns.aff_id.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -34,7 +34,7 @@ BEGIN
 		WHERE	user_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete users.id = %. It is referenced in orders.user_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in orders.user_id.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -43,7 +43,7 @@ BEGIN
 		WHERE	aff_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete users.id = %. It is referenced in orders.aff_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in orders.aff_id.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -52,7 +52,7 @@ BEGIN
 		WHERE	user_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete users.id = %. It is referenced in order_lines.user_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in order_lines.user_id.', NEW.id;
 	END IF;
 	
 	RETURN NEW;

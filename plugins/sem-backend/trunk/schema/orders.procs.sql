@@ -17,7 +17,7 @@ BEGIN
 		AND		status > 'draft'
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete orders.id = %. It is referenced in order_lines.order_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash orders.id = %. It is referenced in order_lines.order_id.', NEW.id;
 	END IF;
 	
 	RETURN NEW;

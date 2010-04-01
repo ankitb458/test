@@ -16,7 +16,7 @@ BEGIN
 		WHERE	campaign_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete campaigns.id = %. It is referenced in orders.campaign_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash campaigns.id = %. It is referenced in orders.campaign_id.', NEW.id;
 	END IF;
 	
 	IF	EXISTS (
@@ -25,7 +25,7 @@ BEGIN
 		WHERE	coupon_id = NEW.id -- cascade updated
 		)
 	THEN
-		RAISE EXCEPTION 'Cannot delete campaigns.id = %. It is referenced in order_lines.coupon_id.', NEW.id;
+		RAISE EXCEPTION 'Cannot trash campaigns.id = %. It is referenced in order_lines.coupon_id.', NEW.id;
 	END IF;
 	
 	RETURN NEW;
