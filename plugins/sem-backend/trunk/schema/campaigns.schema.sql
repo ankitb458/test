@@ -154,7 +154,6 @@ BEGIN
 	
 	-- Default name and ukey
 	NEW.name := COALESCE(NEW.name, NEW.ukey);
-	NEW.ukey := COALESCE(NEW.ukey, to_slug(NEW.name));
 	
 	-- Handle inherit status
 	IF	NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
