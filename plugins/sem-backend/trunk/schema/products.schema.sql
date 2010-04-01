@@ -13,13 +13,13 @@ CREATE TABLE products (
 	rec_price		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_interval	interval,
-	rec_count		smallint,
+	rec_count		int,
 	currency		currency_code NOT NULL DEFAULT 'USD',
 	weight			numeric(7,3),
 	volume			numeric(7,3)[3],
 	starts			datetime,
 	stops			datetime,
-	max_orders		int,
+	stock			int,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
@@ -41,7 +41,7 @@ CREATE TABLE products (
 
 SELECT	activatable('products'),
 		repeatable('products'),
-		depletable('products', 'max_orders'),
+		depletable('products', 'stock'),
 		sluggable('products'),
 		timestampable('products'),
 		searchable('products'),
@@ -52,7 +52,7 @@ CREATE INDEX products_sort ON products(name);
 COMMENT ON TABLE products IS E'Products
 
 - rec_count corresponds to the number of installments, when applicable.
-- max_orders gets decreased as new orders are *cleared*. In other words,
+- stock gets decreased as new orders are *cleared*. In other words,
   it is only loosely enforced.';
 
 /**
@@ -63,13 +63,13 @@ AS
 SELECT	products.*
 FROM	products
 WHERE	status = 'active'
-AND		( max_orders IS NULL OR max_orders > 0 )
+AND		( stock IS NULL OR stock > 0 )
 AND		( stops IS NULL OR stops >= NOW()::datetime );
 
 COMMENT ON VIEW active_products IS E'Active Products
 
 - status is active.
-- max_orders, if set, is not depleted.
+- stock, if set, is not depleted.
 - stops, if set, is not reached.';
 
 /**

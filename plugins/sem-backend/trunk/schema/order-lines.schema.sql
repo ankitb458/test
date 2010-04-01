@@ -12,7 +12,7 @@ CREATE TABLE order_lines (
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,
 	coupon_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
-	quantity		smallint NOT NULL DEFAULT 1,
+	quantity		int NOT NULL DEFAULT 1,
 	init_amount		numeric(8,2) NOT NULL,
 	init_comm		numeric(8,2) NOT NULL,
 	init_discount	numeric(8,2) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE order_lines (
 	rec_comm		numeric(8,2) NOT NULL,
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
-	rec_count		smallint,
+	rec_count		int,
 	memo			text NOT NULL DEFAULT '',
 	CONSTRAINT valid_amounts
 		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND init_discount >= 0 AND
@@ -41,7 +41,7 @@ CREATE TABLE order_lines (
 
 SELECT	timestampable('order_lines'),
 		repeatable('order_lines'),
-		depletable('order_lines', 'max_orders'),
+		depletable('order_lines', 'stock'),
 		searchable('order_lines'),
 		trashable('order_lines');
 

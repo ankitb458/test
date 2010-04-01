@@ -29,7 +29,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN rec_count smallint,
+			ADD COLUMN rec_count int,
 		$EXEC$;
 	END IF;
 	

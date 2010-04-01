@@ -212,7 +212,7 @@ BEGIN
 					firesale,
 					starts,
 					stops,
-					max_orders
+					stock
 			INTO	c
 			FROM	active_coupons
 			WHERE	id = NEW.coupon_id
@@ -235,7 +235,7 @@ BEGIN
 					firesale,
 					starts,
 					stops,
-					max_orders
+					stock
 			INTO	c
 			FROM	active_coupons
 			WHERE	id = o.campaign_id
@@ -256,7 +256,7 @@ BEGIN
 					firesale,
 					starts,
 					stops,
-					max_orders
+					stock
 			INTO	c
 			FROM	active_promos
 			WHERE	promo_id = NEW.product_id;
@@ -293,7 +293,7 @@ BEGIN
 					EXTRACT(EPOCH FROM c.stops - c.starts);
 			END IF;
 		
-			IF	c.max_orders IS NOT NULL
+			IF	c.stock IS NOT NULL
 			THEN
 				SELECT	SUM(order_lines.quantity)
 				INTO	cur_orders
@@ -305,7 +305,7 @@ BEGIN
 				AND		order_lines.status > 'pending'
 				AND		orders.cleared >= c.starts;
 		
-				o_ratio := c.max_orders / ( COALESCE(cur_orders, 0) + c.max_orders );
+				o_ratio := c.stock / ( COALESCE(cur_orders, 0) + c.stock );
 			END IF;
 		
 			c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);

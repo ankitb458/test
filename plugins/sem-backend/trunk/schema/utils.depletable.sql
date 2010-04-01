@@ -18,7 +18,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		ALTER TABLE $EXEC$ || quote_ident(t_name) || $EXEC$
-			ADD COLUMN $EXEC$ || quote_ident(t_field) || $EXEC$ smallint;
+			ADD COLUMN $EXEC$ || quote_ident(t_field) || $EXEC$ int;
 		$EXEC$;
 	END IF;
 	
