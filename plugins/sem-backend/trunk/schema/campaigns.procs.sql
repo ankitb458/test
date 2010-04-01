@@ -52,6 +52,7 @@ BEGIN
 			NEW.name := COALESCE(NEW.name, 'Campaign');
 			NEW.ukey := COALESCE(NEW.ukey, 'campaign');
 		END IF;
+		
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
 	THEN
@@ -74,7 +75,7 @@ BEGIN
 			NEW.aff_id, NEW.id;
 	ELSE
 		NEW.name := COALESCE(NULLIF(NEW.name, ''), u.name);
-		NEW.ukey := COALESCE(NULLIF(NEW.ukey, ''), u.ukey, u.name);
+		NEW.ukey := COALESCE(NULLIF(NEW.ukey, ''), u.ukey, to_slug(u.name));
 	END IF;
 	
 	RETURN NEW;

@@ -149,13 +149,8 @@ CREATE OR REPLACE FUNCTION campaigns_clean()
 AS $$
 BEGIN
 	-- Trim fields
+	NEW.ukey := NULLIF(trim(NEW.ukey), '');
 	NEW.name := COALESCE(NULLIF(trim(NEW.name), ''), NEW.ukey);
-	
-	IF	NEW.promo_id IS NULL AND NEW.aff_id IS NULL
-	THEN
-		NEW.name := COALESCE(NEW.name, 'Campaign');
-		NEW.ukey := COALESCE(NEW.ukey, NEW.name);
-	END IF;
 	
 	-- Handle inherit status
 	IF	NEW.status = 'trash' AND NEW.promo_id IS NOT NULL
