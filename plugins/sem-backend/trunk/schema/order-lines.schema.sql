@@ -25,6 +25,8 @@ CREATE TABLE order_lines (
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
+	CONSTRAINT valid_name
+		CHECK ( name <> '' ),
 	CONSTRAINT valid_amounts
 		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND
 				rec_amount >= rec_comm AND rec_comm >= 0 ),
@@ -88,7 +90,7 @@ BEGIN
 		
 		IF	NEW.name IS NULL
 		THEN
-			NEW.name := 'Product';
+			NEW.name := 'Anonymous Product';
 		END IF;
 	END IF;
 	

@@ -26,6 +26,8 @@ CREATE TABLE users (
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
+	CONSTRAINT valid_name
+		CHECK ( name <> '' ),
 	CONSTRAINT valid_username
 		CHECK ( username <> '' ),
 	CONSTRAINT valid_password

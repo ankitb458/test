@@ -15,6 +15,8 @@ CREATE TABLE orders (
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
+	CONSTRAINT valid_name
+		CHECK ( name <> '' ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
 			NOT ( cleared IS NULL AND status > 'pending' ) ),
@@ -60,7 +62,7 @@ BEGIN
 		
 		IF	NEW.name IS NULL
 		THEN
-			NEW.name := 'Order';
+			NEW.name := 'Anonymous User';
 		END IF;
 	END IF;
 	

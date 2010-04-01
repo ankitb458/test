@@ -21,6 +21,8 @@ CREATE TABLE transaction_lines (
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
+	CONSTRAINT valid_name
+		CHECK ( name <> '' ),
 	CONSTRAINT valid_amounts
 		CHECK ( amount >= 0 AND fee >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow

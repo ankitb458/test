@@ -22,6 +22,8 @@ CREATE TABLE campaigns (
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_ukey
 		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ '^[0-9]+$' ),
+	CONSTRAINT valid_name
+		CHECK ( name <> '' ),
 	CONSTRAINT valid_campaign
 		CHECK ( ukey IS NULL AND promo_id IS NOT NULL OR ukey IS NOT NULL AND promo_id IS NULL ),
 	CONSTRAINT valid_discounts
