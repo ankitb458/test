@@ -25,12 +25,14 @@ CREATE TABLE campaigns (
 	CONSTRAINT valid_campaign
 		CHECK ( ukey IS NULL AND promo_id IS NOT NULL OR ukey IS NOT NULL AND promo_id IS NULL ),
 	CONSTRAINT valid_coupon
-		CHECK ( status IN ('active', 'trash') OR init_discount >= 0 OR rec_discount >= 0 ),
+		CHECK ( promo_id IS NOT NULL OR
+			product_id IS NULL AND init_discount = 0 AND rec_discount = 0 OR
+			product_id IS NOT NULL AND ( status < 'future' OR init_discount > 0 OR rec_discount > 0 ) ),
+	CONSTRAINT valid_discounts
+		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_promo
 		CHECK ( promo_id IS NULL OR
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
-	CONSTRAINT valid_discounts
-		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_activatable
 		CHECK ( starts IS NULL OR stops IS NULL OR stops >= starts ),
 	CONSTRAINT valid_stock
