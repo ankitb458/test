@@ -211,7 +211,7 @@ BEGIN
 					rec_discount,
 					firesale,
 					starts,
-					stops,
+					expires,
 					stock
 			INTO	c
 			FROM	active_coupons
@@ -234,7 +234,7 @@ BEGIN
 					rec_discount,
 					firesale,
 					starts,
-					stops,
+					expires,
 					stock
 			INTO	c
 			FROM	active_coupons
@@ -255,7 +255,7 @@ BEGIN
 					rec_discount,
 					firesale,
 					starts,
-					stops,
+					expires,
 					stock
 			INTO	c
 			FROM	active_promos
@@ -287,10 +287,10 @@ BEGIN
 		-- Process firesale if any
 		IF	c.firesale
 		THEN
-			IF	c.stops IS NOT NULL
+			IF	c.expires IS NOT NULL
 			THEN
-				t_ratio := EXTRACT(EPOCH FROM c.stops - NOW()::datetime) /
-					EXTRACT(EPOCH FROM c.stops - c.starts);
+				t_ratio := EXTRACT(EPOCH FROM c.expires - NOW()::datetime) /
+					EXTRACT(EPOCH FROM c.expires - c.starts);
 			END IF;
 		
 			IF	c.stock IS NOT NULL

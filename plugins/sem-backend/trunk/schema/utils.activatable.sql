@@ -17,7 +17,7 @@ CREATE TYPE status_activatable AS enum (
  * Adds fields:
  * - status
  * - starts
- * - stops
+ * - expires
  *
  * Adds constraint:
  * - valid_activatable
@@ -44,7 +44,7 @@ BEGIN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
 		EXECUTE $EXEC$
 			CONSTRAINT valid_activatable
-				CHECK ( stops >= starts );
+				CHECK ( expires >= starts );
 		$EXEC$;
 	END IF;
 	
@@ -61,8 +61,8 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_deactivate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(stops)
-		WHERE	status = 'active' AND stops IS NOT NULL;
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(expires)
+		WHERE	status = 'active' AND expires IS NOT NULL;
 		$EXEC$;
 	END IF;
 	
@@ -89,7 +89,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'inactive'
 		WHERE	status = 'active'
-		AND		stops <= NOW()::datetime;
+		AND		expires <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -113,10 +113,10 @@ BEGIN
 			END IF;
 		END IF;
 
-		-- Make sure that starts and stops are consistent
-		IF	NEW.starts IS NOT NULL AND NEW.stops IS NOT NULL AND NEW.starts > NEW.stops
+		-- Make sure that starts and expires are consistent
+		IF	NEW.starts IS NOT NULL AND NEW.expires IS NOT NULL AND NEW.starts > NEW.expires
 		THEN
-			NEW.stops := NULL;
+			NEW.expires := NULL;
 		END IF;
 		
 		RETURN NEW;
