@@ -15,5 +15,5 @@ DROP TYPE status_authenticatable;
 DROP TYPE country_code;
 DROP TYPE state_code;
 DROP DOMAIN datetime;
+DROP DOMAIN slug;
 DROP DOMAIN email;
-

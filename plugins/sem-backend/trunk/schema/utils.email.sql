@@ -1,10 +1,4 @@
 /**
- * email domain
- */
-
-CREATE DOMAIN email as varchar CHECK ( is_email(value) );
-
-/**
  * Validates against rfc822
  *
  * @see http://archives.postgresql.org/pgsql-general/2009-08/msg00565.php
@@ -29,3 +23,9 @@ AS $$
 		return 'false';
 	}
 $$ LANGUAGE plperlu IMMUTABLE STRICT;
+
+/**
+ * email domain
+ */
+
+CREATE DOMAIN email as varchar CHECK ( is_email(value) );

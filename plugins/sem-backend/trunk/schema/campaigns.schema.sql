@@ -4,7 +4,7 @@
 CREATE TABLE campaigns (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
-	ukey			varchar UNIQUE,
+	ukey			slug UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
@@ -20,8 +20,6 @@ CREATE TABLE campaigns (
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
-	CONSTRAINT valid_ukey
-		CHECK ( ukey ~ '^[a-z0-9](?:[a-z0-9._-]*[a-z0-9])?$' AND ukey !~ E'^\\d+$' ),
 	CONSTRAINT valid_name
 		CHECK ( name <> '' ),
 	CONSTRAINT valid_campaign

@@ -27,6 +27,11 @@ BEGIN
 END $$ LANGUAGE plpgsql IMMUTABLE STRICT;
 
 /**
+ * slug domain
+ */
+CREATE DOMAIN slug AS varchar CHECK ( value = to_slug(value) );
+
+/**
  * Sluggable behavior
  *
  * Adds fields:
