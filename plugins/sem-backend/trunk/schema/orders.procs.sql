@@ -13,7 +13,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	order_lines
-		WHERE	order_id = NEW.id -- cascade updated
+		WHERE	order_id = NEW.id
 		AND		status > 'draft'
 		)
 	THEN

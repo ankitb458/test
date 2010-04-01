@@ -13,7 +13,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	orders
-		WHERE	campaign_id = NEW.id -- cascade updated
+		WHERE	campaign_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash campaigns.id = %. It is referenced in orders.campaign_id.', NEW.id;
@@ -22,7 +22,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	order_lines
-		WHERE	coupon_id = NEW.id -- cascade updated
+		WHERE	coupon_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash campaigns.id = %. It is referenced in order_lines.coupon_id.', NEW.id;

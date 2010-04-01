@@ -13,7 +13,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	users
-		WHERE	ref_id = NEW.id -- cascade updated
+		WHERE	ref_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in users.ref_id.', NEW.id;
@@ -22,7 +22,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	campaigns
-		WHERE	aff_id = NEW.id -- cascade updated
+		WHERE	aff_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in campaigns.aff_id.', NEW.id;
@@ -31,7 +31,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	orders
-		WHERE	user_id = NEW.id -- cascade updated
+		WHERE	user_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in orders.user_id.', NEW.id;
@@ -40,7 +40,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	orders
-		WHERE	aff_id = NEW.id -- cascade updated
+		WHERE	aff_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in orders.aff_id.', NEW.id;
@@ -49,7 +49,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	order_lines
-		WHERE	user_id = NEW.id -- cascade updated
+		WHERE	user_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash users.id = %. It is referenced in order_lines.user_id.', NEW.id;

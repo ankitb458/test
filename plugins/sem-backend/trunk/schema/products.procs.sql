@@ -13,7 +13,7 @@ BEGIN
 	IF	EXISTS (
 		SELECT	1
 		FROM	order_lines
-		WHERE	product_id = NEW.id -- cascade updated
+		WHERE	product_id = NEW.id
 		)
 	THEN
 		RAISE EXCEPTION 'Cannot trash products.id = %. It is referenced in order_lines.product_id.', NEW.id;
