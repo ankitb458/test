@@ -12,9 +12,9 @@ DECLARE
 	o			record;
 	p			record;
 	c			record;
-	cur_orders	float;
-	t_ratio		numeric := 1;
-	o_ratio		numeric := 1;
+	cur_orders	bigint;
+	t_ratio		float8 := 1;
+	o_ratio		float8 := 1;
 BEGIN
 	IF	TG_OP = 'UPDATE' AND
 		NEW.init_amount IS NOT NULL AND NEW.rec_amount IS NOT NULL AND
@@ -289,13 +289,13 @@ BEGIN
 		THEN
 			IF	c.expire_date IS NOT NULL
 			THEN
-				t_ratio := EXTRACT(EPOCH FROM c.expire_date - NOW()::datetime) /
-					EXTRACT(EPOCH FROM c.expire_date - c.launch_date);
+				t_ratio := ( EXTRACT(EPOCH FROM c.expire_date - NOW()::datetime) /
+					EXTRACT(EPOCH FROM c.expire_date - c.launch_date) )::float8;
 			END IF;
 		
 			IF	c.stock IS NOT NULL
 			THEN
-				SELECT	SUM(order_lines.quantity)
+				SELECT	SUM(order_lines.quantity::bigint)::bigint
 				INTO	cur_orders
 				FROM	order_lines
 				JOIN	orders
@@ -305,7 +305,7 @@ BEGIN
 				AND		order_lines.status > 'pending'
 				AND		orders.cleared_date >= c.launch_date;
 		
-				o_ratio := c.stock / ( COALESCE(cur_orders, 0) + c.stock );
+				o_ratio := ( c.stock / ( COALESCE(cur_orders, 0) + c.stock ) )::float8;
 			END IF;
 		
 			c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);
