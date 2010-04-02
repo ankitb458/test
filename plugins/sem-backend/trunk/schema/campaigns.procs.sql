@@ -210,7 +210,10 @@ CREATE OR REPLACE FUNCTION campaigns_check_delete_promo()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	EXISTS (
+	IF	OLD.promo_id IS NULL
+	THEN
+		RETURN OLD;
+	ELSEIF EXISTS (
 		SELECT	1
 		FROM	products
 		WHERE	id = OLD.promo_id
