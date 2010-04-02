@@ -1,15 +1,15 @@
 /*
- * Transaction lines
+ * Invoice lines
  */
-CREATE TABLE transaction_lines (
+CREATE TABLE invoice_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	due				datetime,
 	cleared			datetime,
 	name			varchar NOT NULL,
-	tx_id			bigint NOT NULL REFERENCES transactions(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	parent_id		bigint REFERENCES transaction_lines(id) ON UPDATE CASCADE,
+	tx_id			bigint NOT NULL REFERENCES invoices(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	amount			numeric(8,2) NOT NULL,
@@ -33,25 +33,23 @@ CREATE TABLE transaction_lines (
 		CHECK ( shipping = 0 AND tax = 0 )
 );
 
-SELECT	timestampable('transaction_lines'),
-		searchable('transaction_lines'),
-		trashable('transaction_lines');
+SELECT	timestampable('invoice_lines'),
+		searchable('invoice_lines'),
+		trashable('invoice_lines');
 
-CREATE INDEX transaction_lines_sort ON transaction_lines(cleared DESC);
-CREATE INDEX transaction_lines_tx_id ON transaction_lines(tx_id);
-CREATE INDEX transaction_lines_order_line_id ON transaction_lines(order_line_id);
-CREATE INDEX transaction_lines_user_id ON transaction_lines(user_id);
+CREATE INDEX invoice_lines_sort ON invoice_lines(cleared DESC);
+CREATE INDEX invoice_lines_tx_id ON invoice_lines(tx_id);
+CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id);
+CREATE INDEX invoice_lines_user_id ON invoice_lines(user_id);
 
-COMMENT ON TABLE transactions IS E'Transaction lines
+COMMENT ON TABLE invoices IS E'Invoice lines
 
-- product_id is only here for statistics.
-- ext_tx_id and ext_status correspond to the counterparty''s
-  transaction id and status.';
+';
 
 /**
- * Clean an transaction line before it gets stored.
+ * Clean an invoice line before it gets stored.
  */
-CREATE OR REPLACE FUNCTION transaction_lines_clean()
+CREATE OR REPLACE FUNCTION invoice_lines_clean()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -59,8 +57,6 @@ DECLARE
 BEGIN
 	-- Trim fields
 	NEW.name := NULLIF(trim(NEW.name, ''), '');
-	NEW.ext_tx_id := trim(NEW.ext_tx_id);
-	NEW.ext_status := trim(NEW.ext_status);
 	
 	-- Default name
 	IF	NEW.name IS NULL
@@ -75,7 +71,7 @@ BEGIN
 		
 		IF	NEW.name IS NULL
 		THEN
-			NEW.name := 'Transaction';
+			NEW.name := 'Invoice';
 		END IF;
 	END IF;
 	
@@ -93,6 +89,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER transaction_lines_05_clean
-	BEFORE INSERT OR UPDATE ON transaction_lines
-FOR EACH ROW EXECUTE PROCEDURE transaction_lines_clean();
+CREATE TRIGGER invoice_lines_05_clean
+	BEFORE INSERT OR UPDATE ON invoice_lines
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_clean();

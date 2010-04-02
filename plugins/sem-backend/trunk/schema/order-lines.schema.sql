@@ -59,7 +59,7 @@ COMMENT ON TABLE orders IS E'Order lines
 
 - user_id gets shipped; orders.user_id gets billed.
 - init/rec amount/comm/discount are auto-filled if not provided.
-- init/rec amount/comm are used as is in transactions.
+- init/rec amount/comm are used as is in invoices.
 - init/rec discount is only stored for reference; it is used nowhere.
 - rec_count gets decremented on cleared payments.
 - coupon_id is typically the same as the order''s campaign_id, the

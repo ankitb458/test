@@ -1,6 +1,6 @@
 
-DROP TABLE transaction_lines CASCADE;
-DROP TABLE transactions CASCADE;
+DROP TABLE invoice_lines CASCADE;
+DROP TABLE invoices CASCADE;
 DROP TABLE order_lines CASCADE;
 DROP TABLE orders CASCADE;
 DROP TABLE campaigns CASCADE;
@@ -8,7 +8,6 @@ DROP TABLE products CASCADE;
 DROP TABLE users CASCADE;
 
 DROP TYPE status_payable;
-DROP TYPE transaction_type;
 DROP TYPE currency_code;
 DROP TYPE status_activatable;
 DROP TYPE status_authenticatable;
