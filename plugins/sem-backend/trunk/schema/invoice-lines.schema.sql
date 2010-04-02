@@ -13,16 +13,16 @@ CREATE TABLE invoice_lines (
 	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	invoice_type	type_invoice NOT NULL DEFAULT 'payment',
-	amount			numeric(6,2) NOT NULL,
-	tax				numeric(6,2) NOT NULL,
+	amount_due		numeric(6,2) NOT NULL,
+	amount_paid		numeric(6,2) NOT NULL,
+	tax_due			numeric(6,2) NOT NULL,
+	tax_paid		numeric(6,2) NOT NULL,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' ),
-	CONSTRAINT valid_amounts
-		CHECK ( amount >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) )
@@ -32,10 +32,10 @@ SELECT	timestampable('invoice_lines'),
 		searchable('invoice_lines'),
 		trashable('invoice_lines');
 
-CREATE INDEX invoice_lines_sort ON invoice_lines(cleared_date DESC);
 CREATE INDEX invoice_lines_invoice_id ON invoice_lines(invoice_id);
-CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id);
 CREATE INDEX invoice_lines_user_id ON invoice_lines(user_id);
+CREATE INDEX invoice_lines_parent_id ON invoice_lines(parent_id);
+CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id);
 
 COMMENT ON TABLE invoices IS E'Invoice lines
 

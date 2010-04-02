@@ -8,8 +8,10 @@ CREATE TABLE invoices (
 	name			varchar NOT NULL,
 	due_date		datetime,
 	cleared_date	datetime,
-	amount			numeric(6,2) NOT NULL DEFAULT 0,
-	tax				numeric(6,2) NOT NULL DEFAULT 0,
+	amount_due		numeric(6,2) NOT NULL DEFAULT 0,
+	amount_paid		numeric(6,2) NOT NULL DEFAULT 0,
+	tax_due			numeric(6,2) NOT NULL DEFAULT 0,
+	tax_paid		numeric(6,2) NOT NULL DEFAULT 0,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -25,11 +27,12 @@ SELECT	timestampable('invoices'),
 		searchable('invoices'),
 		trashable('invoices');
 
-CREATE INDEX invoices_sort ON invoices(cleared_date DESC);
+CREATE INDEX invoices_sort ON invoices(due_date DESC);
 
 COMMENT ON TABLE invoices IS E'Invoices
 
-';
+- amount and tax fields are calculated. They correspond to total cleared
+  amounts.';
 
 /**
  * Clean an invoice before it gets stored.
