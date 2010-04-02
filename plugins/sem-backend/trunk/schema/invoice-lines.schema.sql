@@ -13,7 +13,6 @@ CREATE TABLE invoice_lines (
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	amount			numeric(8,2) NOT NULL,
-	shipping		numeric(8,2) NOT NULL,
 	tax				numeric(8,2) NOT NULL,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
@@ -22,12 +21,10 @@ CREATE TABLE invoice_lines (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' ),
 	CONSTRAINT valid_amounts
-		CHECK ( amount >= 0 AND fee >= 0 AND tax >= 0 ),
+		CHECK ( amount >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
-			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
-	CONSTRAINT undefined_behavior
-		CHECK ( shipping = 0 AND tax = 0 )
+			NOT ( cleared_date IS NULL AND status > 'pending' ) )
 );
 
 SELECT	timestampable('invoice_lines'),
