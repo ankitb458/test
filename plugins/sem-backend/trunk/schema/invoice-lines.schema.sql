@@ -15,7 +15,6 @@ CREATE TABLE invoice_lines (
 	amount			numeric(8,2) NOT NULL,
 	shipping		numeric(8,2) NOT NULL,
 	tax				numeric(8,2) NOT NULL,
-	fee				numeric(8,2) NOT NULL,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
