@@ -166,7 +166,7 @@ BEGIN
 	
 	UPDATE	campaigns
 	SET		status = CASE
-				WHEN aff_id IS NOT NULL AND status IN ('active', 'future')
+				WHEN aff_id IS NOT NULL AND status >= 'future'
 				THEN 'pending'
 				ELSE status
 			END,
@@ -214,7 +214,7 @@ BEGIN
 			END
 	WHERE	product_id = NEW.id
 	AND		( status <> CASE
-				WHEN aff_id IS NOT NULL AND status IN ('active', 'future')
+				WHEN aff_id IS NOT NULL AND status >= 'future'
 				THEN 'pending'
 				ELSE status
 			END OR
