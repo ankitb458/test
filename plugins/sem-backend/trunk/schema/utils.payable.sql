@@ -12,6 +12,14 @@ CREATE TYPE status_payable AS enum (
 	);
 
 /**
+ * Invoice type
+ */
+CREATE TYPE type_invoice AS enum (
+	'payment',		-- Credit / order payment
+	'commission'	-- Debit / affiliate commission
+	);
+
+/**
  * ISO 4217 Currencies
  */
 CREATE TYPE currency_code AS enum (

@@ -15,6 +15,8 @@ DROP TYPE currency_code CASCADE;
 DROP TYPE country_code CASCADE;
 DROP TYPE state_code CASCADE;
 
-DROP TYPE status_payable CASCADE;
 DROP TYPE status_activatable CASCADE;
 DROP TYPE status_authenticatable CASCADE;
+DROP TYPE status_payable CASCADE;
+
+DROP TYPE type_invoice CASCADE;

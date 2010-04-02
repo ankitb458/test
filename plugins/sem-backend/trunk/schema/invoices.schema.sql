@@ -8,6 +8,8 @@ CREATE TABLE invoices (
 	name			varchar NOT NULL,
 	due_date		datetime,
 	cleared_date	datetime,
+	amount			numeric(6,2) NOT NULL DEFAULT 0,
+	tax				numeric(6,2) NOT NULL DEFAULT 0,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
