@@ -15,8 +15,6 @@ CREATE TABLE products (
 	rec_interval	interval,
 	rec_count		int,
 	currency		currency_code NOT NULL DEFAULT 'USD',
-	weight			numeric(6,3),
-	volume			numeric(6,3)[3],
 	launch_date		datetime,
 	expire_date		datetime,
 	stock			int,
@@ -35,13 +33,7 @@ CREATE TABLE products (
 	CONSTRAINT valid_activatable
 		CHECK ( expire_date >= launch_date ),
 	CONSTRAINT valid_stock
-		CHECK ( stock >= 0 ),
-	CONSTRAINT valid_weight
-		CHECK ( weight >= 0 ),
-	CONSTRAINT valid_volume
-		CHECK ( volume > ARRAY[0,0,0]::numeric(6,3)[3] ),
-	CONSTRAINT undefined_behavior
-		CHECK ( rec_count IS NULL AND weight IS NULL AND volume IS NULL )
+		CHECK ( stock >= 0 )
 );
 
 SELECT	activatable('products'),
