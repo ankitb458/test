@@ -210,8 +210,8 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					launch,
-					expire,
+					launch_date,
+					expire_date,
 					stock
 			INTO	c
 			FROM	active_coupons
@@ -233,8 +233,8 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					launch,
-					expire,
+					launch_date,
+					expire_date,
 					stock
 			INTO	c
 			FROM	active_coupons
@@ -254,8 +254,8 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					launch,
-					expire,
+					launch_date,
+					expire_date,
 					stock
 			INTO	c
 			FROM	active_promos
@@ -287,10 +287,10 @@ BEGIN
 		-- Process firesale if any
 		IF	c.firesale
 		THEN
-			IF	c.expire IS NOT NULL
+			IF	c.expire_date IS NOT NULL
 			THEN
-				t_ratio := EXTRACT(EPOCH FROM c.expire - NOW()::datetime) /
-					EXTRACT(EPOCH FROM c.expire - c.launch);
+				t_ratio := EXTRACT(EPOCH FROM c.expire_date - NOW()::datetime) /
+					EXTRACT(EPOCH FROM c.expire_date - c.launch_date);
 			END IF;
 		
 			IF	c.stock IS NOT NULL
@@ -303,7 +303,7 @@ BEGIN
 				WHERE	order_lines.order_id <> NEW.order_id
 				AND		order_lines.coupon_id = NEW.coupon_id
 				AND		order_lines.status > 'pending'
-				AND		orders.cleared >= c.launch;
+				AND		orders.cleared_date >= c.launch_date;
 		
 				o_ratio := c.stock / ( COALESCE(cur_orders, 0) + c.stock );
 			END IF;

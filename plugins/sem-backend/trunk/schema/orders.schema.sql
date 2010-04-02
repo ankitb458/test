@@ -6,8 +6,8 @@ CREATE TABLE orders (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	due				datetime,
-	cleared			datetime,
+	due_date		datetime,
+	cleared_date	datetime,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
@@ -18,22 +18,22 @@ CREATE TABLE orders (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
-			NOT ( cleared IS NULL AND status > 'pending' ) )
+		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+			NOT ( cleared_date IS NULL AND status > 'pending' ) )
 );
 
 SELECT	timestampable('orders'),
 		searchable('orders'),
 		trashable('orders');
 
-CREATE INDEX orders_sort ON orders(due DESC);
+CREATE INDEX orders_sort ON orders(due_date DESC);
 CREATE INDEX orders_user_id ON orders(user_id);
 CREATE INDEX orders_campaign_id ON orders(campaign_id);
 CREATE INDEX orders_aff_id ON orders(aff_id);
 
 COMMENT ON TABLE orders IS E'Orders
 
-- user_id gets billed; order_lines.user_id gets shipped.
+- user_id gets invoiced; order_lines.user_id gets shipped.
 - aff_id gets the commission and is tied to the campaign_id. It gets stored
   for reference, in case a campaign''s owner changes.';
 
@@ -65,13 +65,13 @@ BEGIN
 	END IF;
 	
 	-- Assign default dates if needed
-	IF	NEW.due IS NULL AND NEW.status > 'draft'
+	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
 	THEN
-		NEW.due := NOW();
+		NEW.due_date := NOW();
 	END IF;
-	IF	NEW.cleared IS NULL AND NEW.status > 'pending'
+	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
 	THEN
-		NEW.cleared := NOW();
+		NEW.cleared_date := NOW();
 	END IF;
 	
 	RETURN NEW;

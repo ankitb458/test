@@ -6,8 +6,8 @@ CREATE TABLE invoice_lines (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	due				datetime,
-	cleared			datetime,
+	due_date		datetime,
+	cleared_date	datetime,
 	invoice_id		bigint NOT NULL REFERENCES invoices(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
@@ -25,8 +25,8 @@ CREATE TABLE invoice_lines (
 	CONSTRAINT valid_amounts
 		CHECK ( amount >= 0 AND fee >= 0 AND tax >= 0 ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
-			NOT ( cleared IS NULL AND status > 'pending' ) ),
+		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT undefined_behavior
 		CHECK ( shipping = 0 AND tax = 0 )
 );
@@ -35,7 +35,7 @@ SELECT	timestampable('invoice_lines'),
 		searchable('invoice_lines'),
 		trashable('invoice_lines');
 
-CREATE INDEX invoice_lines_sort ON invoice_lines(cleared DESC);
+CREATE INDEX invoice_lines_sort ON invoice_lines(cleared_date DESC);
 CREATE INDEX invoice_lines_invoice_id ON invoice_lines(invoice_id);
 CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id);
 CREATE INDEX invoice_lines_user_id ON invoice_lines(user_id);
@@ -74,13 +74,13 @@ BEGIN
 	END IF;
 	
 	-- Assign default dates if needed
-	IF	NEW.due IS NULL AND NEW.status > 'draft'
+	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
 	THEN
-		NEW.due := NOW();
+		NEW.due_date := NOW();
 	END IF;
-	IF	NEW.cleared IS NULL AND NEW.status > 'pending'
+	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
 	THEN
-		NEW.cleared := NOW();
+		NEW.cleared_date := NOW();
 	END IF;
 	
 	RETURN NEW;

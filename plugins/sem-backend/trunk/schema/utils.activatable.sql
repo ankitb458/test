@@ -38,7 +38,7 @@ BEGIN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
 		EXECUTE $EXEC$
 			CONSTRAINT valid_activatable
-				CHECK ( expire >= launch );
+				CHECK ( expire_date >= launch_date );
 		$EXEC$;
 	END IF;
 	
@@ -46,7 +46,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_activate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(launch)
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(launch_date)
 		WHERE	status = 'future';
 		$EXEC$;
 	END IF;
@@ -55,8 +55,8 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_deactivate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(expire)
-		WHERE	status = 'active' AND expire IS NOT NULL;
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(expire_date)
+		WHERE	status = 'active' AND expire_date IS NOT NULL;
 		$EXEC$;
 	END IF;
 	
@@ -68,7 +68,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'active'
 		WHERE	status = 'future'
-		AND		launch <= NOW()::datetime;
+		AND		launch_date <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -83,7 +83,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'inactive'
 		WHERE	status = 'active'
-		AND		expire <= NOW()::datetime;
+		AND		expire_date <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -98,19 +98,19 @@ BEGIN
 		-- Process schedules
 		IF	NEW.status = 'future'
 		THEN
-			IF	NEW.launch IS NULL
+			IF	NEW.launch_date IS NULL
 			THEN
 				NEW.status := 'inactive';
-			ELSEIF NEW.launch <= NOW()::datetime
+			ELSEIF NEW.launch_date <= NOW()::datetime
 			THEN
 				NEW.status := 'active';
 			END IF;
 		END IF;
 
-		-- Make sure that launch and expire are consistent
-		IF	NEW.launch IS NOT NULL AND NEW.expire IS NOT NULL AND NEW.launch > NEW.expire
+		-- Make sure that launch_date and expire_date are consistent
+		IF	NEW.launch_date IS NOT NULL AND NEW.expire_date IS NOT NULL AND NEW.launch_date > NEW.expire_date
 		THEN
-			NEW.expire := NULL;
+			NEW.expire_date := NULL;
 		END IF;
 		
 		RETURN NEW;

@@ -6,8 +6,8 @@ CREATE TABLE invoices (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	due				datetime,
-	cleared			datetime,
+	due_date		datetime,
+	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -15,15 +15,15 @@ CREATE TABLE invoices (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( due IS NULL AND status > 'draft' ) AND
-			NOT ( cleared IS NULL AND status > 'pending' ) )
+		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+			NOT ( cleared_date IS NULL AND status > 'pending' ) )
 );
 
 SELECT	timestampable('invoices'),
 		searchable('invoices'),
 		trashable('invoices');
 
-CREATE INDEX invoices_sort ON invoices(cleared DESC);
+CREATE INDEX invoices_sort ON invoices(cleared_date DESC);
 
 COMMENT ON TABLE invoices IS E'Invoices
 
@@ -46,13 +46,13 @@ BEGIN
 	END IF;
 	
 	-- Assign default dates if needed
-	IF	NEW.due IS NULL AND NEW.status > 'draft'
+	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
 	THEN
-		NEW.due := NOW();
+		NEW.due_date := NOW();
 	END IF;
-	IF	NEW.cleared IS NULL AND NEW.status > 'pending'
+	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
 	THEN
-		NEW.cleared := NOW();
+		NEW.cleared_date := NOW();
 	END IF;
 	
 	RETURN NEW;
