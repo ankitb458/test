@@ -7,11 +7,11 @@ CREATE TABLE invoices (
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	due_date		datetime,
+	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
+	due_tax			numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
-	amount_due		numeric(8,2) NOT NULL DEFAULT 0,
-	amount_cleared	numeric(8,2) NOT NULL DEFAULT 0,
-	tax_due			numeric(8,2) NOT NULL DEFAULT 0,
-	tax_cleared		numeric(8,2) NOT NULL DEFAULT 0,
+	cleared_amount	numeric(8,2) NOT NULL DEFAULT 0,
+	cleared_tax		numeric(8,2) NOT NULL DEFAULT 0,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -31,8 +31,10 @@ CREATE INDEX invoices_sort ON invoices(due_date DESC);
 
 COMMENT ON TABLE invoices IS E'Invoices
 
-- amount and tax fields are calculated. They correspond to total cleared
-  amounts.';
+- due and cleared dates have absolutely no relationship with one another.
+  It is possible to advance pay or late pay...
+- amount and tax fields are calculated. They correspond to active invoices
+  only, i.e. cancelled invoices are ignored.';
 
 /**
  * Clean an invoice before it gets stored.

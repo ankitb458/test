@@ -8,8 +8,6 @@ CREATE TABLE order_lines (
 	name			varchar NOT NULL,
 	order_id		bigint NOT NULL REFERENCES orders(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
-	due_date		datetime,
-	cleared_date	datetime,
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE,
 	coupon_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	quantity		int NOT NULL DEFAULT 1,
@@ -21,6 +19,8 @@ CREATE TABLE order_lines (
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
 	rec_count		int,
+	due_date		datetime,
+	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -58,6 +58,8 @@ CREATE INDEX order_lines_coupon_id ON order_lines(coupon_id);
 COMMENT ON TABLE orders IS E'Order lines
 
 - user_id gets shipped; orders.user_id gets invoiced.
+- due and cleared dates have absolutely no relationship with one another.
+  It is possible to advance pay or late pay...
 - init/rec amount/comm/discount are auto-filled if not provided.
 - init/rec amount/comm are used as is in invoices.
 - init/rec discount is only stored for reference; it is used nowhere.

@@ -7,10 +7,10 @@ CREATE TABLE orders (
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
-	due_date		datetime,
-	cleared_date	datetime,
 	campaign_id		bigint REFERENCES campaigns(id) ON UPDATE CASCADE,
 	aff_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	due_date		datetime,
+	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -35,7 +35,9 @@ COMMENT ON TABLE orders IS E'Orders
 
 - user_id gets invoiced; order_lines.user_id gets shipped.
 - aff_id gets the commission and is tied to the campaign_id. It gets stored
-  for reference, in case a campaign''s owner changes.';
+  for reference, in case a campaign''s owner changes.
+- due and cleared dates have absolutely no relationship with one another.
+  It is possible to advance pay or late pay...';
 
 /**
  * Clean an order before it gets stored.

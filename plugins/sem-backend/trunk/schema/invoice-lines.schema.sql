@@ -8,15 +8,15 @@ CREATE TABLE invoice_lines (
 	name			varchar NOT NULL,
 	invoice_id		bigint NOT NULL REFERENCES invoices(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
-	due_date		datetime,
-	cleared_date	datetime,
 	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	invoice_type	type_invoice NOT NULL DEFAULT 'payment',
-	amount_due		numeric(8,2) NOT NULL,
-	amount_cleared	numeric(8,2) NOT NULL,
-	tax_due			numeric(8,2) NOT NULL,
-	tax_cleared		numeric(8,2) NOT NULL,
+	due_date		datetime,
+	due_amount		numeric(8,2) NOT NULL,
+	due_tax			numeric(8,2) NOT NULL,
+	cleared_date	datetime,
+	cleared_amount	numeric(8,2) NOT NULL,
+	cleared_tax		numeric(8,2) NOT NULL,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -39,7 +39,9 @@ CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id);
 
 COMMENT ON TABLE invoices IS E'Invoice lines
 
-';
+- due and cleared dates have absolutely no relationship with one another.
+  It is possible to advance pay or late pay...
+- amounts and taxes are aggregated into invoices if status is cleared.';
 
 /**
  * Clean an invoice line before it gets stored.
