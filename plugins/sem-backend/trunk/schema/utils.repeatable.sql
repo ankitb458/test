@@ -28,7 +28,7 @@ BEGIN
 	END IF;
 	
 	EXECUTE $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__check_interval') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__sanitize_interval') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
@@ -43,12 +43,12 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF	NOT trigger_exists(t_name || '_01__check_interval')
+	IF	NOT trigger_exists(t_name || '_01__sanitize_interval')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_interval') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__sanitize_interval') || $EXEC$
 			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__check_interval') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__sanitize_interval') || $EXEC$();
 		$EXEC$;
 	END IF;
 	RETURN t_name;

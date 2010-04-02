@@ -21,7 +21,7 @@ CREATE TYPE status_activatable AS enum (
  * - {table}_deactivate
  *
  * Adds triggers:
- * - {table}_01__check_activatable
+ * - {table}_01__sanitize_activatable
  *
  * Adds functions
  * - {table}_activate
@@ -91,7 +91,7 @@ BEGIN
 	$EXEC$;
 	
 	EXECUTE $EXEC$
-	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__check_activatable') || $EXEC$()
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__sanitize_activatable') || $EXEC$()
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
@@ -118,12 +118,12 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF	NOT trigger_exists(t_name || '_01__check_activatable')
+	IF	NOT trigger_exists(t_name || '_01__sanitize_activatable')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__check_activatable') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_01__sanitize_activatable') || $EXEC$
 			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
-		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__check_activatable') || $EXEC$();
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__sanitize_activatable') || $EXEC$();
 		$EXEC$;
 	END IF;
 	
