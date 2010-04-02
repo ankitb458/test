@@ -16,7 +16,7 @@ CREATE TABLE orders (
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
-		CHECK ( name <> '' ),
+		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) )
@@ -46,9 +46,6 @@ CREATE OR REPLACE FUNCTION orders_clean()
 	RETURNS trigger
 AS $$
 BEGIN
-	-- Trim fields
-	NEW.name := NULLIF(trim(NEW.name, ''), '');
-	
 	-- Default name
 	IF	NEW.name IS NULL
 	THEN

@@ -21,7 +21,7 @@ CREATE TABLE campaigns (
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
-		CHECK ( name <> '' ),
+		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_campaign
 		CHECK ( ukey IS NULL AND promo_id IS NOT NULL OR ukey IS NOT NULL AND promo_id IS NULL ),
 	CONSTRAINT valid_discounts
@@ -143,10 +143,6 @@ CREATE OR REPLACE FUNCTION campaigns_clean()
 	RETURNS trigger
 AS $$
 BEGIN
-	-- Trim fields
-	NEW.ukey := NULLIF(trim(NEW.ukey), '');
-	NEW.name := NULLIF(trim(NEW.name), '');
-	
 	-- Default name and ukey
 	NEW.name := COALESCE(NEW.name, NEW.ukey);
 	

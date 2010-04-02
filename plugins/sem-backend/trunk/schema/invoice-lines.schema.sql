@@ -10,7 +10,9 @@ CREATE TABLE invoice_lines (
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
-	invoice_type	type_invoice NOT NULL DEFAULT 'payment',
+	payment_id		varchar UNIQUE,
+	payment_type	type_payment NOT NULL DEFAULT 'payment',
+	payment_method	method_payment NOT NULL DEFAULT 'paypal',
 	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL,
 	due_tax			numeric(8,2) NOT NULL,
@@ -22,10 +24,12 @@ CREATE TABLE invoice_lines (
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
-		CHECK ( name <> '' ),
+		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
-			NOT ( cleared_date IS NULL AND status > 'pending' ) )
+			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
+	CONSTRAINT valid_payment_id
+		CHECK ( payment_id <> '' )
 );
 
 SELECT	timestampable('invoice_lines'),
@@ -52,9 +56,6 @@ AS $$
 DECLARE
 	c			campaigns;
 BEGIN
-	-- Trim fields
-	NEW.name := NULLIF(trim(NEW.name, ''), '');
-	
 	-- Default name
 	IF	NEW.name IS NULL
 	THEN

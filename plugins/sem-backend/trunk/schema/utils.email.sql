@@ -28,4 +28,4 @@ $$ LANGUAGE plperlu IMMUTABLE STRICT;
  * email domain
  */
 
-CREATE DOMAIN email as varchar CHECK ( is_email(value) );
+CREATE DOMAIN email as varchar CHECK ( value <> '' AND value = trim(value) AND is_email(value) );

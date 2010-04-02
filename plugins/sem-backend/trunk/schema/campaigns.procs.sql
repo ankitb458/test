@@ -49,8 +49,8 @@ BEGIN
 	THEN
 		IF	NEW.promo_id IS NULL
 		THEN
-			NEW.name := COALESCE(NULLIF(trim(NEW.name), ''), 'Campaign');
-			NEW.ukey := COALESCE(NULLIF(trim(NEW.ukey), ''), 'campaign');
+			NEW.name := COALESCE(NEW.name, 'Campaign');
+			NEW.ukey := COALESCE(NEW.ukey, 'campaign');
 		END IF;
 		
 		RETURN NEW;
@@ -74,8 +74,8 @@ BEGIN
 		RAISE EXCEPTION 'Cannot tie inactive users.id = % to campaigns.id = %.',
 			NEW.aff_id, NEW.id;
 	ELSE
-		NEW.name := COALESCE(NULLIF(trim(NEW.name), ''), u.name);
-		NEW.ukey := COALESCE(NULLIF(trim(NEW.ukey), ''), u.ukey, to_slug(u.name));
+		NEW.name := COALESCE(NEW.name, u.name);
+		NEW.ukey := COALESCE(NEW.ukey, u.ukey, to_slug(u.name));
 	END IF;
 	
 	RETURN NEW;

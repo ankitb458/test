@@ -15,8 +15,9 @@ CREATE TABLE users (
 	lastname		varchar NOT NULL DEFAULT '',
 	country			country_code,
 	state			state_code,
+	aff_cleared		boolean NOT NULL DEFAULT false,
+	payment_method	method_payment NOT NULL DEFAULT 'paypal',
 	paypal			email,
-	aff_docs		boolean NOT NULL DEFAULT false,
 	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	ip				inet,
 	token			uuid,
@@ -25,15 +26,18 @@ CREATE TABLE users (
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
-		CHECK ( name <> '' ),
+		CHECK ( name <> '' AND name = trim(name) AND
+			nickname = trim(nickname) AND firstname = trim(firstname) AND lastname = trim(lastname) ),
 	CONSTRAINT valid_username
-		CHECK ( username <> '' ),
+		CHECK ( username <> '' and username = trim(username) ),
 	CONSTRAINT valid_password
 		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) ),
 	CONSTRAINT valid_state
 		CHECK ( NOT ( country IN ('US', 'CA', 'AU') AND state IS NULL ) ),
 	CONSTRAINT valid_referral
-		CHECK ( id <> ref_id )
+		CHECK ( id <> ref_id ),
+	CONSTRAINT undefined_behavior
+		CHECK ( payment_method = 'paypal' )
 );
 
 SELECT	sluggable('users'),
@@ -74,20 +78,6 @@ CREATE OR REPLACE FUNCTION users_clean()
 	RETURNS trigger
 AS $$
 BEGIN
-	-- Trim fields
-	NEW.name := NULLIF(trim(NEW.name), '');
-	
-	NEW.username := NULLIF(trim(NEW.username), '');
-	NEW.password := trim(NEW.password);
-	
-	NEW.email := NULLIF(trim(NEW.email), '');
-	
-	NEW.firstname := trim(NEW.firstname);
-	NEW.lastname := trim(NEW.lastname);
-	NEW.nickname := trim(NEW.nickname);
-	
-	NEW.paypal := NULLIF(trim(NEW.paypal), '');
-	
 	-- Set name
 	IF	NEW.name IS NULL
 	THEN
@@ -107,6 +97,9 @@ BEGIN
 			NEW.name = 'Anonymous';
 		END IF;
 	END IF;
+	
+	-- Process password
+	NEW.password := trim(NEW.password);
 	
 	IF	NEW.password <> ''
 	THEN

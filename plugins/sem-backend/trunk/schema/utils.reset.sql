@@ -19,4 +19,5 @@ DROP TYPE status_activatable CASCADE;
 DROP TYPE status_authenticatable CASCADE;
 DROP TYPE status_payable CASCADE;
 
-DROP TYPE type_invoice CASCADE;
+DROP TYPE type_payment CASCADE;
+DROP TYPE method_payment CASCADE;

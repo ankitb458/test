@@ -26,7 +26,7 @@ CREATE TABLE order_lines (
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
-		CHECK ( name <> '' ),
+		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_amounts
 		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND
 				rec_amount >= rec_comm AND rec_comm >= 0 ),
@@ -76,9 +76,6 @@ AS $$
 DECLARE
 	c			campaigns;
 BEGIN
-	-- Trim fields
-	NEW.name := NULLIF(trim(NEW.name, ''), '');
-	
 	-- Default name
 	IF	NEW.name IS NULL
 	THEN

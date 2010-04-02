@@ -23,7 +23,9 @@ CREATE TABLE products (
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
-		CHECK ( name <> '' ),
+		CHECK ( name <> '' AND name = trim(name) ),
+	CONSTRAINT valid_sku
+		CHECK ( sku <> '' AND sku = trim(sku) ),
 	CONSTRAINT valid_amounts
 		CHECK ( init_price >= init_comm AND init_comm >= 0 AND
 				rec_price >= rec_comm AND rec_comm >= 0 ),
@@ -76,11 +78,6 @@ CREATE OR REPLACE FUNCTION products_clean()
 	RETURNS trigger
 AS $$
 BEGIN
-	-- Trim fields
-	NEW.ukey := NULLIF(trim(NEW.ukey), '');
-	NEW.name := NULLIF(trim(NEW.name), '');
-	NEW.sku := NULLIF(trim(NEW.sku), '');
-	
 	-- Default name and ukey
 	NEW.name := COALESCE(NEW.name, NEW.ukey, NEW.sku, 'Product');
 	
