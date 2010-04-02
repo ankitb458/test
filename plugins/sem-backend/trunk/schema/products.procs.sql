@@ -127,7 +127,7 @@ BEGIN
 		SET		status = CASE
 					WHEN promo_id IS NOT NULL AND status = 'trash'
 					THEN 'inactive' -- Untrash the promo
-					WHEN status = 'future' AND launch <= NOW()::datetime
+					WHEN status = 'future' AND release <= NOW()::datetime
 					THEN 'active'
 					ELSE status
 				END::status_activatable
@@ -135,7 +135,7 @@ BEGIN
 		AND 	status <> CASE
 					WHEN promo_id IS NOT NULL AND status = 'trash'
 					THEN 'inactive' -- Untrash the promo
-					WHEN status = 'future' AND launch <= NOW()::datetime
+					WHEN status = 'future' AND release <= NOW()::datetime
 					THEN 'active'
 					ELSE status
 				END::status_activatable;

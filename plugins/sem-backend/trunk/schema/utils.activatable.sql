@@ -38,7 +38,7 @@ BEGIN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
 		EXECUTE $EXEC$
 			CONSTRAINT valid_activatable
-				CHECK ( expire >= launch );
+				CHECK ( expire >= release );
 		$EXEC$;
 	END IF;
 	
@@ -46,7 +46,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_activate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(launch)
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$(release)
 		WHERE	status = 'future';
 		$EXEC$;
 	END IF;
@@ -68,7 +68,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'active'
 		WHERE	status = 'future'
-		AND		launch <= NOW()::datetime;
+		AND		release <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -98,17 +98,17 @@ BEGIN
 		-- Process schedules
 		IF	NEW.status = 'future'
 		THEN
-			IF	NEW.launch IS NULL
+			IF	NEW.release IS NULL
 			THEN
 				NEW.status := 'inactive';
-			ELSEIF NEW.launch <= NOW()::datetime
+			ELSEIF NEW.release <= NOW()::datetime
 			THEN
 				NEW.status := 'active';
 			END IF;
 		END IF;
 
-		-- Make sure that launch and expire are consistent
-		IF	NEW.launch IS NOT NULL AND NEW.expire IS NOT NULL AND NEW.launch > NEW.expire
+		-- Make sure that release and expire are consistent
+		IF	NEW.release IS NOT NULL AND NEW.expire IS NOT NULL AND NEW.release > NEW.expire
 		THEN
 			NEW.expire := NULL;
 		END IF;

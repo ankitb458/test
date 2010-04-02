@@ -210,7 +210,7 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					launch,
+					release,
 					expire,
 					stock
 			INTO	c
@@ -233,7 +233,7 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					launch,
+					release,
 					expire,
 					stock
 			INTO	c
@@ -254,7 +254,7 @@ BEGIN
 					init_discount,
 					rec_discount,
 					firesale,
-					launch,
+					release,
 					expire,
 					stock
 			INTO	c
@@ -290,7 +290,7 @@ BEGIN
 			IF	c.expire IS NOT NULL
 			THEN
 				t_ratio := EXTRACT(EPOCH FROM c.expire - NOW()::datetime) /
-					EXTRACT(EPOCH FROM c.expire - c.launch);
+					EXTRACT(EPOCH FROM c.expire - c.release);
 			END IF;
 		
 			IF	c.stock IS NOT NULL
@@ -303,7 +303,7 @@ BEGIN
 				WHERE	order_lines.order_id <> NEW.order_id
 				AND		order_lines.coupon_id = NEW.coupon_id
 				AND		order_lines.status > 'pending'
-				AND		orders.cleared >= c.launch;
+				AND		orders.cleared >= c.release;
 		
 				o_ratio := c.stock / ( COALESCE(cur_orders, 0) + c.stock );
 			END IF;

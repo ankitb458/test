@@ -62,7 +62,7 @@ WHERE	aff_id IS NOT NULL;
 
 UPDATE	products
 SET		status = 'future',
-		launch = NOW() + interval '1 week';
+		release = NOW() + interval '1 week';
 
 UPDATE	campaigns
 SET		product_id = products.id,
@@ -132,7 +132,7 @@ SET		status = 'active',
 
 UPDATE	products
 SET		status = 'future',
-		launch = NOW() + interval '1 week';
+		release = NOW() + interval '1 week';
 
 SELECT	'Allow for active coupons on future products',
 		NOT EXISTS (

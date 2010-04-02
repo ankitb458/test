@@ -7,12 +7,14 @@ DROP TABLE campaigns CASCADE;
 DROP TABLE products CASCADE;
 DROP TABLE users CASCADE;
 
-DROP TYPE status_payable;
-DROP TYPE currency_code;
-DROP TYPE status_activatable;
-DROP TYPE status_authenticatable;
-DROP TYPE country_code;
-DROP TYPE state_code;
-DROP DOMAIN datetime;
-DROP DOMAIN slug;
-DROP DOMAIN email;
+DROP DOMAIN datetime CASCADE;
+DROP DOMAIN slug CASCADE;
+DROP DOMAIN email CASCADE;
+
+DROP TYPE currency_code CASCADE;
+DROP TYPE country_code CASCADE;
+DROP TYPE state_code CASCADE;
+
+DROP TYPE status_payable CASCADE;
+DROP TYPE status_activatable CASCADE;
+DROP TYPE status_authenticatable CASCADE;
