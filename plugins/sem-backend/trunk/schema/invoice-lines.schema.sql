@@ -10,9 +10,9 @@ CREATE TABLE invoice_lines (
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
-	payment_id		varchar UNIQUE,
 	payment_type	type_payment NOT NULL DEFAULT 'payment',
 	payment_method	method_payment NOT NULL DEFAULT 'paypal',
+	payment_id		varchar UNIQUE,
 	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL,
 	due_tax			numeric(8,2) NOT NULL,
@@ -36,10 +36,10 @@ SELECT	timestampable('invoice_lines'),
 		searchable('invoice_lines'),
 		trashable('invoice_lines');
 
-CREATE INDEX invoice_lines_invoice_id ON invoice_lines(invoice_id);
-CREATE INDEX invoice_lines_user_id ON invoice_lines(user_id);
-CREATE INDEX invoice_lines_parent_id ON invoice_lines(parent_id);
-CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id);
+CREATE INDEX invoice_lines_invoice_id ON invoice_lines(invoice_id, payment_type);
+CREATE INDEX invoice_lines_user_id ON invoice_lines(user_id, payment_type);
+CREATE INDEX invoice_lines_parent_id ON invoice_lines(parent_id, payment_type);
+CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id, payment_type);
 
 COMMENT ON TABLE invoices IS E'Invoice lines
 

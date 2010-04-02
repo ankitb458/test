@@ -7,9 +7,9 @@ CREATE TABLE invoices (
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
-	invoice_type	type_invoice NOT NULL DEFAULT 'payment',
-	payment_id		varchar UNIQUE,
+	payment_type	type_payment NOT NULL DEFAULT 'payment',
 	payment_method	method_payment NOT NULL,
+	payment_id		varchar UNIQUE,
 	due_date		datetime,
 	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
@@ -22,7 +22,7 @@ CREATE TABLE invoices (
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT valid_user_id
-		CHECK ( NOT ( invoice_type = 'commission' AND user_id IS NOT NULL ) ),
+		CHECK ( NOT ( payment_type = 'commission' AND user_id IS NOT NULL ) ),
 	CONSTRAINT valid_payment_id
 		CHECK ( payment_id <> '' )
 );
@@ -31,7 +31,8 @@ SELECT	timestampable('invoices'),
 		searchable('invoices'),
 		trashable('invoices');
 
-CREATE INDEX invoices_sort ON invoices(due_date DESC);
+CREATE INDEX invoices_sort ON invoices(payment_type, due_date DESC); -- used for admin screen
+CREATE INDEX invoices_user_id ON invoices(user_id, payment_type, due_date DESC); -- used for aff screens
 
 COMMENT ON TABLE invoices IS E'Invoices
 
