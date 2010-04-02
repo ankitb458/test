@@ -34,7 +34,7 @@ DELETE FROM users
 WHERE	status = 'trash';
 
 UPDATE	users
-SET		name = '',
+SET		name = NULL,
 		firstname = 'Joe',
 		lastname = 'Bar',
 		nickname = 'Joe'
