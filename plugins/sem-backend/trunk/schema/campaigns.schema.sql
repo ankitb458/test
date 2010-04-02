@@ -12,7 +12,7 @@ CREATE TABLE campaigns (
 	product_id		bigint REFERENCES products(id) ON UPDATE CASCADE DEFERRABLE,
 	init_discount	numeric(8,2) NOT NULL DEFAULT 0,
 	rec_discount	numeric(8,2) NOT NULL DEFAULT 0,
-	release			datetime,
+	launch			datetime,
 	expire			datetime,
 	stock			int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
@@ -34,7 +34,7 @@ CREATE TABLE campaigns (
 		CHECK ( promo_id IS NULL OR
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
 	CONSTRAINT valid_activatable
-		CHECK ( expire >= release ),
+		CHECK ( expire >= launch ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_firesale
@@ -159,7 +159,7 @@ BEGIN
 		END IF;
 		NEW.init_discount := 0;
 		NEW.rec_discount := 0;
-		NEW.release := NULL;
+		NEW.launch := NULL;
 		NEW.expire := NULL;
 		NEW.stock := NULL;
 		NEW.firesale := FALSE;

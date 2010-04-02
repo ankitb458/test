@@ -17,7 +17,7 @@ CREATE TABLE products (
 	currency		currency_code NOT NULL DEFAULT 'USD',
 	weight			numeric(7,3),
 	volume			numeric(7,3)[3],
-	release			datetime,
+	launch			datetime,
 	expire			datetime,
 	stock			int,
 	created			datetime NOT NULL DEFAULT NOW(),
@@ -33,7 +33,7 @@ CREATE TABLE products (
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
 			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_activatable
-		CHECK ( expire >= release ),
+		CHECK ( expire >= launch ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
 	CONSTRAINT valid_weight
