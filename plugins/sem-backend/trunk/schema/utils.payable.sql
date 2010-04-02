@@ -12,9 +12,9 @@ CREATE TYPE status_payable AS enum (
 	);
 
 /**
- * Payment type
+ * Invoice type
  */
-CREATE TYPE type_payment AS enum (
+CREATE TYPE type_invoice AS enum (
 	'payment',		-- Credit / order payment
 	'commission'	-- Debit / affiliate commission
 	);

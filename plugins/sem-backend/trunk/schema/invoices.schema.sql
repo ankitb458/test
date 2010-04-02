@@ -7,8 +7,9 @@ CREATE TABLE invoices (
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	invoice_type	type_invoice NOT NULL DEFAULT 'payment',
 	payment_id		varchar UNIQUE,
-	payment_type	type_payment NOT NULL DEFAULT 'payment',
+	payment_method	method_payment NOT NULL DEFAULT 'paypal',
 	due_date		datetime,
 	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
@@ -21,7 +22,7 @@ CREATE TABLE invoices (
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT valid_user_id
-		CHECK ( NOT ( payment_type = 'commission' AND user_id IS NOT NULL ) ),
+		CHECK ( NOT ( invoice_type = 'commission' AND user_id IS NOT NULL ) ),
 	CONSTRAINT valid_payment_id
 		CHECK ( payment_id <> '' )
 );
