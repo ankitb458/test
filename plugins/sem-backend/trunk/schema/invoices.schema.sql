@@ -9,7 +9,7 @@ CREATE TABLE invoices (
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	invoice_type	type_invoice NOT NULL DEFAULT 'payment',
 	payment_id		varchar UNIQUE,
-	payment_method	method_payment NOT NULL DEFAULT 'paypal',
+	payment_method	method_payment NOT NULL,
 	due_date		datetime,
 	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
