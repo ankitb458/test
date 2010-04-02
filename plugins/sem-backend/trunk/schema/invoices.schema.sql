@@ -9,7 +9,7 @@ CREATE TABLE invoices (
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	payment_type	type_payment NOT NULL DEFAULT 'payment',
 	payment_method	method_payment NOT NULL,
-	payment_id		varchar UNIQUE,
+	payment_ref		varchar UNIQUE,
 	due_date		datetime,
 	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
@@ -23,8 +23,8 @@ CREATE TABLE invoices (
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT valid_user_id
 		CHECK ( NOT ( payment_type = 'commission' AND user_id IS NOT NULL ) ),
-	CONSTRAINT valid_payment_id
-		CHECK ( payment_id <> '' )
+	CONSTRAINT valid_payment_ref
+		CHECK ( payment_ref <> '' )
 );
 
 SELECT	timestampable('invoices'),

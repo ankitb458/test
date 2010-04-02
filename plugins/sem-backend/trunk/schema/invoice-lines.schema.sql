@@ -12,7 +12,7 @@ CREATE TABLE invoice_lines (
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	payment_type	type_payment NOT NULL DEFAULT 'payment',
 	payment_method	method_payment NOT NULL DEFAULT 'paypal',
-	payment_id		varchar UNIQUE,
+	payment_ref		varchar UNIQUE,
 	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL,
 	due_tax			numeric(8,2) NOT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE invoice_lines (
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
-	CONSTRAINT valid_payment_id
-		CHECK ( payment_id <> '' )
+	CONSTRAINT valid_payment_ref
+		CHECK ( payment_ref <> '' )
 );
 
 SELECT	timestampable('invoice_lines'),
