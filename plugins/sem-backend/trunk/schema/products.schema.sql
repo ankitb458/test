@@ -8,15 +8,15 @@ CREATE TABLE products (
 	status			status_activatable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	sku				varchar UNIQUE,
-	init_price		numeric(8,2) NOT NULL DEFAULT 0,
-	init_comm		numeric(8,2) NOT NULL DEFAULT 0,
-	rec_price		numeric(8,2) NOT NULL DEFAULT 0,
-	rec_comm		numeric(8,2) NOT NULL DEFAULT 0,
+	init_price		numeric(6,2) NOT NULL DEFAULT 0,
+	init_comm		numeric(6,2) NOT NULL DEFAULT 0,
+	rec_price		numeric(6,2) NOT NULL DEFAULT 0,
+	rec_comm		numeric(6,2) NOT NULL DEFAULT 0,
 	rec_interval	interval,
 	rec_count		int,
 	currency		currency_code NOT NULL DEFAULT 'USD',
-	weight			numeric(7,3),
-	volume			numeric(7,3)[3],
+	weight			numeric(6,3),
+	volume			numeric(6,3)[3],
 	launch_date		datetime,
 	expire_date		datetime,
 	stock			int,
@@ -39,7 +39,7 @@ CREATE TABLE products (
 	CONSTRAINT valid_weight
 		CHECK ( weight >= 0 ),
 	CONSTRAINT valid_volume
-		CHECK ( volume > ARRAY[0,0,0]::numeric(7,3)[3] ),
+		CHECK ( volume > ARRAY[0,0,0]::numeric(6,3)[3] ),
 	CONSTRAINT undefined_behavior
 		CHECK ( rec_count IS NULL AND weight IS NULL AND volume IS NULL )
 );
