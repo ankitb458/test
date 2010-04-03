@@ -29,7 +29,7 @@ CREATE TABLE invoice_lines (
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
 	CONSTRAINT valid_payment_ref
-		CHECK ( payment_ref <> '' )
+		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) )
 );
 
 SELECT	timestampable('invoice_lines'),

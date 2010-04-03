@@ -24,7 +24,7 @@ CREATE TABLE invoices (
 	CONSTRAINT valid_user_id
 		CHECK ( NOT ( payment_type = 'commission' AND user_id IS NOT NULL ) ),
 	CONSTRAINT valid_payment_ref
-		CHECK ( payment_ref <> '' )
+		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) )
 );
 
 SELECT	timestampable('invoices'),
