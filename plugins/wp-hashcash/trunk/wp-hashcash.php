@@ -5,7 +5,7 @@
  Description: Client-side javascript blocks all spam bots.  XHTML 1.1 compliant.
  Author: Elliott Back
  Author URI: http://elliottback.com
- Version: 4.5
+ Version: 4.5.1
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -357,9 +357,9 @@ add_action('signup_header', 'wphc_signuphead');
 function wphc_addhead() {
 	echo "<script type=\"text/javascript\"><!--\n";
 	echo 'function addLoadEvent(func) {
-  if( jQuery ) {
+  if( typeof jQuery != \'undefined\' ) {
     jQuery(document).ready( func );
-  } else if( Prototype ) {
+  } else if( typeof Prototype != \'undefined\' ) {
     Event.observe( window, \'load\', func );
   } else {
     var oldonload = window.onload;

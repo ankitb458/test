@@ -58,6 +58,10 @@ If you are upgrading from a previous version of WP-Hashcash, please disabled the
 
 == Change Log ==
 
+= WP Hashcash 4.5.1 =
+
+* Fix a javascript error
+
 = WP Hashcash 4.5 =
 
 * Support clean interoperation with jQuery and Prototype
