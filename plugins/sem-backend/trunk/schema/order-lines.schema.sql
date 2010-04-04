@@ -83,10 +83,7 @@ BEGIN
 			INTO	NEW.name
 			FROM	products
 			WHERE	id = NEW.product_id;
-		END IF;
-		
-		IF	NEW.name IS NULL
-		THEN
+		ELSE
 			NEW.name := 'Anonymous Product';
 		END IF;
 	END IF;

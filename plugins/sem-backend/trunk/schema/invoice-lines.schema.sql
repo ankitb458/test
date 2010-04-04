@@ -11,14 +11,15 @@ CREATE TABLE invoice_lines (
 	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
 	payment_type	type_payment NOT NULL DEFAULT 'payment',
-	payment_method	method_payment NOT NULL DEFAULT 'paypal',
+	payment_method	method_payment,
 	payment_ref		varchar UNIQUE,
-	due_date		datetime,
+	recurring		boolean NOT NULL DEFAULT false,
+	due_date		datetime NOT NULL DEFAULT NOW(),
 	due_amount		numeric(8,2) NOT NULL,
-	due_tax			numeric(8,2) NOT NULL,
+	due_taxes		numeric(8,2) NOT NULL,
 	cleared_date	datetime,
-	cleared_amount	numeric(8,2) NOT NULL,
-	cleared_tax		numeric(8,2) NOT NULL,
+	cleared_amount	numeric(8,2) NOT NULL DEFAULT 0,
+	cleared_taxes	numeric(8,2) NOT NULL DEFAULT 0,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -28,24 +29,30 @@ CREATE TABLE invoice_lines (
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
+	CONSTRAINT valid_payment_method
+		CHECK ( payment_ref IS NULL OR payment_method IS NOT NULL ),
 	CONSTRAINT valid_payment_ref
-		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) )
+		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) ),
+	CONSTRAINT valid_tax
+		CHECK ( payment_type = 'commission' AND due_taxes = 0 OR
+			payment_type <> 'commission' AND due_taxes >= 0 ),
+	CONSTRAINT undefined_behavior
+		CHECK ( due_taxes = 0 AND cleared_taxes = 0 )
 );
 
 SELECT	timestampable('invoice_lines'),
 		searchable('invoice_lines'),
 		trashable('invoice_lines');
 
-CREATE INDEX invoice_lines_invoice_id ON invoice_lines(invoice_id, payment_type);
-CREATE INDEX invoice_lines_user_id ON invoice_lines(user_id, payment_type);
-CREATE INDEX invoice_lines_parent_id ON invoice_lines(parent_id, payment_type);
-CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id, payment_type);
+CREATE INDEX invoice_lines_invoice_id ON invoice_lines(payment_type, invoice_id);
+CREATE INDEX invoice_lines_user_id ON invoice_lines(payment_type, invoice_id, user_id);
+CREATE INDEX invoice_lines_parent_id ON invoice_lines(payment_type, parent_id);
+CREATE INDEX invoice_lines_order_line_id ON invoice_lines(payment_type, order_line_id);
 
 COMMENT ON TABLE invoices IS E'Invoice lines
 
 - due and cleared dates have absolutely no relationship with one another.
-  It is possible to advance pay or late pay...
-- amounts and taxes are aggregated into invoices if status is cleared.';
+  It is possible to advance pay, or late pay...';
 
 /**
  * Clean an invoice line before it gets stored.
@@ -53,8 +60,6 @@ COMMENT ON TABLE invoices IS E'Invoice lines
 CREATE OR REPLACE FUNCTION invoice_lines_clean()
 	RETURNS trigger
 AS $$
-DECLARE
-	c			campaigns;
 BEGIN
 	-- Default name
 	IF	NEW.name IS NULL
@@ -65,11 +70,18 @@ BEGIN
 			INTO	NEW.name
 			FROM	order_lines
 			WHERE	id = NEW.order_line_id;
-		END IF;
-		
-		IF	NEW.name IS NULL
+		ELSEIF NEW.parent_id IS NOT NULL
 		THEN
-			NEW.name := 'Invoice';
+			SELECT	name
+			INTO	NEW.name
+			FROM	invoice_lines
+			WHERE	id = NEW.parent_id;
+		ELSE
+			NEW.name := CASE
+				WHEN NEW.payment_type = 'commission'
+				THEN 'Commission'
+				ELSE 'Invoice'
+				END;
 		END IF;
 	END IF;
 	
