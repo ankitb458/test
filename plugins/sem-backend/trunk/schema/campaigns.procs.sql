@@ -1,51 +1,16 @@
 /**
- * Checks integrity when a campaign is trashed.
- */
-CREATE OR REPLACE FUNCTION campaigns_check_trash()
-	RETURNS trigger
-AS $$
-BEGIN
-	IF	NEW.status = OLD.status OR NEW.status > 'draft'
-	THEN
-		RETURN NEW;
-	END IF;
-	
-	IF	EXISTS (
-		SELECT	1
-		FROM	orders
-		WHERE	campaign_id = NEW.id
-		)
-	THEN
-		RAISE EXCEPTION 'Cannot trash campaigns.id = %. It is referenced in orders.campaign_id.', NEW.id;
-	END IF;
-	
-	IF	EXISTS (
-		SELECT	1
-		FROM	order_lines
-		WHERE	coupon_id = NEW.id
-		)
-	THEN
-		RAISE EXCEPTION 'Cannot trash campaigns.id = %. It is referenced in order_lines.coupon_id.', NEW.id;
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE CONSTRAINT TRIGGER campaigns_30_check_trash
-	AFTER UPDATE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_check_trash();
-
-/**
  * Sanitizes a campaign's affiliate.
  */
 CREATE OR REPLACE FUNCTION campaigns_sanitize_aff_id()
 	RETURNS trigger
 AS $$
 DECLARE
-	u			record;
+	_user		record;
 BEGIN
-	IF	NEW.aff_id IS NULL
+	IF	NEW.name IS NOT NULL AND NEW.ukey IS NOT NULL
+	THEN
+		RETURN NEW;
+	ELSEIF NEW.aff_id IS NULL
 	THEN
 		IF	NEW.promo_id IS NULL
 		THEN
@@ -54,34 +19,19 @@ BEGIN
 		END IF;
 		
 		RETURN NEW;
-	ELSEIF TG_OP = 'UPDATE'
-	THEN
-		IF	NEW.aff_id IS NOT DISTINCT FROM OLD.aff_id
-		THEN
-			RETURN NEW;
-		END IF;
 	END IF;
 	
-	SELECT	name,
-			ukey
-	INTO	u
+	SELECT	COALESCE(NEW.name, name),
+			COALESCE(NEW.ukey, ukey, to_slug(name), NEW.id::varchar)
+	INTO	NEW.name,
+			NEW.ukey
 	FROM	users
-	WHERE	id = NEW.aff_id
-	AND		status > 'pending';
-	
-	IF	NOT FOUND
-	THEN
-		RAISE EXCEPTION 'Cannot tie inactive users.id = % to campaigns.id = %.',
-			NEW.aff_id, NEW.id;
-	ELSE
-		NEW.name := COALESCE(NEW.name, u.name);
-		NEW.ukey := COALESCE(NEW.ukey, u.ukey, to_slug(u.name));
-	END IF;
+	WHERE	id = NEW.aff_id;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_02_sanitize_aff_id
+CREATE TRIGGER campaigns_01_sanitize_aff_id
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_aff_id();
 
@@ -92,7 +42,7 @@ CREATE OR REPLACE FUNCTION campaigns_sanitize_coupon()
 	RETURNS trigger
 AS $$
 DECLARE
-	p			record;
+	_product		record;
 BEGIN
 	IF	NEW.product_id IS NULL OR
 		TG_OP = 'INSERT' AND NEW.promo_id IS NOT NULL
@@ -114,32 +64,32 @@ BEGIN
 				init_comm,
 				rec_price,
 				rec_comm
-		INTO	p
+		INTO	_product
 		FROM	products
 		WHERE	id = NEW.product_id;
 		
 		IF	TG_OP = 'INSERT'
 		THEN
 			NEW.status := CASE
-				WHEN p.status = 'trash'
+				WHEN _product.status = 'trash'
 				THEN 'trash'
-				WHEN p.status = 'draft'
+				WHEN _product.status = 'draft'
 				THEN 'draft'
-				WHEN p.status = 'pending'
+				WHEN _product.status = 'pending'
 				THEN 'pending'
-				WHEN p.status < 'future' OR NEW.status = 'trash'
+				WHEN _product.status < 'future' OR NEW.status = 'trash'
 				THEN 'inactive'
 				ELSE NEW.status
 				END::status_activatable;
 		ELSE
 			NEW.status := CASE
-				WHEN p.status = 'trash'
+				WHEN _product.status = 'trash'
 				THEN 'trash'
-				WHEN p.status = 'draft'
+				WHEN _product.status = 'draft'
 				THEN 'draft'
-				WHEN p.status = 'pending'
+				WHEN _product.status = 'pending'
 				THEN 'pending'
-				WHEN p.status < 'future' OR OLD.status = 'trash' OR NEW.status = 'trash'
+				WHEN _product.status < 'future' OR OLD.status = 'trash' OR NEW.status = 'trash'
 				THEN 'inactive'
 				ELSE NEW.status
 				END::status_activatable;
@@ -149,26 +99,19 @@ BEGIN
 				init_comm,
 				rec_price,
 				rec_comm
-		INTO	p
+		INTO	_product
 		FROM	products
-		WHERE	id = NEW.product_id
-		AND		status > 'draft';
-		
-		IF	NOT FOUND
-		THEN
-			RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to products.id = %.',
-				NEW.id, NEW.product_id;
-		END IF;
+		WHERE	id = NEW.product_id;
 	END IF;
 	
 	-- Sanitize discount
 	IF	NEW.aff_id IS NOT NULL
 	THEN
-		NEW.init_discount := LEAST(NEW.init_discount, p.init_comm);
-		NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_comm);
+		NEW.init_discount := LEAST(NEW.init_discount, _product.init_comm);
+		NEW.rec_discount := LEAST(NEW.rec_discount, _product.rec_comm);
 	ELSE
-		NEW.init_discount := LEAST(NEW.init_discount, p.init_price - p.init_comm);
-		NEW.rec_discount := LEAST(NEW.rec_discount, p.rec_price - p.rec_comm);
+		NEW.init_discount := LEAST(NEW.init_discount, _product.init_price - _product.init_comm);
+		NEW.rec_discount := LEAST(NEW.rec_discount, _product.rec_price - _product.rec_comm);
 	END IF;
 	
 	RETURN NEW;

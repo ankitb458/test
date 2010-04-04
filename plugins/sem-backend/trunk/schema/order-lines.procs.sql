@@ -5,13 +5,13 @@
  * campaign, affiliate, or coupon), update an order line and set the
  * relevant amount fields to NULL.
  */
-CREATE OR REPLACE FUNCTION order_lines_sanitize_amounts()
+CREATE OR REPLACE FUNCTION order_lines_sanitize_financials()
 	RETURNS trigger
 AS $$
 DECLARE
-	o			record;
-	p			record;
-	c			record;
+	_order		record;
+	_product	record;
+	_coupon		record;
 	cur_orders	bigint;
 	t_ratio		float8 := 1;
 	o_ratio		float8 := 1;
@@ -21,38 +21,6 @@ BEGIN
 		NEW.init_comm IS NOT NULL AND NEW.rec_comm IS NOT NULL AND
 		NEW.init_discount IS NOT NULL AND NEW.rec_discount IS NOT NULL
 	THEN
-		IF	NEW.product_id IS NOT NULL AND
-			NEW.product_id IS DISTINCT FROM OLD.product_id
-		THEN
-			-- Validate product
-			IF	NOT EXISTS (
-				SELECT	1
-				FROM	products
-				WHERE	id = NEW.product_id
-				AND		status > 'draft'
-				)
-			THEN
-				RAISE EXCEPTION 'Cannot tie inactive products.id = % to order_lines.id = %.',
-					NEW.product_id, NEW.id;
-			END IF;
-		END IF;
-
-		IF	NEW.coupon_id IS NOT NULL AND
-			NEW.coupon_id IS DISTINCT FROM OLD.coupon_id
-		THEN
-			-- Validate coupon
-			IF	NOT EXISTS (
-				SELECT	1
-				FROM	campaigns
-				WHERE	id = NEW.coupon_id
-				AND		status > 'draft'
-				)
-			THEN
-				RAISE EXCEPTION 'Cannot tie inactive campaigns.id = % to order_lines.id = %.',
-					NEW.coupon_id, NEW.id;
-			END IF;
-		END IF;
-
 		IF	ROW(NEW.init_comm, NEW.rec_comm) <> ROW(0,0) AND
 			( ROW(NEW.init_amount, NEW.init_comm) IS DISTINCT FROM ROW(OLD.init_amount, OLD.init_comm) OR
 			ROW(NEW.rec_amount, NEW.rec_comm) IS DISTINCT FROM ROW(OLD.rec_amount, OLD.rec_comm) )
@@ -98,7 +66,7 @@ BEGIN
 				user_id,
 				campaign_id,
 				aff_id
-		INTO	o
+		INTO	_order
 		FROM	orders
 		WHERE	id = NEW.order_id;
 	ELSEIF NEW.product_id IS NOT NULL
@@ -123,8 +91,8 @@ BEGIN
 				user_id,
 				campaign_id,
 				aff_id
-		INTO	o;
-		NEW.order_id := o.id;
+		INTO	_order;
+		NEW.order_id := _order.id;
 	ELSEIF NEW.coupon_id IS NOT NULL
 	THEN
 		-- Auto-create order using the coupon_id
@@ -144,8 +112,8 @@ BEGIN
 				user_id,
 				campaign_id,
 				aff_id
-		INTO	o;
-		NEW.order_id := o.id;
+		INTO	_order;
+		NEW.order_id := _order.id;
 	ELSE
 		-- Auto-create order
 		INSERT INTO orders (
@@ -160,14 +128,14 @@ BEGIN
 				user_id,
 				campaign_id,
 				aff_id
-		INTO	o;
-		NEW.order_id := o.id;
+		INTO	_order;
+		NEW.order_id := _order.id;
 	END IF;
 	
 	IF	NEW.product_id IS NULL
 	THEN
 		-- Bail
-		IF	o.aff_id IS NULL
+		IF	_order.aff_id IS NULL
 		THEN
 			NEW.init_comm := 0;
 			NEW.rec_comm := 0;		
@@ -184,16 +152,9 @@ BEGIN
 			rec_comm,
 			rec_interval,
 			rec_count
-	INTO	p
+	INTO	_product
 	FROM	products
-	WHERE	id = NEW.product_id
-	AND		status > 'draft';
-	
-	IF	NOT FOUND
-	THEN
-		RAISE EXCEPTION 'Cannot tie inactive products.id = % to order_lines.id = %.',
-			NEW.product_id, NEW.id;
-	END IF;
+	WHERE	id = NEW.product_id;
 	
 	IF	ROW(NEW.init_discount, NEW.rec_discount) = ROW(0, 0)
 	THEN
@@ -213,20 +174,21 @@ BEGIN
 					launch_date,
 					expire_date,
 					stock
-			INTO	c
+			INTO	_coupon
 			FROM	active_coupons
 			WHERE	id = NEW.coupon_id
 			AND		product_id = NEW.product_id;
 		
 			IF	NOT FOUND OR
 				-- Drop inconsistent sponsors
-				c.aff_id IS NOT NULL AND o.campaign_id IS NOT NULL AND c.aff_id IS DISTINCT FROM o.aff_id
+				_coupon.aff_id IS NOT NULL AND _order.campaign_id IS NOT NULL AND
+				_coupon.aff_id IS DISTINCT FROM _order.aff_id
 			THEN
 				NEW.coupon_id := NULL;
 			END IF;
 		END IF;
 	
-		IF	NEW.coupon_id IS NULL AND o.campaign_id IS NOT NULL
+		IF	NEW.coupon_id IS NULL AND _order.campaign_id IS NOT NULL
 		THEN
 			-- Autofech coupon
 			SELECT	aff_id,
@@ -236,14 +198,14 @@ BEGIN
 					launch_date,
 					expire_date,
 					stock
-			INTO	c
+			INTO	_coupon
 			FROM	active_coupons
-			WHERE	id = o.campaign_id
+			WHERE	id = _order.campaign_id
 			AND		product_id = NEW.product_id;
 		
 			IF	FOUND
 			THEN
-				NEW.coupon_id := o.campaign_id;
+				NEW.coupon_id := _order.campaign_id;
 			END IF;
 		END IF;
 	
@@ -257,13 +219,13 @@ BEGIN
 					launch_date,
 					expire_date,
 					stock
-			INTO	c
+			INTO	_coupon
 			FROM	active_promos
 			WHERE	promo_id = NEW.product_id;
 		
 			IF	FOUND
 			THEN
-				NEW.coupon_id := o.campaign_id;
+				NEW.coupon_id := _order.campaign_id;
 			END IF;
 		END IF;
 	END IF;
@@ -273,27 +235,27 @@ BEGIN
 		-- Sanitize amounts
 		NEW.init_discount := COALESCE(NEW.init_discount, 0);
 		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
-		NEW.init_amount := COALESCE(NEW.init_amount, p.init_price - NEW.init_discount);
-		NEW.rec_amount := COALESCE(NEW.rec_amount, p.rec_price - NEW.rec_discount);
-		IF	o.aff_id IS NULL
+		NEW.init_amount := COALESCE(NEW.init_amount, _product.init_price - NEW.init_discount);
+		NEW.rec_amount := COALESCE(NEW.rec_amount, _product.rec_price - NEW.rec_discount);
+		IF	_order.aff_id IS NULL
 		THEN
 			NEW.init_comm := 0;
 			NEW.rec_comm := 0;
 		ELSE -- Assume a site discount, if any
-			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, p.init_comm), NEW.init_amount);
-			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, p.rec_comm), NEW.rec_amount);
+			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, _product.init_comm), NEW.init_amount);
+			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, _product.rec_comm), NEW.rec_amount);
 		END IF;
 	ELSE
 		-- Process firesale if any
-		IF	c.firesale
+		IF	_coupon.firesale
 		THEN
-			IF	c.expire_date IS NOT NULL
+			IF	_coupon.expire_date IS NOT NULL
 			THEN
-				t_ratio := ( EXTRACT(EPOCH FROM c.expire_date - NOW()::datetime) /
-					EXTRACT(EPOCH FROM c.expire_date - c.launch_date) )::float8;
+				t_ratio := ( EXTRACT(EPOCH FROM _coupon.expire_date - NOW()::datetime) /
+					EXTRACT(EPOCH FROM _coupon.expire_date - _coupon.launch_date) )::float8;
 			END IF;
 		
-			IF	c.stock IS NOT NULL
+			IF	_coupon.stock IS NOT NULL
 			THEN
 				SELECT	SUM(order_lines.quantity::bigint)::bigint
 				INTO	cur_orders
@@ -303,35 +265,35 @@ BEGIN
 				WHERE	order_lines.order_id <> NEW.order_id
 				AND		order_lines.coupon_id = NEW.coupon_id
 				AND		order_lines.status > 'pending'
-				AND		orders.cleared_date >= c.launch_date;
+				AND		orders.cleared_date >= _coupon.launch_date;
 		
-				o_ratio := ( c.stock / ( COALESCE(cur_orders, 0) + c.stock ) )::float8;
+				o_ratio := ( _coupon.stock / ( COALESCE(cur_orders, 0) + _coupon.stock ) )::float8;
 			END IF;
 		
-			c.init_discount := round(c.init_discount * t_ratio * o_ratio, 2);
-			c.rec_discount := round(c.rec_discount * t_ratio * o_ratio, 2);
+			_coupon.init_discount := round(_coupon.init_discount * t_ratio * o_ratio, 2);
+			_coupon.rec_discount := round(_coupon.rec_discount * t_ratio * o_ratio, 2);
 		END IF;
 		
 		-- Sanitize amounts
-		NEW.init_discount := COALESCE(NEW.init_discount, c.init_discount, 0);
-		NEW.rec_discount := COALESCE(NEW.rec_discount, c.rec_discount, 0);
-		NEW.init_amount := COALESCE(NEW.init_amount, p.init_price - NEW.init_discount);
-		NEW.rec_amount := COALESCE(NEW.rec_amount, p.rec_price - NEW.rec_discount);
-		IF	c.aff_id IS NULL
+		NEW.init_discount := COALESCE(NEW.init_discount, _coupon.init_discount, 0);
+		NEW.rec_discount := COALESCE(NEW.rec_discount, _coupon.rec_discount, 0);
+		NEW.init_amount := COALESCE(NEW.init_amount, _product.init_price - NEW.init_discount);
+		NEW.rec_amount := COALESCE(NEW.rec_amount, _product.rec_price - NEW.rec_discount);
+		IF	_coupon.aff_id IS NULL
 		THEN
-			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, p.init_comm), NEW.init_amount);
-			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, p.rec_comm), NEW.rec_amount);
+			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, _product.init_comm), NEW.init_amount);
+			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, _product.rec_comm), NEW.rec_amount);
 		ELSE
-			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, p.init_comm - NEW.init_discount), NEW.init_amount);
-			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, p.rec_comm - NEW.rec_discount), NEW.rec_amount);
+			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, _product.init_comm - NEW.init_discount), NEW.init_amount);
+			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, _product.rec_comm - NEW.rec_discount), NEW.rec_amount);
 		END IF;
 	END IF;
 	
 	-- Fetch interval/count
 	IF	NEW.rec_amount > 0
 	THEN
-		NEW.rec_interval := COALESCE(NEW.rec_interval, p.rec_interval);
-		NEW.rec_count := COALESCE(NEW.rec_count, p.rec_count);
+		NEW.rec_interval := COALESCE(NEW.rec_interval, _product.rec_interval);
+		NEW.rec_count := COALESCE(NEW.rec_count, _product.rec_count);
 	ELSE
 		NEW.rec_interval := NULL;
 		NEW.rec_count := NULL;
@@ -345,47 +307,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_02_sanitize_amounts
+CREATE TRIGGER order_lines_02_sanitize_financials
 	BEFORE INSERT OR UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_amounts();
-
-/**
- * Sanitizes an order_line's shipping user.
- */
-CREATE OR REPLACE FUNCTION order_lines_sanitize_user_id()
-	RETURNS trigger
-AS $$
-DECLARE
-	u_id		bigint;
-BEGIN
-	IF	NEW.user_id IS NULL
-	THEN
-		RETURN NEW;
-	ELSEIF TG_OP = 'UPDATE'
-	THEN
-		IF	NEW.user_id IS NOT DISTINCT FROM OLD.user_id
-		THEN
-			RETURN NEW;
-		END IF;
-	END IF;
-	
-	IF	NOT EXISTS (
-		SELECT	1
-		FROM	users
-		WHERE	id = NEW.user_id
-		AND		status > 'pending'
-		)
-	THEN
-		RAISE EXCEPTION 'Cannot tie inactive users.id = % to order_lines.id = %.',
-			NEW.user_id, NEW.id;
-	END IF;
-	
-	RETURN NEW;
-END $$ LANGUAGE plpgsql;
-
-CREATE TRIGGER order_lines_03_sanitize_user_id
-	BEFORE INSERT OR UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_user_id();
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_financials();
 
 /**
  * Forward status changes to orders
@@ -404,7 +328,7 @@ BEGIN
 		ELSEIF NEW.order_id <> OLD.order_id
 		THEN
 			-- Also do this for the old order
-			SELECT	MAX(order_lines.status)
+			SELECT	MAX(status)
 			INTO	new_status
 			FROM	order_lines
 			WHERE	order_id = OLD.order_id;
@@ -413,21 +337,21 @@ BEGIN
 			
 			UPDATE	orders
 			SET		status = new_status
-			WHERE	orders.id = OLD.order_id
+			WHERE	id = OLD.order_id
 			AND		status <> new_status;
 			
 			-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 		END IF;
 	END IF;
 	
-	SELECT	MAX(order_lines.status)
+	SELECT	MAX(status)
 	INTO	new_status
 	FROM	order_lines
 	WHERE	order_id = NEW.order_id;
 	
 	UPDATE	orders
 	SET		status = new_status
-	WHERE	orders.id = NEW.order_id
+	WHERE	id = NEW.order_id
 	AND		status <> new_status;
 	
 	-- RAISE NOTICE '%, %', TG_NAME, FOUND;

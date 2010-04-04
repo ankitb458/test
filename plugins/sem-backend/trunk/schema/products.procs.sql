@@ -1,33 +1,4 @@
 /**
- * Checks integrity when a product is trashed.
- */
-CREATE OR REPLACE FUNCTION products_check_trash()
-	RETURNS trigger
-AS $$
-BEGIN
-	IF	NEW.status = OLD.status OR NEW.status > 'draft'
-	THEN
-		RETURN NEW;
-	END IF;
-	
-	IF	EXISTS (
-		SELECT	1
-		FROM	order_lines
-		WHERE	product_id = NEW.id
-		)
-	THEN
-		RAISE EXCEPTION 'Cannot trash products.id = %. It is referenced in order_lines.product_id.', NEW.id;
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE CONSTRAINT TRIGGER products_30_check_trash
-	AFTER UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_check_trash();
-
-/**
  * Auto-creates a promo for new products.
  */
 CREATE OR REPLACE FUNCTION products_create_promo()

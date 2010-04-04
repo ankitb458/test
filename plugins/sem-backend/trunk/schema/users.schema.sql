@@ -15,7 +15,8 @@ CREATE TABLE users (
 	lastname		varchar NOT NULL DEFAULT '',
 	country			country_code,
 	state			state_code,
-	aff_cleared		boolean NOT NULL DEFAULT false,
+	tax_dispense	varchar,
+	tax_docs		boolean NOT NULL DEFAULT false,
 	payment_method	method_payment NOT NULL DEFAULT 'paypal',
 	paypal			email,
 	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
@@ -33,7 +34,9 @@ CREATE TABLE users (
 	CONSTRAINT valid_password
 		CHECK ( NOT ( password <> '' AND username IS NULL AND email IS NULL ) ),
 	CONSTRAINT valid_state
-		CHECK ( NOT ( country IN ('US', 'CA', 'AU') AND state IS NULL ) ),
+		CHECK ( state IS NULL OR state IS NOT NULL AND country IN ('US', 'CA', 'AU') ),
+	CONSTRAINT valid_tax_dispense
+		CHECK ( tax_dispense <> '' AND tax_dispense = trim(tax_dispense) ),
 	CONSTRAINT valid_referral
 		CHECK ( id <> ref_id ),
 	CONSTRAINT undefined_behavior
@@ -117,7 +120,7 @@ BEGIN
 		END IF;
 	END IF;
 	
-	IF	NEW.status = 'pending' AND NEW.password = ''
+	IF	NEW.status >= 'pending' AND NEW.password = ''
 	THEN
 		NEW.status := 'inactive';
 	END IF;
@@ -196,24 +199,24 @@ CREATE OR REPLACE FUNCTION get_user(varchar)
 	RETURNS SETOF users
 AS $$
 DECLARE
-	k			varchar := $1;
+	_key		varchar := $1;
 BEGIN
-	k := trim(k);
+	_key := trim(_key);
 	
-	IF	k = ''
+	IF	_key = ''
 	THEN
 		RETURN	QUERY
 		SELECT	NULL::users;
-	ELSEIF is_email(k)
+	ELSEIF is_email(_key)
 	THEN
 		RETURN QUERY
 		SELECT	*
 		FROM	users
-		WHERE	email = lower(k);
+		WHERE	email = lower(_key);
 	ELSE
 		RETURN QUERY
 		SELECT	*
 		FROM	users
-		WHERE	username = lower(k);
+		WHERE	username = lower(_key);
 	END IF;
 END $$ LANGUAGE plpgsql STABLE STRICT ROWS 1;

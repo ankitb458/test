@@ -41,23 +41,13 @@ BEGIN
 	BEGIN
 		IF	OLD.status > $EXEC$ || quote_literal(trash_key) || $EXEC$
 		THEN
-			RAISE EXCEPTION 'Cannot trash $EXEC$ || t_name || $EXEC$.id = %. It must be trashed first.',
+			RAISE EXCEPTION 'Cannot delete $EXEC$ || t_name || $EXEC$.id = %. It must be trashed first.',
 				OLD.id;
 		END IF;
 		
 		RETURN OLD;
 	END;
 	$DEF$ LANGUAGE plpgsql;
-	$EXEC$;
-	
-	EXECUTE $EXEC$
-	CREATE OR REPLACE RULE $EXEC$ || quote_ident(t_name || '__auto_trash') || $EXEC$
-	AS ON DELETE TO $EXEC$ || quote_ident(t_name) || $EXEC$
-	WHERE	status > $EXEC$ || quote_literal(trash_key) || $EXEC$
-	DO INSTEAD
-	UPDATE	 $EXEC$ || quote_ident(t_name) || $EXEC$
-	SET		status = 'trash'
-	WHERE	id = OLD.id;
 	$EXEC$;
 	
 	IF	NOT trigger_exists(t_name || '_01__check_trash')
@@ -68,6 +58,16 @@ BEGIN
 		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__check_trash') || $EXEC$();
 		$EXEC$;
 	END IF;
+	
+	EXECUTE $EXEC$
+	CREATE OR REPLACE RULE $EXEC$ || quote_ident(t_name || '__auto_trash') || $EXEC$
+	AS ON DELETE TO $EXEC$ || quote_ident(t_name) || $EXEC$
+	WHERE	status > $EXEC$ || quote_literal(trash_key) || $EXEC$
+	DO INSTEAD
+	UPDATE	 $EXEC$ || quote_ident(t_name) || $EXEC$
+	SET		status = 'trash'
+	WHERE	id = OLD.id;
+	$EXEC$;
 	
 	RETURN t_name;
 END;

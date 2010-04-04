@@ -73,8 +73,6 @@ COMMENT ON TABLE orders IS E'Order lines
 CREATE OR REPLACE FUNCTION order_lines_clean()
 	RETURNS trigger
 AS $$
-DECLARE
-	c			campaigns;
 BEGIN
 	-- Default name
 	IF	NEW.name IS NULL

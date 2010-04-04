@@ -19,16 +19,20 @@ BEGIN
 		RETURNS TRIGGER
 	AS $DEF$
 	BEGIN
-		NEW.modified := NOW();
+		IF	NEW IS DISTINCT FROM OLD
+		THEN
+			NEW.modified := NOW();
+		END IF;
+		
 		RETURN NEW;
 	END;
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF	NOT trigger_exists(t_name || '_10__modified')
+	IF	NOT trigger_exists(t_name || '_50__modified')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_10__modified') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_50__modified') || $EXEC$
 			BEFORE UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
 		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__modified') || $EXEC$();
 		$EXEC$;

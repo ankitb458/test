@@ -114,6 +114,8 @@ FROM	campaigns;
 \echo '# Cleaning up...'
 \echo
 
+DELETE FROM invoice_lines;
+DELETE FROM invoices;
 DELETE FROM order_lines;
 DELETE FROM orders;
 DELETE FROM products;

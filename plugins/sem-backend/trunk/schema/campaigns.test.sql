@@ -8,15 +8,6 @@ INSERT INTO campaigns DEFAULT VALUES;
 
 INSERT INTO users ( email, password ) VALUES ( 'joe@bar.com', 'joebar' );
 
-SELECT	'Deny adding campaigns to a non-active user:';
-INSERT INTO campaigns ( aff_id )
-SELECT	id
-FROM	users;
-\echo
-
-UPDATE	users
-SET		status = 'inactive';
-
 INSERT INTO campaigns ( aff_id )
 SELECT	id
 FROM	users;
@@ -27,9 +18,8 @@ SELECT	'Allow assigning a campaign to an inactive user',
 		FROM	users
 		);
 
-SELECT	'Deny trashing campaign owner:';
-UPDATE	users
-SET		status = 'trash';
+SELECT	'Deny deleting campaign owner:';
+DELETE FROM users;
 \echo
 
 INSERT INTO products ( init_price, init_comm, rec_price, rec_comm ) VALUES ( 12, 6, 12, 6 );
@@ -43,22 +33,6 @@ SELECT	'Allow creating a promo on an inactive product',
 		init_discount = 6 AND rec_discount = 6
 FROM	campaigns
 WHERE	promo_id IS NOT NULL;
-
-SELECT	'Deny creating a coupon on an inactive product (x2):';
-UPDATE	campaigns
-SET		product_id = products.id,
-		init_discount = 12,
-		rec_discount = 12
-FROM	products
-WHERE	aff_id IS NULL AND promo_id IS NULL;
-\echo
-UPDATE	campaigns
-SET		product_id = products.id,
-		init_discount = 12,
-		rec_discount = 12
-FROM	products
-WHERE	aff_id IS NOT NULL;
-\echo
 
 UPDATE	products
 SET		status = 'future',
@@ -148,6 +122,8 @@ SELECT	'Allow for active coupons on future products',
 \echo '# Cleaning up...'
 \echo
 
+DELETE FROM invoice_lines;
+DELETE FROM invoices;
 DELETE FROM order_lines;
 DELETE FROM orders;
 DELETE FROM products;
