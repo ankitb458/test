@@ -49,7 +49,7 @@ BEGIN
 		NEW.rec_amount := COALESCE(NEW.rec_amount, 0);
 		NEW.init_comm := LEAST(COALESCE(NEW.init_comm, 0), NEW.init_amount);
 		NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, 0), NEW.rec_amount);
-	
+		
 		IF	NEW.order_id IS NOT NULL AND
 			ROW(NEW.init_comm, NEW.rec_comm) = ROW(0, 0)
 		THEN
@@ -242,8 +242,11 @@ BEGIN
 			NEW.init_comm := 0;
 			NEW.rec_comm := 0;
 		ELSE -- Assume a site discount, if any
-			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, _product.init_comm), NEW.init_amount);
-			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, _product.rec_comm), NEW.rec_amount);
+			NEW.init_comm := COALESCE(NEW.init_comm, _product.init_comm);
+			NEW.rec_comm := COALESCE(NEW.rec_comm, _product.rec_comm);
+			
+			NEW.init_comm := LEAST(NEW.init_comm, NEW.init_amount);
+			NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_amount);
 		END IF;
 	ELSE
 		-- Process firesale if any
@@ -281,12 +284,14 @@ BEGIN
 		NEW.rec_amount := COALESCE(NEW.rec_amount, _product.rec_price - NEW.rec_discount);
 		IF	_coupon.aff_id IS NULL
 		THEN
-			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, _product.init_comm), NEW.init_amount);
-			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, _product.rec_comm), NEW.rec_amount);
+			NEW.init_comm := COALESCE(NEW.init_comm, _product.init_comm);
+			NEW.rec_comm := COALESCE(NEW.rec_comm, _product.rec_comm);
 		ELSE
-			NEW.init_comm := LEAST(COALESCE(NEW.init_comm, _product.init_comm - NEW.init_discount), NEW.init_amount);
-			NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, _product.rec_comm - NEW.rec_discount), NEW.rec_amount);
+			NEW.init_comm := COALESCE(NEW.init_comm, _product.init_comm - NEW.init_discount);
+			NEW.rec_comm := COALESCE(NEW.rec_comm, _product.rec_comm - NEW.rec_discount);
 		END IF;
+		NEW.init_comm := LEAST(NEW.init_comm, NEW.init_amount);
+		NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_amount);
 	END IF;
 	
 	-- Fetch interval/count
