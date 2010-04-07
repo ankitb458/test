@@ -10,6 +10,7 @@ CREATE TABLE users (
 	username		varchar(128),
 	password		varchar(60) NOT NULL DEFAULT '',
 	email			email,
+	company			varchar NOT NULL DEFAULT '',
 	nickname		varchar NOT NULL DEFAULT '',
 	firstname		varchar NOT NULL DEFAULT '',
 	lastname		varchar NOT NULL DEFAULT '',
@@ -93,6 +94,8 @@ BEGIN
 			THEN NEW.firstname
 			WHEN NEW.lastname <> ''
 			THEN NEW.lastname
+			WHEN NEW.company <> ''
+			THEN NEW.company
 			ELSE NEW.username
 			END;
 		IF	NEW.name IS NULL
@@ -151,6 +154,7 @@ BEGIN
 			NEW.nickname IS NOT DISTINCT FROM OLD.nickname AND
 			NEW.firstname IS NOT DISTINCT FROM OLD.firstname AND
 			NEW.lastname IS NOT DISTINCT FROM OLD.lastname AND
+			NEW.company IS NOT DISTINCT FROM OLD.company AND
 			NEW.username IS NOT DISTINCT FROM OLD.username AND
 			NEW.email IS NOT DISTINCT FROM OLD.email AND
 			NEW.paypal IS NOT DISTINCT FROM OLD.paypal
@@ -163,6 +167,7 @@ BEGIN
 		|| setweight(to_tsvector(NEW.nickname), 'A')
 		|| setweight(to_tsvector(NEW.firstname), 'A')
 		|| setweight(to_tsvector(NEW.lastname), 'A')
+		|| setweight(to_tsvector(NEW.company), 'A')
 		|| setweight(to_tsvector(COALESCE(NEW.username, '')), 'B');
 	
 	IF	is_email(NEW.email)
