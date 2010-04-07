@@ -15,8 +15,30 @@ CREATE TYPE status_payable AS enum (
  * Payment type
  */
 CREATE TYPE type_payment AS enum (
-	'payment',		-- Credit / order payment
-	'commission'	-- Debit / affiliate commission
+	'payment',
+	'commission'
+	);
+
+/**
+ * Transaction type
+ */
+CREATE TYPE type_transaction AS enum (
+	'invoice',
+	'payment',
+	'cancel',
+	'refund',
+	'reversal'
+	);
+
+/**
+ * Account type
+ */
+CREATE TYPE type_account AS enum (
+	'cash', -- Asset
+	'receivables', -- Asset / Accounts receivable
+	'payables', -- Liability / Accounts payable
+	'revenue', -- Misc Revenue
+	'expense' -- Misc Expense
 	);
 
 /**
@@ -24,8 +46,9 @@ CREATE TYPE type_payment AS enum (
  */
 CREATE TYPE method_payment AS enum (
 	'paypal',
+	'moneybookers',
+	'creditcard',
 	'check',
-	'card',
 	'misc'
 	);
 

@@ -19,9 +19,8 @@ COMMIT;
 \i ./products.test.sql
 \i ./campaigns.test.sql
 \i ./orders.test.sql
---\i ./order-lines.test.sql
 \i ./invoices.test.sql
---\i ./invoice-lines.test.sql
+--\i ./transactions.test.sql
 
 \set VERBOSITY default
 \pset tuples_only off

@@ -64,6 +64,8 @@ WHERE	payment_type = 'commission';
 \echo '# Cleaning up...'
 \echo
 
+-- DELETE FROM transaction_lines;
+-- DELETE FROM transactions;
 DELETE FROM invoice_lines;
 DELETE FROM invoices;
 DELETE FROM order_lines;

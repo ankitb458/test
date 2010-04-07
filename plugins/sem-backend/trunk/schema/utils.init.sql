@@ -19,6 +19,8 @@
 \i ./order-lines.schema.sql
 \i ./invoices.schema.sql
 \i ./invoice-lines.schema.sql
+--\i ./transactions.schema.sql
+--\i ./transaction-lines.schema.sql
 
 \i ./users.procs.sql
 \i ./products.procs.sql
@@ -27,3 +29,5 @@
 \i ./order-lines.procs.sql
 \i ./invoices.procs.sql
 \i ./invoice-lines.procs.sql
+--\i ./transactions.procs.sql
+--\i ./transaction-lines.procs.sql
