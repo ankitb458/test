@@ -10,11 +10,16 @@ CREATE TABLE payment_lines (
 	order_line_id	bigint REFERENCES order_lines(id),
 	parent_id		bigint REFERENCES payment_lines(id),
 	amount			numeric(8,2) NOT NULL,
+	created			datetime NOT NULL DEFAULT NOW(),
+	modified		datetime NOT NULL DEFAULT NOW(),
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_amounts
 		CHECK ( amount >= 0 )
 );
+
+SELECT	timestampable('payment_lines'),
+		trashable('payment_lines');
 
 CREATE INDEX payment_lines_payment_id ON payment_lines(payment_id);
 CREATE INDEX payment_lines_parent_id ON payment_lines(parent_id);

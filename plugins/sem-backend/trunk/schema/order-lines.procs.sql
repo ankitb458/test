@@ -330,6 +330,7 @@ BEGIN
 		IF	NEW.status = OLD.status
 		THEN
 			RETURN NEW;
+		END IF;
 	END IF;
 	
 	SELECT	MAX(status)
