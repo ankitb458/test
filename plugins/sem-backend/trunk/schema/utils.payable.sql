@@ -15,8 +15,8 @@ CREATE TYPE status_payable AS enum (
  * Payment type
  */
 CREATE TYPE type_payment AS enum (
-	'payment',
-	'commission'
+	'order',
+	'comm'
 	);
 
 /**

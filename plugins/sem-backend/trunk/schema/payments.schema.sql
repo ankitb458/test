@@ -1,12 +1,12 @@
 /*
- * Invoices
+ * Payments
  */
-CREATE TABLE invoices (
+CREATE TABLE payments (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	payment_type	type_payment NOT NULL DEFAULT 'payment',
+	payment_type	type_payment NOT NULL DEFAULT 'order',
 	payment_ref		varchar UNIQUE,
 	due_date		datetime NOT NULL DEFAULT NOW(),
 	cleared_date	datetime,
@@ -23,21 +23,21 @@ CREATE TABLE invoices (
 		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) )
 );
 
-SELECT	timestampable('invoices'),
-		searchable('invoices'),
-		trashable('invoices');
+SELECT	timestampable('payments'),
+		searchable('payments'),
+		trashable('payments');
 
-CREATE INDEX invoices_sort ON invoices(payment_type, due_date DESC);
+CREATE INDEX payments_sort ON payments(payment_type, due_date DESC);
 
-COMMENT ON TABLE invoices IS E'Invoices
+COMMENT ON TABLE payments IS E'Payments
 
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay, or late pay...';
 
 /**
- * Clean an invoice before it gets stored.
+ * Clean a payment before it gets stored.
  */
-CREATE OR REPLACE FUNCTION invoices_clean()
+CREATE OR REPLACE FUNCTION payments_clean()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -45,9 +45,9 @@ BEGIN
 	IF	NEW.name IS NULL
 	THEN
 		NEW.name = CASE
-			WHEN NEW.payment_type = 'commission'
+			WHEN NEW.payment_type = 'comm'
 			THEN 'Commissions'
-			ELSE 'Invoice'
+			ELSE 'Payment'
 			END;
 	END IF;
 	
@@ -65,6 +65,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_05_clean
-	BEFORE INSERT OR UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_clean();
+CREATE TRIGGER payments_05_clean
+	BEFORE INSERT OR UPDATE ON payments
+FOR EACH ROW EXECUTE PROCEDURE payments_clean();

@@ -61,7 +61,7 @@ COMMENT ON TABLE orders IS E'Order lines
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay or late pay...
 - init/rec amount/comm/discount are auto-filled if not provided.
-- init/rec amount/comm are used as is in invoices.
+- init/rec amount/comm are used as is in payments.
 - init/rec discount is only stored for reference; it is used nowhere.
 - rec_count gets decremented on cleared_date payments.
 - coupon_id is typically the same as the order''s campaign_id, the

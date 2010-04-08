@@ -1,16 +1,16 @@
 /*
- * Invoice lines
+ * Payment lines
  */
-CREATE TABLE invoice_lines (
+CREATE TABLE payment_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	invoice_id		bigint NOT NULL REFERENCES invoices(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	payment_id		bigint NOT NULL REFERENCES payments(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
-	parent_id		bigint REFERENCES invoice_lines(id) ON UPDATE CASCADE,
+	parent_id		bigint REFERENCES payment_lines(id) ON UPDATE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
-	payment_type	type_payment NOT NULL DEFAULT 'payment',
+	payment_type	type_payment NOT NULL DEFAULT 'order',
 	payment_method	method_payment,
 	payment_ref		varchar UNIQUE,
 	recurring		boolean NOT NULL DEFAULT false,
@@ -34,30 +34,30 @@ CREATE TABLE invoice_lines (
 	CONSTRAINT valid_payment_ref
 		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) ),
 	CONSTRAINT valid_tax
-		CHECK ( payment_type = 'commission' AND due_taxes = 0 OR
-			payment_type <> 'commission' AND due_taxes >= 0 ),
+		CHECK ( payment_type = 'comm' AND due_taxes = 0 OR
+			payment_type <> 'comm' AND due_taxes >= 0 ),
 	CONSTRAINT undefined_behavior
 		CHECK ( due_taxes = 0 AND cleared_taxes = 0 )
 );
 
-SELECT	timestampable('invoice_lines'),
-		searchable('invoice_lines'),
-		trashable('invoice_lines');
+SELECT	timestampable('payment_lines'),
+		searchable('payment_lines'),
+		trashable('payment_lines');
 
-CREATE INDEX invoice_lines_invoice_id ON invoice_lines(payment_type, invoice_id);
-CREATE INDEX invoice_lines_user_id ON invoice_lines(payment_type, invoice_id, user_id);
-CREATE INDEX invoice_lines_parent_id ON invoice_lines(payment_type, parent_id);
-CREATE INDEX invoice_lines_order_line_id ON invoice_lines(payment_type, order_line_id);
+CREATE INDEX payment_lines_payment_id ON payment_lines(payment_type, payment_id);
+CREATE INDEX payment_lines_user_id ON payment_lines(payment_type, payment_id, user_id);
+CREATE INDEX payment_lines_parent_id ON payment_lines(payment_type, parent_id);
+CREATE INDEX payment_lines_order_line_id ON payment_lines(payment_type, order_line_id);
 
-COMMENT ON TABLE invoices IS E'Invoice lines
+COMMENT ON TABLE payments IS E'Payment lines
 
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay, or late pay...';
 
 /**
- * Clean an invoice line before it gets stored.
+ * Clean an payment line before it gets stored.
  */
-CREATE OR REPLACE FUNCTION invoice_lines_clean()
+CREATE OR REPLACE FUNCTION payment_lines_clean()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -74,13 +74,13 @@ BEGIN
 		THEN
 			SELECT	name
 			INTO	NEW.name
-			FROM	invoice_lines
+			FROM	payment_lines
 			WHERE	id = NEW.parent_id;
 		ELSE
 			NEW.name := CASE
-				WHEN NEW.payment_type = 'commission'
-				THEN 'Commission'
-				ELSE 'Invoice'
+				WHEN NEW.payment_type = 'comm'
+				THEN 'comm'
+				ELSE 'Payment'
 				END;
 		END IF;
 	END IF;
@@ -99,6 +99,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_05_clean
-	BEFORE INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_clean();
+CREATE TRIGGER payment_lines_05_clean
+	BEFORE INSERT OR UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_clean();

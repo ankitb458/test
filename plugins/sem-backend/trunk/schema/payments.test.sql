@@ -1,13 +1,13 @@
 \echo
 \echo '#'
-\echo '# Testing invoices'
+\echo '# Testing payments'
 \echo '#'
 \echo
 
-INSERT INTO invoices DEFAULT VALUES;
-INSERT INTO invoice_lines DEFAULT VALUES;
+INSERT INTO payments DEFAULT VALUES;
+INSERT INTO payment_lines DEFAULT VALUES;
 
-DELETE FROM invoices;
+DELETE FROM payments;
 
 INSERT INTO users ( name, email )
 VALUES	( 'Joe', 'joe@bar.com' ),
@@ -29,33 +29,33 @@ FROM	orders,
 		get_user('joe@bar.com') as users,
 		products;
 
-INSERT INTO invoice_lines ( order_line_id )
+INSERT INTO payment_lines ( order_line_id )
 SELECT	id
 FROM	order_lines;
 
-UPDATE	invoice_lines
+UPDATE	payment_lines
 SET		cleared_amount = due_amount,
 		status = 'cleared';
 
-SELECT	'Delegate invoice_line status',
+SELECT	'Delegate payment_line status',
 		status = 'cleared'
-FROM	invoice_lines
-WHERE	payment_type = 'payment';
+FROM	payment_lines
+WHERE	payment_type = 'order';
 
-SELECT	'Handle commissions for cleared invoices',
+SELECT	'Handle commissions for cleared payments',
 		status = 'pending'
-FROM	invoice_lines
-WHERE	payment_type = 'commission';
+FROM	payment_lines
+WHERE	payment_type = 'comm';
 
-UPDATE	invoice_lines
+UPDATE	payment_lines
 SET		cleared_amount = 0,
 		status = 'reversed'
-WHERE	payment_type = 'payment';
+WHERE	payment_type = 'order';
 
-SELECT	'Handle commissions for reversed invoices',
+SELECT	'Handle commissions for reversed payments',
 		status = 'cancelled'
-FROM	invoice_lines
-WHERE	payment_type = 'commission';
+FROM	payment_lines
+WHERE	payment_type = 'comm';
 
 -- clean up
 /*
@@ -66,8 +66,8 @@ WHERE	payment_type = 'commission';
 
 -- DELETE FROM transaction_lines;
 -- DELETE FROM transactions;
-DELETE FROM invoice_lines;
-DELETE FROM invoices;
+DELETE FROM payment_lines;
+DELETE FROM payments;
 DELETE FROM order_lines;
 DELETE FROM orders;
 DELETE FROM products;

@@ -1,37 +1,37 @@
 /**
- * Sanitizes an invoice's amounts based on the order line, if any
+ * Sanitizes a payment line's amounts based on the order line, if any
  */
-CREATE OR REPLACE FUNCTION invoice_lines_sanitize_financials()
+CREATE OR REPLACE FUNCTION payment_lines_sanitize_financials()
 	RETURNS trigger
 AS $$
 DECLARE
 	_order_line	record;
 	_user		record;
 BEGIN
-	-- Invoice id and payment type
-	IF	NEW.invoice_id IS NOT NULL
+	-- Payment id and type
+	IF	NEW.payment_id IS NOT NULL
 	THEN
 		IF	NEW.payment_type IS NULL
 		THEN
 			SELECT	payment_type
 			INTO	NEW.payment_type
-			FROM	invoices
-			WHERE	id = NEW.invoice_id;
+			FROM	payments
+			WHERE	id = NEW.payment_id;
 		END IF;
-	ELSEIF NEW.invoice_id IS NULL
+	ELSEIF NEW.payment_id IS NULL
 	THEN
 		IF	NEW.payment_type IS NOT NULL
 		THEN
-			INSERT INTO invoices ( payment_type )
+			INSERT INTO payments ( payment_type )
 			VALUES ( NEW.payment_type )
 			RETURNING id
-			INTO	NEW.invoice_id;
+			INTO	NEW.payment_id;
 		ELSE
-			INSERT INTO invoices
+			INSERT INTO payments
 			DEFAULT VALUES
 			RETURNING id,
 					payment_type
-			INTO	NEW.invoice_id,
+			INTO	NEW.payment_id,
 					NEW.payment_type;
 		END IF;
 	END IF;
@@ -43,20 +43,20 @@ BEGIN
 	ELSEIF NEW.due_amount IS NULL
 	THEN
 		SELECT	CASE
-				WHEN NEW.payment_type = 'payment' AND NOT NEW.recurring
+				WHEN NEW.payment_type = 'order' AND NOT NEW.recurring
 				THEN init_amount
-				WHEN NEW.payment_type = 'commission' AND NOT NEW.recurring
+				WHEN NEW.payment_type = 'comm' AND NOT NEW.recurring
 				THEN init_comm
-				WHEN NEW.payment_type = 'payment' AND NEW.recurring
+				WHEN NEW.payment_type = 'order' AND NEW.recurring
 				THEN rec_amount
-				WHEN NEW.payment_type = 'commission' AND NEW.recurring
+				WHEN NEW.payment_type = 'comm' AND NEW.recurring
 				THEN rec_comm
 				ELSE NULL -- undefined behavior
 				END,
 				CASE
-				WHEN NEW.payment_type = 'payment'
+				WHEN NEW.payment_type = 'order'
 				THEN orders.user_id
-				WHEN NEW.payment_type = 'commission'
+				WHEN NEW.payment_type = 'comm'
 				THEN orders.aff_id
 				ELSE NULL -- undefined behavior
 				END
@@ -82,14 +82,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_02_sanitize_financials
-	BEFORE INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_sanitize_financials();
+CREATE TRIGGER payment_lines_02_sanitize_financials
+	BEFORE INSERT OR UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_sanitize_financials();
 
 /**
- * Forward status changes to invoices
+ * Forward status changes to payments
  */
-CREATE OR REPLACE FUNCTION invoice_lines_delegate_status()
+CREATE OR REPLACE FUNCTION payment_lines_delegate_status()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -97,22 +97,22 @@ DECLARE
 BEGIN
 	IF	TG_OP = 'UPDATE'
 	THEN
-		IF	ROW(NEW.status, NEW.invoice_id) = ROW(OLD.status, OLD.invoice_id)
+		IF	ROW(NEW.status, NEW.payment_id) = ROW(OLD.status, OLD.payment_id)
 		THEN
 			RETURN NEW;
-		ELSEIF NEW.invoice_id <> OLD.invoice_id
+		ELSEIF NEW.payment_id <> OLD.payment_id
 		THEN
-			-- Also do this for the old invoice
+			-- Also do this for the old payment
 			SELECT	MAX(status)
 			INTO	new_status
-			FROM	invoice_lines
-			WHERE	invoice_id = OLD.invoice_id;
+			FROM	payment_lines
+			WHERE	payment_id = OLD.payment_id;
 			
 			new_status := COALESCE(new_status, 'trash');
 			
-			UPDATE	invoices
+			UPDATE	payments
 			SET		status = new_status
-			WHERE	id = OLD.invoice_id
+			WHERE	id = OLD.payment_id
 			AND		status <> new_status;
 			
 			-- RAISE NOTICE '%, %', TG_NAME, FOUND;
@@ -121,12 +121,12 @@ BEGIN
 	
 	SELECT	MAX(status)
 	INTO	new_status
-	FROM	invoice_lines
-	WHERE	invoice_id = NEW.invoice_id;
+	FROM	payment_lines
+	WHERE	payment_id = NEW.payment_id;
 	
-	UPDATE	invoices
+	UPDATE	payments
 	SET		status = new_status
-	WHERE	id = NEW.invoice_id
+	WHERE	id = NEW.payment_id
 	AND		status <> new_status;
 	
 	-- RAISE NOTICE '%, %', TG_NAME, FOUND;
@@ -134,23 +134,23 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_10_delegate_status
-	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_status();
+CREATE TRIGGER payment_lines_10_delegate_status
+	AFTER INSERT OR UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_status();
 
 /**
  * Handles commissions when payments are cleared or cancelled
  */
-CREATE OR REPLACE FUNCTION invoice_lines_delegate_commissions()
+CREATE OR REPLACE FUNCTION payment_lines_delegate_commissions()
 	RETURNS trigger
 AS $$
 DECLARE
 	_aff_id			bigint;
 	_aff_comm		numeric;
-	_invoice_id		bigint;
+	_payment_id		bigint;
 	_due_date		datetime;
 BEGIN
-	IF	NEW.payment_type <> 'payment' OR
+	IF	NEW.payment_type <> 'order' OR
 		NEW.order_line_id IS NULL
 	THEN
 		RETURN NEW;
@@ -164,10 +164,10 @@ BEGIN
 			-- Todo:
 			-- use transactions to process the diff between cleared and due amounts
 			-- when a commission is paid too early and a refund occurs
-			UPDATE	invoice_lines
+			UPDATE	payment_lines
 			SET		status = 'cancelled'
 			WHERE	parent_id = NEW.id
-			AND		payment_type = 'commission'
+			AND		payment_type = 'comm'
 			AND		status = 'pending';
 			
 			RETURN NEW;
@@ -211,48 +211,48 @@ BEGIN
 	END IF;
 	
 	SELECT	id
-	INTO	_invoice_id
-	FROM	invoices
-	WHERE	payment_type = 'commission'
+	INTO	_payment_id
+	FROM	payments
+	WHERE	payment_type = 'comm'
 	AND		due_date = _due_date
 	AND		status = 'pending'
 	LIMIT 1;
 	
 	IF NOT FOUND
 	THEN
-		INSERT INTO invoices (
+		INSERT INTO payments (
 				payment_type,
 				due_date
 				)
 		VALUES	(
-				'commission',
+				'comm',
 				_due_date
 				)
 		RETURNING id
-		INTO	_invoice_id;
+		INTO	_payment_id;
 	END IF;
 	
 	IF	EXISTS (
 		SELECT	1
-		FROM	invoice_lines
-		WHERE	payment_type = 'commission'
+		FROM	payment_lines
+		WHERE	payment_type = 'comm'
 		AND		parent_id = NEW.id
 		)
 	THEN
-		UPDATE	invoice_lines
+		UPDATE	payment_lines
 		SET		status = 'pending',
-				invoice_id = _invoice_id,
+				payment_id = _payment_id,
 				due_date = _due_date
-		WHERE	payment_type = 'commission'
+		WHERE	payment_type = 'comm'
 		AND		parent_id = NEW.id
 		AND		status <> 'cleared'
-		AND 	( invoice_id <> _invoice_id OR
+		AND 	( payment_id <> _payment_id OR
 				due_date <> _due_date );
 	ELSE
-		INSERT INTO invoice_lines (
+		INSERT INTO payment_lines (
 				status,
 				user_id,
-				invoice_id,
+				payment_id,
 				parent_id,
 				payment_type,
 				payment_method,
@@ -261,9 +261,9 @@ BEGIN
 				)
 		SELECT	'pending',
 				_aff_id,
-				_invoice_id,
+				_payment_id,
 				NEW.id,
-				'commission',
+				'comm',
 				payment_method,
 				_due_date,
 				_aff_comm
@@ -274,6 +274,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_20_delegate_commissions
-	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_commissions();
+CREATE TRIGGER payment_lines_20_delegate_commissions
+	AFTER INSERT OR UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_commissions();
