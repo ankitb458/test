@@ -74,8 +74,10 @@ BEGIN
 		FROM	payment_lines
 		JOIN	payments
 		ON		payments.id = payment_lines.payment_id
+		WHERE	payment_lines.order_line_id = NEW.order_line_id
 		AND		payments.payment_type = 'order'
-		WHERE	payment_lines.order_line_id = NEW.order_line_id;
+				-- Ignore drafts and pending payments unless it's the initial one
+		AND		( payments.status > 'pending' OR payment_lines.parent_id IS NULL );
 
 		UPDATE	order_lines
 		SET		status = _status
