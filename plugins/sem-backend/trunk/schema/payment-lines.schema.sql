@@ -6,9 +6,9 @@ CREATE TABLE payment_lines (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	payment_id		bigint NOT NULL REFERENCES payments(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,
-	parent_id		bigint REFERENCES payment_lines(id) ON UPDATE CASCADE,
+	payment_id		bigint NOT NULL REFERENCES payments(id) ON DELETE CASCADE,
+	order_line_id	bigint REFERENCES order_lines(id),
+	parent_id		bigint REFERENCES payment_lines(id),
 	amount			numeric(8,2) NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),

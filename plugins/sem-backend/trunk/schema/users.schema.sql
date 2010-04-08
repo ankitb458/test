@@ -20,7 +20,7 @@ CREATE TABLE users (
 	tax_docs		boolean NOT NULL DEFAULT false,
 	payment_method	method_payment NOT NULL DEFAULT 'paypal',
 	paypal			email,
-	ref_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
+	ref_id			bigint REFERENCES users(id),
 	ip				inet,
 	token			uuid,
 	created			datetime NOT NULL DEFAULT NOW(),
