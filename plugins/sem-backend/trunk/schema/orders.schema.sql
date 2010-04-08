@@ -80,3 +80,22 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER orders_05_clean
 	BEFORE INSERT OR UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_clean();
+
+/**
+ * Process read-only fields
+ */
+CREATE OR REPLACE FUNCTION orders_readonly()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	ROW(NEW.id) IS DISTINCT FROM ROW(OLD.id)
+	THEN
+		RAISE EXCEPTION 'Can''t edit readonly field in orders.id = %', NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER orders_01_readonly
+	AFTER UPDATE ON orders
+FOR EACH ROW EXECUTE PROCEDURE orders_readonly();

@@ -198,6 +198,25 @@ CREATE TRIGGER users_20_tsv
 FOR EACH ROW EXECUTE PROCEDURE users_tsv();
 
 /**
+ * Process read-only fields
+ */
+CREATE OR REPLACE FUNCTION users_readonly()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	ROW(NEW.id) IS DISTINCT FROM ROW(OLD.id)
+	THEN
+		RAISE EXCEPTION 'Can''t edit readonly field in users.id = %', NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER users_01_readonly
+	AFTER UPDATE ON users
+FOR EACH ROW EXECUTE PROCEDURE users_readonly();
+
+/**
  * Retrieve a user based on its email or username
  */
 CREATE OR REPLACE FUNCTION get_user(varchar)

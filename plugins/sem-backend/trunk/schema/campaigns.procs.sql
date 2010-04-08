@@ -122,31 +122,6 @@ CREATE TRIGGER campaigns_03_sanitize_coupon
 FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_coupon();
 
 /**
- * Prevents promo_id and product_id from being updated when relevant.
- *
- * Insert is prevented by the unique index.
- */
-CREATE OR REPLACE FUNCTION campaigns_check_update_promo()
-	RETURNS trigger
-AS $$
-BEGIN
-	-- IS DISTINCT FROM would disallow SQL to propagate an id change
-	IF	NEW.promo_id IS NULL AND OLD.promo_id IS NOT NULL OR
-		NEW.promo_id IS NOT NULL AND OLD.promo_id IS NULL
-	THEN
-		RAISE EXCEPTION 'Cannot change promo_id on campaigns.id = %.',
-			NEW.id;
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE CONSTRAINT TRIGGER campaigns_01_check_update_promo
-	AFTER UPDATE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_check_update_promo();
-
-/**
  * Prevents promos from being deleted before the product it is tied to.
  */
 CREATE OR REPLACE FUNCTION campaigns_check_delete_promo()

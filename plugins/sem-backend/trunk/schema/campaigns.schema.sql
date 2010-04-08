@@ -180,3 +180,22 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER campaigns_05_clean
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();
+
+/**
+ * Process read-only fields
+ */
+CREATE OR REPLACE FUNCTION campaigns_readonly()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	ROW(NEW.id, NEW.promo_id) IS DISTINCT FROM ROW(OLD.id, OLD.promo_id)
+	THEN
+		RAISE EXCEPTION 'Can''t edit readonly field in campaigns.id = %', NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER campaigns_01_readonly
+	AFTER UPDATE ON campaigns
+FOR EACH ROW EXECUTE PROCEDURE campaigns_readonly();

@@ -68,3 +68,22 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER payment_lines_05_clean
 	BEFORE INSERT OR UPDATE ON payment_lines
 FOR EACH ROW EXECUTE PROCEDURE payment_lines_clean();
+
+/**
+ * Process read-only fields
+ */
+CREATE OR REPLACE FUNCTION payment_lines_readonly()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	ROW(NEW.id, NEW.payment_id) IS DISTINCT FROM ROW(OLD.id, OLD.payment_id)
+	THEN
+		RAISE EXCEPTION 'Can''t edit readonly field in payment_lines.id = %', NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER payment_lines_01_readonly
+	AFTER UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_readonly();

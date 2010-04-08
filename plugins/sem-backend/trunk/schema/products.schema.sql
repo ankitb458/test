@@ -8,13 +8,13 @@ CREATE TABLE products (
 	status			status_activatable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	sku				varchar UNIQUE,
+	currency		currency_code NOT NULL DEFAULT 'USD',
 	init_price		numeric(8,2) NOT NULL DEFAULT 0,
 	init_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_price		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_interval	interval,
 	rec_count		int,
-	currency		currency_code NOT NULL DEFAULT 'USD',
 	launch_date		datetime,
 	expire_date		datetime,
 	stock			int,
@@ -120,3 +120,22 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER products_20_tsv
 	BEFORE INSERT OR UPDATE ON products
 FOR EACH ROW EXECUTE PROCEDURE products_tsv();
+
+/**
+ * Process read-only fields
+ */
+CREATE OR REPLACE FUNCTION products_readonly()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	ROW(NEW.id) IS DISTINCT FROM ROW(OLD.id)
+	THEN
+		RAISE EXCEPTION 'Can''t edit readonly field in products.id = %', NEW.id;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER products_01_readonly
+	AFTER UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_readonly();
