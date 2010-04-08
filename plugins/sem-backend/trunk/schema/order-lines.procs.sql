@@ -327,26 +327,9 @@ DECLARE
 BEGIN
 	IF	TG_OP = 'UPDATE'
 	THEN
-		IF	ROW(NEW.status, NEW.order_id) = ROW(OLD.status, OLD.order_id)
+		IF	NEW.status = OLD.status
 		THEN
 			RETURN NEW;
-		ELSEIF NEW.order_id <> OLD.order_id
-		THEN
-			-- Also do this for the old order
-			SELECT	MAX(status)
-			INTO	_status
-			FROM	order_lines
-			WHERE	order_id = OLD.order_id;
-			
-			_status := COALESCE(_status, 'trash');
-			
-			UPDATE	orders
-			SET		status = _status
-			WHERE	id = OLD.order_id
-			AND		status <> _status;
-			
-			-- RAISE NOTICE '%, %', TG_NAME, FOUND;
-		END IF;
 	END IF;
 	
 	SELECT	MAX(status)
