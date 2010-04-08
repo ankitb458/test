@@ -5,7 +5,6 @@
 \echo
 
 INSERT INTO payments DEFAULT VALUES;
-INSERT INTO payment_lines DEFAULT VALUES;
 
 DELETE FROM payments;
 
@@ -29,33 +28,9 @@ FROM	orders,
 		get_user('joe@bar.com') as users,
 		products;
 
-INSERT INTO payment_lines ( order_line_id )
+INSERT INTO payments ( order_id )
 SELECT	id
-FROM	order_lines;
-
-UPDATE	payment_lines
-SET		cleared_amount = due_amount,
-		status = 'cleared';
-
-SELECT	'Delegate payment_line status',
-		status = 'cleared'
-FROM	payment_lines
-WHERE	payment_type = 'order';
-
-SELECT	'Handle commissions for cleared payments',
-		status = 'pending'
-FROM	payment_lines
-WHERE	payment_type = 'comm';
-
-UPDATE	payment_lines
-SET		cleared_amount = 0,
-		status = 'reversed'
-WHERE	payment_type = 'order';
-
-SELECT	'Handle commissions for reversed payments',
-		status = 'cancelled'
-FROM	payment_lines
-WHERE	payment_type = 'comm';
+FROM	orders;
 
 -- clean up
 /*

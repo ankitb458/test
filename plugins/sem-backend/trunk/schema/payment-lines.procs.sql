@@ -5,8 +5,9 @@ CREATE OR REPLACE FUNCTION payment_lines_sanitize_financials()
 	RETURNS trigger
 AS $$
 DECLARE
+	_payment	record;
 	_order_line	record;
-	_user		record;
+	_user_id	bigint;
 BEGIN
 	-- Payment id and type
 	IF	NEW.payment_id IS NOT NULL
@@ -61,7 +62,7 @@ BEGIN
 				ELSE NULL -- undefined behavior
 				END
 		INTO	NEW.due_amount,
-				NEW.user_id
+				_user_id
 		FROM	order_lines
 		JOIN	orders
 		ON		orders.id = order_lines.order_id
@@ -82,9 +83,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER payment_lines_02_sanitize_financials
-	BEFORE INSERT OR UPDATE ON payment_lines
-FOR EACH ROW EXECUTE PROCEDURE payment_lines_sanitize_financials();
+--CREATE TRIGGER payment_lines_02_sanitize_financials
+--	BEFORE INSERT OR UPDATE ON payment_lines
+--FOR EACH ROW EXECUTE PROCEDURE payment_lines_sanitize_financials();
 
 /**
  * Forward status changes to payments
@@ -134,9 +135,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER payment_lines_10_delegate_status
-	AFTER INSERT OR UPDATE ON payment_lines
-FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_status();
+--CREATE TRIGGER payment_lines_10_delegate_status
+--	AFTER INSERT OR UPDATE ON payment_lines
+--FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_status();
 
 /**
  * Handles commissions when payments are cleared or cancelled
@@ -274,6 +275,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER payment_lines_20_delegate_commissions
-	AFTER INSERT OR UPDATE ON payment_lines
-FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_commissions();
+--CREATE TRIGGER payment_lines_20_delegate_commissions
+--	AFTER INSERT OR UPDATE ON payment_lines
+--FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_commissions();

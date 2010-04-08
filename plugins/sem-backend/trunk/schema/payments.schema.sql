@@ -7,9 +7,14 @@ CREATE TABLE payments (
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	payment_type	type_payment NOT NULL DEFAULT 'order',
+	payment_method	method_payment,
 	payment_ref		varchar UNIQUE,
+	order_id		bigint REFERENCES orders(id) ON UPDATE CASCADE,
+	user_id			bigint REFERENCES users(id) ON UPDATE CASCADE,
 	due_date		datetime NOT NULL DEFAULT NOW(),
+	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
+	cleared_amount	numeric(8,2) NOT NULL DEFAULT 0,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
@@ -19,8 +24,12 @@ CREATE TABLE payments (
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
+	CONSTRAINT valid_payment_method
+		CHECK ( payment_ref IS NULL OR payment_method IS NOT NULL ),
 	CONSTRAINT valid_payment_ref
-		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) )
+		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) ),
+	CONSTRAINT valid_amounts
+		CHECK ( due_amount >= 0 AND cleared_amount >= 0 )
 );
 
 SELECT	timestampable('payments'),
@@ -28,6 +37,8 @@ SELECT	timestampable('payments'),
 		trashable('payments');
 
 CREATE INDEX payments_sort ON payments(payment_type, due_date DESC);
+CREATE INDEX payments_user_id ON payments(payment_type, user_id, due_date DESC);
+CREATE INDEX payments_order_id ON payments(payment_type, order_id, due_date DESC);
 
 COMMENT ON TABLE payments IS E'Payments
 
