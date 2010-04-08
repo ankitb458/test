@@ -27,6 +27,9 @@ BEGIN
 	FROM	payment_lines
 	WHERE	payment_id = NEW.payment_id;
 	
+	_status := COALESCE(_status, 'trash');
+	_amount := COALESCE(_amount, 0);
+	
 	UPDATE	payments
 	SET		status = _status,
 			due_amount = _amount
@@ -66,7 +69,7 @@ BEGIN
 		SELECT	1
 		FROM	payments
 		WHERE	id = NEW.payment_id
-		AND		payment_type = 'order'
+		AND		order_id IS NOT NULL
 		)
 	THEN
 		SELECT	MIN(payment_lines.status)
@@ -75,10 +78,10 @@ BEGIN
 		JOIN	payments
 		ON		payments.id = payment_lines.payment_id
 		WHERE	payment_lines.order_line_id = NEW.order_line_id
-		AND		payments.payment_type = 'order'
+		AND		payments.order_id IS NULL
 				-- Ignore drafts and pending payments unless it's the initial one
 		AND		( payments.status > 'pending' OR payment_lines.parent_id IS NULL );
-
+		
 		UPDATE	order_lines
 		SET		status = _status
 		WHERE	id = NEW.order_line_id

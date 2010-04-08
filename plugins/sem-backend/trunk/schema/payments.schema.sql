@@ -6,7 +6,6 @@ CREATE TABLE payments (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	payment_type	type_payment NOT NULL DEFAULT 'order',
 	payment_method	method_payment,
 	payment_ref		varchar UNIQUE,
 	order_id		bigint REFERENCES orders(id),
@@ -24,8 +23,6 @@ CREATE TABLE payments (
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
-	CONSTRAINT valid_payment_type
-		CHECK ( order_id IS NULL OR payment_type = 'order' ),
 	CONSTRAINT valid_payment_method
 		CHECK ( payment_ref IS NULL OR payment_method IS NOT NULL ),
 	CONSTRAINT valid_payment_ref
@@ -38,9 +35,9 @@ SELECT	timestampable('payments'),
 		searchable('payments'),
 		trashable('payments');
 
-CREATE INDEX payments_sort ON payments(payment_type, due_date DESC);
-CREATE INDEX payments_user_id ON payments(payment_type, user_id, due_date DESC);
-CREATE INDEX payments_order_id ON payments(payment_type, order_id, due_date DESC);
+CREATE INDEX payments_sort ON payments(due_date DESC);
+CREATE INDEX payments_user_id ON payments(order_id, user_id, due_date DESC);
+CREATE INDEX payments_order_id ON payments(order_id, due_date DESC);
 
 COMMENT ON TABLE payments IS E'Payments
 
@@ -58,9 +55,9 @@ BEGIN
 	IF	NEW.name IS NULL
 	THEN
 		NEW.name = CASE
-			WHEN NEW.payment_type = 'comm'
+			WHEN NEW.order_id IS NULL
 			THEN 'Commissions'
-			ELSE 'Payment'
+			ELSE 'Order'
 			END;
 	END IF;
 	
@@ -89,7 +86,7 @@ CREATE OR REPLACE FUNCTION payments_readonly()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.id, NEW.payment_type) IS DISTINCT FROM ROW(OLD.id, OLD.payment_type)
+	IF	ROW(NEW.id, NEW.order_id) IS DISTINCT FROM ROW(OLD.id, NEW.order_id)
 	THEN
 		RAISE EXCEPTION 'Can''t edit readonly field in payments.id = %', NEW.id;
 	END IF;

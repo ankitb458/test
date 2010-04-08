@@ -56,7 +56,7 @@ BEGIN
 			WHERE	id = NEW.parent_id;
 		ELSE
 			SELECT	CASE
-					WHEN payment_type = 'comm'
+					WHEN order_id IS NULL
 					THEN 'Commission'
 					ELSE 'Order'
 					END

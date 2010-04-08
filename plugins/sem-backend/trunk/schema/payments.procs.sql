@@ -63,6 +63,12 @@ BEGIN
 				( order_lines.rec_count IS NULL OR order_lines.rec_count > 0 )
 			);
 	
+	IF	NOT FOUND
+	THEN
+		RAISE EXCEPTION 'Nothing to pay in payments.id = % for orders.id = %',
+			NEW.id, NEW.order_id;
+	END IF;
+	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 

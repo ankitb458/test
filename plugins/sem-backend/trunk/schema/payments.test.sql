@@ -38,7 +38,6 @@ FROM	orders;
 
 SELECT	payments.id,
 		payments.status,
-		payments.payment_type,
 		payments.user_id,
 		payments.order_id,
 		payments.due_date::date,
@@ -52,6 +51,7 @@ JOIN	payment_lines
 ON		payment_lines.payment_id = payments.id
 ORDER BY payments.id,
 		payment_lines.id;
+
 
 -- clean up
 /*
