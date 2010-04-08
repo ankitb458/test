@@ -56,34 +56,9 @@ BEGIN
 		RETURN NEW;
 	ELSEIF TG_OP = 'UPDATE'
 	THEN
-		IF	ROW(NEW.status, NEW.order_line_id) IS NOT DISTINCT FROM ROW(OLD.status, OLD.order_line_id)
+		IF	NEW.status = OLD.status
 		THEN
 			RETURN NEW;
-		END IF;
-		
-		IF	NEW.order_line_id IS DISTINCT FROM OLD.order_line_id AND
-			OLD.order_line_id IS NOT NULL
-		THEN
-			IF	EXISTS(
-				SELECT	1
-				FROM	payments
-				WHERE	id = OLD.payment_id
-				AND		payment_type = 'order'
-				)
-			THEN
-				SELECT	MIN(payment_lines.status)
-				INTO	_status
-				FROM	payment_lines
-				JOIN	payments
-				ON		payments.id = payment_lines.payment_id
-				AND		payments.payment_type = 'order'
-				WHERE	payment_lines.order_line_id = OLD.order_line_id;
-
-				UPDATE	order_lines
-				SET		status = _status
-				WHERE	id = OLD.order_line_id
-				AND		status <> _status;
-			END IF;
 		END IF;
 	END IF;
 	

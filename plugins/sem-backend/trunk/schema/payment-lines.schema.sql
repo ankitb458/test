@@ -76,7 +76,9 @@ CREATE OR REPLACE FUNCTION payment_lines_readonly()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.id, NEW.payment_id) IS DISTINCT FROM ROW(OLD.id, OLD.payment_id)
+	IF	ROW(NEW.id, NEW.payment_id, NEW.order_line_id, NEW.parent_id)
+		IS DISTINCT FROM
+		ROW(OLD.id, OLD.payment_id, OLD.order_line_id, OLD.parent_id)
 	THEN
 		RAISE EXCEPTION 'Can''t edit readonly field in payment_lines.id = %', NEW.id;
 	END IF;
