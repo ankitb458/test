@@ -10,33 +10,9 @@ DECLARE
 BEGIN
 	IF	TG_OP = 'UPDATE'
 	THEN
-		IF	ROW(NEW.status, NEW.payment_id, NEW.amount) = ROW(OLD.status, OLD.payment_id, OLD.amount)
+		IF	ROW(NEW.status, NEW.amount) = ROW(OLD.status, OLD.amount)
 		THEN
 			RETURN NEW;
-		ELSEIF NEW.payment_id <> OLD.payment_id
-		THEN
-			-- Also do this for the old payment
-			SELECT	MAX(status),
-					SUM(CASE
-					WHEN status IN ('pending', 'cleared')
-					THEN amount
-					ELSE 0
-					END)
-			INTO	_status,
-					_amount
-			FROM	payment_lines
-			WHERE	payment_id = OLD.payment_id;
-			
-			_status := COALESCE(_status, 'trash');
-			_amount := COALESCE(_amount, 0);
-			
-			UPDATE	payments
-			SET		status = _status,
-					due_amount = _amount
-			WHERE	id = OLD.payment_id
-			AND		( status <> _status OR due_amount <> _amount );
-			
-			-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 		END IF;
 	END IF;
 	
