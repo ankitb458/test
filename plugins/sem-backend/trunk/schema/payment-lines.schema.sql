@@ -4,6 +4,7 @@
 CREATE TABLE payment_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
+	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	payment_id		bigint NOT NULL REFERENCES payments(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id) ON UPDATE CASCADE,

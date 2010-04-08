@@ -323,7 +323,7 @@ CREATE OR REPLACE FUNCTION order_lines_delegate_status()
 	RETURNS trigger
 AS $$
 DECLARE
-	new_status	status_payable;
+	_status		status_payable;
 BEGIN
 	IF	TG_OP = 'UPDATE'
 	THEN
@@ -334,30 +334,30 @@ BEGIN
 		THEN
 			-- Also do this for the old order
 			SELECT	MAX(status)
-			INTO	new_status
+			INTO	_status
 			FROM	order_lines
 			WHERE	order_id = OLD.order_id;
 			
-			new_status := COALESCE(new_status, 'trash');
+			_status := COALESCE(_status, 'trash');
 			
 			UPDATE	orders
-			SET		status = new_status
+			SET		status = _status
 			WHERE	id = OLD.order_id
-			AND		status <> new_status;
+			AND		status <> _status;
 			
 			-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 		END IF;
 	END IF;
 	
 	SELECT	MAX(status)
-	INTO	new_status
+	INTO	_status
 	FROM	order_lines
 	WHERE	order_id = NEW.order_id;
 	
 	UPDATE	orders
-	SET		status = new_status
+	SET		status = _status
 	WHERE	id = NEW.order_id
-	AND		status <> new_status;
+	AND		status <> _status;
 	
 	-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 	

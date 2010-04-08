@@ -28,9 +28,30 @@ FROM	orders,
 		get_user('joe@bar.com') as users,
 		products;
 
-INSERT INTO payments ( order_id )
-SELECT	id
+INSERT INTO payments (
+		status,
+		order_id
+		)
+SELECT	'pending',
+		id
 FROM	orders;
+
+SELECT	payments.id,
+		payments.status,
+		payments.payment_type,
+		payments.user_id,
+		payments.order_id,
+		payments.due_date::date,
+		payment_lines.id,
+		payment_lines.status,
+		payment_lines.order_line_id,
+		payment_lines.parent_id,
+		payment_lines.amount
+FROM	payments
+JOIN	payment_lines
+ON		payment_lines.payment_id = payments.id
+ORDER BY payments.id,
+		payment_lines.id;
 
 -- clean up
 /*
