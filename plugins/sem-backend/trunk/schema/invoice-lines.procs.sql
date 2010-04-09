@@ -48,11 +48,12 @@ FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_invoice_details();
 /**
  * Delegates the status for order lines
  */
-CREATE OR REPLACE FUNCTION invoice_lines_delegate_order_details()
+CREATE OR REPLACE FUNCTION invoice_lines_delegate_order_line_details()
 	RETURNS trigger
 AS $$
 DECLARE
 	_status		status_payable;
+	_offset		int := 0;
 BEGIN
 	IF	NEW.order_line_id IS NULL
 	THEN
@@ -82,8 +83,27 @@ BEGIN
 				-- Ignore drafts and pending invoices unless it's the initial one
 		AND		( invoices.status > 'pending' OR invoice_lines.parent_id IS NULL );
 		
+		IF	NEW.parent_id IS NOT NULL
+		THEN
+			IF	TG_OP = 'INSERT'
+			THEN
+				IF	NEW.status = 'cleared'
+				THEN
+					_offset := -1
+				END IF;
+			ELSE
+				IF	NEW.status = 'cleared' AND OLD.status <> 'cleared'
+				THEN
+					_offset := -1;
+				ELSEIF NEW.status <> 'cleared' AND OLD.status = 'cleared'
+					_offset := 1;
+				END IF;
+			END IF;
+		END IF;
+		
 		UPDATE	order_lines
-		SET		status = _status
+		SET		status = _status,
+				rec_count = rec_count + _offset
 		WHERE	id = NEW.order_line_id
 		AND		status <> _status;
 		
@@ -93,9 +113,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_20_delegate_order_details
+CREATE TRIGGER invoice_lines_20_delegate_order_line_details
 	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_order_details();
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_order_line_details();
 
 /*
 	-- Extract the commission due date
