@@ -137,8 +137,8 @@ BEGIN
 	
 	SELECT	CASE
 			WHEN NEW.parent_id IS NULL
-			THEN init_comm
-			ELSE rec_comm
+			THEN quantity * init_comm
+			ELSE quantity * rec_comm
 			END
 	INTO	_comm
 	FROM	order_lines
