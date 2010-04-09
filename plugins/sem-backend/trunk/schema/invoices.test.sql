@@ -98,7 +98,7 @@ SET		status = 'reversed',
 WHERE	order_id IS NOT NULL;
 
 SELECT	'Keep a trace of unbalanced payments on reversed commissions',
-		cleared_amount <> 0
+		cleared_amount = 6
 FROM	invoices
 WHERE	order_id IS NULL;
 
