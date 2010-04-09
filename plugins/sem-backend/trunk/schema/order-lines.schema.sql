@@ -23,8 +23,6 @@ CREATE TABLE order_lines (
 	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
-	memo			text NOT NULL DEFAULT '',
-	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_amounts
@@ -47,7 +45,6 @@ CREATE TABLE order_lines (
 
 SELECT	timestampable('order_lines'),
 		repeatable('order_lines'),
-		searchable('order_lines'),
 		trashable('order_lines');
 
 CREATE INDEX order_lines_order_id ON order_lines(order_id);
@@ -61,9 +58,9 @@ COMMENT ON TABLE orders IS E'Order lines
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay or late pay...
 - init/rec amount/comm/discount are auto-filled if not provided.
-- init/rec amount/comm are used as is in payments.
+- init/rec amount/comm are used as is in invoices.
 - init/rec discount is only stored for reference; it is used nowhere.
-- rec_count gets decremented on cleared_date payments.
+- rec_count gets decremented on cleared_date invoices.
 - coupon_id is typically the same as the order''s campaign_id, the
   exception would be in the event of a site-wide promo.';
 

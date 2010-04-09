@@ -19,7 +19,7 @@ COMMIT;
 \i ./products.test.sql
 \i ./campaigns.test.sql
 \i ./orders.test.sql
-\i ./payments.test.sql
+\i ./invoices.test.sql
 --\i ./transactions.test.sql
 
 \set VERBOSITY default

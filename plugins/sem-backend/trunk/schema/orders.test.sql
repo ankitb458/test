@@ -197,8 +197,8 @@ FROM	orders,
 
 -- DELETE FROM transaction_lines;
 -- DELETE FROM transactions;
-DELETE FROM payment_lines;
-DELETE FROM payments;
+DELETE FROM invoice_lines;
+DELETE FROM invoices;
 DELETE FROM order_lines;
 DELETE FROM orders;
 DELETE FROM products;

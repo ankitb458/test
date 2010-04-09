@@ -1,11 +1,12 @@
 /*
- * Payments
+ * Invoices
  */
-CREATE TABLE payments (
+CREATE TABLE invoices (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
+	invoice_type	type_invoice NOT NULL DEFAULT 'revenue',
 	payment_method	method_payment,
 	payment_ref		varchar UNIQUE,
 	order_id		bigint REFERENCES orders(id),
@@ -31,23 +32,23 @@ CREATE TABLE payments (
 		CHECK ( due_amount >= 0 AND cleared_amount >= 0 )
 );
 
-SELECT	timestampable('payments'),
-		searchable('payments'),
-		trashable('payments');
+SELECT	timestampable('invoices'),
+		searchable('invoices'),
+		trashable('invoices');
 
-CREATE INDEX payments_sort ON payments(due_date DESC);
-CREATE INDEX payments_user_id ON payments(order_id, user_id, due_date DESC);
-CREATE INDEX payments_order_id ON payments(order_id, due_date DESC);
+CREATE INDEX invoices_sort ON invoices(due_date DESC);
+CREATE INDEX invoices_user_id ON invoices(order_id, user_id, due_date DESC);
+CREATE INDEX invoices_order_id ON invoices(order_id, due_date DESC);
 
-COMMENT ON TABLE payments IS E'Payments
+COMMENT ON TABLE invoices IS E'Invoices
 
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay, or late pay...';
 
 /**
- * Clean a payment before it gets stored.
+ * Clean a invoice before it gets stored.
  */
-CREATE OR REPLACE FUNCTION payments_clean()
+CREATE OR REPLACE FUNCTION invoices_clean()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -55,7 +56,7 @@ BEGIN
 	IF	NEW.name IS NULL
 	THEN
 		NEW.name = CASE
-			WHEN NEW.order_id IS NULL
+			WHEN NEW.invoice_type = 'expense'
 			THEN 'Commissions'
 			ELSE 'Order'
 			END;
@@ -75,25 +76,27 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER payments_05_clean
-	BEFORE INSERT OR UPDATE ON payments
-FOR EACH ROW EXECUTE PROCEDURE payments_clean();
+CREATE TRIGGER invoices_05_clean
+	BEFORE INSERT OR UPDATE ON invoices
+FOR EACH ROW EXECUTE PROCEDURE invoices_clean();
 
 /**
  * Process read-only fields
  */
-CREATE OR REPLACE FUNCTION payments_readonly()
+CREATE OR REPLACE FUNCTION invoices_readonly()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.id, NEW.order_id) IS DISTINCT FROM ROW(OLD.id, NEW.order_id)
+	IF	ROW(NEW.id, NEW.invoice_type, NEW.order_id)
+		IS DISTINCT FROM
+		ROW(OLD.id, OLD.invoice_type, OLD.order_id)
 	THEN
-		RAISE EXCEPTION 'Can''t edit readonly field in payments.id = %', NEW.id;
+		RAISE EXCEPTION 'Can''t edit readonly field in invoices.id = %', NEW.id;
 	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER payments_01_readonly
-	AFTER UPDATE ON payments
-FOR EACH ROW EXECUTE PROCEDURE payments_readonly();
+CREATE CONSTRAINT TRIGGER invoices_01_readonly
+	AFTER UPDATE ON invoices
+FOR EACH ROW EXECUTE PROCEDURE invoices_readonly();

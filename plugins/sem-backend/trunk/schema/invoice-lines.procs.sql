@@ -1,7 +1,7 @@
 /**
- * Recalculates a payment's status and due amount based on transaction lines
+ * Recalculates a invoice's status and due amount based on transaction lines
  */
-CREATE OR REPLACE FUNCTION payment_lines_delegate_payment_details()
+CREATE OR REPLACE FUNCTION invoice_lines_delegate_invoice_details()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -24,16 +24,16 @@ BEGIN
 			END)
 	INTO	_status,
 			_amount
-	FROM	payment_lines
-	WHERE	payment_id = NEW.payment_id;
+	FROM	invoice_lines
+	WHERE	invoice_id = NEW.invoice_id;
 	
 	_status := COALESCE(_status, 'trash');
 	_amount := COALESCE(_amount, 0);
 	
-	UPDATE	payments
+	UPDATE	invoices
 	SET		status = _status,
 			due_amount = _amount
-	WHERE	id = NEW.payment_id
+	WHERE	id = NEW.invoice_id
 	AND		( status <> _status OR due_amount <> _amount );
 	
 	-- RAISE NOTICE '%, %', TG_NAME, FOUND;
@@ -41,14 +41,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER payment_lines_10_delegate_payment_details
-	AFTER INSERT OR UPDATE ON payment_lines
-FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_payment_details();
+CREATE TRIGGER invoice_lines_10_delegate_invoice_details
+	AFTER INSERT OR UPDATE ON invoice_lines
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_invoice_details();
 
 /**
  * Delegates the status for order lines
  */
-CREATE OR REPLACE FUNCTION payment_lines_delegate_order_details()
+CREATE OR REPLACE FUNCTION invoice_lines_delegate_order_details()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -67,33 +67,35 @@ BEGIN
 	
 	IF	EXISTS(
 		SELECT	1
-		FROM	payments
-		WHERE	id = NEW.payment_id
+		FROM	invoices
+		WHERE	id = NEW.invoice_id
 		AND		order_id IS NOT NULL
 		)
 	THEN
-		SELECT	MIN(payment_lines.status)
+		SELECT	MIN(invoice_lines.status)
 		INTO	_status
-		FROM	payment_lines
-		JOIN	payments
-		ON		payments.id = payment_lines.payment_id
-		WHERE	payment_lines.order_line_id = NEW.order_line_id
-		AND		payments.order_id IS NULL
-				-- Ignore drafts and pending payments unless it's the initial one
-		AND		( payments.status > 'pending' OR payment_lines.parent_id IS NULL );
+		FROM	invoice_lines
+		JOIN	invoices
+		ON		invoices.id = invoice_lines.invoice_id
+		WHERE	invoice_lines.order_line_id = NEW.order_line_id
+		AND		invoices.invoice_type = 'revenue'
+				-- Ignore drafts and pending invoices unless it's the initial one
+		AND		( invoices.status > 'pending' OR invoice_lines.parent_id IS NULL );
 		
 		UPDATE	order_lines
 		SET		status = _status
 		WHERE	id = NEW.order_line_id
 		AND		status <> _status;
+		
+		-- RAISE NOTICE '%, %', TG_NAME, FOUND;
 	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER payment_lines_20_delegate_order_details
-	AFTER INSERT OR UPDATE ON payment_lines
-FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_order_details();
+CREATE TRIGGER invoice_lines_20_delegate_order_details
+	AFTER INSERT OR UPDATE ON invoice_lines
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_order_details();
 
 /*
 	-- Extract the commission due date
