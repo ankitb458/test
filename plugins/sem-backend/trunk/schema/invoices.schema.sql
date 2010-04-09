@@ -24,6 +24,8 @@ CREATE TABLE invoices (
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
+	CONSTRAINT valid_invoice_type
+		CHECK ( invoice_type = 'revenue' OR order_id IS NULL ),
 	CONSTRAINT valid_payment_method
 		CHECK ( payment_ref IS NULL OR payment_method IS NOT NULL ),
 	CONSTRAINT valid_payment_ref

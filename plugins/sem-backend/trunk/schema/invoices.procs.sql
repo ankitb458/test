@@ -82,8 +82,6 @@ FOR EACH ROW EXECUTE PROCEDURE invoices_fill_lines();
 CREATE OR REPLACE FUNCTION invoices_delegate_status()
 	RETURNS trigger
 AS $$
-DECLARE
-	_status		status_payable;
 BEGIN
 	IF	NEW.status = OLD.status
 	THEN

@@ -72,7 +72,7 @@ BEGIN
 	ELSEIF NEW.product_id IS NOT NULL
 	THEN
 		-- Auto-create order using the product_id
-		INSERT INTO orders(
+		INSERT INTO orders (
 				status,
 				user_id,
 				campaign_id
@@ -96,7 +96,7 @@ BEGIN
 	ELSEIF NEW.coupon_id IS NOT NULL
 	THEN
 		-- Auto-create order using the coupon_id
-		INSERT INTO orders(
+		INSERT INTO orders (
 				status,
 				user_id,
 				campaign_id,

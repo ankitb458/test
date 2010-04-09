@@ -54,13 +54,61 @@ SET		status = 'cleared',
 
 SELECT	'Delegate invoice status to lines',
 		status = 'cleared'
-FROM	invoice_lines;
+FROM	invoice_lines
+WHERE	parent_id IS NULL;
+
+SELECT	'Auto schedule commissions on cleared payments',
+		status = 'pending'
+FROM	invoice_lines
+WHERE	parent_id IS NOT NULL;
+
+UPDATE	invoices
+SET		status = 'reversed',
+		cleared_amount = 0
+WHERE	order_id IS NOT NULL;
+
+SELECT	'Auto cancel commissions on reversed payments',
+		status = 'cancelled'
+FROM	invoice_lines
+WHERE	parent_id IS NOT NULL;
+
+UPDATE	invoices
+SET		status = 'cleared',
+		cleared_amount = due_amount
+WHERE	order_id IS NOT NULL;
+
+SELECT	'Auto restore commissions on cancelled reversals',
+		status = 'pending'
+FROM	invoice_lines
+WHERE	parent_id IS NOT NULL;
+
+UPDATE	invoices
+SET		status = 'cleared',
+		cleared_amount = due_amount
+WHERE	order_id IS NULL;
+
+SELECT	'Allow to advance-pay commissions',
+		status = 'cleared'
+FROM	invoice_lines
+WHERE	parent_id IS NOT NULL;
+
+UPDATE	invoices
+SET		status = 'reversed',
+		cleared_amount = 0
+WHERE	order_id IS NOT NULL;
+
+SELECT	'Keep a trace of unbalanced payments on reversed commissions',
+		cleared_amount <> 0
+FROM	invoices
+WHERE	order_id IS NULL;
 
 SELECT	invoices.id,
 		invoices.status,
 		invoices.user_id,
 		invoices.order_id,
 		invoices.due_date::date,
+		invoices.due_amount,
+		invoices.cleared_amount,
 		invoice_lines.id,
 		invoice_lines.status,
 		invoice_lines.order_line_id,
