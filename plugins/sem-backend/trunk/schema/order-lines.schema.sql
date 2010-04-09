@@ -34,8 +34,7 @@ CREATE TABLE order_lines (
 		CHECK ( coupon_id IS NULL AND init_discount = 0 AND rec_discount = 0 OR
 			coupon_id IS NOT NULL AND product_id IS NOT NULL AND ( init_discount > 0 OR rec_discount > 0 ) ),
 	CONSTRAINT valid_interval
-		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
-			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
+		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR rec_interval >= '0' ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
