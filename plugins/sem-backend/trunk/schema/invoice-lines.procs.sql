@@ -177,12 +177,16 @@ BEGIN
 		THEN
 			-- Try an update first
 			UPDATE	invoice_lines
-			SET		status = 'pending',
+			SET		status = CASE
+					WHEN invoice_lines.status <> 'cleared'
+					THEN 'pending'
+					ELSE 'cleared'
+					END::status_payable,
 					amount = _rec_amount
 			FROM	invoices
 			WHERE	invoices.invoice_type = 'revenue'
-			AND		invoice_lines.order_line_id = NEW.invoice_line_id
-			AND		parent_id = NEW.parent_id;
+			AND		invoice_lines.order_line_id = NEW.order_line_id
+			AND		parent_id = NEW.id;
 		END IF;
 		
 		IF	TG_OP = 'INSERT' OR NOT FOUND
@@ -212,9 +216,6 @@ BEGIN
 						)
 				RETURNING id
 				INTO	_invoice_id;
-				
-				RAISE NOTICE '%',
-					FOUND;
 			END IF;
 			
 			INSERT INTO invoice_lines (
@@ -328,8 +329,6 @@ BEGIN
 						NEW.id,
 						_aff_comm
 						);
-				
-				RAISE NOTICE '%', FOUND;
 			END IF;
 		END IF;
 	END IF;

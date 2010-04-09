@@ -114,6 +114,44 @@ SELECT	'cleared',
 		id
 FROM	orders;
 
+SELECT	'Auto insert pending recurring invoices',
+		invoice_lines.status = 'pending'
+FROM	invoices
+JOIN	invoice_lines
+ON		invoice_lines.invoice_id = invoices.id
+AND		invoices.invoice_type = 'revenue'
+AND		invoice_lines.parent_id IS NOT NULL;
+
+UPDATE	invoices
+SET		status = 'reversed'
+FROM	invoice_lines
+WHERE	invoice_lines.invoice_id = invoices.id
+AND		invoices.invoice_type = 'revenue'
+AND		invoice_lines.parent_id IS NULL;
+
+SELECT	'Cancel pending recurring invoices on payment reversal',
+		invoice_lines.status = 'cancelled'
+FROM	invoices
+JOIN	invoice_lines
+ON		invoice_lines.invoice_id = invoices.id
+AND		invoices.invoice_type = 'revenue'
+AND		invoice_lines.parent_id IS NOT NULL;
+
+UPDATE	invoices
+SET		status = 'cleared'
+FROM	invoice_lines
+WHERE	invoice_lines.invoice_id = invoices.id
+AND		invoices.invoice_type = 'revenue'
+AND		invoice_lines.parent_id IS NULL;
+
+SELECT	'Auto restore recurring invoices on cancelled reversals',
+		invoice_lines.status = 'pending'
+FROM	invoices
+JOIN	invoice_lines
+ON		invoice_lines.invoice_id = invoices.id
+AND		invoices.invoice_type = 'revenue'
+AND		invoice_lines.parent_id IS NOT NULL;
+
 SELECT	invoices.id,
 		invoices.status,
 		invoices.user_id,
