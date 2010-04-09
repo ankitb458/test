@@ -17,25 +17,17 @@ DECLARE
 	o_ratio		float8 := 1;
 BEGIN
 	IF	TG_OP = 'UPDATE' AND
-		NEW.init_amount IS NOT NULL AND NEW.rec_amount IS NOT NULL AND
+		NEW.init_price IS NOT NULL AND NEW.rec_price IS NOT NULL AND
 		NEW.init_comm IS NOT NULL AND NEW.rec_comm IS NOT NULL AND
 		NEW.init_discount IS NOT NULL AND NEW.rec_discount IS NOT NULL
 	THEN
-		IF	ROW(NEW.init_comm, NEW.rec_comm) <> ROW(0,0) AND
-			( ROW(NEW.init_amount, NEW.init_comm) IS DISTINCT FROM ROW(OLD.init_amount, OLD.init_comm) OR
-			ROW(NEW.rec_amount, NEW.rec_comm) IS DISTINCT FROM ROW(OLD.rec_amount, OLD.rec_comm) )
-		THEN
-			IF	NOT EXISTS (
-				SELECT	1
-				FROM	orders
-				WHERE	order_id = NEW.order_id
-				AND		aff_id IS NOT NULL
-				)
-			THEN
-				NEW.init_comm := 0;
-				NEW.rec_comm := 0;
-			END IF;
-		END IF;
+		-- Sanitize and bail early
+		NEW.init_comm = LEAST(NEW.init_comm, NEW.init_price - NEW.init_discount);
+		NEW.rec_comm = LEAST(NEW.rec_comm, NEW.rec_price - NEW.rec_discount);
+		
+		-- RAISE NOTICE '%, %, % / %, %, %',
+		-- 	NEW.init_price, NEW.init_comm, NEW.init_discount,
+		-- 	NEW.rec_price, NEW.rec_comm, NEW.rec_discount;
 		
 		RETURN NEW;
 	END IF;
@@ -45,16 +37,24 @@ BEGIN
 		-- Try to bail early
 		NEW.init_discount := COALESCE(NEW.init_discount, 0);
 		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
-		NEW.init_amount := COALESCE(NEW.init_amount, 0);
-		NEW.rec_amount := COALESCE(NEW.rec_amount, 0);
-		NEW.init_comm := LEAST(COALESCE(NEW.init_comm, 0), NEW.init_amount);
-		NEW.rec_comm := LEAST(COALESCE(NEW.rec_comm, 0), NEW.rec_amount);
+		NEW.init_price := COALESCE(NEW.init_price, 0);
+		NEW.rec_price := COALESCE(NEW.rec_price, 0);
+		NEW.init_comm := COALESCE(NEW.init_comm, 0);
+		NEW.rec_comm := COALESCE(NEW.rec_comm, 0);
+		
+		NEW.init_comm = LEAST(NEW.init_comm, NEW.init_price - NEW.init_discount);
+		NEW.rec_comm = LEAST(NEW.rec_comm, NEW.rec_price - NEW.rec_discount);
 		
 		IF	NEW.order_id IS NOT NULL AND
 			ROW(NEW.init_comm, NEW.rec_comm) = ROW(0, 0)
 		THEN
-			-- Nothing to do or verify
+			-- We've an order, and no product, so no coupon
 			NEW.coupon_id := NULL;
+			
+			-- RAISE NOTICE '%, %, % / %, %, %',
+			-- 	NEW.init_price, NEW.init_comm, NEW.init_discount,
+			-- 	NEW.rec_price, NEW.rec_comm, NEW.rec_discount;
+			
 			RETURN NEW;
 		END IF;
 	END IF;
@@ -134,14 +134,14 @@ BEGIN
 	
 	IF	NEW.product_id IS NULL
 	THEN
-		-- Bail
-		IF	_order.aff_id IS NULL
-		THEN
-			NEW.init_comm := 0;
-			NEW.rec_comm := 0;		
-		END IF;
-		
+		-- We've an order, no product, so no coupon
+		-- The coupon got passed as the order's campaign
 		NEW.coupon_id := NULL;
+		
+		-- RAISE NOTICE '%, %, % / %, %, %',
+		-- 	NEW.init_price, NEW.init_comm, NEW.init_discount,
+		-- 	NEW.rec_price, NEW.rec_comm, NEW.rec_discount;
+		
 		RETURN NEW;
 	END IF;
 	
@@ -235,8 +235,8 @@ BEGIN
 		-- Sanitize amounts
 		NEW.init_discount := COALESCE(NEW.init_discount, 0);
 		NEW.rec_discount := COALESCE(NEW.rec_discount, 0);
-		NEW.init_amount := COALESCE(NEW.init_amount, _product.init_price - NEW.init_discount);
-		NEW.rec_amount := COALESCE(NEW.rec_amount, _product.rec_price - NEW.rec_discount);
+		NEW.init_price := COALESCE(NEW.init_price, _product.init_price);
+		NEW.rec_price := COALESCE(NEW.rec_price, _product.rec_price);
 		IF	_order.aff_id IS NULL
 		THEN
 			NEW.init_comm := 0;
@@ -245,11 +245,11 @@ BEGIN
 			NEW.init_comm := COALESCE(NEW.init_comm, _product.init_comm);
 			NEW.rec_comm := COALESCE(NEW.rec_comm, _product.rec_comm);
 			
-			NEW.init_comm := LEAST(NEW.init_comm, NEW.init_amount);
-			NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_amount);
+			NEW.init_comm := LEAST(NEW.init_comm, NEW.init_price - NEW.init_discount);
+			NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_price - NEW.rec_discount);
 		END IF;
 	ELSE
-		-- Process firesale if any
+		-- Process firesale, if any
 		IF	_coupon.firesale
 		THEN
 			IF	_coupon.expire_date IS NOT NULL
@@ -280,8 +280,8 @@ BEGIN
 		-- Sanitize amounts
 		NEW.init_discount := COALESCE(NEW.init_discount, _coupon.init_discount, 0);
 		NEW.rec_discount := COALESCE(NEW.rec_discount, _coupon.rec_discount, 0);
-		NEW.init_amount := COALESCE(NEW.init_amount, _product.init_price - NEW.init_discount);
-		NEW.rec_amount := COALESCE(NEW.rec_amount, _product.rec_price - NEW.rec_discount);
+		NEW.init_price := COALESCE(NEW.init_price, _product.init_price);
+		NEW.rec_price := COALESCE(NEW.rec_price, _product.rec_price);
 		IF	_coupon.aff_id IS NULL
 		THEN
 			NEW.init_comm := COALESCE(NEW.init_comm, _product.init_comm);
@@ -290,12 +290,12 @@ BEGIN
 			NEW.init_comm := COALESCE(NEW.init_comm, _product.init_comm - NEW.init_discount);
 			NEW.rec_comm := COALESCE(NEW.rec_comm, _product.rec_comm - NEW.rec_discount);
 		END IF;
-		NEW.init_comm := LEAST(NEW.init_comm, NEW.init_amount);
-		NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_amount);
+		NEW.init_comm := LEAST(NEW.init_comm, NEW.init_price - NEW.init_discount);
+		NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_price - NEW.rec_discount);
 	END IF;
 	
 	-- Fetch interval/count
-	IF	NEW.rec_amount > 0
+	IF	NEW.rec_price > 0
 	THEN
 		NEW.rec_interval := COALESCE(NEW.rec_interval, _product.rec_interval);
 		NEW.rec_count := COALESCE(NEW.rec_count, _product.rec_count);
@@ -305,8 +305,8 @@ BEGIN
 	END IF;
 	
 	--RAISE NOTICE '%, %, % / %, %, %',
-	--	NEW.init_amount, NEW.init_amount, NEW.init_discount,
-	--	NEW.rec_amount, NEW.rec_amount, NEW.rec_discount;
+	--	NEW.init_price, NEW.init_comm, NEW.init_discount,
+	--	NEW.rec_price, NEW.rec_comm, NEW.rec_discount;
 	
 	RETURN NEW;
 END;

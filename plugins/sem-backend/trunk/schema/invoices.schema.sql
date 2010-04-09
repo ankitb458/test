@@ -23,7 +23,7 @@ CREATE TABLE invoices (
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
 		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
-			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
+			NOT ( cleared_date IS NULL AND status = 'cleared' ) ),
 	CONSTRAINT valid_invoice_type
 		CHECK ( invoice_type = 'revenue' OR order_id IS NULL ),
 	CONSTRAINT valid_payment_method
@@ -69,7 +69,7 @@ BEGIN
 	THEN
 		NEW.due_date := NOW();
 	END IF;
-	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
+	IF	NEW.cleared_date IS NULL AND NEW.status = 'cleared'
 	THEN
 		NEW.cleared_date := NOW();
 	END IF;

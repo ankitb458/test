@@ -24,7 +24,7 @@ CREATE TABLE campaigns (
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_campaign
 		CHECK ( ukey IS NULL AND promo_id IS NOT NULL OR ukey IS NOT NULL AND promo_id IS NULL ),
-	CONSTRAINT valid_discounts
+	CONSTRAINT valid_amounts
 		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_coupon
 		CHECK ( promo_id IS NOT NULL OR

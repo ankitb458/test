@@ -47,6 +47,49 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER orders_20_delegate_aff_id
+CREATE TRIGGER orders_10_delegate_aff_id
 	AFTER UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_delegate_aff_id();
+
+/**
+ * Delegates stock handling when orders are cleared
+ *
+ * Todo: use shipments/shipment lines tables, and trigger this on order line updates instead.
+ */
+CREATE OR REPLACE FUNCTION orders_delegate_stock()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF NEW.cleared_date IS NULL AND OLD.cleared_date IS NOT NULL
+	THEN
+		RAISE EXCEPTION 'Cannot drop cleared date on orders.id = %',
+			NEW.id;
+	ELSEIF NEW.cleared_date IS NULL OR OLD.cleared_date IS NOT NULL
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	-- Deplete products
+	UPDATE	products
+	SET		stock = GREATEST(products.stock - order_lines.quantity, 0)
+	FROM	order_lines
+	WHERE	order_lines.order_id = NEW.id
+	AND		order_lines.status = 'cleared'
+	AND		products.id = order_lines.product_id
+	AND		products.stock IS NOT NULL;
+	
+	-- Deplete coupons
+	UPDATE	campaigns
+	SET		stock = GREATEST(campaigns.stock - order_lines.quantity, 0)
+	FROM	order_lines
+	WHERE	order_lines.order_id = NEW.id
+	AND		order_lines.status = 'cleared'
+	AND		campaigns.id = order_lines.coupon_id
+	AND		campaigns.stock IS NOT NULL;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER orders_20_delegate_stock
+	AFTER UPDATE ON orders
+FOR EACH ROW EXECUTE PROCEDURE orders_delegate_stock();

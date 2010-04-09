@@ -40,7 +40,7 @@ CREATE TABLE users (
 		CHECK ( tax_dispense <> '' AND tax_dispense = trim(tax_dispense) ),
 	CONSTRAINT valid_referral
 		CHECK ( id <> ref_id ),
-	CONSTRAINT undefined_behavior
+	CONSTRAINT unsupported_behavior
 		CHECK ( payment_method = 'paypal' )
 );
 

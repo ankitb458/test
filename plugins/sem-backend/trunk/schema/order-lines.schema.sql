@@ -11,34 +11,27 @@ CREATE TABLE order_lines (
 	product_id		bigint REFERENCES products(id),
 	coupon_id		bigint REFERENCES campaigns(id),
 	quantity		int NOT NULL DEFAULT 1,
-	init_amount		numeric(8,2) NOT NULL,
+	init_price		numeric(8,2) NOT NULL,
 	init_comm		numeric(8,2) NOT NULL,
 	init_discount	numeric(8,2) NOT NULL,
-	rec_amount		numeric(8,2) NOT NULL,
+	rec_price		numeric(8,2) NOT NULL,
 	rec_comm		numeric(8,2) NOT NULL,
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
 	rec_count		int,
-	due_date		datetime,
-	cleared_date	datetime,
 	created			datetime NOT NULL DEFAULT NOW(),
 	modified		datetime NOT NULL DEFAULT NOW(),
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_amounts
-		CHECK ( init_amount >= init_comm AND init_comm >= 0 AND
-				rec_amount >= rec_comm AND rec_comm >= 0 ),
-	CONSTRAINT valid_discounts
-		CHECK ( init_discount >= 0 AND rec_discount >= 0 ),
+		CHECK ( init_price >= init_comm + init_discount AND init_comm >= 0 AND init_discount >= 0 AND
+				rec_price >= rec_comm + rec_discount AND rec_comm >= 0 AND rec_discount >= 0 ),
 	CONSTRAINT valid_coupon
 		CHECK ( coupon_id IS NULL AND init_discount = 0 AND rec_discount = 0 OR
 			coupon_id IS NOT NULL AND product_id IS NOT NULL AND ( init_discount > 0 OR rec_discount > 0 ) ),
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR rec_interval >= '0' ),
-	CONSTRAINT valid_flow
-		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
-			NOT ( cleared_date IS NULL AND status > 'pending' ) ),
-	CONSTRAINT undefined_behavior
+	CONSTRAINT unsupported_behavior
 		CHECK ( rec_count IS NULL AND quantity = 1 )
 );
 
@@ -87,16 +80,6 @@ BEGIN
 	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
 	THEN
 		NEW.rec_count := NULL;
-	END IF;
-	
-	-- Assign default dates if needed
-	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
-	THEN
-		NEW.due_date := NOW();
-	END IF;
-	IF	NEW.cleared_date IS NULL AND NEW.status > 'pending'
-	THEN
-		NEW.cleared_date := NOW();
 	END IF;
 	
 	RETURN NEW;

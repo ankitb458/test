@@ -47,8 +47,8 @@ BEGIN
 			invoice_lines.id,
 			CASE
 			WHEN invoice_lines.parent_id IS NULL
-			THEN init_amount
-			ELSE rec_amount
+			THEN quantity * ( init_price - init_discount )
+			ELSE quantity * ( rec_price - rec_discount )
 			END
 	FROM	order_lines
 	LEFT JOIN invoice_lines
