@@ -30,8 +30,8 @@ CREATE TABLE products (
 		CHECK ( init_price >= init_comm AND init_comm >= 0 AND
 				rec_price >= rec_comm AND rec_comm >= 0 ),
 	CONSTRAINT valid_interval
-		CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
-			rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
+		CHECK ( rec_interval IS NULL AND rec_count IS NULL AND rec_price = 0 OR
+			rec_interval IS NOT NULL AND rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_activatable
 		CHECK ( expire_date >= launch_date ),
 	CONSTRAINT valid_stock

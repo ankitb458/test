@@ -5,9 +5,9 @@ CREATE TYPE status_payable AS enum (
 	'trash',
 	'draft',
 	'pending',
-	'cancelled',
 	'reversed',
 	'refunded',
+	'cancelled',
 	'cleared'
 	);
 

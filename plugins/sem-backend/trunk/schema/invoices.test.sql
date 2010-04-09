@@ -102,6 +102,18 @@ SELECT	'Keep a trace of unbalanced payments on reversed commissions',
 FROM	invoices
 WHERE	order_id IS NULL;
 
+DELETE FROM invoices;
+
+UPDATE	order_lines
+SET		status = 'draft',
+		rec_price = 3,
+		rec_interval = '1 month';
+
+INSERT INTO invoices ( status, order_id )
+SELECT	'cleared',
+		id
+FROM	orders;
+
 SELECT	invoices.id,
 		invoices.status,
 		invoices.user_id,

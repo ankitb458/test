@@ -55,19 +55,7 @@ BEGIN
 	ON		invoice_lines.order_line_id = order_lines.id
 	AND		invoice_lines.parent_id IS NULL
 	WHERE	order_lines.order_id = NEW.order_id
-	AND		( -- Initial invoice
-			invoice_lines.parent_id IS NULL AND order_lines.status IN ('draft', 'pending')
-	OR		-- Recurring invoice
-			invoice_lines.parent_id IS NULL AND order_lines.status = 'cleared' AND
-				order_lines.rec_interval IS NOT NULL AND
-				( order_lines.rec_count IS NULL OR order_lines.rec_count > 0 )
-			);
-	
-	IF	NOT FOUND
-	THEN
-		RAISE EXCEPTION 'Nothing to pay in invoices.id = % for orders.id = %',
-			NEW.id, NEW.order_id;
-	END IF;
+	AND		invoice_lines.id IS NULL AND order_lines.status IN ('draft', 'pending');
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
