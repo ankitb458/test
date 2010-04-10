@@ -152,27 +152,8 @@ ON		invoice_lines.invoice_id = invoices.id
 AND		invoices.invoice_type = 'revenue'
 AND		invoice_lines.parent_id IS NOT NULL;
 
-SELECT	invoices.id,
-		invoices.status,
-		invoices.user_id,
-		invoices.order_id,
-		invoices.due_date::date,
-		invoices.due_amount,
-		invoices.cleared_amount,
-		invoice_lines.id,
-		invoice_lines.status,
-		invoice_lines.order_line_id,
-		invoice_lines.parent_id,
-		invoice_lines.amount
-FROM	invoices
-JOIN	invoice_lines
-ON		invoice_lines.invoice_id = invoices.id
-ORDER BY invoices.id,
-		invoice_lines.id;
-
-
 -- clean up
-/*
+--/*
 --\! sleep 3
 
 \echo '# Cleaning up...'

@@ -4,8 +4,20 @@
 \echo '#'
 \echo
 
-INSERT INTO products ( init_price, init_comm, rec_price, rec_comm )
-VALUES	( 12, 6, 12, 6 );
+INSERT INTO products (
+		init_price,
+		init_comm,
+		rec_price,
+		rec_comm,
+		rec_interval
+		)
+VALUES (
+		12,
+		6,
+		12,
+		6,
+		'1 month'
+		);
 
 UPDATE	products
 SET		status = 'trash';

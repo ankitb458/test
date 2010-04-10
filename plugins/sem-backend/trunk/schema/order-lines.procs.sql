@@ -389,3 +389,28 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER order_lines_15_delegate_campaign_id
 	AFTER INSERT OR UPDATE ON order_lines
 FOR EACH ROW EXECUTE PROCEDURE order_lines_delegate_campaign_id();
+
+/**
+ * Delegate changes in amounts to uncleared invoices
+ */
+CREATE OR REPLACE FUNCTION order_lines_delegate_invoice_lines()
+	RETURNS trigger
+AS $$
+DECLARE
+	rec		record;
+BEGIN
+	IF	ROW(NEW.init_price, NEW.rec_price) = ROW(OLD.init_price, OLD.rec_price) AND
+		ROW(NEW.init_comm, NEW.rec_comm) = ROW(OLD.init_comm, OLD.rec_comm) AND
+		ROW(NEW.init_discount, NEW.rec_discount) = ROW(OLD.init_discount, OLD.rec_discount)
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	-- Todo: update uncleared payments
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER order_lines_20_delegate_invoice_lines
+	AFTER UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_delegate_invoice_lines();

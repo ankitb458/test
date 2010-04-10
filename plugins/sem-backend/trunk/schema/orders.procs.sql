@@ -1,5 +1,5 @@
 /**
- * Sanitizes an orders's campaign.
+ * Sanitizes an order's campaign.
  */
 CREATE OR REPLACE FUNCTION orders_sanitize_campaign_id()
 	RETURNS trigger
@@ -93,3 +93,32 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER orders_20_delegate_stock
 	AFTER UPDATE ON orders
 FOR EACH ROW EXECUTE PROCEDURE orders_delegate_stock();
+
+/**
+ * Delegate commissions
+ */
+CREATE OR REPLACE FUNCTION orders_delegate_commissions()
+	RETURNS trigger
+AS $$
+DECLARE
+	rec		record;
+BEGIN
+	IF	NEW.status <> 'cleared' OR
+		NEW.aff_id IS NOT NULL AND NEW.aff_id IS NOT DISTINCT FROM OLD.aff_id
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	IF	OLD.aff_id IS NULL
+	THEN
+		NULL;
+	ELSE
+		NULL;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER orders_20_delegate_commissions
+	AFTER UPDATE ON orders
+FOR EACH ROW EXECUTE PROCEDURE orders_delegate_commissions();
