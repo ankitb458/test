@@ -516,8 +516,10 @@ abstract class s_data_base extends s_base {
 			if ( isset($this->uuid) ) {
 				return $this->uuid;
 			} else {
-				global $wpdb;
-				return $this->uuid = $wpdb->get_var("SELECT UUID() as value;");
+				if ( !class_exists('UUID') ) {
+					require_once dirname(__FILE__) . '/uuid.php';
+				}
+				return $this->uuid =  (string) UUID::mint(4);
 			}
 		}
 			
@@ -629,7 +631,7 @@ abstract class s_data_base extends s_base {
 			return $this;
 		} elseif ( is_object($key) ) {
 			# called like:
-			# $row = $wpdb->get_results($sql);
+			# $row = get_results($sql);
 			# foreach ( $rows as $row )
 			#   $obj = new class($row);
 			
@@ -685,7 +687,7 @@ abstract class s_data_base extends s_base {
 			return $this;
 		}
 		
-		global $wpdb;
+		$db = sb::db();
 		$table = $this::types;
 		
 		if ( self::is_id($key) ) {
@@ -693,33 +695,35 @@ abstract class s_data_base extends s_base {
 			# $row = new class($id);
 			
 			$id = (int) $key;
-			$row = $wpdb->get_row("
+			$row = $db->query("
 				SELECT	*
-				FROM	`{$wpdb->$table}`
+				FROM	$table
 				WHERE	id = $id
-				");
+				")->fetchObject();
 		} elseif ( self::is_uuid($key) ) {
 			# called like:
 			# $row = new class($uuid);
 			
 			$this->set('uuid', $key);
-			$uuid = $wpdb->_real_escape($key);
-			$row = $wpdb->get_row("
+			$dbs = $db->prepare("
 				SELECT	*
-				FROM	`{$wpdb->$table}`
-				WHERE	uuid = '$uuid'
+				FROM	$table
+				WHERE	uuid = ?
 				");
+			$dbs->execute(array($key));
+			$row = $dbs->fetchObject();
 		} else {
 			# called like:
 			# $row = new class($ukey);
 			
 			$this->set('ukey', $key);
-			$ukey = $wpdb->_real_escape($key);
-			$row = $wpdb->get_row("
+			$dbs = $db->query("
 				SELECT	*
-				FROM	`{$wpdb->$table}`
-				WHERE	ukey = '$ukey'
+				FROM	$table
+				WHERE	ukey = ?
 				");
+			$dbs->execute(array($key));
+			$row = $dbs->fetchObject();
 		}
 		
 		return $row
@@ -791,7 +795,7 @@ abstract class s_data_base extends s_base {
 		if ( !$this->ukey )
 			return $this;
 		
-		global $wpdb;
+		$db = sb::db();
 		$table = $this::types;
 		$ukey = $this->ukey;
 		$suffix = 1;
@@ -799,21 +803,23 @@ abstract class s_data_base extends s_base {
 		if ( $this->id )
 			$exclude = "id <> " . (int) $this->id;
 		else
-			$exclude = "uuid <> '" . $wpdb->_real_escape($this->uuid()) . "'";
+			$exclude = "uuid <> '" . $this->uuid() . "'";
 		
 		# prevent ukeys from polluting the object cache
 		if ( self::is_id($ukey) || self::is_uuid($ukey) )
 			$ukey = "$ukey-$suffix";
 		
 		do {
-			$conflict = $wpdb->get_var("
+			$dbs = $db->prepare("
 				SELECT EXISTS (
 					SELECT	1
-					FROM	`{$wpdb->$table}`
-					WHERE	ukey = '" . $wpdb->_real_escape($ukey) . "'
+					FROM	$table
+					WHERE	ukey = ?
 					AND		$exclude
 					) as conflict
 				");
+			$dbs->execute(array($ukey));
+			$conflict = $dbs->fetchObject()->conflict;
 			
 			if ( !$conflict )
 				return $this->set('ukey', $ukey);
@@ -1001,14 +1007,13 @@ abstract class s_data_base extends s_base {
 		if ( !$this->id || !$this->is_trash() || !$this->can_delete() )
 			return false;
 		
-		global $wpdb;
 		$type = $this::type;
 		$table = $this::types;
 		
 		# do stuff before
 		do_action('delete_' . $type, $this);
 		
-		$wpdb->query("DELETE FROM {$wpdb->$table} WHERE id = " . $this->id());
+		sb::db()->query("DELETE FROM $table WHERE id = " . $this->id());
 		
 		# clear cache and counts
 		$this->clear_cache()->clear_counts();
@@ -1040,7 +1045,8 @@ abstract class s_data_base extends s_base {
 		
 		do_action('pre_save_' . $this::type, $this, $old);
 		
-		global $wpdb;
+		$db = sb::db();
+		$args = array();
 		$table = $this::types;
 		$sql = array();
 		$now = gmdate('Y-m-d H:i:s'); # MySQL's NOW() isn't always GMT
@@ -1049,67 +1055,51 @@ abstract class s_data_base extends s_base {
 			foreach ( $this->fields() as $field ) {
 				switch ( $field ) {
 				case 'id':
-					continue 2;
-					
 				case 'created_date':
 				case 'modified_date':
-					$sql["`$field`"] = "'$now'";
 					continue 2;
 					
 				default:
-					if ( is_null($this->$field) ) {
-						$sql["`$field`"] = 'NULL';
-					} elseif ( is_bool($this->$field) ) {
-						$sql["`$field`"] = intval($this->$field);
-					} elseif ( is_int($this->$field) || is_float($this->$field) ) {
-						$sql["`$field`"] = $this->$field;
-					} else {
-						$sql["`$field`"] = "'" . $wpdb->_real_escape($this->$field) . "'";
-					}
+					$sql["$field"] = '?';
+					$args[] = $this->$field;
 				}
 			}
 				
 			$sql = "
-				INSERT INTO `{$wpdb->$table}`
+				INSERT INTO $table
 					( " . implode(', ', array_keys($sql)) . " )
 				VALUES
 					( " . implode(', ', $sql) . " )
+				RETURNING id
 				";
 			
-			$wpdb->query($sql);
-			$this->id($wpdb->insert_id);
+			$dbs = $db->prepare($sql);
+			$dbs->execute($args);
+			$this->id($dbs->fetchObject()->id);
 		} else {
 			foreach ( $this->fields() as $field ) {
 				switch ( $field ) {
 				case 'id':
 				case 'uuid':
 				case 'created_date':
-					continue 2;
-					
 				case 'modified_date':
-					$sql[] = "`$field` = '$now'";
 					continue 2;
 				
 				default:
-					if ( is_null($this->$field) ) {
-						$sql[] = "`$field` = NULL";
-					} elseif ( is_bool($this->$field) ) {
-						$sql[] = "`$field` = " . intval($this->$field);
-					} elseif ( is_int($this->$field) || is_float($this->$field) ) {
-						$sql[] = "`$field` = " . $this->$field;
-					} else {
-						$sql[] = "`$field` = '" . $wpdb->_real_escape($this->$field) . "'";
-					}
+					$sql[] = "$field = ?";
+					$args[] = $this->$field;
 				}
 			}
 			
 			$sql = "
-				UPDATE	`{$wpdb->$table}`
+				UPDATE	$table
 				SET		" . implode(', ', $sql) . "
-				WHERE	id = $id
+				WHERE	id = ?
 				";
+			$args[] = $id;
 			
-			$wpdb->query($sql);
+			$dbs = $db->prepare($sql);
+			$dbs->execute($args);
 		}
 		
 		# clear cache
@@ -1502,8 +1492,7 @@ abstract class s_dataset_base extends s_base implements Iterator {
 		if ( $this->is_singular ) {
 			$this->push($class($this->args)->cache());
 		} else {
-			global $wpdb;
-			$rows = $wpdb->get_results($this->sql($sql, $args));
+			$rows = sb::db()->query($this->sql($sql, $args))->fetchAll(PDO::FETCH_OBJ);
 			foreach ( $rows as $row )
 				$this->push($class($row)->cache());
 		}
@@ -1755,7 +1744,6 @@ abstract class s_dataset_base extends s_base implements Iterator {
 	 **/
 
 	function sql($sql = null, $args = null) {
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
@@ -1766,7 +1754,7 @@ abstract class s_dataset_base extends s_base implements Iterator {
 		if ( !isset($select) )
 			$select = "$t.*";
 		if ( !isset($from) )
-			$from = "`{$wpdb->$table}` as $t";
+			$from = "$table as $t";
 		if ( !isset($order_by) )
 			$order_by = isset($filters['sort']['order_by'])
 				? $filters['sort']['order_by']
@@ -1876,7 +1864,6 @@ abstract class s_dataset_base extends s_base implements Iterator {
 	 **/
 
 	function ids_sql($args) {
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
@@ -1900,12 +1887,10 @@ abstract class s_dataset_base extends s_base implements Iterator {
 		if ( !$status  )
 			return $filter;
 		
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
 		if ( $status != 'all' ) {
-			$status = $wpdb->_real_escape($status);
 			$filter['where'] = "$t.status = '$status'";
 		} else {
 			$filter['where'] = "$t.status <> 'trash'";
@@ -1923,13 +1908,14 @@ abstract class s_dataset_base extends s_base implements Iterator {
 	 **/
 
 	function search_sql($args) {
+		return array();
+		/*
 		$s = $args['s'];
 		$filter = array();
 		
 		if ( !$s )
 			return $filter;
 		
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
@@ -1937,10 +1923,10 @@ abstract class s_dataset_base extends s_base implements Iterator {
 			$s_sql = intval($s);
 			$filter['where'] = "$t.id = $s_sql";
 		} elseif ( self::is_uuid($s) ) {
-			$s_sql = $wpdb->_real_escape($s);
+			$s_sql = sb::db()->escape($s);
 			$filter['where'] = "$t.uuid = '$s_sql'";
 		} else {
-			$s_sql = $wpdb->_real_escape(addcslashes($s, '_%\\'));
+			$s_sql = sb::db()->escape(addcslashes($s, '_%\\'));
 			if ( strlen($s) < 5 )
 				$match = "LIKE '$s_sql%'";
 			else
@@ -1950,6 +1936,7 @@ abstract class s_dataset_base extends s_base implements Iterator {
 		}
 		
 		return $filter;
+		*/
 	} # search_sql()
 	
 	
@@ -1978,7 +1965,6 @@ abstract class s_dataset_base extends s_base implements Iterator {
 			$order = 'ASC';
 		}
 		
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
@@ -2006,7 +1992,7 @@ abstract class s_dataset_base extends s_base implements Iterator {
 		
 		$per_page = (int) $this->per_page();
 		$start = ( (int) $paged - 1 ) * $per_page;
-		$filter['limit'] = "$start, $per_page";
+		$filter['limit'] = "$start OFFSET $per_page";
 		
 		return $filter;
 	} # paged_sql()
@@ -2025,13 +2011,12 @@ abstract class s_dataset_base extends s_base implements Iterator {
 		if ( $num_rows !== false )
 			return $num_rows;
 		
-		global $wpdb;
 		$sql = $this->sql(array(
-			'select' => 'COUNT(*)',
+			'select' => 'COUNT(*) as num_rows',
 			'order_by' => false,
 			'limit' => false,
 			));
-		$num_rows = (int) $wpdb->get_var($sql);
+		$num_rows = (int) sb::db()->query($sql)->fetchObject()->num_rows;
 		wp_cache_add($cache_id, $num_rows, 'counts');
 		
 		return $num_rows;
@@ -2051,7 +2036,6 @@ abstract class s_dataset_base extends s_base implements Iterator {
 		if ( $values !== false )
 			return $values;
 
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
@@ -2067,7 +2051,7 @@ abstract class s_dataset_base extends s_base implements Iterator {
 			'limit' => false,
 			), $strip);
 		
-		$res = $wpdb->get_results($sql);
+		$res = sb::db()->query($sql)->fetchAll(PDO::FETCH_OBJ);
 		
 		foreach ( $res as $status_count ) {
 			if ( !isset($values[$status_count->status]) )

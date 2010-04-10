@@ -594,158 +594,20 @@ class campaign extends s_data_base implements campaign_type, s_data {
 		if ( $can_delete !== false )
 			return (bool) $can_delete;
 		
-		global $wpdb;
 		$id = (int) $this->id;
 		
-		$can_delete = !$wpdb->get_var("
+		$can_delete = sb::db()->query("
 			SELECT EXISTS (
 				SELECT	1
-				FROM	`$wpdb->orders` as o
+				FROM	orders as o
 				WHERE	o.campaign_id = $id
 				) as has_orders
-			");
+			")->fetchObject()->has_orders;
 		
 		wp_cache_add($this::type . '_can_delete_' . $this->id, (int) $can_delete, 'counts');
 		
 		return (bool) $can_delete;
 	} # can_delete()
-	
-	
-	/**
-	 * save_product()
-	 *
-	 * @todo move this into a trigger
-	 *
-	 * @param int $id
-	 * @param object $new
-	 * @param object $old
-	 * @return void
-	 **/
-
-	function save_product($id, $new, $old) {
-		if ( $new->init_price == $old->init_price
-			&& $new->rec_price == $old->rec_price
-			&& $new->init_comm == $old->init_comm
-			&& $new->rec_comm == $old->rec_comm )
-			return;
-		
-		foreach ( array('init', 'rec') as $var ) {
-			$price = $var . '_price';
-			$comm = $var . '_comm';
-			$discount = $var . '_discount';
-			$new->$price = round(floatval($new->$price), 2);
-			$old->$price = round(floatval($old->$price), 2);
-			$new->$comm = round(floatval($new->$comm), 2);
-			$old->$comm = round(floatval($old->$comm), 2);
-		}
-		
-		global $wpdb;
-		$now = gmdate('Y-m-d H:i:s'); # MySQL's NOW() isn't always GMT
-		$uuid = $wpdb->_real_escape($new->uuid);
-		$rows = $wpdb->get_results("
-			SELECT	id, ukey, uuid
-			FROM	`$wpdb->campaigns`
-			WHERE	product_id = $id
-			");
-		
-		$sql = "
-			UPDATE	`$wpdb->campaigns`
-			SET		status = CASE
-					WHEN $new->init_comm = 0 AND $new->rec_comm = 0
-					THEN 'active'
-					WHEN status IN ('active', 'future')
-					THEN 'pending'
-					ELSE status
-					END,
-					product_id = CASE
-					WHEN $new->init_comm = 0 AND $new->rec_comm = 0
-					THEN NULL
-					ELSE product_id
-					END,
-					init_discount = CASE
-					WHEN init_discount = 0 OR $new->init_price = 0 OR $new->init_comm = 0
-					THEN 0
-					WHEN init_discount = $old->init_comm
-					THEN $new->init_comm
-					WHEN init_discount = $old->init_comm / 2
-					THEN $new->init_comm / 2
-					WHEN aff_id IS NOT NULL
-					THEN init_discount * $new->init_comm / $old->init_comm
-					ELSE LEAST(init_discount * $new->init_price / $old->init_price, $new->init_price - $new->init_comm)
-					END,
-					rec_discount = CASE
-					WHEN rec_discount = 0 OR $new->rec_price = 0 OR $new->rec_comm = 0
-					THEN 0
-					WHEN rec_discount = $old->rec_comm
-					THEN $new->rec_comm
-					WHEN rec_discount = $old->rec_comm / 2
-					THEN $new->rec_comm / 2
-					WHEN aff_id IS NOT NULL
-					THEN rec_discount * $new->rec_comm / $old->rec_comm
-					ELSE LEAST(rec_discount * $new->rec_price / $old->rec_price, $new->rec_price - $new->rec_comm)
-					END,
-					modified_date = '$now'
-			WHERE	product_id = $id
-			AND		uuid <> '$uuid'
-			";
-		
-		$wpdb->query($sql);
-		
-		foreach ( $rows as $row ) {
-			wp_cache_delete($row->id, self::types);
-			wp_cache_delete($row->uuid, self::types);
-			if ( $row->ukey )
-				wp_cache_delete($row->ukey, self::types);
-		}
-	} # save_product()
-	
-	
-	/**
-	 * trash_product()
-	 *
-	 * @todo move this into a trigger
-	 *
-	 * @param int $id
-	 * @param object $new
-	 * @param object $old
-	 * @return void
-	 **/
-
-	function trash_product($id, $new, $old) {
-		$id = (int) $id;
-		
-		global $wpdb;
-		$rows = $wpdb->get_results("
-			SELECT	id, uuid, ukey
-			FROM	`$wpdb->campaigns`
-			WHERE	product_id = $id
-			");
-		
-		$now = gmdate('Y-m-d H:i:s'); # MySQL's NOW() isn't always GMT
-		$uuid = $wpdb->_real_escape($new->uuid);
-		$sql = "
-			UPDATE	`$wpdb->campaigns`
-			SET		status = 'active',
-					product_id = NULL,
-					init_discount = 0,
-					rec_discount = 0,
-					min_date = NULL,
-					max_date = NULL,
-					max_orders = NULL,
-					modified_date = '$now'
-			WHERE	product_id = $id
-			AND		uuid <> '$uuid'
-			";
-		
-		$wpdb->query($sql);
-		
-		foreach ( $rows as $row ) {
-			wp_cache_delete($row->id, self::types);
-			wp_cache_delete($row->uuid, self::types);
-			if ( $row->ukey )
-				wp_cache_delete($row->ukey, self::types);
-		}
-	} # trash_product()
 	
 	
 	/**
@@ -936,6 +798,8 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 	 **/
 
 	function search_sql($args) {
+		return array();
+		/*
 		$s = $args['s'];
 		$filter = parent::search_sql($args);
 		
@@ -944,19 +808,19 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		
 		$filter['join'] = array();
 		
-		global $wpdb;
+		$db = sb::db();
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
-		$s_sql = $wpdb->_real_escape(addcslashes($s, '_%\\'));
+		$s_sql = $db->escape(addcslashes($s, '_%\\'));
 		if ( strlen($s) < 5 )
-			$match = "LIKE '$s_sql%'";
+			$match = "ILIKE '$s_sql%'";
 		else
-			$match = "LIKE '%$s_sql%'";
+			$match = "ILIKE '%$s_sql%'";
 		
 		if ( !$args['aff_id'] ) {
 			$filter['join'][] = "
-			LEFT JOIN	`$wpdb->users` as u
+			LEFT JOIN	users as u
 			ON			u.ID = $t.aff_id
 			AND			( u.display_name $match OR u.user_email $match OR u.user_login $match )";
 			$filter['where'][] = "u.ID IS NOT NULL";
@@ -964,11 +828,11 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		
 		if ( !$args['product_id'] ) {
 			$filter['join'][] = "
-			LEFT JOIN	`$wpdb->products` as p
+			LEFT JOIN	products as p
 			ON			( p.name $match OR p.ukey $match )";
 			$filter['where'][] = "p.id IS NOT NULL";
 		}
-		
+		*/
 		return $filter;
 	} # search_sql()
 	
@@ -986,7 +850,6 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 			: (int) wp_get_current_user()->ID;
 		$filter = array();
 		
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
@@ -1008,7 +871,6 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		$product_id = $args['product_id'];
 		$filter = array();
 		
-		global $wpdb;
 		$table = $this::types;
 		$t = substr($table, 0, 1);
 		
@@ -1091,12 +953,11 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		
 		$product_ids = array_unique(array_map('intval', $product_ids));
 		
-		global $wpdb;
-		$products = $wpdb->get_results("
+		$products = sb::db()->query("
 			SELECT	*
-			FROM	$wpdb->products
+			FROM	products
 			WHERE	id IN ( " . implode(', ', $product_ids) . " )
-			");
+			")->fetchAll(PDO::FETCH_OBJ);
 		
 		foreach ( $products as $product )
 			product($product)->cache();
@@ -1123,14 +984,13 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		if ( !$ids )
 			return $this;
 		
-		global $wpdb;
 		$ids = array_map('intval', $ids);
-		$counts = $wpdb->get_results("
+		$counts = sb::db()->query("
 			SELECT	campaign_id, COUNT(*) as num_orders, COUNT(NULLIF(status, 'cleared')) as pending_orders
 			FROM	orders
 			WHERE	campaign_id IN ( " . implode(', ', $ids) . " )
 			GROUP BY campaign_id
-			");
+			")->fetchAll(PDO::FETCH_OBJ);
 		
 		foreach ( $counts as $count ) {
 			wp_cache_add($this::type . '_orders_' . $count->campaign_id, $count->num_orders - $count->pending_orders, 'counts');

@@ -390,16 +390,15 @@ class product extends s_data_base implements product_type, s_data {
 		if ( $can_delete !== false )
 			return (bool) $can_delete;
 		
-		global $wpdb;
 		$id = (int) $this->id;
 		
-		$can_delete = !$wpdb->get_var("
+		$can_delete = !sb::db()->query("
 			SELECT EXISTS (
 				SELECT	1
-				FROM	$wpdb->orders as o
+				FROM	orders as o
 				WHERE	o.product_id = $id
 				) as has_orders
-			");
+			")->fetch();
 		
 		wp_cache_add($this::type . '_can_delete_' . $this->id, (int) $can_delete, 'counts');
 		
@@ -536,14 +535,13 @@ class product_set extends s_dataset_base implements product_type, s_dataset {
 		if ( !$uuids )
 			return $this;
 		
-		global $wpdb;
-		$uuids = array_map(array($wpdb, '_real_escape'), $uuids);
+		$db = sb::db();
 		
-		$coupons = $wpdb->get_results("
+		$coupons = $db->query("
 			SELECT	*
-			FROM	$wpdb->campaigns
+			FROM	campaigns
 			WHERE	uuid IN ( '" . implode("', '", $uuids) . "' )
-			");
+			")->fetchAll(PDO::FETCH_OBJ);
 		
 		foreach ( $coupons as $coupon )
 			campaign($coupon)->cache();
@@ -572,14 +570,13 @@ class product_set extends s_dataset_base implements product_type, s_dataset {
 		if ( !$ids )
 			return $this;
 		
-		global $wpdb;
 		$ids = array_map('intval', $ids);
-		$counts = $wpdb->get_results("
+		$counts = sb::db()->query("
 			SELECT	product_id, COUNT(*) as num_orders, COUNT(NULLIF(status, 'cleared')) as pending_orders
 			FROM	orders
 			WHERE	product_id IN ( " . implode(', ', $ids) . " )
 			GROUP BY product_id
-			");
+			")->fetchAll(POD::FETCH_OBJ);
 		
 		foreach ( $counts as $count ) {
 			wp_cache_add($this::type . '_orders_' . $count->product_id, $count->num_orders - $count->pending_orders, 'counts');

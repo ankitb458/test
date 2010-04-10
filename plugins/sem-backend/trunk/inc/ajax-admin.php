@@ -164,7 +164,6 @@ class s_ajax_admin extends s_base {
 	 **/
 
 	function suggest_product() {
-		global $wpdb;
 		$data = array();
 		$s = self::sanitize();
 		

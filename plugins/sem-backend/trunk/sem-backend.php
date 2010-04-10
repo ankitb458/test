@@ -19,28 +19,6 @@ This software is copyright Mesoconcepts (http://www.mesoconcepts.com), and is di
 http://www.mesoconcepts.com/license/
 **/
 
-global $wpdb;
-
-if ( defined('SB_PREFIX') ) {
-	$wpdb->s_prefix = SB_PREFIX;
-} else {
-	$wpdb->s_prefix = $wpdb->prefix;
-}
-
-$wpdb->products = $wpdb->s_prefix . 'products';
-$wpdb->campaigns = $wpdb->s_prefix . 'campaigns';
-$wpdb->orders = $wpdb->s_prefix . 'orders';
-$wpdb->transactions = $wpdb->s_prefix . 'transactions';
-
-$wpdb->memberships = $wpdb->s_prefix . 'memberships';
-$wpdb->membership2product = $wpdb->s_prefix . 'membership2product'; # product allows membership
-
-$wpdb->product2membership = $wpdb->s_prefix . 'product2membership'; # product grants membership
-$wpdb->membership2post = $wpdb->prefix . 'membership2post'; # membership allows post, *per* site
-
-$wpdb->user2membership = $wpdb->s_prefix . 'user2membership';
-
-
 load_plugin_textdomain('sem-backend', false, dirname(plugin_basename(__FILE__)) . '/lang');
 
 if ( !defined('s_rev') )
@@ -51,7 +29,6 @@ if ( !defined('s_url') )
 	define('s_url', rtrim(plugin_dir_url(__FILE__), '/'));
 
 
-
 /**
  * sb
  *
@@ -59,6 +36,8 @@ if ( !defined('s_url') )
  **/
 
 class sb {
+	static $dbh;
+	
 	/**
 	 * activate()
 	 *
@@ -66,8 +45,14 @@ class sb {
 	 **/
 
 	static function activate() {
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		include s_path . '/inc/schema.php';
+		add_option('fancy_currency', __('$%s', 'sem-backend'));
+
+		$role =& get_role('administrator');
+		$role->add_cap('manage_products');
+		$role->add_cap('manage_campaigns');
+		$role->add_cap('manage_orders');
+		$role->add_cap('manage_transactions');
+		$role->add_cap('manage_memberships');
 	} # activate()
 	
 	
@@ -342,6 +327,27 @@ EOS;
 		
 		echo '</pre>';
 	} # exception_handler()
+	
+	/**
+	 * Returns the db handler, instantiating it if necessary
+	 *
+	 * @return object $dbh A PDO/PgSQL object
+	 **/
+	static function db() {
+		if ( isset(self::$dbh) ) {
+			return self::$dbh;
+		}
+		
+		try {
+			self::$dbh = new PDO('pgsql:dbname=' . SB_NAME . ';host=' . SB_HOST, SB_USER, SB_PASS, array(
+				PDO::ATTR_EMULATE_PREPARES => true,
+				));
+		} catch ( Exception $e ) {
+			die('DB Connection failed.');
+		}
+		
+		return self::$dbh;
+	}
 } # sb
 
 set_exception_handler(array('sb', 'exception_handler'));
