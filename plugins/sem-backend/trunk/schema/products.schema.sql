@@ -8,7 +8,6 @@ CREATE TABLE products (
 	status			status_activatable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
 	sku				varchar UNIQUE,
-	currency		currency_code NOT NULL DEFAULT 'USD',
 	init_price		numeric(8,2) NOT NULL DEFAULT 0,
 	init_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_price		numeric(8,2) NOT NULL DEFAULT 0,
