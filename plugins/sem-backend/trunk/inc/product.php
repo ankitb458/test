@@ -527,6 +527,8 @@ class product_set extends s_dataset_base implements product_type, s_dataset {
 		$uuids = array();
 		
 		foreach ( $this as $row ) {
+			if ( !$row->id() )
+				continue;
 			$uuid = $row->uuid();
 			if ( wp_cache_get($uuid, 'campaigns') === false )
 				$uuids[] = $uuid;
@@ -563,6 +565,8 @@ class product_set extends s_dataset_base implements product_type, s_dataset {
 		
 		foreach ( $this as $row ) {
 			$id = $row->id();
+			if ( !$id )
+				continue;
 			if ( wp_cache_get($this::type . '_orders_' . $id, 'counts') === false )
 				$ids[] = $id;
 		}

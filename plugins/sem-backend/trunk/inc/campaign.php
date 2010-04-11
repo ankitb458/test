@@ -904,6 +904,8 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		$user_ids = array();
 		
 		foreach ( $this as $row ) {
+			if ( !$row->id() )
+				continue;
 			$aff_id = $row->aff_id();
 			if ( $aff_id && wp_cache_get($aff_id, 'users') === false )
 				$user_ids[] = $aff_id;
@@ -943,6 +945,8 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		$uuids = array();
 		
 		foreach ( $this as $row ) {
+			if ( !$row->id() )
+				continue;
 			$product_id = $row->product_id();
 			if ( $product_id && wp_cache_get($product_id, 'products') === false )
 				$product_ids[] = $product_id;
@@ -977,6 +981,8 @@ class campaign_set extends s_dataset_base implements campaign_type, s_dataset {
 		
 		foreach ( $this as $row ) {
 			$id = $row->id();
+			if ( !$id )
+				continue;
 			if ( wp_cache_get($this::type . '_orders_' . $id, 'counts') === false )
 				$ids[] = $id;
 		}
