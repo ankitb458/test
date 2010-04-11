@@ -23,8 +23,8 @@ CREATE TABLE users (
 	ref_id			bigint REFERENCES users(id),
 	ip				inet,
 	token			uuid,
-	created			datetime NOT NULL DEFAULT NOW(),
-	modified		datetime NOT NULL DEFAULT NOW(),
+	created_date	datetime NOT NULL DEFAULT NOW(),
+	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name

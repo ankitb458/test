@@ -2,8 +2,8 @@
  * Timestampable behavior
  *
  * Adds fields:
- * - {table}.created
- * - {table}.modified
+ * - {table}.created_date
+ * - {table}.modified_date
  *
  * Adds triggers:
  * - {table}_10__modified()
@@ -21,7 +21,7 @@ BEGIN
 	BEGIN
 		IF	NEW IS DISTINCT FROM OLD
 		THEN
-			NEW.modified := NOW();
+			NEW.modified_date := NOW();
 		END IF;
 		
 		RETURN NEW;

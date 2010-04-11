@@ -10,8 +10,8 @@ CREATE TABLE invoice_lines (
 	order_line_id	bigint REFERENCES order_lines(id),
 	parent_id		bigint REFERENCES invoice_lines(id),
 	amount			numeric(8,2) NOT NULL,
-	created			datetime NOT NULL DEFAULT NOW(),
-	modified		datetime NOT NULL DEFAULT NOW(),
+	created_date	datetime NOT NULL DEFAULT NOW(),
+	modified_date	datetime NOT NULL DEFAULT NOW(),
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_amounts

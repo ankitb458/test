@@ -19,8 +19,8 @@ CREATE TABLE order_lines (
 	rec_discount	numeric(8,2) NOT NULL,
 	rec_interval	interval,
 	rec_count		int,
-	created			datetime NOT NULL DEFAULT NOW(),
-	modified		datetime NOT NULL DEFAULT NOW(),
+	created_date	datetime NOT NULL DEFAULT NOW(),
+	modified_date	datetime NOT NULL DEFAULT NOW(),
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_amounts

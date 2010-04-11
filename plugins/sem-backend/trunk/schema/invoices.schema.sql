@@ -15,8 +15,8 @@ CREATE TABLE invoices (
 	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
 	cleared_amount	numeric(8,2) NOT NULL DEFAULT 0,
-	created			datetime NOT NULL DEFAULT NOW(),
-	modified		datetime NOT NULL DEFAULT NOW(),
+	created_date	datetime NOT NULL DEFAULT NOW(),
+	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name

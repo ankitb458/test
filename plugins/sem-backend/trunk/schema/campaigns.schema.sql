@@ -16,8 +16,8 @@ CREATE TABLE campaigns (
 	expire_date		datetime,
 	stock			int,
 	firesale		boolean NOT NULL DEFAULT FALSE,
-	created			datetime NOT NULL DEFAULT NOW(),
-	modified		datetime NOT NULL DEFAULT NOW(),
+	created_date	datetime NOT NULL DEFAULT NOW(),
+	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
 	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
