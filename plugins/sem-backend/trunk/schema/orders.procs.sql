@@ -52,7 +52,7 @@ CREATE TRIGGER orders_10_delegate_aff_id
 FOR EACH ROW EXECUTE PROCEDURE orders_delegate_aff_id();
 
 /**
- * Delegates stock handling when orders are cleared
+ * Depletes products and coupons when orders are cleared
  *
  * Todo: use shipments/shipment lines tables, and trigger this on order line updates instead.
  */
