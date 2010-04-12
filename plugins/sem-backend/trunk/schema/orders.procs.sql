@@ -1,5 +1,5 @@
 /**
- * Clean an order before it gets stored.
+ * Sets a default name when needed.
  */
 CREATE OR REPLACE FUNCTION orders_sanitize_name()
 	RETURNS trigger

@@ -1,5 +1,5 @@
 /**
- * Clean a invoice before it gets stored.
+ * Sets a default name when needed.
  */
 CREATE OR REPLACE FUNCTION invoices_sanitize_name()
 	RETURNS trigger

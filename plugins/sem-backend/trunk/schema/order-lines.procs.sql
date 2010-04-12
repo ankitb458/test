@@ -1,5 +1,5 @@
 /**
- * Sets a default name to order lines
+ * Sets a default name when needed.
  */
 CREATE OR REPLACE FUNCTION order_lines_sanitize_name()
 	RETURNS trigger

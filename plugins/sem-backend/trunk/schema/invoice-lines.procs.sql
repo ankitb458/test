@@ -1,5 +1,5 @@
 /**
- * Sets a default name when needed
+ * Sets a default name when needed.
  */
 CREATE OR REPLACE FUNCTION invoice_lines_sanitize_name()
 	RETURNS trigger

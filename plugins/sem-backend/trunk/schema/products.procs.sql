@@ -1,5 +1,5 @@
 /**
- * Assigns a default name to new products
+ * Sets a default name when needed.
  */
 CREATE OR REPLACE FUNCTION products_sanitize_name()
 	RETURNS trigger
@@ -17,7 +17,7 @@ CREATE TRIGGER products_05_sanitize_name
 FOR EACH ROW EXECUTE PROCEDURE products_sanitize_name();
 
 /**
- * Assigns a default name to new products
+ * Makes sure that selling a product results in a profit.
  */
 CREATE OR REPLACE FUNCTION products_sanitize_commission()
 	RETURNS trigger
