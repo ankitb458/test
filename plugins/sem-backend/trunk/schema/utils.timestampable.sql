@@ -29,10 +29,10 @@ BEGIN
 	$DEF$ LANGUAGE plpgsql;
 	$EXEC$;
 	
-	IF	NOT trigger_exists(t_name || '_50__modified')
+	IF	NOT trigger_exists(t_name || '_99__modified')
 	THEN
 		EXECUTE $EXEC$
-		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_50__modified') || $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_99__modified') || $EXEC$
 			BEFORE UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
 		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__modified') || $EXEC$();
 		$EXEC$;
