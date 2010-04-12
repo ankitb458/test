@@ -34,8 +34,7 @@ CREATE INDEX orders_aff_id ON orders(aff_id);
 COMMENT ON TABLE orders IS E'Orders
 
 - user_id gets invoiced; order_lines.user_id gets shipped.
-- aff_id gets the commission and is tied to the campaign_id. It gets stored
-  for reference, in case a campaign''s owner changes.
+- aff_id gets the commission and is extracted from the campaign_id.
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay or late pay...';
 
@@ -55,10 +54,7 @@ BEGIN
 			INTO	NEW.name
 			FROM	users
 			WHERE	id = NEW.user_id;
-		END IF;
-		
-		IF	NEW.name IS NULL
-		THEN
+		ELSE
 			NEW.name := 'Anonymous User';
 		END IF;
 	END IF;
