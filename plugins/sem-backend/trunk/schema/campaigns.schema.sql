@@ -150,10 +150,7 @@ BEGIN
 	IF	NEW.product_id IS NULL
 	THEN
 		-- Reset coupon fields
-		IF	NEW.status <> 'trash'
-		THEN
-			NEW.status := 'active';
-		END IF;
+		NEW.status := 'active';
 		NEW.init_discount := 0;
 		NEW.rec_discount := 0;
 		NEW.launch_date := NULL;
