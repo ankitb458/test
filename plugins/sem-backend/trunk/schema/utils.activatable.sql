@@ -113,7 +113,7 @@ BEGIN
 			NEW.expire_date IS NOT NULL AND
 			NEW.$EXEC$ || quote_ident(t_field) || $EXEC$ > NEW.expire_date
 		THEN
-			NEW.expire_date := NULL;
+			NEW.expire_date := NEW.$EXEC$ || quote_ident(t_field) || $EXEC$;
 		END IF;
 		
 		RETURN NEW;

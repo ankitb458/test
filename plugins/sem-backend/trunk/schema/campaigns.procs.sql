@@ -122,6 +122,50 @@ CREATE TRIGGER campaigns_03_sanitize_coupon
 FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_coupon();
 
 /**
+ * Automatically sets the release date
+ */
+CREATE OR REPLACE FUNCTION campaigns_sanitize_launch_date()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	NEW.product_id IS NULL
+	THEN
+		NEW.launch_date := NULL;
+		NEW.expire_date := NULL;
+		RETURN NEW;
+	ELSEIF NEW.status > 'inactive' AND NEW.launch_date IS NULL
+	THEN
+		NEW.launch_date := NOW();
+		RETURN NEW;
+	ELSEIF NEW.status <= 'inactive' OR TG_OP = 'INSERT'
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	IF	ROW(NEW.product_id, NEW.init_discount, NEW.rec_discount, NEW.firesale)
+		IS NOT DISTINCT FROM
+		ROW(OLD.product_id, OLD.init_discount, OLD.rec_discount, OLD.firesale)
+	THEN
+		RETURN NEW;
+	ELSEIF NEW.launch_date IS DISTINCT FROM OLD.launch_date
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	NEW.launch_date := GREATEST(NEW.launch_date, NOW());
+	IF	NEW.expire_date IS NOT NULL AND NEW.launch_date > NEW.expire_date
+	THEN
+		NEW.expire_date := NEW.launch_date;
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER campaigns_90_sanitize_launch_date
+	BEFORE INSERT OR UPDATE ON campaigns
+FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_launch_date();
+
+/**
  * Prevents promos from being deleted before the product it is tied to.
  */
 CREATE OR REPLACE FUNCTION campaigns_delete_promo()

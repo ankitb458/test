@@ -43,26 +43,30 @@ CREATE OR REPLACE FUNCTION products_sanitize_release_date()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	NEW.status > 'pending' AND NEW.release_date IS NULL
+	IF	NEW.status > 'inactive' AND NEW.release_date IS NULL
 	THEN
 		NEW.release_date := NOW();
 		RETURN NEW;
-	ELSEIF NEW.status <= 'pending' OR TG_OP = 'INSERT'
+	ELSEIF NEW.status <= 'inactive' OR TG_OP = 'INSERT'
 	THEN
 		RETURN NEW;
 	END IF;
 	
-	IF	ROW(NEW.init_price, NEW.init_discount, NEW.rec_price, NEW.rec_discount)
+	IF	ROW(NEW.init_price, NEW.init_comm, NEW.rec_price, NEW.rec_comm)
 		IS NOT DISTINCT FROM
-		ROW(OLD.init_price, OLD.init_discount, OLD.rec_price, OLD.rec_discount)
+		ROW(OLD.init_price, OLD.init_comm, OLD.rec_price, OLD.rec_comm)
 	THEN
 		RETURN NEW;
-	ELSEIF NEW.release_date <> OLD.release_date
+	ELSEIF NEW.release_date IS DISTINCT FROM OLD.release_date
 	THEN
 		RETURN NEW;
 	END IF;
 	
 	NEW.release_date := GREATEST(NEW.release_date, NOW());
+	IF	NEW.expire_date IS NOT NULL AND NEW.release_date > NEW.expire_date
+	THEN
+		NEW.expire_date := NEW.release_date;
+	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
