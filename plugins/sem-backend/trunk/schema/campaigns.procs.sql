@@ -57,17 +57,17 @@ BEGIN
 		END IF;
 	END IF;
 	
+	SELECT	status,
+			init_price,
+			init_comm,
+			rec_price,
+			rec_comm
+	INTO	_product
+	FROM	products
+	WHERE	id = NEW.product_id;
+	
 	IF	NEW.product_id = NEW.promo_id
 	THEN
-		SELECT	status,
-				init_price,
-				init_comm,
-				rec_price,
-				rec_comm
-		INTO	_product
-		FROM	products
-		WHERE	id = NEW.product_id;
-		
 		IF	TG_OP = 'INSERT'
 		THEN
 			NEW.status := CASE
@@ -94,14 +94,6 @@ BEGIN
 				ELSE NEW.status
 				END::status_activatable;
 		END IF;
-	ELSE
-		SELECT	init_price,
-				init_comm,
-				rec_price,
-				rec_comm
-		INTO	_product
-		FROM	products
-		WHERE	id = NEW.product_id;
 	END IF;
 	
 	-- Sanitize discount

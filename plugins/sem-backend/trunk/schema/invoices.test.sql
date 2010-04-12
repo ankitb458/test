@@ -153,7 +153,7 @@ AND		invoices.invoice_type = 'revenue'
 AND		invoice_lines.parent_id IS NOT NULL;
 
 -- clean up
---/*
+/*
 --\! sleep 3
 
 \echo '# Cleaning up...'
