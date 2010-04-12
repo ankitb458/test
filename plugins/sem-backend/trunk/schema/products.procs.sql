@@ -37,6 +37,41 @@ CREATE TRIGGER products_10_insert
 FOR EACH ROW EXECUTE PROCEDURE products_insert();
 
 /**
+ * Automatically sets the release date
+ */
+CREATE OR REPLACE FUNCTION products_sanitize_release_date()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	NEW.status > 'pending' AND NEW.release_date IS NULL
+	THEN
+		NEW.release_date := NOW();
+		RETURN NEW;
+	ELSEIF NEW.status <= 'pending' OR TG_OP = 'INSERT'
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	IF	ROW(NEW.init_price, NEW.init_discount, NEW.rec_price, NEW.rec_discount)
+		IS NOT DISTINCT FROM
+		ROW(OLD.init_price, OLD.init_discount, OLD.rec_price, OLD.rec_discount)
+	THEN
+		RETURN NEW;
+	ELSEIF NEW.release_date <> OLD.release_date
+	THEN
+		RETURN NEW;
+	END IF;
+	
+	NEW.release_date := GREATEST(NEW.release_date, NOW());
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_90_sanitize_release_date
+	BEFORE INSERT OR UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_sanitize_release_date();
+
+/**
  * Process coupons when a product's status changes
  */
 CREATE OR REPLACE FUNCTION products_update_status()
