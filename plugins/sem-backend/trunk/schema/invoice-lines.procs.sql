@@ -43,7 +43,7 @@ FOR EACH ROW EXECUTE PROCEDURE invoice_lines_sanitize_name();
 /**
  * Recalculates a invoice's status and due amount based on transaction lines
  */
-CREATE OR REPLACE FUNCTION invoice_lines_delegate_invoice_details()
+CREATE OR REPLACE FUNCTION invoice_lines_delegate_invoices()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -83,14 +83,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_10_delegate_invoice_details
+CREATE TRIGGER invoice_lines_10_delegate_invoices
 	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_invoice_details();
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_invoices
 
 /**
  * Delegates the status for order lines
  */
-CREATE OR REPLACE FUNCTION invoice_lines_delegate_order_line_details()
+CREATE OR REPLACE FUNCTION invoice_lines_delegate_order_lines()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -378,6 +378,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_20_delegate_order_line_details
+CREATE TRIGGER invoice_lines_20_delegate_order_lines
 	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_order_line_details();
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_order_lines();
