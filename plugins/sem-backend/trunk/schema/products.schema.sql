@@ -14,7 +14,7 @@ CREATE TABLE products (
 	rec_comm		numeric(8,2) NOT NULL DEFAULT 0,
 	rec_interval	interval,
 	rec_count		int,
-	launch_date		datetime,
+	release_date	datetime,
 	expire_date		datetime,
 	stock			int,
 	created_date	datetime NOT NULL DEFAULT NOW(),
@@ -32,14 +32,14 @@ CREATE TABLE products (
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL AND rec_price = 0 OR
 			rec_interval IS NOT NULL AND rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
 	CONSTRAINT valid_activatable
-		CHECK ( expire_date >= launch_date ),
+		CHECK ( expire_date >= release_date ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 )
 );
 
-SELECT	activatable('products'),
-		repeatable('products'),
+SELECT	activatable('products', 'release_date'),
 		depletable('products', 'stock'),
+		repeatable('products'),
 		sluggable('products'),
 		timestampable('products'),
 		searchable('products'),

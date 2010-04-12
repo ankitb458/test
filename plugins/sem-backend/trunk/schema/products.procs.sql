@@ -1,7 +1,7 @@
 /**
  * Auto-creates a promo for new products.
  */
-CREATE OR REPLACE FUNCTION products_create_promo()
+CREATE OR REPLACE FUNCTION products_insert()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -32,9 +32,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_10_create_promo
+CREATE TRIGGER products_10_insert
 	AFTER INSERT ON products
-FOR EACH ROW EXECUTE PROCEDURE products_create_promo();
+FOR EACH ROW EXECUTE PROCEDURE products_insert();
 
 /**
  * Process coupons when a product's status changes

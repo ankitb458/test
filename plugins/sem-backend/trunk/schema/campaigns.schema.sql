@@ -6,7 +6,7 @@ CREATE TABLE campaigns (
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	ukey			slug UNIQUE,
 	status			status_activatable NOT NULL DEFAULT 'draft',
-	name			varchar(512) NOT NULL,
+	name			varchar NOT NULL,
 	aff_id			bigint REFERENCES users(id),
 	promo_id		bigint REFERENCES products(id) ON DELETE CASCADE DEFERRABLE UNIQUE,
 	product_id		bigint REFERENCES products(id) DEFERRABLE,
@@ -41,7 +41,7 @@ CREATE TABLE campaigns (
 		CHECK ( NOT firesale OR stock IS NOT NULL OR expire_date IS NOT NULL )
 );
 
-SELECT	activatable('campaigns'),
+SELECT	activatable('campaigns', 'launch_date'),
 		depletable('campaigns', 'stock'),
 		sluggable('campaigns'),
 		timestampable('campaigns'),

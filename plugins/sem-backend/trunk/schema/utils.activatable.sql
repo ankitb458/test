@@ -27,18 +27,19 @@ CREATE TYPE status_activatable AS enum (
  * - {table}_activate
  * - {table}_deactivate
  */
-CREATE OR REPLACE FUNCTION activatable(varchar)
+CREATE OR REPLACE FUNCTION activatable(varchar, varchar)
 	RETURNS varchar
 AS $$
 DECLARE
 	t_name		alias for $1;
+	t_field		alias for $2;
 BEGIN
 	IF	NOT constraint_exists(t_name, 'valid_activatable')
 	THEN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
 		EXECUTE $EXEC$
 			CONSTRAINT valid_activatable
-				CHECK ( expire_date >= launch_date );
+				CHECK ( expire_date >= $EXEC$ || t_field || $EXEC$ );
 		$EXEC$;
 	END IF;
 	
@@ -46,7 +47,7 @@ BEGIN
 	THEN
 		EXECUTE $EXEC$
 		CREATE INDEX $EXEC$ || quote_ident(t_name || '_activate') || $EXEC$
-			ON $EXEC$ || quote_ident(t_name) || $EXEC$(launch_date)
+			ON $EXEC$ || quote_ident(t_name) || $EXEC$($EXEC$ || quote_ident(t_field) || $EXEC$)
 		WHERE	status = 'future';
 		$EXEC$;
 	END IF;
@@ -68,7 +69,7 @@ BEGIN
 		UPDATE	$EXEC$ || quote_ident(t_name) || $EXEC$
 		SET		status = 'active'
 		WHERE	status = 'future'
-		AND		launch_date <= NOW()::datetime;
+		AND		$EXEC$ || quote_ident(t_field) || $EXEC$ <= NOW()::datetime;
 		
 		RETURN FOUND;
 	END;
@@ -98,17 +99,19 @@ BEGIN
 		-- Process schedules
 		IF	NEW.status = 'future'
 		THEN
-			IF	NEW.launch_date IS NULL
+			IF	NEW.$EXEC$ || quote_ident(t_field) || $EXEC$ IS NULL
 			THEN
 				NEW.status := 'inactive';
-			ELSEIF NEW.launch_date <= NOW()::datetime
+			ELSEIF NEW.$EXEC$ || quote_ident(t_field) || $EXEC$ <= NOW()::datetime
 			THEN
 				NEW.status := 'active';
 			END IF;
 		END IF;
 
-		-- Make sure that launch_date and expire_date are consistent
-		IF	NEW.launch_date IS NOT NULL AND NEW.expire_date IS NOT NULL AND NEW.launch_date > NEW.expire_date
+		-- Make sure that start_date and expire_date are consistent
+		IF	NEW.$EXEC$ || quote_ident(t_field) || $EXEC$ IS NOT NULL AND
+			NEW.expire_date IS NOT NULL AND
+			NEW.$EXEC$ || quote_ident(t_field) || $EXEC$ > NEW.expire_date
 		THEN
 			NEW.expire_date := NULL;
 		END IF;
