@@ -63,6 +63,7 @@ BEGIN
 		RETURN NEW;
 	ELSEIF TG_OP = 'INSERT' AND NEW.promo_id IS NOT NULL
 	THEN
+		-- This can only ever happen with a trigger; we're clean already.
 		RETURN NEW;
 	END IF;
 	
@@ -131,7 +132,7 @@ BEGIN
 	END IF;
 	
 	-- Active campaigns require a discount
-	IF	NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
+	IF	NEW.status > 'inactive' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
 	THEN
 		NEW.status = 'inactive';
 	END IF;

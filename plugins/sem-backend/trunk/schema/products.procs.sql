@@ -36,44 +36,6 @@ CREATE TRIGGER products_05_sanitize_commission
 FOR EACH ROW EXECUTE PROCEDURE products_sanitize_commission();
 
 /**
- * Auto-creates a promo for new products.
- */
-CREATE OR REPLACE FUNCTION products_insert()
-	RETURNS trigger
-AS $$
-BEGIN
-	INSERT INTO campaigns (
-		uuid,
-		status,
-		name,
-		product_id,
-		promo_id
-		)
-	VALUES (
-		NEW.uuid,
-		CASE
-		WHEN NEW.status = 'trash'
-		THEN 'trash'
-		WHEN NEW.status = 'draft'
-		THEN 'draft'
-		WHEN NEW.status = 'pending'
-		THEN 'pending'
-		ELSE 'inactive'
-		END::status_activatable,
-		'Promo on ' || NEW.name,
-		NEW.id,
-		NEW.id
-		);
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER products_10_insert
-	AFTER INSERT ON products
-FOR EACH ROW EXECUTE PROCEDURE products_insert();
-
-/**
  * Automatically sets the release date
  */
 CREATE OR REPLACE FUNCTION products_sanitize_release_date()
@@ -111,6 +73,44 @@ END $$ LANGUAGE plpgsql;
 CREATE TRIGGER products_90_sanitize_release_date
 	BEFORE INSERT OR UPDATE ON products
 FOR EACH ROW EXECUTE PROCEDURE products_sanitize_release_date();
+
+/**
+ * Auto-creates a promo for new products.
+ */
+CREATE OR REPLACE FUNCTION products_insert()
+	RETURNS trigger
+AS $$
+BEGIN
+	INSERT INTO campaigns (
+		uuid,
+		status,
+		name,
+		product_id,
+		promo_id
+		)
+	VALUES (
+		NEW.uuid,
+		CASE
+		WHEN NEW.status = 'trash'
+		THEN 'trash'
+		WHEN NEW.status = 'draft'
+		THEN 'draft'
+		WHEN NEW.status = 'pending'
+		THEN 'pending'
+		ELSE 'inactive'
+		END::status_activatable,
+		'Promo on ' || NEW.name,
+		NEW.id,
+		NEW.id
+		);
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_10_insert
+	AFTER INSERT ON products
+FOR EACH ROW EXECUTE PROCEDURE products_insert();
 
 /**
  * Process coupons when a product's status changes
