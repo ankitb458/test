@@ -111,7 +111,7 @@ FOR EACH ROW EXECUTE PROCEDURE invoices_insert_lines();
 /**
  * Delegates status changes to invoices into invoice lines
  */
-CREATE OR REPLACE FUNCTION invoices_update_status()
+CREATE OR REPLACE FUNCTION invoices_propagate_status()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -129,6 +129,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_10_update_status
+CREATE TRIGGER invoices_10_propagate_status
 	AFTER UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_update_status();
+FOR EACH ROW EXECUTE PROCEDURE invoices_propagate_status();

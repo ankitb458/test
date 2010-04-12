@@ -85,7 +85,7 @@ END $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER invoice_lines_10_delegate_invoices
 	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_invoices
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_invoices();
 
 /**
  * Delegates the status for order lines

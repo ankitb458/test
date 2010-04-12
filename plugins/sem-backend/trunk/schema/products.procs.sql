@@ -115,7 +115,7 @@ FOR EACH ROW EXECUTE PROCEDURE products_insert();
 /**
  * Process coupons when a product's status changes
  */
-CREATE OR REPLACE FUNCTION products_update_status()
+CREATE OR REPLACE FUNCTION products_propagate_status()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -194,14 +194,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_10_update_status
+CREATE TRIGGER products_10_propagate_status
 	AFTER UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_update_status();
+FOR EACH ROW EXECUTE PROCEDURE products_propagate_status();
 
 /**
  * Refreshes coupon discounts on product updates.
  */
-CREATE OR REPLACE FUNCTION products_update_price()
+CREATE OR REPLACE FUNCTION products_propagate_price()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -314,6 +314,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_20_update_price
+CREATE TRIGGER products_20_propagate_price
 	AFTER UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_update_price();
+FOR EACH ROW EXECUTE PROCEDURE products_propagate_price();
