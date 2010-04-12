@@ -11,7 +11,8 @@ CREATE TABLE invoices (
 	payment_ref		varchar UNIQUE,
 	order_id		bigint REFERENCES orders(id),
 	user_id			bigint REFERENCES users(id),
-	due_date		datetime NOT NULL DEFAULT NOW(),
+	issue_date		datetime NOT NULL DEFAULT NOW(),
+	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
 	cleared_amount	numeric(8,2) NOT NULL DEFAULT 0,
@@ -22,7 +23,8 @@ CREATE TABLE invoices (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+		CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
+			NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status = 'cleared' ) ),
 	CONSTRAINT valid_invoice_type
 		CHECK ( invoice_type = 'revenue' OR order_id IS NULL ),

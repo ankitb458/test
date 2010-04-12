@@ -48,6 +48,25 @@ CREATE TRIGGER invoices_02_insert_user_id
 FOR EACH ROW EXECUTE PROCEDURE invoices_insert_user_id();
 
 /**
+ * Auto-assigns an issue date when needed
+ */
+CREATE OR REPLACE FUNCTION invoices_sanitize_issue_date()
+	RETURNS trigger
+AS $$
+BEGIN
+	IF	NEW.status > 'draft' AND NEW.issue_date IS NULL
+	THEN
+		NEW.issue_date := NOW();
+	END IF;
+	
+	RETURN NEW;
+END $$ LANGUAGE plpgsql;
+
+CREATE TRIGGER invoices_10_sanitize_issue_date
+	BEFORE INSERT OR UPDATE ON invoices
+FOR EACH ROW EXECUTE PROCEDURE invoices_sanitize_issue_date();
+
+/**
  * Autofills an order's invoice
  */
 CREATE OR REPLACE FUNCTION invoices_insert_lines()
@@ -92,7 +111,7 @@ FOR EACH ROW EXECUTE PROCEDURE invoices_insert_lines();
 /**
  * Delegates status changes to invoices into invoice lines
  */
-CREATE OR REPLACE FUNCTION invoices_delegate_status()
+CREATE OR REPLACE FUNCTION invoices_update_status()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -110,6 +129,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_10_delegate_status
+CREATE TRIGGER invoices_10_update_status
 	AFTER UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_delegate_status();
+FOR EACH ROW EXECUTE PROCEDURE invoices_update_status();
