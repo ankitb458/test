@@ -1,7 +1,32 @@
 /**
+ * Clean a invoice before it gets stored.
+ */
+CREATE OR REPLACE FUNCTION invoices_sanitize_name()
+	RETURNS trigger
+AS $$
+BEGIN
+	-- Default name
+	IF	NEW.name IS NULL
+	THEN
+		NEW.name = CASE
+			WHEN NEW.invoice_type = 'expense'
+			THEN 'Commissions'
+			ELSE 'Order'
+			END;
+	END IF;
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER invoices_05_sanitize_name
+	BEFORE INSERT OR UPDATE ON invoices
+FOR EACH ROW EXECUTE PROCEDURE invoices_sanitize_name();
+
+/**
  * Autofills the user id when possible
  */
-CREATE OR REPLACE FUNCTION invoices_fill_user_id()
+CREATE OR REPLACE FUNCTION invoices_insert_user_id()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -18,14 +43,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_02_fill_user_id
+CREATE TRIGGER invoices_02_insert_user_id
 	BEFORE INSERT ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_fill_user_id();
+FOR EACH ROW EXECUTE PROCEDURE invoices_insert_user_id();
 
 /**
  * Autofills an order's invoice
  */
-CREATE OR REPLACE FUNCTION invoices_fill_lines()
+CREATE OR REPLACE FUNCTION invoices_insert_lines()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -60,9 +85,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_10_fill_lines
+CREATE TRIGGER invoices_10_insert_lines
 	AFTER INSERT ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_fill_lines();
+FOR EACH ROW EXECUTE PROCEDURE invoices_insert_lines();
 
 /**
  * Delegates status changes to invoices into invoice lines

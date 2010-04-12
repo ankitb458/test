@@ -35,6 +35,7 @@ CREATE TABLE invoices (
 );
 
 SELECT	timestampable('invoices'),
+		payable('invoices'),
 		searchable('invoices'),
 		trashable('invoices');
 
@@ -46,41 +47,6 @@ COMMENT ON TABLE invoices IS E'Invoices
 
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay, or late pay...';
-
-/**
- * Clean a invoice before it gets stored.
- */
-CREATE OR REPLACE FUNCTION invoices_clean()
-	RETURNS trigger
-AS $$
-BEGIN
-	-- Default name
-	IF	NEW.name IS NULL
-	THEN
-		NEW.name = CASE
-			WHEN NEW.invoice_type = 'expense'
-			THEN 'Commissions'
-			ELSE 'Order'
-			END;
-	END IF;
-	
-	-- Assign default dates if needed
-	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
-	THEN
-		NEW.due_date := NOW();
-	END IF;
-	IF	NEW.cleared_date IS NULL AND NEW.status = 'cleared'
-	THEN
-		NEW.cleared_date := NOW();
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER invoices_05_clean
-	BEFORE INSERT OR UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_clean();
 
 /**
  * Process read-only fields

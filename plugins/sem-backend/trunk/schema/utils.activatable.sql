@@ -34,12 +34,12 @@ DECLARE
 	t_name		alias for $1;
 	t_field		alias for $2;
 BEGIN
-	IF	NOT constraint_exists(t_name, 'valid_activatable')
+	IF	NOT constraint_exists(t_name, 'valid_' || t_field)
 	THEN
-		RAISE EXCEPTION 'Constraint valid_% does not exist on %', 'activatable. Default:', t_name;
-		EXECUTE $EXEC$
+		RAISE EXCEPTION 'Constraint valid_% does not exist on %. Default: %', t_field, t_name,
+		$EXEC$
 			CONSTRAINT valid_activatable
-				CHECK ( expire_date >= $EXEC$ || t_field || $EXEC$ );
+				CHECK ( expire_date >= $EXEC$ || t_field || $EXEC$ )
 		$EXEC$;
 	END IF;
 	

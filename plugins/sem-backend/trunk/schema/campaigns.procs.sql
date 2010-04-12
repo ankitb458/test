@@ -12,6 +12,8 @@ BEGIN
 		RETURN NEW;
 	ELSEIF NEW.aff_id IS NULL
 	THEN
+		NEW.name := COALESCE(NEW.name, NEW.ukey);
+		
 		IF	NEW.promo_id IS NULL
 		THEN
 			NEW.name := COALESCE(NEW.name, 'Campaign');
@@ -31,7 +33,7 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_01_sanitize_name
+CREATE TRIGGER campaigns_05_sanitize_name
 	BEFORE INSERT OR UPDATE ON campaigns
 FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_name();
 
@@ -44,11 +46,33 @@ AS $$
 DECLARE
 	_product		record;
 BEGIN
-	IF	NEW.product_id IS NULL OR
-		TG_OP = 'INSERT' AND NEW.promo_id IS NOT NULL
+	IF	NEW.product_id IS NULL
+	THEN
+		-- Reset coupon fields
+		IF	NEW.status <> 'trash'
+		THEN
+			NEW.status := 'active';
+		END IF;
+		NEW.init_discount := 0;
+		NEW.rec_discount := 0;
+		NEW.launch_date := NULL;
+		NEW.expire_date := NULL;
+		NEW.stock := NULL;
+		NEW.firesale := FALSE;
+		
+		RETURN NEW;
+	ELSEIF TG_OP = 'INSERT' AND NEW.promo_id IS NOT NULL
 	THEN
 		RETURN NEW;
-	ELSEIF TG_OP = 'UPDATE'
+	END IF;
+	
+	-- Firesales require either or both of expire_date and stock
+	IF	NEW.firesale
+	THEN
+		NEW.firesale := NEW.expire_date IS NOT NULL OR NEW.stock IS NOT NULL;
+	END IF;
+	
+	IF	TG_OP = 'UPDATE'
 	THEN
 		IF	ROW(NEW.status, NEW.product_id, NEW.init_discount, NEW.rec_discount)
 			IS NOT DISTINCT FROM ROW(OLD.status, OLD.product_id, OLD.init_discount, OLD.rec_discount)
@@ -104,6 +128,12 @@ BEGIN
 	ELSE
 		NEW.init_discount := LEAST(NEW.init_discount, _product.init_price - _product.init_comm);
 		NEW.rec_discount := LEAST(NEW.rec_discount, _product.rec_price - _product.rec_comm);
+	END IF;
+	
+	-- Active campaigns require a discount
+	IF	NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
+	THEN
+		NEW.status = 'inactive';
 	END IF;
 	
 	RETURN NEW;

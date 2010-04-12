@@ -1,4 +1,33 @@
 /**
+ * Clean an order before it gets stored.
+ */
+CREATE OR REPLACE FUNCTION orders_sanitize_name()
+	RETURNS trigger
+AS $$
+BEGIN
+	-- Default name
+	IF	NEW.name IS NULL
+	THEN
+		IF	NEW.user_id IS NOT NULL
+		THEN
+			SELECT	name
+			INTO	NEW.name
+			FROM	users
+			WHERE	id = NEW.user_id;
+		ELSE
+			NEW.name := 'Anonymous User';
+		END IF;
+	END IF;
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER orders_05_sanitize_name
+	BEFORE INSERT OR UPDATE ON orders
+FOR EACH ROW EXECUTE PROCEDURE orders_sanitize_name();
+
+/**
  * Sanitizes an order's campaign.
  */
 CREATE OR REPLACE FUNCTION orders_sanitize_campaign_id()

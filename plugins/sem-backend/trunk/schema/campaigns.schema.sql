@@ -33,7 +33,7 @@ CREATE TABLE campaigns (
 	CONSTRAINT valid_promo
 		CHECK ( promo_id IS NULL OR
 			promo_id IS NOT DISTINCT FROM product_id AND ukey IS NULL AND aff_id IS NULL ),
-	CONSTRAINT valid_activatable
+	CONSTRAINT valid_launch_date
 		CHECK ( expire_date >= launch_date ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 ),
@@ -136,51 +136,6 @@ COMMENT ON VIEW active_promos IS E'Active Promos
 - status is active.
 - stock, if set, is not depleted.
 - expire_date, if set, is not reached.';
-
-/**
- * Clean a campaign before it gets stored.
- */
-CREATE OR REPLACE FUNCTION campaigns_clean()
-	RETURNS trigger
-AS $$
-BEGIN
-	-- Default name and ukey
-	NEW.name := COALESCE(NEW.name, NEW.ukey);
-	
-	IF	NEW.product_id IS NULL
-	THEN
-		-- Reset coupon fields
-		IF	NEW.status <> 'trash'
-		THEN
-			NEW.status := 'active';
-		END IF;
-		NEW.init_discount := 0;
-		NEW.rec_discount := 0;
-		NEW.launch_date := NULL;
-		NEW.expire_date := NULL;
-		NEW.stock := NULL;
-		NEW.firesale := FALSE;
-	ELSE
-		-- Require a discount
-		IF	NEW.status >= 'future' AND NEW.init_discount = 0 AND NEW.rec_discount = 0
-		THEN
-			NEW.status = 'inactive';
-		END IF;
-		
-		-- Firesales require either or both of expire_date and stock
-		IF	NEW.firesale
-		THEN
-			NEW.firesale := NEW.expire_date IS NOT NULL OR NEW.stock IS NOT NULL;
-		END IF;
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER campaigns_05_clean
-	BEFORE INSERT OR UPDATE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_clean();
 
 /**
  * Process read-only fields

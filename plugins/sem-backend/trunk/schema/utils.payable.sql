@@ -12,6 +12,68 @@ CREATE TYPE status_payable AS enum (
 	);
 
 /**
+ * Payable behavior
+ *
+ * Adds fields:
+ * - rec_interval
+ * - rec_count
+ *
+ * Adds constraint:
+ * - valid_interval
+ *
+ * Adds triggers:
+ * - {table}_01__check_interval
+ */
+CREATE OR REPLACE FUNCTION payable(varchar)
+	RETURNS varchar
+AS $$
+DECLARE
+	t_name		alias for $1;
+BEGIN
+	IF	NOT constraint_exists(t_name, 'valid_flow')
+	THEN
+		RAISE EXCEPTION 'Constraint valid_% does not exist on %. Default: %', 'flow', t_name,
+		$EXEC$
+			CONSTRAINT valid_flow
+				CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+					NOT ( cleared_date IS NULL AND status = 'cleared' ) )
+		$EXEC$;
+	END IF;
+	
+	EXECUTE $EXEC$
+	CREATE OR REPLACE FUNCTION $EXEC$ || quote_ident(t_name || '__sanitize_flow') || $EXEC$()
+		RETURNS TRIGGER
+	AS $DEF$
+	BEGIN
+		-- Assign default dates if needed
+		IF	NEW.due_date IS NULL AND NEW.status > 'draft'
+		THEN
+			NEW.due_date := NOW();
+		END IF;
+		IF	NEW.cleared_date IS NULL AND NEW.status = 'cleared'
+		THEN
+			NEW.cleared_date := NOW();
+		END IF;
+
+		RETURN NEW;
+	END;
+	$DEF$ LANGUAGE plpgsql;
+	$EXEC$;
+	
+	IF	NOT trigger_exists(t_name || '_30__sanitize_flow')
+	THEN
+		EXECUTE $EXEC$
+		CREATE TRIGGER $EXEC$ || quote_ident(t_name || '_30__sanitize_flow') || $EXEC$
+			BEFORE INSERT OR UPDATE ON $EXEC$ || quote_ident(t_name) || $EXEC$
+		FOR EACH ROW EXECUTE PROCEDURE $EXEC$ || quote_ident(t_name || '__sanitize_flow') || $EXEC$();
+		$EXEC$;
+	END IF;
+	RETURN t_name;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/**
  * Payment type
  */
 CREATE TYPE type_invoice AS enum (

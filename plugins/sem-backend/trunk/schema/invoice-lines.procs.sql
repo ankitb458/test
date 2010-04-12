@@ -1,4 +1,46 @@
 /**
+ * Sets a default name when needed
+ */
+CREATE OR REPLACE FUNCTION invoice_lines_sanitize_name()
+	RETURNS trigger
+AS $$
+BEGIN
+	-- Default name
+	IF	NEW.name IS NULL
+	THEN
+		IF	NEW.order_line_id IS NOT NULL
+		THEN
+			SELECT	name
+			INTO	NEW.name
+			FROM	order_lines
+			WHERE	id = NEW.order_line_id;
+		ELSEIF NEW.parent_id IS NOT NULL
+		THEN
+			SELECT	name
+			INTO	NEW.name
+			FROM	invoice_lines
+			WHERE	id = NEW.parent_id;
+		ELSE
+			SELECT	CASE
+					WHEN order_id IS NULL
+					THEN 'Commission'
+					ELSE 'Order'
+					END
+			INTO	NEW.name
+			FROM	invoices
+			WHERE	id = NEW.invoice_id;
+		END IF;
+	END IF;
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER invoice_lines_05_sanitize_name
+	BEFORE INSERT OR UPDATE ON invoice_lines
+FOR EACH ROW EXECUTE PROCEDURE invoice_lines_sanitize_name();
+
+/**
  * Recalculates a invoice's status and due amount based on transaction lines
  */
 CREATE OR REPLACE FUNCTION invoice_lines_delegate_invoice_details()

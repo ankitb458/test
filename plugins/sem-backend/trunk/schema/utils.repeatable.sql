@@ -19,11 +19,11 @@ DECLARE
 BEGIN
 	IF	NOT constraint_exists(t_name, 'valid_interval')
 	THEN
-		RAISE EXCEPTION 'Constraint valid_% does not exist on %. Default:', 'interval', t_name;
-		EXECUTE $EXEC$
+		RAISE EXCEPTION 'Constraint valid_% does not exist on %. Default: %', 'interval', t_name,
+		$EXEC$
 			CONSTRAINT valid_interval
 				CHECK ( rec_interval IS NULL AND rec_count IS NULL OR
-					rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) );
+					rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) )
 		$EXEC$;
 	END IF;
 	

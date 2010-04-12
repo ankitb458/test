@@ -58,40 +58,6 @@ COMMENT ON TABLE orders IS E'Order lines
   exception would be in the event of a site-wide promo.';
 
 /**
- * Clean an order line before it gets stored.
- */
-CREATE OR REPLACE FUNCTION order_lines_clean()
-	RETURNS trigger
-AS $$
-BEGIN
-	-- Default name
-	IF	NEW.name IS NULL
-	THEN
-		IF	NEW.product_id IS NOT NULL
-		THEN
-			SELECT	name
-			INTO	NEW.name
-			FROM	products
-			WHERE	id = NEW.product_id;
-		ELSE
-			NEW.name := 'Anonymous Product';
-		END IF;
-	END IF;
-	
-	IF	NEW.rec_interval IS NULL AND NEW.rec_count IS NOT NULL
-	THEN
-		NEW.rec_count := NULL;
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER order_lines_05_clean
-	BEFORE INSERT OR UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_clean();
-
-/**
  * Process read-only fields
  */
 CREATE OR REPLACE FUNCTION order_lines_readonly()

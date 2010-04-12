@@ -23,6 +23,7 @@ CREATE TABLE orders (
 );
 
 SELECT	timestampable('orders'),
+		payable('orders'),
 		searchable('orders'),
 		trashable('orders');
 
@@ -37,45 +38,6 @@ COMMENT ON TABLE orders IS E'Orders
 - aff_id gets the commission and is extracted from the campaign_id.
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay or late pay...';
-
-/**
- * Clean an order before it gets stored.
- */
-CREATE OR REPLACE FUNCTION orders_clean()
-	RETURNS trigger
-AS $$
-BEGIN
-	-- Default name
-	IF	NEW.name IS NULL
-	THEN
-		IF	NEW.user_id IS NOT NULL
-		THEN
-			SELECT	name
-			INTO	NEW.name
-			FROM	users
-			WHERE	id = NEW.user_id;
-		ELSE
-			NEW.name := 'Anonymous User';
-		END IF;
-	END IF;
-	
-	-- Assign default dates if needed
-	IF	NEW.due_date IS NULL AND NEW.status > 'draft'
-	THEN
-		NEW.due_date := NOW();
-	END IF;
-	IF	NEW.cleared_date IS NULL AND NEW.status = 'cleared'
-	THEN
-		NEW.cleared_date := NOW();
-	END IF;
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER orders_05_clean
-	BEFORE INSERT OR UPDATE ON orders
-FOR EACH ROW EXECUTE PROCEDURE orders_clean();
 
 /**
  * Process read-only fields

@@ -31,7 +31,7 @@ CREATE TABLE products (
 	CONSTRAINT valid_interval
 		CHECK ( rec_interval IS NULL AND rec_count IS NULL AND rec_price = 0 OR
 			rec_interval IS NOT NULL AND rec_interval >= '0' AND ( rec_count IS NULL OR rec_count >= 0 ) ),
-	CONSTRAINT valid_activatable
+	CONSTRAINT valid_release_date
 		CHECK ( expire_date >= release_date ),
 	CONSTRAINT valid_stock
 		CHECK ( stock >= 0 )
@@ -69,28 +69,6 @@ COMMENT ON VIEW active_products IS E'Active Products
 - status is active.
 - stock, if set, is not depleted.
 - expire_date, if set, is not reached.';
-
-/**
- * Clean a product before it gets stored.
- */
-CREATE OR REPLACE FUNCTION products_clean()
-	RETURNS trigger
-AS $$
-BEGIN
-	-- Default name and ukey
-	NEW.name := COALESCE(NEW.name, NEW.ukey, NEW.sku, 'Product');
-	
-	-- Fix commissions if needed
-	NEW.init_comm := LEAST(NEW.init_comm, NEW.init_price);
-	NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_price);
-	
-	RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER products_05_clean
-	BEFORE INSERT OR UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_clean();
 
 /**
  * Add SKU to the tsv

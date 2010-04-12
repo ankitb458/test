@@ -1,4 +1,33 @@
 /**
+ * Sets a default name to order lines
+ */
+CREATE OR REPLACE FUNCTION order_lines_sanitize_name()
+	RETURNS trigger
+AS $$
+BEGIN
+	-- Default name
+	IF	NEW.name IS NULL
+	THEN
+		IF	NEW.product_id IS NOT NULL
+		THEN
+			SELECT	name
+			INTO	NEW.name
+			FROM	products
+			WHERE	id = NEW.product_id;
+		ELSE
+			NEW.name := 'Anonymous Product';
+		END IF;
+	END IF;
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER order_lines_05_sanitize_name
+	BEFORE INSERT OR UPDATE ON order_lines
+FOR EACH ROW EXECUTE PROCEDURE order_lines_sanitize_name();
+
+/**
  * Sanitizes an order line's coupon.
  *
  * To force a refresh of an order's details (e.g. when changing its

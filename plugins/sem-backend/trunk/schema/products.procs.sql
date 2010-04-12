@@ -1,4 +1,41 @@
 /**
+ * Assigns a default name to new products
+ */
+CREATE OR REPLACE FUNCTION products_sanitize_name()
+	RETURNS trigger
+AS $$
+BEGIN
+	-- Default name and ukey
+	NEW.name := COALESCE(NEW.name, NEW.ukey, NEW.sku, 'Product');
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_05_sanitize_name
+	BEFORE INSERT OR UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_sanitize_name();
+
+/**
+ * Assigns a default name to new products
+ */
+CREATE OR REPLACE FUNCTION products_sanitize_commission()
+	RETURNS trigger
+AS $$
+BEGIN
+	-- Fix commissions if needed
+	NEW.init_comm := LEAST(NEW.init_comm, NEW.init_price);
+	NEW.rec_comm := LEAST(NEW.rec_comm, NEW.rec_price);
+	
+	RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER products_05_sanitize_commission
+	BEFORE INSERT OR UPDATE ON products
+FOR EACH ROW EXECUTE PROCEDURE products_sanitize_commission();
+
+/**
  * Auto-creates a promo for new products.
  */
 CREATE OR REPLACE FUNCTION products_insert()
