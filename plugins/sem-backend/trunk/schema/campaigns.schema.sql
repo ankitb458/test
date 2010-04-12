@@ -168,9 +168,9 @@ BEGIN
 		END IF;
 		
 		-- Firesales require either or both of expire_date and stock
-		IF	NEW.firesale AND NEW.expire_date IS NULL AND NEW.stock IS NULL
+		IF	NEW.firesale
 		THEN
-			NEW.firesale := FALSE;
+			NEW.firesale := NEW.expire_date IS NOT NULL OR NEW.stock IS NOT NULL;
 		END IF;
 	END IF;
 	
