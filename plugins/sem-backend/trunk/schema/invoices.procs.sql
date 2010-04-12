@@ -26,7 +26,7 @@ FOR EACH ROW EXECUTE PROCEDURE invoices_sanitize_name();
 /**
  * Autofills the user id when possible
  */
-CREATE OR REPLACE FUNCTION invoices_insert_user_id()
+CREATE OR REPLACE FUNCTION invoices_sanitize_user_id()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -43,9 +43,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_02_insert_user_id
+CREATE TRIGGER invoices_02_sanitize_user_id
 	BEFORE INSERT ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_insert_user_id();
+FOR EACH ROW EXECUTE PROCEDURE invoices_sanitize_user_id();
 
 /**
  * Auto-assigns an issue date when needed
