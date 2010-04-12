@@ -1,7 +1,7 @@
 /**
- * Sanitizes a campaign's affiliate.
+ * Sanitizes a campaign's name based on the affiliate.
  */
-CREATE OR REPLACE FUNCTION campaigns_sanitize_aff_id()
+CREATE OR REPLACE FUNCTION campaigns_sanitize_name()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -31,9 +31,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER campaigns_01_sanitize_aff_id
+CREATE TRIGGER campaigns_01_sanitize_name
 	BEFORE INSERT OR UPDATE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_aff_id();
+FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_name();
 
 /**
  * Validates a coupon's discounts.
@@ -124,7 +124,7 @@ FOR EACH ROW EXECUTE PROCEDURE campaigns_sanitize_coupon();
 /**
  * Prevents promos from being deleted before the product it is tied to.
  */
-CREATE OR REPLACE FUNCTION campaigns_check_delete_promo()
+CREATE OR REPLACE FUNCTION campaigns_delete_promo()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -144,6 +144,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER campaigns_01_check_delete_promo
+CREATE CONSTRAINT TRIGGER campaigns_01_delete_promo
 	AFTER DELETE ON campaigns
-FOR EACH ROW EXECUTE PROCEDURE campaigns_check_delete_promo();
+FOR EACH ROW EXECUTE PROCEDURE campaigns_delete_promo();

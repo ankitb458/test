@@ -56,6 +56,7 @@ COMMENT ON TABLE products IS E'Stores campaigns, coupons, and promos.
 
 Promos are tied to products through their uuid; every product has one.
 
+- ukey cannot be null unless the campaign is a promo.
 - stock gets decreased as new orders are *cleared*. In other words,
   it is only loosely enforced.
 - An active firesale requires either or both of expire_date and stock.
