@@ -2548,7 +2548,7 @@ class sem_nav_menu extends WP_Widget {
 			SELECT	posts.ID
 			FROM	$wpdb->posts as posts
 			WHERE	posts.post_type = 'page'
-			AND		post_status <> 'trash'
+			AND		post_status IN ( 'publish', 'private' )
 			AND		posts.post_parent IN ( " . implode(',', $root_ids) . " )
 			");
 		
@@ -3223,7 +3223,7 @@ EOS;
 					SELECT	ID
 					FROM	$wpdb->posts
 					WHERE	post_type = 'page'
-					AND		post_status <> 'trash'
+					AND		post_status IN ( 'publish', 'private' )
 					");
 				wp_cache_set('page_ids', $page_ids, 'widget_queries');
 			}
