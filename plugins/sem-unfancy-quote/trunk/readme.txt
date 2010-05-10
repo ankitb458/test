@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: code, quote, fancy-quote, fancy quote, unfancy-quote, unfancy quote, semiologic
 Requires at least: 2.0
-Tested up to: 2.9.2
+Tested up to: 3.0
 Stable tag: trunk
 
 The unfancy quote plugin for WordPress lets you override WordPress' quote fancification.
