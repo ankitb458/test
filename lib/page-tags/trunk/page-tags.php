@@ -2,7 +2,7 @@
 /*
  * Page Tags
  * Author: Denis de Bernardy <http://www.mesoconcepts.com>
- * Version: 2.0.2
+ * Version: 2.0.3 RC
  */
 
 
@@ -20,6 +20,16 @@ class page_tags {
 	 **/
 
 	function scripts() {
+		if ( function_exists('is_multisite') ) {
+			if ( isset($_GET['post']) ) {
+				$post = get_post(intval($_GET['post']));
+				if ( $post->post_type != 'page' )
+					return;
+			} elseif ( !isset($_GET['post_type']) || $_GET['post_type'] != 'page' ) {
+				return;
+			}
+		}
+		
 		$plugin_path = plugin_dir_url(__FILE__);
 		
 		wp_enqueue_script('page_tags', $plugin_path . 'js/page-tags.js', array('suggest', 'jquery-ui-tabs', 'wp-lists'), '20090520', true);
@@ -89,4 +99,8 @@ class page_tags {
 
 add_action('admin_print_scripts-page.php', array('page_tags', 'scripts'));
 add_action('admin_print_scripts-page-new.php', array('page_tags', 'scripts'));
+if ( function_exists('is_multisite') ) {
+	add_action('admin_print_scripts-post.php', array('page_tags', 'scripts'));
+	add_action('admin_print_scripts-post-new.php', array('page_tags', 'scripts'));
+}
 ?>
