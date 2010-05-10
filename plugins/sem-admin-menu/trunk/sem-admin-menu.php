@@ -337,7 +337,7 @@ function sem_admin_menu_admin() {
 foreach ( array('load-page-new.php', 'load-settings_page_admin-menu') as $hook )
 	add_action($hook, 'sem_admin_menu_admin');
 
-if ( function_exists('is_super_admin') && is_admin() &&
+if ( function_exists('is_multisite') && is_admin() &&
 	isset($_GET['post_type']) && $_GET['post_type'] == 'page' )
 	add_action('load-post-new.php', 'sem_admin_menu_admin');
 
