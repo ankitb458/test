@@ -2662,6 +2662,8 @@ class sem_nav_menu extends WP_Widget {
 		
 		if ( $site_domain == $link_domain ) {
 			return true;
+		} elseif ( function_exists('is_multisite') && is_multisite() ) {
+			return false;
 		} else {
 			$site_elts = explode('.', $site_domain);
 			$link_elts = explode('.', $link_domain);
