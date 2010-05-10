@@ -36,7 +36,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 
 = 4.0.5 =
 
-- 3.0 compat
+- WP 3.0 compat
 
 = 4.0.4 =
 
