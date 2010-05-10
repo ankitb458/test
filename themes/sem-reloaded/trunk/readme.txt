@@ -27,6 +27,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 0.9.3 =
+
+- 3.0 compat
+
 = 0.9.2 =
 
 - Autofix panels when moving in and out of themes
