@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: asides, opt-in-front-page, opt-in front page, opt-in, semiologic
 Requires at least: 2.8
-Tested up to: 2.9.2
+Tested up to: 3.0
 Stable tag: trunk
 
 Lets you add posts to your front page on an opt-in basis.
