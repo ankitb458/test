@@ -151,11 +151,18 @@ class sem_admin_menu {
 					$parent_id = '';
 				}
 				
-				if ( $parent_id )
-					$parent_id = '?parent_id=' . $parent_id;
+				if ( $parent_id ) {
+					$parent_id = ( function_exists('is_super_admin') ? '&amp;' : '?' )
+						. 'parent_id=' . $parent_id;
+				}
 				
 				echo '<span class="am_new">'
-					. '<a href="' . $admin_url . 'page-new.php' . $parent_id . '">'
+					. '<a href="' . $admin_url
+						. ( function_exists('is_super_admin')
+							? 'post-new.php?post_type=page'
+							: 'page-new.php'
+							)
+						. $parent_id . '">'
 						. __('New Page', 'sem-admin-menu')
 						. '</a>'
 					. '</span>'
@@ -330,6 +337,9 @@ function sem_admin_menu_admin() {
 foreach ( array('load-page-new.php', 'load-settings_page_admin-menu') as $hook )
 	add_action($hook, 'sem_admin_menu_admin');
 
+if ( function_exists('is_super_admin') && is_admin() &&
+	isset($_GET['post_type']) && $_GET['post_type'] == 'page' )
+	add_action('load-post-new.php', 'sem_admin_menu_admin');
 
 if ( !is_admin() ) {
 	add_action('wp_print_styles', array('sem_admin_menu', 'styles'));
