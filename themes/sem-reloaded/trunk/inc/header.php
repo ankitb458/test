@@ -84,7 +84,7 @@ class sem_header {
 				$entropy = intval(get_site_option('sem_entropy')) + 1;
 				update_site_option('sem_entropy', $entropy);
 				
-				$name = WP_CONTENT_DIR . '/header/header-' . $entropy . '.' . $ext;
+				$name = WP_CONTENT_DIR . header::get_basedir() . '/header-' . $entropy . '.' . $ext;
 				
 				@move_uploaded_file($_FILES['header_file']['tmp_name'], $name);
 				
@@ -187,10 +187,10 @@ class sem_header {
 			}
 		}
 		
-		wp_mkdir_p(WP_CONTENT_DIR . '/header');
+		wp_mkdir_p(WP_CONTENT_DIR . header::get_basedir());
 		
 		if ( !$header || is_writable(WP_CONTENT_DIR . $header) || strpos($header, "/skins/$active_skin/") !== false ) {
-			if ( is_writable(WP_CONTENT_DIR . '/header') ) {
+			if ( is_writable(WP_CONTENT_DIR . $site_basedir) ) {
 				echo '<h3>'
 					. '<label for="header_file">'
 						. ( defined('GLOB_BRACE')
@@ -247,7 +247,7 @@ class sem_header {
 			$scan_type = false;
 		}
 		
-		$header = glob(WP_CONTENT_DIR . "/header/$post_ID/$header_scan", $scan_type);
+		$header = glob(WP_CONTENT_DIR . header::get_basedir() . "/$post_ID/$header_scan", $scan_type);
 		
 		if ( $header ) {
 			$header = current($header);
@@ -295,7 +295,7 @@ class sem_header {
 			}
 		}
 		
-		wp_mkdir_p(WP_CONTENT_DIR . '/header');
+		wp_mkdir_p(WP_CONTENT_DIR . header::get_basedir());
 		
 		if ( !$header || is_writable(WP_CONTENT_DIR . $header) ) {
 			if ( is_writable(WP_CONTENT_DIR . '/header') ) {
@@ -351,7 +351,7 @@ class sem_header {
 			$scan_type = false;
 		}
 		
-		$header = glob(WP_CONTENT_DIR . "/header/$post_id/$header_scan", $scan_type);
+		$header = glob(WP_CONTENT_DIR . header::get_basedir() . "/$post_id/$header_scan", $scan_type);
 		
 		if ( $header ) {
 			$header = current($header);
@@ -366,7 +366,7 @@ class sem_header {
 			
 			if ( !in_array($ext, defined('GLOB_BRACE') ? array('jpg', 'jpeg', 'png', 'gif', 'swf') : array('jpg')) ) {
 				return;
-			} elseif ( !wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_id) ) {
+			} elseif ( !wp_mkdir_p(WP_CONTENT_DIR . header::get_basedir() . $post_id) ) {
 				return;
 			} elseif ( $header && !@unlink(WP_CONTENT_DIR . $header) ) {
 				return;
@@ -375,9 +375,9 @@ class sem_header {
 			$entropy = intval(get_site_option('sem_entropy')) + 1;
 			update_site_option('sem_entropy', $entropy);
 			
-			$name = WP_CONTENT_DIR . '/header/' . $post_id . '/header-' . $entropy . '.' . $ext;
+			$name = WP_CONTENT_DIR . header::get_basedir() . '/' . $post_id . '/header-' . $entropy . '.' . $ext;
 			
-			wp_mkdir_p(WP_CONTENT_DIR . '/header/' . $post_id);
+			wp_mkdir_p(WP_CONTENT_DIR . header::get_basedir() . '/' . $post_id);
 			@move_uploaded_file($_FILES['header_file']['tmp_name'], $name);
 			
 			$stat = stat(dirname($name));

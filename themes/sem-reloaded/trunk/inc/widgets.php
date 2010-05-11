@@ -1956,9 +1956,33 @@ EOS;
 	
 	
 	/**
+	 * get_basedir()
+	 *
+	 * @return string $header_basedir
+	 **/
+	function get_basedir() {
+		static $header_basedir;
+		
+		if ( isset($header_basedir) )
+			return $header_basedir;
+		
+		$header_basedir = '/header';
+		if ( defined('SUBDOMAIN_INSTALL') && SUBDOMAIN_INSTALL )
+			$header_basedir .= '/' . $_SERVER['HTTP_HOST'];
+		if ( function_exists('is_multisite') && is_multisite() ) {
+			$home_path = parse_url(get_option('home'));
+			$home_path = isset($home_path['path']) ? rtrim($home_path['path'], '/') : '';
+			$header_basedir .= $home_path;
+		}
+		
+		return $header_basedir;
+	}
+	
+	
+	/**
 	 * get()
 	 *
-	 * @return void
+	 * @return string $header
 	 **/
 
 	function get() {
@@ -2003,6 +2027,8 @@ EOS;
 			}
 		}
 		
+		$header_basedir = header::get_basedir();
+		
 		if ( defined('GLOB_BRACE') ) {
 			$header_scan = "header{,-*}.{jpg,jpeg,png,gif,swf}";
 			$skin_scan = "header.{jpg,jpeg,png,gif,swf}";
@@ -2015,7 +2041,7 @@ EOS;
 		
 		if ( is_singular() ) {
 			# entry-specific header
-			$header = glob(WP_CONTENT_DIR . "/header/$post_ID/$header_scan", $scan_type);
+			$header = glob(WP_CONTENT_DIR . "$header_basedir/$post_ID/$header_scan", $scan_type);
 			if ( $header ) {
 				$header = current($header);
 				$header = str_replace(WP_CONTENT_DIR, '', $header);
@@ -2032,7 +2058,7 @@ EOS;
 		switch ( true ) {
 		default:
 			# uploaded header
-			$header = glob(WP_CONTENT_DIR . "/header/$header_scan", $scan_type);
+			$header = glob(WP_CONTENT_DIR . "$header_basedir/$header_scan", $scan_type);
 			if ( $header )
 				break;
 			
