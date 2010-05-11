@@ -81,8 +81,8 @@ class sem_header {
 					. "</div>\n";
 				return;
 			} else {
-				$entropy = intval(get_option('sem_entropy')) + 1;
-				update_option('sem_entropy', $entropy);
+				$entropy = intval(get_site_option('sem_entropy')) + 1;
+				update_site_option('sem_entropy', $entropy);
 				
 				$name = WP_CONTENT_DIR . '/header/header-' . $entropy . '.' . $ext;
 				
@@ -372,8 +372,8 @@ class sem_header {
 				return;
 			}
 			
-			$entropy = intval(get_option('sem_entropy')) + 1;
-			update_option('sem_entropy', $entropy);
+			$entropy = intval(get_site_option('sem_entropy')) + 1;
+			update_site_option('sem_entropy', $entropy);
 			
 			$name = WP_CONTENT_DIR . '/header/' . $post_id . '/header-' . $entropy . '.' . $ext;
 			
