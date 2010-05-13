@@ -13,6 +13,9 @@ class hitslink_admin {
 	 **/
 
 	function save_options() {
+		if ( !current_user_can('unfiltered_html') )
+			return;
+		
 		if ( !$_POST || !current_user_can('manage_options') )
 			return;
 		

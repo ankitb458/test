@@ -48,6 +48,10 @@ It could be argued that Google knows your stats anyway if you're delivering AdSe
 
 == Change Log ==
 
+= 2.0.1 =
+
+- WP 3.0 compat
+
 = 2.0 =
 
 - Complete Rewrite
