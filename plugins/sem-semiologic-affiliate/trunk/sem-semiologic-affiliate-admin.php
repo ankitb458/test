@@ -16,6 +16,9 @@ class semiologic_affiliate_admin {
 		if ( !$_POST || !current_user_can('manage_options') )
 			return;
 		
+		if ( function_exists('is_super_admin') && !is_super_admin() )
+			return;
+		
 		check_admin_referer('semiologic_affiliate');
 		
 		$campaign_key = stripslashes($_POST['campaign_key']);
@@ -25,7 +28,7 @@ class semiologic_affiliate_admin {
 		
 		$campaign_key = trim(preg_replace("/[^0-9a-zA-Z_-]/", "", $campaign_key));
 		
-		update_option('sem_campaign_key', $campaign_key);
+		update_site_option('sem_campaign_key', $campaign_key);
 		
 		echo "<div class=\"updated fade\">\n"
 			. "<p>"
@@ -44,6 +47,9 @@ class semiologic_affiliate_admin {
 	 **/
 
 	function edit_options() {
+		if ( function_exists('is_super_admin') && !is_super_admin() )
+			return;
+		
 		echo '<div class="wrap">' . "\n";
 		
 		echo '<form method="post" action="">' . "\n";

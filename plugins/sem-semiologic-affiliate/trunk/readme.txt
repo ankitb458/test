@@ -34,6 +34,10 @@ Alternatively, email sales at semiologic dot com.
 
 == Change Log ==
 
+= 2.1 =
+
+- WP 3.0 compat
+
 = 2.0.1 =
 
 - Force a higher pcre.backtrack_limit and pcre.recursion_limit to avoid blank screens on large posts
