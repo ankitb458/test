@@ -20,8 +20,8 @@ class google_analytics_admin {
 		
 		$ga_script = stripslashes($_POST['ga_script']);
 		
-		if ( preg_match("/_gat\._getTracker\(\"(UA-[a-z0-9-]+)\"\);/ix", $ga_script, $match) ) {
-			$uacct = $match[1];
+		if ( preg_match("/^UA-[a-z0-9-]+$/ix", $ga_script, $match) ) {
+			$uacct = $match[0];
 		} else {
 			$uacct = '';
 		}
@@ -73,7 +73,7 @@ EOF;
 		echo '<h2>' . __('Google Analytics Settings', 'google-analytics') . '</h2>' . "\n";
 		
 		echo '<h3>'
-			. __('Google Analytics Script', 'google-analytics')
+			. __('Google Analytics Id', 'google-analytics')
 			. '</h3>' . "\n";
 		
 		echo '<table class="form-table">' . "\n";
@@ -84,16 +84,14 @@ EOF;
 			. '</th>'
 			. '<td>'
 			. '<p>'
-			. __('Paste the <b>ga.js</b> script from <a href="http://analytics.google.com">Google analytics</a> into the following textarea (<a href="http://www.google.com/support/googleanalytics/bin/answer.py?answer=55603">where do I find it?</a>):', 'google-analytics')
+			. __('Paste the user ID from the <b>ga.js</b> script from <a href="http://analytics.google.com">Google analytics</a> into the following textarea (<a href="http://www.google.com/support/googleanalytics/bin/answer.py?answer=55603">where do I find it?</a>):', 'google-analytics')
 			. '</p>' ."\n"
-			. '<textarea name="ga_script"'
-					. ' class="widefat code" cols="58" rows="12"'
-					. ' onfocus="var this_val=eval(this); this_val.select();"'
-					. '>'
-				. esc_html($ga_script)
-			. '</textarea>'
+			. '<input type="text" name="ga_script"'
+					. ' class="widefat code"'
+					. ' value="' . esc_attr($uacct) . '"'
+					. ' />'
 			. '<p>'
-			. __('<strong>Important</strong>: Use the new <strong>ga.js</strong> script, not the legacy urchin.js script.', 'google-analytics')
+			. __('Tip: in <code>var pageTracker = _gat._getTracker("UA-123456-1");</code>, your ID is <code>UA-123456-1</code>.', 'google-analytics')
 			. '</p>'
 			. '</td>'
 			. '</tr>';
