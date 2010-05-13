@@ -6,7 +6,8 @@
 function pc_robots_txt_admin_menu() {
 	
 	if ( function_exists('add_options_page') ) {
-
+		if ( function_exists('is_super_admin') && !is_super_admin() )
+			return;
 		#add_options_page(page_title, menu_title, access_level/capability, file, [function]);
 		add_options_page('Robots.txt', 'Robots.txt', 'manage_options', str_replace("\\", "/", __FILE__), 'pc_robots_txt_options');
 	}
@@ -15,8 +16,10 @@ function pc_robots_txt_admin_menu() {
 
 
 function pc_robots_txt_options() {
-
-	$options = get_option('pc_robots_txt');
+	if ( function_exists('is_super_admin') && !is_super_admin() )
+		return;
+	
+	$options = get_site_option('pc_robots_txt');
 	if ( !is_array($options) )
 		$options = pc_robots_txt_set_defaults();
 
@@ -26,7 +29,7 @@ function pc_robots_txt_options() {
 
 		$options['user_agents'] = $_POST['user_agents'];
 
-		update_option('pc_robots_txt', $options);
+		update_site_option('pc_robots_txt', $options);
 
 		echo "<div id=\"message\" class=\"updated fade\"><p>Settings saved.</p></div>";
 	}

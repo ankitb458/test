@@ -15,6 +15,10 @@ A robots.txt file manager.
 
 == Change Log ==
 
+= 1.3 =
+
+- WP 3.0 compat
+
 = 1.2 =
 
 - Don't interfere with canonical redirects

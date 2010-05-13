@@ -3,7 +3,7 @@
 Plugin Name: PC Robots.txt
 Plugin URI: http://petercoughlin.com/wp-plugins/
 Description: Create and manage a virtual robots.txt file for your blog.
-Version: 1.2 fork
+Version: 1.3 RC fork
 Author: Peter Coughlin
 Author URI: http://petercoughlin.com/
 */
@@ -12,7 +12,7 @@ Author URI: http://petercoughlin.com/
 function pc_robots_txt() {
 
 	if ( strpos($_SERVER['REQUEST_URI'], '/robots.txt') !== false ) {
-		$options = get_option('pc_robots_txt');
+		$options = get_site_option('pc_robots_txt');
 		
 		if ( !is_array($options) || !$options['user_agents'] )
 			$options = pc_robots_txt_set_defaults();
@@ -29,14 +29,17 @@ function pc_robots_txt() {
 
 
 function pc_robots_txt_set_defaults() {
-
-	$options = array(
-		"user_agents" => "User-agent: *\n"
-		. "Disallow: /wp-*\n"
-		. "Allow: /wp-content/uploads\n"
-		);
+	$options = get_option('pc_robots_txt');
 	
-	update_option('pc_robots_txt', $options);
+	if ( !$options ) {
+		$options = array(
+			"user_agents" => "User-agent: *\n"
+			. "Disallow: /wp-*\n"
+			. "Allow: /wp-content/uploads\n"
+			);
+	}
+	
+	update_site_option('pc_robots_txt', $options);
 
 	return $options;
 
