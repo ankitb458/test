@@ -17,6 +17,10 @@ The plugin allows to readily insert such an icon on your site.
 
 == Change Log ==
 
+= 1.5 =
+
+- WP 3.0 compat
+
 = 1.4.1 =
 
 - Move plugin in its own folder
