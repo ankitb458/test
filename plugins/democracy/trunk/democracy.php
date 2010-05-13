@@ -3,7 +3,7 @@
 Plugin Name: Poll Widget / Democracy
 Plugin URI: http://blog.jalenack.com/archives/democracy/
 Description: Ajax polling plugin
-Version: 1.16.2 fork
+Version: 1.16.3 RC fork
 Author: Andrew Sutherland
 Author URI: http://blog.jalenack.com/
 */
@@ -191,7 +191,7 @@ function jal_dem_admin_page() {
 </div>
 <?php } ?>
 <?php if (isset($_POST['jal_dem_edit'])) { ?><div class="updated">
-    <p>Poll #<?php echo $_POST['poll_id']; ?> was edited successfully</p>
+    <p>Poll #<?php echo $poll_id; ?> was edited successfully</p>
 </div>
 <?php } ?>
 <?php if (!empty($_GET['edit'])) { ?>

@@ -15,6 +15,10 @@ A poll widget.
 
 == Change Log ==
 
+= 1.16.3 =
+
+- WP 3.0 compat
+
 = 1.16.2 =
 
 - Avoid using broken WP functions
