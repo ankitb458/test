@@ -54,6 +54,9 @@ function dump_stops($in = null) {
 	if ( ( $_POST || !current_user_can('manage_options') ) && !sem_sql_debug )
 		return $in;
 	
+	if ( function_exists('is_super_admin') && !is_super_admin() )
+		return $in;
+	
 	global $sem_stops;
 	global $wp_object_cache;
 	
@@ -164,7 +167,10 @@ add_action('wp_print_scripts', 'init_dump');
  **/
 
 function dump_phpinfo() {
-	if ( isset($_GET['debug']) && $_GET['debug'] == 'phpinfo' && current_user_can('manage_options')) {
+	if ( function_exists('is_super_admin') && !is_super_admin() )
+		return;
+	
+	if ( isset($_GET['debug']) && $_GET['debug'] == 'phpinfo' && current_user_can('manage_options') ) {
 		phpinfo();
 		die;
 	}
@@ -180,6 +186,9 @@ add_action('init', 'dump_phpinfo');
  **/
 
 function dump_js() {
+	if ( function_exists('is_super_admin') && !is_super_admin() )
+		return;
+	
 	$folder = sem_url . '/js';
 	wp_enqueue_script('jquery-logger', $folder . '/jquery.logger.js', array('jquery'),  '20090903');
 } # dump_js()

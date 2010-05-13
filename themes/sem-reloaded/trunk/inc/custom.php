@@ -220,6 +220,9 @@ EOS;
 	 **/
 
 	function save_options() {
+		if ( function_exists('is_multisite') && is_multisite() )
+			return;
+		
 		if ( !$_POST || !current_user_can('switch_themes') )
 			return;
 		
@@ -440,6 +443,9 @@ EOS;
 	 **/
 
 	function edit_options() {
+		if ( function_exists('is_multisite') && is_multisite() )
+			return;
+		
 		global $wp_filesystem;
 		global $sem_options;
 		

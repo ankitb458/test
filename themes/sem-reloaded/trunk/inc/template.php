@@ -13,13 +13,15 @@ class sem_template {
 	 **/
 
 	function admin_menu() {
-		add_theme_page(
-			__('Manage Custom', 'sem-reloaded'),
-			__('Custom CSS', 'sem-reloaded'),
-			'switch_themes',
-			'custom',
-			array('sem_custom', 'edit_options')
-			);
+		if ( !( function_exists('is_multisite') && is_multisite() ) ) {
+			add_theme_page(
+				__('Manage Custom', 'sem-reloaded'),
+				__('Custom CSS', 'sem-reloaded'),
+				'switch_themes',
+				'custom',
+				array('sem_custom', 'edit_options')
+				);
+		}
 		add_theme_page(
 			__('Manage Header', 'sem-reloaded'),
 			__('Header', 'sem-reloaded'),

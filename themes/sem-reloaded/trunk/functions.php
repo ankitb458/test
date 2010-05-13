@@ -88,7 +88,9 @@ if ( is_admin() ) {
 		include_once sem_path . '/inc/custom.php';
 	}
 	
-	add_action('load-appearance_page_custom', 'sem_custom_admin');
+	if ( !( function_exists('is_multisite') && is_multisite() ) ) {
+		add_action('load-appearance_page_custom', 'sem_custom_admin');
+	}
 	
 	function sem_update() {
 		include_once sem_path . '/inc/update.php';
