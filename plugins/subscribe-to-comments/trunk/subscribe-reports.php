@@ -5,12 +5,16 @@ GPL licensed (and heavily hacked)
 */
 /*---- Produce a stat report somewhere perhaps? ----- */
 function VSI_add_option() {
+	if ( function_exists('is_super_admin') && !is_super_admin() )
+		return;
 	add_management_page('Subscribers', 'Subscribers', 'administrator', __FILE__, 'VSI_function_options');
 }
 add_action('admin_menu', 'VSI_add_option');
 
 function VSI_function_options() {
 	global $wpdb;
+	if ( function_exists('is_super_admin') && !is_super_admin() )
+		return;
 
 	echo '<div class="wrap">'
 		. '<h2>' . __('Subscriber Details') . '</h2>';

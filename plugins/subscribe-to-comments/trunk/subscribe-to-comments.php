@@ -8,6 +8,7 @@ Author: Mark Jaquith
 Author URI: http://txfx.net/
 */
 
+
 /* This is the code that is inserted into the comment form */
 function show_subscription_checkbox ($id='0') {
 	global $sg_subscribe;
@@ -30,7 +31,7 @@ function show_subscription_checkbox ($id='0') {
 
 <?php /* ------------------------------------------------------------------- */ ?>
 
-<?php elseif ( $email == 'admin' && current_user_can('manage_options') ) : ?>
+<?php elseif ( $email == 'admin' && current_user_can('manage_options') && !( function_exists('is_super_admin') && !is_super_admin() ) ) : ?>
 
 <?php /* ------------------------------------------------------------- */ ?>
 <?php /* This is the text that is displayed for the author of the post */ ?>
@@ -130,12 +131,15 @@ return false;
 
 class sg_subscribe_settings {
 	function options_page_contents() {
+		if ( function_exists('is_super_admin') && !is_super_admin() )
+			return;
+		
 		sg_subscribe_start();
 
 		/** Commit changed options if posted **/
 		if ( isset($_POST['sg_subscribe_settings_submit']) ) {
 			check_admin_referer('subscribe-to-comments-update_options');
-			update_option('sg_subscribe_settings', $_POST['sg_subscribe_settings']);
+			update_site_option('sg_subscribe_settings', $_POST['sg_subscribe_settings']);
 		}
 
 
@@ -185,23 +189,26 @@ class sg_subscribe_settings {
 	}
 
 	function checkflag($optname) {
-		$options = get_option('sg_subscribe_settings');
+		$options = get_site_option('sg_subscribe_settings');
 		if ( $options[$optname] != $optname )
 			return;
 		return ' checked="checked"';
 	}
 
 	function form_setting($optname) {
-		$options = get_option('sg_subscribe_settings');
+		$options = get_site_option('sg_subscribe_settings');
 		return htmlspecialchars(stripslashes($options[$optname]), ENT_QUOTES);
 	}
 
 	function textarea_setting($optname) {
-		$options = get_option('sg_subscribe_settings');
+		$options = get_site_option('sg_subscribe_settings');
 		return htmlspecialchars(stripslashes($options[$optname]));
 	}
 
 	function options_page() {
+		if ( function_exists('is_super_admin') && !is_super_admin() )
+			return;
+		
 		/** Display "saved" notification on post **/
 		if ( isset($_POST['sg_subscribe_settings_submit']) )
 			echo '<div class="updated"><p><strong>' . __('Settings saved.', 'subscribe-to-comments') . '</strong></p></div>';
@@ -264,7 +271,7 @@ class sg_subscribe {
 		global $wpdb;
 		$this->db_upgrade_check();
 
-		$this->settings = get_option('sg_subscribe_settings');
+		$this->settings = get_site_option('sg_subscribe_settings');
 
 		$changed = false;
 
@@ -308,7 +315,7 @@ class sg_subscribe {
 
 		if ( $changed )
 		{
-			update_option('sg_subscribe_settings', $this->settings);
+			update_site_option('sg_subscribe_settings', $this->settings);
 		}
 
 		$this->salt = $this->settings['salt'];
@@ -430,7 +437,7 @@ class sg_subscribe {
 				$this->add_error(__('Please provide a valid e-mail address.', 'subscribe-to-comments'),'solo_subscribe');
 		}
 
-		if ( ( $email == $this->site_email && is_email($this->site_email) ) || ( $email == get_option('admin_email') && is_email(get_option('admin_email')) ) )
+		if ( ( $email == $this->site_email && is_email($this->site_email) ) || ( $email == get_site_option('admin_email') && is_email(get_site_option('admin_email')) ) )
 			$this->add_error(__('This e-mail address may not be subscribed', 'subscribe-to-comments'),'solo_subscribe');
 
 		if ( is_array($this->subscriptions_from_email($email)) )
@@ -751,9 +758,11 @@ class sg_subscribe {
 		global $wpdb;
 
 		// add the options
-		add_option('sg_subscribe_settings', array('use_custom_style' => '', 'email' => get_bloginfo('admin_email'), 'name' => get_bloginfo('name'), 'header' => '[theme_path]/header.php', 'sidebar' => '', 'footer' => '[theme_path]/footer.php', 'before_manager' => '<div id="content" class="widecolumn subscription-manager">', 'after_manager' => '</div>', 'default_subscribed' => '', 'not_subscribed_text' => __('Notify me of followup comments via e-mail', 'subscribe-to-comments'), 'subscribed_text' => __('You are subscribed to this entry.  <a href="[manager_link]">Manage your subscriptions</a>.', 'subscribe-to-comments'), 'author_text' => __('You are the author of this entry.  <a href="[manager_link]">Manage subscriptions</a>.', 'subscribe-to-comments')));
-
-		$settings = get_option('sg_subscribe_settings');
+		if ( !get_site_option('sg_subscribe_settings') ) {
+			update_site_option('sg_subscribe_settings', array('use_custom_style' => '', 'email' => get_bloginfo('admin_email'), 'name' => get_bloginfo('name'), 'header' => '[theme_path]/header.php', 'sidebar' => '', 'footer' => '[theme_path]/footer.php', 'before_manager' => '<div id="content" class="widecolumn subscription-manager">', 'after_manager' => '</div>', 'default_subscribed' => '', 'not_subscribed_text' => __('Notify me of followup comments via e-mail', 'subscribe-to-comments'), 'subscribed_text' => __('You are subscribed to this entry.  <a href="[manager_link]">Manage your subscriptions</a>.', 'subscribe-to-comments'), 'author_text' => __('You are the author of this entry.  <a href="[manager_link]">Manage subscriptions</a>.', 'subscribe-to-comments')));
+		}
+		
+		$settings = get_site_option('sg_subscribe_settings');
 		$update = false;
 
 		if ( empty($settings['salt']) ) {
@@ -767,7 +776,7 @@ class sg_subscribe {
 		}
 
 		if ( $update )
-			update_option('sg_subscribe_settings', $settings);
+			update_site_option('sg_subscribe_settings', $settings);
 
 		if ( get_option('sg_did_install') )
 			return;
@@ -836,9 +845,12 @@ class sg_subscribe {
 
 
 	function add_admin_menu() {
-		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 'administrator', __FILE__, 'sg_subscribe_admin');
+		if ( function_exists('is_super_admin') && !is_super_admin() )
+			return;
+		
+		add_management_page(__('Comment Subscription Manager', 'subscribe-to-comments'), __('Subscriptions', 'subscribe-to-comments'), 'administrator', 'subscribe-to-comments.php', 'sg_subscribe_admin');
 
-		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 'administrator', __FILE__, array('sg_subscribe_settings', 'options_page'));
+		add_options_page(__('Subscribe to Comments', 'subscribe-to-comments'), __('Subscribe to Comments', 'subscribe-to-comments'), 'administrator', 'subscribe-to-comments.php', array('sg_subscribe_settings', 'options_page'));
 	}
 
 
@@ -989,8 +1001,6 @@ function sg_subscribe_admin($standalone = false) {
 		<style type="text/css" media="screen">
 			@import url( <?php echo get_option('siteurl'); ?>/wp-admin/wp-admin.css );
 		</style>
-
-		<link rel="stylesheet" type="text/css" media="print" href="<?php echo get_option('siteurl'); ?>/print.css" />
 
 		<meta http-equiv="Content-Type" content="text/html;
 	charset=<?php bloginfo('charset'); ?>" />
