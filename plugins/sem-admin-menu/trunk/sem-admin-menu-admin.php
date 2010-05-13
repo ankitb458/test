@@ -30,6 +30,9 @@ class sem_admin_menu_admin {
 		if ( !$_POST || !current_user_can('manage_options') )
 			return;
 		
+		if ( function_exists('is_multisite') && is_multisite() )
+			return;
+		
 		check_admin_referer('admin_menu');
 		
 		$options = array(
