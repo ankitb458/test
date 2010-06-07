@@ -38,6 +38,9 @@ if ( !class_exists('sem_fixes') ) {
 if ( function_exists('add_theme_support') )
 	add_theme_support('post-thumbnails');
 
+if ( function_exists('add_custom_background') )
+	add_custom_background(array('sem_template', 'custom_background_cb'));
+
 
 #
 # extra functions

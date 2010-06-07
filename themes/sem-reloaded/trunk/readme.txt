@@ -30,6 +30,7 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 = 0.9.3 =
 
 - WP 3.0 compat
+- Integrate WP 3.0 custom background handler
 
 = 0.9.2 =
 

@@ -636,6 +636,19 @@ class sem_template {
 		
 		return $params;
 	} # the_footer_sidebar_params()
+	
+	
+	/**
+	 * custom_background_cb()
+	 *
+	 * @return void
+	 **/
+	function custom_background_cb() {
+		ob_start();
+		_custom_background_cb();
+		$o = ob_get_clean();
+		echo str_replace('body {', 'html {', $o);
+	} # custom_background_cb()
 } # sem_template
 
 if ( !is_admin() ) {
