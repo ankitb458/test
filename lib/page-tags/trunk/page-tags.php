@@ -2,7 +2,7 @@
 /*
  * Page Tags
  * Author: Denis de Bernardy <http://www.mesoconcepts.com>
- * Version: 2.0.3 RC
+ * Version: 2.0.3
  */
 
 

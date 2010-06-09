@@ -3,7 +3,7 @@
 Plugin Name: Semiologic Affiliate
 Plugin URI: http://www.semiologic.com/software/sem-affiliate/
 Description: Automatically adds your affiliate ID to all links to Semiologic.
-Version: 2.1 RC
+Version: 2.1
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: sem-semiologic-affiliate
