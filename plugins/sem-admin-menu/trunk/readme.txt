@@ -53,6 +53,10 @@ To configure the behavior, browse Settings / Admin Menu.
 
 == Change Log ==
 
+= 6.0.2 =
+
+- More WP 3.0 fixes
+
 = 6.0.1 =
 
 - WP 3.0 compat
