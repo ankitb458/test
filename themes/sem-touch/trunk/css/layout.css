@@ -1,0 +1,159 @@
+/* 960px Screen layout */
+/**/
+body.sem_admin_menu {
+	padding-top: 15px;
+}
+
+#wrapper {
+	max-width: 960px;
+	min-width: 720px;
+	margin: 0 auto;
+	background: #eee;
+}
+
+.pad {
+	padding: 0 15px;
+}
+
+.clear {
+	clear: both;
+}
+
+#sitename {
+	line-height: 60px;
+}
+
+#search {
+	margin: 10px 0;
+	float: right;
+	text-align: right;
+}
+
+.header_nav ul {
+	display: block;
+	float: left;
+	margin: 0;
+	line-height: 30px;
+}
+
+.header_nav .meta-menu {
+	float: right;
+}
+
+.header_nav li {
+	display: inline-block;
+	margin: 0 10px 0 0;
+}
+
+.meta-menu li {
+	margin: 0 0 0 2px;
+}
+
+.meta-menu img {
+	vertical-align: middle;
+}
+
+.header_nav ul ul {
+	display: none;
+}
+
+.footer_nav {
+	text-align: center;
+}
+
+.footer_nav ul {
+	display: block;
+	margin: 10px 0;
+}
+
+.footer_nav li {
+	display: inline-block;
+	margin: 0 5px;
+}
+
+.footer {
+	text-align: center;
+}
+
+#content {
+	width: 66.67%;
+	min-width: 480px;
+	max-width: 640px;
+	float: left;
+}
+
+#sidebar {
+	width: 33.33%;
+	min-width: 240px;
+	max-width: 320px;
+	float: right;
+}
+
+.footer_box {
+	width: 33.33%;
+	min-width: 240px;
+	max-width: 320px;
+	float: left;
+}
+
+.footer_box:nth-child(3n+1) {
+	clear: both;
+}
+
+/* 480px Handset layout */
+/**/
+@media only screen and (max-width: 720px) {
+	#wrapper {
+		min-width: 480px;
+		max-width: 480px;
+	}
+	
+	#content,
+	#sidebar {
+		width: 100%;
+		float: none;
+		min-width: 100%;
+		max-width: 100%;
+	}
+	
+	.widget,
+	.footer_box {
+		width: 50%;
+		float: left;
+	}
+	
+	.footer_box:nth-child(3n+1) {
+		clear: none;
+	}
+	
+	.widget:nth-child(2n+1),
+	.footer_box:nth-child(2n+1) {
+		clear: both;
+	}
+}
+/**/
+
+/* Print layout */
+/** /
+@media only print {
+	body {
+		padding: 20px !important;
+	}
+	
+	#body,
+	#content {
+		float: none;
+		width: 100%;
+	}
+	
+	#am,
+	#header_wrap,
+	#header_nav_wrap,
+	#sidebar_wrap,
+	#footer_boxes_wrap,
+	#footer_nav_wrap,
+	#footer_wrap {
+		display: none;
+	}
+}
+/**/

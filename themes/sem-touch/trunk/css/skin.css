@@ -1,0 +1,25 @@
+#header {
+	background: #ddd;
+}
+
+#header_nav {
+	background: #ccc;
+}
+
+/** /
+#header_wrap,
+#header_wrap {
+	border-bottom: solid 2px #ccc;
+}
+
+#footer_boxes_wrap,
+#footer_wrap {
+	border-top: solid 2px #ccc;
+}
+
+@media only screen and (max-width: 720px) {
+	#sidebar_wrap {
+		border-top: solid 2px #ccc;
+	}
+}
+/**/
