@@ -1,10 +1,8 @@
 <div class="clear"></div>
 </div>
-</div>
 </div><!-- #body -->
 
 
-<div id="footer_boxes_wrap">
 <div id="footer_boxes" class="footer_boxes">
 <div id="footer_boxes_bg">
 
@@ -12,11 +10,9 @@
 
 <div class="clear"></div>
 </div>
-</div>
 </div><!-- #footer_boxes -->
 
 
-<div id="footer_nav_wrap">
 <div id="footer_nav" class="footer_nav navbar">
 <div id="footer_nav_bg" class="pad">
 
@@ -28,20 +24,17 @@
 
 <div class="clear"></div>
 </div>
-</div>
 </div><!-- #footer_nav -->
 
 
-<div id="footer_wrap">
 <div id="footer" class="footer">
 <div id="footer_bg" class="pad">
 
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 
 <div class="clear"></div>
 </div>
 </div><!-- #footer -->
-</div><!-- #footer_wrap -->
 
 
 <div class="clear"></div>

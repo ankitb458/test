@@ -1,5 +1,5 @@
 body {
-	font: 14px/1.4 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+	font: 14px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 }
 
 hr {
@@ -9,21 +9,26 @@ hr {
 	height: 0;
 }
 
-#sitename,
-h1 {
-	font-size: 18px;
+.sitename {
+	font-family: Georgia, Serif;
+	font-weight: normal;
+	font-size: 24px;
 	letter-spacing: -1px;
-	font-weight: bold;
+}
+
+h1 {
+	font-family: Georgia, Serif;
+	font-weight: normal;
+	font-size: 22px;
+	letter-spacing: -1px;
 }
 
 h2 {
 	font-size: 16px;
-	letter-spacing: -1px;
-	font-weight: normal;
 }
 
 h3 {
-	font-size: 14px;
+	font-size: 15px;
 }
 
 ol {
@@ -42,18 +47,18 @@ p, h5, h6, hr,
 ol, ul, dl,
 pre, table, address,
 fieldset {
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 12px;
+	margin-bottom: 12px;
 }
 
 h1, h2, h3, h4 {
-	margin-top: 15px;
-	margin-bottom: 5px;
+	margin-top: 16px;
+	margin-bottom: 4px;
 }
 
 h1 + h2, h1 + h3, h1 + h4,
 h2 + h3, h2 + h4, h3 + h4 {
-	margin-top: 5px;
+	margin-top: 4px;
 }
 
 html {
@@ -61,11 +66,11 @@ html {
 	color: #333;
 }
 
-#sitename, h1, h2, h3, h4 {
+.header, h1, h2, h3, h4 {
 	color: #000;
 }
 
-a, .navbar a, .navbar a:visited {
+a {
 	color: #00c;
 }
 
@@ -73,7 +78,7 @@ a:visited {
 	color: #606;
 }
 
-#sitename a, #sitename a:visited,
+.header a, .header a:visited,
 h1 a, h1 a:visited,
 h2 a, h2 a:visited {
 	color: inherit;
@@ -81,8 +86,6 @@ h2 a, h2 a:visited {
 }
 
 a:hover, a:active, a:focus,
-#sitename a:hover, #sitename a:active, #sitename a:focus,
-.navbar a:hover, .navbar a:active, .navbar a:focus,
 h1 a:hover, h1 a:active, h1 a:focus,
 h2 a:hover, h2 a:active, h2 a:focus {
 	color: #c00;

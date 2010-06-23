@@ -8,11 +8,10 @@ body.sem_admin_menu {
 	max-width: 960px;
 	min-width: 720px;
 	margin: 0 auto;
-	background: #eee;
 }
 
 .pad {
-	padding: 0 15px;
+	padding: 0 16px;
 }
 
 .clear {
@@ -36,20 +35,34 @@ body.sem_admin_menu {
 	line-height: 30px;
 }
 
-.header_nav .meta-menu {
+.header_nav .meta_nav {
 	float: right;
 }
 
-.header_nav li {
-	display: inline-block;
-	margin: 0 10px 0 0;
+.header_nav .pad {
+	padding: 0 16px 0 8px;
 }
 
-.meta-menu li {
+.header_nav li {
+	display: block;
+	float: left;
+	margin: 0 8px 0 0;
+}
+
+.header_nav a {
+	display: block;
+	padding: 0 8px;
+}
+
+.meta_nav li {
 	margin: 0 0 0 2px;
 }
 
-.meta-menu img {
+.meta_nav a {
+	padding: 0;
+}
+
+.meta_nav img {
 	vertical-align: middle;
 }
 
@@ -63,12 +76,12 @@ body.sem_admin_menu {
 
 .footer_nav ul {
 	display: block;
-	margin: 10px 0;
+	margin: 0;
 }
 
 .footer_nav li {
 	display: inline-block;
-	margin: 0 5px;
+	margin: 0 8px;
 }
 
 .footer {
@@ -87,6 +100,14 @@ body.sem_admin_menu {
 	min-width: 240px;
 	max-width: 320px;
 	float: right;
+}
+
+.widget {
+	margin: 16px 0;
+}
+
+.footer_box {
+	margin: 0 0 16px 0;
 }
 
 .footer_box {
@@ -120,6 +141,7 @@ body.sem_admin_menu {
 	.footer_box {
 		width: 50%;
 		float: left;
+		margin: 0 0 16px 0;
 	}
 	
 	.footer_box:nth-child(3n+1) {
@@ -134,7 +156,7 @@ body.sem_admin_menu {
 /**/
 
 /* Print layout */
-/** /
+/**/
 @media only print {
 	body {
 		padding: 20px !important;
@@ -147,12 +169,12 @@ body.sem_admin_menu {
 	}
 	
 	#am,
-	#header_wrap,
-	#header_nav_wrap,
-	#sidebar_wrap,
-	#footer_boxes_wrap,
-	#footer_nav_wrap,
-	#footer_wrap {
+	#header,
+	#header_nav,
+	#sidebar,
+	#footer_boxes,
+	#footer_nav,
+	#footer {
 		display: none;
 	}
 }
