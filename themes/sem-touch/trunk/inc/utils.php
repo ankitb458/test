@@ -10,7 +10,7 @@ class sem_utils
 	 * @return void
 	 **/
 	static function styles() {
-		foreach ( array('reset', 'layout', 'text', 'skin') as $file ) {
+		foreach ( array('reset', 'layout', 'text', 'skin', 'icons') as $file ) {
 			wp_enqueue_style(
 				'sem-' . $file,
 				sem_url . '/css/' . $file . '.css',

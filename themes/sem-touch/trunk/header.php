@@ -2,7 +2,7 @@
 <head>
 <title><?php if ( $title = trim(wp_title('&#8211;', false)) ) : echo ( strpos($title, '&#8211;') === 0 ) ? trim(substr($title, strlen('&#8211;'))) : $title; else : bloginfo('description'); endif; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset'); ?>"> 
-<meta name="viewport" content="width=device-height" >
+<link rel="alternate" type="application/rss+xml" title="<?php _e('RSS feed'); ?>" href="<?php bloginfo('rss2_url'); ?>" />
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 <?php wp_head(); ?>
 </head>

@@ -1,5 +1,5 @@
 body {
-	font: 14px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+	font: 14px/1.45 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 }
 
 hr {
@@ -52,13 +52,13 @@ fieldset {
 }
 
 h1, h2, h3, h4 {
-	margin-top: 16px;
-	margin-bottom: 4px;
+	margin-top: 18px;
+	margin-bottom: 6px;
 }
 
 h1 + h2, h1 + h3, h1 + h4,
 h2 + h3, h2 + h4, h3 + h4 {
-	margin-top: 4px;
+	margin-top: 6px;
 }
 
 html {

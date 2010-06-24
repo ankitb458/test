@@ -11,7 +11,7 @@ body.sem_admin_menu {
 }
 
 .pad {
-	padding: 0 16px;
+	padding: 0 18px;
 }
 
 .clear {
@@ -23,7 +23,7 @@ body.sem_admin_menu {
 }
 
 #search {
-	margin: 10px 0;
+	margin: 12px 0;
 	float: right;
 	text-align: right;
 }
@@ -32,26 +32,22 @@ body.sem_admin_menu {
 	display: block;
 	float: left;
 	margin: 0;
-	line-height: 30px;
+	line-height: 36px;
 }
 
 .header_nav .meta_nav {
 	float: right;
 }
 
-.header_nav .pad {
-	padding: 0 16px 0 8px;
-}
-
 .header_nav li {
-	display: block;
+	display: inline;
 	float: left;
-	margin: 0 8px 0 0;
+	margin: 0 6px 0 0;
 }
 
 .header_nav a {
-	display: block;
-	padding: 0 8px;
+	display: inline;
+	padding: 0px 6px;
 }
 
 .meta_nav li {
@@ -59,7 +55,12 @@ body.sem_admin_menu {
 }
 
 .meta_nav a {
+	margin: 0;
 	padding: 0;
+}
+
+.meta_nav a:hover {
+	background: #eee;
 }
 
 .meta_nav img {
@@ -80,8 +81,8 @@ body.sem_admin_menu {
 }
 
 .footer_nav li {
-	display: inline-block;
-	margin: 0 8px;
+	display: inline;
+	margin: 0 6px;
 }
 
 .footer {
@@ -118,7 +119,19 @@ body.sem_admin_menu {
 }
 
 .footer_box:nth-child(3n+1) {
+	width: 33.34%;
 	clear: both;
+}
+
+.widget li,
+.footer_box li {
+	list-style: square;
+	margin-left: 18px;
+}
+
+.widget li li,
+.footer_box li li {
+	margin-left: 12px;
 }
 
 /* 480px Handset layout */
@@ -141,7 +154,6 @@ body.sem_admin_menu {
 	.footer_box {
 		width: 50%;
 		float: left;
-		margin: 0 0 16px 0;
 	}
 	
 	.footer_box:nth-child(3n+1) {
@@ -159,13 +171,21 @@ body.sem_admin_menu {
 /**/
 @media only print {
 	body {
-		padding: 20px !important;
+		padding: 18px !important;
+	}
+	
+	#wrapper {
+		width: 100%;
+		min-width: 100%;
+		max-width: 100%;
 	}
 	
 	#body,
 	#content {
 		float: none;
 		width: 100%;
+		min-width: 100%;
+		max-width: 100%;
 	}
 	
 	#am,
