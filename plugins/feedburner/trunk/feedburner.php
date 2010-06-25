@@ -108,7 +108,7 @@ function ol_feedburner_options_subpanel() {
 
 function ol_feed_redirect() {
 	global $wp, $feedburner_settings, $feed, $withcomments;
-	if (is_feed() && $feed != 'comments-rss2' && !is_single() && $wp->query_vars['category_name'] == '' && ($withcomments != 1) && trim($feedburner_settings['feedburner_url']) != '') {
+	if (is_feed() && $feed != 'comments-rss2' && !is_single() && empty($wp->query_vars['category_name']) && ($withcomments != 1) && trim($feedburner_settings['feedburner_url']) != '') {
 		if (function_exists('status_header')) status_header( 302 );
 		header("Location:" . trim($feedburner_settings['feedburner_url']));
 		header("HTTP/1.1 302 Temporary Redirect");
