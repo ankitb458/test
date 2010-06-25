@@ -90,7 +90,7 @@ body.sem_admin_menu {
 }
 
 #content {
-	width: 66.67%;
+	width: 66.66%;
 	min-width: 480px;
 	max-width: 640px;
 	float: left;
@@ -118,9 +118,17 @@ body.sem_admin_menu {
 	float: left;
 }
 
+.footer_box:nth-child(3n) {
+	float: right;
+}
+
 .footer_box:nth-child(3n+1) {
-	width: 33.34%;
+	float: left;
 	clear: both;
+}
+
+.footer_box:nth-child(3n+2) {
+	float: left;
 }
 
 .widget li,
@@ -160,8 +168,14 @@ body.sem_admin_menu {
 		clear: none;
 	}
 	
+	.widget:nth-child(2n),
+	.footer_box:nth-child(2n) {
+		float: right;
+	}
+	
 	.widget:nth-child(2n+1),
 	.footer_box:nth-child(2n+1) {
+		float: left;
 		clear: both;
 	}
 }
