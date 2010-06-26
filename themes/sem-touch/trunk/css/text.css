@@ -1,5 +1,5 @@
 body {
-	font: 14px/1.45 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+	font: 13px/1.55 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
 }
 
 hr {
@@ -62,8 +62,13 @@ h2 + h3, h2 + h4, h3 + h4 {
 }
 
 html {
-	background: #fdfdfd;
-	color: #333;
+	background: #f1f1f1;
+	color: #1b1b1b;
+}
+
+.wrapper {
+	background: #fff;
+	color: #1b1b1b;
 }
 
 .header, h1, h2, h3, h4 {

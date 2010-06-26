@@ -3,7 +3,7 @@ if ( !defined('sem_debug') )
 	define(sem_debug, true);
 
 if ( !isset($content_width) )
-	$content_width = 450;
+	$content_width = 420;
 
 define('sem_version', '0.1');
 define('sem_path', get_stylesheet_directory());
@@ -11,14 +11,14 @@ define('sem_url', get_stylesheet_directory_uri());
 
 load_theme_textdomain('sem-touch', TEMPLATEPATH . '/lang');
 
-add_custom_background();
-
 define('HEADER_TEXTCOLOR', '');
 define('HEADER_IMAGE', '');
 define('HEADER_IMAGE_WIDTH', 960);
-define('HEADER_IMAGE_HEIGHT', 80);
+define('HEADER_IMAGE_HEIGHT', 60);
 
 add_custom_image_header(array('sem_utils', 'header_css'), array('sem_admin', 'header_css'));
+
+add_custom_background(array('sem_utils', 'background_css'));
 
 register_nav_menus(array(
 	'header' => __('Header Navigation', 'sem-touch'),

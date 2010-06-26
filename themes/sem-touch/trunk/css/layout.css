@@ -32,7 +32,7 @@ body.sem_admin_menu {
 	display: block;
 	float: left;
 	margin: 0;
-	line-height: 36px;
+	line-height: 30px;
 }
 
 .header_nav .meta_nav {
@@ -41,26 +41,11 @@ body.sem_admin_menu {
 
 .header_nav li {
 	display: inline;
-	float: left;
 	margin: 0 6px 0 0;
 }
 
-.header_nav a {
-	display: inline;
-	padding: 0px 6px;
-}
-
 .meta_nav li {
-	margin: 0 0 0 2px;
-}
-
-.meta_nav a {
 	margin: 0;
-	padding: 0;
-}
-
-.meta_nav a:hover {
-	background: #eee;
 }
 
 .meta_nav img {
@@ -96,6 +81,14 @@ body.sem_admin_menu {
 	float: left;
 }
 
+.monocolumn #content,
+.monocolumn #sidebar {
+	width: 100%;
+	min-width: 100%;
+	max-width: 100%;
+	float: none;
+}
+
 #sidebar {
 	width: 33.33%;
 	min-width: 240px;
@@ -107,10 +100,12 @@ body.sem_admin_menu {
 	margin: 16px 0;
 }
 
+.monocolumn .widget,
 .footer_box {
 	margin: 0 0 16px 0;
 }
 
+.monocolumn .widget,
 .footer_box {
 	width: 33.33%;
 	min-width: 240px;
@@ -118,15 +113,18 @@ body.sem_admin_menu {
 	float: left;
 }
 
+.monocolumn .widget:nth-child(3n),
 .footer_box:nth-child(3n) {
 	float: right;
 }
 
+.monocolumn .widget:nth-child(3n+1),
 .footer_box:nth-child(3n+1) {
 	float: left;
 	clear: both;
 }
 
+.monocolumn .widget:nth-child(3n+2),
 .footer_box:nth-child(3n+2) {
 	float: left;
 }
@@ -153,27 +151,31 @@ body.sem_admin_menu {
 	#content,
 	#sidebar {
 		width: 100%;
-		float: none;
 		min-width: 100%;
 		max-width: 100%;
+		float: none;
 	}
 	
 	.widget,
+	.monocolumn .widget,
 	.footer_box {
 		width: 50%;
 		float: left;
 	}
 	
+	.monocolumn .widget:nth-child(3n+1),
 	.footer_box:nth-child(3n+1) {
 		clear: none;
 	}
 	
 	.widget:nth-child(2n),
+	.monocolumn .widget:nth-child(2n),
 	.footer_box:nth-child(2n) {
 		float: right;
 	}
 	
 	.widget:nth-child(2n+1),
+	.monocolumn .widget:nth-child(2n+1),
 	.footer_box:nth-child(2n+1) {
 		float: left;
 		clear: both;

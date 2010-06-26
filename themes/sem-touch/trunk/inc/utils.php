@@ -36,7 +36,10 @@ class sem_utils
 <?php
 if ( get_header_textcolor() ) :
 ?>
-#sitename {
+.header,
+.header a,
+.header a:hover,
+.header a:active {
 	color: #<?php header_textcolor() ?>;
 }
 <?php
@@ -50,6 +53,29 @@ endif;
 ?>
 </style>
 <?php
+	}
+	
+	/**
+	 * Overrides the default background CSS
+	 *
+	 * @return void
+	 **/
+	static function background_css() {
+		ob_start();
+		_custom_background_cb();
+		$o = ob_get_clean();
+		echo str_replace('body {', 'html {', $o);
+	}
+	
+	/**
+	 * Append a monocolumn class to the body tag
+	 *
+	 * @param array $classes
+	 * @return array $classes
+	 **/
+	static function monocolumn($classes) {
+		$classes[] = 'monocolumn';
+		return $classes;
 	}
 } // END class sem_utils
 
