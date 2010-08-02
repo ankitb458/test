@@ -1,0 +1,47 @@
+.media_container {
+	overflow: hidden;
+	width: 100%;
+	clear: both;
+	margin-top: .5em;
+	margin-bottom: .5em;
+}
+
+.media_attachment a {
+	display: block;
+	border-top: solid 1px #282;
+	border-bottom: solid 1px #282;
+    background: #efe 10px center no-repeat;
+	color: #11d;
+	text-decoration: none;
+	width: 100%;
+	padding: 30px 10px 30px 65px;
+	margin: 6px 0px;
+}
+
+.media_attachment a:hover {
+	color: #b11;
+}
+
+.media_attachment .media_info {
+	color: #000;
+}
+
+.media_container .media {
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.media_caption a {
+	text-decoration: none !important;
+	color: inherit;
+	font-size: 9pt;
+}
+
+.media_caption img {
+	margin-bottom: 2px;
+}
+
+.media a img {
+	border: 0px;
+}
