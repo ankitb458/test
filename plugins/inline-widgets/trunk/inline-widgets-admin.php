@@ -86,7 +86,7 @@ class inline_widgets_admin {
 			$js_options[] = $js_option;
 		}
 
-?><script type="text/javascript">
+?><script type="text/javascript"><!--//--><![CDATA[//><!--
 var inlineWidgetItems = new Array();
 <?php echo implode("\n", $js_options) . "\n"; ?>
 document.inlineWidgetItems = inlineWidgetItems;
@@ -121,7 +121,7 @@ if ( document.getElementById('quicktags') ) {
 
 	document.getElementById('ed_toolbar').innerHTML += inlineWidgetsQTButton;
 } // end if
-</script>
+//--><!]]></script>
 <?php
 	} # footer_js()
 	

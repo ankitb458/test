@@ -3,7 +3,7 @@
 Plugin Name: Inline Widgets
 Plugin URI: http://www.semiologic.com/software/inline-widgets/
 Description: Creates a special sidebar that lets you insert arbitrary widgets in posts and pages. Configure these inline widgets under <a href="widgets.php">Appearance / Widgets</a>.
-Version: 2.0.2
+Version: 2.0.3
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: inline-widgets
@@ -263,7 +263,7 @@ class inline_widgets {
 
 
 function inline_widgets_admin() {
-	include dirname(__FILE__) . '/inline-widgets-admin.php';
+	include_once dirname(__FILE__) . '/inline-widgets-admin.php';
 }
 
 foreach ( array('page-new.php', 'page.php', 'post-new.php', 'post.php') as $hook )
