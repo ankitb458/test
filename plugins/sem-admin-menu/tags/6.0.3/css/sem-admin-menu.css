@@ -1,0 +1,74 @@
+body {
+	margin: 0px !important;
+}
+
+#am {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	text-align: right;
+	z-index: 9999;
+}
+
+#am div {
+	background-color: #ccc !important;
+	border-bottom: solid 1px #666 !important;
+	border-right: solid 1px #666 !important;
+	border-top: solid 1px #ddd !important;
+	border-left: solid 1px #ddd !important;
+	color: #000 !important;
+	font-family: Trebuchet MS, Tahoma, Helvetica, Sans-Serif !important;
+	font-size: 11px !important;
+	line-height: 13px !important;
+	margin: 0px;
+	padding: 0px !important;
+	padding-left: 5px;
+}
+
+#am span {
+	padding-right: 5px;
+	margin: 0px;
+}
+
+#am .am_new {
+	background: url(../icons/new_file.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_manage {
+	background: url(../icons/edit.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_comments {
+	background: url(../icons/comment.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_options {
+	background: url(../icons/options.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_dashboard {
+	background: url(../icons/activity.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am .am_user {
+	background: url(../icons/user.gif) center left no-repeat;
+	padding-left: 14px;
+}
+
+#am a {
+	color: #555 !important;
+	text-decoration: none !important;
+	padding: 0px;
+	margin: 0px;
+}
+
+#am a:hover {
+	color: #000 !important;
+	text-decoration: underline !important;
+}
