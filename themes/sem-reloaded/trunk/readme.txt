@@ -27,6 +27,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 0.9.4 =
+
+- WP 3.0.1 compat
+
 = 0.9.3 =
 
 - WP 3.0 compat

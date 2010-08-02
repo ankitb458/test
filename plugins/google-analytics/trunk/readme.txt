@@ -80,6 +80,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 4.1.1 =
+
+- WP 3.0.1 compat
+
 = 4.1 =
 
 - WP 3.0 compat

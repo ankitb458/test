@@ -3,7 +3,7 @@
 Plugin Name: AutoTag
 Plugin URI: http://www.semiologic.com/software/autotag/
 Description: Leverages Yahoo!'s term extraction web service to automatically tag your posts.
-Version: 3.0.2
+Version: 3.0.3
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: autotag
@@ -61,7 +61,7 @@ function load_autotag_admin() {
 	if ( !extension_loaded('simplexml') )
 		return;
 	
-	include dirname(__FILE__) . '/autotag-admin.php';
+	include_once dirname(__FILE__) . '/autotag-admin.php';
 }
 
 foreach ( array('post.php', 'post-new.php', 'page.php', 'page-new.php') as $hook )

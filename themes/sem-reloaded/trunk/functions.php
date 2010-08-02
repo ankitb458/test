@@ -58,7 +58,7 @@ if ( file_exists(sem_path . '/custom.php') )
 if ( is_admin() ) {
 	if ( !function_exists('load_multipart_entry') ) :
 	function load_multipart_entry() {
-		include dirname(__FILE__) . '/inc/multipart-entry/multipart-entry.php';
+		include_once dirname(__FILE__) . '/inc/multipart-entry/multipart-entry.php';
 	} # load_multipart_entry()
 	endif;
 
