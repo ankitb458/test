@@ -20,7 +20,7 @@ CREATE TABLE products (
 	created_date	datetime NOT NULL DEFAULT NOW(),
 	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
-	tsv				tsvector NOT NULL,
+--	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_sku
@@ -42,7 +42,7 @@ SELECT	activatable('products', 'release_date'),
 		repeatable('products'),
 		sluggable('products'),
 		timestampable('products'),
-		searchable('products'),
+--		searchable('products'),
 		trashable('products');
 
 CREATE INDEX products_sort ON products(name);
@@ -94,9 +94,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER products_20_tsv
-	BEFORE INSERT OR UPDATE ON products
-FOR EACH ROW EXECUTE PROCEDURE products_tsv();
+--CREATE TRIGGER products_20_tsv
+--	BEFORE INSERT OR UPDATE ON products
+--FOR EACH ROW EXECUTE PROCEDURE products_tsv();
 
 /**
  * Process read-only fields

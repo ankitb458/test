@@ -14,7 +14,7 @@ CREATE TABLE orders (
 	created_date	datetime NOT NULL DEFAULT NOW(),
 	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
-	tsv				tsvector NOT NULL,
+--	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
@@ -24,7 +24,7 @@ CREATE TABLE orders (
 
 SELECT	timestampable('orders'),
 		payable('orders'),
-		searchable('orders'),
+--		searchable('orders'),
 		trashable('orders');
 
 CREATE INDEX orders_sort ON orders(due_date DESC);

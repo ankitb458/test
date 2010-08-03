@@ -1,8 +1,10 @@
 
-DROP TABLE transaction_lines CASCADE;
-DROP TABLE transactions CASCADE;
-DROP TABLE invoice_lines CASCADE;
-DROP TABLE invoices CASCADE;
+--DROP TABLE transaction_lines CASCADE;
+--DROP TABLE transactions CASCADE;
+DROP TABLE movement_lines CASCADE;
+DROP TABLE movements CASCADE;
+DROP TABLE payment_lines CASCADE;
+DROP TABLE payments CASCADE;
 DROP TABLE order_lines CASCADE;
 DROP TABLE orders CASCADE;
 DROP TABLE campaigns CASCADE;

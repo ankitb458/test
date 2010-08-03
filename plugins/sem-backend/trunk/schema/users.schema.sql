@@ -26,7 +26,7 @@ CREATE TABLE users (
 	created_date	datetime NOT NULL DEFAULT NOW(),
 	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
-	tsv				tsvector NOT NULL,
+--	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) AND
 			nickname = trim(nickname) AND firstname = trim(firstname) AND lastname = trim(lastname) ),
@@ -46,7 +46,7 @@ CREATE TABLE users (
 
 SELECT	sluggable('users'),
 		timestampable('users'),
-		searchable('users'),
+--		searchable('users'),
 		trashable('users');
 
 CREATE INDEX users_sort ON users(name);
@@ -127,9 +127,9 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER users_20_tsv
-	BEFORE INSERT OR UPDATE ON users
-FOR EACH ROW EXECUTE PROCEDURE users_tsv();
+--CREATE TRIGGER users_20_tsv
+--	BEFORE INSERT OR UPDATE ON users
+--FOR EACH ROW EXECUTE PROCEDURE users_tsv();
 
 /**
  * Process read-only fields

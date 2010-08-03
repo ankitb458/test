@@ -13,9 +13,7 @@ CREATE TABLE invoice_lines (
 	created_date	datetime NOT NULL DEFAULT NOW(),
 	modified_date	datetime NOT NULL DEFAULT NOW(),
 	CONSTRAINT valid_name
-		CHECK ( name <> '' AND name = trim(name) ),
-	CONSTRAINT valid_amounts
-		CHECK ( amount >= 0 )
+		CHECK ( name <> '' AND name = trim(name) )
 );
 
 SELECT	timestampable('invoice_lines'),

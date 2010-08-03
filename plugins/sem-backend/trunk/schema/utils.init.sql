@@ -17,8 +17,8 @@
 \i ./campaigns.schema.sql
 \i ./orders.schema.sql
 \i ./order-lines.schema.sql
-\i ./invoices.schema.sql
-\i ./invoice-lines.schema.sql
+\i ./payments.schema.sql
+\i ./payment-lines.schema.sql
 --\i ./transactions.schema.sql
 --\i ./transaction-lines.schema.sql
 
@@ -27,7 +27,7 @@
 \i ./campaigns.procs.sql
 \i ./orders.procs.sql
 \i ./order-lines.procs.sql
-\i ./invoices.procs.sql
-\i ./invoice-lines.procs.sql
+\i ./payments.procs.sql
+\i ./payment-lines.procs.sql
 --\i ./transactions.procs.sql
 --\i ./transaction-lines.procs.sql

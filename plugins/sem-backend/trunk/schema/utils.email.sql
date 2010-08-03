@@ -1,5 +1,5 @@
 /**
- * Validates against rfc822
+ * Validates an email against rfc822
  *
  * @see http://archives.postgresql.org/pgsql-general/2009-08/msg00565.php
  */

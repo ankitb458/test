@@ -19,7 +19,7 @@ CREATE TABLE campaigns (
 	created_date	datetime NOT NULL DEFAULT NOW(),
 	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
-	tsv				tsvector NOT NULL,
+--	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_campaign
@@ -45,7 +45,7 @@ SELECT	activatable('campaigns', 'launch_date'),
 		depletable('campaigns', 'stock'),
 		sluggable('campaigns'),
 		timestampable('campaigns'),
-		searchable('campaigns'),
+--		searchable('campaigns'),
 		trashable('campaigns');
 
 CREATE INDEX campaigns_sort ON campaigns(name);

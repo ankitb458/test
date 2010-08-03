@@ -19,7 +19,7 @@ CREATE TABLE invoices (
 	created_date	datetime NOT NULL DEFAULT NOW(),
 	modified_date	datetime NOT NULL DEFAULT NOW(),
 	memo			text NOT NULL DEFAULT '',
-	tsv				tsvector NOT NULL,
+--	tsv				tsvector NOT NULL,
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
@@ -31,14 +31,12 @@ CREATE TABLE invoices (
 	CONSTRAINT valid_payment_method
 		CHECK ( payment_ref IS NULL OR payment_method IS NOT NULL ),
 	CONSTRAINT valid_payment_ref
-		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) ),
-	CONSTRAINT valid_amounts
-		CHECK ( due_amount >= 0 AND cleared_amount >= 0 )
+		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) )
 );
 
 SELECT	timestampable('invoices'),
 		payable('invoices'),
-		searchable('invoices'),
+--		searchable('invoices'),
 		trashable('invoices');
 
 CREATE INDEX invoices_sort ON invoices(due_date DESC);
