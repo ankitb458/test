@@ -1,14 +1,14 @@
 /*
- * Invoice lines
+ * payment lines
  */
-CREATE TABLE invoice_lines (
+CREATE TABLE payment_lines (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	invoice_id		bigint NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+	payment_id		bigint NOT NULL REFERENCES payments(id) ON DELETE CASCADE,
 	order_line_id	bigint REFERENCES order_lines(id),
-	parent_id		bigint REFERENCES invoice_lines(id),
+	parent_id		bigint REFERENCES payment_lines(id),
 	amount			numeric(8,2) NOT NULL,
 	created_date	datetime NOT NULL DEFAULT NOW(),
 	modified_date	datetime NOT NULL DEFAULT NOW(),
@@ -16,37 +16,37 @@ CREATE TABLE invoice_lines (
 		CHECK ( name <> '' AND name = trim(name) )
 );
 
-SELECT	timestampable('invoice_lines'),
-		trashable('invoice_lines');
+SELECT	timestampable('payment_lines'),
+		trashable('payment_lines');
 
-CREATE INDEX invoice_lines_invoice_id ON invoice_lines(invoice_id);
-CREATE INDEX invoice_lines_parent_id ON invoice_lines(parent_id);
-CREATE INDEX invoice_lines_order_line_id ON invoice_lines(order_line_id);
+CREATE INDEX payment_lines_payment_id ON payment_lines(payment_id);
+CREATE INDEX payment_lines_parent_id ON payment_lines(parent_id);
+CREATE INDEX payment_lines_order_line_id ON payment_lines(order_line_id);
 
-COMMENT ON TABLE invoices IS E'Invoice lines
+COMMENT ON TABLE payments IS E'payment lines
 
-- A reference to an order line with no parent is a non-recurring invoice
+- A reference to an order line with no parent is a non-recurring payment
   for an order.
 - A reference to an order line with a parent is either of a recurring
-  invoice for an order, or a commission related to a invoice.';
+  payment for an order, or a commission related to a payment.';
 
 /**
  * Process read-only fields
  */
-CREATE OR REPLACE FUNCTION invoice_lines_readonly()
+CREATE OR REPLACE FUNCTION payment_lines_readonly()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.id, NEW.invoice_id, NEW.order_line_id, NEW.parent_id)
+	IF	ROW(NEW.id, NEW.payment_id, NEW.order_line_id, NEW.parent_id)
 		IS DISTINCT FROM
-		ROW(OLD.id, OLD.invoice_id, OLD.order_line_id, OLD.parent_id)
+		ROW(OLD.id, OLD.payment_id, OLD.order_line_id, OLD.parent_id)
 	THEN
-		RAISE EXCEPTION 'Can''t edit readonly field in invoice_lines.id = %', NEW.id;
+		RAISE EXCEPTION 'Can''t edit readonly field in payment_lines.id = %', NEW.id;
 	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER invoice_lines_01_readonly
-	AFTER UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_readonly();
+CREATE CONSTRAINT TRIGGER payment_lines_01_readonly
+	AFTER UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_readonly();

@@ -9,6 +9,7 @@ CREATE TABLE orders (
 	user_id			bigint REFERENCES users(id),
 	campaign_id		bigint REFERENCES campaigns(id),
 	aff_id			bigint REFERENCES users(id),
+	issue_date		datetime,
 	due_date		datetime,
 	cleared_date	datetime,
 	created_date	datetime NOT NULL DEFAULT NOW(),
@@ -18,7 +19,8 @@ CREATE TABLE orders (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+		CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
+			NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status = 'cleared' ) )
 );
 
@@ -34,7 +36,7 @@ CREATE INDEX orders_aff_id ON orders(aff_id);
 
 COMMENT ON TABLE orders IS E'Orders
 
-- user_id gets invoiced; order_lines.user_id gets shipped.
+- user_id gets paymentd; order_lines.user_id gets shipped.
 - aff_id gets the commission and is extracted from the campaign_id.
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay or late pay...';

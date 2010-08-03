@@ -1,7 +1,7 @@
 /**
  * Sets a default name when needed.
  */
-CREATE OR REPLACE FUNCTION invoices_sanitize_name()
+CREATE OR REPLACE FUNCTION payments_sanitize_name()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -9,7 +9,7 @@ BEGIN
 	IF	NEW.name IS NULL
 	THEN
 		NEW.name = CASE
-			WHEN NEW.invoice_type = 'expense'
+			WHEN NEW.payment_type = 'expense'
 			THEN 'Commissions'
 			ELSE 'Order'
 			END;
@@ -19,14 +19,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_05_sanitize_name
-	BEFORE INSERT OR UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_sanitize_name();
+CREATE TRIGGER payments_05_sanitize_name
+	BEFORE INSERT OR UPDATE ON payments
+FOR EACH ROW EXECUTE PROCEDURE payments_sanitize_name();
 
 /**
  * Autofills the user id when possible
  */
-CREATE OR REPLACE FUNCTION invoices_sanitize_user_id()
+CREATE OR REPLACE FUNCTION payments_sanitize_user_id()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -43,14 +43,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_02_sanitize_user_id
-	BEFORE INSERT ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_sanitize_user_id();
+CREATE TRIGGER payments_02_sanitize_user_id
+	BEFORE INSERT ON payments
+FOR EACH ROW EXECUTE PROCEDURE payments_sanitize_user_id();
 
 /**
  * Auto-assigns an issue date when needed
  */
-CREATE OR REPLACE FUNCTION invoices_sanitize_issue_date()
+CREATE OR REPLACE FUNCTION payments_sanitize_issue_date()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -62,14 +62,14 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_10_sanitize_issue_date
-	BEFORE INSERT OR UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_sanitize_issue_date();
+CREATE TRIGGER payments_10_sanitize_issue_date
+	BEFORE INSERT OR UPDATE ON payments
+FOR EACH ROW EXECUTE PROCEDURE payments_sanitize_issue_date();
 
 /**
- * Autofills an order's invoice
+ * Autofills an order's payment
  */
-CREATE OR REPLACE FUNCTION invoices_insert_lines()
+CREATE OR REPLACE FUNCTION payments_insert_lines()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -78,9 +78,9 @@ BEGIN
 		RETURN NEW;
 	END IF;
 	
-	INSERT INTO invoice_lines (
+	INSERT INTO payment_lines (
 			status,
-			invoice_id,
+			payment_id,
 			order_line_id,
 			parent_id,
 			amount
@@ -88,30 +88,30 @@ BEGIN
 	SELECT	NEW.status,
 			NEW.id,
 			order_lines.id,
-			invoice_lines.id,
+			payment_lines.id,
 			CASE
-			WHEN invoice_lines.parent_id IS NULL
+			WHEN payment_lines.parent_id IS NULL
 			THEN quantity * ( init_price - init_discount )
 			ELSE quantity * ( rec_price - rec_discount )
 			END
 	FROM	order_lines
-	LEFT JOIN invoice_lines
-	ON		invoice_lines.order_line_id = order_lines.id
-	AND		invoice_lines.parent_id IS NULL
+	LEFT JOIN payment_lines
+	ON		payment_lines.order_line_id = order_lines.id
+	AND		payment_lines.parent_id IS NULL
 	WHERE	order_lines.order_id = NEW.order_id
-	AND		invoice_lines.id IS NULL AND order_lines.status IN ('draft', 'pending');
+	AND		payment_lines.id IS NULL AND order_lines.status IN ('draft', 'pending');
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_10_insert_lines
-	AFTER INSERT ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_insert_lines();
+CREATE TRIGGER payments_10_insert_lines
+	AFTER INSERT ON payments
+FOR EACH ROW EXECUTE PROCEDURE payments_insert_lines();
 
 /**
- * Delegates status changes to invoices into invoice lines
+ * Delegates status changes to payments into payment lines
  */
-CREATE OR REPLACE FUNCTION invoices_propagate_status()
+CREATE OR REPLACE FUNCTION payments_propagate_status()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -120,15 +120,15 @@ BEGIN
 		RETURN NEW;
 	END IF;
 	
-	UPDATE	invoice_lines
+	UPDATE	payment_lines
 	SET		status = NEW.status
-	WHERE	invoice_id = NEW.id
+	WHERE	payment_id = NEW.id
 	AND		status = OLD.status
 	AND		status <> NEW.status;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoices_10_propagate_status
-	AFTER UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_propagate_status();
+CREATE TRIGGER payments_10_propagate_status
+	AFTER UPDATE ON payments
+FOR EACH ROW EXECUTE PROCEDURE payments_propagate_status();

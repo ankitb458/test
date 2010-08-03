@@ -13,7 +13,7 @@ CREATE TYPE status_authenticatable AS enum (
 /**
  * ISO 3166 Country codes
  */
-CREATE TYPE country_code AS enum (
+CREATE TYPE code_country AS enum (
 	'AF', -- AFGHANISTAN
 	'AX', -- ALAND ISLANDS
 	'AL', -- ALBANIA
@@ -265,7 +265,7 @@ CREATE TYPE country_code AS enum (
 /**
  * State codes
  */
-CREATE TYPE state_code AS enum (
+CREATE TYPE code_state AS enum (
 	-- United States
 	'AL', -- Alabama
 	'AK', -- Alaska

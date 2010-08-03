@@ -47,13 +47,13 @@ CREATE INDEX order_lines_coupon_id ON order_lines(coupon_id);
 
 COMMENT ON TABLE orders IS E'Order lines
 
-- user_id gets shipped; orders.user_id gets invoiced.
+- user_id gets shipped; orders.user_id gets paymentd.
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay or late pay...
 - init/rec amount/comm/discount are auto-filled if not provided.
-- init/rec amount/comm are used as is in invoices.
+- init/rec amount/comm are used as is in payments.
 - init/rec discount is only stored for reference; it is used nowhere.
-- rec_count gets decremented on cleared_date invoices.
+- rec_count gets decremented on cleared_date payments.
 - coupon_id is typically the same as the order''s campaign_id, the
   exception would be in the event of a site-wide promo.';
 

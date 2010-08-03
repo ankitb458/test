@@ -10,7 +10,7 @@ CREATE TABLE movements (
 	movement_ref	varchar UNIQUE,
 	order_id		bigint REFERENCES orders(id),
 	user_id			bigint REFERENCES users(id),
-	issue_date		datetime NOT NULL DEFAULT NOW(),
+	issue_date		datetime,
 	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
@@ -36,13 +36,9 @@ CREATE TABLE movements (
 );
 
 SELECT	timestampable('movements'),
-		payable('movements'),
+		shippable('movements'),
 --		searchable('movements'),
 		trashable('movements');
-
-CREATE INDEX movements_sort ON movements(due_date DESC);
-CREATE INDEX movements_user_id ON movements(order_id, user_id, due_date DESC);
-CREATE INDEX movements_order_id ON movements(order_id, due_date DESC);
 
 COMMENT ON TABLE movements IS E'Movements
 

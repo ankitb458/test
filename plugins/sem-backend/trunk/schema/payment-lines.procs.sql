@@ -1,7 +1,7 @@
 /**
  * Sets a default name when needed.
  */
-CREATE OR REPLACE FUNCTION invoice_lines_sanitize_name()
+CREATE OR REPLACE FUNCTION payment_lines_sanitize_name()
 	RETURNS trigger
 AS $$
 BEGIN
@@ -18,7 +18,7 @@ BEGIN
 		THEN
 			SELECT	name
 			INTO	NEW.name
-			FROM	invoice_lines
+			FROM	payment_lines
 			WHERE	id = NEW.parent_id;
 		ELSE
 			SELECT	CASE
@@ -27,8 +27,8 @@ BEGIN
 					ELSE 'Order'
 					END
 			INTO	NEW.name
-			FROM	invoices
-			WHERE	id = NEW.invoice_id;
+			FROM	payments
+			WHERE	id = NEW.payment_id;
 		END IF;
 	END IF;
 	
@@ -36,14 +36,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_05_sanitize_name
-	BEFORE INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_sanitize_name();
+CREATE TRIGGER payment_lines_05_sanitize_name
+	BEFORE INSERT OR UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_sanitize_name();
 
 /**
- * Recalculates a invoice's status and due amount based on transaction lines
+ * Recalculates a payment's status and due amount based on transaction lines
  */
-CREATE OR REPLACE FUNCTION invoice_lines_delegate_invoices()
+CREATE OR REPLACE FUNCTION payment_lines_delegate_payments()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -66,16 +66,16 @@ BEGIN
 			END)
 	INTO	_status,
 			_amount
-	FROM	invoice_lines
-	WHERE	invoice_id = NEW.invoice_id;
+	FROM	payment_lines
+	WHERE	payment_id = NEW.payment_id;
 	
 	_status := COALESCE(_status, 'trash');
 	_amount := COALESCE(_amount, 0);
 	
-	UPDATE	invoices
+	UPDATE	payments
 	SET		status = _status,
 			due_amount = _amount
-	WHERE	id = NEW.invoice_id
+	WHERE	id = NEW.payment_id
 	AND		( status <> _status OR due_amount <> _amount );
 	
 	-- RAISE NOTICE '%, %', TG_NAME, FOUND;
@@ -83,22 +83,22 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_10_delegate_invoices
-	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_invoices();
+CREATE TRIGGER payment_lines_10_delegate_payments
+	AFTER INSERT OR UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_payments();
 
 /**
  * Delegates the status for order lines
  */
-CREATE OR REPLACE FUNCTION invoice_lines_delegate_order_lines()
+CREATE OR REPLACE FUNCTION payment_lines_delegate_order_lines()
 	RETURNS trigger
 AS $$
 DECLARE
 	_status			status_payable;
-	_invoice		record;
+	_payment		record;
 	_offset			int := 0;
 	_extra			boolean;
-	_invoice_id		bigint;
+	_payment_id		bigint;
 	_due_date		datetime;
 	_rec_amount		numeric(8,2);
 	_rec_interval	interval;
@@ -120,25 +120,25 @@ BEGIN
 	SELECT	due_date,
 			cleared_date,
 			order_id
-	INTO	_invoice
-	FROM	invoices
-	WHERE	id = NEW.invoice_id
-	AND		invoice_type = 'revenue';
+	INTO	_payment
+	FROM	payments
+	WHERE	id = NEW.payment_id
+	AND		payment_type = 'revenue';
 	
 	IF	NOT FOUND
 	THEN
 		RETURN NEW;
 	END IF;
 	
-	SELECT	MIN(invoice_lines.status)
+	SELECT	MIN(payment_lines.status)
 	INTO	_status
-	FROM	invoice_lines
-	JOIN	invoices
-	ON		invoices.id = invoice_lines.invoice_id
-	WHERE	invoice_lines.order_line_id = NEW.order_line_id
-	AND		invoices.invoice_type = 'revenue'
-			-- Ignore drafts and pending invoices unless it's the initial one
-	AND		( invoices.status NOT IN ('trash', 'draft', 'pending') OR invoice_lines.parent_id IS NULL );
+	FROM	payment_lines
+	JOIN	payments
+	ON		payments.id = payment_lines.payment_id
+	WHERE	payment_lines.order_line_id = NEW.order_line_id
+	AND		payments.payment_type = 'revenue'
+			-- Ignore drafts and pending payments unless it's the initial one
+	AND		( payments.status NOT IN ('trash', 'draft', 'pending') OR payment_lines.parent_id IS NULL );
 	
 	IF	TG_OP = 'INSERT'
 	THEN
@@ -187,12 +187,12 @@ BEGIN
 	IF	NOT _extra
 	THEN
 		-- Cancel all draft and pending payments related to this order line
-		UPDATE	invoice_lines
+		UPDATE	payment_lines
 		SET		status = 'cancelled'
-		FROM	invoices
-		WHERE	invoices.id = invoice_lines.invoice_id
-		AND		invoice_lines.order_line_id = NEW.order_line_id
-		AND		invoice_lines.status IN ('draft', 'pending');
+		FROM	payments
+		WHERE	payments.id = payment_lines.payment_id
+		AND		payment_lines.order_line_id = NEW.order_line_id
+		AND		payment_lines.status IN ('draft', 'pending');
 		
 		RETURN NEW;
 	END IF;
@@ -218,58 +218,58 @@ BEGIN
 		IF	TG_OP = 'UPDATE'
 		THEN
 			-- Try an update first
-			UPDATE	invoice_lines
+			UPDATE	payment_lines
 			SET		status = CASE
-					WHEN invoice_lines.status <> 'cleared'
+					WHEN payment_lines.status <> 'cleared'
 					THEN 'pending'
 					ELSE 'cleared'
 					END::status_payable,
 					amount = _rec_amount
-			FROM	invoices
-			WHERE	invoices.invoice_type = 'revenue'
-			AND		invoice_lines.order_line_id = NEW.order_line_id
+			FROM	payments
+			WHERE	payments.payment_type = 'revenue'
+			AND		payment_lines.order_line_id = NEW.order_line_id
 			AND		parent_id = NEW.id;
 		END IF;
 		
 		IF	TG_OP = 'INSERT' OR NOT FOUND
 		THEN
 			-- Extract the payment's due date
-			_due_date := _invoice.due_date + _rec_interval;
+			_due_date := _payment.due_date + _rec_interval;
 		
 			SELECT	id
-			INTO	_invoice_id
-			FROM	invoices
-			WHERE	invoice_type = 'revenue'
+			INTO	_payment_id
+			FROM	payments
+			WHERE	payment_type = 'revenue'
 			AND		due_date = _due_date;
 		
 			IF	NOT FOUND
 			THEN
-				INSERT INTO invoices (
+				INSERT INTO payments (
 						status,
-						invoice_type,
+						payment_type,
 						order_id,
 						due_date
 						)
 				VALUES	(
 						'pending',
 						'revenue',
-						_invoice.order_id,
+						_payment.order_id,
 						_due_date
 						)
 				RETURNING id
-				INTO	_invoice_id;
+				INTO	_payment_id;
 			END IF;
 			
-			INSERT INTO invoice_lines (
+			INSERT INTO payment_lines (
 					status,
-					invoice_id,
+					payment_id,
 					order_line_id,
 					parent_id,
 					amount
 					)
 			VALUES (
 					'pending',
-					_invoice_id,
+					_payment_id,
 					NEW.order_line_id,
 					NEW.id,
 					_rec_amount
@@ -281,42 +281,42 @@ BEGIN
 	IF	_aff_comm <> 0
 	THEN
 		-- Extract the commission's due date
-		_due_date := date_trunc('month', _invoice.cleared_date + interval '1 month + 2 week');
-		IF	_due_date - _invoice.cleared_date < interval '30 day'
+		_due_date := date_trunc('month', _payment.cleared_date + interval '1 month + 2 week');
+		IF	_due_date - _payment.cleared_date < interval '30 day'
 		THEN
 			_due_date := _due_date + interval '2 week';
 		END IF;
 
-		IF	_invoice.order_id IS NOT NULL
+		IF	_payment.order_id IS NOT NULL
 		THEN
 			SELECT	aff_id
 			INTO	_aff_id
 			FROM	orders
-			WHERE	id = _invoice.order_id;
+			WHERE	id = _payment.order_id;
 		END IF;
 
 		IF	_aff_id IS NOT NULL
 		THEN
 			SELECT	id
-			INTO	_invoice_id
-			FROM	invoices
-			WHERE	invoice_type = 'expense'
+			INTO	_payment_id
+			FROM	payments
+			WHERE	payment_type = 'expense'
 			AND		due_date = _due_date
 			AND		user_id = _aff_id;
 		ELSE
 			SELECT	id
-			INTO	_invoice_id
-			FROM	invoices
+			INTO	_payment_id
+			FROM	payments
 			WHERE	due_date = _due_date
-			AND		invoice_type = 'expense'
+			AND		payment_type = 'expense'
 			AND		user_id IS NULL;
 		END IF;
 
 		IF	NOT FOUND
 		THEN
-			INSERT INTO invoices (
+			INSERT INTO payments (
 					status,
-					invoice_type,
+					payment_type,
 					user_id,
 					due_date
 					)
@@ -327,18 +327,18 @@ BEGIN
 					_due_date
 					)
 			RETURNING id
-			INTO	_invoice_id;
+			INTO	_payment_id;
 	
-			INSERT INTO invoice_lines (
+			INSERT INTO payment_lines (
 					status,
-					invoice_id,
+					payment_id,
 					order_line_id,
 					parent_id,
 					amount
 					)
 			VALUES (
 					'pending',
-					_invoice_id,
+					_payment_id,
 					NEW.order_line_id,
 					NEW.id,
 					_aff_comm
@@ -347,26 +347,26 @@ BEGIN
 			IF	TG_OP = 'UPDATE'
 			THEN
 				-- Try an update first
-				UPDATE	invoice_lines
+				UPDATE	payment_lines
 				SET		status = 'pending',
 						amount = _aff_comm
-				WHERE	invoice_id = _invoice_id
+				WHERE	payment_id = _payment_id
 				AND		order_line_id = NEW.order_line_id
 				AND		parent_id = NEW.id;
 			END IF;
 	
 			IF	TG_OP = 'INSERT' OR NOT FOUND
 			THEN
-				INSERT INTO invoice_lines (
+				INSERT INTO payment_lines (
 						status,
-						invoice_id,
+						payment_id,
 						order_line_id,
 						parent_id,
 						amount
 						)
 				VALUES (
 						'pending',
-						_invoice_id,
+						_payment_id,
 						NEW.order_line_id,
 						NEW.id,
 						_aff_comm
@@ -378,6 +378,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER invoice_lines_20_delegate_order_lines
-	AFTER INSERT OR UPDATE ON invoice_lines
-FOR EACH ROW EXECUTE PROCEDURE invoice_lines_delegate_order_lines();
+CREATE TRIGGER payment_lines_20_delegate_order_lines
+	AFTER INSERT OR UPDATE ON payment_lines
+FOR EACH ROW EXECUTE PROCEDURE payment_lines_delegate_order_lines();

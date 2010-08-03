@@ -1,17 +1,17 @@
 /*
- * Invoices
+ * payments
  */
-CREATE TABLE invoices (
+CREATE TABLE payments (
 	id				bigserial PRIMARY KEY,
 	uuid			uuid NOT NULL DEFAULT uuid() UNIQUE,
 	status			status_payable NOT NULL DEFAULT 'draft',
 	name			varchar NOT NULL,
-	invoice_type	type_invoice NOT NULL DEFAULT 'revenue',
+	payment_type	type_payment NOT NULL DEFAULT 'revenue',
 	payment_method	method_payment,
 	payment_ref		varchar UNIQUE,
 	order_id		bigint REFERENCES orders(id),
 	user_id			bigint REFERENCES users(id),
-	issue_date		datetime NOT NULL DEFAULT NOW(),
+	issue_date		datetime,
 	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
@@ -26,24 +26,20 @@ CREATE TABLE invoices (
 		CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
 			NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status = 'cleared' ) ),
-	CONSTRAINT valid_invoice_type
-		CHECK ( invoice_type = 'revenue' OR order_id IS NULL ),
+	CONSTRAINT valid_payment_type
+		CHECK ( payment_type = 'revenue' OR order_id IS NULL ),
 	CONSTRAINT valid_payment_method
 		CHECK ( payment_ref IS NULL OR payment_method IS NOT NULL ),
 	CONSTRAINT valid_payment_ref
 		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) )
 );
 
-SELECT	timestampable('invoices'),
-		payable('invoices'),
---		searchable('invoices'),
-		trashable('invoices');
+SELECT	timestampable('payments'),
+		payable('payments'),
+--		searchable('payments'),
+		trashable('payments');
 
-CREATE INDEX invoices_sort ON invoices(due_date DESC);
-CREATE INDEX invoices_user_id ON invoices(order_id, user_id, due_date DESC);
-CREATE INDEX invoices_order_id ON invoices(order_id, due_date DESC);
-
-COMMENT ON TABLE invoices IS E'Invoices
+COMMENT ON TABLE payments IS E'payments
 
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay, or late pay...';
@@ -51,20 +47,20 @@ COMMENT ON TABLE invoices IS E'Invoices
 /**
  * Process read-only fields
  */
-CREATE OR REPLACE FUNCTION invoices_readonly()
+CREATE OR REPLACE FUNCTION payments_readonly()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	ROW(NEW.id, NEW.invoice_type, NEW.order_id)
+	IF	ROW(NEW.id, NEW.payment_type, NEW.order_id)
 		IS DISTINCT FROM
-		ROW(OLD.id, OLD.invoice_type, OLD.order_id)
+		ROW(OLD.id, OLD.payment_type, OLD.order_id)
 	THEN
-		RAISE EXCEPTION 'Can''t edit readonly field in invoices.id = %', NEW.id;
+		RAISE EXCEPTION 'Can''t edit readonly field in payments.id = %', NEW.id;
 	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE CONSTRAINT TRIGGER invoices_01_readonly
-	AFTER UPDATE ON invoices
-FOR EACH ROW EXECUTE PROCEDURE invoices_readonly();
+CREATE CONSTRAINT TRIGGER payments_01_readonly
+	AFTER UPDATE ON payments
+FOR EACH ROW EXECUTE PROCEDURE payments_readonly();

@@ -137,8 +137,8 @@ SELECT	'Allow for active coupons on future products',
 
 -- DELETE FROM transaction_lines;
 -- DELETE FROM transactions;
-DELETE FROM invoice_lines;
-DELETE FROM invoices;
+DELETE FROM payment_lines;
+DELETE FROM payments;
 DELETE FROM order_lines;
 DELETE FROM orders;
 DELETE FROM products;

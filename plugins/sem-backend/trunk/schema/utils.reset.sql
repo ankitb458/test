@@ -15,9 +15,9 @@ DROP DOMAIN datetime CASCADE;
 DROP DOMAIN slug CASCADE;
 DROP DOMAIN email CASCADE;
 
-DROP TYPE currency_code CASCADE;
-DROP TYPE country_code CASCADE;
-DROP TYPE state_code CASCADE;
+DROP TYPE code_currency CASCADE;
+DROP TYPE code_country CASCADE;
+DROP TYPE code_state CASCADE;
 
 DROP TYPE status_activatable CASCADE;
 DROP TYPE status_authenticatable CASCADE;
@@ -27,4 +27,5 @@ DROP TYPE type_transaction CASCADE;
 DROP TYPE type_account CASCADE;
 
 DROP TYPE type_invoice CASCADE;
+DROP TYPE type_payment CASCADE;
 DROP TYPE method_payment CASCADE;

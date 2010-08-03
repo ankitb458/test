@@ -420,9 +420,9 @@ CREATE TRIGGER order_lines_15_delegate_campaign_id
 FOR EACH ROW EXECUTE PROCEDURE order_lines_delegate_campaign_id();
 
 /**
- * Delegate changes in amounts to uncleared invoices
+ * Delegate changes in amounts to uncleared payments
  */
-CREATE OR REPLACE FUNCTION order_lines_delegate_invoice_lines()
+CREATE OR REPLACE FUNCTION order_lines_delegate_payment_lines()
 	RETURNS trigger
 AS $$
 DECLARE
@@ -440,6 +440,6 @@ BEGIN
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER order_lines_20_delegate_invoice_lines
+CREATE TRIGGER order_lines_20_delegate_payment_lines
 	AFTER UPDATE ON order_lines
-FOR EACH ROW EXECUTE PROCEDURE order_lines_delegate_invoice_lines();
+FOR EACH ROW EXECUTE PROCEDURE order_lines_delegate_payment_lines();

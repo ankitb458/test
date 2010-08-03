@@ -35,7 +35,8 @@ BEGIN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %. Default: %', 'flow', t_name,
 		$EXEC$
 			CONSTRAINT valid_flow
-				CHECK ( NOT ( due_date IS NULL AND status > 'draft' ) AND
+				CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
+					NOT ( due_date IS NULL AND status > 'draft' ) AND
 					NOT ( cleared_date IS NULL AND status = 'cleared' ) )
 		$EXEC$;
 	END IF;
@@ -46,6 +47,10 @@ BEGIN
 	AS $DEF$
 	BEGIN
 		-- Assign default dates if needed
+		IF	NEW.issue_date IS NULL AND NEW.status > 'draft'
+		THEN
+			NEW.issue_date := NOW();
+		END IF;
 		IF	NEW.due_date IS NULL AND NEW.status > 'draft'
 		THEN
 			NEW.due_date := NOW();
@@ -76,31 +81,9 @@ $$ LANGUAGE plpgsql;
 /**
  * Payment type
  */
-CREATE TYPE type_invoice AS enum (
+CREATE TYPE type_payment AS enum (
 	'revenue',
 	'expense'
-	);
-
-/**
- * Transaction type
- */
-CREATE TYPE type_transaction AS enum (
-	'invoice',
-	'payment',
-	'cancel',
-	'refund',
-	'reversal'
-	);
-
-/**
- * Account type
- */
-CREATE TYPE type_account AS enum (
-	'cash', -- Asset
-	'receivables', -- Asset / Accounts receivable
-	'payables', -- Liability / Accounts payable
-	'revenue', -- Misc Revenue
-	'expense' -- Misc Expense
 	);
 
 /**
@@ -117,7 +100,7 @@ CREATE TYPE method_payment AS enum (
 /**
  * ISO 4217 Currencies
  */
-CREATE TYPE currency_code AS enum (
+CREATE TYPE code_currency AS enum (
 	'AED', -- United Arab Emirates, Dirhams
 	'AFN', -- Afghanistan, Afghanis
 	'ALL', -- Albania, Leke
