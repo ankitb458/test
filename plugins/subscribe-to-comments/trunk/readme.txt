@@ -15,6 +15,10 @@ Subscribe to Comments enables commenters to sign up for e-mail notification of s
 
 == Change Log ==
 
+= 2.6.1 =
+
+- WP 3.1 compat
+
 = 2.6 =
 
 - WP 3.0 compat

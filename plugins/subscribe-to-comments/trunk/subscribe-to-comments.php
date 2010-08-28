@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Subscribe To Comments
-Version: 2.6 fork
+Version: 2.6.1 alpha fork
 Plugin URI: http://txfx.net/code/wordpress/subscribe-to-comments/
 Description: Allows readers to receive notifications of new comments that are posted to an entry.  Based on version 1 from <a href="http://scriptygoddess.com/">Scriptygoddess</a>
 Author: Mark Jaquith
@@ -67,7 +67,8 @@ return $id;
 /* This is NOT inserted automaticallly... you must place it yourself    */
 /* -------------------------------------------------------------------- */
 function show_manual_subscription_form() {
-	global $id, $sg_subscribe, $user_email;
+	global $sg_subscribe, $user_email;
+	$id = get_the_ID();
 	sg_subscribe_start();
 	$sg_subscribe->show_errors('solo_subscribe', '<div class="solo-subscribe-errors">', '</div>', __('<strong>Error: </strong>', 'subscribe-to-comments'), '<br />');
 
