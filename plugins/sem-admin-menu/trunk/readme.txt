@@ -53,6 +53,10 @@ To configure the behavior, browse Settings / Admin Menu.
 
 == Change Log ==
 
+= 6.0.4 =
+
+- Optimization when the always-on option isn't turned on.
+
 = 6.0.3 =
 
 - WP 3.0.1 compat
