@@ -27,6 +27,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 0.9.5 =
+
+- Fix a bug when dealing with headers
+
 = 0.9.4 =
 
 - WP 3.0.1 compat

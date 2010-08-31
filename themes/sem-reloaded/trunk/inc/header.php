@@ -187,7 +187,8 @@ class sem_header {
 			}
 		}
 		
-		wp_mkdir_p(WP_CONTENT_DIR . header::get_basedir());
+		$site_basedir = header::get_basedir();
+		wp_mkdir_p(WP_CONTENT_DIR . $site_basedir);
 		
 		if ( !$header || is_writable(WP_CONTENT_DIR . $header) || strpos($header, "/skins/$active_skin/") !== false ) {
 			if ( is_writable(WP_CONTENT_DIR . $site_basedir) ) {
