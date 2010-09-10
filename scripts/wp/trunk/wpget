@@ -2,12 +2,12 @@
 #
 # WP/Sem Pro packager
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.9
+# Version: 1.0
 # http://www.mesoconcepts.com/license/
 #
 
 # init args
-version=0.8
+version=1.0
 force=0
 quiet=0
 sem_pro=''
@@ -99,18 +99,17 @@ fi
 
 if [ "$sem_key" = '' ]; then
 	core='wordpress'
-	wp_themes='p2'
-	sem_themes=''
+	wp_themes=''
+	sem_themes='sem-reloaded'
 	wp_plugins='auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-external-links sem-dofollow sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
 	sem_plugins=''
 else
-	core='sem-pro wordpress'
-	wp_themes='p2'
-	sem_themes='semiologic sem-reloaded'
+	core='wordpress'
+	wp_themes=''
+	sem_themes='sem-reloaded'
 	wp_plugins='auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-dofollow sem-external-links sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
 	sem_plugins='ad-manager article-uploader autotag contact-form feed-widgets fuzzy-widgets google-analytics hitslink inline-widgets mediacaster nav-menus newsletter-manager random-widgets redirect-manager related-widgets script-manager search-reloaded sem-cache sem-cloner sem-fixes sem-semiologic-affiliate sem-seo silo smart-links version-checker widget-contexts'
 fi
-
 
 
 cwd=$PWD
@@ -265,13 +264,14 @@ fi
 
 # wp_core
 for package in $core; do
-	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+	url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
 	if [ "$url" = '' ]; then
 		continue
 	fi
 	
 	if [ $quiet -eq 0 ]; then
-		echo "Fetching $package"
+		version=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 2`
+		echo "Fetching $package v.$version"
 	fi
 	
 	if [ "$sem_pro" != '' ]; then
@@ -287,13 +287,14 @@ done
 
 # wp_themes
 for package in $wp_themes; do
-	url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+	url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
 	if [ "$url" = '' ]; then
 		continue
 	fi
 	
 	if [ $quiet -eq 0 ]; then
-		echo "Fetching $package"
+		version=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 2`
+		echo "Fetching $package v.$version"
 	fi
 	
 	$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
@@ -306,13 +307,14 @@ done
 if [ "$sem_pro" = '' ]; then
 	# sem_themes
 	for package in $sem_themes; do
-		url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+		url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
 		if [ "$url" = '' ]; then
 			continue
 		fi
 		
 		if [ $quiet -eq 0 ]; then
-			echo "Fetching $package"
+			version=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 2`
+			echo "Fetching $package v.$version"
 		fi
 		
 		$curl_cmd -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
@@ -324,13 +326,14 @@ if [ "$sem_pro" = '' ]; then
 	
 	# wp_plugins
 	for package in $wp_plugins; do
-		url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+		url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
 		if [ "$url" = '' ]; then
 			continue
 		fi
 		
 		if [ $quiet -eq 0 ]; then
-			echo "Fetching $package"
+			version=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 2`
+			echo "Fetching $package v.$version"
 		fi
 		
 		$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
@@ -342,13 +345,14 @@ if [ "$sem_pro" = '' ]; then
 	
 	# sem_plugins
 	for package in $sem_plugins; do
-		url=`cat ~/.wpget.$dir | grep $package, | cut -d , -f 3`
+		url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
 		if [ "$url" = '' ]; then
 			continue
 		fi
 		
 		if [ $quiet -eq 0 ]; then
-			echo "Fetching $package"
+			version=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 2`
+			echo "Fetching $package v.$version"
 		fi
 		
 		$curl_cmd -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1

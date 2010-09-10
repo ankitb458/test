@@ -2,13 +2,13 @@
 #
 # hub.org WP/Sem Pro utils
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 0.9.1 beta
+# Version: 1.0
 # http://www.mesoconcepts.com/license/
 #
 
 
 # init
-version=0.9
+version=1.0
 quiet=0
 force=0
 all=0
