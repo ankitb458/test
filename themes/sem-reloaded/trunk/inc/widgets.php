@@ -1847,38 +1847,56 @@ class header extends WP_Widget {
 		$ext = strtolower(end($ext));
 		
 		if ( $ext != 'swf' ) {
-			list($width, $height) = wp_cache_get('sem_header', 'sem_header');
-			
-			$header = '<img src="' . sem_url . '/icons/pixel.gif"'
-				. ' height="' . intval($height) . '" width="100%"'
-				. ' alt="'
-					. esc_attr(get_option('blogname'))
-					. ' &bull; '
-					. esc_attr(get_option('blogdescription'))
-					. '"'
-				. ' />';
-			
-			if ( !( is_front_page() && !is_paged() ) ) {
-				$header = '<a'
-				. ' href="' . esc_url(user_trailingslashit(get_option('home'))) . '"'
-				. ' title="'
-					. esc_attr(get_option('blogname'))
-					. ' &bull; '
-					. esc_attr(get_option('blogdescription'))
-					. '"'
-				. '>' . $header . '</a>';
-			}
-			
 			echo '<div id="header_img" class="pad">'
-				. $header
-				. '</div>' . "\n";
+				. header::display_header_image($header);
 		} else {
-			echo '<div id="header_img">'
-				. header::display_flash($header)
-				. '</div>' . "\n";
+			echo '<div id="header_img">' 
+				. header::display_header_flash($header);
 		}
+		echo '</div>' . "\n";
 	} # display()
-	
+	/**
+	 * display_header_flash()
+	 * 
+	 * @param string $header
+	 * @return string html
+	 */
+	function display_header_flash($header) {
+		return header::display_flash($header);
+	}
+	/**
+	 * display_header_image()
+	 * 
+	 * @param string $header
+	 * @return string html
+	 */
+	function display_header_image($header) {
+		if (false === $header_size = wp_cache_get('sem_header', 'sem_header'))
+			$header_size = @getimagesize(WP_CONTENT_DIR . $header);
+		list($width, $height) = $header_size;
+		
+		$html = '<img src="' . sem_url . '/icons/pixel.gif"'
+			. ' height="' . intval($height) . '" width="100%"'
+			. ' alt="'
+				. esc_attr(get_option('blogname'))
+				. ' &bull; '
+				. esc_attr(get_option('blogdescription'))
+				. '"'
+			. ' />';
+		
+		if ( !( is_front_page() && !is_paged() ) ) {
+			$html = '<a'
+			. ' href="' . esc_url(user_trailingslashit(get_option('home'))) . '"'
+			. ' title="'
+				. esc_attr(get_option('blogname'))
+				. ' &bull; '
+				. esc_attr(get_option('blogdescription'))
+				. '"'
+			. '>' . $html . '</a>';
+		}
+		
+		return $html;
+	}
 	
 	/**
 	 * display_image()
@@ -1886,7 +1904,6 @@ class header extends WP_Widget {
 	 * @param string $header
 	 * @return string $html
 	 **/
-
 	function display_image($header = null) {
 		if ( !$header )
 			$header = header::get_header();
@@ -2080,7 +2097,7 @@ EOS;
 			$header = current($header);
 			$header = str_replace(WP_CONTENT_DIR, '', $header);
 			$header_size = @getimagesize(WP_CONTENT_DIR . $header);
-			if ( $header_size ) {
+			if ( false !== $header_size ) {
 				wp_cache_set('sem_header', $header_size, 'sem_header');
 				set_transient('sem_header', $header);
 				return $header;
