@@ -53,6 +53,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 2.0.4 =
+
+- PHP notices
+
 = 2.0.3 =
 
 - WP 3.0.1 compat
