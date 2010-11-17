@@ -1,8 +1,8 @@
 #!/bin/sh
 #
-# WP/Sem Pro packager
+# hub.org WP/Sem Pro packager
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 1.0.1
+# Version: 1.0.2
 # http://www.mesoconcepts.com/license/
 #
 
@@ -281,7 +281,6 @@ for package in $core; do
 	fi
 	
 	$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
-	rm -f /tmp/$dir/$package.zip 2> /dev/null
 done
 
 
@@ -300,7 +299,6 @@ for package in $wp_themes; do
 	$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
 	$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
 	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
-	rm -f /tmp/$dir/$package.zip 2> /dev/null
 done
 
 
@@ -320,7 +318,6 @@ if [ "$sem_pro" = '' ]; then
 		$curl_cmd -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
 		$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
 		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
-		rm -f /tmp/$dir/$package.zip 2> /dev/null
 	done
 	
 	
@@ -339,7 +336,6 @@ if [ "$sem_pro" = '' ]; then
 		$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
 		$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
 		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/plugins/$package 2> /dev/null
-		rm -f /tmp/$dir/$package.zip 2> /dev/null
 	done
 	
 	
@@ -358,7 +354,6 @@ if [ "$sem_pro" = '' ]; then
 		$curl_cmd -s --connect-timeout 3 -b "$cookies" -f $url -o /tmp/$dir/$package.zip		|| exit 1
 		$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
 		mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
-		rm -f /tmp/$dir/$package.zip 2> /dev/null
 	done
 fi
 
