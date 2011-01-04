@@ -103,13 +103,13 @@ if [ "$sem_key" = '' ]; then
 	core='wordpress'
 	wp_themes=''
 	sem_themes='sem-reloaded'
-	wp_plugins='akismet auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-external-links sem-dofollow sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
+	wp_plugins='auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-external-links sem-dofollow sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
 	sem_plugins=''
 else
 	core='wordpress'
 	wp_themes=''
 	sem_themes='sem-reloaded'
-	wp_plugins='akismet auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-dofollow sem-external-links sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
+	wp_plugins='auto-thickbox core-control dealdotcom-widgets sem-admin-menu sem-autolink-uri sem-author-image sem-bookmark-me sem-dofollow sem-external-links sem-fancy-excerpt sem-frame-buster sem-opt-in-front sem-subscribe-me sem-unfancy-quote uploads-folder wp-db-backup wp-hashcash xml-sitemaps'
 	sem_plugins='ad-manager article-uploader autotag contact-form democracy feed-widgets fuzzy-widgets google-analytics hitslink inline-widgets mediacaster nav-menus newsletter-manager pc-robots-txt random-widgets redirect-manager related-widgets script-manager search-reloaded sem-cache sem-cloner sem-fixes sem-semiologic-affiliate sem-seo silo smart-links star-rating subscribe-to-comments version-checker widget-contexts'
 fi
 
