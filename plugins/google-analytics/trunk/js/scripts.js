@@ -55,14 +55,14 @@ jQuery(document).ready(function() {
 				
 				if ( !label ) {
 					try {
-						window.pageTracker._trackEvent(category, action);
+						window._gaq.push(['_trackEvent', category, action]);
 					} catch ( err ) {}
 				} else {
 					var count = jQuery(this).attr('ga_count');
 					count = count ? parseInt(count) + 1 : 1;
 					jQuery(this).attr('ga_count', count);
 					try {
-						window.pageTracker._trackEvent(category, action, label, count);
+						window._gaq.push(['_trackEvent', category, action, label, count]);
 					} catch ( err ) {}
 				}
 				
@@ -72,14 +72,14 @@ jQuery(document).ready(function() {
 			t.click(function(e) {
 				if ( !label ) {
 					try {
-						window.pageTracker._trackEvent(category, action);
+						window._gaq.push(['_trackEvent', category, action]);
 					} catch ( err ) {}
 				} else {
 					var count = jQuery(this).data('ga_count');
 					count = count ? parseInt(count) + 1 : 1;
 					jQuery(this).data('ga_count', count);
 					try {
-						window.pageTracker._trackEvent(category, action, label, count);
+						window._gaq.push(['_trackEvent', category, action, label, count]);
 					} catch ( err ) {}
 				}
 			});
@@ -92,7 +92,7 @@ jQuery(document).ready(function() {
 			var href = jQuery(this).attr('href');
 			if ( href && href.match(/^https?:/i) && !href.match(window.google_analytics_regexp) ) {
 				try {
-					window.pageTracker._trackPageview('/outbound/?to=' + href);
+					window._gaq.push(['_trackPageview', '/outbound/?to=' + href]);
 				} catch ( err ) {}
 			}
 		}

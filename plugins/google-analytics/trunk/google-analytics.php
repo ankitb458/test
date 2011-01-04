@@ -3,7 +3,7 @@
 Plugin Name: Google Analytics
 Plugin URI: http://www.semiologic.com/software/google-analytics/
 Description: Adds <a href="http://analytics.google.com">Google analytics</a> to your blog, with various advanced tracking features enabled.
-Version: 4.1.1
+Version: 4.2 RC
 Author: Denis de Bernardy
 Author URI: http://www.getsemiologic.com
 Text Domain: google-analytics
@@ -37,14 +37,12 @@ if ( !defined('GA_DOMAIN') )
 
 class google_analytics {
 	/**
-	 * header_scripts()
+	 * domain name parts to be tracked
 	 *
-	 * @return void
+	 * @return array domain name parts
 	 **/
 
-	function header_scripts() {
-		$uacct = google_analytics::get_options();
-		
+	function getDomainParts() {
 		$domain = GA_DOMAIN ? GA_DOMAIN : get_option('home');
 		$domain = parse_url($domain);
 		$domain = $domain['host'];
@@ -61,15 +59,42 @@ class google_analytics {
 			} while ( $_domain );
 		}
 		
-		$domain = '[^/]+://[^/]*' . implode('\\.', array_map('addslashes', $domain)) . '(/|$)';
+		return $domain;
+	}
+	
+	/**
+	 * header_scripts()
+	 *
+	 * @return void
+	 **/
+
+	function header_scripts() {
+		$uacct = google_analytics::get_options();
+		
+		$domainParts = self::getDomainParts();
+		$domainRegex = '[^/]+://[^/]*' . implode('\\.', array_map('addslashes', $domainParts)) . '(/|$)';
+		$ga_domain = ''; # experimental
+		if ( GA_DOMAIN )
+			$ga_domain = "\n_gaq.push(['_setDomainName', '" . addslashes(GA_DOMAIN) . "']);";
 		
 		echo <<<EOS
-
 <script type="text/javascript">
 window.google_analytics_uacct = "$uacct";
-window.google_analytics_regexp = new RegExp("$domain", 'i');
+window.google_analytics_regexp = new RegExp("$domainRegex", 'i');
 </script>
+<script type="text/javascript">
 
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', '$uacct']);
+_gaq.push(['_trackPageview']);$ga_domain
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+
+</script>
 EOS;
 		
 		if ( !sem_google_analytics_debug && ( !$uacct || current_user_can('publish_posts') || current_user_can('publish_pages') ) )
@@ -93,7 +118,6 @@ EOS;
 		));
 	} # header_scripts()
 	
-	
 	/**
 	 * footer_scripts()
 	 *
@@ -103,24 +127,13 @@ EOS;
 	function footer_scripts() {
 		$uacct = google_analytics::get_options();
 		
-		$ga_domain = ''; # experimental
-		if ( GA_DOMAIN )
-			$ga_domain = 'pageTracker._setDomainName(\'' . addslashes(GA_DOMAIN) . '\'); ';
-		
-		echo <<<EOS
-
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-EOS;
 		if ( !sem_google_analytics_debug && !$uacct )
 			return;
 		
 echo <<<EOS
 
 <script type="text/javascript">
-try { var pageTracker = _gat._getTracker("$uacct"); $ga_domain} catch(err) {}
+try { var pageTracker = _gat._getTracker("$uacct");} catch(err) {}
 </script>
 
 EOS;
@@ -151,9 +164,9 @@ EOS;
 		}
 		
 		if ( is_404() ) {
-			$tracker = 'pageTracker._trackPageview("/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer);';
+			$tracker = '_gaq.push(["_trackPageview", "/404/?page=" + document.location.pathname + document.location.search + "&from=" + document.referrer]);';
 		} else {
-			$tracker = 'pageTracker._trackPageview();';
+			$tracker = "_gaq.push(['_trackPageview']);";
 		}
 		
 		echo <<<EOS
