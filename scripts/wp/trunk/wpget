@@ -2,12 +2,12 @@
 #
 # hub.org WP/Sem Pro packager
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 1.0.2
+# Version: 1.0.3
 # http://www.mesoconcepts.com/license/
 #
 
 # init args
-version=1.0
+version=1.0.3
 force=0
 quiet=0
 sem_pro=''

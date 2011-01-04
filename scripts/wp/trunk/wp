@@ -2,13 +2,13 @@
 #
 # hub.org WP/Sem Pro installer/upgrader
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 1.0.2
+# Version: 1.0.3
 # http://www.mesoconcepts.com/license/
 #
 
 
 # init
-version=1.0
+version=1.0.3
 quiet=0
 force=0
 all=0
