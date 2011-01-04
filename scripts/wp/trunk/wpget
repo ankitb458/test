@@ -284,24 +284,6 @@ for package in $core; do
 done
 
 
-# wp_plugins
-for package in $wp_plugins; do
-	url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
-	if [ "$url" = '' ]; then
-		continue
-	fi
-	
-	if [ $quiet -eq 0 ]; then
-		version=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 2`
-		echo "Fetching $package v.$version"
-	fi
-	
-	$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
-	$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
-	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/plugins/$package 2> /dev/null
-done
-
-
 # wp_themes
 for package in $wp_themes; do
 	url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
@@ -317,6 +299,24 @@ for package in $wp_themes; do
 	$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
 	$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
 	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/themes/$package 2> /dev/null
+done
+
+
+# wp_plugins
+for package in $wp_plugins; do
+	url=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 3`
+	if [ "$url" = '' ]; then
+		continue
+	fi
+	
+	if [ $quiet -eq 0 ]; then
+		version=`cat ~/.wpget.$dir | grep $package, -m 1 | cut -d , -f 2`
+		echo "Fetching $package v.$version"
+	fi
+	
+	$curl_cmd -s --connect-timeout 3 -f $url -o /tmp/$dir/$package.zip		|| exit 1
+	$unzip_cmd /tmp/$dir/$package.zip &> /dev/null							|| exit 1
+	mv /tmp/$dir/$package /tmp/$dir/wordpress/wp-content/plugins/$package 2> /dev/null
 done
 
 
