@@ -3,7 +3,7 @@
 Plugin Name: Star Rating for Reviews
 Plugin URI: http://www.channel-ai.com/blog/plugins/star-rating/
 Description: Insert inline rating stars within your posts based on the score you assign, e.g.: [rating:5].
-Version: 0.2.1 fork
+Version: 0.2.2 fork
 Author: Yaosan Yeo
 Author URI: http://www.channel-ai.com/blog/
 */
@@ -109,7 +109,7 @@ function ai_genstar($matches) {
 
 	$star = $percent * $maxstar;
 
-	$path = trailingslashit(get_settings('siteurl')) . 'wp-content/plugins/star-rating/';
+	$path = plugin_dir_url(__FILE__);
 
 	// check if half star occurs
 	// e.g. [3.75 , 4.25) = 4 stars; [4.25 , 4.75) = 4.5 stars
