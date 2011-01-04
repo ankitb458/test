@@ -179,7 +179,7 @@ function jal_add_question () {
 }
 
 
-function jal_dem_admin_head() { ?>    <script type="text/javascript" src="<?php echo get_bloginfo('wpurl') . "/wp-content/plugins/democracy/admin.js"; ?>"></script>
+function jal_dem_admin_head() { ?>    <script type="text/javascript" src="<?php echo plugin_dir_url(__FILE__) . 'admin.js'; ?>"></script>
 <?php }
 
 function jal_dem_admin_page() {
@@ -423,7 +423,7 @@ function jal_democracy($poll_id = 0) {
  		$latestaid = $wpdb->get_var("SELECT aid FROM {$table_prefix}democracyA ORDER BY aid DESC LIMIT 1");
 
  		$total_votes = $wpdb->get_var("SELECT SUM(votes) FROM {$table_prefix}democracyA WHERE qid = ".$poll_question->id);
-    ?>     <form action="<?php echo get_bloginfo('wpurl') . '/wp-content/plugins/democracy/democracy.php?jal_nojs=true'; ?>" method="post" id="democracyForm" onsubmit="return ReadVote();">
+    ?>     <form action="<?php echo plugin_dir_url(__FILE__) . 'democracy.php?jal_nojs=true'; ?>" method="post" id="democracyForm" onsubmit="return ReadVote();">
         <div id="democracy">
         <?php echo $jal_before_question . $poll_question->question . $jal_after_question; ?>
         <ul>
