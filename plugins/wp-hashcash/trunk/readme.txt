@@ -3,7 +3,7 @@
 Contributors: ecb29, donncha
 Tags: spam, antispam, anti-spam, comments, comment, pingback, trackback, wp-hashcash, plugin, security, wordpress, javascript, js, signup, sign-up, wp-login.php, wp-signup.php, buddypress, bp, WPMU
 Requires at least: 2.8
-Tested up to: 3.0
+Tested up to: 3.1
 
 Client-side javascript blocks all spam bots. XHTML 1.1 compliant.
 
