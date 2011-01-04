@@ -78,6 +78,8 @@ if [ "$unzip_cmd" = '' ]; then
 		echo 'Err: failed to find unzip or tar'
 		exit 1
 	fi
+else
+	unzip_cmd="$unzip_cmd -q"
 fi
 
 # find curl
