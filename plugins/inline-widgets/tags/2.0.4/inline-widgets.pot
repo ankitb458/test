@@ -1,0 +1,36 @@
+# Inline Widgets pot file.
+# Copyright (C) 2009 Mesoconcepts <http://www.mesoconcepts.com>
+# This file is distributed under the same license as the Inline Widgets package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"Report-Msgid-Bugs-To: https://tickets.semiologic.com\n"
+"POT-Creation-Date: 2009-09-16 16:26+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: inline-widgets-admin.php:106
+msgid "Widget"
+msgstr ""
+
+#: inline-widgets-info.php:2
+msgid "Inline Widgets"
+msgstr ""
+
+#: inline-widgets-info.php:3
+msgid ""
+"Creates a special sidebar that lets you insert arbitrary widgets in posts "
+"and pages. Configure these inline widgets under <a href=\"widgets.php"
+"\">Appearance / Widgets</a>."
+msgstr ""
+
+#: inline-widgets.php:43
+msgid "Inline Widgets (for use in entries)"
+msgstr ""
