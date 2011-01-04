@@ -9,7 +9,7 @@ CREATE TABLE orders (
 	user_id			bigint REFERENCES users(id),
 	campaign_id		bigint REFERENCES campaigns(id),
 	aff_id			bigint REFERENCES users(id),
-	issue_date		datetime,
+	issued_date		datetime,
 	due_date		datetime,
 	cleared_date	datetime,
 	created_date	datetime NOT NULL DEFAULT NOW(),
@@ -19,7 +19,7 @@ CREATE TABLE orders (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
+		CHECK ( NOT ( issued_date IS NULL AND status > 'draft' ) AND
 			NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status = 'cleared' ) )
 );

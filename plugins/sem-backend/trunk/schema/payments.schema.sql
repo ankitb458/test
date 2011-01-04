@@ -11,7 +11,7 @@ CREATE TABLE payments (
 	payment_ref		varchar UNIQUE,
 	order_id		bigint REFERENCES orders(id),
 	user_id			bigint REFERENCES users(id),
-	issue_date		datetime,
+	issued_date		datetime,
 	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
@@ -23,7 +23,7 @@ CREATE TABLE payments (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
+		CHECK ( NOT ( issued_date IS NULL AND status > 'draft' ) AND
 			NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status = 'cleared' ) ),
 	CONSTRAINT valid_payment_type
@@ -39,7 +39,7 @@ SELECT	timestampable('payments'),
 --		searchable('payments'),
 		trashable('payments');
 
-COMMENT ON TABLE payments IS E'payments
+COMMENT ON TABLE payments IS E'Payments
 
 - due and cleared dates have absolutely no relationship with one another.
   It is possible to advance pay, or late pay...';

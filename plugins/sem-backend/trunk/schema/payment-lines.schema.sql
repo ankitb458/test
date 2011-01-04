@@ -23,7 +23,7 @@ CREATE INDEX payment_lines_payment_id ON payment_lines(payment_id);
 CREATE INDEX payment_lines_parent_id ON payment_lines(parent_id);
 CREATE INDEX payment_lines_order_line_id ON payment_lines(order_line_id);
 
-COMMENT ON TABLE payments IS E'payment lines
+COMMENT ON TABLE payment_lines IS E'Payment lines
 
 - A reference to an order line with no parent is a non-recurring payment
   for an order.

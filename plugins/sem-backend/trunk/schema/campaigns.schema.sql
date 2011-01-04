@@ -52,7 +52,7 @@ CREATE INDEX campaigns_sort ON campaigns(name);
 CREATE INDEX campaigns_aff_id ON campaigns(aff_id);
 CREATE INDEX campaigns_product_id ON campaigns(product_id);
 
-COMMENT ON TABLE products IS E'Stores campaigns, coupons, and promos.
+COMMENT ON TABLE campaigns IS E'Campaigns, coupons, and promos.
 
 Promos are tied to products through their uuid; every product has one.
 

@@ -10,7 +10,7 @@ CREATE TABLE movements (
 	movement_ref	varchar UNIQUE,
 	order_id		bigint REFERENCES orders(id),
 	user_id			bigint REFERENCES users(id),
-	issue_date		datetime,
+	issued_date		datetime,
 	due_date		datetime,
 	due_amount		numeric(8,2) NOT NULL DEFAULT 0,
 	cleared_date	datetime,
@@ -22,15 +22,13 @@ CREATE TABLE movements (
 	CONSTRAINT valid_name
 		CHECK ( name <> '' AND name = trim(name) ),
 	CONSTRAINT valid_flow
-		CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
+		CHECK ( NOT ( issued_date IS NULL AND status > 'draft' ) AND
 			NOT ( due_date IS NULL AND status > 'draft' ) AND
 			NOT ( cleared_date IS NULL AND status = 'cleared' ) ),
 	CONSTRAINT valid_movement_type
 		CHECK ( movement_type = 'shipment' OR order_id IS NULL ),
-	CONSTRAINT valid_payment_method
-		CHECK ( payment_ref IS NULL OR payment_method IS NOT NULL ),
-	CONSTRAINT valid_payment_ref
-		CHECK ( payment_ref <> '' AND payment_ref = trim(payment_ref) ),
+	CONSTRAINT valid_movement_ref
+		CHECK ( movement_ref <> '' AND movement_ref = trim(movement_ref) ),
 	CONSTRAINT valid_amounts
 		CHECK ( due_amount >= 0 AND cleared_amount >= 0 )
 );

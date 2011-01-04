@@ -50,21 +50,21 @@ FOR EACH ROW EXECUTE PROCEDURE payments_sanitize_user_id();
 /**
  * Auto-assigns an issue date when needed
  */
-CREATE OR REPLACE FUNCTION payments_sanitize_issue_date()
+CREATE OR REPLACE FUNCTION payments_sanitize_issued_date()
 	RETURNS trigger
 AS $$
 BEGIN
-	IF	NEW.status > 'draft' AND NEW.issue_date IS NULL
+	IF	NEW.status > 'draft' AND NEW.issued_date IS NULL
 	THEN
-		NEW.issue_date := NOW();
+		NEW.issued_date := NOW();
 	END IF;
 	
 	RETURN NEW;
 END $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER payments_10_sanitize_issue_date
+CREATE TRIGGER payments_10_sanitize_issued_date
 	BEFORE INSERT OR UPDATE ON payments
-FOR EACH ROW EXECUTE PROCEDURE payments_sanitize_issue_date();
+FOR EACH ROW EXECUTE PROCEDURE payments_sanitize_issued_date();
 
 /**
  * Autofills an order's payment

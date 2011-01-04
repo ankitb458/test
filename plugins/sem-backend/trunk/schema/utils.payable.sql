@@ -35,7 +35,7 @@ BEGIN
 		RAISE EXCEPTION 'Constraint valid_% does not exist on %. Default: %', 'flow', t_name,
 		$EXEC$
 			CONSTRAINT valid_flow
-				CHECK ( NOT ( issue_date IS NULL AND status > 'draft' ) AND
+				CHECK ( NOT ( issued_date IS NULL AND status > 'draft' ) AND
 					NOT ( due_date IS NULL AND status > 'draft' ) AND
 					NOT ( cleared_date IS NULL AND status = 'cleared' ) )
 		$EXEC$;
@@ -47,9 +47,9 @@ BEGIN
 	AS $DEF$
 	BEGIN
 		-- Assign default dates if needed
-		IF	NEW.issue_date IS NULL AND NEW.status > 'draft'
+		IF	NEW.issued_date IS NULL AND NEW.status > 'draft'
 		THEN
-			NEW.issue_date := NOW();
+			NEW.issued_date := NOW();
 		END IF;
 		IF	NEW.due_date IS NULL AND NEW.status > 'draft'
 		THEN

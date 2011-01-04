@@ -10,7 +10,7 @@ CREATE TABLE order_lines (
 	user_id			bigint REFERENCES users(id),
 	product_id		bigint REFERENCES products(id),
 	coupon_id		bigint REFERENCES campaigns(id),
-	quantity		int NOT NULL DEFAULT 1,
+	quantity		numeric(8,2) NOT NULL DEFAULT 1,
 	init_price		numeric(8,2) NOT NULL,
 	init_comm		numeric(8,2) NOT NULL,
 	init_discount	numeric(8,2) NOT NULL,
@@ -45,7 +45,7 @@ CREATE INDEX order_lines_user_id ON order_lines(user_id);
 CREATE INDEX order_lines_product_id ON order_lines(product_id);
 CREATE INDEX order_lines_coupon_id ON order_lines(coupon_id);
 
-COMMENT ON TABLE orders IS E'Order lines
+COMMENT ON TABLE order_lines IS E'Order lines
 
 - user_id gets shipped; orders.user_id gets paymentd.
 - due and cleared dates have absolutely no relationship with one another.
