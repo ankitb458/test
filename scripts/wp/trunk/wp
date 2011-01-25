@@ -2,7 +2,7 @@
 #
 # hub.org WP/Sem Pro installer/upgrader
 # Author: Denis de Bernardy <http://www.mesoconcepts.com>
-# Version: 1.1
+# Version: 1.2
 # http://www.mesoconcepts.com/license/
 #
 
@@ -376,7 +376,7 @@ then
 		echo "Copying $src to $path"
 	fi
 	
-	cp -R $src/* $path/.
+	#cp -R $src/* $path/.
 fi
 
 
@@ -447,16 +447,24 @@ then
 	secret2=`uuidgen`
 	secret3=`uuidgen`
 	secret4=`uuidgen`
+	secret5=`uuidgen`
+	secret6=`uuidgen`
+	secret7=`uuidgen`
+	secret8=`uuidgen`
 	
 	cat $path/wp-config-sample.php \
-		| sed "s/define('DB_NAME', 'putyourdbnamehere');/define('DB_NAME', '$dbn');/" \
-		| sed "s/define('DB_USER', 'usernamehere');/define('DB_USER', '$dbu');/" \
-		| sed "s/define('DB_PASSWORD', 'yourpasswordhere');/define('DB_PASSWORD', '$dbp');/" \
-		| sed "s/define('DB_HOST', 'localhost');/define('DB_HOST', '$dbh');/" \
-		| sed "s/define('AUTH_KEY', 'put your unique phrase here');/define('AUTH_KEY', '$secret1');/" \
-		| sed "s/define('SECURE_AUTH_KEY', 'put your unique phrase here');/define('SECURE_AUTH_KEY', '$secret2');/" \
-		| sed "s/define('LOGGED_IN_KEY', 'put your unique phrase here');/define('LOGGED_IN_KEY', '$secret3');/" \
-		| sed "s/define('NONCE_KEY', 'put your unique phrase here');/define('NONCE_KEY', '$secret4');/" \
+		| sed "s/define('DB_NAME',.*);/define('DB_NAME', '$dbn');/" \
+		| sed "s/define('DB_USER',.*);/define('DB_USER', '$dbu');/" \
+		| sed "s/define('DB_PASSWORD',.*);/define('DB_PASSWORD', '$dbp');/" \
+		| sed "s/define('DB_HOST',.*);/define('DB_HOST', '$dbh');/" \
+		| sed "s/define('AUTH_KEY',.*);/define('AUTH_KEY', '$secret1');/" \
+		| sed "s/define('SECURE_AUTH_KEY',.*);/define('SECURE_AUTH_KEY', '$secret2');/" \
+		| sed "s/define('LOGGED_IN_KEY',.*);/define('LOGGED_IN_KEY', '$secret3');/" \
+		| sed "s/define('NONCE_KEY',.*);/define('NONCE_KEY', '$secret4');/" \
+		| sed "s/define('AUTH_SALT',.*);/define('AUTH_SALT', '$secret5');/" \
+		| sed "s/define('SECURE_AUTH_SALT',.*);/define('SECURE_AUTH_SALT', '$secret6');/" \
+		| sed "s/define('LOGGED_IN_SALT',.*);/define('LOGGED_IN_SALT', '$secret7');/" \
+		| sed "s/define('NONCE_SALT',.*);/define('NONCE_SALT', '$secret8');/" \
 		> $path/wp-config.php
 fi
 
@@ -467,28 +475,27 @@ then
 	echo "Setting $path permissions"
 fi
 
-chown -R $owner $path 2> /dev/null
-
-find $path -type d -exec chmod 0755 {} \; 2> /dev/null
-find $path -type f -exec chmod 0644 {} \; 2> /dev/null
-
-chmod ugo+w $path/.htaccess
-chmod ugo+w $path/wp-config.php
-chmod ugo+w $path/wp-content
-#chmod ugo+w $path/wp-content/*-cache-config.php
-
-for dir in	media \
-			wp-content/authors \
-			wp-content/backup-* \
-			wp-content/cache \
-			wp-content/header \
-			wp-content/sitemaps \
-			wp-content/uploads
-do
-	if [ -d $path/$dir ]; then
-		chmod -R ugo+w $path/$dir 2> /dev/null
-	fi
-done
+# chown -R $owner $path 2> /dev/null
+# 
+# find $path -type d -exec chmod 0755 {} \; 2> /dev/null
+# find $path -type f -exec chmod 0644 {} \; 2> /dev/null
+# 
+# chmod ugo+w $path/.htaccess
+# chmod ugo+w $path/wp-config.php
+# chmod ugo+w $path/wp-content
+# 
+# for dir in	media \
+# 			wp-content/authors \
+# 			wp-content/backup-* \
+# 			wp-content/cache \
+# 			wp-content/header \
+# 			wp-content/sitemaps \
+# 			wp-content/uploads
+# do
+# 	if [ -d $path/$dir ]; then
+# 		chmod -R ugo+w $path/$dir 2> /dev/null
+# 	fi
+# done
 
 
 # delete maintenance file
