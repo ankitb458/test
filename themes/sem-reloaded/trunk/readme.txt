@@ -27,6 +27,10 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 
 == Change Log ==
 
+= 0.9.7 =
+
+- Add a unique class to widgets
+
 = 0.9.6 =
 
 - Header optimizations

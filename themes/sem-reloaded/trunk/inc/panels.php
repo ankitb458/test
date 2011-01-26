@@ -17,7 +17,7 @@ class sem_panels {
 		sem_panels::switch_themes();
 		
 		global $sem_options;
-		$before_widget = '<div class="widget %2$s">' . "\n"
+		$before_widget = '<div class="widget %1$s %2$s">' . "\n"
 						. '<div class="widget_top"><div class="hidden"></div></div>' . "\n"
 						. '<div class="widget_bg">' . "\n"
 						. '<div class="pad">';
@@ -126,7 +126,7 @@ class sem_panels {
 			switch ( $panel_id ) {
 			case 'the_header':
 				$before_widget = "\n\t"
-					. '<div class="%2$s header_widget wrapper">' . "\n\t"
+					. '<div class="%1$s %2$s header_widget wrapper">' . "\n\t"
 					. '<div class="header_widget_top"><div class="hidden"></div></div>' . "\n\t"
 					. '<div class="header_widget_bg">' . "\n\t"
 					. '<div class="wrapper_item">' . "\n\t"
@@ -141,7 +141,7 @@ class sem_panels {
 			
 			case 'the_footer':
 				$before_widget = "\n\t"
-					. '<div class="%2$s footer_widget wrapper">' . "\n\t"
+					. '<div class="%1$s %2$s footer_widget wrapper">' . "\n\t"
 					. '<div class="footer_widget_top"><div class="hidden"></div></div>' . "\n\t"
 					. '<div class="footer_widget_bg">' . "\n\t"
 					. '<div class="wrapper_item">' . "\n\t"
@@ -156,7 +156,7 @@ class sem_panels {
 			
 			case 'the_header_boxes':
 			case 'the_footer_boxes':
-				$before_widget = '<div class="inline_box %2$s">' . "\n"
+				$before_widget = '<div class="inline_box %1$s %2$s">' . "\n"
 					. '<div class="pad">' . "\n";
 				$after_widget = '</div>' . "\n"
 					. '</div><!-- inline_box -->' . "\n";
@@ -165,7 +165,7 @@ class sem_panels {
 			case 'before_the_entries':
 			case 'after_the_entries':
 			case 'the_404':
-				$before_widget = '<div class="%2$s main_widget">' . "\n"
+				$before_widget = '<div class="%1$s %2$s main_widget">' . "\n"
 					. '<div class="main_widget_top"><div class="hidden"></div></div>' . "\n"
 					. '<div class="main_widget_bg">' . "\n"
 					. '<div class="pad">' . "\n";
@@ -177,7 +177,7 @@ class sem_panels {
 			
 			default:
 				$before_widget = '<div class="spacer"></div>' . "\n"
-					. '<div class="%2$s">' . "\n"
+					. '<div class="%1$s %2$s">' . "\n"
 					. '<div class="pad">' . "\n";
 				$after_widget = '</div>' . "\n"
 					. '</div>' . "\n";
