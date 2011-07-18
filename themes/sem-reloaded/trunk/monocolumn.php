@@ -5,7 +5,6 @@
 # You would lose your changes when you upgrade your site. Use php widgets instead.
 #
 
-
 /*
 Template Name: Mono Column
 */

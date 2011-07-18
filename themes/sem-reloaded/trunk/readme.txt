@@ -3,7 +3,7 @@ Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: semiologic
 Requires at least: 2.8
-Tested up to: 3.1
+Tested up to: 3.2.1
 Stable tag: trunk
 
 The Semiologic theme, reloaded for WordPress.
@@ -30,6 +30,7 @@ The [Semiologic forum](http://forum.semiologic.com) is the best place to report 
 = 0.9.7 =
 
 - Add a unique class to widgets
+- jQuery compat / Nav Menus
 
 = 0.9.6 =
 
