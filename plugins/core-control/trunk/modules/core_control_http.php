@@ -9,7 +9,7 @@ Author URI: http://dd32.id.au/
 
 class core_control_http {
 
-	function core_control_http() {
+	function __construct() {
 		add_action('core_control-http', array(&$this, 'the_page'));
 		
 		$this->settings = array('curl' => array('enabled' => true), 'streams' => array('enabled' => true), 'fopen' => array('enabled' => true), 'fsockopen' => array('enabled' => true), 'exthttp' => array('enabled' => true));
@@ -24,7 +24,7 @@ class core_control_http {
 
 		foreach ( $this->settings as $transport => $options )
 			if ( $options['enabled'] === false )
-				add_filter($options['filter'], array(&$this, 'disable_transport'));
+				add_filter($options['filter'], '__return_false' );
 	}
 
 	function has_page() {
@@ -33,10 +33,6 @@ class core_control_http {
 
 	function menu() {
 		return array('http', 'External HTTP Access');
-	}
-	
-	function disable_transport() {
-		return false;
 	}
 	
 	function handle_posts() {
@@ -75,25 +71,20 @@ class core_control_http {
 			  </thead>
 			  <tbody>
 			  ';
-
-		$primary_get = WP_Http::_getTransport();
-		$primary_get_nonblocking = WP_Http::_getTransport(array('blocking' => false));
-		$primary_post = WP_Http::_postTransport();
-		$primary_post_nonblocking = WP_Http::_postTransport(array('blocking' => false));
-		foreach ( array('primary_get', 'primary_post', 'primary_get_nonblocking', 'primary_post_nonblocking') as $var )
-			$$var = strtolower(get_class(${$var}[0]));
 		
 		foreach ( array('exthttp' => 'PHP HTTP Extension', 'curl' => 'cURL', 'streams' => 'PHP Streams', 'fopen' => 'PHP fopen()', 'fsockopen' => 'PHP fsockopen()' ) as $transport => $text ) {
 			$class = "WP_Http_$transport";
+			if ( ! class_exists($class) )
+				continue;
 			$class = new $class;
 			
 			//Before we test, we need to remove any filters we've loaded.
-			$filtered = has_filter($this->settings[$transport]['filter'], array(&$this, 'disable_transport'));
+			$filtered = has_filter($this->settings[$transport]['filter'], '__return_false' );
 			if ( $filtered )
-				remove_filter($this->settings[$transport]['filter'], array(&$this, 'disable_transport'));
+				remove_filter($this->settings[$transport]['filter'], '__return_false' );
 			$useable = $class->test();
 			if ( $filtered )
-				add_filter($this->settings[$transport]['filter'], array(&$this, 'disable_transport'));
+				add_filter($this->settings[$transport]['filter'], '__return_false' );
 			$disabled = $this->settings[$transport]['enabled'] === false;
 			$colour = $useable ? '#e7f7d3' : '#ee4546';
 			if ( $useable && $disabled )
@@ -101,21 +92,7 @@ class core_control_http {
 			
 			$status = $disabled ? 'Disabled' : ($useable ? 'Available' : 'Not Available');
 			
-			//This may look messy, But it works well and doesnt mean too many IF branches
 			$extra = '';
-			foreach ( array('primary_get', 'primary_post', 'primary_get_nonblocking', 'primary_post_nonblocking') as $var ) {
-				if ( strtolower("WP_Http_$transport") == $$var ) {
-					$var = substr($var, 8);
-					$extra .= 'Primary ';
-					if ( 'g' == $var{0} )
-						$extra .= 'GET';
-					else
-						$extra .= 'POST';
-					if ( strpos($var, '_') )
-						$extra .= '(non-blocking)';
-					$extra .= '<br />';
-				}
-			}
 
 			echo '<tr style="background-color: ' . $colour . ';">';
 				echo '<th style="text-shadow: none !important;">' . $text . '</th>';
@@ -143,6 +120,7 @@ class core_control_http {
 						'method' => 'GET',
 						'timeout' => max(10, apply_filters( 'http_request_timeout', 5)),
 						'redirection' => apply_filters( 'http_request_redirection_count', 5),
+						'_redirection' => apply_filters( 'http_request_redirection_count', 5),
 						'httpversion' => apply_filters( 'http_request_version', '1.0'),
 						'user-agent' => apply_filters( 'http_headers_useragent', 'WordPress/' . $GLOBALS['wp_version'] . '; ' . get_bloginfo( 'url' )  ),
 						'blocking' => true,
@@ -151,7 +129,9 @@ class core_control_http {
 						'body' => null,
 						'compress' => false,
 						'decompress' => true,
-						'sslverify' => true
+						'sslverify' => true,
+						'filename' => '',
+						'stream' => false,
 					);
 					$result = $class->request($url, $args);
 					if ( is_wp_error($result) ) {
@@ -204,11 +184,9 @@ class core_control_http {
 						'http_headers_useragent' => 'WordPress/' . $GLOBALS['wp_version'] . '; ' . get_bloginfo( 'url' ),
 						'block_local_requests' => false,
 						
-						'use_fsockopen_transport' => false !== (($option = get_option( 'disable_fsockopen' )) && time()-$option < 43200),
-						'use_fopen_transport' => true,
+						'use_fsockopen_transport' => true,
 						'use_streams_transport' => true,
-						'use_http_extension_transport' => function_exists('http_request'),
-						'use_curl_transport' => function_exists('curl_init') && function_exists('curl_exec'),
+						'use_curl_transport' => true,
 						
 						'https_local_ssl_verify' => true,
 						'https_ssl_verify' => true,

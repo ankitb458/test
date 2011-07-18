@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: HTTP Access Logger Module
-Version: 1.0
+Version: 1.1
 Description: Core Control HTTP Logger module, This allows you to Log external connections which WordPress makes.
 Author: Dion Hulse
 Author URI: http://dd32.id.au/
@@ -10,7 +10,7 @@ class core_control_http_log {
 
 	var $request = null;
 
-	function core_control_http_log() {
+	function __construct() {
 		add_action('core_control-http_log', array(&$this, 'the_page'));
 		
 		$this->settings = array('logging' => false);
@@ -22,13 +22,16 @@ class core_control_http_log {
 		
 		//Enable Logging if so be it.
 		if ( $this->settings['logging'] != false && ( !defined('WP_HTTP_BLOCK_EXTERNAL') || !WP_HTTP_BLOCK_EXTERNAL) ) {
-			add_action('http_api_debug', array(&$this, 'do_log'), 10, 3);
+			add_filter('pre_http_request', array(&$this, 'do_log'), 10, 3);
 			add_filter('http_request_args', array(&$this, 'do_log'), 10, 2 );
+			add_action('http_api_debug', array(&$this, 'do_log'), 10, 3);
 			add_action('shutdown', array(&$this, 'end_request'));
+			
 		}
 		register_post_type('http', array(
 										'label' => __('Core Control: HTTP Logger data', 'core-control'),
-										'public' => false
+										'public' => false,
+										'rewrite' => false,
 									));
 	}
 
@@ -50,10 +53,10 @@ class core_control_http_log {
 		$mtime = $mtime[1] + $mtime[0];
 		return $mtime-$start;
 	}
-	
+
 	function do_log($data = '', $log_type = '', $extra = '') {
 		//before:
-		if ( '' == $log_type || 'http' == substr($log_type, 0, 4) ) {
+		if ( 'http_request_args' == current_filter() ) {
 			//THIS IS A FILTER PEOPLE!
 			if ( is_object($this->request) ) {
 				//Previous request must've failed.
@@ -65,15 +68,15 @@ class core_control_http_log {
 			//RETURN ON FILTERS!
 			return $data;
 		//starting..
-		} elseif ( 'transports_list' == $log_type ) {
-			$transports = array($data);
-			
+		} elseif ( 'pre_http_request' == current_filter() ) {
+			$transport = WP_HTTP::_get_first_available_transport($log_type /* $args */, $extra /* $url */);
+
 			$this->request->start = $this->timer_start();
 			$this->request->realtime = time();
-			$this->request->transports = array_map('get_class', $transports);
-			
+			$this->request->transports = $transport;
+			return $data; //FILTER
 		//after:
-		} elseif ( 'response' == $log_type ) {
+		} elseif ( 'http_api_debug' == current_filter() && 'response' == $log_type ) {
 			$result =& $data;
 			$class =& $extra;
 			
@@ -87,7 +90,7 @@ class core_control_http_log {
 	}
 	
 	function end_request() {
-		if ( is_null($this->request) )
+		if ( empty($this->request) )
 			return;
 		//A Request has finished, Lets remove useless items:
 		unset($this->request->start);
@@ -107,7 +110,10 @@ class core_control_http_log {
 			'post_content_filtered' => $post_content_filtered
 		);
 
+		//Disable error reporting for this call, Cron triggers requests before init, which causes $wp_rewrite not to be loaded causing the unique slug handler to fail.
+		$err = error_reporting(0);
 		wp_insert_post($arr);
+		error_reporting($err);
 		
 		$this->request = null;
 	}
@@ -336,7 +342,7 @@ class core_control_http_log {
 				<?php endif; ?>
 				<tr>
 					<th>HTTP Transports</th>
-					<td><?php echo implode(', ', $the_request->transports); ?></td>
+					<td><?php echo ( is_array($the_request->transports) ? implode(', ', $the_request->transports) : $the_request->transports ); ?></td>
 				</tr>
 				<tr>
 					<th>Request Time</th>

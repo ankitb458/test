@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Core Control
-Version: 1.0
+Version: 1.1
 Plugin URI: http://dd32.id.au/wordpress-plugins/core-control/
 Description: Core Control is a set of plugin modules which can be used to control certain aspects of the WordPress control.
 Author: Dion Hulse
@@ -12,66 +12,48 @@ $GLOBALS['core-control'] = new core_control();
 class core_control {
 	var $basename = '';
 	var $folder = '';
-	var $version = '1.0';
+	var $version = '1.1';
 	
 	var $modules = array();
 	
-	function core_control() {
+	function __construct() {
 		//Set the directory of the plugin:
 		$this->basename = plugin_basename(__FILE__);
 		$this->folder = dirname($this->basename);
 
-		//load plugins after core class
-		add_action('init', array(&$this, 'load_modules'), 25);
+		// Load modules ASAP
+		add_action('plugins_loaded', array(&$this, 'load_modules'), 1);
 
 		//Register general hooks.
-		add_action('admin_init', array(&$this, 'admin_init'));
 		add_action('admin_menu', array(&$this, 'admin_menu'));
 		register_activation_hook(__FILE__, array(&$this, 'activate'));
-		register_deactivation_hook(__FILE__, array(&$this, 'deactivate'));
-		
-	}
-	
-	function admin_init() {
-		//Load any translation files needed:
-		load_plugin_textdomain('core-control', '', $this->folder . '/langs/');
-
-		//Register our JS & CSS
-		//When i implement it and convert over.. yes.
-		//wp_register_script('core-control', plugins_url( $this->folder . '/core-control.js' ), array('jquery'), $this->version);
-		//wp_register_style ('core-control', plugins_url( $this->folder . '/core-control.css' ), array(), $this->version);
 
 		//Add actions/filters
 		add_action('admin_post_core_control-modules', array(&$this, 'handle_posts'));
 
 		//Add page
 		add_action('core_control-default', array(&$this, 'default_page'));
+
 	}
+	
 	function admin_menu() {
 		add_submenu_page('tools.php', __('Core Control', 'core-control'), __('Core Control', 'core-control'), 'manage_options', 'core-control', array(&$this, 'main_page'));
 	}
 
 	function activate() {
 		global $wp_version;
-		if ( ! version_compare( $wp_version, '3.0', '>=') ) {
+		if ( ! version_compare( $wp_version, '3.2', '>=') ) {
 			if ( function_exists('deactivate_plugins') )
 				deactivate_plugins(__FILE__);
-			die(__('<strong>Core Control:</strong> Sorry, This plugin requires WordPress 3.0+', 'core-control'));
+			die(__('<strong>Core Control:</strong> Sorry, This plugin requires WordPress 3.2+', 'core-control'));
 		}
-		/* I WISH..
-		if ( version_compare(PHP_VERSION, '5.2.0', '<') ) {
-			deactivate_plugins(__FILE__); // Deactivate ourself
-			die( sprintf(__('<strong>Core Control:</strong> Sorry, This plugin has taken a bold step in requiring PHP 5.2+, Your server is currently running PHP %s, Please bug your host to upgrade to a recent version of PHP which is less bug-prone. At last count, <strong>over 80%% of WordPress installs are using PHP 5.2+</strong>.', 'core-control'), PHP_VERSION) );
-		}*/
-	}
-	
-	function deactivate() {
-		delete_option('core_control-active_modules');
 	}
 
 	function load_modules() {
 		$modules = get_option('core_control-active_modules', array());
-		foreach ( $modules as $module ) {
+		foreach ( (array) $modules as $module ) {
+			if ( 0 !== validate_file($module) )
+				continue;
 			if ( ! file_exists(WP_PLUGIN_DIR . '/' . $this->folder . '/modules/' . $module) )
 				continue;
 			include_once WP_PLUGIN_DIR . '/' . $this->folder . '/modules/' . $module;

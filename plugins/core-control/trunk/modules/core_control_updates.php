@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Updates Module
-Version: 1.0
+Version: 1.1
 Description: Core Control Updates module, This allows you to Disable Plugin/Theme/Core update checking, or to force a check to take place.
 Author: Dion Hulse
 Author URI: http://dd32.id.au/
 */
 class core_control_updates {
 
-	function core_control_updates() {
+	function __construct() {
 		add_action('core_control-updates', array(&$this, 'the_page'));
 		
 		$this->settings = array('plugins' => array('enabled' => true), 'themes' => array('enabled' => true), 'core' => array('enabled' => true));
@@ -121,7 +121,7 @@ class core_control_updates {
 				if ( false === $result ) {
 					echo '<p>An Error occured during the update check</p>';
 				} else {
-					$new = get_transient('update_plugins');
+					$new = get_site_transient('update_plugins');
 					if ( !empty($new->response) && !empty($plugins->response) ) {
 						if ( count($new->response) > count($plugins->response) )
 							echo '<p>New updates were found</p>';
@@ -173,7 +173,7 @@ class core_control_updates {
 				if ( false === $result ) {
 					echo '<p>An Error occured during the update check</p>';
 				} else {
-					$new = get_transient('update_themes');
+					$new = get_site_transient('update_themes');
 					if ( isset($new->response) && isset($themes->response) ) {
 						if ( count($new->response) > count($themes->response) )
 							echo '<p>New updates were found</p>';
