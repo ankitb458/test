@@ -2,7 +2,7 @@
 Contributors: Yaosan Yeo
 Tags: semiologic
 Requires at least: 2.9
-Tested up to: 3.1
+Tested up to: 3.2.1
 Stable tag: trunk
 
 Insert inline rating stars within your posts based on the score you assign, e.g.: [rating:5].
