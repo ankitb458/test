@@ -2,7 +2,7 @@
 Contributors: Denis-de-Bernardy
 Donate link: http://www.semiologic.com/partners/
 Tags: lightbox, thickbox, shadowbox, gallery, semiologic
-Requires at least: 2.7
+Requires at least: 2.8
 Tested up to: 3.2.1
 Stable tag: trunk
 
@@ -57,6 +57,7 @@ If you require more dedicated assistance, consider using [Semiologic Pro](http:/
 = 2.0.3 =
 
 - Fix conflict with wp cron.
+- Use esc_url() / Require WP 2.8.
 
 = 2.0.2 =
 
