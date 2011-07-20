@@ -1,0 +1,121 @@
+/*
+Fam Fam Fam silk icons are copyright Mark James (http://www.famfamfam.com/lab/icons/silk/), and CC-By licensed:
+
+http://creativecommons.org/licenses/by/2.5/
+
+To customize this file, create a icons.css file in your skin's folder. Paste this file's contents into it,
+then only keep that which you need. Remove references to images, or adjust them accordingly. This will let
+you customize the theme's CSS without losing your changes when you upgrade.
+*/
+
+#main a.external_icon,
+#credits a.external_icon {
+	background: url(../icons/world_go.gif) center right no-repeat;
+	padding-left: 0px;
+	padding-right: 14px;
+}
+
+ul {
+	list-style-image: url(../icons/bullet.gif);
+}
+
+.entry_content ul,
+.search_result ul {
+	list-style: square;
+}
+
+.edit_entry a {
+	background: url(../icons/page_white_edit.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.reply_comment a {
+	background: url(../icons/comment_add.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.comment_entry img {
+	background: url(../icons/comment_add.gif) bottom center no-repeat;
+	vertical-align: middle;
+}
+
+.edit_comment a {
+	background: url(../icons/comment_edit.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_tags a,
+.entry_categories a {
+	background: url(../icons/folder.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_author a,
+.entry_author span,
+.signed_in_author a,
+.loginout a {
+	background: url(../icons/user.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_date span,
+.entry_date a,
+.comment_date span,
+.pings_date span,
+h3.post_list_date {
+	background: url(../icons/calendar.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.entry_replies a {
+	background: url(../icons/comment.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.leave_reply a {
+	background: url(../icons/comment_add.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.name_label label {
+	background: url(../icons/user.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.email_label label {
+	background: url(../icons/email.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.url_label label {
+	background: url(../icons/world_link.gif) center left no-repeat;
+	padding-left: 18px;
+	padding-right: 0px;
+}
+
+.link_entry a,
+.link_comment a {
+	padding: 0px;
+	background: none;
+}
+
+.link_entry img,
+.link_comment img {
+	background: url(../icons/link.gif) bottom center no-repeat;
+}
+
+.s {
+	background: url(../icons/magnifier.gif) bottom left no-repeat #fff;
+	padding-left: 19px;
+	padding-right: 3px;
+}
