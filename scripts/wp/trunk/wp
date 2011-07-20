@@ -376,7 +376,7 @@ then
 		echo "Copying $src to $path"
 	fi
 	
-	#cp -R $src/* $path/.
+	cp -R $src/* $path/.
 fi
 
 
@@ -475,27 +475,27 @@ then
 	echo "Setting $path permissions"
 fi
 
-# chown -R $owner $path 2> /dev/null
-# 
-# find $path -type d -exec chmod 0755 {} \; 2> /dev/null
-# find $path -type f -exec chmod 0644 {} \; 2> /dev/null
-# 
-# chmod ugo+w $path/.htaccess
-# chmod ugo+w $path/wp-config.php
-# chmod ugo+w $path/wp-content
-# 
-# for dir in	media \
-# 			wp-content/authors \
-# 			wp-content/backup-* \
-# 			wp-content/cache \
-# 			wp-content/header \
-# 			wp-content/sitemaps \
-# 			wp-content/uploads
-# do
-# 	if [ -d $path/$dir ]; then
-# 		chmod -R ugo+w $path/$dir 2> /dev/null
-# 	fi
-# done
+chown -R $owner $path 2> /dev/null
+
+find $path -type d -exec chmod 0755 {} \; 2> /dev/null
+find $path -type f -exec chmod 0644 {} \; 2> /dev/null
+
+chmod ugo+w $path/.htaccess
+chmod ugo+w $path/wp-config.php
+chmod ugo+w $path/wp-content
+
+for dir in	media \
+			wp-content/authors \
+			wp-content/backup-* \
+			wp-content/cache \
+			wp-content/header \
+			wp-content/sitemaps \
+			wp-content/uploads
+do
+	if [ -d $path/$dir ]; then
+		chmod -R ugo+w $path/$dir 2> /dev/null
+	fi
+done
 
 
 # delete maintenance file
